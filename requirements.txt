@@ -1,0 +1,7 @@
+dicttoxml==1.7.4
+music-tag==0.4.3
+pathvalidate==2.4.1
+Pillow==8.3.2
+pyYAML==5.4.1
+sanitize-filename==1.2.0
+youtube_dl==2021.6.6

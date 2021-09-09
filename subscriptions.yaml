@@ -1,0 +1,61 @@
+config:
+  working_directory: '/Users/jesse.bannon/workspace/ytdl_subscribe/tmp'
+
+presets:
+  soundcloud:
+    source: "soundcloud"
+    ytdl_opts:
+      format: 'bestaudio/best'
+      extractaudio: True  # only keep the audio
+      audioformat: "mp3"  # convert to mp3
+      noplaylist: True
+    post_process:
+      file_name: "[{upload_year}] {sanitized_title}/{sanitized_title}.{ext}"
+      thumbnail_name: "[{upload_year}] {sanitized_title}/folder.{thumbnail_ext}"
+      tagging:
+        artist: "{artist}"
+        title: "{title}"
+        album: "{title}"
+        year: "{upload_year}"
+        genre: "{genre}"
+
+  music_videos:
+    source: "youtube"
+    ytdl_opts:
+      format: 'best'
+      sleep_interval: 8
+      max_sleep_interval: 25
+    post_process:
+      file_name: "{sanitized_artist} - {sanitized_track}.{ext}"
+      convert_thumbnail: "jpg"
+      thumbnail_name: "{sanitized_artist} - {sanitized_track}.jpg"
+      nfo_name: "{sanitized_artist} - {sanitized_track}.nfo"
+      nfo_root: "musicvideo"
+      nfo:
+        artist: "{artist}"
+        track: "{sanitized_track}"
+        album: "Music Videos"
+        year: "{upload_year}"
+
+subscriptions:
+#  delorra:
+#    url: "https://soundcloud.com/delorra/tracks"
+#    preset: "soundcloud"
+#    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/delorra"
+#    overrides:
+#      artist: "DeLorra"
+#      genre: "Synthwave / Electronic"
+
+#  tom_petty:
+#    url: "https://www.youtube.com/playlist?list=PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i"
+#    preset: "music_videos"
+#    output_path: "tompetty_test"
+#    overrides:
+#      artist: "Tom Petty and the Heartbreakers"
+
+  rammstein:
+    url: "https://www.youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
+    preset: "music_videos"
+    output_path: "rammstein test"
+    overrides:
+      artist: "Rammstein"
