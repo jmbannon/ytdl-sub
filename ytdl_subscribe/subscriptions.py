@@ -10,6 +10,7 @@ from ytdl_subscribe import SubscriptionSource
 
 import youtube_dl as ytdl
 
+
 def _f(value, entry):
     return value.format(**entry)
 
@@ -24,7 +25,7 @@ def _ffile(file_value, path, entry, makedirs=False):
 
 
 class Subscription(object):
-    WORKING_DIRECTORY = ''
+    WORKING_DIRECTORY = ""
 
     source = None
 
@@ -56,73 +57,84 @@ class Subscription(object):
         self.WORKING_DIRECTORY += f"{'/' if self.WORKING_DIRECTORY else ''}{self.name}"
 
         # Always set outtmpl to the id and extension. Will be renamed using the subscription's output_path value
-        self.ytdl_opts['outtmpl'] = self.WORKING_DIRECTORY + '/%(id)s.%(ext)s'
-        self.ytdl_opts['writethumbnail'] = True
+        self.ytdl_opts["outtmpl"] = self.WORKING_DIRECTORY + "/%(id)s.%(ext)s"
+        self.ytdl_opts["writethumbnail"] = True
 
     def parse_entry(self, entry):
         # Add overrides to the entry
         entry = dict(entry, **self.overrides)
 
         # Add the file path to the entry, assert it exists
-        entry['file_path'] = f"{self.WORKING_DIRECTORY}/{entry['id']}.{entry['ext']}"
+        entry["file_path"] = f"{self.WORKING_DIRECTORY}/{entry['id']}.{entry['ext']}"
 
         # Add sanitized values
-        entry['sanitized_artist'] = sanitize(entry['artist'])
-        entry['sanitized_title'] = sanitize(entry['title'])
+        entry["sanitized_artist"] = sanitize(entry["artist"])
+        entry["sanitized_title"] = sanitize(entry["title"])
 
         return entry
 
     def _post_process_tagging(self, entry):
-        t = music_tag.load_file(entry['file_path'])
-        for tag, tag_formatter in self.post_process['tagging'].items():
+        t = music_tag.load_file(entry["file_path"])
+        for tag, tag_formatter in self.post_process["tagging"].items():
             t[tag] = _f(tag_formatter, entry)
         t.save()
 
     def _post_process_nfo(self, entry):
         nfo = {}
-        for tag, tag_formatter in self.post_process['nfo'].items():
+        for tag, tag_formatter in self.post_process["nfo"].items():
             nfo[tag] = _f(tag_formatter, entry)
 
         xml = dicttoxml.dicttoxml(
             obj=nfo,
-            root='nfo_root' in self.post_process,
-            custom_root=self.post_process.get('nfo_root'),
+            root="nfo_root" in self.post_process,
+            custom_root=self.post_process.get("nfo_root"),
             attr_type=False,
         )
-        nfo_file_path = _ffile(self.post_process['nfo_name'], self.output_path, entry, makedirs=True)
-        with open(nfo_file_path, 'wb') as f:
+        nfo_file_path = _ffile(
+            self.post_process["nfo_name"], self.output_path, entry, makedirs=True
+        )
+        with open(nfo_file_path, "wb") as f:
             f.write(xml)
 
     def extract_info(self):
         """
         Extracts only the info of the source, does not download it
         """
-        raise NotImplemented('Each source needs to implement how it extracts info')
+        raise NotImplemented("Each source needs to implement how it extracts info")
 
     def post_process_entry(self, entry):
-        if 'tagging' in self.post_process:
+        if "tagging" in self.post_process:
             self._post_process_tagging(entry)
 
         # Move the file after all direct file modifications are complete
-        output_file_path = _ffile(self.post_process['file_name'], self.output_path, entry, makedirs=True)
-        copyfile(entry['file_path'], output_file_path)
+        output_file_path = _ffile(
+            self.post_process["file_name"], self.output_path, entry, makedirs=True
+        )
+        copyfile(entry["file_path"], output_file_path)
 
         # Download the thumbnail if its present
-        if 'thumbnail_name' in self.post_process:
-            thumbnail_dest_path = _ffile(self.post_process['thumbnail_name'], self.output_path, entry, makedirs=True)
+        if "thumbnail_name" in self.post_process:
+            thumbnail_dest_path = _ffile(
+                self.post_process["thumbnail_name"],
+                self.output_path,
+                entry,
+                makedirs=True,
+            )
             if not os.path.isfile(thumbnail_dest_path):
-                thumbnail_file_path = f"{self.WORKING_DIRECTORY}/{entry['id']}.{entry['thumbnail_ext']}"
+                thumbnail_file_path = (
+                    f"{self.WORKING_DIRECTORY}/{entry['id']}.{entry['thumbnail_ext']}"
+                )
                 if os.path.isfile(thumbnail_file_path):
                     copyfile(thumbnail_file_path, thumbnail_dest_path)
 
-                if 'convert_thumbnail' in self.post_process:
+                if "convert_thumbnail" in self.post_process:
                     # TODO: Clean with yaml definitions
-                    if self.post_process['convert_thumbnail'] == 'jpg':
-                        self.post_process['convert_thumbnail'] = 'jpeg'
+                    if self.post_process["convert_thumbnail"] == "jpg":
+                        self.post_process["convert_thumbnail"] = "jpeg"
                     im = Image.open(thumbnail_dest_path).convert("RGB")
-                    im.save(thumbnail_dest_path, self.post_process['convert_thumbnail'])
+                    im.save(thumbnail_dest_path, self.post_process["convert_thumbnail"])
 
-        if 'nfo' in self.post_process:
+        if "nfo" in self.post_process:
             self._post_process_nfo(entry)
 
     @classmethod
@@ -133,15 +145,15 @@ class Subscription(object):
         elif SubscriptionSource.YOUTUBE in d:
             dclass = YoutubeSubscription
         else:
-            raise ValueError('dne')
+            raise ValueError("dne")
 
         return dclass(
             name=name,
             options=d[dclass.source],
-            ytdl_opts=d['ytdl_opts'],
-            post_process=d['post_process'],
-            overrides=d['overrides'],
-            output_path=d['output_path'],
+            ytdl_opts=d["ytdl_opts"],
+            post_process=d["post_process"],
+            overrides=d["overrides"],
+            output_path=d["output_path"],
         )
 
 
@@ -149,33 +161,33 @@ class SoundcloudSubscription(Subscription):
     source = SubscriptionSource.SOUNDCLOUD
 
     def is_entry_skippable(self, entry):
-        return self.options['skip_premiere_tracks'] and '/preview/' in entry['url']
+        return self.options["skip_premiere_tracks"] and "/preview/" in entry["url"]
 
     def parse_entry(self, entry):
         entry = super(SoundcloudSubscription, self).parse_entry(entry)
-        entry['upload_year'] = entry['upload_date'][:4]
+        entry["upload_year"] = entry["upload_date"][:4]
 
         # Add thumbnail ext value
-        entry['thumbnail_ext'] = entry['thumbnail'].split('.')[-1]
+        entry["thumbnail_ext"] = entry["thumbnail"].split(".")[-1]
 
         # If the entry does not have album fields, set them to be the track fields
-        if 'album' not in entry:
-            entry['album'] = entry['title']
-            entry['sanitized_album'] = entry['sanitized_title']
-            entry['album_year'] = entry['upload_year']
-            entry['tracknumber'] = 1
-            entry['tracknumberpadded'] = f'{1:02d}'
+        if "album" not in entry:
+            entry["album"] = entry["title"]
+            entry["sanitized_album"] = entry["sanitized_title"]
+            entry["album_year"] = entry["upload_year"]
+            entry["tracknumber"] = 1
+            entry["tracknumberpadded"] = f"{1:02d}"
 
         return entry
 
     def parse_album_entry(self, album_entry):
-        album_year = min([int(e['upload_date'][:4]) for e in album_entry['entries']])
-        for track_number, e in enumerate(album_entry['entries'], start=1):
-            e['album'] = album_entry['title']
-            e['sanitized_album'] = sanitize(album_entry['title'])
-            e['album_year'] = album_year
-            e['tracknumber'] = track_number
-            e['tracknumberpadded'] = f'{track_number:02d}'
+        album_year = min([int(e["upload_date"][:4]) for e in album_entry["entries"]])
+        for track_number, e in enumerate(album_entry["entries"], start=1):
+            e["album"] = album_entry["title"]
+            e["sanitized_album"] = sanitize(album_entry["title"])
+            e["album_year"] = album_year
+            e["tracknumber"] = track_number
+            e["tracknumberpadded"] = f"{track_number:02d}"
         return album_entry
 
     def extract_info(self):
@@ -185,30 +197,39 @@ class SoundcloudSubscription(Subscription):
         base_url = f"https://soundcloud.com/{self.options['username']}"
         tracks = []
 
-        if self.options.get('download_strategy') == 'albums_then_tracks':
+        if self.options.get("download_strategy") == "albums_then_tracks":
             track_ytdl_opts = {
-                'download_archive': self.WORKING_DIRECTORY + '/ytdl-download-archive.txt',
-                'forcejson': True,
+                "download_archive": self.WORKING_DIRECTORY
+                + "/ytdl-download-archive.txt",
+                "forcejson": True,
             }
             # Get the album tracks first, but do not download. Unfortunately we cannot use download_archive for
             # this be
             with ytdl.YoutubeDL(self.ytdl_opts) as ytd:
-                info = ytd.extract_info(base_url + '/albums', download=False)
+                info = ytd.extract_info(base_url + "/albums", download=False)
 
-            album_entries = [self.parse_album_entry(a) for a in info['entries']]
+            album_entries = [self.parse_album_entry(a) for a in info["entries"]]
             for album_entry in album_entries:
-                tracks += [self.parse_entry(e) for e in album_entry['entries'] if not self.is_entry_skippable(e)]
+                tracks += [
+                    self.parse_entry(e)
+                    for e in album_entry["entries"]
+                    if not self.is_entry_skippable(e)
+                ]
 
             with ytdl.YoutubeDL(dict(self.ytdl_opts, **track_ytdl_opts)) as ytd:
                 # Get the rest of the tracks that are part of the album tracks
-                info = ytd.extract_info(base_url + '/tracks')
-            album_track_ids = [t['id'] for t in tracks]
-            tracks += [self.parse_entry(e) for e in info['entries'] if e['id'] not in album_track_ids and not self.is_entry_skippable(e)]
+                info = ytd.extract_info(base_url + "/tracks")
+            album_track_ids = [t["id"] for t in tracks]
+            tracks += [
+                self.parse_entry(e)
+                for e in info["entries"]
+                if e["id"] not in album_track_ids and not self.is_entry_skippable(e)
+            ]
 
             for e in tracks:
                 self.post_process_entry(e)
         else:
-            raise ValueError('Invalid download_strategy field for Soundcloud')
+            raise ValueError("Invalid download_strategy field for Soundcloud")
 
 
 class YoutubeSubscription(Subscription):
@@ -216,12 +237,12 @@ class YoutubeSubscription(Subscription):
 
     def parse_entry(self, entry):
         entry = super(YoutubeSubscription, self).parse_entry(entry)
-        entry['upload_year'] = entry['upload_date'][:4]
+        entry["upload_year"] = entry["upload_date"][:4]
 
-        entry['thumbnail_ext'] = 'webp'
+        entry["thumbnail_ext"] = "webp"
 
         # Try to get the track, fall back on title
-        entry['sanitized_track'] = sanitize(entry.get('track', entry['title']))
+        entry["sanitized_track"] = sanitize(entry.get("track", entry["title"]))
         return entry
 
     def extract_info(self):
@@ -232,6 +253,6 @@ class YoutubeSubscription(Subscription):
         with ytdl.YoutubeDL(self.ytdl_opts) as ytd:
             info = ytd.extract_info(url)
 
-        entries = [self.parse_entry(e) for e in info['entries']]
+        entries = [self.parse_entry(e) for e in info["entries"]]
         for e in entries:
             self.post_process_entry(e)
