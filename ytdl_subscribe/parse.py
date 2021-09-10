@@ -1,6 +1,9 @@
 import yaml
 import time
 from getpass import getpass
+
+from mergedeep import mergedeep
+
 from ytdl_subscribe.subscriptions import Subscription
 
 from ytdl_subscribe.enums import YAMLSection
@@ -26,8 +29,11 @@ def parse_subscriptions(subscription_yaml_path):
 
     subscriptions = []
     for name, subscription in yaml_dict[YAMLSection.SUBSCRIPTIONS_KEY].items():
+        preset = {}
         if subscription.get('preset') in presets:
             preset = presets[subscription['preset']]
-            subscriptions.append(Subscription.from_dict(dict(preset, **subscription)))
+        subscription = mergedeep.merge({}, preset, subscription)
+        subscriptions.append(Subscription.from_dict(name, subscription))
+
 
     return subscriptions
