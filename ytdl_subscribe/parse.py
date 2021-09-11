@@ -1,21 +1,14 @@
 import yaml
-import time
-from getpass import getpass
 
 from mergedeep import mergedeep
 
-from ytdl_subscribe.subscriptions import Subscription
+from ytdl_subscribe.subscriptions.subscription import Subscription
 
 from ytdl_subscribe.enums import YAMLSection
 
 
 def _set_config_variables(config):
     Subscription.WORKING_DIRECTORY = config.get("working_directory", "")
-    Subscription.USERNAME = config.get("ytdl_username")
-    if Subscription.USERNAME:
-        print(f"Enter password for '{Subscription.USERNAME}': ")
-        time.sleep(0.2)
-        Subscription.PASSWORD = getpass()
 
 
 def parse_subscriptions(subscription_yaml_path):
