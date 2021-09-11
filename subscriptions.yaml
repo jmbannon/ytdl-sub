@@ -42,22 +42,30 @@ presets:
         year: "{upload_year}"
 
 subscriptions:
-#  ALISON:
-#    preset: "soundcloud_with_id3_tags"
-#    soundcloud:
-#      username: alis_on
-#    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/alison"
-#    overrides:
-#      artist: "A.L.I.S.O.N."
-#      genre: "Synthwave / Electronic"
-#  delorra:
-#    preset: "soundcloud_with_id3_tags"
-#    soundcloud:
-#      username: delorra
-#    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/delorra"
-#    overrides:
-#      artist: "DeLorra"
-#      genre: "Synthwave / Electronic"
+  ALISON:
+    preset: "soundcloud_with_id3_tags"
+    soundcloud:
+      username: alis_on
+    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/alison"
+    overrides:
+      artist: "A.L.I.S.O.N."
+      genre: "Synthwave / Electronic"
+  delorra:
+    preset: "soundcloud_with_id3_tags"
+    soundcloud:
+      username: delorra
+    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/delorra"
+    overrides:
+      artist: "DeLorra"
+      genre: "Synthwave / Electronic"
+  bl00dwave:
+    preset: "soundcloud_with_id3_tags"
+    soundcloud:
+      username: bl00dwave
+    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/bl00dwave"
+    overrides:
+      artist: "bl00dwave"
+      genre: "Synthwave / Electronic"
 
   tom_petty:
     youtube:
@@ -67,9 +75,9 @@ subscriptions:
     overrides:
       artist: "Tom Petty and the Heartbreakers"
 
-#  rammstein:
-#    url: "https://www.youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
-#    preset: "music_videos"
-#    output_path: "rammstein test"
-#    overrides:
-#      artist: "Rammstein"
+  rammstein:
+    url: "https://www.youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
+    preset: "music_videos"
+    output_path: "rammstein test"
+    overrides:
+      artist: "Rammstein"

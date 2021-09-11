@@ -202,7 +202,6 @@ class SoundcloudSubscription(Subscription):
             track_ytdl_opts = {
                 "download_archive": self.WORKING_DIRECTORY
                 + "/ytdl-download-archive.txt",
-                "forcejson": True,
             }
             # Get the album tracks first, but do not download. Unfortunately we cannot use download_archive for
             # this be
