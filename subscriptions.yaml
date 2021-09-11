@@ -28,8 +28,7 @@ presets:
       noop: True
     ytdl_opts:
       format: 'best'
-      sleep_interval: 8
-      max_sleep_interval: 25
+      ignoreerrors: True
     post_process:
       file_name: "{sanitized_artist} - {sanitized_track}.{ext}"
       convert_thumbnail: "jpg"
@@ -43,31 +42,30 @@ presets:
         year: "{upload_year}"
 
 subscriptions:
-  ALISON:
-    preset: "soundcloud_with_id3_tags"
-    soundcloud:
-      username: alis_on
-    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/alison"
-    overrides:
-      artist: "A.L.I.S.O.N."
-      genre: "Synthwave / Electronic"
-  delorra:
-    preset: "soundcloud_with_id3_tags"
-    soundcloud:
-      username: delorra
-    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/delorra"
-    overrides:
-      artist: "DeLorra"
-      genre: "Synthwave / Electronic"
-
-#  tom_petty:
-#    url: "https://www.youtube.com/playlist?list=PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i"
-#    youtube:
-#      playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
-#    preset: "music_videos"
-#    output_path: "tompetty_test"
+#  ALISON:
+#    preset: "soundcloud_with_id3_tags"
+#    soundcloud:
+#      username: alis_on
+#    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/alison"
 #    overrides:
-#      artist: "Tom Petty and the Heartbreakers"
+#      artist: "A.L.I.S.O.N."
+#      genre: "Synthwave / Electronic"
+#  delorra:
+#    preset: "soundcloud_with_id3_tags"
+#    soundcloud:
+#      username: delorra
+#    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/delorra"
+#    overrides:
+#      artist: "DeLorra"
+#      genre: "Synthwave / Electronic"
+
+  tom_petty:
+    youtube:
+      playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
+    preset: "music_videos"
+    output_path: "tompetty_test"
+    overrides:
+      artist: "Tom Petty and the Heartbreakers"
 
 #  rammstein:
 #    url: "https://www.youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"

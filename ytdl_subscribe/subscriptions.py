@@ -1,3 +1,4 @@
+import json
 import os
 from shutil import copyfile
 
@@ -8,7 +9,7 @@ import dicttoxml
 from PIL import Image
 from ytdl_subscribe import SubscriptionSource
 
-import youtube_dl as ytdl
+import yt_dlp as ytdl
 
 
 def _f(value, entry):
@@ -239,20 +240,33 @@ class YoutubeSubscription(Subscription):
         entry = super(YoutubeSubscription, self).parse_entry(entry)
         entry["upload_year"] = entry["upload_date"][:4]
 
-        entry["thumbnail_ext"] = "webp"
+        entry["thumbnail_ext"] = entry["thumbnail"].split(".")[-1]
 
         # Try to get the track, fall back on title
         entry["sanitized_track"] = sanitize(entry.get("track", entry["title"]))
         return entry
 
     def extract_info(self):
-        """
-        Extracts only the info of the source, does not download it
-        """
-        url = f"https://youtube.com/playlist?list={self.options['playlist_id']}"
-        with ytdl.YoutubeDL(self.ytdl_opts) as ytd:
-            info = ytd.extract_info(url)
+        playlist_id = self.options['playlist_id']
+        url = f"https://youtube.com/playlist?list={playlist_id}"
+        track_ytdl_opts = {
+            "download_archive": self.WORKING_DIRECTORY + "/ytdl-download-archive.txt",
+            "writeinfojson": True,
+        }
 
-        entries = [self.parse_entry(e) for e in info["entries"]]
+        # Do not get entries from the extract info, let it write to the info.json file and
+        # load that instead. This is because if the video is already downloaded, it will
+        # not fetch the metadata (maybe there is a way??)
+        with ytdl.YoutubeDL(dict(self.ytdl_opts, **track_ytdl_opts)) as ytd:
+            _ = ytd.extract_info(url)
+
+        # Load the entries from info.json, ignore the playlist entry
+        entries = []
+        for file_name in os.listdir(self.WORKING_DIRECTORY):
+            if file_name.endswith('.info.json') and not file_name.startswith(playlist_id):
+                with open(self.WORKING_DIRECTORY + '/' + file_name, 'r') as f:
+                    entries.append(json.load(f))
+
+        entries = [self.parse_entry(e) for e in entries]
         for e in entries:
             self.post_process_entry(e)

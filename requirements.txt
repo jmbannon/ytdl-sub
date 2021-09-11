@@ -6,4 +6,4 @@ pathvalidate==2.4.1
 Pillow==8.3.2
 pyYAML==5.4.1
 sanitize-filename==1.2.0
-youtube_dl==2021.6.6
+yt-dlp==2021.9.2
