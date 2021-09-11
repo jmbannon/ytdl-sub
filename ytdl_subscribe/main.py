@@ -1,5 +1,7 @@
 from ytdl_subscribe.parse import parse_subscriptions
 
+parser = argparse.ArgumentParser(description="Process some integers.")
+
 
 if __name__ == "__main__":
     # execute only if run as a script

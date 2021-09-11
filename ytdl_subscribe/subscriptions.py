@@ -247,7 +247,7 @@ class YoutubeSubscription(Subscription):
         return entry
 
     def extract_info(self):
-        playlist_id = self.options['playlist_id']
+        playlist_id = self.options["playlist_id"]
         url = f"https://youtube.com/playlist?list={playlist_id}"
         track_ytdl_opts = {
             "download_archive": self.WORKING_DIRECTORY + "/ytdl-download-archive.txt",
@@ -263,8 +263,10 @@ class YoutubeSubscription(Subscription):
         # Load the entries from info.json, ignore the playlist entry
         entries = []
         for file_name in os.listdir(self.WORKING_DIRECTORY):
-            if file_name.endswith('.info.json') and not file_name.startswith(playlist_id):
-                with open(self.WORKING_DIRECTORY + '/' + file_name, 'r') as f:
+            if file_name.endswith(".info.json") and not file_name.startswith(
+                playlist_id
+            ):
+                with open(self.WORKING_DIRECTORY + "/" + file_name, "r") as f:
                     entries.append(json.load(f))
 
         entries = [self.parse_entry(e) for e in entries]
