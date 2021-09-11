@@ -5,17 +5,19 @@ parser = argparse.ArgumentParser(
     description="YoutubeDL-Subscribe: Download and organize your favorite media easily."
 )
 parser.add_argument(
-    "-c", "--config",
-    metavar='CONFIGPATH',
+    "-c",
+    "--config",
+    metavar="CONFIGPATH",
     type=str,
     help="path to the config yaml, uses subscriptions.yaml if not provided",
     default="subscriptions.yaml",
 )
 parser.add_argument(
-    "-s", "--subscriptions",
-    metavar='SUB',
-    nargs='+',
-    help='specific subscriptions to download, downloads all if not provided'
+    "-s",
+    "--subscriptions",
+    metavar="SUB",
+    nargs="+",
+    help="specific subscriptions to download, downloads all if not provided",
 )
 
 
