@@ -43,10 +43,10 @@ class SoundcloudSubscription(Subscription):
         tracks = []
 
         if self.options.get("download_strategy") == "albums_then_tracks":
-            # Get the album info first, but do not download. This tells us which track ids belong
+            # Get the album info first. This tells us which track ids belong
             # to an album. Unfortunately we cannot use download_archive or info.json for this
             with ytdl.YoutubeDL(self.ytdl_opts) as ytd:
-                info = ytd.extract_info(base_url + "/albums", download=False)
+                info = ytd.extract_info(base_url + "/albums")
 
             # For each album, parse each entry in the album
             album_entries = [self.parse_album_entry(a) for a in info["entries"]]
@@ -57,12 +57,7 @@ class SoundcloudSubscription(Subscription):
                     if not self.is_entry_skippable(e)
                 ]
 
-            # Download the tracks now, and use download_archive to cache
-            track_ytdl_opts = {
-                "download_archive": self.WORKING_DIRECTORY
-                + "/ytdl-download-archive.txt",
-            }
-            with ytdl.YoutubeDL(dict(self.ytdl_opts, **track_ytdl_opts)) as ytd:
+            with ytdl.YoutubeDL(self.ytdl_opts) as ytd:
                 info = ytd.extract_info(base_url + "/tracks")
 
             # Skip parsing entries that have already been parsed when parsing albums
