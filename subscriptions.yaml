@@ -1,5 +1,5 @@
 config:
-  working_directory: '/Users/jesse.bannon/workspace/ytdl_subscribe/tmp'
+  working_directory: 'tmp'
 
 presets:
   soundcloud_with_id3_tags:
@@ -37,7 +37,7 @@ presets:
       nfo_root: "musicvideo"
       nfo:
         artist: "{artist}"
-        track: "{sanitized_track}"
+        title: "{sanitized_track}"
         album: "Music Videos"
         year: "{upload_year}"
 
@@ -46,7 +46,7 @@ subscriptions:
     preset: "soundcloud_with_id3_tags"
     soundcloud:
       username: alis_on
-    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/alison"
+    output_path: "/mnt/nas/Downloads/ytdl/music/ALISON"
     overrides:
       artist: "A.L.I.S.O.N."
       genre: "Synthwave / Electronic"
@@ -54,7 +54,7 @@ subscriptions:
     preset: "soundcloud_with_id3_tags"
     soundcloud:
       username: delorra
-    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/delorra"
+    output_path: "/mnt/nas/Downloads/ytdl/music/DeLorra"
     overrides:
       artist: "DeLorra"
       genre: "Synthwave / Electronic"
@@ -62,7 +62,7 @@ subscriptions:
     preset: "soundcloud_with_id3_tags"
     soundcloud:
       username: bl00dwave
-    output_path: "/Users/jesse.bannon/workspace/ytdl_subscribe/bl00dwave"
+    output_path: "/mnt/nas/Downloads/ytdl/music/bl00dwave"
     overrides:
       artist: "bl00dwave"
       genre: "Synthwave / Electronic"
@@ -71,13 +71,14 @@ subscriptions:
     youtube:
       playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
     preset: "music_videos"
-    output_path: "tompetty_test"
+    output_path: "/mnt/nas/Downloads/ytdl/music_videos/Tom Petty"
     overrides:
       artist: "Tom Petty and the Heartbreakers"
 
   rammstein:
-    url: "https://www.youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
+    youtube:
+      playlist_id: "PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
     preset: "music_videos"
-    output_path: "rammstein test"
+    output_path: "/mnt/nas/Downloads/ytdl/music_videos/Rammstein"
     overrides:
       artist: "Rammstein"
