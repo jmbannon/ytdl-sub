@@ -71,7 +71,7 @@ subscriptions:
     youtube:
       playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
     preset: "music_videos"
-    output_path: "/mnt/nas/Downloads/ytdl/music_videos/Tom Petty"
+    output_path: "/tmp/Tom Petty"
     overrides:
       artist: "Tom Petty and the Heartbreakers"
 
