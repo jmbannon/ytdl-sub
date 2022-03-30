@@ -73,3 +73,45 @@ def mock_entry_kwargs(uid, title, ext, upload_date, thumbnail):
 @pytest.fixture
 def mock_entry(mock_entry_kwargs):
     return Entry(**mock_entry_kwargs)
+
+
+@pytest.fixture
+def validate_entry_properties(
+    uid,
+    title,
+    upload_date,
+    upload_year,
+    ext,
+    thumbnail,
+    thumbnail_ext,
+    download_file_name,
+):
+    def _validate_entry_properties(entry: Entry):
+        assert entry.uid == uid
+        assert entry.title == title
+        # Title does not require sanitizing, so should be the same
+        assert entry.sanitized_title == title
+        assert entry.upload_date == upload_date
+        assert entry.upload_year == upload_year
+        assert entry.ext == ext
+        assert entry.thumbnail == thumbnail
+        assert entry.thumbnail_ext == thumbnail_ext
+        assert entry.download_file_name == download_file_name
+
+        return True
+
+    return _validate_entry_properties
+
+
+@pytest.fixture
+def validate_entry_dict_contains_valid_formatters():
+    def _validate_entry_dict_contains_valid_formatters(entry: Entry):
+        for key, value in entry.to_dict().items():
+            expected_string = f"test {value} formatting works"
+            format_string = f"test {{{key}}} formatting works"
+
+            assert entry.apply_formatter(format_string) == expected_string
+
+        return True
+
+    return _validate_entry_dict_contains_valid_formatters

@@ -6,28 +6,17 @@ class TestEntry(object):
     def test_entry_properties(
         self,
         mock_entry,
-        uid,
-        title,
-        upload_date,
-        upload_year,
-        ext,
-        thumbnail,
-        thumbnail_ext,
-        download_file_name,
+        validate_entry_properties,
     ):
-        assert mock_entry.uid == uid
-        assert mock_entry.title == title
-        # Title does not require sanitizing, so should be the same
-        assert mock_entry.sanitized_title == title
-        assert mock_entry.upload_date == upload_date
-        assert mock_entry.upload_year == upload_year
-        assert mock_entry.ext == ext
-        assert mock_entry.thumbnail == thumbnail
-        assert mock_entry.thumbnail_ext == thumbnail_ext
-        assert mock_entry.download_file_name == download_file_name
+        assert validate_entry_properties(mock_entry)
 
     def test_entry_to_dict(self, mock_entry, mock_entry_to_dict):
         assert mock_entry.to_dict() == mock_entry_to_dict
+
+    def test_entry_dict_contains_valid_formatters(
+        self, mock_entry, validate_entry_dict_contains_valid_formatters
+    ):
+        assert validate_entry_dict_contains_valid_formatters(mock_entry)
 
     def test_entry_file_path(self, mock_entry, download_file_name):
         relative_directory = tempfile.TemporaryDirectory()
