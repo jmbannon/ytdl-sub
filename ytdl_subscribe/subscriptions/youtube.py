@@ -4,8 +4,8 @@ from typing import List
 
 import yt_dlp as ytdl
 
-from ytdl_subscribe import SubscriptionSource
 from ytdl_subscribe.entries.youtube import YoutubeVideo
+from ytdl_subscribe.enums import SubscriptionSource
 from ytdl_subscribe.subscriptions.subscription import Subscription
 
 

@@ -12,6 +12,7 @@ class EntryFormatter:
     """
     Ensures user-created formatter strings are valid
     """
+
     FIELDS_VALIDATOR = re.compile(r"{([a-z_]+?)}")
 
     def __init__(self, format_string: str):
@@ -50,14 +51,17 @@ class Entry:
     """
 
     def __init__(self, **kwargs):
+        """
+        Initialize the entry using ytdl metadata
+        """
         self._kwargs = kwargs
 
     def kwargs_contains(self, key: str) -> bool:
-        """Check if internal kwargs contains the specified key"""
+        """Returns whether internal kwargs contains the specified key"""
         return key in self._kwargs
 
     def kwargs(self, key) -> Any:
-        """Get an internal kwarg value supplied from ytdl"""
+        """Returns an internal kwarg value supplied from ytdl"""
         if not self.kwargs_contains(key):
             raise KeyError(
                 f"Expected '{key}' in {self.__class__.__name__} but does not exist."
@@ -66,55 +70,55 @@ class Entry:
 
     @property
     def uid(self) -> str:
-        """Get the entry's unique id"""
+        """Returns the entry's unique id"""
         return self.kwargs("id")
 
     @property
     def title(self) -> str:
-        """Get the entry's title"""
+        """Returns the entry's title"""
         return self.kwargs("title")
 
     @property
     def sanitized_title(self) -> str:
-        """Get the entry's sanitized title"""
+        """Returns the entry's sanitized title"""
         return sanitize(self.title)
 
     @property
     def ext(self) -> str:
-        """Get the entry's file extension"""
+        """Returns the entry's file extension"""
         return self.kwargs("ext")
 
     @property
     def upload_date(self) -> str:
-        """Get the entry's upload date"""
+        """Returns the entry's upload date"""
         return self.kwargs("upload_date")
 
     @property
     def upload_year(self) -> int:
-        """Get the entry's upload year"""
+        """Returns the entry's upload year"""
         return int(self.upload_date[:4])
 
     @property
     def thumbnail(self) -> str:
-        """Get the entry's thumbnail url"""
+        """Returns the entry's thumbnail url"""
         return self.kwargs("thumbnail")
 
     @property
     def thumbnail_ext(self) -> str:
-        """Get the entry's thumbnail extension"""
+        """Returns the entry's thumbnail extension"""
         return self.thumbnail.split(".")[-1]
 
     @property
     def download_file_name(self) -> str:
-        """Get the entry's file name when downloaded locally"""
+        """Returns the entry's file name when downloaded locally"""
         return f"{self.uid}.{self.ext}"
 
     def file_path(self, relative_directory: str):
-        """Get the entry's file path with respect to the relative directory"""
+        """Returns the entry's file path with respect to the relative directory"""
         return str(Path(relative_directory) / self.download_file_name)
 
     def to_dict(self) -> Dict:
-        """Expose the entry's values as a dictionary"""
+        """Returns the entry's values as a dictionary"""
         return {
             "uid": self.uid,
             "title": self.title,

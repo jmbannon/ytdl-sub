@@ -1,11 +1,10 @@
 from typing import List
-from typing import Type
 
 import yt_dlp as ytdl
 
-from ytdl_subscribe import SubscriptionSource
 from ytdl_subscribe.entries.soundcloud import SoundcloudAlbum
 from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
+from ytdl_subscribe.enums import SubscriptionSource
 from ytdl_subscribe.subscriptions.subscription import Subscription
 
 

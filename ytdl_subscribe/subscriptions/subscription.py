@@ -1,15 +1,14 @@
 import os
 from copy import deepcopy
 from shutil import copyfile
-from typing import Type
 
 import dicttoxml
 import music_tag
 from PIL import Image
 from sanitize_filename import sanitize
 
-from ytdl_subscribe import SubscriptionSource
 from ytdl_subscribe.entries.entry import Entry
+from ytdl_subscribe.enums import SubscriptionSource
 
 
 class Subscription(object):
