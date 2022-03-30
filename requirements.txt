@@ -1,4 +1,4 @@
-black
+black==21.11b1
 argparse==1.4.0
 dicttoxml==1.7.4
 mergedeep==1.3.4
@@ -8,3 +8,4 @@ Pillow==8.3.2
 pyYAML==5.4.1
 sanitize-filename==1.2.0
 yt-dlp==2021.9.2
+pytest==7.1.1

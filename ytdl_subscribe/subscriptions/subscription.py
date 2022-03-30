@@ -1,5 +1,7 @@
 import os
+from copy import deepcopy
 from shutil import copyfile
+from typing import Type
 
 import dicttoxml
 import music_tag
@@ -7,6 +9,7 @@ from PIL import Image
 from sanitize_filename import sanitize
 
 from ytdl_subscribe import SubscriptionSource
+from ytdl_subscribe.entries.entry import Entry
 
 
 class Subscription(object):
@@ -36,6 +39,8 @@ class Subscription(object):
         self.ytdl_opts = ytdl_opts or dict()
         self.post_process = post_process
         self.overrides = overrides
+        for k, v in deepcopy(overrides).items():
+            self.overrides[f'sanitized_{k}'] = sanitize(v)
         self.output_path = output_path
 
         # Separate each subscription's working directory
@@ -45,30 +50,17 @@ class Subscription(object):
         self.ytdl_opts["outtmpl"] = self.WORKING_DIRECTORY + "/%(id)s.%(ext)s"
         self.ytdl_opts["writethumbnail"] = True
 
-    def format_entry(self, value, entry):
-        """
-        Parameters
-        ----------
-        value: str
-            String with format variables that should be populated
-        entry: dict
-            Entry used to populate any format variables in the value
-
-        Returns
-        -------
-        str
-        """
-        return value.format(**entry)
-
-    def format_filepath(self, filepath, entry, makedirs=False):
+    def format_filepath(
+        self, filepath_formatter: str, entry: Type[Entry], makedirs=False
+    ):
         """
         Convert a filepath value in the config to an actual filepath.
 
         Parameters
         ----------
-        filepath: str
+        filepath_formatter: str
             File path relative to the specified output path
-        entry: dict
+        entry: Type[Entry]
             Entry used to populate any format variables in the filepath
         makedirs: bool
             Whether to create all directories in the final filepath.
@@ -78,36 +70,25 @@ class Subscription(object):
         str
             Full filepath.
         """
-        file_name = self.format_entry(filepath, entry)
+        file_name = entry.apply_formatter(filepath_formatter, overrides=self.overrides)
         output_file_path = f"{self.output_path}/{file_name}"
         if makedirs:
             os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
 
         return output_file_path
 
-    def parse_entry(self, entry):
-        # Add overrides to the entry
-        entry = dict(entry, **self.overrides)
-
-        # Add the file path to the entry, assert it exists
-        entry["file_path"] = f"{self.WORKING_DIRECTORY}/{entry['id']}.{entry['ext']}"
-
-        # Add sanitized values
-        entry["sanitized_artist"] = sanitize(entry["artist"])
-        entry["sanitized_title"] = sanitize(entry["title"])
-
-        return entry
-
-    def _post_process_tagging(self, entry):
-        t = music_tag.load_file(entry["file_path"])
+    def _post_process_tagging(self, entry: Type[Entry]):
+        t = music_tag.load_file(
+            entry.file_path(relative_directory=self.WORKING_DIRECTORY)
+        )
         for tag, tag_formatter in self.post_process["tagging"].items():
-            t[tag] = self.format_entry(tag_formatter, entry)
+            t[tag] = entry.apply_formatter(tag_formatter, overrides=self.overrides)
         t.save()
 
     def _post_process_nfo(self, entry):
         nfo = {}
         for tag, tag_formatter in self.post_process["nfo"].items():
-            nfo[tag] = self.format_entry(tag_formatter, entry)
+            nfo[tag] = entry.apply_formatter(tag_formatter, overrides=self.overrides)
 
         xml = dicttoxml.dicttoxml(
             obj=nfo,
@@ -127,7 +108,7 @@ class Subscription(object):
         """
         raise NotImplemented("Each source needs to implement how it extracts info")
 
-    def post_process_entry(self, entry):
+    def post_process_entry(self, entry: Type[Entry]):
         if "tagging" in self.post_process:
             self._post_process_tagging(entry)
 
@@ -135,7 +116,9 @@ class Subscription(object):
         output_file_path = self.format_filepath(
             self.post_process["file_name"], entry, makedirs=True
         )
-        copyfile(entry["file_path"], output_file_path)
+        copyfile(
+            entry.file_path(relative_directory=self.WORKING_DIRECTORY), output_file_path
+        )
 
         # Download the thumbnail if its present
         if "thumbnail_name" in self.post_process:
@@ -146,7 +129,7 @@ class Subscription(object):
             )
             if not os.path.isfile(thumbnail_dest_path):
                 thumbnail_file_path = (
-                    f"{self.WORKING_DIRECTORY}/{entry['id']}.{entry['thumbnail_ext']}"
+                    f"{self.WORKING_DIRECTORY}/{entry.uid}.{entry.thumbnail_ext}"
                 )
                 if os.path.isfile(thumbnail_file_path):
                     copyfile(thumbnail_file_path, thumbnail_dest_path)

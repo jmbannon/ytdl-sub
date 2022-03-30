@@ -1,3 +1,5 @@
+from typing import Optional
+
 import yaml
 
 from mergedeep import mergedeep
@@ -57,7 +59,7 @@ def parse_presets(yaml_dict):
     return presets
 
 
-def parse_subscriptions(yaml_dict, presets, subscriptions=None):
+def parse_subscriptions(yaml_dict: dict, presets: dict, subscriptions: Optional[list]):
     """
     Parses subscriptions from a subscription yaml dict
 
@@ -65,12 +67,12 @@ def parse_subscriptions(yaml_dict, presets, subscriptions=None):
     ----------
     yaml_dict: dict
     presets: dict
-    subscriptions: list of str or None
+    subscriptions: list[str] or None
         If present, only parse these subscriptions
 
     Returns
     -------
-    list of Subscription
+    list[Subscription]
     """
     parsed_subscriptions = []
 

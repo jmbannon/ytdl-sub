@@ -12,14 +12,14 @@ presets:
       audioformat: "mp3"  # convert to mp3
       noplaylist: True
     post_process:
-      file_name: "[{album_year}] {sanitized_album}/{tracknumberpadded} - {sanitized_title}.{ext}"
+      file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
       thumbnail_name: "[{album_year}] {sanitized_album}/folder.{thumbnail_ext}"
       tagging:
         artist: "{artist}"
         albumartist: "{artist}"
         title: "{title}"
         album: "{album}"
-        tracknumber: "{tracknumber}"
+        tracknumber: "{track_number}"
         year: "{album_year}"
         genre: "{genre}"
 
@@ -62,7 +62,7 @@ subscriptions:
     preset: "soundcloud_with_id3_tags"
     soundcloud:
       username: bl00dwave
-    output_path: "/mnt/nas/Downloads/ytdl/music/bl00dwave"
+    output_path: "/tmp/bl00dwave"
     overrides:
       artist: "bl00dwave"
       genre: "Synthwave / Electronic"
