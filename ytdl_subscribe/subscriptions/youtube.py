@@ -1,25 +1,16 @@
 import json
 import os
+from typing import List
 
 import yt_dlp as ytdl
-from sanitize_filename import sanitize
 
 from ytdl_subscribe import SubscriptionSource
+from ytdl_subscribe.entries.youtube import YoutubeVideo
 from ytdl_subscribe.subscriptions.subscription import Subscription
 
 
 class YoutubeSubscription(Subscription):
     source = SubscriptionSource.YOUTUBE
-
-    def parse_entry(self, entry):
-        entry = super(YoutubeSubscription, self).parse_entry(entry)
-        entry["upload_year"] = entry["upload_date"][:4]
-
-        entry["thumbnail_ext"] = entry["thumbnail"].split(".")[-1]
-
-        # Try to get the track, fall back on title
-        entry["sanitized_track"] = sanitize(entry.get("track", entry["title"]))
-        return entry
 
     def extract_info(self):
         playlist_id = self.options["playlist_id"]
@@ -36,14 +27,13 @@ class YoutubeSubscription(Subscription):
             _ = ytd.extract_info(url)
 
         # Load the entries from info.json, ignore the playlist entry
-        entries = []
+        entries: List[YoutubeVideo] = []
         for file_name in os.listdir(self.WORKING_DIRECTORY):
             if file_name.endswith(".info.json") and not file_name.startswith(
                 playlist_id
             ):
                 with open(self.WORKING_DIRECTORY + "/" + file_name, "r") as f:
-                    entries.append(json.load(f))
+                    entries.append(YoutubeVideo(**json.load(f)))
 
-        entries = [self.parse_entry(e) for e in entries]
         for e in entries:
             self.post_process_entry(e)

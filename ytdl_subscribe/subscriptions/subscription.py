@@ -51,7 +51,7 @@ class Subscription(object):
         self.ytdl_opts["writethumbnail"] = True
 
     def format_filepath(
-        self, filepath_formatter: str, entry: Type[Entry], makedirs=False
+        self, filepath_formatter: str, entry: Entry, makedirs=False
     ):
         """
         Convert a filepath value in the config to an actual filepath.
@@ -60,7 +60,7 @@ class Subscription(object):
         ----------
         filepath_formatter: str
             File path relative to the specified output path
-        entry: Type[Entry]
+        entry: Entry
             Entry used to populate any format variables in the filepath
         makedirs: bool
             Whether to create all directories in the final filepath.
@@ -77,7 +77,7 @@ class Subscription(object):
 
         return output_file_path
 
-    def _post_process_tagging(self, entry: Type[Entry]):
+    def _post_process_tagging(self, entry: Entry):
         t = music_tag.load_file(
             entry.file_path(relative_directory=self.WORKING_DIRECTORY)
         )
@@ -108,7 +108,7 @@ class Subscription(object):
         """
         raise NotImplemented("Each source needs to implement how it extracts info")
 
-    def post_process_entry(self, entry: Type[Entry]):
+    def post_process_entry(self, entry: Entry):
         if "tagging" in self.post_process:
             self._post_process_tagging(entry)
 

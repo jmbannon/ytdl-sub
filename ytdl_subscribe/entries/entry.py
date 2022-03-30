@@ -12,8 +12,11 @@ class Entry(object):
     def __init__(self, **kwargs):
         self._kwargs = kwargs
 
+    def kwargs_contains(self, key):
+        return key in self._kwargs
+
     def kwargs(self, key) -> Any:
-        if key not in self._kwargs:
+        if not self.kwargs_contains(key):
             raise KeyError(
                 f"Expected '{key}' in {self.__class__.__name__} but does not exist."
             )
@@ -36,6 +39,22 @@ class Entry(object):
         return self.kwargs("ext")
 
     @property
+    def upload_date(self) -> str:
+        return self.kwargs("upload_date")
+
+    @property
+    def upload_year(self) -> int:
+        return int(self.upload_date[:4])
+
+    @property
+    def thumbnail(self) -> str:
+        return self.kwargs("thumbnail")
+
+    @property
+    def thumbnail_ext(self) -> str:
+        return self.thumbnail.split(".")[-1]
+
+    @property
     def download_file_name(self) -> str:
         return f"{self.uid}.{self.ext}"
 
@@ -48,6 +67,10 @@ class Entry(object):
             "title": self.title,
             "sanitized_title": self.sanitized_title,
             "ext": self.ext,
+            "upload_date": self.upload_date,
+            "upload_year": self.upload_year,
+            "thumbnail": self.thumbnail,
+            "thumbnail_ext": self.thumbnail_ext,
         }
 
     def apply_formatter(self, format_string: str, overrides: Optional[Dict]) -> str:

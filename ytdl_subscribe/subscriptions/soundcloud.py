@@ -12,7 +12,7 @@ class SoundcloudSubscription(Subscription):
 
     def extract_info(self):
         base_url = f"https://soundcloud.com/{self.options['username']}"
-        tracks: List[Type[SoundcloudTrack]] = []
+        tracks: List[SoundcloudTrack] = []
 
         if self.options.get("download_strategy") == "albums_then_tracks":
             # Get the album info first. This tells us which track ids belong

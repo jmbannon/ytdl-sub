@@ -7,22 +7,6 @@ from ytdl_subscribe.entries.entry import Entry
 
 class SoundcloudTrack(Entry):
     @property
-    def upload_date(self) -> str:
-        return self.kwargs("upload_date")
-
-    @property
-    def upload_year(self) -> int:
-        return int(self.upload_date[:4])
-
-    @property
-    def thumbnail(self) -> str:
-        return self.kwargs("thumbnail")
-
-    @property
-    def thumbnail_ext(self) -> str:
-        return self.thumbnail.split(".")[-1]
-
-    @property
     def track_number(self) -> int:
         return 1
 
@@ -50,10 +34,6 @@ class SoundcloudTrack(Entry):
         return dict(
             super(SoundcloudTrack, self).to_dict(),
             **{
-                "upload_date": self.upload_date,
-                "upload_year": self.upload_year,
-                "thumbnail": self.thumbnail,
-                "thumbnail_ext": self.thumbnail_ext,
                 "track_number": self.track_number,
                 "track_number_padded": self.track_number_padded,
                 "album": self.album,
