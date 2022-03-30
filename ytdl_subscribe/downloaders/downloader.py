@@ -9,8 +9,8 @@ import yt_dlp as ytdl
 
 class Downloader:
     """
-    Class that interacts with ytdl to perform the download of metadata and content, and should translate that to
-    list of Entry objects.
+    Class that interacts with ytdl to perform the download of metadata and content,
+    and should translate that to list of Entry objects.
     """
 
     @classmethod
@@ -29,7 +29,7 @@ class Downloader:
     ) -> Dict:
         """Configure the ytdl options for the downloader"""
         if ytdl_options is None:
-            ytdl_options = dict()
+            ytdl_options = {}
 
         # Overwrite defaults with input
         ytdl_options = dict(cls.ytdl_option_defaults(), **ytdl_options)
