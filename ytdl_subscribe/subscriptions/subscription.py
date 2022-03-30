@@ -8,7 +8,6 @@ from PIL import Image
 from sanitize_filename import sanitize
 
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.enums import SubscriptionSource
 
 
 class Subscription(object):
@@ -140,26 +139,3 @@ class Subscription(object):
 
         if "nfo" in self.post_process:
             self._post_process_nfo(entry)
-
-    @classmethod
-    def from_dict(cls, name, d):
-        # TODO: Make sure there is only one source, verify url
-        if SubscriptionSource.SOUNDCLOUD in d:
-            from ytdl_subscribe.subscriptions.soundcloud import SoundcloudSubscription
-
-            dclass = SoundcloudSubscription
-        elif SubscriptionSource.YOUTUBE in d:
-            from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
-
-            dclass = YoutubeSubscription
-        else:
-            raise ValueError("dne")
-
-        return dclass(
-            name=name,
-            options=d[dclass.source],
-            ytdl_opts=d["ytdl_opts"],
-            post_process=d["post_process"],
-            overrides=d["overrides"],
-            output_path=d["output_path"],
-        )

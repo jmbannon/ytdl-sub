@@ -3,8 +3,11 @@ from typing import Optional
 import yaml
 from mergedeep import mergedeep
 
+from ytdl_subscribe.enums import SubscriptionSource
 from ytdl_subscribe.enums import YAMLSection
+from ytdl_subscribe.subscriptions.soundcloud import SoundcloudSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
+from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
 
 
 def _set_config_variables(config):
@@ -80,7 +83,26 @@ def parse_subscriptions(yaml_dict: dict, presets: dict, subscriptions: Optional[
         if subscription.get("preset") in presets:
             preset = presets[subscription["preset"]]
         subscription = mergedeep.merge({}, preset, subscription)
-        parsed_subscriptions.append(Subscription.from_dict(name, subscription))
+
+        if SubscriptionSource.SOUNDCLOUD in subscription:
+            subscription_source = SubscriptionSource.SOUNDCLOUD
+            subscription_class = SoundcloudSubscription
+        elif SubscriptionSource.YOUTUBE in subscription:
+            subscription_source = SubscriptionSource.YOUTUBE
+            subscription_class = YoutubeSubscription
+        else:
+            raise ValueError("dne")
+
+        parsed_subscriptions.append(
+            subscription_class(
+                name=name,
+                options=subscription[subscription_source],
+                ytdl_opts=subscription["ytdl_opts"],
+                post_process=subscription["post_process"],
+                overrides=subscription["overrides"],
+                output_path=subscription["output_path"],
+            )
+        )
 
     # Filter subscriptions if present
     if subscriptions:
