@@ -1,9 +1,8 @@
 import argparse
-from ytdl_subscribe.parse import (
-    parse_subscriptions,
-    parse_subscriptions_file,
-    parse_presets,
-)
+
+from ytdl_subscribe.parse import parse_presets
+from ytdl_subscribe.parse import parse_subscriptions
+from ytdl_subscribe.parse import parse_subscriptions_file
 
 parser = argparse.ArgumentParser(
     description="YoutubeDL-Subscribe: Download and organize your favorite media easily."

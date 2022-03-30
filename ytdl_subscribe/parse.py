@@ -1,12 +1,10 @@
 from typing import Optional
 
 import yaml
-
 from mergedeep import mergedeep
 
-from ytdl_subscribe.subscriptions.subscription import Subscription
-
 from ytdl_subscribe.enums import YAMLSection
+from ytdl_subscribe.subscriptions.subscription import Subscription
 
 
 def _set_config_variables(config):

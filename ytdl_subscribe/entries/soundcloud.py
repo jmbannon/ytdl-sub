@@ -1,4 +1,6 @@
-from typing import List, Type, Dict
+from typing import Dict
+from typing import List
+from typing import Type
 
 from sanitize_filename import sanitize
 
