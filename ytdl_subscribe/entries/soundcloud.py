@@ -62,6 +62,7 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
     def album_year(self) -> int:
         return self._album.album_year
 
+
 class SoundcloudAlbum(Entry):
     def __init__(self, skip_premiere_tracks: bool, **kwargs):
         super(SoundcloudAlbum, self).__init__(**kwargs)

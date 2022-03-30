@@ -1,7 +1,39 @@
-from string import Formatter
-from typing import Any, Dict, Optional
+import re
+from pathlib import Path
+from typing import Any, Dict, Optional, List
 
 from sanitize_filename import sanitize
+
+
+class EntryFormatter(object):
+    FIELDS_VALIDATOR = re.compile(r"{([a-z_]+?)}")
+
+    def __init__(self, format_string: str):
+        self.format_string = format_string
+        self._error_prefix = f"Format string '{self.format_string}' is invalid:"
+
+    def parse(self) -> List[str]:
+        """
+        Returns
+        -------
+        List of fields to format
+        """
+        open_bracket_count = self.format_string.count("{")
+        close_bracket_count = self.format_string.count("}")
+
+        if open_bracket_count != close_bracket_count:
+            raise ValueError(
+                f"{self._error_prefix} Brackets are reserved for {{variable_names}} and should contain a single open and close bracket."
+            )
+
+        parsed_fields = re.findall(EntryFormatter.FIELDS_VALIDATOR, self.format_string)
+
+        if len(parsed_fields) != open_bracket_count:
+            raise ValueError(
+                f"{self._error_prefix} {{variable_names}} should only contain lowercase letters and underscores with a single open and close bracket."
+            )
+
+        return sorted(parsed_fields)
 
 
 class Entry(object):
@@ -59,7 +91,7 @@ class Entry(object):
         return f"{self.uid}.{self.ext}"
 
     def file_path(self, relative_directory: str):
-        return f"{relative_directory}/{self.download_file_name}"
+        return str(Path(relative_directory) / self.download_file_name)
 
     def to_dict(self) -> Dict:
         return {
@@ -73,18 +105,20 @@ class Entry(object):
             "thumbnail_ext": self.thumbnail_ext,
         }
 
-    def apply_formatter(self, format_string: str, overrides: Optional[Dict]) -> str:
+    def apply_formatter(
+        self, format_string: str, overrides: Optional[Dict] = None
+    ) -> str:
         entry_dict = self.to_dict()
         if overrides:
             entry_dict = dict(entry_dict, **overrides)
 
-        field_names = [
-            fname for _, fname, _, _ in Formatter().parse(format_string) if fname
-        ]
-        for fname in field_names:
-            if fname not in entry_dict:
-                raise KeyError(
-                    f"Format variable '{fname}' does not exist for {self.__class__.__name__}."
+        field_names = EntryFormatter(format_string).parse()
+
+        for field_name in field_names:
+            if field_name not in entry_dict:
+                available_fields = ", ".join(sorted(entry_dict.keys()))
+                raise ValueError(
+                    f"Format variable '{field_name}' does not exist for {self.__class__.__name__}. Available fields: {available_fields}"
                 )
 
         return format_string.format(**entry_dict)

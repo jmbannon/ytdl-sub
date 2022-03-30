@@ -9,3 +9,4 @@ pyYAML==5.4.1
 sanitize-filename==1.2.0
 yt-dlp==2021.9.2
 pytest==7.1.1
+coverage==6.3.2

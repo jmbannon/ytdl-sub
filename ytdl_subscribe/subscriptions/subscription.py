@@ -40,7 +40,7 @@ class Subscription(object):
         self.post_process = post_process
         self.overrides = overrides
         for k, v in deepcopy(overrides).items():
-            self.overrides[f'sanitized_{k}'] = sanitize(v)
+            self.overrides[f"sanitized_{k}"] = sanitize(v)
         self.output_path = output_path
 
         # Separate each subscription's working directory
@@ -50,9 +50,7 @@ class Subscription(object):
         self.ytdl_opts["outtmpl"] = self.WORKING_DIRECTORY + "/%(id)s.%(ext)s"
         self.ytdl_opts["writethumbnail"] = True
 
-    def format_filepath(
-        self, filepath_formatter: str, entry: Entry, makedirs=False
-    ):
+    def format_filepath(self, filepath_formatter: str, entry: Entry, makedirs=False):
         """
         Convert a filepath value in the config to an actual filepath.
 
