@@ -7,10 +7,7 @@ presets:
       download_strategy: "albums_then_tracks"
       skip_premiere_tracks: True
     ytdl_opts:
-      format: 'bestaudio/best'
-      extractaudio: True  # only keep the audio
-      audioformat: "mp3"  # convert to mp3
-      noplaylist: True
+      format: 'bestaudio[ext=mp3]'
     post_process:
       file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
       thumbnail_name: "[{album_year}] {sanitized_album}/folder.{thumbnail_ext}"
@@ -30,14 +27,14 @@ presets:
       format: 'best'
       ignoreerrors: True
     post_process:
-      file_name: "{sanitized_artist} - {sanitized_track}.{ext}"
+      file_name: "{sanitized_artist} - {sanitized_title}.{ext}"
       convert_thumbnail: "jpg"
-      thumbnail_name: "{sanitized_artist} - {sanitized_track}.jpg"
-      nfo_name: "{sanitized_artist} - {sanitized_track}.nfo"
+      thumbnail_name: "{sanitized_artist} - {sanitized_title}.jpg"
+      nfo_name: "{sanitized_artist} - {sanitized_title}.nfo"
       nfo_root: "musicvideo"
       nfo:
         artist: "{artist}"
-        title: "{sanitized_track}"
+        title: "{title}"
         album: "Music Videos"
         year: "{upload_year}"
 

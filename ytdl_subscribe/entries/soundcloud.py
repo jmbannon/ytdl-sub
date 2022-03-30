@@ -95,10 +95,6 @@ class SoundcloudAlbum(Entry):
     Entry object to represent a Soundcloud album.
     """
 
-    def __init__(self, skip_premiere_tracks: bool, **kwargs):
-        super().__init__(**kwargs)
-        self.skip_premiere_tracks = skip_premiere_tracks
-
     @property
     def _single_tracks(self) -> List[SoundcloudTrack]:
         """
@@ -107,8 +103,9 @@ class SoundcloudAlbum(Entry):
         """
         return [SoundcloudTrack(**entry) for entry in self.kwargs("entries")]
 
-    @property
-    def album_tracks(self) -> List[SoundcloudAlbumTrack]:
+    def album_tracks(
+        self, skip_premiere_tracks: bool = True
+    ) -> List[SoundcloudAlbumTrack]:
         """
         Returns all tracks in the album represented as album-tracks. They will share the
         same album name, have ordered track numbers, and a shared album year.
@@ -122,7 +119,7 @@ class SoundcloudAlbum(Entry):
             )
             for i, entry in enumerate(self.kwargs("entries"))
         ]
-        if self.skip_premiere_tracks:
+        if skip_premiere_tracks:
             album_tracks = [t for t in album_tracks if not t.is_premiere]
 
         return album_tracks
