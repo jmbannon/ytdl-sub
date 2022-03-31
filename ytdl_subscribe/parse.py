@@ -8,10 +8,18 @@ from ytdl_subscribe.enums import YAMLSection
 from ytdl_subscribe.subscriptions.soundcloud import SoundcloudSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
+from ytdl_subscribe.validators.config.config import Config
 
 
 def _set_config_variables(config):
     Subscription.WORKING_DIRECTORY = config.get("working_directory", "")
+
+
+def read_config_file(config_path: str) -> Config:
+    with open(config_path, "r", encoding="utf-8") as file:
+        config_dict = yaml.safe_load(file)
+
+    return Config(name="config", value=config_dict).validate()
 
 
 def parse_subscriptions_file(subscription_yaml_path, set_config_variables=True):
@@ -62,14 +70,14 @@ def parse_presets(yaml_dict):
 
 def parse_subscriptions(yaml_dict: dict, presets: dict, subscriptions: Optional[list]):
     """
-    Parses subscriptions from a subscription yaml dict
+    Parses config from a subscription yaml dict
 
     Parameters
     ----------
     yaml_dict: dict
     presets: dict
     subscriptions: list[str] or None
-        If present, only parse these subscriptions
+        If present, only parse these config
 
     Returns
     -------
@@ -77,7 +85,7 @@ def parse_subscriptions(yaml_dict: dict, presets: dict, subscriptions: Optional[
     """
     parsed_subscriptions = []
 
-    # Parse all subscriptions even if all are not used for validation's sake
+    # Parse all config even if all are not used for validation's sake
     for name, subscription in yaml_dict[YAMLSection.SUBSCRIPTIONS_KEY].items():
         preset = {}
         if subscription.get("preset") in presets:
@@ -104,7 +112,7 @@ def parse_subscriptions(yaml_dict: dict, presets: dict, subscriptions: Optional[
             )
         )
 
-    # Filter subscriptions if present
+    # Filter config if present
     if subscriptions:
         parsed_subscriptions = [
             sub for sub in parsed_subscriptions if sub.name in subscriptions

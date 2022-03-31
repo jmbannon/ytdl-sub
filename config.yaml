@@ -1,12 +1,12 @@
-config:
-  working_directory: 'tmp'
+# ytdl-sub needs a temporary place to download files. Choose that path here
+working_directory: 'tmp'
 
 presets:
   soundcloud_with_id3_tags:
     soundcloud:
-      download_strategy: "albums_then_tracks"
+      download_strategy: "albums_and_singles"
       skip_premiere_tracks: True
-    ytdl_opts:
+    ytdl_options:
       format: 'bestaudio[ext=mp3]'
     post_process:
       file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
@@ -23,7 +23,7 @@ presets:
   music_videos:
     youtube:
       download_strategy: "playlist"
-    ytdl_opts:
+    ytdl_options:
       format: 'best'
       ignoreerrors: True
     post_process:

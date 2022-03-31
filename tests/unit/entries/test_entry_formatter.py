@@ -1,6 +1,6 @@
 import pytest
 
-from ytdl_subscribe.entries.entry import EntryFormatter
+from ytdl_subscribe.utils.formatter_validator import FormatterValidator
 
 
 @pytest.fixture
@@ -44,11 +44,11 @@ def error_message_unequal_regex_matches_generator(
 class TestEntryFormatter(object):
     def test_parse(self):
         format_string = "Here is my {var_one} and {var_two} 💩"
-        assert EntryFormatter(format_string).parse() == ["var_one", "var_two"]
+        assert FormatterValidator(format_string).parse() == ["var_one", "var_two"]
 
     def test_parse_no_variables(self):
         format_string = "No vars 💩"
-        assert EntryFormatter(format_string).parse() == []
+        assert FormatterValidator(format_string).parse() == []
 
     @pytest.mark.parametrize(
         "format_string",
@@ -65,7 +65,7 @@ class TestEntryFormatter(object):
         expected_error_msg = error_message_unequal_brackets_generator(format_string)
 
         with pytest.raises(ValueError, match=expected_error_msg):
-            assert EntryFormatter(format_string).parse()
+            assert FormatterValidator(format_string).parse()
 
     @pytest.mark.parametrize(
         "format_string",
@@ -86,4 +86,4 @@ class TestEntryFormatter(object):
         )
 
         with pytest.raises(ValueError, match=expected_error_msg):
-            assert EntryFormatter(format_string).parse()
+            assert FormatterValidator(format_string).parse()

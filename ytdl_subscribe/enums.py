@@ -19,4 +19,4 @@ class SubscriptionSourceName(object):
 class YAMLSection(object):
     CONFIG_KEY = "config"
     PRESET_KEY = "presets"
-    SUBSCRIPTIONS_KEY = "subscriptions"
+    SUBSCRIPTIONS_KEY = "config"
