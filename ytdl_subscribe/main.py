@@ -1,14 +1,12 @@
 import argparse
 from typing import List
 
-from ytdl_subscribe.parse import parse_presets
-from ytdl_subscribe.parse import parse_subscriptions
-from ytdl_subscribe.parse import parse_subscriptions_file
-from ytdl_subscribe.parse import read_config_file
-
 ###################################################################################################
 # GLOBAL PARSER
-from ytdl_subscribe.validators.config.config import Config
+from ytdl_subscribe.validators.config.config_validator import ConfigValidator
+from ytdl_subscribe.validators.config.subscription_validator import (
+    SubscriptionValidator,
+)
 
 parser = argparse.ArgumentParser(
     description="YoutubeDL-Subscribe: Download and organize your favorite media hassle-free."
@@ -43,10 +41,20 @@ download_parser.add_argument(
 if __name__ == "__main__":
     args = parser.parse_args()
 
-    config: Config = Config.from_file_path(args.config)
+    config: ConfigValidator = ConfigValidator.from_file_path(args.config)
     if args.subparser == "sub":
         subscription_paths: List[str] = args.subscription_paths
+        subscriptions: List[SubscriptionValidator] = []
 
+        for subscription_path in subscription_paths:
+            subscriptions += SubscriptionValidator.from_file_path(
+                config=config, subscription_path=subscription_path
+            )
+
+        for subscription in subscriptions:
+            subscription.to_subscription().extract_info()
+
+        print("hi")
         # for subscription_path in subscription_paths:
         #
         #

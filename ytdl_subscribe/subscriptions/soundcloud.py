@@ -15,7 +15,7 @@ class SoundcloudSubscription(Subscription):
             ytdl_options=self.ytdl_opts,
         )
 
-        if self.options.get("download_strategy") == "albums_then_tracks":
+        if self.options.get("download_strategy") == "albums_and_singles":
             # Get the album info first. This tells us which track ids belong
             # to an album. Unfortunately we cannot use download_archive or info.json for this
             albums: List[SoundcloudAlbum] = soundcloud_downloader.download_albums(

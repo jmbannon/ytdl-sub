@@ -14,9 +14,3 @@ class SubscriptionSourceName(object):
     def pretty_all(cls) -> str:
         """Returns all subscription sources pretty printed"""
         return ", ".join(cls.all())
-
-
-class YAMLSection(object):
-    CONFIG_KEY = "config"
-    PRESET_KEY = "presets"
-    SUBSCRIPTIONS_KEY = "config"

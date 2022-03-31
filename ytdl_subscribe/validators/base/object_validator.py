@@ -2,11 +2,11 @@ from typing import Any
 from typing import Optional
 from typing import Set
 
+from ytdl_subscribe.validators.base.base_validator import BaseValidator
 from ytdl_subscribe.validators.exceptions import ValidationException
-from ytdl_subscribe.validators.native.validator import Validator
 
 
-class ObjectValidator(Validator):
+class ObjectValidator(BaseValidator):
 
     required_fields: Set[str] = []
     optional_fields: Set[str] = []
