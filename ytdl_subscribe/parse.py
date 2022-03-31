@@ -3,7 +3,7 @@ from typing import Optional
 import yaml
 from mergedeep import mergedeep
 
-from ytdl_subscribe.enums import SubscriptionSource
+from ytdl_subscribe.enums import SubscriptionSourceName
 from ytdl_subscribe.enums import YAMLSection
 from ytdl_subscribe.subscriptions.soundcloud import SoundcloudSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
@@ -84,11 +84,11 @@ def parse_subscriptions(yaml_dict: dict, presets: dict, subscriptions: Optional[
             preset = presets[subscription["preset"]]
         subscription = mergedeep.merge({}, preset, subscription)
 
-        if SubscriptionSource.SOUNDCLOUD in subscription:
-            subscription_source = SubscriptionSource.SOUNDCLOUD
+        if SubscriptionSourceName.SOUNDCLOUD in subscription:
+            subscription_source = SubscriptionSourceName.SOUNDCLOUD
             subscription_class = SoundcloudSubscription
-        elif SubscriptionSource.YOUTUBE in subscription:
-            subscription_source = SubscriptionSource.YOUTUBE
+        elif SubscriptionSourceName.YOUTUBE in subscription:
+            subscription_source = SubscriptionSourceName.YOUTUBE
             subscription_class = YoutubeSubscription
         else:
             raise ValueError("dne")

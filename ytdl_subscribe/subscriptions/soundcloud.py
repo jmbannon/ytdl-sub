@@ -3,13 +3,10 @@ from typing import List
 from ytdl_subscribe.downloaders.soundcloud_downloader import SoundcloudDownloader
 from ytdl_subscribe.entries.soundcloud import SoundcloudAlbum
 from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
-from ytdl_subscribe.enums import SubscriptionSource
 from ytdl_subscribe.subscriptions.subscription import Subscription
 
 
 class SoundcloudSubscription(Subscription):
-    source = SubscriptionSource.SOUNDCLOUD
-
     def extract_info(self):
         tracks: List[SoundcloudTrack] = []
         soundcloud_downloader = SoundcloudDownloader(

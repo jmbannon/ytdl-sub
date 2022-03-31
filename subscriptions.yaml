@@ -1,81 +1,42 @@
-config:
-  working_directory: 'tmp'
+ALISON:
+  preset: "soundcloud_with_id3_tags"
+  soundcloud:
+    username: alis_on
+  output_path: "/mnt/nas/Downloads/ytdl/music/ALISON"
+  overrides:
+    artist: "A.L.I.S.O.N."
+    genre: "Synthwave / Electronic"
 
-presets:
-  soundcloud_with_id3_tags:
-    soundcloud:
-      download_strategy: "albums_then_tracks"
-      skip_premiere_tracks: True
-    ytdl_opts:
-      format: 'bestaudio[ext=mp3]'
-    post_process:
-      file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
-      thumbnail_name: "[{album_year}] {sanitized_album}/folder.{thumbnail_ext}"
-      tagging:
-        artist: "{artist}"
-        albumartist: "{artist}"
-        title: "{title}"
-        album: "{album}"
-        tracknumber: "{track_number}"
-        year: "{album_year}"
-        genre: "{genre}"
+delorra:
+  preset: "soundcloud_with_id3_tags"
+  soundcloud:
+    username: delorra
+  output_path: "/mnt/nas/Downloads/ytdl/music/DeLorra"
+  overrides:
+    artist: "DeLorra"
+    genre: "Synthwave / Electronic"
 
-  music_videos:
-    youtube:
-      noop: True
-    ytdl_opts:
-      format: 'best'
-      ignoreerrors: True
-    post_process:
-      file_name: "{sanitized_artist} - {sanitized_title}.{ext}"
-      convert_thumbnail: "jpg"
-      thumbnail_name: "{sanitized_artist} - {sanitized_title}.jpg"
-      nfo_name: "{sanitized_artist} - {sanitized_title}.nfo"
-      nfo_root: "musicvideo"
-      nfo:
-        artist: "{artist}"
-        title: "{title}"
-        album: "Music Videos"
-        year: "{upload_year}"
+bl00dwave:
+  preset: "soundcloud_with_id3_tags"
+  soundcloud:
+    username: bl00dwave
+  output_path: "/tmp/bl00dwave"
+  overrides:
+    artist: "bl00dwave"
+    genre: "Synthwave / Electronic"
 
-subscriptions:
-  ALISON:
-    preset: "soundcloud_with_id3_tags"
-    soundcloud:
-      username: alis_on
-    output_path: "/mnt/nas/Downloads/ytdl/music/ALISON"
-    overrides:
-      artist: "A.L.I.S.O.N."
-      genre: "Synthwave / Electronic"
-  delorra:
-    preset: "soundcloud_with_id3_tags"
-    soundcloud:
-      username: delorra
-    output_path: "/mnt/nas/Downloads/ytdl/music/DeLorra"
-    overrides:
-      artist: "DeLorra"
-      genre: "Synthwave / Electronic"
-  bl00dwave:
-    preset: "soundcloud_with_id3_tags"
-    soundcloud:
-      username: bl00dwave
-    output_path: "/tmp/bl00dwave"
-    overrides:
-      artist: "bl00dwave"
-      genre: "Synthwave / Electronic"
+tom_petty:
+  youtube:
+    playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
+  preset: "music_videos"
+  output_path: "/tmp/Tom Petty"
+  overrides:
+    artist: "Tom Petty and the Heartbreakers"
 
-  tom_petty:
-    youtube:
-      playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
-    preset: "music_videos"
-    output_path: "/tmp/Tom Petty"
-    overrides:
-      artist: "Tom Petty and the Heartbreakers"
-
-  rammstein:
-    youtube:
-      playlist_id: "PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
-    preset: "music_videos"
-    output_path: "/mnt/nas/Downloads/ytdl/music_videos/Rammstein"
-    overrides:
-      artist: "Rammstein"
+rammstein:
+  youtube:
+    playlist_id: "PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
+  preset: "music_videos"
+  output_path: "/mnt/nas/Downloads/ytdl/music_videos/Rammstein"
+  overrides:
+    artist: "Rammstein"

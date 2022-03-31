@@ -3,6 +3,7 @@ black==21.11b1
 coverage==6.3.2
 dicttoxml==1.7.4
 isort==5.10.1
+jsonschema==4.4.0
 mergedeep==1.3.4
 music-tag==0.4.3
 pathvalidate==2.4.1

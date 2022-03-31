@@ -5,7 +5,7 @@ from ytdl_subscribe.parse import parse_subscriptions
 from ytdl_subscribe.parse import parse_subscriptions_file
 
 parser = argparse.ArgumentParser(
-    description="YoutubeDL-Subscribe: Download and organize your favorite media easily."
+    description="YoutubeDL-Subscribe: Download and organize your favorite media hassle-free."
 )
 parser.add_argument(
     "-c",

@@ -13,8 +13,6 @@ from ytdl_subscribe.entries.entry import Entry
 class Subscription(object):
     WORKING_DIRECTORY = ""
 
-    source = None
-
     def __init__(self, name, options, ytdl_opts, post_process, overrides, output_path):
         """
         Parameters
