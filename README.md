@@ -228,7 +228,7 @@ Rammstein:
     artist: "Rammstein"
 ```
 
-You can have multiple subscription files for better organizing. Now that that is defined, we can invoke the download
+You can have multiple subscription files for better organizing. We can invoke the subscriptoin download
 using the command below. This makes it easy to use `ytdl-sub` in a cron job.
 ```shell
 ytdl-sub sub subscription.yaml
@@ -257,16 +257,37 @@ ytdl-sub server
 ```
 POST request to invoke the same one-time download example via REST.
 ```commandline
-curl -X POST -H "Content-type: application/json"         \
-    -d '{                                                \
-        "soundcloud.username": "alis_on",                \
-        "overrides": {                                   \
-            "artist": "A.L.I.S.O.N.",                    \
-            "genre": "Synthwave;Electronic;Instrumental" \
-        }                                                \
-    }'                                                   \
-    'localhost:8080/soundcloud_wih_id3_tags'
+curl -X POST -H "Content-type: application/json"                \
+    -d '{                                                       \
+        "soundcloud.username": "alis_on",                       \
+        "overrides.artist": "A.L.I.S.O.N.",                     \
+        "overrides.genre": "Synthwave;Electronic;Instrumental"  \
+    }'                                                          \
+    'localhost:8080/soundcloud_discography'
 ```
+
+## Other Nice-To-Have Feature Ideas [not available yet]
+### Check existing media before downloading
+Right now, ytdl-sub will naively download everything in the given playlist/artist url. We should check the destination
+directory first to see if it has already been downloaded. Might involve including a tag with its ytdl id.
+
+### More download strategies
+Only full artist (soundcloud) and playlists (youtube) are currently supported. Add new ones for single song/video
+downloads.
+
+### Make adding new sources easy to implement
+Developers should not have to work around spaghetti to add new sources to ytdl-subscribe. It should be very modularized
+and definable in a separate file as a plugin.
+
+### Musicbrainz Integration
+Integration with musicbrainz to fetch correct artist names, song titles, ids, etc and make those tags usable would be
+a great feature for OCD music hoarders like myself, and would play nicely with existing collections to ensure
+files land in the same directory. This can be worked around for now by using overrides.
+
+### Configurable Time Windows to Delete Stale Media
+There are some news channels and podcasts that I'd like to download but only keep the prior 2 weeks-worth of videos.
+This would have to introspect files that reside in the host filesystem. Extreme caution would be required since we are
+perma-deleting files.
 
 ## Contributing
 I would like to get this to a point where I create a stable release before I accept PRs from the outside world. In the
