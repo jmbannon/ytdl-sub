@@ -25,6 +25,8 @@ music videos. Both are intended to be consumed by [Kodi](https://github.com/xbmc
 should (hopefully) be customizable enough to support other use-cases like downloading a playlist as a TV show or
 multiple movies.
 
+The `{variables}` used in the strings are derived from the media itself or defined in the `overrides` section.
+
 #### config.yaml
 ```yaml
 # [Required]
