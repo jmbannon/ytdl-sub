@@ -27,7 +27,11 @@ multiple movies.
 
 #### config.yaml
 ```yaml
+# [Required]
+# All presets live under this section. Other configurable things for ytdl-sub will
+# reside in a different section.
 presets:
+
   # [Required]
   # Custom name that you define for your preset. This preset is intended to download
   # a soundcloud artist's discography.
