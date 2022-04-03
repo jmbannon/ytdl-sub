@@ -3,13 +3,11 @@ from typing import Optional
 
 from ytdl_subscribe.utils.enums import SubscriptionSourceName
 from ytdl_subscribe.validators.base.dict_validator import DictValidator
-from ytdl_subscribe.validators.config.sources.base_source_validator import (
-    BaseSourceValidator,
-)
-from ytdl_subscribe.validators.config.sources.soundcloud_source_validator import (
+from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
     SoundcloudSourceValidator,
 )
-from ytdl_subscribe.validators.config.sources.youtube_source_validator import (
+from ytdl_subscribe.validators.config.sources.source_validator import SourceValidator
+from ytdl_subscribe.validators.config.sources.youtube_validators import (
     YoutubeSourceValidator,
 )
 from ytdl_subscribe.validators.exceptions import ValidationException
@@ -27,7 +25,7 @@ class PresetValidator(DictValidator):
 
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)
-        self.subscription_source: Optional[BaseSourceValidator] = None
+        self.subscription_source: Optional[SourceValidator] = None
         self.subscription_source_name: Optional[str] = None
 
         for object_key, object_value in self.object_items:

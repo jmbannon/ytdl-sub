@@ -1,10 +1,8 @@
 import re
 from keyword import iskeyword
 from typing import List
-from typing import Optional
 
 from ytdl_subscribe.validators.base.string_validator import StringValidator
-from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 class StringFormatterValidator(StringValidator):
