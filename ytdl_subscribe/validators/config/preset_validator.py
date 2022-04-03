@@ -21,7 +21,6 @@ class PresetValidator(DictValidator):
         "overrides",
         *SubscriptionSourceName.all(),
     }
-    allow_extra_fields = False
 
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)

@@ -4,6 +4,7 @@ from typing import Dict
 from typing import Type
 
 from ytdl_subscribe.validators.base.dict_validator import DictValidator
+from ytdl_subscribe.validators.base.dict_validator import DictWithExtraFieldsValidator
 from ytdl_subscribe.validators.base.string_validator import StringValidator
 
 
@@ -11,13 +12,9 @@ class DownloadStrategyValidator(DictValidator):
     pass
 
 
-class SourceValidator(DictValidator):
+class SourceValidator(DictWithExtraFieldsValidator):
     # All media sources must define a download strategy
     required_fields = {"download_strategy"}
-
-    # We allow extra fields at this level, once the download strategy is chosen,
-    # all fields in the dict should be required.
-    allow_extra_fields = True
 
     download_strategy_validator_mapping: Dict[str, Type[DownloadStrategyValidator]] = {}
 

@@ -1,4 +1,5 @@
 from typing import Any
+from typing import Dict
 from typing import Optional
 from typing import Set
 from typing import Type
@@ -17,15 +18,13 @@ class DictValidator(Validator):
 
     required_fields: Set[str] = set()
     optional_fields: Set[str] = set()
-    allow_extra_fields = False
 
-    def __validate_required_fields_are_present(self):
-        """
-        Raises
-        -------
-        ValidationException
-            If the required fields are not present in the dict
-        """
+    _allow_extra_fields = False
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        # Ensure all required keys are present
         for required_key in self.required_fields:
             if required_key not in self.value:
                 error_msg = (
@@ -33,29 +32,16 @@ class DictValidator(Validator):
                 )
                 raise ValidationException(error_msg)
 
-    def __validate_extra_fields(self):
-        """
-        Raises
-        -------
-        ValidationException
-            If allow_extra_fields=False and non-required/options fields are present
-        """
-        if not self.allow_extra_fields:
+        # If no extra fields are allowed, ensure all fields are either
+        # required or optional fields
+        if not self._allow_extra_fields:
             for object_key in self.object_keys:
-                if (
-                    object_key not in self.required_fields
-                    and object_key not in self.optional_fields
-                ):
+                if object_key not in self.allowed_fields:
                     error_msg = (
                         f"'{self.name}' contains the field '{object_key}' which is not allowed. "
                         f"Allowed fields: {', '.join(self.allowed_fields)}"
                     )
                     raise ValidationException(error_msg)
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-        self.__validate_required_fields_are_present()
-        self.__validate_extra_fields()
 
     def validate_dict_value(
         self, dict_value_name: str, validator: Type[T], default: Optional[Any] = None
@@ -92,4 +78,4 @@ class DictValidator(Validator):
 
 
 class DictWithExtraFieldsValidator(DictValidator):
-    allow_extra_fields = True
+    _allow_extra_fields = True
