@@ -3,18 +3,20 @@ from typing import Any
 from typing import Dict
 from typing import Type
 
-from ytdl_subscribe.validators.base.dict_validator import DictValidator
-from ytdl_subscribe.validators.base.dict_validator import DictWithExtraFieldsValidator
+from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 
 
-class DownloadStrategyValidator(DictValidator):
+class DownloadStrategyValidator(StrictDictValidator):
     pass
 
 
-class SourceValidator(DictWithExtraFieldsValidator):
+class SourceValidator(StrictDictValidator):
     # All media sources must define a download strategy
-    required_fields = {"download_strategy"}
+    required_keys = {"download_strategy"}
+
+    # Extra fields will be strict-validated using other StictDictValidators
+    allow_extra_fields = True
 
     download_strategy_validator_mapping: Dict[str, Type[DownloadStrategyValidator]] = {}
 
@@ -32,7 +34,7 @@ class SourceValidator(DictWithExtraFieldsValidator):
 
         # Remove all non-download strategy keys before passing the dict to the validator
         download_strategy_dict = copy.deepcopy(self.dict)
-        for key_to_delete in self.allowed_fields:
+        for key_to_delete in self.allowed_keys:
             del download_strategy_dict[key_to_delete]
 
         download_strategy_class = self.download_strategy_validator_mapping[

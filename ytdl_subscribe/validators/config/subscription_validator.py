@@ -8,29 +8,27 @@ from ytdl_subscribe.subscriptions.soundcloud import SoundcloudSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
 from ytdl_subscribe.utils.enums import SubscriptionSourceName
-from ytdl_subscribe.validators.base.dict_validator import DictValidator
-from ytdl_subscribe.validators.base.dict_validator import DictWithExtraFieldsValidator
+from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.base.validators import DictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.config_validator import ConfigValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 
 
-class SubscriptionValidator(DictValidator):
+class SubscriptionValidator(StrictDictValidator):
     """
     A Subscription is a preset but overrides it with specific values
     """
 
-    required_fields = {"preset"}
-    optional_fields = PresetValidator.required_fields.union(
-        PresetValidator.optional_fields
-    )
+    required_keys = {"preset"}
+    optional_keys = PresetValidator.required_keys.union(PresetValidator.optional_keys)
 
     def __init__(self, config: ConfigValidator, name: str, value: Any):
         super().__init__(name, value)
         self.config = config
         self.overrides = self.validate_key(
             key="overrides",
-            validator=DictWithExtraFieldsValidator,
+            validator=DictValidator,
             default={},
         )
 

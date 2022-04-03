@@ -2,7 +2,7 @@ from typing import Any
 from typing import Optional
 
 from ytdl_subscribe.utils.enums import SubscriptionSourceName
-from ytdl_subscribe.validators.base.dict_validator import DictValidator
+from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
     SoundcloudSourceValidator,
 )
@@ -13,9 +13,9 @@ from ytdl_subscribe.validators.config.sources.youtube_validators import (
 from ytdl_subscribe.validators.exceptions import ValidationException
 
 
-class PresetValidator(DictValidator):
-    required_fields = {"post_process"}
-    optional_fields = {
+class PresetValidator(StrictDictValidator):
+    required_keys = {"post_process"}
+    optional_keys = {
         "ytdl_options",
         "output_path",
         "overrides",

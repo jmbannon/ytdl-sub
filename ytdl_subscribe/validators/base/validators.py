@@ -1,6 +1,7 @@
 from typing import Any
 from typing import Optional
 from typing import Type
+from typing import TypeVar
 
 from ytdl_subscribe.validators.exceptions import ValidationException
 
@@ -57,3 +58,36 @@ class StringValidator(Validator):
     @property
     def value(self) -> str:
         return self._value
+
+
+T = TypeVar("T", bound=Validator)
+
+
+class DictValidator(Validator):
+    expected_value_type = dict
+    expected_value_type_name = "object"  # for non-python users
+
+    @property
+    def dict(self) -> dict:
+        return self._value
+
+    @property
+    def keys(self):
+        return sorted(list(self.dict.keys()))
+
+    def get(self, key: str, default: Optional[Any] = None) -> Any:
+        return self.dict.get(key, default)
+
+    def validate_key(
+        self, key: str, validator: Type[T], default: Optional[Any] = None
+    ) -> T:
+        value = self.get(key=key, default=default)
+        if value is None:
+            raise self._validation_exception(
+                f"{key} is missing when it should be present."
+            )
+
+        return validator(
+            name=f"{self.name}.{key}",
+            value=self.get(key=key, default=default),
+        )

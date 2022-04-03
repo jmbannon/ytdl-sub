@@ -2,18 +2,18 @@ from typing import Any
 
 import yaml
 
-from ytdl_subscribe.validators.base.dict_validator import DictValidator
-from ytdl_subscribe.validators.base.dict_validator import DictWithExtraFieldsValidator
+from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.base.validators import DictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 
 
-class ConfigValidator(DictValidator):
-    required_fields = {"working_directory", "presets"}
+class ConfigValidator(StrictDictValidator):
+    required_keys = {"working_directory", "presets"}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
         self.working_directory = self.validate_key("working_directory", StringValidator)
-        self.presets = self.validate_key("presets", DictWithExtraFieldsValidator)
+        self.presets = self.validate_key("presets", DictValidator)
 
     @classmethod
     def from_file_path(cls, config_path) -> "ConfigValidator":
