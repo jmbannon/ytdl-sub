@@ -27,22 +27,22 @@ class PresetValidator(DictValidator):
         self.subscription_source: Optional[SourceValidator] = None
         self.subscription_source_name: Optional[str] = None
 
-        for object_key, object_value in self.object_items:
-            if object_key in SubscriptionSourceName.all() and self.subscription_source:
+        for key, val in self.dict.items():
+            if key in SubscriptionSourceName.all() and self.subscription_source:
                 raise ValidationException(
                     f"'{self.name}' can only have one of the following sources: {SubscriptionSourceName.pretty_all()}"
                 )
 
-            if object_key == SubscriptionSourceName.SOUNDCLOUD:
+            if key == SubscriptionSourceName.SOUNDCLOUD:
                 self.subscription_source_name = SubscriptionSourceName.SOUNDCLOUD
-                self.subscription_source = self.validate_dict_value(
-                    dict_value_name=object_key,
+                self.subscription_source = self.validate_key(
+                    key=key,
                     validator=SoundcloudSourceValidator,
                 )
-            elif object_key == SubscriptionSourceName.YOUTUBE:
+            elif key == SubscriptionSourceName.YOUTUBE:
                 self.subscription_source_name = SubscriptionSourceName.YOUTUBE
-                self.subscription_source = self.validate_dict_value(
-                    dict_value_name=object_key,
+                self.subscription_source = self.validate_key(
+                    key=key,
                     validator=YoutubeSourceValidator,
                 )
 

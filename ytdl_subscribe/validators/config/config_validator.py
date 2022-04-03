@@ -4,7 +4,7 @@ import yaml
 
 from ytdl_subscribe.validators.base.dict_validator import DictValidator
 from ytdl_subscribe.validators.base.dict_validator import DictWithExtraFieldsValidator
-from ytdl_subscribe.validators.base.string_validator import StringValidator
+from ytdl_subscribe.validators.base.validators import StringValidator
 
 
 class ConfigValidator(DictValidator):
@@ -12,10 +12,8 @@ class ConfigValidator(DictValidator):
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
-        self.working_directory = self.validate_dict_value(
-            "working_directory", StringValidator
-        )
-        self.presets = self.validate_dict_value("presets", DictWithExtraFieldsValidator)
+        self.working_directory = self.validate_key("working_directory", StringValidator)
+        self.presets = self.validate_key("presets", DictWithExtraFieldsValidator)
 
     @classmethod
     def from_file_path(cls, config_path) -> "ConfigValidator":

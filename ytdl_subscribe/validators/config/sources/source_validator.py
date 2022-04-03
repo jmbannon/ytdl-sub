@@ -5,7 +5,7 @@ from typing import Type
 
 from ytdl_subscribe.validators.base.dict_validator import DictValidator
 from ytdl_subscribe.validators.base.dict_validator import DictWithExtraFieldsValidator
-from ytdl_subscribe.validators.base.string_validator import StringValidator
+from ytdl_subscribe.validators.base.validators import StringValidator
 
 
 class DownloadStrategyValidator(DictValidator):
@@ -20,8 +20,8 @@ class SourceValidator(DictWithExtraFieldsValidator):
 
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)
-        self.download_strategy_name = self.validate_dict_value(
-            dict_value_name="download_strategy",
+        self.download_strategy_name = self.validate_key(
+            key="download_strategy",
             validator=StringValidator,
         ).value
 

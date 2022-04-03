@@ -39,3 +39,21 @@ class Validator:
     def _validation_exception(self, error_message: str):
         prefix = f"Validation error in {self.name}: "
         return ValidationException(f"{prefix}{error_message}")
+
+
+class BoolValidator(Validator):
+    expected_value_type: Type = bool
+    expected_value_type_name = "boolean"
+
+    @property
+    def value(self) -> bool:
+        return self._value
+
+
+class StringValidator(Validator):
+    expected_value_type: Type = str
+    expected_value_type_name = "string"
+
+    @property
+    def value(self) -> str:
+        return self._value

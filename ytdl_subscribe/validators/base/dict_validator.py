@@ -5,7 +5,7 @@ from typing import Set
 from typing import Type
 from typing import TypeVar
 
-from ytdl_subscribe.validators.base.validator import Validator
+from ytdl_subscribe.validators.base.validators import Validator
 from ytdl_subscribe.validators.exceptions import ValidationException
 
 T = TypeVar("T", bound=Validator)
@@ -35,7 +35,7 @@ class DictValidator(Validator):
         # If no extra fields are allowed, ensure all fields are either
         # required or optional fields
         if not self._allow_extra_fields:
-            for object_key in self.object_keys:
+            for object_key in self.keys:
                 if object_key not in self.allowed_fields:
                     error_msg = (
                         f"'{self.name}' contains the field '{object_key}' which is not allowed. "
@@ -43,18 +43,18 @@ class DictValidator(Validator):
                     )
                     raise ValidationException(error_msg)
 
-    def validate_dict_value(
-        self, dict_value_name: str, validator: Type[T], default: Optional[Any] = None
+    def validate_key(
+        self, key: str, validator: Type[T], default: Optional[Any] = None
     ) -> T:
-        value = self.get(object_key=dict_value_name, default=default)
+        value = self.get(key=key, default=default)
         if value is None:
             raise self._validation_exception(
-                f"{dict_value_name} is missing when it should be present."
+                f"{key} is missing when it should be present."
             )
 
         return validator(
-            name=f"{self.name}.{dict_value_name}",
-            value=self.get(object_key=dict_value_name, default=default),
+            name=f"{self.name}.{key}",
+            value=self.get(key=key, default=default),
         )
 
     @property
@@ -66,15 +66,11 @@ class DictValidator(Validator):
         return sorted(self.required_fields.union(self.optional_fields))
 
     @property
-    def object_keys(self):
+    def keys(self):
         return sorted(list(self.dict.keys()))
 
-    @property
-    def object_items(self):
-        return self.dict.items()
-
-    def get(self, object_key: str, default: Optional[Any] = None) -> Any:
-        return self.dict.get(object_key, default)
+    def get(self, key: str, default: Optional[Any] = None) -> Any:
+        return self.dict.get(key, default)
 
 
 class DictWithExtraFieldsValidator(DictValidator):

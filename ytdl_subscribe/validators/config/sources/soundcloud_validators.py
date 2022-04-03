@@ -1,5 +1,5 @@
-from ytdl_subscribe.validators.base.bool_validator import BoolValidator
-from ytdl_subscribe.validators.base.string_validator import StringValidator
+from ytdl_subscribe.validators.base.validators import BoolValidator
+from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.sources.source_validator import (
     DownloadStrategyValidator,
 )
@@ -11,8 +11,8 @@ class SoundcloudAlbumsAndSinglesDownloadValidator(DownloadStrategyValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.username = self.validate_dict_value(
-            dict_value_name="username", validator=StringValidator
+        self.username = self.validate_key(
+            key="username", validator=StringValidator
         ).value
 
 
@@ -25,6 +25,6 @@ class SoundcloudSourceValidator(SourceValidator):
 
     def __init__(self, name: str, value: dict):
         super().__init__(name=name, value=value)
-        self.skip_premiere_tracks = self.validate_dict_value(
+        self.skip_premiere_tracks = self.validate_key(
             "skip_premiere_tracks", BoolValidator, default=True
         ).value

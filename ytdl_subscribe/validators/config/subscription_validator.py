@@ -10,7 +10,7 @@ from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
 from ytdl_subscribe.utils.enums import SubscriptionSourceName
 from ytdl_subscribe.validators.base.dict_validator import DictValidator
 from ytdl_subscribe.validators.base.dict_validator import DictWithExtraFieldsValidator
-from ytdl_subscribe.validators.base.string_validator import StringValidator
+from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.config_validator import ConfigValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 
@@ -28,18 +28,18 @@ class SubscriptionValidator(DictValidator):
     def __init__(self, config: ConfigValidator, name: str, value: Any):
         super().__init__(name, value)
         self.config = config
-        self.overrides = self.validate_dict_value(
-            dict_value_name="overrides",
+        self.overrides = self.validate_key(
+            key="overrides",
             validator=DictWithExtraFieldsValidator,
             default={},
         )
 
-        preset_name = self.validate_dict_value(
-            dict_value_name="preset",
+        preset_name = self.validate_key(
+            key="preset",
             validator=StringValidator,
         ).value
 
-        available_presets = self.config.presets.object_keys
+        available_presets = self.config.presets.keys
         if preset_name not in available_presets:
             raise self._validation_exception(
                 f"'preset '{preset_name}' does not exist in the provided config. "

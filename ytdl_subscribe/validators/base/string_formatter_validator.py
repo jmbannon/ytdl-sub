@@ -2,7 +2,7 @@ import re
 from keyword import iskeyword
 from typing import List
 
-from ytdl_subscribe.validators.base.string_validator import StringValidator
+from ytdl_subscribe.validators.base.validators import StringValidator
 
 
 class StringFormatterValidator(StringValidator):
