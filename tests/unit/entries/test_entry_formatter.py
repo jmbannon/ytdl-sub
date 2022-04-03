@@ -1,6 +1,9 @@
 import pytest
 
-from ytdl_subscribe.utils.formatter_validator import FormatterValidator
+from ytdl_subscribe.validators.base.string_formatter_validator import (
+    StringFormatterValidator,
+)
+from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 @pytest.fixture
@@ -13,42 +16,21 @@ def error_message_unequal_regex_matches_str():
     return "{variable_names} should only contain lowercase letters and underscores with a single open and close bracket."
 
 
-@pytest.fixture
-def error_message_prefix_generator():
-    def _error_message_prefix_generator(format_string):
-        return f"Format string '{format_string}' is invalid: "
-
-    return _error_message_prefix_generator
-
-
-@pytest.fixture
-def error_message_unequal_brackets_generator(
-    error_message_prefix_generator, error_message_unequal_brackets_str
-):
-    def _error_message_unequal_brackets_generator(format_string):
-        return f"{error_message_prefix_generator(format_string)}{error_message_unequal_brackets_str}"
-
-    return _error_message_unequal_brackets_generator
-
-
-@pytest.fixture
-def error_message_unequal_regex_matches_generator(
-    error_message_prefix_generator, error_message_unequal_regex_matches_str
-):
-    def _error_message_unequal_regex_matches_generator(format_string):
-        return f"{error_message_prefix_generator(format_string)}{error_message_unequal_regex_matches_str}"
-
-    return _error_message_unequal_regex_matches_generator
-
-
 class TestEntryFormatter(object):
     def test_parse(self):
         format_string = "Here is my {var_one} and {var_two} 💩"
-        assert FormatterValidator(format_string).parse() == ["var_one", "var_two"]
+        assert StringFormatterValidator(
+            name="test_format_variables", format_string=format_string
+        ).format_variables == ["var_one", "var_two"]
 
     def test_parse_no_variables(self):
         format_string = "No vars 💩"
-        assert FormatterValidator(format_string).parse() == []
+        assert (
+            StringFormatterValidator(
+                name="test_format_variables_empty", format_string=format_string
+            ).format_variables
+            == []
+        )
 
     @pytest.mark.parametrize(
         "format_string",
@@ -60,12 +42,14 @@ class TestEntryFormatter(object):
         ],
     )
     def test_parse_fail_uneven_brackets(
-        self, format_string, error_message_unequal_brackets_generator
+        self, format_string, error_message_unequal_brackets_str
     ):
-        expected_error_msg = error_message_unequal_brackets_generator(format_string)
+        expected_error_msg = (
+            f"Validation error in fail: {error_message_unequal_brackets_str}"
+        )
 
-        with pytest.raises(ValueError, match=expected_error_msg):
-            assert FormatterValidator(format_string).parse()
+        with pytest.raises(ValidationException, match=expected_error_msg):
+            _ = StringFormatterValidator(name="fail", format_string=format_string)
 
     @pytest.mark.parametrize(
         "format_string",
@@ -79,11 +63,11 @@ class TestEntryFormatter(object):
         ],
     )
     def test_parse_fail_variable(
-        self, format_string, error_message_unequal_regex_matches_generator
+        self, format_string, error_message_unequal_regex_matches_str
     ):
-        expected_error_msg = error_message_unequal_regex_matches_generator(
-            format_string
+        expected_error_msg = (
+            f"Validation error in fail: {error_message_unequal_regex_matches_str}"
         )
 
-        with pytest.raises(ValueError, match=expected_error_msg):
-            assert FormatterValidator(format_string).parse()
+        with pytest.raises(ValidationException, match=expected_error_msg):
+            _ = StringFormatterValidator(name="fail", format_string=format_string)

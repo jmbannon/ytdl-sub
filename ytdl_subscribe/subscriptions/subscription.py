@@ -22,7 +22,8 @@ class Subscription(object):
         options: dict
             Dictionary of ytdl options, specific to the source type
         ytdl_opts: dict
-            Dictionary of options passed directly to ytdl. See `youtube_dl.YoutubeDL.YoutubeDL` for options.
+            Dictionary of options passed directly to ytdl.
+            See `youtube_dl.YoutubeDL.YoutubeDL` for options.
         post_process: dict
             Dictionary of ytdl-subscribe post processing options
         overrides: dict

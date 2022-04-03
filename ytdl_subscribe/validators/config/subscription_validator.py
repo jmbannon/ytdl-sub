@@ -1,7 +1,5 @@
 from typing import Any
-from typing import Dict
 from typing import List
-from typing import Optional
 
 import yaml
 from mergedeep import mergedeep
@@ -10,64 +8,72 @@ from ytdl_subscribe.subscriptions.soundcloud import SoundcloudSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
 from ytdl_subscribe.utils.enums import SubscriptionSourceName
+from ytdl_subscribe.validators.base.dict_validator import DictValidator
+from ytdl_subscribe.validators.base.dict_validator import DictWithExtraFieldsValidator
+from ytdl_subscribe.validators.base.string_validator import StringValidator
 from ytdl_subscribe.validators.config.config_validator import ConfigValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
-from ytdl_subscribe.validators.exceptions import ValidationException
 
 
-class SubscriptionValidator(PresetValidator):
+class SubscriptionValidator(DictValidator):
     """
     A Subscription is a preset but overrides it with specific values
     """
 
     required_fields = {"preset"}
-    optional_fields = {"overrides"}.union(
-        PresetValidator.required_fields, PresetValidator.optional_fields
+    optional_fields = PresetValidator.required_fields.union(
+        PresetValidator.optional_fields
     )
 
     def __init__(self, config: ConfigValidator, name: str, value: Any):
         super().__init__(name, value)
         self.config = config
-        self.overrides: Optional[Dict] = None
+        self.overrides = self.validate_dict_value(
+            dict_value_name="overrides",
+            validator=DictWithExtraFieldsValidator,
+            default={},
+        )
 
-    def validate(self) -> "SubscriptionValidator":
-        # If a preset is present, update the
-        preset_name = self.get("preset")
-        available_presets = sorted(list(self.config.presets.keys()))
+        preset_name = self.validate_dict_value(
+            dict_value_name="preset",
+            validator=StringValidator,
+        ).value
+
+        available_presets = self.config.presets.object_keys
         if preset_name not in available_presets:
-            raise ValidationException(
-                f"'{self.name}.preset' does not exist in the provided config. "
+            raise self._validation_exception(
+                f"'preset '{preset_name}' does not exist in the provided config. "
                 f"Available presets: {', '.join(available_presets)}"
             )
 
-        self.overrides = self.get("overrides", {})
-
         # A little hacky, we will override the preset with the contents of this subscription, then validate it
-        self.value = mergedeep.merge(
-            self.config.presets[preset_name].value,
-            self.value,
+        preset_dict = mergedeep.merge(
+            self.config.presets.dict[preset_name],
+            self.dict,
             strategy=mergedeep.Strategy.REPLACE,
         )
+        del preset_dict["preset"]
 
-        _ = super().validate()
-        return self
+        self.preset = PresetValidator(
+            name=self.name,
+            value=preset_dict,
+        )
 
     def to_subscription(self) -> Subscription:
-        subscription_class = None
-        if self.subscription_source_name == SubscriptionSourceName.SOUNDCLOUD:
+        if self.preset.subscription_source_name == SubscriptionSourceName.SOUNDCLOUD:
             subscription_class = SoundcloudSubscription
-        elif self.subscription_source_name == SubscriptionSourceName.YOUTUBE:
+        elif self.preset.subscription_source_name == SubscriptionSourceName.YOUTUBE:
             subscription_class = YoutubeSubscription
         else:
             raise ValueError("subscription source class not found")
 
         return subscription_class(
             name=self.name,
-            options=self.get(self.subscription_source_name),
-            ytdl_opts=self.get("ytdl_options"),
-            post_process=self.get("post_process"),
-            overrides=self.get("overrides"),
-            output_path=self.get("output_path"),
+            options=self.preset.get(self.preset.subscription_source_name),
+            ytdl_opts=self.preset.get("ytdl_options"),
+            post_process=self.preset.get("post_process"),
+            overrides=self.preset.get("overrides"),
+            output_path=self.preset.get("output_path"),
         )
 
     @classmethod
@@ -83,7 +89,7 @@ class SubscriptionValidator(PresetValidator):
             subscriptions.append(
                 SubscriptionValidator(
                     config=config, name=subscription_key, value=subscription_object
-                ).validate()
+                )
             )
 
         return subscriptions

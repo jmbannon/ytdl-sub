@@ -5,7 +5,9 @@ from typing import Optional
 
 from sanitize_filename import sanitize
 
-from ytdl_subscribe.utils.formatter_validator import FormatterValidator
+from ytdl_subscribe.validators.base.string_formatter_validator import (
+    StringFormatterValidator,
+)
 
 
 class Entry:
@@ -104,7 +106,9 @@ class Entry:
         if overrides:
             entry_dict = dict(entry_dict, **overrides)
 
-        field_names = FormatterValidator(format_string).parse()
+        field_names = StringFormatterValidator(
+            "TODO: UPDATE", format_string
+        ).format_variables
 
         for field_name in field_names:
             if field_name not in entry_dict:
