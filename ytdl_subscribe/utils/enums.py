@@ -1,7 +1,7 @@
 from typing import List
 
 
-class SubscriptionSourceName(object):
+class SubscriptionSourceName:
     YOUTUBE = "youtube"
     SOUNDCLOUD = "soundcloud"
 

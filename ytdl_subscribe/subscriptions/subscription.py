@@ -43,7 +43,8 @@ class Subscription(object):
         # Separate each subscription's working directory
         self.WORKING_DIRECTORY += f"{'/' if self.WORKING_DIRECTORY else ''}{self.name}"
 
-        # Always set outtmpl to the id and extension. Will be renamed using the subscription's output_path value
+        # Always set outtmpl to the id and extension. Will be renamed using the subscription's
+        # output_path value
         self.ytdl_opts["outtmpl"] = self.WORKING_DIRECTORY + "/%(id)s.%(ext)s"
         self.ytdl_opts["writethumbnail"] = True
 

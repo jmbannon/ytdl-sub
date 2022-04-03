@@ -1,4 +1,5 @@
 import argparse
+import sys
 from typing import List
 
 ###################################################################################################
@@ -68,4 +69,4 @@ if __name__ == "__main__":
     if args.subparser == "dl":
         print("Interactive download is not supported yet. Stay tuned!")
 
-    exit(0)
+    sys.exit(0)

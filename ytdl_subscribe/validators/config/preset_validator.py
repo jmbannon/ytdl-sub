@@ -27,7 +27,7 @@ class PresetValidator(StrictDictValidator):
         self.subscription_source: Optional[SourceValidator] = None
         self.subscription_source_name: Optional[str] = None
 
-        for key, val in self.dict.items():
+        for key in self.keys:
             if key in SubscriptionSourceName.all() and self.subscription_source:
                 raise ValidationException(
                     f"'{self.name}' can only have one of the following sources: {SubscriptionSourceName.pretty_all()}"

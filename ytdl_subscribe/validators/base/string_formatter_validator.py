@@ -32,7 +32,8 @@ class StringFormatterValidator(StringValidator):
 
         if open_bracket_count != close_bracket_count:
             raise self._validation_exception(
-                error_message="Brackets are reserved for {variable_names} and should contain a single open and close bracket."
+                "Brackets are reserved for {variable_names} and should contain "
+                "a single open and close bracket."
             )
 
         format_variables: List[str] = list(
@@ -59,4 +60,9 @@ class StringFormatterValidator(StringValidator):
 
     @property
     def format_string(self) -> str:
+        """
+        Returns
+        -------
+        The literal format string, unformatted.
+        """
         return self._value

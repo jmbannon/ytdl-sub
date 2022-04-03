@@ -95,7 +95,8 @@ T = TypeVar("T", bound=Validator)
 
 class DictValidator(Validator):
     """
-    Validates dictionary-based fields. Errors to them as 'object's since this could be validating a yaml.
+    Validates dictionary-based fields. Errors to them as 'object's since this could be validating
+    a yaml.
     """
 
     expected_value_type = dict

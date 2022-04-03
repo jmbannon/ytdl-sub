@@ -16,7 +16,7 @@ class SourceValidator(StrictDictValidator):
     required_keys = {"download_strategy"}
 
     # Extra fields will be strict-validated using other StictDictValidators
-    allow_extra_fields = True
+    allow_extra_keys = True
 
     download_strategy_validator_mapping: Dict[str, Type[DownloadStrategyValidator]] = {}
 
