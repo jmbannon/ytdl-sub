@@ -1,4 +1,5 @@
 from typing import Any
+from typing import List
 from typing import Optional
 from typing import Type
 from typing import TypeVar
@@ -7,18 +8,20 @@ from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 class Validator:
+    """
+    Abstract class used to validate any kind of field. Will ensure the value is the specified type.
+    """
+
     # The python type that value should be
     expected_value_type: Type = object
 
     # When raising an error, call the type this value instead of its python name
     expected_value_type_name: Optional[str] = None
 
-    def __validate_value(self):
-        """
-        Returns
-        -------
-        Validation exception to raise when the value's type is not the expected type
-        """
+    def __init__(self, name: str, value: Any):
+        self.name = name
+        self._value = value
+
         if not isinstance(self._value, self.expected_value_type):
             expected_value_type_name = self.expected_value_type_name or str(
                 self.expected_value_type
@@ -27,36 +30,63 @@ class Validator:
                 error_message=f"should be of type {expected_value_type_name}."
             )
 
-    def __init__(self, name: str, value: Any):
-        self.name = name
-        self._value = value
-
-        self.__validate_value()
-
     @property
     def value(self) -> object:
+        """
+        Returns
+        -------
+        Value of the validator
+        """
         return self._value
 
-    def _validation_exception(self, error_message: str):
+    def _validation_exception(self, error_message: str) -> ValidationException:
+        """
+        Parameters
+        ----------
+        error_message
+            Error message to include in the ValidationException
+
+        Returns
+        -------
+        Validation exception with a consistent prefix.
+        """
         prefix = f"Validation error in {self.name}: "
         return ValidationException(f"{prefix}{error_message}")
 
 
 class BoolValidator(Validator):
+    """
+    Validates boolean fields.
+    """
+
     expected_value_type: Type = bool
     expected_value_type_name = "boolean"
 
     @property
     def value(self) -> bool:
+        """
+        Returns
+        -------
+        Boolean value
+        """
         return self._value
 
 
 class StringValidator(Validator):
+    """
+    Validates string fields.
+    """
+
     expected_value_type: Type = str
     expected_value_type_name = "string"
 
     @property
     def value(self) -> str:
+        """
+        Returns
+        -------
+        String value
+        """
         return self._value
 
 
@@ -64,24 +94,49 @@ T = TypeVar("T", bound=Validator)
 
 
 class DictValidator(Validator):
+    """
+    Validates dictionary-based fields. Errors to them as 'object's since this could be validating a yaml.
+    """
+
     expected_value_type = dict
-    expected_value_type_name = "object"  # for non-python users
+    expected_value_type_name = "object"
 
     @property
     def dict(self) -> dict:
+        """
+        Returns
+        -------
+        Dictionary value
+        """
         return self._value
 
     @property
-    def keys(self):
+    def keys(self) -> List[str]:
+        """
+        Returns
+        -------
+        Sorted list of dictionary keys
+        """
         return sorted(list(self.dict.keys()))
-
-    def get(self, key: str, default: Optional[Any] = None) -> Any:
-        return self.dict.get(key, default)
 
     def validate_key(
         self, key: str, validator: Type[T], default: Optional[Any] = None
     ) -> T:
-        value = self.get(key=key, default=default)
+        """
+        Parameters
+        ----------
+        key
+            Name of they key in the dict to validate
+        validator
+            The validator to use for the key's value
+        default
+            If the key's value is None, use this as the default
+
+        Returns
+        -------
+        An instance of the specified validator
+        """
+        value = self.dict.get(key, default)
         if value is None:
             raise self._validation_exception(
                 f"{key} is missing when it should be present."
@@ -89,5 +144,5 @@ class DictValidator(Validator):
 
         return validator(
             name=f"{self.name}.{key}",
-            value=self.get(key=key, default=default),
+            value=value,
         )

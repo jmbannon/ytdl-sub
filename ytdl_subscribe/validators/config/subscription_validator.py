@@ -67,11 +67,11 @@ class SubscriptionValidator(StrictDictValidator):
 
         return subscription_class(
             name=self.name,
-            options=self.preset.get(self.preset.subscription_source_name),
-            ytdl_opts=self.preset.get("ytdl_options"),
-            post_process=self.preset.get("post_process"),
-            overrides=self.preset.get("overrides"),
-            output_path=self.preset.get("output_path"),
+            options=self.preset.dict.get(self.preset.subscription_source_name),
+            ytdl_opts=self.preset.dict.get("ytdl_options"),
+            post_process=self.preset.dict.get("post_process"),
+            overrides=self.preset.dict.get("overrides"),
+            output_path=self.preset.dict.get("output_path"),
         )
 
     @classmethod
