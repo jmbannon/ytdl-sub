@@ -1,8 +1,12 @@
 from typing import Any
 from typing import Optional
+from typing import Tuple
 
 from ytdl_subscribe.utils.enums import SubscriptionSourceName
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.config.output_options_validator import (
+    OutputOptionsValidator,
+)
 from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
     SoundcloudSourceValidator,
 )
@@ -14,40 +18,51 @@ from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 class PresetValidator(StrictDictValidator):
-    required_keys = {"post_process"}
+    required_keys = {"output_options, metadata_options"}
     optional_keys = {
         "ytdl_options",
-        "output_path",
         "overrides",
         *SubscriptionSourceName.all(),
     }
 
-    def __init__(self, name: str, value: Any):
-        super().__init__(name=name, value=value)
-        self.subscription_source: Optional[SourceValidator] = None
-        self.subscription_source_name: Optional[str] = None
+    def __validate_and_get_subscription_source(self) -> Tuple[str, SourceValidator]:
+        subscription_source: Optional[SourceValidator] = None
+        subscription_source_name: Optional[str] = None
 
         for key in self.keys:
-            if key in SubscriptionSourceName.all() and self.subscription_source:
+            if key in SubscriptionSourceName.all() and subscription_source:
                 raise ValidationException(
                     f"'{self.name}' can only have one of the following sources: {SubscriptionSourceName.pretty_all()}"
                 )
 
             if key == SubscriptionSourceName.SOUNDCLOUD:
-                self.subscription_source_name = SubscriptionSourceName.SOUNDCLOUD
-                self.subscription_source = self.validate_key(
+                subscription_source_name = SubscriptionSourceName.SOUNDCLOUD
+                subscription_source = self.validate_key(
                     key=key,
                     validator=SoundcloudSourceValidator,
                 )
             elif key == SubscriptionSourceName.YOUTUBE:
-                self.subscription_source_name = SubscriptionSourceName.YOUTUBE
-                self.subscription_source = self.validate_key(
+                subscription_source_name = SubscriptionSourceName.YOUTUBE
+                subscription_source = self.validate_key(
                     key=key,
                     validator=YoutubeSourceValidator,
                 )
 
         # If subscription source was not set, error
-        if not self.subscription_source:
+        if not subscription_source:
             raise ValidationException(
                 f"'{self.name} must have one of the following sources: {SubscriptionSourceName.pretty_all()}"
             )
+
+        return subscription_source_name, subscription_source
+
+    def __init__(self, name: str, value: Any):
+        super().__init__(name=name, value=value)
+        (
+            self.subscription_source_name,
+            self.subscription_source,
+        ) = self.__validate_and_get_subscription_source()
+        self.output_options = self.validate_key(
+            key="output_options",
+            validator=OutputOptionsValidator,
+        )

@@ -17,19 +17,25 @@ class StrictDictValidator(DictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        if len(self.required_keys) == 0:
+        if len(self.allowed_keys) == 0:
             raise ValueError(
-                "No required fields when using a StrictDictValidator. "
+                "No required or optional keys defined when using a StrictDictValidator. "
                 "Should be using DictValidator instead."
             )
 
         # Ensure all required keys are present
         for required_key in self.required_keys:
             if required_key not in self.value:
-                error_msg = (
-                    f"'{self.name}' is missing the required field '{required_key}'"
+                raise self._validation_exception(
+                    f"missing the required field '{required_key}'"
                 )
-                raise ValidationException(error_msg)
+
+        # Ensure an empty dict was not passed as the value
+        if not self.dict:
+            raise self._validation_exception(
+                f"at least one of the following fields must be defined: "
+                f"{', '.join(self.optional_keys)}'"
+            )
 
         # Ensure all keys are either required or optional keys if no extra field are allowed
         if not self.allow_extra_keys:

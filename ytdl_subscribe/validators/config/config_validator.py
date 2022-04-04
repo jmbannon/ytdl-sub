@@ -16,9 +16,12 @@ class ConfigValidator(StrictDictValidator):
         self.presets = self.validate_key("presets", DictValidator)
 
     @classmethod
+    def from_dict(cls, config_dict) -> "ConfigValidator":
+        return ConfigValidator(name="config", value=config_dict)
+
+    @classmethod
     def from_file_path(cls, config_path) -> "ConfigValidator":
         # TODO: Create separate yaml file loader class
         with open(config_path, "r", encoding="utf-8") as file:
             config_dict = yaml.safe_load(file)
-
-        return ConfigValidator(name="config", value=config_dict)
+        return ConfigValidator.from_dict(config_dict)
