@@ -78,9 +78,18 @@ class Entry:
         """Returns the entry's file name when downloaded locally"""
         return f"{self.uid}.{self.ext}"
 
+    @property
+    def download_thumbnail_name(self) -> str:
+        """Returns the thumbnail's file name when downloaded locally TODO: unit test this"""
+        return f"{self.uid}.{self.thumbnail_ext}"
+
     def file_path(self, relative_directory: str):
         """Returns the entry's file path with respect to the relative directory"""
         return str(Path(relative_directory) / self.download_file_name)
+
+    def thumbnail_path(self, relative_directory: str):
+        """Returns the entry's thumbnail path with respect to the relative directory"""
+        return str(Path(relative_directory) / self.download_thumbnail_name)
 
     def to_dict(self) -> Dict:
         """Returns the entry's values as a dictionary"""

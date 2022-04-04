@@ -4,7 +4,9 @@ from typing import List
 import yaml
 from mergedeep import mergedeep
 
-from ytdl_subscribe.subscriptions.soundcloud import SoundcloudSubscription
+from ytdl_subscribe.subscriptions.soundcloud import (
+    SoundcloudAlbumsAndSinglesSubscription,
+)
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
 from ytdl_subscribe.utils.enums import SubscriptionSourceName
@@ -12,7 +14,14 @@ from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValid
 from ytdl_subscribe.validators.base.validators import DictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.config_validator import ConfigValidator
+from ytdl_subscribe.validators.config.preset_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
+from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
+    SoundcloudSourceValidator,
+)
+from ytdl_subscribe.validators.config.sources.youtube_validators import (
+    YoutubePlaylistDownloadValidator,
+)
 
 
 class SubscriptionValidator(StrictDictValidator):
@@ -26,9 +35,11 @@ class SubscriptionValidator(StrictDictValidator):
     def __init__(self, config: ConfigValidator, name: str, value: Any):
         super().__init__(name, value)
         self.config = config
-        self.overrides = self.validate_key(
+
+        # Ensure the overrides defined here are valid
+        _ = self.validate_key(
             key="overrides",
-            validator=DictValidator,
+            validator=OverridesValidator,
             default={},
         )
 
@@ -58,20 +69,27 @@ class SubscriptionValidator(StrictDictValidator):
         )
 
     def to_subscription(self) -> Subscription:
-        if self.preset.subscription_source_name == SubscriptionSourceName.SOUNDCLOUD:
-            subscription_class = SoundcloudSubscription
-        elif self.preset.subscription_source_name == SubscriptionSourceName.YOUTUBE:
+        if isinstance(
+            self.preset.subscription_source.download_strategy,
+            SoundcloudAlbumsAndSinglesSubscription,
+        ):
+            subscription_class = SoundcloudAlbumsAndSinglesSubscription
+        elif isinstance(
+            self.preset.subscription_source.download_strategy,
+            YoutubePlaylistDownloadValidator,
+        ):
             subscription_class = YoutubeSubscription
         else:
             raise ValueError("subscription source class not found")
 
         return subscription_class(
             name=self.name,
-            options=self.preset.dict.get(self.preset.subscription_source_name),
-            ytdl_opts=self.preset.dict.get("ytdl_options"),
-            post_process=self.preset.dict.get("post_process"),
-            overrides=self.preset.dict.get("overrides"),
-            output_path=self.preset.dict.get("output_path"),
+            config_options=self.config,
+            source_options=self.preset.subscription_source,
+            output_options=self.preset.output_options,
+            metadata_options=self.preset.metadata_options,
+            ytdl_options=self.preset.ytdl_options,
+            overrides=self.preset.overrides,
         )
 
     @classmethod

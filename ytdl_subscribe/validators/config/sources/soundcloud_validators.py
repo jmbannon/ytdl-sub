@@ -11,9 +11,7 @@ class SoundcloudAlbumsAndSinglesDownloadValidator(DownloadStrategyValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.username = self.validate_key(
-            key="username", validator=StringValidator
-        ).value
+        self.username = self.validate_key(key="username", validator=StringValidator)
 
 
 class SoundcloudSourceValidator(SourceValidator):
@@ -27,4 +25,4 @@ class SoundcloudSourceValidator(SourceValidator):
         super().__init__(name=name, value=value)
         self.skip_premiere_tracks = self.validate_key(
             "skip_premiere_tracks", BoolValidator, default=True
-        ).value
+        )

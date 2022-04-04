@@ -1,99 +1,115 @@
 import os
-from copy import deepcopy
 from shutil import copyfile
+from typing import Type
+from typing import TypeVar
 
 import dicttoxml
 import music_tag
 from PIL import Image
-from sanitize_filename import sanitize
 
 from ytdl_subscribe.entries.entry import Entry
+from ytdl_subscribe.validators.config.config_validator import ConfigValidator
+from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
+    MetadataOptionsValidator,
+)
+from ytdl_subscribe.validators.config.output_options.output_options_validator import (
+    OutputOptionsValidator,
+)
+from ytdl_subscribe.validators.config.preset_validator import OverridesValidator
+from ytdl_subscribe.validators.config.preset_validator import YTDLOptionsValidator
+from ytdl_subscribe.validators.config.sources.source_validator import (
+    DownloadStrategyValidator,
+)
+from ytdl_subscribe.validators.config.sources.source_validator import SourceValidator
+
+SOURCE_T = TypeVar("SOURCE_T", bound=SourceValidator)
+DOWNLOAD_STRATEGY_T = TypeVar("DOWNLOAD_STRATEGY_T", bound=DownloadStrategyValidator)
 
 
 class Subscription(object):
-    WORKING_DIRECTORY = ""
+    source_validator_type: Type[SOURCE_T]
+    download_strategy_type: Type[DOWNLOAD_STRATEGY_T]
 
-    def __init__(self, name, options, ytdl_opts, post_process, overrides, output_path):
+    def __init__(
+        self,
+        name: str,
+        config_options: ConfigValidator,
+        source_options: SourceValidator,
+        output_options: OutputOptionsValidator,
+        metadata_options: MetadataOptionsValidator,
+        ytdl_options: YTDLOptionsValidator,
+        overrides: OverridesValidator,
+    ):
         """
         Parameters
         ----------
         name: str
             Name of the subscription
-        options: dict
-            Dictionary of ytdl options, specific to the source type
-        ytdl_opts: dict
-            Dictionary of options passed directly to ytdl.
-            See `youtube_dl.YoutubeDL.YoutubeDL` for options.
-        post_process: dict
-            Dictionary of ytdl-subscribe post processing options
-        overrides: dict
-            Dictionary that overrides every ytdl entry. Be careful what you override!
-        output_path: str
-            Base path to save files to
+        config_options: ConfigValidator
+        source_options: SourceValidator
+        output_options: OutputOptionsValidator
+        metadata_options: MetadataOptionsValidator
+        ytdl_options: YTDLOptionsValidator
+        overrides: OverridesValidator
         """
         self.name = name
-        self.options = options
-        self.ytdl_opts = ytdl_opts or dict()
-        self.post_process = post_process
+        self.config_options = config_options
+
+        self.__source_options = source_options
+        self.__download_strategy_options = source_options.download_strategy
+
+        if not isinstance(self.__source_options, self.source_validator_type):
+            raise ValueError("Source options does not match the expected type")
+
+        if not isinstance(
+            self.__download_strategy_options, self.download_strategy_type
+        ):
+            raise ValueError("Download strategy does not match the expected type")
+
+        self.output_options = output_options
+        self.metadata_options = metadata_options
+        self.ytdl_options = ytdl_options
         self.overrides = overrides
-        for k, v in deepcopy(overrides).items():
-            self.overrides[f"sanitized_{k}"] = sanitize(v)
-        self.output_path = output_path
 
-        # Separate each subscription's working directory
-        self.WORKING_DIRECTORY += f"{'/' if self.WORKING_DIRECTORY else ''}{self.name}"
+    @property
+    def source_options(self) -> SOURCE_T:
+        return self.__source_options
 
-        # Always set outtmpl to the id and extension. Will be renamed using the subscription's
-        # output_path value
-        self.ytdl_opts["outtmpl"] = self.WORKING_DIRECTORY + "/%(id)s.%(ext)s"
-        self.ytdl_opts["writethumbnail"] = True
-
-    def format_filepath(self, filepath_formatter: str, entry: Entry, makedirs=False):
-        """
-        Convert a filepath value in the config to an actual filepath.
-
-        Parameters
-        ----------
-        filepath_formatter: str
-            File path relative to the specified output path
-        entry: Entry
-            Entry used to populate any format variables in the filepath
-        makedirs: bool
-            Whether to create all directories in the final filepath.
-
-        Returns
-        -------
-        str
-            Full filepath.
-        """
-        file_name = entry.apply_formatter(filepath_formatter, overrides=self.overrides)
-        output_file_path = f"{self.output_path}/{file_name}"
-        if makedirs:
-            os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-
-        return output_file_path
+    @property
+    def download_strategy_options(self) -> DOWNLOAD_STRATEGY_T:
+        return self.__download_strategy_options
 
     def _post_process_tagging(self, entry: Entry):
+        id3_options = self.metadata_options.id3
         t = music_tag.load_file(
-            entry.file_path(relative_directory=self.WORKING_DIRECTORY)
+            entry.file_path(
+                relative_directory=self.config_options.working_directory.value
+            )
         )
-        for tag, tag_formatter in self.post_process["tagging"].items():
-            t[tag] = entry.apply_formatter(tag_formatter, overrides=self.overrides)
+        for tag, tag_formatter in id3_options.tags.dict.items():
+            t[tag] = entry.apply_formatter(
+                format_string=tag_formatter, overrides=self.overrides.dict
+            )
         t.save()
 
     def _post_process_nfo(self, entry):
         nfo = {}
-        for tag, tag_formatter in self.post_process["nfo"].items():
-            nfo[tag] = entry.apply_formatter(tag_formatter, overrides=self.overrides)
+        nfo_options = self.metadata_options.nfo
+
+        for tag, tag_formatter in nfo_options.tags.dict.items():
+            nfo[tag] = entry.apply_formatter(
+                format_string=tag_formatter, overrides=self.overrides
+            )
 
         xml = dicttoxml.dicttoxml(
             obj=nfo,
-            root="nfo_root" in self.post_process,
-            custom_root=self.post_process.get("nfo_root"),
+            root=True,  # We assume all NFOs have a root. Maybe we should not?
+            custom_root=nfo_options.nfo_root.value,
             attr_type=False,
         )
-        nfo_file_path = self.format_filepath(
-            self.post_process["nfo_name"], entry, makedirs=True
+        nfo_file_path = entry.apply_formatter(
+            format_string=nfo_options.nfo_name.format_string,
+            overrides=self.overrides.dict,
         )
         with open(nfo_file_path, "wb") as f:
             f.write(xml)
@@ -105,37 +121,46 @@ class Subscription(object):
         raise NotImplemented("Each source needs to implement how it extracts info")
 
     def post_process_entry(self, entry: Entry):
-        if "tagging" in self.post_process:
+        if self.metadata_options.id3:
             self._post_process_tagging(entry)
 
         # Move the file after all direct file modifications are complete
-        output_file_path = self.format_filepath(
-            self.post_process["file_name"], entry, makedirs=True
+        entry_source_file_path = entry.file_path(
+            relative_directory=self.config_options.working_directory.value
         )
-        copyfile(
-            entry.file_path(relative_directory=self.WORKING_DIRECTORY), output_file_path
+
+        entry_destination_file_path = entry.apply_formatter(
+            format_string=self.output_options.file_name.format_string,
+            overrides=self.overrides.dict,
         )
+
+        os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
+        copyfile(entry_source_file_path, entry_destination_file_path)
 
         # Download the thumbnail if its present
-        if "thumbnail_name" in self.post_process:
-            thumbnail_dest_path = self.format_filepath(
-                self.post_process["thumbnail_name"],
-                entry,
-                makedirs=True,
+        if self.output_options.thumbnail_name:
+            thumbnail_source_path = entry.thumbnail_path(
+                relative_directory=self.config_options.working_directory.value
             )
-            if not os.path.isfile(thumbnail_dest_path):
-                thumbnail_file_path = (
-                    f"{self.WORKING_DIRECTORY}/{entry.uid}.{entry.thumbnail_ext}"
+
+            thumbnail_destination_path = entry.apply_formatter(
+                format_string=self.output_options.thumbnail_name.format_string,
+                overrides=self.overrides.dict,
+            )
+
+            os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
+
+            # If the thumbnail is to be converted, then save the converted thumbnail to the
+            # output filepath
+            if self.output_options.convert_thumbnail:
+                im = Image.open(thumbnail_source_path).convert("RGB")
+                im.save(
+                    fp=thumbnail_destination_path,
+                    format=self.output_options.convert_thumbnail.value,
                 )
-                if os.path.isfile(thumbnail_file_path):
-                    copyfile(thumbnail_file_path, thumbnail_dest_path)
+            # Otherwise, just copy the downloaded thumbnail
+            else:
+                copyfile(thumbnail_source_path, thumbnail_destination_path)
 
-                if "convert_thumbnail" in self.post_process:
-                    # TODO: Clean with yaml definitions
-                    if self.post_process["convert_thumbnail"] == "jpg":
-                        self.post_process["convert_thumbnail"] = "jpeg"
-                    im = Image.open(thumbnail_dest_path).convert("RGB")
-                    im.save(thumbnail_dest_path, self.post_process["convert_thumbnail"])
-
-        if "nfo" in self.post_process:
+        if self.metadata_options.nfo:
             self._post_process_nfo(entry)
