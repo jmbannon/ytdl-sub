@@ -99,7 +99,7 @@ class Subscription(object):
 
         for tag, tag_formatter in nfo_options.tags.dict.items():
             nfo[tag] = entry.apply_formatter(
-                format_string=tag_formatter, overrides=self.overrides
+                format_string=tag_formatter, overrides=self.overrides.dict
             )
 
         xml = dicttoxml.dicttoxml(
@@ -162,12 +162,12 @@ class Subscription(object):
             if self.output_options.convert_thumbnail:
                 im = Image.open(source_thumbnail_path).convert("RGB")
                 im.save(
-                    fp=output_thumbnail_name,
+                    fp=output_thumbnail_path,
                     format=self.output_options.convert_thumbnail.value,
                 )
             # Otherwise, just copy the downloaded thumbnail
             else:
-                copyfile(source_thumbnail_path, output_thumbnail_name)
+                copyfile(source_thumbnail_path, output_thumbnail_path)
 
         if self.metadata_options.nfo:
             self._post_process_nfo(entry)

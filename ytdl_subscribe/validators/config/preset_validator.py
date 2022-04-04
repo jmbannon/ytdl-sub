@@ -1,13 +1,13 @@
 import copy
 from typing import Any
 from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Type
 
 import sanitize_filename
 
-from ytdl_subscribe.utils.enums import SubscriptionSourceName
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.string_formatter_validator import (
     DictFormatterValidator,
@@ -47,27 +47,32 @@ class OverridesValidator(DictFormatterValidator):
 
 
 class PresetValidator(StrictDictValidator):
+    subscription_source_validator_mapping: Dict[str, Type[SourceValidator]] = {
+        "soundcloud": SoundcloudSourceValidator,
+        "youtube": YoutubeSourceValidator,
+    }
+
     required_keys = {"output_options"}
     optional_keys = {
         "metadata_options",
         "ytdl_options",
         "overrides",
-        *SubscriptionSourceName.all(),
+        *subscription_source_validator_mapping.keys(),
     }
 
-    subscription_source_validator_mapping: Dict[str, Type[SourceValidator]] = {
-        SubscriptionSourceName.SOUNDCLOUD: SoundcloudSourceValidator,
-        SubscriptionSourceName.YOUTUBE: YoutubeSourceValidator,
-    }
+    @property
+    def available_sources(self) -> List[str]:
+        return sorted(list(self.subscription_source_validator_mapping.keys()))
 
     def __validate_and_get_subscription_source(self) -> Tuple[str, SourceValidator]:
         subscription_source: Optional[SourceValidator] = None
         subscription_source_name: Optional[str] = None
 
         for key in self.keys:
-            if key in SubscriptionSourceName.all() and subscription_source:
+            if key in self.available_sources and subscription_source:
                 raise ValidationException(
-                    f"'{self.name}' can only have one of the following sources: {SubscriptionSourceName.pretty_all()}"
+                    f"'{self.name}' can only have one of the following sources: "
+                    f"{', '.join(self.available_sources)}"
                 )
 
             if key in self.subscription_source_validator_mapping:
@@ -79,7 +84,8 @@ class PresetValidator(StrictDictValidator):
         # If subscription source was not set, error
         if not subscription_source:
             raise ValidationException(
-                f"'{self.name} must have one of the following sources: {SubscriptionSourceName.pretty_all()}"
+                f"'{self.name} must have one of the following sources: "
+                f"{', '.join(self.available_sources)}"
             )
 
         return subscription_source_name, subscription_source
