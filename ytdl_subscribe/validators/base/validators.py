@@ -9,10 +9,12 @@ from ytdl_subscribe.validators.exceptions import ValidationException
 
 class Validator:
     """
-    Abstract class used to validate any kind of field. Will ensure the value is the specified type.
+    Used to validate the value of a python object. This is the 'base' class that will first
+    check that the value's type matches the expected type. Validators that inherit from this should
+    perform their validation within the __init__.
     """
 
-    # The python type that value should be
+    # If the value is not this expected type, error
     expected_value_type: Type = object
 
     # When raising an error, call the type this value instead of its python name

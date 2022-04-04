@@ -10,7 +10,6 @@ class StringFormatterValidator(StringValidator):
     Ensures user-created formatter strings are valid
     """
 
-    expected_value_type = str
     expected_value_type_name = "format string"
 
     FIELDS_VALIDATOR = re.compile(r"{([a-z_]+?)}")
