@@ -132,7 +132,7 @@ class Subscription(object):
 
         output_directory = entry.apply_formatter(
             format_string=self.output_options.output_directory.format_string,
-            overrides=self.overrides.dict
+            overrides=self.overrides.dict,
         )
         output_file_name = entry.apply_formatter(
             format_string=self.output_options.file_name.format_string,
