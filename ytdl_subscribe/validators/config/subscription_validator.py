@@ -27,8 +27,10 @@ class SubscriptionValidator(StrictDictValidator):
     A Subscription is a preset but overrides it with specific values
     """
 
-    required_keys = {"preset"}
-    optional_keys = PresetValidator.required_keys.union(PresetValidator.optional_keys)
+    _required_keys = {"preset"}
+    _optional_keys = PresetValidator._required_keys.union(
+        PresetValidator._optional_keys
+    )
 
     def __init__(self, config: ConfigValidator, name: str, value: Any):
         super().__init__(name, value)

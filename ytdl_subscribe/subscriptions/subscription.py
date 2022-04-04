@@ -108,9 +108,13 @@ class Subscription(object):
             custom_root=nfo_options.nfo_root.value,
             attr_type=False,
         )
-        nfo_file_path = entry.apply_formatter(
+
+        nfo_file_name = entry.apply_formatter(
             format_string=nfo_options.nfo_name.format_string,
             overrides=self.overrides.dict,
+        )
+        nfo_file_path = Path(self.output_options.output_directory.value) / Path(
+            nfo_file_name
         )
         with open(nfo_file_path, "wb") as f:
             f.write(xml)

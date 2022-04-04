@@ -11,12 +11,12 @@ class StringSelectValidator(StringValidator):
     Ensures strings have selected one of the discrete allowed values.
     """
 
-    select_values: Set[str] = set()
+    _select_values: Set[str] = set()
 
     def __init__(self, name, value: str):
         super().__init__(name=name, value=value)
 
-        if self.value not in self.select_values:
+        if self.value not in self._select_values:
             raise self._validation_exception(
-                f"Must be one of the following values: {', '.join(self.select_values)}"
+                f"Must be one of the following values: {', '.join(self._select_values)}"
             )

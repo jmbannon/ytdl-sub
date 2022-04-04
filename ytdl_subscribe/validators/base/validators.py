@@ -15,18 +15,18 @@ class Validator:
     """
 
     # If the value is not this expected type, error
-    expected_value_type: Type = object
+    _expected_value_type: Type = object
 
     # When raising an error, call the type this value instead of its python name
-    expected_value_type_name: Optional[str] = None
+    _expected_value_type_name: Optional[str] = None
 
     def __init__(self, name: str, value: Any):
         self.name = name
         self._value = value
 
-        if not isinstance(self._value, self.expected_value_type):
-            expected_value_type_name = self.expected_value_type_name or str(
-                self.expected_value_type
+        if not isinstance(self._value, self._expected_value_type):
+            expected_value_type_name = self._expected_value_type_name or str(
+                self._expected_value_type
             )
             raise self._validation_exception(
                 error_message=f"should be of type {expected_value_type_name}."
@@ -61,8 +61,8 @@ class BoolValidator(Validator):
     Validates boolean fields.
     """
 
-    expected_value_type: Type = bool
-    expected_value_type_name = "boolean"
+    _expected_value_type: Type = bool
+    _expected_value_type_name = "boolean"
 
     @property
     def value(self) -> bool:
@@ -79,8 +79,8 @@ class StringValidator(Validator):
     Validates string fields.
     """
 
-    expected_value_type: Type = str
-    expected_value_type_name = "string"
+    _expected_value_type: Type = str
+    _expected_value_type_name = "string"
 
     @property
     def value(self) -> str:
@@ -101,8 +101,8 @@ class DictValidator(Validator):
     a yaml.
     """
 
-    expected_value_type = dict
-    expected_value_type_name = "object"
+    _expected_value_type = dict
+    _expected_value_type_name = "object"
 
     @property
     def dict(self) -> dict:

@@ -47,22 +47,22 @@ class OverridesValidator(DictFormatterValidator):
 
 
 class PresetValidator(StrictDictValidator):
-    subscription_source_validator_mapping: Dict[str, Type[SourceValidator]] = {
+    _subscription_source_validator_mapping: Dict[str, Type[SourceValidator]] = {
         "soundcloud": SoundcloudSourceValidator,
         "youtube": YoutubeSourceValidator,
     }
 
-    required_keys = {"output_options"}
-    optional_keys = {
+    _required_keys = {"output_options"}
+    _optional_keys = {
         "metadata_options",
         "ytdl_options",
         "overrides",
-        *subscription_source_validator_mapping.keys(),
+        *_subscription_source_validator_mapping.keys(),
     }
 
     @property
     def available_sources(self) -> List[str]:
-        return sorted(list(self.subscription_source_validator_mapping.keys()))
+        return sorted(list(self._subscription_source_validator_mapping.keys()))
 
     def __validate_and_get_subscription_source(self) -> Tuple[str, SourceValidator]:
         subscription_source: Optional[SourceValidator] = None
@@ -75,10 +75,10 @@ class PresetValidator(StrictDictValidator):
                     f"{', '.join(self.available_sources)}"
                 )
 
-            if key in self.subscription_source_validator_mapping:
+            if key in self._subscription_source_validator_mapping:
                 subscription_source_name = key
                 subscription_source = self.validate_key(
-                    key=key, validator=self.subscription_source_validator_mapping[key]
+                    key=key, validator=self._subscription_source_validator_mapping[key]
                 )
 
         # If subscription source was not set, error

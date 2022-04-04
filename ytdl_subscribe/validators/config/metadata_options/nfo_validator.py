@@ -5,12 +5,10 @@ from ytdl_subscribe.validators.base.string_formatter_validator import (
 from ytdl_subscribe.validators.base.string_formatter_validator import (
     StringFormatterValidator,
 )
-from ytdl_subscribe.validators.base.string_select_validator import StringSelectValidator
-from ytdl_subscribe.validators.base.validators import StringValidator
 
 
 class NFOValidator(StrictDictValidator):
-    required_keys = {"nfo_name", "nfo_root", "tags"}
+    _required_keys = {"nfo_name", "nfo_root", "tags"}
 
     def __init__(self, name, value):
         super().__init__(name, value)

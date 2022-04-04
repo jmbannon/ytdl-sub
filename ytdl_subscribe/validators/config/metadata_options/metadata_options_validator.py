@@ -1,15 +1,10 @@
-from typing import Optional
-
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.string_formatter_validator import (
-    StringFormatterValidator,
-)
 from ytdl_subscribe.validators.config.metadata_options.id3_validator import Id3Validator
 from ytdl_subscribe.validators.config.metadata_options.nfo_validator import NFOValidator
 
 
 class MetadataOptionsValidator(StrictDictValidator):
-    optional_keys = {"id3", "nfo"}
+    _optional_keys = {"id3", "nfo"}
 
     def __init__(self, name, value):
         super().__init__(name, value)

@@ -13,10 +13,10 @@ class DownloadStrategyValidator(StrictDictValidator):
 
 class SourceValidator(StrictDictValidator):
     # All media sources must define a download strategy
-    required_keys = {"download_strategy"}
+    _required_keys = {"download_strategy"}
 
     # Extra fields will be strict-validated using other StictDictValidators
-    allow_extra_keys = True
+    _allow_extra_keys = True
 
     download_strategy_validator_mapping: Dict[str, Type[DownloadStrategyValidator]] = {}
 
@@ -34,7 +34,7 @@ class SourceValidator(StrictDictValidator):
 
         # Remove all non-download strategy keys before passing the dict to the validator
         download_strategy_dict = copy.deepcopy(self.dict)
-        for key_to_delete in self.allowed_keys:
+        for key_to_delete in self._allowed_keys:
             del download_strategy_dict[key_to_delete]
 
         download_strategy_class = self.download_strategy_validator_mapping[

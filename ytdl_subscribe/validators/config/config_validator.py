@@ -8,7 +8,7 @@ from ytdl_subscribe.validators.base.validators import StringValidator
 
 
 class ConfigValidator(StrictDictValidator):
-    required_keys = {"working_directory", "presets"}
+    _required_keys = {"working_directory", "presets"}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)

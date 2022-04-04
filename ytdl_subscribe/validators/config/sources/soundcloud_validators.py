@@ -7,7 +7,7 @@ from ytdl_subscribe.validators.config.sources.source_validator import SourceVali
 
 
 class SoundcloudAlbumsAndSinglesDownloadValidator(DownloadStrategyValidator):
-    required_keys = {"username"}
+    _required_keys = {"username"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
@@ -15,7 +15,7 @@ class SoundcloudAlbumsAndSinglesDownloadValidator(DownloadStrategyValidator):
 
 
 class SoundcloudSourceValidator(SourceValidator):
-    optional_keys = {"skip_premiere_tracks"}
+    _optional_keys = {"skip_premiere_tracks"}
 
     download_strategy_validator_mapping = {
         "albums_and_singles": SoundcloudAlbumsAndSinglesDownloadValidator

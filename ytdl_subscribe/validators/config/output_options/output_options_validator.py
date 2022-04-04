@@ -8,12 +8,12 @@ from ytdl_subscribe.validators.base.string_select_validator import StringSelectV
 
 
 class ConvertThumbnailValidator(StringSelectValidator):
-    select_values = {"jpeg"}
+    _select_values = {"jpeg"}
 
 
 class OutputOptionsValidator(StrictDictValidator):
-    required_keys = {"output_directory", "file_name"}
-    optional_keys = {"convert_thumbnail", "thumbnail_name"}
+    _required_keys = {"output_directory", "file_name"}
+    _optional_keys = {"convert_thumbnail", "thumbnail_name"}
 
     def __init__(self, name, value):
         super().__init__(name, value)

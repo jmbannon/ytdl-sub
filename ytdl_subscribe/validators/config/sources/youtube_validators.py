@@ -8,7 +8,7 @@ from ytdl_subscribe.validators.config.sources.source_validator import SourceVali
 
 
 class YoutubePlaylistDownloadValidator(DownloadStrategyValidator):
-    required_keys = {"playlist_id"}
+    _required_keys = {"playlist_id"}
 
     def __init__(self, name, value):
         super().__init__(name, value)

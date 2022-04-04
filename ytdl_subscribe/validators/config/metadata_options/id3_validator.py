@@ -7,12 +7,12 @@ from ytdl_subscribe.validators.base.validators import StringValidator
 
 
 class Id3VersionValidator(StringSelectValidator):
-    select_values = {"2.3", "2.4"}
+    _select_values = {"2.3", "2.4"}
 
 
 class Id3Validator(StrictDictValidator):
-    required_keys = {"id3_version", "tags"}
-    optional_keys = {"multi_value_separator"}
+    _required_keys = {"id3_version", "tags"}
+    _optional_keys = {"multi_value_separator"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
