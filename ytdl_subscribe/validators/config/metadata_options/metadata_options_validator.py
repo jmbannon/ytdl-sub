@@ -4,7 +4,8 @@ from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValid
 from ytdl_subscribe.validators.base.string_formatter_validator import (
     StringFormatterValidator,
 )
-from ytdl_subscribe.validators.base.string_select_validator import StringSelectValidator
+from ytdl_subscribe.validators.config.metadata_options.id3_validator import Id3Validator
+from ytdl_subscribe.validators.config.metadata_options.nfo_validator import NFOValidator
 
 
 class MetadataOptionsValidator(StrictDictValidator):
@@ -13,6 +14,9 @@ class MetadataOptionsValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
+        self.id3 = self.validate_key_if_present(key="id3", validator=Id3Validator)
+        self.nfo = self.validate_key_if_present(key="nfo", validator=NFOValidator)
+
         self.output_directory: StringFormatterValidator = self.validate_key(
             key="output_directory", validator=StringFormatterValidator
         )
@@ -20,15 +24,3 @@ class MetadataOptionsValidator(StrictDictValidator):
         self.file_name: StringFormatterValidator = self.validate_key(
             key="file_name", validator=StringFormatterValidator
         )
-
-        self.convert_thumbnail: Optional[str] = None
-        if "convert_thumbnail" in self.dict:
-            self.convert_thumbnail = self.validate_key(
-                key="convert_thumbnail", validator=ConvertThumbnailValidator
-            ).value
-
-        self.thumbnail_name: Optional[StringFormatterValidator] = None
-        if "thumbnail_name" in self.dict:
-            self.thumbnail_name = self.validate_key(
-                key="thumbnail_name", validator=StringFormatterValidator
-            )

@@ -123,7 +123,10 @@ class DictValidator(Validator):
         return sorted(list(self.dict.keys()))
 
     def validate_key(
-        self, key: str, validator: Type[T], default: Optional[Any] = None
+        self,
+        key: str,
+        validator: Type[T],
+        default: Optional[Any] = None,
     ) -> T:
         """
         Parameters
@@ -149,3 +152,14 @@ class DictValidator(Validator):
             name=f"{self.name}.{key}",
             value=value,
         )
+
+    def validate_key_if_present(
+        self,
+        key: str,
+        validator: Type[T],
+        default: Optional[Any] = None,
+    ) -> Optional[T]:
+        if key not in self.dict:
+            return None
+
+        return self.validate_key(key=key, validator=validator, default=default)

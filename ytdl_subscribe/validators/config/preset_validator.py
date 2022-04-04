@@ -4,7 +4,14 @@ from typing import Tuple
 
 from ytdl_subscribe.utils.enums import SubscriptionSourceName
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.config.output_options_validator import (
+from ytdl_subscribe.validators.base.string_formatter_validator import (
+    DictFormatterValidator,
+)
+from ytdl_subscribe.validators.base.validators import DictValidator
+from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
+    MetadataOptionsValidator,
+)
+from ytdl_subscribe.validators.config.output_options.output_options_validator import (
     OutputOptionsValidator,
 )
 from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
@@ -62,7 +69,19 @@ class PresetValidator(StrictDictValidator):
             self.subscription_source_name,
             self.subscription_source,
         ) = self.__validate_and_get_subscription_source()
+
         self.output_options = self.validate_key(
             key="output_options",
             validator=OutputOptionsValidator,
+        )
+        self.metadata_options = self.validate_key(
+            key="metadata_options", validator=MetadataOptionsValidator
+        )
+
+        self.ytdl_options = self.validate_key_if_present(
+            key="ytdl_options", validator=DictValidator
+        )
+
+        self.overrides = self.validate_key_if_present(
+            key="overrides", validator=DictFormatterValidator
         )

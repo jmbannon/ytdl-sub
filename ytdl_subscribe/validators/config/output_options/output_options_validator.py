@@ -21,19 +21,13 @@ class OutputOptionsValidator(StrictDictValidator):
         self.output_directory: StringFormatterValidator = self.validate_key(
             key="output_directory", validator=StringFormatterValidator
         )
-
         self.file_name: StringFormatterValidator = self.validate_key(
             key="file_name", validator=StringFormatterValidator
         )
 
-        self.convert_thumbnail: Optional[str] = None
-        if "convert_thumbnail" in self.dict:
-            self.convert_thumbnail = self.validate_key(
-                key="convert_thumbnail", validator=ConvertThumbnailValidator
-            ).value
-
-        self.thumbnail_name: Optional[StringFormatterValidator] = None
-        if "thumbnail_name" in self.dict:
-            self.thumbnail_name = self.validate_key(
-                key="thumbnail_name", validator=StringFormatterValidator
-            )
+        self.convert_thumbnail = self.validate_key_if_present(
+            key="convert_thumbnail", validator=ConvertThumbnailValidator
+        )
+        self.thumbnail_name = self.validate_key_if_present(
+            key="thumbnail_name", validator=StringFormatterValidator
+        )

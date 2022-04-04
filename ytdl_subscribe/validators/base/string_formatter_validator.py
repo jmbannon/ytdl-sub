@@ -2,6 +2,7 @@ import re
 from keyword import iskeyword
 from typing import List
 
+from ytdl_subscribe.validators.base.validators import DictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 
 
@@ -65,3 +66,15 @@ class StringFormatterValidator(StringValidator):
         The literal format string, unformatted.
         """
         return self._value
+
+
+class DictFormatterValidator(DictValidator):
+    """
+    Validates a dictionary made up of key: string_formatters
+    """
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        for key in self.keys:
+            _ = self.validate_key(key=key, validator=StringFormatterValidator)
