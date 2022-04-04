@@ -17,7 +17,7 @@ from ytdl_subscribe.validators.config.config_validator import ConfigValidator
 from ytdl_subscribe.validators.config.preset_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
-    SoundcloudSourceValidator,
+    SoundcloudSourceValidator, SoundcloudAlbumsAndSinglesDownloadValidator,
 )
 from ytdl_subscribe.validators.config.sources.youtube_validators import (
     YoutubePlaylistDownloadValidator,
@@ -64,14 +64,14 @@ class SubscriptionValidator(StrictDictValidator):
         del preset_dict["preset"]
 
         self.preset = PresetValidator(
-            name=self.name,
+            name=f"{self.name}.{preset_name}",
             value=preset_dict,
         )
 
     def to_subscription(self) -> Subscription:
         if isinstance(
             self.preset.subscription_source.download_strategy,
-            SoundcloudAlbumsAndSinglesSubscription,
+            SoundcloudAlbumsAndSinglesDownloadValidator,
         ):
             subscription_class = SoundcloudAlbumsAndSinglesSubscription
         elif isinstance(

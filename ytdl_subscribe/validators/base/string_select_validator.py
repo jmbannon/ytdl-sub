@@ -13,8 +13,8 @@ class StringSelectValidator(StringValidator):
 
     select_values: Set[str] = set()
 
-    def __init__(self, name, format_string: str):
-        super().__init__(name=name, value=format_string)
+    def __init__(self, name, value: str):
+        super().__init__(name=name, value=value)
 
         if self.value not in self.select_values:
             raise self._validation_exception(

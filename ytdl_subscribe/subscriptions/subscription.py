@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from shutil import copyfile
 from typing import Type
 from typing import TypeVar
@@ -129,38 +130,44 @@ class Subscription(object):
             relative_directory=self.config_options.working_directory.value
         )
 
-        entry_destination_file_path = entry.apply_formatter(
+        output_directory = entry.apply_formatter(
+            format_string=self.output_options.output_directory.format_string,
+            overrides=self.overrides.dict
+        )
+        output_file_name = entry.apply_formatter(
             format_string=self.output_options.file_name.format_string,
             overrides=self.overrides.dict,
         )
+        entry_destination_file_path = Path(output_directory) / Path(output_file_name)
 
         os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
         copyfile(entry_source_file_path, entry_destination_file_path)
 
         # Download the thumbnail if its present
         if self.output_options.thumbnail_name:
-            thumbnail_source_path = entry.thumbnail_path(
+            source_thumbnail_path = entry.thumbnail_path(
                 relative_directory=self.config_options.working_directory.value
             )
 
-            thumbnail_destination_path = entry.apply_formatter(
+            output_thumbnail_name = entry.apply_formatter(
                 format_string=self.output_options.thumbnail_name.format_string,
                 overrides=self.overrides.dict,
             )
+            output_thumbnail_path = Path(output_directory) / Path(output_thumbnail_name)
 
-            os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
+            os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
 
             # If the thumbnail is to be converted, then save the converted thumbnail to the
             # output filepath
             if self.output_options.convert_thumbnail:
-                im = Image.open(thumbnail_source_path).convert("RGB")
+                im = Image.open(source_thumbnail_path).convert("RGB")
                 im.save(
-                    fp=thumbnail_destination_path,
+                    fp=output_thumbnail_name,
                     format=self.output_options.convert_thumbnail.value,
                 )
             # Otherwise, just copy the downloaded thumbnail
             else:
-                copyfile(thumbnail_source_path, thumbnail_destination_path)
+                copyfile(source_thumbnail_path, output_thumbnail_name)
 
         if self.metadata_options.nfo:
             self._post_process_nfo(entry)

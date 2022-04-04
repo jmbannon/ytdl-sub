@@ -38,7 +38,7 @@ class OverridesValidator(DictFormatterValidator):
     def dict(self) -> dict:
         """For overrides, create sanitized versions of each entry for convenience"""
         output_dict = copy.deepcopy(super().dict)
-        for key in self.keys:
+        for key in list(output_dict.keys()):
             output_dict[f"sanitized_{key}"] = sanitize_filename.sanitize(
                 output_dict[key]
             )
@@ -47,8 +47,9 @@ class OverridesValidator(DictFormatterValidator):
 
 
 class PresetValidator(StrictDictValidator):
-    required_keys = {"output_options, metadata_options"}
+    required_keys = {"output_options"}
     optional_keys = {
+        "metadata_options",
         "ytdl_options",
         "overrides",
         *SubscriptionSourceName.all(),

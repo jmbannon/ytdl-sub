@@ -16,11 +16,3 @@ class MetadataOptionsValidator(StrictDictValidator):
 
         self.id3 = self.validate_key_if_present(key="id3", validator=Id3Validator)
         self.nfo = self.validate_key_if_present(key="nfo", validator=NFOValidator)
-
-        self.output_directory: StringFormatterValidator = self.validate_key(
-            key="output_directory", validator=StringFormatterValidator
-        )
-
-        self.file_name: StringFormatterValidator = self.validate_key(
-            key="file_name", validator=StringFormatterValidator
-        )

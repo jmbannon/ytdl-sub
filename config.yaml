@@ -8,17 +8,21 @@ presets:
       skip_premiere_tracks: True
     ytdl_options:
       format: 'bestaudio[ext=mp3]'
-    post_process:
+    output_options:
       file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
-      thumbnail_name: "[{album_year}] {sanitized_album}/folder.{thumbnail_ext}"
-      tagging:
-        artist: "{artist}"
-        albumartist: "{artist}"
-        title: "{title}"
-        album: "{album}"
-        tracknumber: "{track_number}"
-        year: "{album_year}"
-        genre: "{genre}"
+      convert_thumbnail: "jpeg"
+      thumbnail_name: "[{album_year}] {sanitized_album}/folder.jpeg"
+    metadata_options:
+      id3:
+        id3_version: "2.4"
+        tags:
+          artist: "{artist}"
+          albumartist: "{artist}"
+          title: "{title}"
+          album: "{album}"
+          tracknumber: "{track_number}"
+          year: "{album_year}"
+          genre: "{genre}"
 
   music_videos:
     youtube:
@@ -26,14 +30,16 @@ presets:
     ytdl_options:
       format: 'best'
       ignoreerrors: True
-    post_process:
+    output_options:
       file_name: "{sanitized_artist} - {sanitized_title}.{ext}"
-      convert_thumbnail: "jpg"
-      thumbnail_name: "{sanitized_artist} - {sanitized_title}.jpg"
-      nfo_name: "{sanitized_artist} - {sanitized_title}.nfo"
-      nfo_root: "musicvideo"
+      convert_thumbnail: "jpeg"
+      thumbnail_name: "{sanitized_artist} - {sanitized_title}.jpeg"
+    metadata_options:
       nfo:
-        artist: "{artist}"
-        title: "{title}"
-        album: "Music Videos"
-        year: "{upload_year}"
+        nfo_name: "{sanitized_artist} - {sanitized_title}.nfo"
+        nfo_root: "musicvideo"
+        tags:
+          artist: "{artist}"
+          title: "{title}"
+          album: "Music Videos"
+          year: "{upload_year}"

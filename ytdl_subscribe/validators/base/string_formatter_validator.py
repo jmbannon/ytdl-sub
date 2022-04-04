@@ -54,8 +54,8 @@ class StringFormatterValidator(StringValidator):
 
         return format_variables
 
-    def __init__(self, name, format_string: str):
-        super().__init__(name=name, value=format_string)
+    def __init__(self, name, value: str):
+        super().__init__(name=name, value=value)
         self.format_variables = self.__validate_and_get_format_variables()
 
     @property
