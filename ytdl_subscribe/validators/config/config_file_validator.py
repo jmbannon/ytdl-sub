@@ -4,20 +4,9 @@ import yaml
 
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import LiteralDictValidator
-from ytdl_subscribe.validators.base.validators import StringValidator
-
-
-class ConfigOptionsValidator(StrictDictValidator):
-    """Validation for the config options"""
-
-    _required_keys = {"working_directory"}
-
-    def __init__(self, name: str, value: Any):
-        super().__init__(name, value)
-
-        self.working_directory = self._validate_key(
-            key="working_directory", validator=StringValidator
-        )
+from ytdl_subscribe.validators.config.config_options.config_options_validator import (
+    ConfigOptionsValidator,
+)
 
 
 class ConfigPresetsValidator(LiteralDictValidator):

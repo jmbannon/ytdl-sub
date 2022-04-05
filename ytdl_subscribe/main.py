@@ -4,7 +4,7 @@ from typing import List
 
 ###################################################################################################
 # GLOBAL PARSER
-from ytdl_subscribe.validators.config.config_validator import ConfigFileValidator
+from ytdl_subscribe.validators.config.config_file_validator import ConfigFileValidator
 from ytdl_subscribe.validators.config.subscription_validator import (
     SubscriptionValidator,
 )

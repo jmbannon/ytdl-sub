@@ -1,9 +1,9 @@
 from ytdl_subscribe.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.validators.config.sources.youtube_validators import (
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubePlaylistDownloadValidator,
 )
-from ytdl_subscribe.validators.config.sources.youtube_validators import (
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubeSourceValidator,
 )
 

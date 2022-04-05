@@ -12,15 +12,17 @@ from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
-from ytdl_subscribe.validators.config.config_validator import ConfigFileValidator
+from ytdl_subscribe.validators.config.config_file_validator import ConfigFileValidator
+from ytdl_subscribe.validators.config.overrides.overrides_validator import (
+    OverridesValidator,
+)
 from ytdl_subscribe.validators.config.preset_validator import PRESET_OPTIONAL_KEYS
 from ytdl_subscribe.validators.config.preset_validator import PRESET_REQUIRED_KEYS
-from ytdl_subscribe.validators.config.preset_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
-from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
+from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
     SoundcloudAlbumsAndSinglesDownloadValidator,
 )
-from ytdl_subscribe.validators.config.sources.youtube_validators import (
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubePlaylistDownloadValidator,
 )
 

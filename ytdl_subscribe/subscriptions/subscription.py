@@ -10,19 +10,27 @@ from PIL import Image
 
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.config.config_validator import ConfigOptionsValidator
+from ytdl_subscribe.validators.config.config_options.config_options_validator import (
+    ConfigOptionsValidator,
+)
 from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
     MetadataOptionsValidator,
 )
 from ytdl_subscribe.validators.config.output_options.output_options_validator import (
     OutputOptionsValidator,
 )
-from ytdl_subscribe.validators.config.preset_validator import OverridesValidator
-from ytdl_subscribe.validators.config.preset_validator import YTDLOptionsValidator
-from ytdl_subscribe.validators.config.sources.source_validator import (
+from ytdl_subscribe.validators.config.overrides.overrides_validator import (
+    OverridesValidator,
+)
+from ytdl_subscribe.validators.config.source_options.source_validator import (
     DownloadStrategyValidator,
 )
-from ytdl_subscribe.validators.config.sources.source_validator import SourceValidator
+from ytdl_subscribe.validators.config.source_options.source_validator import (
+    SourceValidator,
+)
+from ytdl_subscribe.validators.config.ytdl_options.ytdl_options_validator import (
+    YTDLOptionsValidator,
+)
 
 SOURCE_T = TypeVar("SOURCE_T", bound=SourceValidator)
 DOWNLOAD_STRATEGY_T = TypeVar("DOWNLOAD_STRATEGY_T", bound=DownloadStrategyValidator)

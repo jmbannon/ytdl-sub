@@ -4,10 +4,10 @@ from ytdl_subscribe.downloaders.soundcloud_downloader import SoundcloudDownloade
 from ytdl_subscribe.entries.soundcloud import SoundcloudAlbum
 from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
+from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
     SoundcloudAlbumsAndSinglesDownloadValidator,
 )
-from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
+from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
     SoundcloudSourceValidator,
 )
 

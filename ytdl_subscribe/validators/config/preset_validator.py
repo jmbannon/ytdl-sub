@@ -4,45 +4,29 @@ from typing import List
 from typing import Optional
 from typing import Type
 
-import sanitize_filename
-
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.string_formatter_validator import (
-    DictFormatterValidator,
-)
-from ytdl_subscribe.validators.base.validators import LiteralDictValidator
 from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
     MetadataOptionsValidator,
 )
 from ytdl_subscribe.validators.config.output_options.output_options_validator import (
     OutputOptionsValidator,
 )
-from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
+from ytdl_subscribe.validators.config.overrides.overrides_validator import (
+    OverridesValidator,
+)
+from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
     SoundcloudSourceValidator,
 )
-from ytdl_subscribe.validators.config.sources.source_validator import SourceValidator
-from ytdl_subscribe.validators.config.sources.youtube_validators import (
+from ytdl_subscribe.validators.config.source_options.source_validator import (
+    SourceValidator,
+)
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubeSourceValidator,
 )
+from ytdl_subscribe.validators.config.ytdl_options.ytdl_options_validator import (
+    YTDLOptionsValidator,
+)
 from ytdl_subscribe.validators.exceptions import ValidationException
-
-
-class YTDLOptionsValidator(LiteralDictValidator):
-    """Ensures `ytdl_options` is a dict"""
-
-    pass
-
-
-class OverridesValidator(DictFormatterValidator):
-    """Ensures `overrides` is a dict"""
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-        for key in self._keys:
-            self._value[f"sanitized_{key}"] = sanitize_filename.sanitize(
-                self._value[key]
-            )
-
 
 PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[SourceValidator]] = {
     "soundcloud": SoundcloudSourceValidator,
