@@ -20,14 +20,14 @@ class TestEntryFormatter(object):
     def test_parse(self):
         format_string = "Here is my {var_one} and {var_two} 💩"
         assert StringFormatterValidator(
-            name="test_format_variables", format_string=format_string
+            name="test_format_variables", value=format_string
         ).format_variables == ["var_one", "var_two"]
 
     def test_parse_no_variables(self):
         format_string = "No vars 💩"
         assert (
             StringFormatterValidator(
-                name="test_format_variables_empty", format_string=format_string
+                name="test_format_variables_empty", value=format_string
             ).format_variables
             == []
         )
@@ -49,7 +49,7 @@ class TestEntryFormatter(object):
         )
 
         with pytest.raises(ValidationException, match=expected_error_msg):
-            _ = StringFormatterValidator(name="fail", format_string=format_string)
+            _ = StringFormatterValidator(name="fail", value=format_string)
 
     @pytest.mark.parametrize(
         "format_string",
@@ -70,4 +70,4 @@ class TestEntryFormatter(object):
         )
 
         with pytest.raises(ValidationException, match=expected_error_msg):
-            _ = StringFormatterValidator(name="fail", format_string=format_string)
+            _ = StringFormatterValidator(name="fail", value=format_string)
