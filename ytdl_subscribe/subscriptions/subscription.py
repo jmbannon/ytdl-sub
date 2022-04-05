@@ -8,6 +8,7 @@ import dicttoxml
 import music_tag
 from PIL import Image
 
+from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.validators.config.config_validator import ConfigOptionsValidator
 from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
@@ -25,11 +26,15 @@ from ytdl_subscribe.validators.config.sources.source_validator import SourceVali
 
 SOURCE_T = TypeVar("SOURCE_T", bound=SourceValidator)
 DOWNLOAD_STRATEGY_T = TypeVar("DOWNLOAD_STRATEGY_T", bound=DownloadStrategyValidator)
+DOWNLOADER_T = TypeVar("DOWNLOADER_T", bound=Downloader)
 
 
 class Subscription(object):
+    SOURCE_T = TypeVar("SOURCE_T", bound=SourceValidator)
+
     source_validator_type: Type[SOURCE_T]
     download_strategy_type: Type[DOWNLOAD_STRATEGY_T]
+    downloader_type: Type[Downloader]
 
     def __init__(
         self,
@@ -54,17 +59,14 @@ class Subscription(object):
         overrides: OverridesValidator
         """
         self.name = name
-        self.config_options = config_options
+        self._config_options = config_options
+        self._source_options = source_options
+        self._download_strategy_options = source_options.download_strategy
 
-        self.__source_options = source_options
-        self.__download_strategy_options = source_options.download_strategy
-
-        if not isinstance(self.__source_options, self.source_validator_type):
+        if not isinstance(self._source_options, self.source_validator_type):
             raise ValueError("Source options does not match the expected type")
 
-        if not isinstance(
-            self.__download_strategy_options, self.download_strategy_type
-        ):
+        if not isinstance(self._download_strategy_options, self.download_strategy_type):
             raise ValueError("Download strategy does not match the expected type")
 
         self.output_options = output_options
@@ -74,18 +76,28 @@ class Subscription(object):
 
     @property
     def source_options(self) -> SOURCE_T:
-        return self.__source_options
+        return self._source_options
 
     @property
     def download_strategy_options(self) -> DOWNLOAD_STRATEGY_T:
-        return self.__download_strategy_options
+        return self._download_strategy_options
+
+    @property
+    def working_directory(self) -> str:
+        """Returns the directory that the downloader saves files to"""
+        return str(Path(self._config_options.working_directory.value) / Path(self.name))
+
+    @property
+    def downloader(self) -> DOWNLOADER_T:
+        return self.downloader_type(
+            output_directory=self.working_directory,
+            ytdl_options=self.ytdl_options.dict,
+        )
 
     def _post_process_tagging(self, entry: Entry):
         id3_options = self.metadata_options.id3
         t = music_tag.load_file(
-            entry.file_path(
-                relative_directory=self.config_options.working_directory.value
-            )
+            entry.file_path(relative_directory=self.working_directory)
         )
         for tag, tag_formatter in id3_options.tags.dict.items():
             t[tag] = entry.apply_formatter(
@@ -131,7 +143,7 @@ class Subscription(object):
 
         # Move the file after all direct file modifications are complete
         entry_source_file_path = entry.file_path(
-            relative_directory=self.config_options.working_directory.value
+            relative_directory=self.working_directory
         )
 
         output_directory = entry.apply_formatter(
@@ -150,7 +162,7 @@ class Subscription(object):
         # Download the thumbnail if its present
         if self.output_options.thumbnail_name:
             source_thumbnail_path = entry.thumbnail_path(
-                relative_directory=self.config_options.working_directory.value
+                relative_directory=self.working_directory
             )
 
             output_thumbnail_name = entry.apply_formatter(

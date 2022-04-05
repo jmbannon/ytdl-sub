@@ -1,9 +1,11 @@
 from typing import Any
+from typing import Dict
 
 import yaml
 
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import DictValidator
+from ytdl_subscribe.validators.base.validators import LiteralDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 
 
@@ -18,6 +20,12 @@ class ConfigOptionsValidator(StrictDictValidator):
         )
 
 
+class ConfigPresetsValidator(LiteralDictValidator):
+    """Shallow validator checking for the presets dict in the config"""
+
+    pass
+
+
 class ConfigFileValidator(StrictDictValidator):
     _required_keys = {"configuration", "presets"}
 
@@ -26,7 +34,7 @@ class ConfigFileValidator(StrictDictValidator):
         self.config_options = self._validate_key(
             "configuration", ConfigOptionsValidator
         )
-        self.presets = self._validate_key("presets", DictValidator)
+        self.presets = self._validate_key("presets", ConfigPresetsValidator)
 
     @classmethod
     def from_dict(cls, config_dict) -> "ConfigFileValidator":

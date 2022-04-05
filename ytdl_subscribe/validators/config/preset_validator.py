@@ -13,6 +13,7 @@ from ytdl_subscribe.validators.base.string_formatter_validator import (
     DictFormatterValidator,
 )
 from ytdl_subscribe.validators.base.validators import DictValidator
+from ytdl_subscribe.validators.base.validators import LiteralDictValidator
 from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
     MetadataOptionsValidator,
 )
@@ -29,23 +30,21 @@ from ytdl_subscribe.validators.config.sources.youtube_validators import (
 from ytdl_subscribe.validators.exceptions import ValidationException
 
 
-class YTDLOptionsValidator(DictValidator):
-    @property
-    def dict(self) -> Dict:
-        return self._dict
+class YTDLOptionsValidator(LiteralDictValidator):
+    """Ensures `ytdl_options` is a dict"""
+
+    pass
 
 
 class OverridesValidator(DictFormatterValidator):
-    @property
-    def dict(self) -> Dict[str, str]:
-        """For overrides, create sanitized versions of each entry for convenience"""
-        output_dict = copy.deepcopy(self._dict)
-        for key in self._keys:
-            output_dict[f"sanitized_{key}"] = sanitize_filename.sanitize(
-                output_dict[key]
-            )
+    """Ensures `overrides` is a dict"""
 
-        return output_dict
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        for key in self._keys:
+            self._value[f"sanitized_{key}"] = sanitize_filename.sanitize(
+                self._value[key]
+            )
 
 
 PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[SourceValidator]] = {

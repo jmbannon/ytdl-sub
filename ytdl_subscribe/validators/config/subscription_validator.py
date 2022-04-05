@@ -1,3 +1,4 @@
+import copy
 from typing import Any
 from typing import List
 
@@ -8,15 +9,12 @@ from ytdl_subscribe.subscriptions.soundcloud import (
     SoundcloudAlbumsAndSinglesSubscription,
 )
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
+from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.config_validator import ConfigFileValidator
 from ytdl_subscribe.validators.config.preset_validator import PRESET_OPTIONAL_KEYS
 from ytdl_subscribe.validators.config.preset_validator import PRESET_REQUIRED_KEYS
-from ytdl_subscribe.validators.config.preset_validator import (
-    PRESET_SOURCE_VALIDATOR_MAPPING,
-)
 from ytdl_subscribe.validators.config.preset_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
@@ -51,18 +49,17 @@ class SubscriptionValidator(StrictDictValidator):
             validator=StringValidator,
         ).value
 
-        available_presets = self.config.presets._keys
-        if preset_name not in available_presets:
+        if preset_name not in self.config.presets.keys:
             raise self._validation_exception(
                 f"'preset '{preset_name}' does not exist in the provided config. "
-                f"Available presets: {', '.join(available_presets)}"
+                f"Available presets: {', '.join(self.config.presets.keys)}"
             )
 
-        # A little hacky, we will override the preset with the contents of this subscription, then validate it
+        # A little hacky, we will override the preset with the contents of this subscription,
+        # then validate it
+        preset_dict = copy.deepcopy(self.config.presets.dict[preset_name])
         preset_dict = mergedeep.merge(
-            self.config.presets._dict[preset_name],
-            self._dict,
-            strategy=mergedeep.Strategy.REPLACE,
+            preset_dict, self._dict, strategy=mergedeep.Strategy.REPLACE
         )
         del preset_dict["preset"]
 
@@ -81,7 +78,7 @@ class SubscriptionValidator(StrictDictValidator):
             self.preset.subscription_source.download_strategy,
             YoutubePlaylistDownloadValidator,
         ):
-            subscription_class = YoutubeSubscription
+            subscription_class = YoutubePlaylistSubscription
         else:
             raise ValueError("subscription source class not found")
 

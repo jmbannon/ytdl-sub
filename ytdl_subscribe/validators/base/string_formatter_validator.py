@@ -1,9 +1,8 @@
 import re
 from keyword import iskeyword
-from typing import Dict
 from typing import List
 
-from ytdl_subscribe.validators.base.validators import DictValidator
+from ytdl_subscribe.validators.base.validators import LiteralDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 
 
@@ -69,7 +68,7 @@ class StringFormatterValidator(StringValidator):
         return self._value
 
 
-class DictFormatterValidator(DictValidator):
+class DictFormatterValidator(LiteralDictValidator):
     """
     Validates a dictionary made up of key: string_formatters
     """
@@ -79,7 +78,3 @@ class DictFormatterValidator(DictValidator):
 
         for key in self._keys:
             _ = self._validate_key(key=key, validator=StringFormatterValidator)
-
-    @property
-    def dict(self) -> Dict[str, str]:
-        return self._dict

@@ -1,4 +1,5 @@
 from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Type
@@ -154,3 +155,15 @@ class DictValidator(Validator):
             return None
 
         return self._validate_key(key=key, validator=validator, default=default)
+
+
+class LiteralDictValidator(DictValidator):
+    """DictValidator with exposed dict and keys method"""
+
+    @property
+    def dict(self) -> Dict:
+        return super()._dict
+
+    @property
+    def keys(self) -> List[str]:
+        return super()._keys
