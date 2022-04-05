@@ -8,12 +8,18 @@ from ytdl_subscribe.validators.exceptions import ValidationException
 
 @pytest.fixture
 def error_message_unequal_brackets_str():
-    return "Brackets are reserved for {variable_names} and should contain a single open and close bracket."
+    return (
+        "Brackets are reserved for {variable_names} and "
+        "should contain a single open and close bracket."
+    )
 
 
 @pytest.fixture
 def error_message_unequal_regex_matches_str():
-    return "{variable_names} should only contain lowercase letters and underscores with a single open and close bracket."
+    return (
+        "{variable_names} should only contain lowercase letters and "
+        "underscores with a single open and close bracket."
+    )
 
 
 class TestEntryFormatter(object):
