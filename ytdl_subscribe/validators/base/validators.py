@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import Any
 from typing import Dict
 from typing import List
@@ -8,7 +9,7 @@ from typing import TypeVar
 from ytdl_subscribe.validators.exceptions import ValidationException
 
 
-class Validator:
+class Validator(ABC):
     """
     Used to validate the value of a python object. This is the 'base' class that will first
     check that the value's type matches the expected type. Validators that inherit from this should
