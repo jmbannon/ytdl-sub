@@ -1,6 +1,3 @@
-import re
-from keyword import iskeyword
-from typing import List
 from typing import Set
 
 from ytdl_subscribe.validators.base.validators import StringValidator

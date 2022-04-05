@@ -1,16 +1,18 @@
 import re
 from keyword import iskeyword
 from typing import List
+from typing import final
 
 from ytdl_subscribe.validators.base.validators import LiteralDictValidator
-from ytdl_subscribe.validators.base.validators import StringValidator
+from ytdl_subscribe.validators.base.validators import Validator
 
 
-class StringFormatterValidator(StringValidator):
+class StringFormatterValidator(Validator):
     """
     Ensures user-created formatter strings are valid
     """
 
+    _expected_value_type = str
     _expected_value_type_name = "format string"
 
     __fields_validator = re.compile(r"{([a-z_]+?)}")
@@ -58,6 +60,7 @@ class StringFormatterValidator(StringValidator):
         super().__init__(name=name, value=value)
         self.format_variables = self.__validate_and_get_format_variables()
 
+    @final
     @property
     def format_string(self) -> str:
         """

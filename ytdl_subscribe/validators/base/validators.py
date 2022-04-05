@@ -5,6 +5,7 @@ from typing import List
 from typing import Optional
 from typing import Type
 from typing import TypeVar
+from typing import final
 
 from ytdl_subscribe.validators.exceptions import ValidationException
 
@@ -97,6 +98,7 @@ class DictValidator(Validator):
     _expected_value_type = dict
     _expected_value_type_name = "object"
 
+    @final
     @property
     def _dict(self) -> dict:
         """
@@ -106,6 +108,7 @@ class DictValidator(Validator):
         """
         return self._value
 
+    @final
     @property
     def _keys(self) -> List[str]:
         """
@@ -115,6 +118,7 @@ class DictValidator(Validator):
         """
         return sorted(list(self._dict.keys()))
 
+    @final
     def _validate_key(
         self,
         key: str,
@@ -129,30 +133,47 @@ class DictValidator(Validator):
         validator
             The validator to use for the key's value
         default
-            If the key's value is None, use this as the default
+            If the key's value does not exist, use this value, unless it is None.
 
         Returns
         -------
         An instance of the specified validator
         """
-        value = self._dict.get(key, default)
-        if value is None:
+        if key not in self._dict and default is None:
             raise self._validation_exception(
                 f"{key} is missing when it should be present."
             )
 
         return validator(
             name=f"{self._name}.{key}",
-            value=value,
+            value=self._dict.get(key, default),
         )
 
+    @final
     def _validate_key_if_present(
         self,
         key: str,
         validator: Type[T],
         default: Optional[Any] = None,
     ) -> Optional[T]:
-        if key not in self._dict:
+        """
+        If the key does not exist in the dict, and no default is provided, return None.
+        Otherwise, validate the key.
+
+        Parameters
+        ----------
+        key
+            Name of they key in the dict to validate
+        validator
+            The validator to use for the key's value
+        default
+            If the key's value does not exist, use this value.
+
+        Returns
+        -------
+        An instance of the specified validator
+        """
+        if key not in self._dict and default is None:
             return None
 
         return self._validate_key(key=key, validator=validator, default=default)
