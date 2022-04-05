@@ -33,5 +33,5 @@ class YoutubePlaylistSubscription(YoutubeSubscription):
             playlist_id=self.download_strategy_options.playlist_id.value
         )
 
-        for e in entries:
-            self.post_process_entry(e)
+        for entry in entries:
+            self.post_process_entry(entry)

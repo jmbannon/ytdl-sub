@@ -1,5 +1,3 @@
-from typing import Optional
-
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.string_formatter_validator import (
     StringFormatterValidator,
@@ -8,10 +6,14 @@ from ytdl_subscribe.validators.base.string_select_validator import StringSelectV
 
 
 class ConvertThumbnailValidator(StringSelectValidator):
+    """Valid image types that thumbnails can be converted to"""
+
     _select_values = {"jpeg"}
 
 
 class OutputOptionsValidator(StrictDictValidator):
+    """Where to output the final files and thumbnails"""
+
     _required_keys = {"output_directory", "file_name"}
     _optional_keys = {"convert_thumbnail", "thumbnail_name"}
 

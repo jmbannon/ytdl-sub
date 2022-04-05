@@ -184,8 +184,10 @@ class LiteralDictValidator(DictValidator):
 
     @property
     def dict(self) -> Dict:
+        """Returns the entire dict"""
         return super()._dict
 
     @property
     def keys(self) -> List[str]:
+        """Returns a sorted list of the dict's keys"""
         return super()._keys

@@ -1,9 +1,7 @@
-import copy
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Tuple
 from typing import Type
 
 import sanitize_filename
@@ -12,7 +10,6 @@ from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValid
 from ytdl_subscribe.validators.base.string_formatter_validator import (
     DictFormatterValidator,
 )
-from ytdl_subscribe.validators.base.validators import DictValidator
 from ytdl_subscribe.validators.base.validators import LiteralDictValidator
 from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
     MetadataOptionsValidator,

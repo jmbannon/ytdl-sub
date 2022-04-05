@@ -58,5 +58,5 @@ class SoundcloudAlbumsAndSinglesSubscription(SoundcloudSubscription):
             if not any(album.contains(track) for album in albums)
         ]
 
-        for e in tracks:
-            self.post_process_entry(e)
+        for entry in tracks:
+            self.post_process_entry(entry)

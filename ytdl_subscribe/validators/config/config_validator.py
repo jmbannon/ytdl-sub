@@ -1,15 +1,15 @@
 from typing import Any
-from typing import Dict
 
 import yaml
 
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.validators import DictValidator
 from ytdl_subscribe.validators.base.validators import LiteralDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 
 
 class ConfigOptionsValidator(StrictDictValidator):
+    """Validation for the config options"""
+
     _required_keys = {"working_directory"}
 
     def __init__(self, name: str, value: Any):
@@ -22,8 +22,6 @@ class ConfigOptionsValidator(StrictDictValidator):
 
 class ConfigPresetsValidator(LiteralDictValidator):
     """Shallow validator checking for the presets dict in the config"""
-
-    pass
 
 
 class ConfigFileValidator(StrictDictValidator):

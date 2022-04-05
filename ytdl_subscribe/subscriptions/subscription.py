@@ -30,8 +30,6 @@ DOWNLOADER_T = TypeVar("DOWNLOADER_T", bound=Downloader)
 
 
 class Subscription(object):
-    SOURCE_T = TypeVar("SOURCE_T", bound=SourceValidator)
-
     source_validator_type: Type[SOURCE_T]
     download_strategy_type: Type[DOWNLOAD_STRATEGY_T]
     downloader_type: Type[Downloader]
@@ -96,14 +94,14 @@ class Subscription(object):
 
     def _post_process_tagging(self, entry: Entry):
         id3_options = self.metadata_options.id3
-        t = music_tag.load_file(
+        audio_file = music_tag.load_file(
             entry.file_path(relative_directory=self.working_directory)
         )
         for tag, tag_formatter in id3_options.tags.dict.items():
-            t[tag] = entry.apply_formatter(
+            audio_file[tag] = entry.apply_formatter(
                 format_string=tag_formatter, overrides=self.overrides.dict
             )
-        t.save()
+        audio_file.save()
 
     def _post_process_nfo(self, entry):
         nfo = {}
@@ -128,14 +126,14 @@ class Subscription(object):
         nfo_file_path = Path(self.output_options.output_directory.value) / Path(
             nfo_file_name
         )
-        with open(nfo_file_path, "wb") as f:
-            f.write(xml)
+        with open(nfo_file_path, "wb") as nfo_file:
+            nfo_file.write(xml)
 
     def extract_info(self):
         """
         Extracts only the info of the source, does not download it
         """
-        raise NotImplemented("Each source needs to implement how it extracts info")
+        raise NotImplementedError("Each source needs to implement how it extracts info")
 
     def post_process_entry(self, entry: Entry):
         if self.metadata_options.id3:
@@ -176,8 +174,8 @@ class Subscription(object):
             # If the thumbnail is to be converted, then save the converted thumbnail to the
             # output filepath
             if self.output_options.convert_thumbnail:
-                im = Image.open(source_thumbnail_path).convert("RGB")
-                im.save(
+                image = Image.open(source_thumbnail_path).convert("RGB")
+                image.save(
                     fp=output_thumbnail_path,
                     format=self.output_options.convert_thumbnail.value,
                 )
