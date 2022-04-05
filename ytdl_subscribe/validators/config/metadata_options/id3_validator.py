@@ -17,11 +17,11 @@ class Id3Validator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self.id3_version = self.validate_key(
+        self.id3_version = self._validate_key(
             key="id3_version", validator=Id3VersionValidator
         ).value
-        self.tags = self.validate_key(key="tags", validator=DictFormatterValidator)
+        self.tags = self._validate_key(key="tags", validator=DictFormatterValidator)
 
-        self.multi_value_separator = self.validate_key_if_present(
+        self.multi_value_separator = self._validate_key_if_present(
             key="multi_value_separator", validator=StringValidator
         )

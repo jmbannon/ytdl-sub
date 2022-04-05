@@ -4,7 +4,7 @@ from typing import List
 
 ###################################################################################################
 # GLOBAL PARSER
-from ytdl_subscribe.validators.config.config_validator import ConfigValidator
+from ytdl_subscribe.validators.config.config_validator import ConfigFileValidator
 from ytdl_subscribe.validators.config.subscription_validator import (
     SubscriptionValidator,
 )
@@ -42,7 +42,7 @@ download_parser.add_argument(
 if __name__ == "__main__":
     args = parser.parse_args()
 
-    config: ConfigValidator = ConfigValidator.from_file_path(args.config)
+    config: ConfigFileValidator = ConfigFileValidator.from_file_path(args.config)
     if args.subparser == "sub":
         subscription_paths: List[str] = args.subscription_paths
         subscriptions: List[SubscriptionValidator] = []

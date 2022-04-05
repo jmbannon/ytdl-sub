@@ -44,18 +44,15 @@ class Downloader:
     def __init__(
         self,
         output_directory: str,
-        working_directory: Optional[str] = None,
         ytdl_options: Optional[Dict] = None,
     ):
-        self.output_path = output_directory
-
-        self.working_directory = working_directory
-        if self.working_directory is None:
-            self.working_directory = tempfile.TemporaryDirectory().name
+        self.output_directory = output_directory
+        if self.output_directory is None:
+            self.output_directory = tempfile.TemporaryDirectory().name
 
         self.ytdl_options = Downloader._configure_ytdl_options(
             ytdl_options=ytdl_options,
-            working_directory=self.working_directory,
+            working_directory=self.output_directory,
         )
 
     @contextmanager

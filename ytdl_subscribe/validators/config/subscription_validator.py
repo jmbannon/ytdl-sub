@@ -11,7 +11,12 @@ from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeSubscription
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
-from ytdl_subscribe.validators.config.config_validator import ConfigValidator
+from ytdl_subscribe.validators.config.config_validator import ConfigFileValidator
+from ytdl_subscribe.validators.config.preset_validator import PRESET_OPTIONAL_KEYS
+from ytdl_subscribe.validators.config.preset_validator import PRESET_REQUIRED_KEYS
+from ytdl_subscribe.validators.config.preset_validator import (
+    PRESET_SOURCE_VALIDATOR_MAPPING,
+)
 from ytdl_subscribe.validators.config.preset_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.sources.soundcloud_validators import (
@@ -28,27 +33,25 @@ class SubscriptionValidator(StrictDictValidator):
     """
 
     _required_keys = {"preset"}
-    _optional_keys = PresetValidator._required_keys.union(
-        PresetValidator._optional_keys
-    )
+    _optional_keys = PRESET_REQUIRED_KEYS.union(PRESET_OPTIONAL_KEYS)
 
-    def __init__(self, config: ConfigValidator, name: str, value: Any):
+    def __init__(self, config: ConfigFileValidator, name: str, value: Any):
         super().__init__(name, value)
         self.config = config
 
         # Ensure the overrides defined here are valid
-        _ = self.validate_key(
+        _ = self._validate_key(
             key="overrides",
             validator=OverridesValidator,
             default={},
         )
 
-        preset_name = self.validate_key(
+        preset_name = self._validate_key(
             key="preset",
             validator=StringValidator,
         ).value
 
-        available_presets = self.config.presets.keys
+        available_presets = self.config.presets._keys
         if preset_name not in available_presets:
             raise self._validation_exception(
                 f"'preset '{preset_name}' does not exist in the provided config. "
@@ -57,14 +60,14 @@ class SubscriptionValidator(StrictDictValidator):
 
         # A little hacky, we will override the preset with the contents of this subscription, then validate it
         preset_dict = mergedeep.merge(
-            self.config.presets.dict[preset_name],
-            self.dict,
+            self.config.presets._dict[preset_name],
+            self._dict,
             strategy=mergedeep.Strategy.REPLACE,
         )
         del preset_dict["preset"]
 
         self.preset = PresetValidator(
-            name=f"{self.name}.{preset_name}",
+            name=f"{self._name}.{preset_name}",
             value=preset_dict,
         )
 
@@ -83,8 +86,8 @@ class SubscriptionValidator(StrictDictValidator):
             raise ValueError("subscription source class not found")
 
         return subscription_class(
-            name=self.name,
-            config_options=self.config,
+            name=self._name,
+            config_options=self.config.config_options,
             source_options=self.preset.subscription_source,
             output_options=self.preset.output_options,
             metadata_options=self.preset.metadata_options,
@@ -94,7 +97,7 @@ class SubscriptionValidator(StrictDictValidator):
 
     @classmethod
     def from_file_path(
-        cls, config: ConfigValidator, subscription_path: str
+        cls, config: ConfigFileValidator, subscription_path: str
     ) -> List["SubscriptionValidator"]:
         # TODO: Create separate yaml file loader class
         with open(subscription_path, "r", encoding="utf-8") as file:

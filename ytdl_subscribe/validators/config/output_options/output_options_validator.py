@@ -18,16 +18,16 @@ class OutputOptionsValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self.output_directory: StringFormatterValidator = self.validate_key(
+        self.output_directory: StringFormatterValidator = self._validate_key(
             key="output_directory", validator=StringFormatterValidator
         )
-        self.file_name: StringFormatterValidator = self.validate_key(
+        self.file_name: StringFormatterValidator = self._validate_key(
             key="file_name", validator=StringFormatterValidator
         )
 
-        self.convert_thumbnail = self.validate_key_if_present(
+        self.convert_thumbnail = self._validate_key_if_present(
             key="convert_thumbnail", validator=ConvertThumbnailValidator
         )
-        self.thumbnail_name = self.validate_key_if_present(
+        self.thumbnail_name = self._validate_key_if_present(
             key="thumbnail_name", validator=StringFormatterValidator
         )

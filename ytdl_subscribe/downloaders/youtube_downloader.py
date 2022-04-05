@@ -26,7 +26,7 @@ class YoutubeDownloader(Downloader):
         """
         ytdl_metadata_override = {
             "download_archive": str(
-                Path(self.working_directory) / "ytdl-download-archive.txt"
+                Path(self.output_directory) / "ytdl-download-archive.txt"
             ),
             "writeinfojson": True,
         }
@@ -44,12 +44,12 @@ class YoutubeDownloader(Downloader):
         entries: List[YoutubeVideo] = []
 
         # Load the entries from info.json, ignore the playlist entry
-        for file_name in os.listdir(self.working_directory):
+        for file_name in os.listdir(self.output_directory):
             if file_name.endswith(".info.json") and not file_name.startswith(
                 playlist_id
             ):
                 with open(
-                    Path(self.working_directory) / file_name, "r", encoding="utf-8"
+                    Path(self.output_directory) / file_name, "r", encoding="utf-8"
                 ) as file:
                     entries.append(YoutubeVideo(**json.load(file)))
 

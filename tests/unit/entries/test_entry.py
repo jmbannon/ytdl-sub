@@ -65,7 +65,7 @@ class TestEntry(object):
 
     def test_entry_formatter_fails_missing_field(self, mock_entry):
         format_string = f"prefix {{bah_humbug}} suffix"
-        available_fields = ", ".join(sorted(mock_entry.to_dict().keys()))
+        available_fields = ", ".join(sorted(mock_entry.to_dict()._keys()))
         expected_error_msg = f"Format variable 'bah_humbug' does not exist for Entry. Available fields: {available_fields}"
 
         with pytest.raises(ValueError, match=expected_error_msg):

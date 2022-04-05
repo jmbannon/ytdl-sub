@@ -13,10 +13,10 @@ class NFOValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self.nfo_name = self.validate_key(
+        self.nfo_name = self._validate_key(
             key="nfo_name", validator=StringFormatterValidator
         )
-        self.nfo_root = self.validate_key(
+        self.nfo_root = self._validate_key(
             key="nfo_root", validator=StringFormatterValidator
         )
-        self.tags = self.validate_key(key="tags", validator=DictFormatterValidator)
+        self.tags = self._validate_key(key="tags", validator=DictFormatterValidator)

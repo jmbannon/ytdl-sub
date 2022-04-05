@@ -1,5 +1,6 @@
 # ytdl-sub needs a temporary place to download files. Choose that path here
-working_directory: 'tmp'
+configuration:
+  working_directory: 'tmp'
 
 presets:
   soundcloud_with_id3_tags:

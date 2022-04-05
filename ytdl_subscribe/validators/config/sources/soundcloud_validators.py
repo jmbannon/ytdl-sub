@@ -11,18 +11,18 @@ class SoundcloudAlbumsAndSinglesDownloadValidator(DownloadStrategyValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.username = self.validate_key(key="username", validator=StringValidator)
+        self.username = self._validate_key(key="username", validator=StringValidator)
 
 
 class SoundcloudSourceValidator(SourceValidator):
     _optional_keys = {"skip_premiere_tracks"}
 
-    download_strategy_validator_mapping = {
+    _download_strategy_validator_mapping = {
         "albums_and_singles": SoundcloudAlbumsAndSinglesDownloadValidator
     }
 
     def __init__(self, name: str, value: dict):
         super().__init__(name=name, value=value)
-        self.skip_premiere_tracks = self.validate_key(
+        self.skip_premiere_tracks = self._validate_key(
             "skip_premiere_tracks", BoolValidator, default=True
         )

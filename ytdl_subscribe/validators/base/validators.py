@@ -21,7 +21,7 @@ class Validator:
     _expected_value_type_name: Optional[str] = None
 
     def __init__(self, name: str, value: Any):
-        self.name = name
+        self._name = name
         self._value = value
 
         if not isinstance(self._value, self._expected_value_type):
@@ -31,15 +31,6 @@ class Validator:
             raise self._validation_exception(
                 error_message=f"should be of type {expected_value_type_name}."
             )
-
-    @property
-    def value(self) -> object:
-        """
-        Returns
-        -------
-        Value of the validator
-        """
-        return self._value
 
     def _validation_exception(self, error_message: str) -> ValidationException:
         """
@@ -52,7 +43,7 @@ class Validator:
         -------
         Validation exception with a consistent prefix.
         """
-        prefix = f"Validation error in {self.name}: "
+        prefix = f"Validation error in {self._name}: "
         return ValidationException(f"{prefix}{error_message}")
 
 
@@ -79,7 +70,7 @@ class StringValidator(Validator):
     Validates string fields.
     """
 
-    _expected_value_type: Type = str
+    _expected_value_type = str
     _expected_value_type_name = "string"
 
     @property
@@ -105,7 +96,7 @@ class DictValidator(Validator):
     _expected_value_type_name = "object"
 
     @property
-    def dict(self) -> dict:
+    def _dict(self) -> dict:
         """
         Returns
         -------
@@ -114,15 +105,15 @@ class DictValidator(Validator):
         return self._value
 
     @property
-    def keys(self) -> List[str]:
+    def _keys(self) -> List[str]:
         """
         Returns
         -------
         Sorted list of dictionary keys
         """
-        return sorted(list(self.dict.keys()))
+        return sorted(list(self._dict.keys()))
 
-    def validate_key(
+    def _validate_key(
         self,
         key: str,
         validator: Type[T],
@@ -142,24 +133,24 @@ class DictValidator(Validator):
         -------
         An instance of the specified validator
         """
-        value = self.dict.get(key, default)
+        value = self._dict.get(key, default)
         if value is None:
             raise self._validation_exception(
                 f"{key} is missing when it should be present."
             )
 
         return validator(
-            name=f"{self.name}.{key}",
+            name=f"{self._name}.{key}",
             value=value,
         )
 
-    def validate_key_if_present(
+    def _validate_key_if_present(
         self,
         key: str,
         validator: Type[T],
         default: Optional[Any] = None,
     ) -> Optional[T]:
-        if key not in self.dict:
+        if key not in self._dict:
             return None
 
-        return self.validate_key(key=key, validator=validator, default=default)
+        return self._validate_key(key=key, validator=validator, default=default)

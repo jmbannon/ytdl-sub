@@ -25,13 +25,13 @@ class StrictDictValidator(DictValidator):
 
         # Ensure all required keys are present
         for required_key in self._required_keys:
-            if required_key not in self.value:
+            if required_key not in self._dict:
                 raise self._validation_exception(
                     f"missing the required field '{required_key}'"
                 )
 
         # Ensure an empty dict was not passed as the value
-        if not self.dict:
+        if not self._dict:
             raise self._validation_exception(
                 f"at least one of the following fields must be defined: "
                 f"{', '.join(self._optional_keys)}'"
@@ -39,10 +39,10 @@ class StrictDictValidator(DictValidator):
 
         # Ensure all keys are either required or optional keys if no extra field are allowed
         if not self._allow_extra_keys:
-            for object_key in self.keys:
+            for object_key in self._keys:
                 if object_key not in self._allowed_keys:
                     error_msg = (
-                        f"'{self.name}' contains the field '{object_key}' which is not allowed. "
+                        f"'{self._name}' contains the field '{object_key}' which is not allowed. "
                         f"Allowed fields: {', '.join(self._allowed_keys)}"
                     )
                     raise ValidationException(error_msg)

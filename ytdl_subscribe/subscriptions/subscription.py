@@ -9,7 +9,7 @@ import music_tag
 from PIL import Image
 
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.config.config_validator import ConfigValidator
+from ytdl_subscribe.validators.config.config_validator import ConfigOptionsValidator
 from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
     MetadataOptionsValidator,
 )
@@ -34,7 +34,7 @@ class Subscription(object):
     def __init__(
         self,
         name: str,
-        config_options: ConfigValidator,
+        config_options: ConfigOptionsValidator,
         source_options: SourceValidator,
         output_options: OutputOptionsValidator,
         metadata_options: MetadataOptionsValidator,
@@ -46,7 +46,7 @@ class Subscription(object):
         ----------
         name: str
             Name of the subscription
-        config_options: ConfigValidator
+        config_options: ConfigOptionsValidator
         source_options: SourceValidator
         output_options: OutputOptionsValidator
         metadata_options: MetadataOptionsValidator

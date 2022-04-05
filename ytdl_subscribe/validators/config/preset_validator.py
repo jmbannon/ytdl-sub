@@ -30,15 +30,17 @@ from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 class YTDLOptionsValidator(DictValidator):
-    pass
+    @property
+    def dict(self) -> Dict:
+        return self._dict
 
 
 class OverridesValidator(DictFormatterValidator):
     @property
-    def dict(self) -> dict:
+    def dict(self) -> Dict[str, str]:
         """For overrides, create sanitized versions of each entry for convenience"""
-        output_dict = copy.deepcopy(super().dict)
-        for key in list(output_dict.keys()):
+        output_dict = copy.deepcopy(self._dict)
+        for key in self._keys:
             output_dict[f"sanitized_{key}"] = sanitize_filename.sanitize(
                 output_dict[key]
             )
@@ -46,69 +48,69 @@ class OverridesValidator(DictFormatterValidator):
         return output_dict
 
 
-class PresetValidator(StrictDictValidator):
-    _subscription_source_validator_mapping: Dict[str, Type[SourceValidator]] = {
-        "soundcloud": SoundcloudSourceValidator,
-        "youtube": YoutubeSourceValidator,
-    }
+PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[SourceValidator]] = {
+    "soundcloud": SoundcloudSourceValidator,
+    "youtube": YoutubeSourceValidator,
+}
 
-    _required_keys = {"output_options"}
-    _optional_keys = {
-        "metadata_options",
-        "ytdl_options",
-        "overrides",
-        *_subscription_source_validator_mapping.keys(),
-    }
+PRESET_REQUIRED_KEYS = {"output_options"}
+PRESET_OPTIONAL_KEYS = {
+    "metadata_options",
+    "ytdl_options",
+    "overrides",
+    *PRESET_SOURCE_VALIDATOR_MAPPING.keys(),
+}
+
+
+class PresetValidator(StrictDictValidator):
+    _required_keys = PRESET_REQUIRED_KEYS
+    _optional_keys = PRESET_OPTIONAL_KEYS
 
     @property
-    def available_sources(self) -> List[str]:
-        return sorted(list(self._subscription_source_validator_mapping.keys()))
+    def __available_sources(self) -> List[str]:
+        return sorted(list(PRESET_SOURCE_VALIDATOR_MAPPING.keys()))
 
-    def __validate_and_get_subscription_source(self) -> Tuple[str, SourceValidator]:
+    def __validate_and_get_subscription_source(self) -> SourceValidator:
         subscription_source: Optional[SourceValidator] = None
-        subscription_source_name: Optional[str] = None
 
-        for key in self.keys:
-            if key in self.available_sources and subscription_source:
+        for key in self._keys:
+            if key in self.__available_sources and subscription_source:
                 raise ValidationException(
-                    f"'{self.name}' can only have one of the following sources: "
-                    f"{', '.join(self.available_sources)}"
+                    f"'{self._name}' can only have one of the following sources: "
+                    f"{', '.join(self.__available_sources)}"
                 )
 
-            if key in self._subscription_source_validator_mapping:
-                subscription_source_name = key
-                subscription_source = self.validate_key(
-                    key=key, validator=self._subscription_source_validator_mapping[key]
+            if key in PRESET_SOURCE_VALIDATOR_MAPPING:
+                subscription_source = self._validate_key(
+                    key=key, validator=PRESET_SOURCE_VALIDATOR_MAPPING[key]
                 )
 
         # If subscription source was not set, error
         if not subscription_source:
             raise ValidationException(
-                f"'{self.name} must have one of the following sources: "
-                f"{', '.join(self.available_sources)}"
+                f"'{self._name} must have one of the following sources: "
+                f"{', '.join(self.__available_sources)}"
             )
 
-        return subscription_source_name, subscription_source
+        return subscription_source
 
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)
-        (
-            self.subscription_source_name,
-            self.subscription_source,
-        ) = self.__validate_and_get_subscription_source()
 
-        self.output_options = self.validate_key(
+        self.subscription_source = self.__validate_and_get_subscription_source()
+
+        self.output_options = self._validate_key(
             key="output_options",
             validator=OutputOptionsValidator,
         )
-        self.metadata_options = self.validate_key(
+        self.metadata_options = self._validate_key(
             key="metadata_options", validator=MetadataOptionsValidator
         )
 
-        self.ytdl_options = self.validate_key(
+        self.ytdl_options = self._validate_key(
             key="ytdl_options", validator=YTDLOptionsValidator, default={}
         )
 
-        self.overrides = self.validate_key(
+        self.overrides = self._validate_key(
             key="overrides", validator=OverridesValidator, default={}
         )

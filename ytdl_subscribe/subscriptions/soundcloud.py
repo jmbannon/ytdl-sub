@@ -30,8 +30,7 @@ class SoundcloudAlbumsAndSinglesSubscription(Subscription):
 
         tracks: List[SoundcloudTrack] = []
         soundcloud_downloader = SoundcloudDownloader(
-            output_directory=self.output_options.output_directory.value,
-            working_directory=self.config_options.working_directory.value,
+            output_directory=self.config_options.working_directory.value,
             ytdl_options=self.ytdl_options.dict,
         )
 

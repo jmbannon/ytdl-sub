@@ -9,5 +9,5 @@ class MetadataOptionsValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self.id3 = self.validate_key_if_present(key="id3", validator=Id3Validator)
-        self.nfo = self.validate_key_if_present(key="nfo", validator=NFOValidator)
+        self.id3 = self._validate_key_if_present(key="id3", validator=Id3Validator)
+        self.nfo = self._validate_key_if_present(key="nfo", validator=NFOValidator)

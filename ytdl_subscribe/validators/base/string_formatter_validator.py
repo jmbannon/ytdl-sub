@@ -1,5 +1,6 @@
 import re
 from keyword import iskeyword
+from typing import Dict
 from typing import List
 
 from ytdl_subscribe.validators.base.validators import DictValidator
@@ -13,7 +14,7 @@ class StringFormatterValidator(StringValidator):
 
     _expected_value_type_name = "format string"
 
-    FIELDS_VALIDATOR = re.compile(r"{([a-z_]+?)}")
+    __fields_validator = re.compile(r"{([a-z_]+?)}")
 
     def __validate_and_get_format_variables(self) -> List[str]:
         """
@@ -37,7 +38,7 @@ class StringFormatterValidator(StringValidator):
             )
 
         format_variables: List[str] = list(
-            re.findall(StringFormatterValidator.FIELDS_VALIDATOR, self.format_string)
+            re.findall(StringFormatterValidator.__fields_validator, self.format_string)
         )
 
         if len(format_variables) != open_bracket_count:
@@ -76,5 +77,9 @@ class DictFormatterValidator(DictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        for key in self.keys:
-            _ = self.validate_key(key=key, validator=StringFormatterValidator)
+        for key in self._keys:
+            _ = self._validate_key(key=key, validator=StringFormatterValidator)
+
+    @property
+    def dict(self) -> Dict[str, str]:
+        return self._dict
