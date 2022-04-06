@@ -1,3 +1,5 @@
+from abc import ABC
+
 from ytdl_subscribe.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
@@ -8,7 +10,7 @@ from ytdl_subscribe.validators.config.source_options.youtube_validators import (
 )
 
 
-class YoutubeSubscription(Subscription):
+class YoutubeSubscription(Subscription, ABC):
     source_validator_type = YoutubeSourceValidator
     downloader_type = YoutubeDownloader
 

@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import List
 
 from ytdl_subscribe.downloaders.soundcloud_downloader import SoundcloudDownloader
@@ -12,7 +13,7 @@ from ytdl_subscribe.validators.config.source_options.soundcloud_validators impor
 )
 
 
-class SoundcloudSubscription(Subscription):
+class SoundcloudSubscription(Subscription, ABC):
     source_validator_type = SoundcloudSourceValidator
     downloader_type = SoundcloudDownloader
 
@@ -32,9 +33,7 @@ class SoundcloudAlbumsAndSinglesSubscription(SoundcloudSubscription):
     def download_strategy_options(self) -> SoundcloudAlbumsAndSinglesDownloadValidator:
         return super().download_strategy_options
 
-    def extract_info(
-        self,
-    ):
+    def extract_info(self):
         tracks: List[SoundcloudTrack] = []
 
         # Get the album info first. This tells us which track ids belong
