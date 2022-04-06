@@ -8,6 +8,7 @@ from ytdl_subscribe.validators.base.string_formatter_validators import (
 from ytdl_subscribe.validators.config.overrides.overrides_validator import (
     OverridesValidator,
 )
+from ytdl_subscribe.validators.exceptions import StringFormattingException
 from ytdl_subscribe.validators.exceptions import ValidationException
 
 
@@ -98,14 +99,16 @@ class TestEntry(object):
             },
         )
 
+        # Max depth is 3 so should go level_a -(0)-> level_b -(1)-> level_a -(2)-> level_b
         expected_error_msg = (
-            f"Attempted to format 'test' but failed after reaching max recursion depth of 3. "
-            f"Try to keep variables dependent on only one other variable."
+            "Validation error in test: Attempted to format but failed after reaching max recursion "
+            "depth of 3. Try to keep variables dependent on only one other variable at max. "
+            "Unresolved variables: level_b"
         )
 
         format_string = StringFormatterValidator(name="test", value="{level_a}")
 
-        with pytest.raises(ValidationException, match=expected_error_msg):
+        with pytest.raises(StringFormattingException, match=expected_error_msg):
             _ = mock_entry.apply_formatter(format_string, overrides=overrides)
 
     def test_entry_missing_kwarg(self, mock_entry):
@@ -121,7 +124,10 @@ class TestEntry(object):
             name="test", value=f"prefix {{bah_humbug}} suffix"
         )
         available_fields = ", ".join(sorted(mock_entry.to_dict().keys()))
-        expected_error_msg = f"Format variable 'bah_humbug' does not exist for Entry. Available fields: {available_fields}"
+        expected_error_msg = (
+            f"Validation error in test: Format variable 'bah_humbug' does not exist. "
+            f"Available variables: {available_fields}"
+        )
 
-        with pytest.raises(ValueError, match=expected_error_msg):
+        with pytest.raises(StringFormattingException, match=expected_error_msg):
             assert mock_entry.apply_formatter(format_string)

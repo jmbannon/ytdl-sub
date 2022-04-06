@@ -1,4 +1,5 @@
 import re
+from collections import OrderedDict
 from keyword import iskeyword
 from typing import Dict
 from typing import List
@@ -6,6 +7,7 @@ from typing import final
 
 from ytdl_subscribe.validators.base.validators import LiteralDictValidator
 from ytdl_subscribe.validators.base.validators import Validator
+from ytdl_subscribe.validators.exceptions import StringFormattingException
 
 
 class StringFormatterValidator(Validator):
@@ -17,6 +19,8 @@ class StringFormatterValidator(Validator):
     _expected_value_type_name = "format string"
 
     __fields_validator = re.compile(r"{([a-z_]+?)}")
+
+    __max_format_recursion = 3
 
     def __validate_and_get_format_variables(self) -> List[str]:
         """
@@ -36,7 +40,8 @@ class StringFormatterValidator(Validator):
         if open_bracket_count != close_bracket_count:
             raise self._validation_exception(
                 "Brackets are reserved for {variable_names} and should contain "
-                "a single open and close bracket."
+                "a single open and close bracket.",
+                exception_class=StringFormattingException,
             )
 
         format_variables: List[str] = list(
@@ -46,13 +51,15 @@ class StringFormatterValidator(Validator):
         if len(format_variables) != open_bracket_count:
             raise self._validation_exception(
                 "{variable_names} should only contain "
-                "lowercase letters and underscores with a single open and close bracket."
+                "lowercase letters and underscores with a single open and close bracket.",
+                exception_class=StringFormattingException,
             )
 
         for variable in format_variables:
             if iskeyword(variable):
                 raise self._validation_exception(
-                    f"'{variable}' is a Python keyword and cannot be used as a variable."
+                    f"'{variable}' is a Python keyword and cannot be used as a variable.",
+                    exception_class=StringFormattingException,
                 )
 
         return format_variables
@@ -70,6 +77,40 @@ class StringFormatterValidator(Validator):
         The literal format string, unformatted.
         """
         return self._value
+
+    @final
+    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
+        # Ensure the variable names exist within the entry and overrides
+        for variable_name in self.format_variables:
+            if variable_name not in variable_dict:
+                available_fields = ", ".join(sorted(variable_dict.keys()))
+                raise self._validation_exception(
+                    f"Format variable '{variable_name}' does not exist. "
+                    f"Available variables: {available_fields}",
+                    exception_class=StringFormattingException,
+                )
+
+        # Keep formatting the format string until no format_variables are present
+        formatter = self
+        recursion_depth = 0
+        max_depth = StringFormatterValidator.__max_format_recursion
+
+        while formatter.format_variables and recursion_depth < max_depth:
+            formatter = StringFormatterValidator(
+                name=self._name,
+                value=formatter.format_string.format(**OrderedDict(variable_dict)),
+            )
+            recursion_depth += 1
+
+        if formatter.format_variables:
+            raise self._validation_exception(
+                f"Attempted to format but failed after reaching max recursion depth of "
+                f"{max_depth}. Try to keep variables dependent on only one other variable at max. "
+                f"Unresolved variables: {', '.join(sorted(formatter.format_variables))}",
+                exception_class=StringFormattingException,
+            )
+
+        return formatter.format_string
 
 
 class DictFormatterValidator(LiteralDictValidator):

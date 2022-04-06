@@ -10,6 +10,8 @@ from typing import final
 
 from ytdl_subscribe.validators.exceptions import ValidationException
 
+V = TypeVar("V", bound=ValidationException)
+
 
 class Validator(ABC):
     """
@@ -38,7 +40,9 @@ class Validator(ABC):
                 error_message=f"should be of type {expected_value_type_name}."
             )
 
-    def _validation_exception(self, error_message: str) -> ValidationException:
+    def _validation_exception(
+        self, error_message: str, exception_class: Type[V] = ValidationException
+    ) -> V:
         """
         Parameters
         ----------
@@ -50,7 +54,7 @@ class Validator(ABC):
         Validation exception with a consistent prefix.
         """
         prefix = f"Validation error in {self._name}: "
-        return ValidationException(f"{prefix}{error_message}")
+        return exception_class(f"{prefix}{error_message}")
 
 
 class BoolValidator(Validator):

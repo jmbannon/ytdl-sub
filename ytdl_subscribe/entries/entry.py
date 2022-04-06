@@ -20,8 +20,6 @@ class Entry:
     Entry object to represent a single media object returned from yt-dlp.
     """
 
-    _MAX_FORMATTER_RECURSION = 3
-
     def __init__(self, **kwargs):
         """
         Initialize the entry using ytdl metadata
@@ -122,38 +120,6 @@ class Entry:
         """
         entry_dict = self.to_dict()
         if overrides:
-            # TODO: need to check recursively populate format variables
             entry_dict = dict(entry_dict, **overrides.dict_with_format_strings)
 
-        for field_name in formatter.format_variables:
-            if field_name not in entry_dict:
-                available_fields = ", ".join(sorted(entry_dict.keys()))
-                raise ValueError(
-                    f"Format variable '{field_name}' does not exist "
-                    f"for {self.__class__.__name__}. Available fields: {available_fields}"
-                )
-
-        format_string = formatter.format_string
-        variables_present = True
-        recursion_depth = 0
-        while variables_present and recursion_depth < self._MAX_FORMATTER_RECURSION:
-            format_string = format_string.format(**OrderedDict(entry_dict))
-            variables_present = (
-                len(
-                    StringFormatterValidator(
-                        name="__recursive_formatter_update__",
-                        value=format_string,
-                    ).format_variables
-                )
-                > 0
-            )
-            recursion_depth += 1
-
-        if variables_present:
-            raise ValidationException(
-                f"Attempted to format '{formatter._name}' but failed after reaching max recursion "
-                f"depth of {self._MAX_FORMATTER_RECURSION}. Try to keep variables dependent on "
-                f"only one other variable."
-            )
-
-        return format_string
+        return formatter.apply_formatter(variable_dict=entry_dict)
