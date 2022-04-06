@@ -1,6 +1,9 @@
 import pytest
 
 from ytdl_subscribe.entries.entry import Entry
+from ytdl_subscribe.validators.base.string_formatter_validators import (
+    StringFormatterValidator,
+)
 
 
 @pytest.fixture
@@ -110,7 +113,12 @@ def validate_entry_dict_contains_valid_formatters():
             expected_string = f"test {value} formatting works"
             format_string = f"test {{{key}}} formatting works"
 
-            assert entry.apply_formatter(format_string) == expected_string
+            assert (
+                entry.apply_formatter(
+                    StringFormatterValidator(name="test", value=format_string)
+                )
+                == expected_string
+            )
 
         return True
 

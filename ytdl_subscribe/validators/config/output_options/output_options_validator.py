@@ -1,5 +1,5 @@
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.string_formatter_validator import (
+from ytdl_subscribe.validators.base.string_formatter_validators import (
     StringFormatterValidator,
 )
 from ytdl_subscribe.validators.base.string_select_validator import StringSelectValidator

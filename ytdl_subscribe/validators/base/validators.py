@@ -1,3 +1,4 @@
+import copy
 from abc import ABC
 from typing import Any
 from typing import Dict
@@ -25,7 +26,9 @@ class Validator(ABC):
 
     def __init__(self, name: str, value: Any):
         self._name = name
-        self._value = value
+        self._value = copy.deepcopy(
+            value
+        )  # Always deep copy to avoid editing references
 
         if not isinstance(self._value, self._expected_value_type):
             expected_value_type_name = self._expected_value_type_name or str(

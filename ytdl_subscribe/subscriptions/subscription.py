@@ -10,6 +10,9 @@ from PIL import Image
 
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.entries.entry import Entry
+from ytdl_subscribe.validators.base.string_formatter_validators import (
+    StringFormatterValidator,
+)
 from ytdl_subscribe.validators.config.config_options.config_options_validator import (
     ConfigOptionsValidator,
 )
@@ -80,14 +83,31 @@ class Subscription(object):
             ytdl_options=self.ytdl_options.dict,
         )
 
+    def _apply_entry_formatter(
+        self, entry: Entry, formatter: StringFormatterValidator
+    ) -> str:
+        """
+        Parameters
+        ----------
+        entry
+            Entry with values to use in the formatter
+        formatter
+            The formatter itself
+
+        Returns
+        -------
+        The format_string after .format has been called on it using entry and override values
+        """
+        return entry.apply_formatter(formatter=formatter, overrides=self.overrides)
+
     def _post_process_tagging(self, entry: Entry):
         id3_options = self.metadata_options.id3
         audio_file = music_tag.load_file(
             entry.file_path(relative_directory=self.working_directory)
         )
         for tag, tag_formatter in id3_options.tags.dict.items():
-            audio_file[tag] = entry.apply_formatter(
-                format_string=tag_formatter, overrides=self.overrides.dict
+            audio_file[tag] = self._apply_entry_formatter(
+                entry=entry, formatter=tag_formatter
             )
         audio_file.save()
 
@@ -96,24 +116,28 @@ class Subscription(object):
         nfo_options = self.metadata_options.nfo
 
         for tag, tag_formatter in nfo_options.tags.dict.items():
-            nfo[tag] = entry.apply_formatter(
-                format_string=tag_formatter, overrides=self.overrides.dict
-            )
+            nfo[tag] = self._apply_entry_formatter(entry=entry, formatter=tag_formatter)
 
+        # Write the nfo tags to XML with the nfo_root
+        nfo_root = self._apply_entry_formatter(
+            entry=entry, formatter=nfo_options.nfo_root
+        )
         xml = dicttoxml.dicttoxml(
             obj=nfo,
             root=True,  # We assume all NFOs have a root. Maybe we should not?
-            custom_root=nfo_options.nfo_root.value,
+            custom_root=nfo_root,
             attr_type=False,
         )
 
-        nfo_file_name = entry.apply_formatter(
-            format_string=nfo_options.nfo_name.format_string,
-            overrides=self.overrides.dict,
+        nfo_file_name = self._apply_entry_formatter(
+            entry=entry, formatter=nfo_options.nfo_name
         )
-        nfo_file_path = Path(self.output_options.output_directory.value) / Path(
-            nfo_file_name
+        output_directory = self._apply_entry_formatter(
+            entry=entry, formatter=self.output_options.output_directory
         )
+
+        # Save the nfo's XML to file
+        nfo_file_path = Path(output_directory) / Path(nfo_file_name)
         with open(nfo_file_path, "wb") as nfo_file:
             nfo_file.write(xml)
 
@@ -132,13 +156,12 @@ class Subscription(object):
             relative_directory=self.working_directory
         )
 
-        output_directory = entry.apply_formatter(
-            format_string=self.output_options.output_directory.format_string,
-            overrides=self.overrides.dict,
+        output_directory = self._apply_entry_formatter(
+            entry=entry, formatter=self.output_options.output_directory
         )
-        output_file_name = entry.apply_formatter(
-            format_string=self.output_options.file_name.format_string,
-            overrides=self.overrides.dict,
+
+        output_file_name = self._apply_entry_formatter(
+            entry=entry, formatter=self.output_options.file_name
         )
         entry_destination_file_path = Path(output_directory) / Path(output_file_name)
 
@@ -151,9 +174,8 @@ class Subscription(object):
                 relative_directory=self.working_directory
             )
 
-            output_thumbnail_name = entry.apply_formatter(
-                format_string=self.output_options.thumbnail_name.format_string,
-                overrides=self.overrides.dict,
+            output_thumbnail_name = self._apply_entry_formatter(
+                entry=entry, formatter=self.output_options.thumbnail_name
             )
             output_thumbnail_path = Path(output_directory) / Path(output_thumbnail_name)
 

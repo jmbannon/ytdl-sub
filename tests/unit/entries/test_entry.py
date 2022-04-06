@@ -2,6 +2,13 @@ import tempfile
 
 import pytest
 
+from ytdl_subscribe.validators.base.string_formatter_validators import (
+    StringFormatterValidator,
+)
+from ytdl_subscribe.validators.config.overrides.overrides_validator import (
+    OverridesValidator,
+)
+
 
 class TestEntry(object):
     def test_entry_properties(
@@ -30,13 +37,17 @@ class TestEntry(object):
             relative_directory.cleanup()
 
     def test_entry_formatter_single_field(self, mock_entry):
-        format_string = f"prefix {{uid}} suffix"
+        format_string = StringFormatterValidator(
+            name="test", value=f"prefix {{uid}} suffix"
+        )
         expected_string = f"prefix {mock_entry.uid} suffix"
 
         assert mock_entry.apply_formatter(format_string) == expected_string
 
     def test_entry_formatter_duplicate_fields(self, mock_entry):
-        format_string = f"prefix {{upload_year}} {{upload_year}} suffix"
+        format_string = StringFormatterValidator(
+            name="test", value=f"prefix {{upload_year}} {{upload_year}} suffix"
+        )
         expected_string = (
             f"prefix {mock_entry.upload_year} {mock_entry.upload_year} suffix"
         )
@@ -45,9 +56,11 @@ class TestEntry(object):
 
     def test_entry_formatter_override(self, mock_entry):
         new_uid = "my very own uid"
-        overrides = {"uid": new_uid}
+        overrides = OverridesValidator(name="test", value={"uid": new_uid})
 
-        format_string = f"prefix {{uid}} suffix"
+        format_string = StringFormatterValidator(
+            name="test", value=f"prefix {{uid}} suffix"
+        )
         expected_string = f"prefix {new_uid} suffix"
 
         assert (
@@ -64,7 +77,9 @@ class TestEntry(object):
             mock_entry.kwargs(key)
 
     def test_entry_formatter_fails_missing_field(self, mock_entry):
-        format_string = f"prefix {{bah_humbug}} suffix"
+        format_string = StringFormatterValidator(
+            name="test", value=f"prefix {{bah_humbug}} suffix"
+        )
         available_fields = ", ".join(sorted(mock_entry.to_dict().keys()))
         expected_error_msg = f"Format variable 'bah_humbug' does not exist for Entry. Available fields: {available_fields}"
 

@@ -5,8 +5,11 @@ from typing import Optional
 
 from sanitize_filename import sanitize
 
-from ytdl_subscribe.validators.base.string_formatter_validator import (
+from ytdl_subscribe.validators.base.string_formatter_validators import (
     StringFormatterValidator,
+)
+from ytdl_subscribe.validators.config.overrides.overrides_validator import (
+    OverridesValidator,
 )
 
 
@@ -105,7 +108,9 @@ class Entry:
         }
 
     def apply_formatter(
-        self, format_string: str, overrides: Optional[Dict] = None
+        self,
+        formatter: StringFormatterValidator,
+        overrides: Optional[OverridesValidator] = None,
     ) -> str:
         """
         Perform a string format on the given format string, using the entry's dict for format
@@ -113,13 +118,10 @@ class Entry:
         """
         entry_dict = self.to_dict()
         if overrides:
-            entry_dict = dict(entry_dict, **overrides)
+            # TODO: need to check recursively populate format variables
+            entry_dict = dict(entry_dict, **overrides.dict_with_format_strings)
 
-        field_names = StringFormatterValidator(
-            "TODO: UPDATE", format_string
-        ).format_variables
-
-        for field_name in field_names:
+        for field_name in formatter.format_variables:
             if field_name not in entry_dict:
                 available_fields = ", ".join(sorted(entry_dict.keys()))
                 raise ValueError(
@@ -127,4 +129,4 @@ class Entry:
                     f"for {self.__class__.__name__}. Available fields: {available_fields}"
                 )
 
-        return format_string.format(**entry_dict)
+        return formatter.format_string.format(**entry_dict)
