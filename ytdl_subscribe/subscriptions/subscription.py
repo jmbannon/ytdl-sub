@@ -13,23 +13,12 @@ from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.validators.config.config_options.config_options_validator import (
     ConfigOptionsValidator,
 )
-from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
-    MetadataOptionsValidator,
-)
-from ytdl_subscribe.validators.config.output_options.output_options_validator import (
-    OutputOptionsValidator,
-)
-from ytdl_subscribe.validators.config.overrides.overrides_validator import (
-    OverridesValidator,
-)
+from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.source_options.source_validator import (
     DownloadStrategyValidator,
 )
 from ytdl_subscribe.validators.config.source_options.source_validator import (
     SourceValidator,
-)
-from ytdl_subscribe.validators.config.ytdl_options.ytdl_options_validator import (
-    YTDLOptionsValidator,
 )
 
 SOURCE_T = TypeVar("SOURCE_T", bound=SourceValidator)
@@ -46,11 +35,7 @@ class Subscription(object):
         self,
         name: str,
         config_options: ConfigOptionsValidator,
-        source_options: SourceValidator,
-        output_options: OutputOptionsValidator,
-        metadata_options: MetadataOptionsValidator,
-        ytdl_options: YTDLOptionsValidator,
-        overrides: OverridesValidator,
+        preset_options: PresetValidator,
     ):
         """
         Parameters
@@ -58,27 +43,22 @@ class Subscription(object):
         name: str
             Name of the subscription
         config_options: ConfigOptionsValidator
-        source_options: SourceValidator
-        output_options: OutputOptionsValidator
-        metadata_options: MetadataOptionsValidator
-        ytdl_options: YTDLOptionsValidator
-        overrides: OverridesValidator
+        preset_options: PresetValidator
         """
         self.name = name
+        self.output_options = preset_options.output_options
+        self.metadata_options = preset_options.metadata_options
+        self.ytdl_options = preset_options.ytdl_options
+        self.overrides = preset_options.overrides
         self._config_options = config_options
-        self._source_options = source_options
-        self._download_strategy_options = source_options.download_strategy
+        self._source_options = preset_options.subscription_source
+        self._download_strategy_options = self._source_options.download_strategy
 
         if not isinstance(self._source_options, self.source_validator_type):
             raise ValueError("Source options does not match the expected type")
 
         if not isinstance(self._download_strategy_options, self.download_strategy_type):
             raise ValueError("Download strategy does not match the expected type")
-
-        self.output_options = output_options
-        self.metadata_options = metadata_options
-        self.ytdl_options = ytdl_options
-        self.overrides = overrides
 
     @property
     def source_options(self) -> SOURCE_T:

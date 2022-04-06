@@ -87,11 +87,7 @@ class SubscriptionValidator(StrictDictValidator):
         return subscription_class(
             name=self._name,
             config_options=self.config.config_options,
-            source_options=self.preset.subscription_source,
-            output_options=self.preset.output_options,
-            metadata_options=self.preset.metadata_options,
-            ytdl_options=self.preset.ytdl_options,
-            overrides=self.preset.overrides,
+            preset_options=self.preset,
         )
 
     @classmethod
