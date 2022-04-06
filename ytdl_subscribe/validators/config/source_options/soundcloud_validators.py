@@ -3,9 +3,7 @@ from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.source_options.source_validator import (
     DownloadStrategyValidator,
 )
-from ytdl_subscribe.validators.config.source_options.source_validator import (
-    SourceValidator,
-)
+from ytdl_subscribe.validators.config.source_options.source_validator import SourceValidator
 
 
 class SoundcloudAlbumsAndSinglesDownloadValidator(DownloadStrategyValidator):

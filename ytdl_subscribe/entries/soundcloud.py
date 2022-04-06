@@ -103,9 +103,7 @@ class SoundcloudAlbum(Entry):
         """
         return [SoundcloudTrack(**entry) for entry in self.kwargs("entries")]
 
-    def album_tracks(
-        self, skip_premiere_tracks: bool = True
-    ) -> List[SoundcloudAlbumTrack]:
+    def album_tracks(self, skip_premiere_tracks: bool = True) -> List[SoundcloudAlbumTrack]:
         """
         Returns all tracks in the album represented as album-tracks. They will share the
         same album name, have ordered track numbers, and a shared album year.

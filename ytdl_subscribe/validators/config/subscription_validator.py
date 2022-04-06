@@ -5,17 +5,13 @@ from typing import List
 import yaml
 from mergedeep import mergedeep
 
-from ytdl_subscribe.subscriptions.soundcloud import (
-    SoundcloudAlbumsAndSinglesSubscription,
-)
+from ytdl_subscribe.subscriptions.soundcloud import SoundcloudAlbumsAndSinglesSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.config_file_validator import ConfigFileValidator
-from ytdl_subscribe.validators.config.overrides.overrides_validator import (
-    OverridesValidator,
-)
+from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PRESET_OPTIONAL_KEYS
 from ytdl_subscribe.validators.config.preset_validator import PRESET_REQUIRED_KEYS
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
@@ -60,9 +56,7 @@ class SubscriptionValidator(StrictDictValidator):
         # A little hacky, we will override the preset with the contents of this subscription,
         # then validate it
         preset_dict = copy.deepcopy(self.config.presets.dict[preset_name])
-        preset_dict = mergedeep.merge(
-            preset_dict, self._dict, strategy=mergedeep.Strategy.REPLACE
-        )
+        preset_dict = mergedeep.merge(preset_dict, self._dict, strategy=mergedeep.Strategy.REPLACE)
         del preset_dict["preset"]
 
         self.preset = PresetValidator(

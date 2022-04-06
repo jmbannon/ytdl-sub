@@ -18,9 +18,7 @@ class SourceValidator(StrictDictValidator):
     # Extra fields will be strict-validated using other StictDictValidators
     _allow_extra_keys = True
 
-    _download_strategy_validator_mapping: Dict[
-        str, Type[DownloadStrategyValidator]
-    ] = {}
+    _download_strategy_validator_mapping: Dict[str, Type[DownloadStrategyValidator]] = {}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)
@@ -39,9 +37,7 @@ class SourceValidator(StrictDictValidator):
         for key_to_delete in self._allowed_keys:
             del download_strategy_dict[key_to_delete]
 
-        download_strategy_class = self._download_strategy_validator_mapping[
-            download_strategy_name
-        ]
+        download_strategy_class = self._download_strategy_validator_mapping[download_strategy_name]
         self.download_strategy = download_strategy_class(
             name=self._name, value=download_strategy_dict
         )

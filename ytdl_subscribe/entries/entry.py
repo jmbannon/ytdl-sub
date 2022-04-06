@@ -6,12 +6,8 @@ from typing import Optional
 
 from sanitize_filename import sanitize
 
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    StringFormatterValidator,
-)
-from ytdl_subscribe.validators.config.overrides.overrides_validator import (
-    OverridesValidator,
-)
+from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
+from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 from ytdl_subscribe.validators.exceptions import ValidationException
 
 
@@ -33,9 +29,7 @@ class Entry:
     def kwargs(self, key) -> Any:
         """Returns an internal kwarg value supplied from ytdl"""
         if not self.kwargs_contains(key):
-            raise KeyError(
-                f"Expected '{key}' in {self.__class__.__name__} but does not exist."
-            )
+            raise KeyError(f"Expected '{key}' in {self.__class__.__name__} but does not exist.")
         return self._kwargs[key]
 
     @property

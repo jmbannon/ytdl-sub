@@ -2,12 +2,8 @@ import tempfile
 
 import pytest
 
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    StringFormatterValidator,
-)
-from ytdl_subscribe.validators.config.overrides.overrides_validator import (
-    OverridesValidator,
-)
+from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
+from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 from ytdl_subscribe.validators.exceptions import StringFormattingException
 from ytdl_subscribe.validators.exceptions import ValidationException
 
@@ -47,9 +43,7 @@ class TestEntry(object):
             mock_entry.kwargs(key)
 
     def test_entry_formatter_fails_missing_field(self, mock_entry):
-        format_string = StringFormatterValidator(
-            name="test", value=f"prefix {{bah_humbug}} suffix"
-        )
+        format_string = StringFormatterValidator(name="test", value=f"prefix {{bah_humbug}} suffix")
         available_fields = ", ".join(sorted(mock_entry.to_dict().keys()))
         expected_error_msg = (
             f"Validation error in test: Format variable 'bah_humbug' does not exist. "

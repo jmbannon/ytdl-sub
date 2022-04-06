@@ -28,9 +28,7 @@ class Validator(ABC):
 
     def __init__(self, name: str, value: Any):
         self._name = name
-        self._value = copy.deepcopy(
-            value
-        )  # Always deep copy to avoid editing references
+        self._value = copy.deepcopy(value)  # Always deep copy to avoid editing references
 
         if not isinstance(self._value, self._expected_value_type):
             expected_value_type_name = self._expected_value_type_name or str(
@@ -147,9 +145,7 @@ class DictValidator(Validator):
         An instance of the specified validator
         """
         if key not in self._dict and default is None:
-            raise self._validation_exception(
-                f"{key} is missing when it should be present."
-            )
+            raise self._validation_exception(f"{key} is missing when it should be present.")
 
         return validator(
             name=f"{self._name}.{key}",

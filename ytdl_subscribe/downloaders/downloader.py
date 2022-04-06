@@ -24,9 +24,7 @@ class Downloader:
         return {}
 
     @classmethod
-    def _configure_ytdl_options(
-        cls, ytdl_options: Optional[Dict], working_directory: str
-    ) -> Dict:
+    def _configure_ytdl_options(cls, ytdl_options: Optional[Dict], working_directory: str) -> Dict:
         """Configure the ytdl options for the downloader"""
         if ytdl_options is None:
             ytdl_options = {}
@@ -56,9 +54,7 @@ class Downloader:
         )
 
     @contextmanager
-    def ytdl_downloader(
-        self, ytdl_options_overrides: Optional[Dict] = None
-    ) -> ytdl.YoutubeDL:
+    def ytdl_downloader(self, ytdl_options_overrides: Optional[Dict] = None) -> ytdl.YoutubeDL:
         """
         Context manager to interact with yt_dlp.
         """
@@ -69,9 +65,7 @@ class Downloader:
         with ytdl.YoutubeDL(ytdl_options) as ytdl_downloader:
             yield ytdl_downloader
 
-    def extract_info(
-        self, ytdl_options_overrides: Optional[Dict] = None, **kwargs
-    ) -> Dict:
+    def extract_info(self, ytdl_options_overrides: Optional[Dict] = None, **kwargs) -> Dict:
         """
         Wrapper around yt_dlp.YoutubeDL.YoutubeDL.extract_info
         All kwargs will passed to the extract_info function.

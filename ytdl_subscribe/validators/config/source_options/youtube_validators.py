@@ -4,9 +4,7 @@ from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.source_options.source_validator import (
     DownloadStrategyValidator,
 )
-from ytdl_subscribe.validators.config.source_options.source_validator import (
-    SourceValidator,
-)
+from ytdl_subscribe.validators.config.source_options.source_validator import SourceValidator
 
 
 class YoutubePlaylistDownloadValidator(DownloadStrategyValidator):
@@ -18,9 +16,7 @@ class YoutubePlaylistDownloadValidator(DownloadStrategyValidator):
 
 
 class YoutubeSourceValidator(SourceValidator):
-    _download_strategy_validator_mapping = {
-        "playlist": YoutubePlaylistDownloadValidator
-    }
+    _download_strategy_validator_mapping = {"playlist": YoutubePlaylistDownloadValidator}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)

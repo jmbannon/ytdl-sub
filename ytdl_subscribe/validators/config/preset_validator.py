@@ -11,15 +11,11 @@ from ytdl_subscribe.validators.config.metadata_options.metadata_options_validato
 from ytdl_subscribe.validators.config.output_options.output_options_validator import (
     OutputOptionsValidator,
 )
-from ytdl_subscribe.validators.config.overrides.overrides_validator import (
-    OverridesValidator,
-)
+from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
     SoundcloudSourceValidator,
 )
-from ytdl_subscribe.validators.config.source_options.source_validator import (
-    SourceValidator,
-)
+from ytdl_subscribe.validators.config.source_options.source_validator import SourceValidator
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubeSourceValidator,
 )

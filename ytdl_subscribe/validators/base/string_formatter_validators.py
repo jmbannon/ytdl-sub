@@ -122,9 +122,7 @@ class DictFormatterValidator(LiteralDictValidator):
         super().__init__(name, value)
 
         for key in self._keys:
-            self._value[key] = self._validate_key(
-                key=key, validator=StringFormatterValidator
-            )
+            self._value[key] = self._validate_key(key=key, validator=StringFormatterValidator)
 
     @property
     def dict(self) -> Dict[str, StringFormatterValidator]:
@@ -134,7 +132,4 @@ class DictFormatterValidator(LiteralDictValidator):
     @property
     def dict_with_format_strings(self) -> Dict[str, str]:
         """Returns dict with the format strings themselves"""
-        return {
-            key: string_formatter.format_string
-            for key, string_formatter in self.dict.items()
-        }
+        return {key: string_formatter.format_string for key, string_formatter in self.dict.items()}

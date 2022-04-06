@@ -26,9 +26,7 @@ class StrictDictValidator(DictValidator):
         # Ensure all required keys are present
         for required_key in self._required_keys:
             if required_key not in self._dict:
-                raise self._validation_exception(
-                    f"missing the required field '{required_key}'"
-                )
+                raise self._validation_exception(f"missing the required field '{required_key}'")
 
         # Ensure an empty dict was not passed as the value
         if not self._dict:

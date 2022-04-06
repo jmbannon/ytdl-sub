@@ -5,9 +5,7 @@ from typing import List
 ###################################################################################################
 # GLOBAL PARSER
 from ytdl_subscribe.validators.config.config_file_validator import ConfigFileValidator
-from ytdl_subscribe.validators.config.subscription_validator import (
-    SubscriptionValidator,
-)
+from ytdl_subscribe.validators.config.subscription_validator import SubscriptionValidator
 
 parser = argparse.ArgumentParser(
     description="YoutubeDL-Subscribe: Download and organize your favorite media hassle-free."

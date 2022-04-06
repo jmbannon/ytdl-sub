@@ -25,9 +25,7 @@ class YoutubeDownloader(Downloader):
         not fetch the metadata (maybe there is a way??)
         """
         ytdl_metadata_override = {
-            "download_archive": str(
-                Path(self.output_directory) / "ytdl-download-archive.txt"
-            ),
+            "download_archive": str(Path(self.output_directory) / "ytdl-download-archive.txt"),
             "writeinfojson": True,
         }
         _ = self.extract_info(ytdl_options_overrides=ytdl_metadata_override, url=url)
@@ -45,12 +43,8 @@ class YoutubeDownloader(Downloader):
 
         # Load the entries from info.json, ignore the playlist entry
         for file_name in os.listdir(self.output_directory):
-            if file_name.endswith(".info.json") and not file_name.startswith(
-                playlist_id
-            ):
-                with open(
-                    Path(self.output_directory) / file_name, "r", encoding="utf-8"
-                ) as file:
+            if file_name.endswith(".info.json") and not file_name.startswith(playlist_id):
+                with open(Path(self.output_directory) / file_name, "r", encoding="utf-8") as file:
                     entries.append(YoutubeVideo(**json.load(file)))
 
         return entries

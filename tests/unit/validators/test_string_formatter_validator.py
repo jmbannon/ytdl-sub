@@ -1,11 +1,7 @@
 import pytest
 
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    DictFormatterValidator,
-)
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    StringFormatterValidator,
-)
+from ytdl_subscribe.validators.base.string_formatter_validators import DictFormatterValidator
+from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 from ytdl_subscribe.validators.exceptions import StringFormattingException
 from ytdl_subscribe.validators.exceptions import ValidationException
 
@@ -29,9 +25,7 @@ def error_message_unequal_regex_matches_str():
 class TestStringFormatterValidator(object):
     def test_parse(self):
         format_string = "Here is my {var_one} and {var_two} 💩"
-        validator = StringFormatterValidator(
-            name="test_format_variables", value=format_string
-        )
+        validator = StringFormatterValidator(name="test_format_variables", value=format_string)
 
         assert validator.format_string == format_string
         assert validator.format_variables == ["var_one", "var_two"]
@@ -54,12 +48,8 @@ class TestStringFormatterValidator(object):
             "Try }var_one} and {var_one}",
         ],
     )
-    def test_validate_fail_uneven_brackets(
-        self, format_string, error_message_unequal_brackets_str
-    ):
-        expected_error_msg = (
-            f"Validation error in fail: {error_message_unequal_brackets_str}"
-        )
+    def test_validate_fail_uneven_brackets(self, format_string, error_message_unequal_brackets_str):
+        expected_error_msg = f"Validation error in fail: {error_message_unequal_brackets_str}"
 
         with pytest.raises(ValidationException, match=expected_error_msg):
             _ = StringFormatterValidator(name="fail", value=format_string)
@@ -78,9 +68,7 @@ class TestStringFormatterValidator(object):
     def test_validate_fail_bad_variable(
         self, format_string, error_message_unequal_regex_matches_str
     ):
-        expected_error_msg = (
-            f"Validation error in fail: {error_message_unequal_regex_matches_str}"
-        )
+        expected_error_msg = f"Validation error in fail: {error_message_unequal_regex_matches_str}"
 
         with pytest.raises(ValidationException, match=expected_error_msg):
             _ = StringFormatterValidator(name="fail", value=format_string)
@@ -92,9 +80,7 @@ class TestStringFormatterValidator(object):
             ("{try} {valid_var}", "try"),
         ],
     )
-    def test_validate_fail_variable_keyword_or_not_identifier(
-        self, format_string, bad_variable
-    ):
+    def test_validate_fail_variable_keyword_or_not_identifier(self, format_string, bad_variable):
         expected_error_msg = (
             f"Validation error in fail: "
             f"'{bad_variable}' is a Python keyword and cannot be used as a variable."
@@ -105,14 +91,10 @@ class TestStringFormatterValidator(object):
 
     def test_string_formatter_single_field(self):
         uid = "this uid"
-        format_string = StringFormatterValidator(
-            name="test", value=f"prefix {{uid}} suffix"
-        )
+        format_string = StringFormatterValidator(name="test", value=f"prefix {{uid}} suffix")
         expected_string = f"prefix {uid} suffix"
 
-        assert (
-            format_string.apply_formatter(variable_dict={"uid": uid}) == expected_string
-        )
+        assert format_string.apply_formatter(variable_dict={"uid": uid}) == expected_string
 
     def test_entry_formatter_duplicate_fields(self):
         upload_year = "2022"
@@ -133,15 +115,10 @@ class TestStringFormatterValidator(object):
             "level_c": "level c and {level_b}",
         }
 
-        format_string = StringFormatterValidator(
-            name="test", value="level d and {level_c}"
-        )
+        format_string = StringFormatterValidator(name="test", value="level d and {level_c}")
         expected_string = "level d and level c and level b and level a"
 
-        assert (
-            format_string.apply_formatter(variable_dict=variable_dict)
-            == expected_string
-        )
+        assert format_string.apply_formatter(variable_dict=variable_dict) == expected_string
 
     def test_entry_formatter_override_recursive_fail_cycle(self):
         variable_dict = {

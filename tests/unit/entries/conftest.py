@@ -1,9 +1,7 @@
 import pytest
 
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    StringFormatterValidator,
-)
+from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 
 
 @pytest.fixture
@@ -47,9 +45,7 @@ def download_file_name(uid, ext):
 
 
 @pytest.fixture
-def mock_entry_to_dict(
-    uid, title, ext, upload_date, upload_year, thumbnail, thumbnail_ext
-):
+def mock_entry_to_dict(uid, title, ext, upload_date, upload_year, thumbnail, thumbnail_ext):
     return {
         "uid": uid,
         "title": title,
@@ -114,9 +110,7 @@ def validate_entry_dict_contains_valid_formatters():
             format_string = f"test {{{key}}} formatting works"
 
             assert (
-                entry.apply_formatter(
-                    StringFormatterValidator(name="test", value=format_string)
-                )
+                entry.apply_formatter(StringFormatterValidator(name="test", value=format_string))
                 == expected_string
             )
 

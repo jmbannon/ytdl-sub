@@ -18,9 +18,7 @@ class ConfigFileValidator(StrictDictValidator):
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
-        self.config_options = self._validate_key(
-            "configuration", ConfigOptionsValidator
-        )
+        self.config_options = self._validate_key("configuration", ConfigOptionsValidator)
         self.presets = self._validate_key("presets", ConfigPresetsValidator)
 
     @classmethod

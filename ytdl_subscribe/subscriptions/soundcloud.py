@@ -53,9 +53,7 @@ class SoundcloudAlbumsAndSinglesSubscription(SoundcloudSubscription):
             artist_name=self.download_strategy_options.username.value
         )
         tracks += [
-            track
-            for track in single_tracks
-            if not any(album.contains(track) for album in albums)
+            track for track in single_tracks if not any(album.contains(track) for album in albums)
         ]
 
         for entry in tracks:

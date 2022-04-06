@@ -1,11 +1,7 @@
 import sanitize_filename
 
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    DictFormatterValidator,
-)
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    StringFormatterValidator,
-)
+from ytdl_subscribe.validators.base.string_formatter_validators import DictFormatterValidator
+from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 
 
 class OverridesValidator(DictFormatterValidator):

@@ -8,9 +8,7 @@ from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 class TestDictValidator:
-    @pytest.mark.parametrize(
-        "value", [{}, {"key": "value"}, {"b": {}, "a": "keys_out_of_order"}]
-    )
+    @pytest.mark.parametrize("value", [{}, {"key": "value"}, {"b": {}, "a": "keys_out_of_order"}])
     def test_dict_validator(self, value):
         dict_validator = DictValidator(name="good_dict_validator", value=value)
         assert dict_validator._name == "good_dict_validator"
@@ -31,9 +29,7 @@ class TestDictValidator:
     )
     def test_dict_validator_validate_key(self, value, validator_class):
         dict_validator = DictValidator(name="validate_key", value={"key_name": value})
-        validated_key = dict_validator._validate_key(
-            key="key_name", validator=validator_class
-        )
+        validated_key = dict_validator._validate_key(key="key_name", validator=validator_class)
 
         assert isinstance(validated_key, validator_class)
         assert validated_key.value == value
@@ -95,9 +91,7 @@ class TestDictValidator:
 
 
 class TestLiteralDictValidator:
-    @pytest.mark.parametrize(
-        "value", [{}, {"key": "value"}, {"b": {}, "a": "keys_out_of_order"}]
-    )
+    @pytest.mark.parametrize("value", [{}, {"key": "value"}, {"b": {}, "a": "keys_out_of_order"}])
     def test_literal_dict_validator_dict_and_keys(self, value):
         dict_validator = LiteralDictValidator(name="good_dict_validator", value=value)
         assert dict_validator._name == "good_dict_validator"
