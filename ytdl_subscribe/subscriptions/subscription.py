@@ -14,21 +14,28 @@ from ytdl_subscribe.validators.base.string_formatter_validators import StringFor
 from ytdl_subscribe.validators.config.config_options.config_options_validator import (
     ConfigOptionsValidator,
 )
+from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
+    MetadataOptionsValidator,
+)
+from ytdl_subscribe.validators.config.output_options.output_options_validator import (
+    OutputOptionsValidator,
+)
+from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.source_options.source_validator import (
     DownloadStrategyValidator,
 )
 from ytdl_subscribe.validators.config.source_options.source_validator import SourceValidator
 
-SOURCE_T = TypeVar("SOURCE_T", bound=SourceValidator)
-DOWNLOAD_STRATEGY_T = TypeVar("DOWNLOAD_STRATEGY_T", bound=DownloadStrategyValidator)
-DOWNLOADER_T = TypeVar("DOWNLOADER_T", bound=Downloader)
+T = TypeVar("T", bound=SourceValidator)
+U = TypeVar("U", bound=DownloadStrategyValidator)
+V = TypeVar("V", bound=Downloader)
 
 
-class Subscription(object):
-    source_validator_type: Type[SOURCE_T]
-    download_strategy_type: Type[DOWNLOAD_STRATEGY_T]
-    downloader_type: Type[Downloader]
+class Subscription:
+    source_validator_type: Type[T]
+    download_strategy_type: Type[U]
+    downloader_type: Type[V]
 
     def __init__(
         self,
@@ -45,38 +52,53 @@ class Subscription(object):
         preset_options: PresetValidator
         """
         self.name = name
-        self.output_options = preset_options.output_options
-        self.metadata_options = preset_options.metadata_options
-        self.ytdl_options = preset_options.ytdl_options
-        self.overrides = preset_options.overrides
-        self._config_options = config_options
-        self._source_options = preset_options.subscription_source
-        self._download_strategy_options = self._source_options.download_strategy
+        self.__config_options = config_options
+        self.__preset_options = preset_options
 
-        if not isinstance(self._source_options, self.source_validator_type):
+        if not isinstance(preset_options.subscription_source, self.source_validator_type):
             raise ValueError("Source options does not match the expected type")
 
-        if not isinstance(self._download_strategy_options, self.download_strategy_type):
+        if not isinstance(
+            preset_options.subscription_source.download_strategy, self.download_strategy_type
+        ):
             raise ValueError("Download strategy does not match the expected type")
 
     @property
-    def source_options(self) -> SOURCE_T:
-        return self._source_options
+    def output_options(self) -> OutputOptionsValidator:
+        """Returns the output options defined for this subscription"""
+        return self.__preset_options.output_options
 
     @property
-    def download_strategy_options(self) -> DOWNLOAD_STRATEGY_T:
-        return self._download_strategy_options
+    def metadata_options(self) -> MetadataOptionsValidator:
+        """Returns the metadata options defined for this subscription"""
+        return self.__preset_options.metadata_options
+
+    @property
+    def source_options(self) -> T:
+        """Returns the source options defined for this subscription"""
+        return self.__preset_options.subscription_source
+
+    @property
+    def download_strategy_options(self) -> U:
+        """Returns the download strategy options defined for this subscription"""
+        return self.source_options.download_strategy
+
+    @property
+    def overrides(self) -> OverridesValidator:
+        """Returns the overrides defined for this subscription"""
+        return self.__preset_options.overrides
 
     @property
     def working_directory(self) -> str:
         """Returns the directory that the downloader saves files to"""
-        return str(Path(self._config_options.working_directory.value) / Path(self.name))
+        return str(Path(self.__config_options.working_directory.value) / Path(self.name))
 
     @property
-    def downloader(self) -> DOWNLOADER_T:
+    def downloader(self) -> V:
+        """Returns the downloader that will be used to download media for this subscription"""
         return self.downloader_type(
             output_directory=self.working_directory,
-            ytdl_options=self.ytdl_options.dict,
+            ytdl_options=self.__preset_options.ytdl_options.dict,
         )
 
     def _apply_formatter(self, entry: Entry, formatter: StringFormatterValidator) -> str:
@@ -96,13 +118,19 @@ class Subscription(object):
         return formatter.apply_formatter(variable_dict)
 
     def _post_process_tagging(self, entry: Entry):
+        """
+        Tags the entry's audio file using values defined in the metadata options
+        """
         id3_options = self.metadata_options.id3
         audio_file = music_tag.load_file(entry.file_path(relative_directory=self.working_directory))
         for tag, tag_formatter in id3_options.tags.dict.items():
             audio_file[tag] = self._apply_formatter(entry=entry, formatter=tag_formatter)
         audio_file.save()
 
-    def _post_process_nfo(self, entry):
+    def _post_process_nfo(self, entry: Entry):
+        """
+        Creates an entry's NFO file using values defined in the metadata options
+        """
         nfo = {}
         nfo_options = self.metadata_options.nfo
 

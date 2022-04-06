@@ -29,7 +29,8 @@ class SourceValidator(StrictDictValidator):
 
         if download_strategy_name not in self._possible_download_strategies:
             raise self._validation_exception(
-                f"download_strategy must be one of the following: {', '.join(self._possible_download_strategies)}"
+                f"download_strategy must be one of the following: "
+                f"{', '.join(self._possible_download_strategies)}"
             )
 
         # Remove all non-download strategy keys before passing the dict to the validator
