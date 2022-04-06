@@ -83,7 +83,7 @@ class Subscription(object):
             ytdl_options=self.ytdl_options.dict,
         )
 
-    def _apply_entry_formatter(
+    def _apply_formatter(
         self, entry: Entry, formatter: StringFormatterValidator
     ) -> str:
         """
@@ -98,7 +98,8 @@ class Subscription(object):
         -------
         The format_string after .format has been called on it using entry and override values
         """
-        return entry.apply_formatter(formatter=formatter, overrides=self.overrides)
+        variable_dict = dict(entry.to_dict(), **self.overrides.dict_with_format_strings)
+        return formatter.apply_formatter(variable_dict)
 
     def _post_process_tagging(self, entry: Entry):
         id3_options = self.metadata_options.id3
@@ -106,7 +107,7 @@ class Subscription(object):
             entry.file_path(relative_directory=self.working_directory)
         )
         for tag, tag_formatter in id3_options.tags.dict.items():
-            audio_file[tag] = self._apply_entry_formatter(
+            audio_file[tag] = self._apply_formatter(
                 entry=entry, formatter=tag_formatter
             )
         audio_file.save()
@@ -116,12 +117,10 @@ class Subscription(object):
         nfo_options = self.metadata_options.nfo
 
         for tag, tag_formatter in nfo_options.tags.dict.items():
-            nfo[tag] = self._apply_entry_formatter(entry=entry, formatter=tag_formatter)
+            nfo[tag] = self._apply_formatter(entry=entry, formatter=tag_formatter)
 
         # Write the nfo tags to XML with the nfo_root
-        nfo_root = self._apply_entry_formatter(
-            entry=entry, formatter=nfo_options.nfo_root
-        )
+        nfo_root = self._apply_formatter(entry=entry, formatter=nfo_options.nfo_root)
         xml = dicttoxml.dicttoxml(
             obj=nfo,
             root=True,  # We assume all NFOs have a root. Maybe we should not?
@@ -129,10 +128,10 @@ class Subscription(object):
             attr_type=False,
         )
 
-        nfo_file_name = self._apply_entry_formatter(
+        nfo_file_name = self._apply_formatter(
             entry=entry, formatter=nfo_options.nfo_name
         )
-        output_directory = self._apply_entry_formatter(
+        output_directory = self._apply_formatter(
             entry=entry, formatter=self.output_options.output_directory
         )
 
@@ -156,11 +155,11 @@ class Subscription(object):
             relative_directory=self.working_directory
         )
 
-        output_directory = self._apply_entry_formatter(
+        output_directory = self._apply_formatter(
             entry=entry, formatter=self.output_options.output_directory
         )
 
-        output_file_name = self._apply_entry_formatter(
+        output_file_name = self._apply_formatter(
             entry=entry, formatter=self.output_options.file_name
         )
         entry_destination_file_path = Path(output_directory) / Path(output_file_name)
@@ -174,7 +173,7 @@ class Subscription(object):
                 relative_directory=self.working_directory
             )
 
-            output_thumbnail_name = self._apply_entry_formatter(
+            output_thumbnail_name = self._apply_formatter(
                 entry=entry, formatter=self.output_options.thumbnail_name
             )
             output_thumbnail_path = Path(output_directory) / Path(output_thumbnail_name)

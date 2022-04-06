@@ -6,6 +6,7 @@ from ytdl_subscribe.validators.base.string_formatter_validators import (
 from ytdl_subscribe.validators.base.string_formatter_validators import (
     StringFormatterValidator,
 )
+from ytdl_subscribe.validators.exceptions import StringFormattingException
 from ytdl_subscribe.validators.exceptions import ValidationException
 
 
@@ -101,6 +102,64 @@ class TestStringFormatterValidator(object):
 
         with pytest.raises(ValidationException, match=expected_error_msg):
             _ = StringFormatterValidator(name="fail", value=format_string)
+
+    def test_string_formatter_single_field(self):
+        uid = "this uid"
+        format_string = StringFormatterValidator(
+            name="test", value=f"prefix {{uid}} suffix"
+        )
+        expected_string = f"prefix {uid} suffix"
+
+        assert (
+            format_string.apply_formatter(variable_dict={"uid": uid}) == expected_string
+        )
+
+    def test_entry_formatter_duplicate_fields(self):
+        upload_year = "2022"
+        format_string = StringFormatterValidator(
+            name="test", value=f"prefix {{upload_year}} {{upload_year}} suffix"
+        )
+        expected_string = f"prefix {upload_year} {upload_year} suffix"
+
+        assert (
+            format_string.apply_formatter(variable_dict={"upload_year": upload_year})
+            == expected_string
+        )
+
+    def test_entry_formatter_override_recursive(self):
+        variable_dict = {
+            "level_a": "level a",
+            "level_b": "level b and {level_a}",
+            "level_c": "level c and {level_b}",
+        }
+
+        format_string = StringFormatterValidator(
+            name="test", value="level d and {level_c}"
+        )
+        expected_string = "level d and level c and level b and level a"
+
+        assert (
+            format_string.apply_formatter(variable_dict=variable_dict)
+            == expected_string
+        )
+
+    def test_entry_formatter_override_recursive_fail_cycle(self):
+        variable_dict = {
+            "level_a": "{level_b}",
+            "level_b": "{level_a}",
+        }
+
+        # Max depth is 3 so should go level_a -(0)-> level_b -(1)-> level_a -(2)-> level_b
+        expected_error_msg = (
+            "Validation error in test: Attempted to format but failed after reaching max recursion "
+            "depth of 3. Try to keep variables dependent on only one other variable at max. "
+            "Unresolved variables: level_b"
+        )
+
+        format_string = StringFormatterValidator(name="test", value="{level_a}")
+
+        with pytest.raises(StringFormattingException, match=expected_error_msg):
+            _ = format_string.apply_formatter(variable_dict=variable_dict)
 
 
 class TestDictFormatterValidator(object):
