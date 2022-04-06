@@ -8,6 +8,7 @@ from ytdl_subscribe.validators.base.string_formatter_validators import (
 from ytdl_subscribe.validators.config.overrides.overrides_validator import (
     OverridesValidator,
 )
+from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 class TestEntry(object):
@@ -67,6 +68,45 @@ class TestEntry(object):
             mock_entry.apply_formatter(format_string, overrides=overrides)
             == expected_string
         )
+
+    def test_entry_formatter_override_recursive(self, mock_entry):
+        overrides = OverridesValidator(
+            name="test",
+            value={
+                "level_a": "level a",
+                "level_b": "level b and {level_a}",
+                "level_c": "level c and {level_b}",
+            },
+        )
+
+        format_string = StringFormatterValidator(
+            name="test", value="level d and {level_c}"
+        )
+        expected_string = "level d and level c and level b and level a"
+
+        assert (
+            mock_entry.apply_formatter(format_string, overrides=overrides)
+            == expected_string
+        )
+
+    def test_entry_formatter_override_recursive_fail_cycle(self, mock_entry):
+        overrides = OverridesValidator(
+            name="test",
+            value={
+                "level_a": "{level_b}",
+                "level_b": "{level_a}",
+            },
+        )
+
+        expected_error_msg = (
+            f"Attempted to format 'test' but failed after reaching max recursion depth of 3. "
+            f"Try to keep variables dependent on only one other variable."
+        )
+
+        format_string = StringFormatterValidator(name="test", value="{level_a}")
+
+        with pytest.raises(ValidationException, match=expected_error_msg):
+            _ = mock_entry.apply_formatter(format_string, overrides=overrides)
 
     def test_entry_missing_kwarg(self, mock_entry):
         key = "dne"
