@@ -1,6 +1,8 @@
 import os
+from abc import ABC
 from pathlib import Path
 from shutil import copyfile
+from typing import Generic
 from typing import Type
 from typing import TypeVar
 
@@ -28,15 +30,11 @@ from ytdl_subscribe.validators.config.source_options.source_validator import (
 from ytdl_subscribe.validators.config.source_options.source_validator import SourceValidator
 
 T = TypeVar("T", bound=SourceValidator)
-U = TypeVar("U", bound=DownloadStrategyValidator)
-V = TypeVar("V", bound=Downloader)
+U = TypeVar("U", bound=Downloader)
+V = TypeVar("V", bound=DownloadStrategyValidator)
 
 
-class Subscription:
-    source_validator_type: Type[T]
-    download_strategy_type: Type[U]
-    downloader_type: Type[V]
-
+class Subscription(Generic[T, V], ABC):
     def __init__(
         self,
         name: str,
@@ -55,13 +53,22 @@ class Subscription:
         self.__config_options = config_options
         self.__preset_options = preset_options
 
-        if not isinstance(preset_options.subscription_source, self.source_validator_type):
-            raise ValueError("Source options does not match the expected type")
+    @property
+    def source_options(self) -> T:
+        """Returns the source options defined for this subscription"""
+        return self.__preset_options.subscription_source
 
-        if not isinstance(
-            preset_options.subscription_source.download_strategy, self.download_strategy_type
-        ):
-            raise ValueError("Download strategy does not match the expected type")
+    def get_downloader(self, downloader_type: Type[U]) -> U:
+        """Returns the downloader that will be used to download media for this subscription"""
+        return downloader_type(
+            output_directory=self.working_directory,
+            ytdl_options=self.__preset_options.ytdl_options.dict,
+        )
+
+    @property
+    def download_strategy_options(self) -> V:
+        """Returns the download strategy options defined for this subscription"""
+        return self.source_options.download_strategy
 
     @property
     def output_options(self) -> OutputOptionsValidator:
@@ -74,16 +81,6 @@ class Subscription:
         return self.__preset_options.metadata_options
 
     @property
-    def source_options(self) -> T:
-        """Returns the source options defined for this subscription"""
-        return self.__preset_options.subscription_source
-
-    @property
-    def download_strategy_options(self) -> U:
-        """Returns the download strategy options defined for this subscription"""
-        return self.source_options.download_strategy
-
-    @property
     def overrides(self) -> OverridesValidator:
         """Returns the overrides defined for this subscription"""
         return self.__preset_options.overrides
@@ -92,14 +89,6 @@ class Subscription:
     def working_directory(self) -> str:
         """Returns the directory that the downloader saves files to"""
         return str(Path(self.__config_options.working_directory.value) / Path(self.name))
-
-    @property
-    def downloader(self) -> V:
-        """Returns the downloader that will be used to download media for this subscription"""
-        return self.downloader_type(
-            output_directory=self.working_directory,
-            ytdl_options=self.__preset_options.ytdl_options.dict,
-        )
 
     def _apply_formatter(self, entry: Entry, formatter: StringFormatterValidator) -> str:
         """
