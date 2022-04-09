@@ -1,3 +1,4 @@
+from ytdl_subscribe.validators.base.string_datetime import StringDatetimeValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.source_options.source_validators import YoutubeSourceValidator
 
@@ -20,7 +21,10 @@ class YoutubeVideoSourceValidator(YoutubeSourceValidator):
 
 class YoutubeChannelSourceValidator(YoutubeSourceValidator):
     _required_keys = {"channel_id"}
+    _optional_keys = {"before", "after"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
         self.channel_id = self._validate_key("channel_id", StringValidator)
+        self.before = self._validate_key_if_present("before", StringDatetimeValidator)
+        self.after = self._validate_key_if_present("after", StringDatetimeValidator)

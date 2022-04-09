@@ -9,8 +9,8 @@ from mergedeep import mergedeep
 
 from ytdl_subscribe.subscriptions.soundcloud import SoundcloudAlbumsAndSinglesSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription, \
-    YoutubeChannelSubscription
+from ytdl_subscribe.subscriptions.youtube import YoutubeChannelSubscription
+from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeVideoSubscription
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
@@ -23,7 +23,10 @@ from ytdl_subscribe.validators.config.source_options.soundcloud_validators impor
     SoundcloudAlbumsAndSinglesSourceValidator,
 )
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubePlaylistSourceValidator, YoutubeChannelSourceValidator,
+    YoutubeChannelSourceValidator,
+)
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
+    YoutubePlaylistSourceValidator,
 )
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubeVideoSourceValidator,

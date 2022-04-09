@@ -2,9 +2,12 @@ import os
 from abc import ABC
 from pathlib import Path
 from shutil import copyfile
-from typing import Generic, overload, Optional
+from typing import Dict
+from typing import Generic
+from typing import Optional
 from typing import Type
 from typing import TypeVar
+from typing import overload
 
 import dicttoxml
 import music_tag
@@ -55,12 +58,17 @@ class Subscription(Generic[S], ABC):
         """Returns the source options defined for this subscription"""
         return self.__preset_options.subscription_source
 
-    def get_downloader(self, downloader_type: Type[D]) -> D:
+    def get_downloader(
+        self, downloader_type: Type[D], source_ytdl_options: Optional[Dict] = None
+    ) -> D:
         """Returns the downloader that will be used to download media for this subscription"""
-        return downloader_type(
-            output_directory=self.working_directory,
-            ytdl_options=self.__preset_options.ytdl_options.dict,
-        )
+
+        # if source_ytdl_options are present, override the ytdl_options with them
+        ytdl_options = self.__preset_options.ytdl_options.dict
+        if source_ytdl_options:
+            ytdl_options = dict(ytdl_options, **source_ytdl_options)
+
+        return downloader_type(output_directory=self.working_directory, ytdl_options=ytdl_options)
 
     @property
     def output_options(self) -> OutputOptionsValidator:
@@ -82,7 +90,9 @@ class Subscription(Generic[S], ABC):
         """Returns the directory that the downloader saves files to"""
         return str(Path(self.__config_options.working_directory.value) / Path(self.name))
 
-    def _apply_formatter(self, formatter: StringFormatterValidator, entry: Optional[Entry] = None) -> str:
+    def _apply_formatter(
+        self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
+    ) -> str:
         """
         Returns the format_string after .format has been called on it using entry (if provided) and
         override values

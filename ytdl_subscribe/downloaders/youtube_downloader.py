@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 from typing import List
 
+from yt_dlp.utils import RejectedVideoReached
+
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.entries.youtube import YoutubeVideo
 
@@ -38,7 +40,11 @@ class YoutubeDownloader(Downloader):
             "download_archive": str(Path(self.output_directory) / "ytdl-download-archive.txt"),
             "writeinfojson": True,
         }
-        _ = self.extract_info(ytdl_options_overrides=ytdl_metadata_override, url=url)
+
+        try:
+            _ = self.extract_info(ytdl_options_overrides=ytdl_metadata_override, url=url)
+        except RejectedVideoReached:
+            pass
 
     def download_video(self, video_id: str) -> YoutubeVideo:
         """Download a single Youtube video"""

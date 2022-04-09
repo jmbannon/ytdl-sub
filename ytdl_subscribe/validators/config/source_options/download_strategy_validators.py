@@ -11,7 +11,10 @@ from ytdl_subscribe.validators.config.source_options.soundcloud_validators impor
 )
 from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubePlaylistSourceValidator, YoutubeChannelSourceValidator,
+    YoutubeChannelSourceValidator,
+)
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
+    YoutubePlaylistSourceValidator,
 )
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubeVideoSourceValidator,

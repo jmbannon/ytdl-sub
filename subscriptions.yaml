@@ -61,10 +61,11 @@
 recent_channel_test:
   preset: "yt_channel"
   ytdl_options:
-    daterange: now-2weeks
+    break_on_reject: True
   youtube:
     download_strategy: "channel"
     channel_id: "UCRcCVDu_4oARsAKFkKYydAQ"
+    after: today-8months
   output_options:
     output_directory: "/tmp/dunkey"
   overrides:

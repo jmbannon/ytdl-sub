@@ -78,10 +78,12 @@ class StringFormatterValidator(Validator):
         """
         return self._value
 
-    @final
-    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
+    def __apply_formatter(
+        self, formatter: "StringFormatterValidator", variable_dict: Dict[str, str]
+    ) -> "StringFormatterValidator":
+        """TODO: test recursive case where variable not found"""
         # Ensure the variable names exist within the entry and overrides
-        for variable_name in self.format_variables:
+        for variable_name in formatter.format_variables:
             if variable_name not in variable_dict:
                 available_fields = ", ".join(sorted(variable_dict.keys()))
                 raise self._validation_exception(
@@ -90,16 +92,20 @@ class StringFormatterValidator(Validator):
                     exception_class=StringFormattingException,
                 )
 
+        return StringFormatterValidator(
+            name=self._name,
+            value=formatter.format_string.format(**OrderedDict(variable_dict)),
+        )
+
+    @final
+    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
         # Keep formatting the format string until no format_variables are present
         formatter = self
         recursion_depth = 0
         max_depth = StringFormatterValidator.__max_format_recursion
 
         while formatter.format_variables and recursion_depth < max_depth:
-            formatter = StringFormatterValidator(
-                name=self._name,
-                value=formatter.format_string.format(**OrderedDict(variable_dict)),
-            )
+            formatter = self.__apply_formatter(formatter=formatter, variable_dict=variable_dict)
             recursion_depth += 1
 
         if formatter.format_variables:

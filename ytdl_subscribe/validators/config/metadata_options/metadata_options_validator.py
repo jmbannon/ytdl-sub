@@ -13,4 +13,6 @@ class MetadataOptionsValidator(StrictDictValidator):
         self.nfo = self._validate_key_if_present(key="nfo", validator=NFOValidator)
 
         # TODO: Ensure this does not depend on entry variables, only overrides
-        self.output_directory_nfo = self._validate_key_if_present(key="output_directory_nfo", validator=NFOValidator)
+        self.output_directory_nfo = self._validate_key_if_present(
+            key="output_directory_nfo", validator=NFOValidator
+        )
