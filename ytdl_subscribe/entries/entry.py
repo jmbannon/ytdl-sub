@@ -63,6 +63,30 @@ class Entry:
         return int(self.upload_date[:4])
 
     @property
+    def upload_month_padded(self) -> str:
+        """Returns the entry's upload month, padded"""
+        return self.upload_date[4:6]
+
+    @property
+    def upload_day_padded(self) -> str:
+        """Returns the entry's upload day, padded"""
+        return self.upload_date[6:8]
+
+    @property
+    def upload_month(self) -> int:
+        """Returns the entry's upload month as an int"""
+        return int(self.upload_month_padded.lstrip("0"))
+
+    @property
+    def upload_day(self) -> int:
+        """Returns the entry's upload month as an int"""
+        return int(self.upload_day_padded.lstrip("0"))
+
+    @property
+    def description(self) -> str:
+        return self.kwargs("description")
+
+    @property
     def thumbnail(self) -> str:
         """Returns the entry's thumbnail url"""
         return self.kwargs("thumbnail")

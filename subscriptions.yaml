@@ -48,12 +48,24 @@
 #  overrides:
 #    artist: "Rammstein"
 
-gogo_video_test:
-  preset: "music_videos"
+#gogo_video_test:
+#  preset: "music_videos"
+#  youtube:
+#    download_strategy: "video"
+#    video_id: "2RHTiXvELNg"
+#  output_options:
+#    output_directory: "/tmp/gogos"
+#  overrides:
+#    artist: "The Gogos"
+
+recent_channel_test:
+  preset: "yt_channel"
+  ytdl_options:
+    daterange: now-2weeks
   youtube:
-    download_strategy: "video"
-    video_id: "2RHTiXvELNg"
+    download_strategy: "channel"
+    channel_id: "UCRcCVDu_4oARsAKFkKYydAQ"
   output_options:
-    output_directory: "/tmp/gogos"
+    output_directory: "/tmp/dunkey"
   overrides:
-    artist: "The Gogos"
+    tv_show_name: "Youtube: Dunkey"

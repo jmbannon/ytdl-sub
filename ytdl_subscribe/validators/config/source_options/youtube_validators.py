@@ -16,3 +16,11 @@ class YoutubeVideoSourceValidator(YoutubeSourceValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
         self.video_id = self._validate_key("video_id", StringValidator)
+
+
+class YoutubeChannelSourceValidator(YoutubeSourceValidator):
+    _required_keys = {"channel_id"}
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        self.channel_id = self._validate_key("channel_id", StringValidator)

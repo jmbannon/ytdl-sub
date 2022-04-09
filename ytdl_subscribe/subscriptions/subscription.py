@@ -2,7 +2,7 @@ import os
 from abc import ABC
 from pathlib import Path
 from shutil import copyfile
-from typing import Generic
+from typing import Generic, overload, Optional
 from typing import Type
 from typing import TypeVar
 
@@ -19,6 +19,7 @@ from ytdl_subscribe.validators.config.config_options.config_options_validator im
 from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
     MetadataOptionsValidator,
 )
+from ytdl_subscribe.validators.config.metadata_options.nfo_validator import NFOValidator
 from ytdl_subscribe.validators.config.output_options.output_options_validator import (
     OutputOptionsValidator,
 )
@@ -81,20 +82,14 @@ class Subscription(Generic[S], ABC):
         """Returns the directory that the downloader saves files to"""
         return str(Path(self.__config_options.working_directory.value) / Path(self.name))
 
-    def _apply_formatter(self, entry: Entry, formatter: StringFormatterValidator) -> str:
+    def _apply_formatter(self, formatter: StringFormatterValidator, entry: Optional[Entry] = None) -> str:
         """
-        Parameters
-        ----------
-        entry
-            Entry with values to use in the formatter
-        formatter
-            The formatter itself
-
-        Returns
-        -------
-        The format_string after .format has been called on it using entry and override values
+        Returns the format_string after .format has been called on it using entry (if provided) and
+        override values
         """
-        variable_dict = dict(entry.to_dict(), **self.overrides.dict_with_format_strings)
+        variable_dict = self.overrides.dict_with_format_strings
+        if entry:
+            variable_dict = dict(entry.to_dict(), **variable_dict)
         return formatter.apply_formatter(variable_dict)
 
     def _post_process_tagging(self, entry: Entry):
@@ -104,21 +99,20 @@ class Subscription(Generic[S], ABC):
         id3_options = self.metadata_options.id3
         audio_file = music_tag.load_file(entry.file_path(relative_directory=self.working_directory))
         for tag, tag_formatter in id3_options.tags.dict.items():
-            audio_file[tag] = self._apply_formatter(entry=entry, formatter=tag_formatter)
+            audio_file[tag] = self._apply_formatter(formatter=tag_formatter, entry=entry)
         audio_file.save()
 
-    def _post_process_nfo(self, entry: Entry):
+    def _post_process_nfo(self, nfo_options: NFOValidator, entry: Optional[Entry] = None):
         """
         Creates an entry's NFO file using values defined in the metadata options
         """
         nfo = {}
-        nfo_options = self.metadata_options.nfo
 
         for tag, tag_formatter in nfo_options.tags.dict.items():
-            nfo[tag] = self._apply_formatter(entry=entry, formatter=tag_formatter)
+            nfo[tag] = self._apply_formatter(formatter=tag_formatter, entry=entry)
 
         # Write the nfo tags to XML with the nfo_root
-        nfo_root = self._apply_formatter(entry=entry, formatter=nfo_options.nfo_root)
+        nfo_root = self._apply_formatter(formatter=nfo_options.nfo_root, entry=entry)
         xml = dicttoxml.dicttoxml(
             obj=nfo,
             root=True,  # We assume all NFOs have a root. Maybe we should not?
@@ -126,9 +120,9 @@ class Subscription(Generic[S], ABC):
             attr_type=False,
         )
 
-        nfo_file_name = self._apply_formatter(entry=entry, formatter=nfo_options.nfo_name)
+        nfo_file_name = self._apply_formatter(formatter=nfo_options.nfo_name, entry=entry)
         output_directory = self._apply_formatter(
-            entry=entry, formatter=self.output_options.output_directory
+            formatter=self.output_options.output_directory, entry=entry
         )
 
         # Save the nfo's XML to file
@@ -150,11 +144,11 @@ class Subscription(Generic[S], ABC):
         entry_source_file_path = entry.file_path(relative_directory=self.working_directory)
 
         output_directory = self._apply_formatter(
-            entry=entry, formatter=self.output_options.output_directory
+            formatter=self.output_options.output_directory, entry=entry
         )
 
         output_file_name = self._apply_formatter(
-            entry=entry, formatter=self.output_options.file_name
+            formatter=self.output_options.file_name, entry=entry
         )
         entry_destination_file_path = Path(output_directory) / Path(output_file_name)
 
@@ -166,7 +160,7 @@ class Subscription(Generic[S], ABC):
             source_thumbnail_path = entry.thumbnail_path(relative_directory=self.working_directory)
 
             output_thumbnail_name = self._apply_formatter(
-                entry=entry, formatter=self.output_options.thumbnail_name
+                formatter=self.output_options.thumbnail_name, entry=entry
             )
             output_thumbnail_path = Path(output_directory) / Path(output_thumbnail_name)
 
@@ -185,4 +179,7 @@ class Subscription(Generic[S], ABC):
                 copyfile(source_thumbnail_path, output_thumbnail_path)
 
         if self.metadata_options.nfo:
-            self._post_process_nfo(entry)
+            self._post_process_nfo(nfo_options=self.metadata_options.nfo, entry=entry)
+
+        if self.metadata_options.output_directory_nfo:
+            self._post_process_nfo(nfo_options=self.metadata_options.output_directory_nfo)

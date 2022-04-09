@@ -9,7 +9,8 @@ from mergedeep import mergedeep
 
 from ytdl_subscribe.subscriptions.soundcloud import SoundcloudAlbumsAndSinglesSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription
+from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription, \
+    YoutubeChannelSubscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeVideoSubscription
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
@@ -22,7 +23,7 @@ from ytdl_subscribe.validators.config.source_options.soundcloud_validators impor
     SoundcloudAlbumsAndSinglesSourceValidator,
 )
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubePlaylistSourceValidator,
+    YoutubePlaylistSourceValidator, YoutubeChannelSourceValidator,
 )
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubeVideoSourceValidator,
@@ -78,7 +79,8 @@ class SubscriptionValidator(StrictDictValidator):
             subscription_class = YoutubePlaylistSubscription
         elif isinstance(self.preset.subscription_source, YoutubeVideoSourceValidator):
             subscription_class = YoutubeVideoSubscription
-
+        elif isinstance(self.preset.subscription_source, YoutubeChannelSourceValidator):
+            subscription_class = YoutubeChannelSubscription
         if subscription_class is None:
             raise ValueError("subscription source class not found")
 

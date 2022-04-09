@@ -43,3 +43,31 @@ presets:
           title: "{title}"
           album: "Music Videos"
           year: "{upload_year}"
+
+  yt_channel:
+    youtube:
+    ytdl_options:
+      format: 'best'
+      ignoreerrors: True
+    output_options:
+      file_name: "{output_file_name}.{ext}"
+      convert_thumbnail: "jpeg"
+      thumbnail_name: "{output_file_name}.jpeg"
+    metadata_options:
+      nfo:
+        nfo_name: "{output_file_name}.nfo"
+        nfo_root: "episodedetails"
+        tags:
+          title: "{title}"
+          season: "{upload_year}"
+          episode: "{upload_month}{upload_day_padded}"
+          plot: "{description}"
+          year: "{upload_year}"
+          aired: "{upload_year}-{upload_month_padded}-{upload_day_padded}"
+      output_directory_nfo:
+        nfo_name: "tvshow.nfo"
+        nfo_root: "tvshow"
+        tags:
+          title: "{tv_show_name}"
+    overrides:
+      output_file_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {sanitized_title}"
