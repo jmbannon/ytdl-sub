@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -8,7 +7,6 @@ from sanitize_filename import sanitize
 
 from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
-from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 class Entry:

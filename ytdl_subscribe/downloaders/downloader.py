@@ -24,7 +24,12 @@ class Downloader:
         return {}
 
     @classmethod
-    def _configure_ytdl_options(cls, ytdl_options: Optional[Dict], working_directory: str) -> Dict:
+    def _configure_ytdl_options(
+        cls,
+        working_directory: str,
+        ytdl_options: Optional[Dict],
+        download_archive_file_name: Optional[str],
+    ) -> Dict:
         """Configure the ytdl options for the downloader"""
         if ytdl_options is None:
             ytdl_options = {}
@@ -35,14 +40,19 @@ class Downloader:
         # Overwrite defaults + input with global options
         ytdl_options = dict(ytdl_options, **cls.ytdl_option_overrides())
 
-        # Finally overwrite the output location with the specified working directory
+        # Overwrite the output location with the specified working directory
         ytdl_options["outtmpl"] = str(Path(working_directory) / "%(id)s.%(ext)s")
+
+        # If a download archive file name is provided, set it to that
+        ytdl_options["download_archive"] = str(Path(working_directory) / download_archive_file_name)
+
         return ytdl_options
 
     def __init__(
         self,
         output_directory: str,
         ytdl_options: Optional[Dict] = None,
+        download_archive_file_name: Optional[str] = None,
     ):
         self.output_directory = output_directory
         if self.output_directory is None:
@@ -51,6 +61,7 @@ class Downloader:
         self.ytdl_options = Downloader._configure_ytdl_options(
             ytdl_options=ytdl_options,
             working_directory=self.output_directory,
+            download_archive_file_name=download_archive_file_name,
         )
 
     @contextmanager

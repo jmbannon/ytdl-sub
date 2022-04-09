@@ -4,6 +4,7 @@ from ytdl_subscribe.validators.base.string_formatter_validators import (
 )
 from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 from ytdl_subscribe.validators.base.string_select_validator import StringSelectValidator
+from ytdl_subscribe.validators.base.validators import BoolValidator
 
 
 class ConvertThumbnailValidator(StringSelectValidator):
@@ -16,7 +17,7 @@ class OutputOptionsValidator(StrictDictValidator):
     """Where to output the final files and thumbnails"""
 
     _required_keys = {"output_directory", "file_name"}
-    _optional_keys = {"convert_thumbnail", "thumbnail_name"}
+    _optional_keys = {"convert_thumbnail", "thumbnail_name", "maintain_download_archive"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
@@ -36,4 +37,8 @@ class OutputOptionsValidator(StrictDictValidator):
         )
         self.thumbnail_name = self._validate_key_if_present(
             key="thumbnail_name", validator=StringFormatterValidator
+        )
+
+        self.maintain_download_archive = self._validate_key_if_present(
+            key="maintain_download_archive", validator=BoolValidator
         )

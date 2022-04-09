@@ -51,7 +51,7 @@ if __name__ == "__main__":
             )
 
         for subscription in subscriptions:
-            subscription.to_subscription().extract_info()
+            subscription.to_subscription().download()
 
         print("hi")
         # for subscription_path in subscription_paths:

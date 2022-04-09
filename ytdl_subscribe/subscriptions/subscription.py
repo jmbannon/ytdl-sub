@@ -1,4 +1,5 @@
 import os
+import shutil
 from abc import ABC
 from pathlib import Path
 from shutil import copyfile
@@ -61,13 +62,16 @@ class Subscription(Generic[S], ABC):
         self, downloader_type: Type[D], source_ytdl_options: Optional[Dict] = None
     ) -> D:
         """Returns the downloader that will be used to download media for this subscription"""
-
         # if source_ytdl_options are present, override the ytdl_options with them
         ytdl_options = self.__preset_options.ytdl_options.dict
         if source_ytdl_options:
             ytdl_options = dict(ytdl_options, **source_ytdl_options)
 
-        return downloader_type(output_directory=self.working_directory, ytdl_options=ytdl_options)
+        return downloader_type(
+            output_directory=self.working_directory,
+            ytdl_options=ytdl_options,
+            download_archive_file_name=self.download_archive_file_name,
+        )
 
     @property
     def output_options(self) -> OutputOptionsValidator:
@@ -88,6 +92,14 @@ class Subscription(Generic[S], ABC):
     def working_directory(self) -> str:
         """Returns the directory that the downloader saves files to"""
         return str(Path(self.__config_options.working_directory.value) / Path(self.name))
+
+    @property
+    def output_directory(self):
+        return self._apply_formatter(formatter=self.output_options.output_directory)
+
+    @property
+    def download_archive_file_name(self):
+        return f".ytdl-subscribe-{self.name}-download-archive.txt"
 
     def _apply_formatter(
         self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
@@ -139,7 +151,23 @@ class Subscription(Generic[S], ABC):
         with open(nfo_file_path, "wb") as nfo_file:
             nfo_file.write(xml)
 
-    def extract_info(self):
+    def download(self):
+        """
+        Performs the subscription download.
+        """
+        existing_download_archive = Path(self.output_directory) / self.download_archive_file_name
+        working_directory_archive = Path(self.working_directory) / self.download_archive_file_name
+
+        if self.output_options.maintain_download_archive:
+            if os.path.exists(existing_download_archive):
+                shutil.copy(existing_download_archive, working_directory_archive)
+
+        self._extract_info()
+
+        if self.output_options.maintain_download_archive:
+            shutil.copy(working_directory_archive, existing_download_archive)
+
+    def _extract_info(self):
         """
         Extracts only the info of the source, does not download it
         """

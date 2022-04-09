@@ -14,7 +14,7 @@ from ytdl_subscribe.validators.config.source_options.youtube_validators import (
 
 
 class YoutubePlaylistSubscription(Subscription[YoutubePlaylistSourceValidator]):
-    def extract_info(self):
+    def _extract_info(self):
         entries = self.get_downloader(YoutubeDownloader).download_playlist(
             playlist_id=self.source_options.playlist_id.value
         )
@@ -24,7 +24,7 @@ class YoutubePlaylistSubscription(Subscription[YoutubePlaylistSourceValidator]):
 
 
 class YoutubeChannelSubscription(Subscription[YoutubeChannelSourceValidator]):
-    def extract_info(self):
+    def _extract_info(self):
         source_ytdl_options = {}
         if self.source_options.before or self.source_options.after:
             source_ytdl_options["daterange"] = DateRange(
@@ -40,7 +40,7 @@ class YoutubeChannelSubscription(Subscription[YoutubeChannelSourceValidator]):
 
 
 class YoutubeVideoSubscription(Subscription[YoutubeVideoSourceValidator]):
-    def extract_info(self):
+    def _extract_info(self):
         entry = self.get_downloader(YoutubeDownloader).download_video(
             video_id=self.source_options.video_id.value
         )

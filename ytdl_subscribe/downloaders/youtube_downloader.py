@@ -37,7 +37,6 @@ class YoutubeDownloader(Downloader):
         not fetch the metadata (maybe there is a way??)
         """
         ytdl_metadata_override = {
-            "download_archive": str(Path(self.output_directory) / "ytdl-download-archive.txt"),
             "writeinfojson": True,
         }
 

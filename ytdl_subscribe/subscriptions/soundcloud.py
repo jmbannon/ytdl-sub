@@ -12,7 +12,7 @@ from ytdl_subscribe.validators.config.source_options.soundcloud_validators impor
 class SoundcloudAlbumsAndSinglesSubscription(
     Subscription[SoundcloudAlbumsAndSinglesSourceValidator]
 ):
-    def extract_info(self):
+    def _extract_info(self):
         tracks: List[SoundcloudTrack] = []
         downloader = self.get_downloader(SoundcloudDownloader)
 
