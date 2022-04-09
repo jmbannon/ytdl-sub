@@ -1,6 +1,8 @@
 import copy
 from typing import Any
 from typing import List
+from typing import Optional
+from typing import Type
 
 import yaml
 from mergedeep import mergedeep
@@ -8,6 +10,7 @@ from mergedeep import mergedeep
 from ytdl_subscribe.subscriptions.soundcloud import SoundcloudAlbumsAndSinglesSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription
+from ytdl_subscribe.subscriptions.youtube import YoutubeVideoSubscription
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.config_file_validator import ConfigFileValidator
@@ -20,6 +23,9 @@ from ytdl_subscribe.validators.config.source_options.soundcloud_validators impor
 )
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubePlaylistSourceValidator,
+)
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
+    YoutubeVideoSourceValidator,
 )
 
 
@@ -65,11 +71,15 @@ class SubscriptionValidator(StrictDictValidator):
         )
 
     def to_subscription(self) -> Subscription:
+        subscription_class: Optional[Type[Subscription]] = None
         if isinstance(self.preset.subscription_source, SoundcloudAlbumsAndSinglesSourceValidator):
             subscription_class = SoundcloudAlbumsAndSinglesSubscription
         elif isinstance(self.preset.subscription_source, YoutubePlaylistSourceValidator):
             subscription_class = YoutubePlaylistSubscription
-        else:
+        elif isinstance(self.preset.subscription_source, YoutubeVideoSourceValidator):
+            subscription_class = YoutubeVideoSubscription
+
+        if subscription_class is None:
             raise ValueError("subscription source class not found")
 
         return subscription_class(

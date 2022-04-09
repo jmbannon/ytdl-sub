@@ -18,30 +18,42 @@
 #    artist: "DeLorra"
 #    genre: "Synthwave / Electronic"
 #
-bl00dwave:
-  preset: "soundcloud_with_id3_tags"
-  soundcloud:
-    username: bl00dwave
-  output_options:
-    output_directory: "/tmp/bl00dwave"
-  overrides:
-    artist: "bl00dwave"
-    genre: "Synthwave / Electronic"
+#bl00dwave:
+#  preset: "soundcloud_with_id3_tags"
+#  soundcloud:
+#    username: bl00dwave
+#  output_options:
+#    output_directory: "/tmp/bl00dwave"
+#  overrides:
+#    artist: "bl00dwave"
+#    genre: "Synthwave / Electronic"
+#
+#tom_petty:
+#  preset: "music_videos"
+#  youtube:
+#    download_strategy: "playlist"
+#    playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
+#  output_options:
+#    output_directory: "/tmp/Tom Petty"
+#  overrides:
+#    artist: "Tom Petty and the Heartbreakers"
+#
+#rammstein:
+#  preset: "music_videos"
+#  youtube:
+#    download_strategy: "playlist"
+#    playlist_id: "PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
+#  output_options:
+#    output_directory: "/tmp/Rammstein"
+#  overrides:
+#    artist: "Rammstein"
 
-tom_petty:
+gogo_video_test:
   preset: "music_videos"
   youtube:
-    playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
+    download_strategy: "video"
+    video_id: "2RHTiXvELNg"
   output_options:
-    output_directory: "/tmp/Tom Petty"
+    output_directory: "/tmp/gogos"
   overrides:
-    artist: "Tom Petty and the Heartbreakers"
-
-rammstein:
-  preset: "music_videos"
-  youtube:
-    playlist_id: "PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
-  output_options:
-    output_directory: "/tmp/Rammstein"
-  overrides:
-    artist: "Rammstein"
+    artist: "The Gogos"

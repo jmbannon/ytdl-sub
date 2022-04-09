@@ -3,6 +3,9 @@ from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubePlaylistSourceValidator,
 )
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
+    YoutubeVideoSourceValidator,
+)
 
 
 class YoutubePlaylistSubscription(Subscription[YoutubePlaylistSourceValidator]):
@@ -13,3 +16,12 @@ class YoutubePlaylistSubscription(Subscription[YoutubePlaylistSourceValidator]):
 
         for entry in entries:
             self.post_process_entry(entry)
+
+
+class YoutubeVideoSubscription(Subscription[YoutubeVideoSourceValidator]):
+    def extract_info(self):
+        entry = self.get_downloader(YoutubeDownloader).download_video(
+            video_id=self.source_options.video_id.value
+        )
+
+        self.post_process_entry(entry)

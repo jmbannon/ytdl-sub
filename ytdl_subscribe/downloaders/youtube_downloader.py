@@ -18,6 +18,11 @@ class YoutubeDownloader(Downloader):
         """Returns full playlist url"""
         return f"https://youtube.com/playlist?list={playlist_id}"
 
+    @classmethod
+    def video_url(cls, video_id: str) -> str:
+        """Returns full video url"""
+        return f"https://youtube.com/watch?v={video_id}"
+
     def _download_with_metadata(self, url: str) -> None:
         """
         Do not get entries from the extract info, let it write to the info.json file and load
@@ -29,6 +34,10 @@ class YoutubeDownloader(Downloader):
             "writeinfojson": True,
         }
         _ = self.extract_info(ytdl_options_overrides=ytdl_metadata_override, url=url)
+
+    def download_video(self, video_id: str) -> YoutubeVideo:
+        entry = self.extract_info(url=self.video_url(video_id))
+        return YoutubeVideo(**entry)
 
     def download_playlist(self, playlist_id: str) -> List[YoutubeVideo]:
         """

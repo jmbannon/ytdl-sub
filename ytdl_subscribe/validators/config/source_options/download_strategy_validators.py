@@ -13,6 +13,9 @@ from ytdl_subscribe.validators.config.source_options.source_validators import So
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubePlaylistSourceValidator,
 )
+from ytdl_subscribe.validators.config.source_options.youtube_validators import (
+    YoutubeVideoSourceValidator,
+)
 
 
 class DownloadStrategyValidator(StrictDictValidator, ABC):
@@ -61,4 +64,7 @@ class SoundcloudDownloadStrategyValidator(DownloadStrategyValidator):
 
 
 class YoutubeDownloadStrategyValidator(DownloadStrategyValidator):
-    _download_strategy_to_source_mapping = {"playlist": YoutubePlaylistSourceValidator}
+    _download_strategy_to_source_mapping = {
+        "playlist": YoutubePlaylistSourceValidator,
+        "video": YoutubeVideoSourceValidator,
+    }

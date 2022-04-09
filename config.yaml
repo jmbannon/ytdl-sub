@@ -27,7 +27,6 @@ presets:
 
   music_videos:
     youtube:
-      download_strategy: "playlist"
     ytdl_options:
       format: 'best'
       ignoreerrors: True
