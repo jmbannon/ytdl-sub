@@ -1,4 +1,7 @@
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.base.string_formatter_validators import (
+    OverridesStringFormatterValidator,
+)
 from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 from ytdl_subscribe.validators.base.string_select_validator import StringSelectValidator
 
@@ -18,13 +21,16 @@ class OutputOptionsValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self.output_directory: StringFormatterValidator = self._validate_key(
-            key="output_directory", validator=StringFormatterValidator
+        # Output directory should resolve without any entry variables.
+        # This is to check the directory for any download-archives before any downloads begin
+        self.output_directory: OverridesStringFormatterValidator = self._validate_key(
+            key="output_directory", validator=OverridesStringFormatterValidator
         )
+
+        # file name and thumbnails however can use entry variables
         self.file_name: StringFormatterValidator = self._validate_key(
             key="file_name", validator=StringFormatterValidator
         )
-
         self.convert_thumbnail = self._validate_key_if_present(
             key="convert_thumbnail", validator=ConvertThumbnailValidator
         )

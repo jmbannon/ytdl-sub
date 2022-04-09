@@ -103,6 +103,10 @@ class DictValidator(Validator):
     _expected_value_type = dict
     _expected_value_type_name = "object"
 
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        self.__validator_dict: Dict[str, Validator] = {}
+
     @final
     @property
     def _dict(self) -> dict:
@@ -112,6 +116,15 @@ class DictValidator(Validator):
         Dictionary value
         """
         return self._value
+
+    @final
+    @property
+    def _validator_dict(self) -> Dict[str, Validator]:
+        """
+        Returns dict containing names and validators of any keys that were validated.
+        This allows top-level validators to recursively search a dict validator.
+        """
+        return self.__validator_dict
 
     @final
     @property
@@ -147,10 +160,14 @@ class DictValidator(Validator):
         if key not in self._dict and default is None:
             raise self._validation_exception(f"{key} is missing when it should be present.")
 
-        return validator(
-            name=f"{self._name}.{key}",
+        validator_name = f"{self._name}.{key}"
+        validator_instance = validator(
+            name=validator_name,
             value=self._dict.get(key, default),
         )
+
+        self.__validator_dict[validator_name] = validator_instance
+        return validator_instance
 
     @final
     def _validate_key_if_present(

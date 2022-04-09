@@ -5,6 +5,11 @@ from typing import Optional
 from typing import Type
 
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.base.string_formatter_validators import (
+    OverridesStringFormatterValidator,
+)
+from ytdl_subscribe.validators.base.validators import DictValidator
+from ytdl_subscribe.validators.base.validators import Validator
 from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
     MetadataOptionsValidator,
 )
@@ -25,6 +30,7 @@ from ytdl_subscribe.validators.config.source_options.source_validators import So
 from ytdl_subscribe.validators.config.ytdl_options.ytdl_options_validator import (
     YTDLOptionsValidator,
 )
+from ytdl_subscribe.validators.exceptions import StringFormattingVariableNotFoundException
 from ytdl_subscribe.validators.exceptions import ValidationException
 
 PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[DownloadStrategyValidator]] = {
@@ -74,6 +80,43 @@ class PresetValidator(StrictDictValidator):
 
         return download_strategy_validator.source_validator
 
+    def __validate_override_string_formatter_validator(
+        self, formatter_validator: OverridesStringFormatterValidator
+    ):
+        # Gather all resolvable override variables
+        resolvable_override_variables: List[str] = []
+        for name, override_variable in self.overrides.dict.items():
+            try:
+                _ = override_variable.apply_formatter(self.overrides.dict_with_format_strings)
+            except StringFormattingVariableNotFoundException:
+                continue
+            resolvable_override_variables.append(name)
+
+        for variable_name in formatter_validator.format_variables:
+            if variable_name not in resolvable_override_variables:
+                raise StringFormattingVariableNotFoundException(
+                    f"This variable can only use override variables that resolve without needing "
+                    f"variables from a downloaded file. The only override variables defined that "
+                    f"meet this condition are: {', '.join(sorted(resolvable_override_variables))}"
+                )
+
+    def __recursive_preset_validate(
+        self, validator_dict: Optional[Dict[str, Validator]] = None
+    ) -> None:
+        """
+        Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
+        and resolve.
+        """
+        if validator_dict is None:
+            validator_dict = self._validator_dict
+
+        for name, validator in validator_dict.items():
+            if isinstance(validator, DictValidator):
+                self.__recursive_preset_validate(validator._validator_dict)
+
+            if isinstance(validator, OverridesStringFormatterValidator):
+                self.__validate_override_string_formatter_validator(validator)
+
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)
 
@@ -94,3 +137,7 @@ class PresetValidator(StrictDictValidator):
         self.overrides = self._validate_key(
             key="overrides", validator=OverridesValidator, default={}
         )
+
+        # After all options are initialized, perform a recursive post-validate that requires
+        # values from multiple validators
+        self.__recursive_preset_validate()

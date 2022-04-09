@@ -7,7 +7,6 @@ from typing import Generic
 from typing import Optional
 from typing import Type
 from typing import TypeVar
-from typing import overload
 
 import dicttoxml
 import music_tag
@@ -168,6 +167,19 @@ class Subscription(Generic[S], ABC):
         # Download the thumbnail if its present
         if self.output_options.thumbnail_name:
             source_thumbnail_path = entry.thumbnail_path(relative_directory=self.working_directory)
+
+            # Bug that mismatches webp and jpg extensions. Try to hotfix here
+            if not os.path.isfile(source_thumbnail_path):
+                actual_thumbnail_ext = ".webp"
+                if entry.thumbnail_ext == "webp":
+                    actual_thumbnail_ext = ".jpg"
+
+                source_thumbnail_path = source_thumbnail_path.replace(
+                    f".{entry.thumbnail_ext}", actual_thumbnail_ext
+                )
+                if not os.path.isfile(source_thumbnail_path):
+                    # TODO: make more formal
+                    raise ValueError("Youtube thumbnails are a lie")
 
             output_thumbnail_name = self._apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry

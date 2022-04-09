@@ -8,6 +8,7 @@ from typing import final
 from ytdl_subscribe.validators.base.validators import LiteralDictValidator
 from ytdl_subscribe.validators.base.validators import Validator
 from ytdl_subscribe.validators.exceptions import StringFormattingException
+from ytdl_subscribe.validators.exceptions import StringFormattingVariableNotFoundException
 
 
 class StringFormatterValidator(Validator):
@@ -89,7 +90,7 @@ class StringFormatterValidator(Validator):
                 raise self._validation_exception(
                     f"Format variable '{variable_name}' does not exist. "
                     f"Available variables: {available_fields}",
-                    exception_class=StringFormattingException,
+                    exception_class=StringFormattingVariableNotFoundException,
                 )
 
         return StringFormatterValidator(
@@ -117,6 +118,12 @@ class StringFormatterValidator(Validator):
             )
 
         return formatter.format_string
+
+
+class OverridesStringFormatterValidator(StringFormatterValidator):
+    """
+    A string formatter that should strictly use overrides that resolve without any entry variables.
+    """
 
 
 class DictFormatterValidator(LiteralDictValidator):
