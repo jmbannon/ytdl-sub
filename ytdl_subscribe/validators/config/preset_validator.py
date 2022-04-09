@@ -12,21 +12,24 @@ from ytdl_subscribe.validators.config.output_options.output_options_validator im
     OutputOptionsValidator,
 )
 from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
-from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
-    SoundcloudSourceValidator,
+from ytdl_subscribe.validators.config.source_options.download_strategy_validators import (
+    DownloadStrategyValidator,
 )
-from ytdl_subscribe.validators.config.source_options.source_validator import SourceValidator
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubeSourceValidator,
+from ytdl_subscribe.validators.config.source_options.download_strategy_validators import (
+    SoundcloudDownloadStrategyValidator,
 )
+from ytdl_subscribe.validators.config.source_options.download_strategy_validators import (
+    YoutubeDownloadStrategyValidator,
+)
+from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
 from ytdl_subscribe.validators.config.ytdl_options.ytdl_options_validator import (
     YTDLOptionsValidator,
 )
 from ytdl_subscribe.validators.exceptions import ValidationException
 
-PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[SourceValidator]] = {
-    "soundcloud": SoundcloudSourceValidator,
-    "youtube": YoutubeSourceValidator,
+PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[DownloadStrategyValidator]] = {
+    "soundcloud": SoundcloudDownloadStrategyValidator,
+    "youtube": YoutubeDownloadStrategyValidator,
 }
 
 PRESET_REQUIRED_KEYS = {"output_options"}
@@ -47,28 +50,29 @@ class PresetValidator(StrictDictValidator):
         return sorted(list(PRESET_SOURCE_VALIDATOR_MAPPING.keys()))
 
     def __validate_and_get_subscription_source(self) -> SourceValidator:
-        subscription_source: Optional[SourceValidator] = None
+        download_strategy_validator: Optional[DownloadStrategyValidator] = None
 
         for key in self._keys:
-            if key in self.__available_sources and subscription_source:
+            # Ensure there are not multiple sources, i.e. youtube and soundcloud
+            if key in self.__available_sources and download_strategy_validator:
                 raise ValidationException(
                     f"'{self._name}' can only have one of the following sources: "
                     f"{', '.join(self.__available_sources)}"
                 )
 
             if key in PRESET_SOURCE_VALIDATOR_MAPPING:
-                subscription_source = self._validate_key(
+                download_strategy_validator = self._validate_key(
                     key=key, validator=PRESET_SOURCE_VALIDATOR_MAPPING[key]
                 )
 
         # If subscription source was not set, error
-        if not subscription_source:
+        if not download_strategy_validator:
             raise ValidationException(
                 f"'{self._name} must have one of the following sources: "
                 f"{', '.join(self.__available_sources)}"
             )
 
-        return subscription_source
+        return download_strategy_validator.source_validator
 
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)

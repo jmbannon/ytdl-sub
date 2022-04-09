@@ -7,13 +7,10 @@ from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
     SoundcloudAlbumsAndSinglesDownloadValidator,
 )
-from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
-    SoundcloudSourceValidator,
-)
 
 
 class SoundcloudAlbumsAndSinglesSubscription(
-    Subscription[SoundcloudSourceValidator, SoundcloudAlbumsAndSinglesDownloadValidator]
+    Subscription[SoundcloudAlbumsAndSinglesDownloadValidator]
 ):
     def extract_info(self):
         tracks: List[SoundcloudTrack] = []
@@ -22,7 +19,7 @@ class SoundcloudAlbumsAndSinglesSubscription(
         # Get the album info first. This tells us which track ids belong
         # to an album. Unfortunately we cannot use download_archive or info.json for this
         albums: List[SoundcloudAlbum] = downloader.download_albums(
-            artist_name=self.download_strategy_options.username.value
+            artist_name=self.source_options.username.value
         )
 
         for album in albums:
@@ -31,9 +28,7 @@ class SoundcloudAlbumsAndSinglesSubscription(
             )
 
         # only add tracks that are not part of an album
-        single_tracks = downloader.download_tracks(
-            artist_name=self.download_strategy_options.username.value
-        )
+        single_tracks = downloader.download_tracks(artist_name=self.source_options.username.value)
         tracks += [
             track for track in single_tracks if not any(album.contains(track) for album in albums)
         ]

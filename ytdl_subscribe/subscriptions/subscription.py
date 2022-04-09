@@ -24,17 +24,13 @@ from ytdl_subscribe.validators.config.output_options.output_options_validator im
 )
 from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
-from ytdl_subscribe.validators.config.source_options.source_validator import (
-    DownloadStrategyValidator,
-)
-from ytdl_subscribe.validators.config.source_options.source_validator import SourceValidator
+from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
 
 T = TypeVar("T", bound=SourceValidator)
 U = TypeVar("U", bound=Downloader)
-V = TypeVar("V", bound=DownloadStrategyValidator)
 
 
-class Subscription(Generic[T, V], ABC):
+class Subscription(Generic[T], ABC):
     def __init__(
         self,
         name: str,
@@ -64,11 +60,6 @@ class Subscription(Generic[T, V], ABC):
             output_directory=self.working_directory,
             ytdl_options=self.__preset_options.ytdl_options.dict,
         )
-
-    @property
-    def download_strategy_options(self) -> V:
-        """Returns the download strategy options defined for this subscription"""
-        return self.source_options.download_strategy
 
     @property
     def output_options(self) -> OutputOptionsValidator:

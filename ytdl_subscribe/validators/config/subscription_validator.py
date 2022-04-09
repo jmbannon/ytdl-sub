@@ -65,15 +65,9 @@ class SubscriptionValidator(StrictDictValidator):
         )
 
     def to_subscription(self) -> Subscription:
-        if isinstance(
-            self.preset.subscription_source.download_strategy,
-            SoundcloudAlbumsAndSinglesDownloadValidator,
-        ):
+        if isinstance(self.preset.subscription_source, SoundcloudAlbumsAndSinglesDownloadValidator):
             subscription_class = SoundcloudAlbumsAndSinglesSubscription
-        elif isinstance(
-            self.preset.subscription_source.download_strategy,
-            YoutubePlaylistDownloadValidator,
-        ):
+        elif isinstance(self.preset.subscription_source, YoutubePlaylistDownloadValidator):
             subscription_class = YoutubePlaylistSubscription
         else:
             raise ValueError("subscription source class not found")
