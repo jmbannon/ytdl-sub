@@ -16,10 +16,10 @@ from ytdl_subscribe.validators.config.preset_validator import PRESET_OPTIONAL_KE
 from ytdl_subscribe.validators.config.preset_validator import PRESET_REQUIRED_KEYS
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
-    SoundcloudAlbumsAndSinglesDownloadValidator,
+    SoundcloudAlbumsAndSinglesSourceValidator,
 )
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubePlaylistDownloadValidator,
+    YoutubePlaylistSourceValidator,
 )
 
 
@@ -65,9 +65,9 @@ class SubscriptionValidator(StrictDictValidator):
         )
 
     def to_subscription(self) -> Subscription:
-        if isinstance(self.preset.subscription_source, SoundcloudAlbumsAndSinglesDownloadValidator):
+        if isinstance(self.preset.subscription_source, SoundcloudAlbumsAndSinglesSourceValidator):
             subscription_class = SoundcloudAlbumsAndSinglesSubscription
-        elif isinstance(self.preset.subscription_source, YoutubePlaylistDownloadValidator):
+        elif isinstance(self.preset.subscription_source, YoutubePlaylistSourceValidator):
             subscription_class = YoutubePlaylistSubscription
         else:
             raise ValueError("subscription source class not found")

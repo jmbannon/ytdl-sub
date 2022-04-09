@@ -5,12 +5,12 @@ from ytdl_subscribe.entries.soundcloud import SoundcloudAlbum
 from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
-    SoundcloudAlbumsAndSinglesDownloadValidator,
+    SoundcloudAlbumsAndSinglesSourceValidator,
 )
 
 
 class SoundcloudAlbumsAndSinglesSubscription(
-    Subscription[SoundcloudAlbumsAndSinglesDownloadValidator]
+    Subscription[SoundcloudAlbumsAndSinglesSourceValidator]
 ):
     def extract_info(self):
         tracks: List[SoundcloudTrack] = []

@@ -26,11 +26,11 @@ from ytdl_subscribe.validators.config.overrides.overrides_validator import Overr
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
 
-T = TypeVar("T", bound=SourceValidator)
-U = TypeVar("U", bound=Downloader)
+S = TypeVar("S", bound=SourceValidator)
+D = TypeVar("D", bound=Downloader)
 
 
-class Subscription(Generic[T], ABC):
+class Subscription(Generic[S], ABC):
     def __init__(
         self,
         name: str,
@@ -50,11 +50,11 @@ class Subscription(Generic[T], ABC):
         self.__preset_options = preset_options
 
     @property
-    def source_options(self) -> T:
+    def source_options(self) -> S:
         """Returns the source options defined for this subscription"""
         return self.__preset_options.subscription_source
 
-    def get_downloader(self, downloader_type: Type[U]) -> U:
+    def get_downloader(self, downloader_type: Type[D]) -> D:
         """Returns the downloader that will be used to download media for this subscription"""
         return downloader_type(
             output_directory=self.working_directory,

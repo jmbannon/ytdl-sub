@@ -4,7 +4,7 @@ from ytdl_subscribe.validators.config.source_options.source_validators import (
 )
 
 
-class SoundcloudAlbumsAndSinglesDownloadValidator(SoundcloudSourceValidator):
+class SoundcloudAlbumsAndSinglesSourceValidator(SoundcloudSourceValidator):
     _required_keys = {"username"}
 
     def __init__(self, name, value):

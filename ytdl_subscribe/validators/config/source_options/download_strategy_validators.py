@@ -7,11 +7,11 @@ from typing import Type
 from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
 from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
-    SoundcloudAlbumsAndSinglesDownloadValidator,
+    SoundcloudAlbumsAndSinglesSourceValidator,
 )
 from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubePlaylistDownloadValidator,
+    YoutubePlaylistSourceValidator,
 )
 
 
@@ -56,9 +56,9 @@ class DownloadStrategyValidator(StrictDictValidator, ABC):
 
 class SoundcloudDownloadStrategyValidator(DownloadStrategyValidator):
     _download_strategy_to_source_mapping = {
-        "albums_and_singles": SoundcloudAlbumsAndSinglesDownloadValidator
+        "albums_and_singles": SoundcloudAlbumsAndSinglesSourceValidator
     }
 
 
 class YoutubeDownloadStrategyValidator(DownloadStrategyValidator):
-    _download_strategy_to_source_mapping = {"playlist": YoutubePlaylistDownloadValidator}
+    _download_strategy_to_source_mapping = {"playlist": YoutubePlaylistSourceValidator}
