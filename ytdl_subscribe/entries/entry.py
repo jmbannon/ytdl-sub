@@ -81,6 +81,13 @@ class Entry:
         return int(self.upload_day_padded.lstrip("0"))
 
     @property
+    def standardized_upload_date(self) -> str:
+        """
+        :return: upload date as YYYY-MM-DD
+        """
+        return f"{self.upload_year}-{self.upload_month_padded}-{self.upload_day_padded}"
+
+    @property
     def description(self) -> str:
         return self.kwargs("description")
 
@@ -126,6 +133,7 @@ class Entry:
             "upload_month_padded": self.upload_month_padded,
             "upload_day": self.upload_day,
             "upload_day_padded": self.upload_day_padded,
+            "standardized_upload_date": self.standardized_upload_date,
             "thumbnail": self.thumbnail,
             "thumbnail_ext": self.thumbnail_ext,
         }

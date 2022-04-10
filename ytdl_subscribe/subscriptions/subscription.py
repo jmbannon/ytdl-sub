@@ -1,3 +1,4 @@
+import contextlib
 import os
 import shutil
 from abc import ABC
@@ -126,6 +127,10 @@ class Subscription(Generic[S], ABC):
     def _post_process_nfo(self, nfo_options: NFOValidator, entry: Optional[Entry] = None):
         """
         Creates an entry's NFO file using values defined in the metadata options
+
+        :param nfo_options: Options for the NFO
+        :param entry: Optional. Will pass entry values to nfo string formatters. If None, will only
+        use override variables that must resolve.
         """
         nfo = {}
 
@@ -151,21 +156,27 @@ class Subscription(Generic[S], ABC):
         with open(nfo_file_path, "wb") as nfo_file:
             nfo_file.write(xml)
 
+    @contextlib.contextmanager
+    def _maintain_archive_file(self):
+        if not self.output_options.maintain_download_archive:
+            return
+
+        existing_download_archive = Path(self.output_directory) / self.download_archive_file_name
+        working_directory_archive = Path(self.working_directory) / self.download_archive_file_name
+
+        if os.path.exists(existing_download_archive):
+            shutil.copy(existing_download_archive, working_directory_archive)
+
+        yield
+
+        shutil.copy(working_directory_archive, existing_download_archive)
+
     def download(self):
         """
         Performs the subscription download.
         """
-        existing_download_archive = Path(self.output_directory) / self.download_archive_file_name
-        working_directory_archive = Path(self.working_directory) / self.download_archive_file_name
-
-        if self.output_options.maintain_download_archive:
-            if os.path.exists(existing_download_archive):
-                shutil.copy(existing_download_archive, working_directory_archive)
-
-        self._extract_info()
-
-        if self.output_options.maintain_download_archive:
-            shutil.copy(working_directory_archive, existing_download_archive)
+        with self._maintain_archive_file():
+            self._extract_info()
 
     def _extract_info(self):
         """
