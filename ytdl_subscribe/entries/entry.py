@@ -35,8 +35,20 @@ class BaseEntry(ABC):
 
     @property
     def extractor(self) -> str:
-        """Get the ytdl extrator name"""
+        """
+        :return: The ytdl extrator name
+        """
         return self.kwargs("extractor")
+
+    @property
+    def order_index(self) -> int:
+        """
+        Reserved for any child entry class that might have some kind of ordering to it.
+        Returns 1 unless overwritten.
+
+        :return: The order index (1-based)
+        """
+        return 1
 
     def to_dict(self) -> Dict[str, str]:
         """Returns the entry's values as a dictionary"""

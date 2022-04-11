@@ -10,6 +10,11 @@ def uid():
 
 
 @pytest.fixture
+def extractor():
+    return "xtract"
+
+
+@pytest.fixture
 def title():
     return "entry title"
 
@@ -45,7 +50,9 @@ def download_file_name(uid, ext):
 
 
 @pytest.fixture
-def mock_entry_to_dict(uid, title, ext, upload_date, upload_year, thumbnail, thumbnail_ext):
+def mock_entry_to_dict(
+    uid, title, ext, upload_date, upload_year, thumbnail, thumbnail_ext, extractor
+):
     return {
         "uid": uid,
         "title": title,
@@ -55,6 +62,7 @@ def mock_entry_to_dict(uid, title, ext, upload_date, upload_year, thumbnail, thu
         "upload_year": upload_year,
         "thumbnail": thumbnail,
         "thumbnail_ext": thumbnail_ext,
+        "extractor": extractor,
     }
 
 
@@ -62,6 +70,7 @@ def mock_entry_to_dict(uid, title, ext, upload_date, upload_year, thumbnail, thu
 def mock_entry_kwargs(uid, title, ext, upload_date, thumbnail):
     return {
         "id": uid,
+        "extractor": extractor,
         "title": title,
         "ext": ext,
         "upload_date": upload_date,

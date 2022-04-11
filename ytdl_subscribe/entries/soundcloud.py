@@ -65,18 +65,22 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
     Entry object to represent a Soundcloud track yt-dlp that belongs to an album.
     """
 
-    def __init__(self, album: str, track_number: int, album_year: int, **kwargs):
+    def __init__(self, album: str, album_year: int, track_number: int, **kwargs):
         """
         Initialize the album track using album metadata and ytdl metadata for the specific track.
         """
         super().__init__(**kwargs)
         self._album = album
-        self._track_number = track_number
         self._album_year = album_year
+        self._track_number = track_number
 
     @property
     def track_number(self) -> int:
         """Returns the entry's track number"""
+        return self._track_number
+
+    @property
+    def order_index(self) -> int:
         return self._track_number
 
     @property
@@ -88,6 +92,17 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
     def album_year(self) -> int:
         """Returns the entry's album year, fetched from its internal album"""
         return self._album_year
+
+    @classmethod
+    def from_soundcloud_entry(
+        cls, soundcloud_track: SoundcloudTrack, album: str, album_year: int, track_number: int
+    ) -> "SoundcloudAlbumTrack":
+        return SoundcloudAlbumTrack(
+            album=album,
+            album_year=album_year,
+            track_number=track_number,
+            **soundcloud_track._kwargs,
+        )
 
 
 class SoundcloudAlbum(Entry):
@@ -108,17 +123,20 @@ class SoundcloudAlbum(Entry):
         Returns all tracks in the album represented as album-tracks. They will share the
         same album name, have ordered track numbers, and a shared album year.
         """
-        album_tracks = [
-            SoundcloudAlbumTrack(
-                album=self.title,
-                track_number=i + 1,
-                album_year=self.album_year,
-                **entry,
-            )
-            for i, entry in enumerate(self.kwargs("entries"))
-        ]
+        tracks = [SoundcloudTrack(**entry) for entry in self.kwargs("entries")]
+
         if skip_premiere_tracks:
-            album_tracks = [t for t in album_tracks if not t.is_premiere]
+            tracks = [track for track in tracks if not track.is_premiere]
+
+        album_tracks = [
+            SoundcloudAlbumTrack.from_soundcloud_entry(
+                soundcloud_track=track,
+                album=self.title,
+                album_year=self.album_year,
+                track_number=i + 1,
+            )
+            for i, track in enumerate(tracks)
+        ]
 
         return album_tracks
 
