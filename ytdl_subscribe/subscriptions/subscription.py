@@ -157,17 +157,64 @@ class Subscription(Generic[S], ABC):
         )
 
         nfo_file_name = self._apply_formatter(formatter=nfo_options.nfo_name, entry=entry)
-        output_directory = self._apply_formatter(
-            formatter=self.output_options.output_directory, entry=entry
-        )
 
         # Save the nfo's XML to file
-        nfo_file_path = Path(output_directory) / Path(nfo_file_name)
+        nfo_file_path = Path(self.output_directory) / Path(nfo_file_name)
         with open(nfo_file_path, "wb") as nfo_file:
             nfo_file.write(xml)
 
         # Archive the nfo's file name
         self._archive_entry_file_name(entry=entry, relative_file_name=nfo_file_name)
+
+    def _post_process_thumbnail(self, entry: Entry):
+        source_thumbnail_path = entry.thumbnail_path(relative_directory=self.working_directory)
+
+        # Bug that mismatches webp and jpg extensions. Try to hotfix here
+        if not os.path.isfile(source_thumbnail_path):
+            actual_thumbnail_ext = ".webp"
+            if entry.thumbnail_ext == "webp":
+                actual_thumbnail_ext = ".jpg"
+
+            source_thumbnail_path = source_thumbnail_path.replace(
+                f".{entry.thumbnail_ext}", actual_thumbnail_ext
+            )
+            if not os.path.isfile(source_thumbnail_path):
+                # TODO: make more formal
+                raise ValueError("Youtube thumbnails are a lie")
+
+        output_thumbnail_name = self._apply_formatter(
+            formatter=self.output_options.thumbnail_name, entry=entry
+        )
+        output_thumbnail_path = Path(self.output_directory) / Path(output_thumbnail_name)
+
+        os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
+
+        # If the thumbnail is to be converted, then save the converted thumbnail to the
+        # output filepath
+        if self.output_options.convert_thumbnail:
+            image = Image.open(source_thumbnail_path).convert("RGB")
+            image.save(
+                fp=output_thumbnail_path,
+                format=self.output_options.convert_thumbnail.value,
+            )
+        # Otherwise, just copy the downloaded thumbnail
+        else:
+            copyfile(source_thumbnail_path, output_thumbnail_path)
+
+        # Archive the thumbnail file name
+        self._archive_entry_file_name(entry=entry, relative_file_name=output_thumbnail_name)
+
+    def _copy_entry_file_to_output_directory(self, entry: Entry):
+        # Move the file after all direct file modifications are complete
+        entry_source_file_path = entry.file_path(relative_directory=self.working_directory)
+
+        output_file_name = self._apply_formatter(
+            formatter=self.output_options.file_name, entry=entry
+        )
+        entry_destination_file_path = Path(self.output_directory) / Path(output_file_name)
+
+        os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
+        copyfile(entry_source_file_path, entry_destination_file_path)
 
     @contextlib.contextmanager
     def _maintain_archive_file(self):
@@ -200,66 +247,23 @@ class Subscription(Generic[S], ABC):
         """
         raise NotImplementedError("Each source needs to implement how it extracts info")
 
-    def post_process_entry(self, entry: Entry):
+    def post_process_entry(self, entry: Entry) -> None:
+        """
+        After downloading an entry to the working directory, perform all post-processing, which
+        includes:
+            - Adding metadata to the entry file itself (music tags)
+            - Moving the entry file + thumbnail to the output directory with its formatted name
+            - Creating new metadata files (NFO) to reside alongside the entry files
+
+        :param entry: The entry to post-process
+        """
         if self.metadata_options.id3:
             self._post_process_tagging(entry)
 
-        # Move the file after all direct file modifications are complete
-        entry_source_file_path = entry.file_path(relative_directory=self.working_directory)
+        self._copy_entry_file_to_output_directory(entry=entry)
 
-        output_directory = self._apply_formatter(
-            formatter=self.output_options.output_directory, entry=entry
-        )
-
-        output_file_name = self._apply_formatter(
-            formatter=self.output_options.file_name, entry=entry
-        )
-        entry_destination_file_path = Path(output_directory) / Path(output_file_name)
-
-        os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
-        copyfile(entry_source_file_path, entry_destination_file_path)
-
-        self._archive_entry_file_name(entry=entry, relative_file_name=output_file_name)
-
-        # TODO: move thumbnail to separate function
-        # Download the thumbnail if its present
         if self.output_options.thumbnail_name:
-            source_thumbnail_path = entry.thumbnail_path(relative_directory=self.working_directory)
-
-            # Bug that mismatches webp and jpg extensions. Try to hotfix here
-            if not os.path.isfile(source_thumbnail_path):
-                actual_thumbnail_ext = ".webp"
-                if entry.thumbnail_ext == "webp":
-                    actual_thumbnail_ext = ".jpg"
-
-                source_thumbnail_path = source_thumbnail_path.replace(
-                    f".{entry.thumbnail_ext}", actual_thumbnail_ext
-                )
-                if not os.path.isfile(source_thumbnail_path):
-                    # TODO: make more formal
-                    raise ValueError("Youtube thumbnails are a lie")
-
-            output_thumbnail_name = self._apply_formatter(
-                formatter=self.output_options.thumbnail_name, entry=entry
-            )
-            output_thumbnail_path = Path(output_directory) / Path(output_thumbnail_name)
-
-            os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
-
-            # If the thumbnail is to be converted, then save the converted thumbnail to the
-            # output filepath
-            if self.output_options.convert_thumbnail:
-                image = Image.open(source_thumbnail_path).convert("RGB")
-                image.save(
-                    fp=output_thumbnail_path,
-                    format=self.output_options.convert_thumbnail.value,
-                )
-            # Otherwise, just copy the downloaded thumbnail
-            else:
-                copyfile(source_thumbnail_path, output_thumbnail_path)
-
-            # Archive the thumbnail file name
-            self._archive_entry_file_name(entry=entry, relative_file_name=output_thumbnail_name)
+            self._post_process_thumbnail(entry=entry)
 
         if self.metadata_options.nfo:
             self._post_process_nfo(nfo_options=self.metadata_options.nfo, entry=entry)
