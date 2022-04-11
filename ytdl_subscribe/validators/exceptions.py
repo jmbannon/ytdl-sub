@@ -8,3 +8,7 @@ class StringFormattingException(ValidationException):
 
 class StringFormattingVariableNotFoundException(StringFormattingException):
     """Tried to format a string but the variable was not found"""
+
+
+class DownloadArchiveException(ValueError):
+    """Any user or file errors caused by download archive or mapping files"""
