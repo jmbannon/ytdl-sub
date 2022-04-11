@@ -1,3 +1,4 @@
+from abc import ABC
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -9,11 +10,8 @@ from ytdl_subscribe.validators.base.string_formatter_validators import StringFor
 from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 
 
-class Entry:
-    """
-    Entry object to represent a single media object returned from yt-dlp.
-    """
-
+# TODO: strip things out of entry into BaseEntry
+class BaseEntry(ABC):
     def __init__(self, **kwargs):
         """
         Initialize the entry using ytdl metadata
@@ -36,6 +34,39 @@ class Entry:
         return self.kwargs("id")
 
     @property
+    def extractor(self) -> str:
+        """Get the ytdl extrator name"""
+        return self.kwargs("extractor")
+
+    def to_dict(self) -> Dict[str, str]:
+        """Returns the entry's values as a dictionary"""
+        return {
+            "uid": self.uid,
+            "extractor": self.extractor,
+        }
+
+    def apply_formatter(
+        self,
+        formatter: StringFormatterValidator,
+        overrides: Optional[OverridesValidator] = None,
+    ) -> str:
+        """
+        Perform a string format on the given format string, using the entry's dict for format
+        values. The override dict will overwrite any values within the entry's dict.
+        """
+        entry_dict = self.to_dict()
+        if overrides:
+            entry_dict = dict(entry_dict, **overrides.dict_with_format_strings)
+
+        return formatter.apply_formatter(variable_dict=entry_dict)
+
+
+class Entry(BaseEntry):
+    """
+    Entry object to represent a single media object returned from yt-dlp.
+    """
+
+    @property
     def title(self) -> str:
         """Returns the entry's title"""
         return self.kwargs("title")
@@ -44,11 +75,6 @@ class Entry:
     def sanitized_title(self) -> str:
         """Returns the entry's sanitized title"""
         return sanitize(self.title)
-
-    @property
-    def extractor(self) -> str:
-        """Get the ytdl extrator name"""
-        return self.kwargs("extractor")
 
     @property
     def ext(self) -> str:
@@ -126,34 +152,21 @@ class Entry:
 
     def to_dict(self) -> Dict:
         """Returns the entry's values as a dictionary"""
-        return {
-            "uid": self.uid,
-            "title": self.title,
-            "sanitized_title": self.sanitized_title,
-            "description": self.description,
-            "ext": self.ext,
-            "upload_date": self.upload_date,
-            "upload_year": self.upload_year,
-            "upload_month": self.upload_month,
-            "upload_month_padded": self.upload_month_padded,
-            "upload_day": self.upload_day,
-            "upload_day_padded": self.upload_day_padded,
-            "standardized_upload_date": self.standardized_upload_date,
-            "thumbnail": self.thumbnail,
-            "thumbnail_ext": self.thumbnail_ext,
-        }
-
-    def apply_formatter(
-        self,
-        formatter: StringFormatterValidator,
-        overrides: Optional[OverridesValidator] = None,
-    ) -> str:
-        """
-        Perform a string format on the given format string, using the entry's dict for format
-        values. The override dict will overwrite any values within the entry's dict.
-        """
-        entry_dict = self.to_dict()
-        if overrides:
-            entry_dict = dict(entry_dict, **overrides.dict_with_format_strings)
-
-        return formatter.apply_formatter(variable_dict=entry_dict)
+        return dict(
+            super().to_dict(),
+            **{
+                "title": self.title,
+                "sanitized_title": self.sanitized_title,
+                "description": self.description,
+                "ext": self.ext,
+                "upload_date": self.upload_date,
+                "upload_year": self.upload_year,
+                "upload_month": self.upload_month,
+                "upload_month_padded": self.upload_month_padded,
+                "upload_day": self.upload_day,
+                "upload_day_padded": self.upload_day_padded,
+                "standardized_upload_date": self.standardized_upload_date,
+                "thumbnail": self.thumbnail,
+                "thumbnail_ext": self.thumbnail_ext,
+            },
+        )

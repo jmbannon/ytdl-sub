@@ -129,7 +129,7 @@ class SoundcloudAlbum(Entry):
 
     @property
     def track_count(self) -> int:
-        return self.kwargs('playlist_count')
+        return self.kwargs("playlist_count")
 
     @property
     def downloaded_track_count(self) -> int:
