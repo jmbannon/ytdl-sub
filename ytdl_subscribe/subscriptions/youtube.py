@@ -1,8 +1,6 @@
 from abc import ABC
 from typing import List
 
-from yt_dlp import DateRange
-
 from ytdl_subscribe.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_subscribe.entries.youtube import YoutubeVideo
 from ytdl_subscribe.subscriptions.subscription import SourceT

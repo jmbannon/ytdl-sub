@@ -46,6 +46,11 @@ class Entry:
         return sanitize(self.title)
 
     @property
+    def extractor(self) -> str:
+        """Get the ytdl extrator name"""
+        return self.kwargs("extractor")
+
+    @property
     def ext(self) -> str:
         """Returns the entry's file extension"""
         return self.kwargs("ext")

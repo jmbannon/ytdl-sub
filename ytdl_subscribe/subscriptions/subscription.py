@@ -224,6 +224,16 @@ class Subscription(Generic[SourceT], ABC):
         os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
         copyfile(entry_source_file_path, entry_destination_file_path)
 
+        self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
+
+    @contextlib.contextmanager
+    def _prepare_working_directory(self):
+        os.makedirs(self.working_directory, exist_ok=True)
+
+        yield
+
+        shutil.rmtree(self.working_directory)
+
     @contextlib.contextmanager
     def _maintain_archive_file(self):
         if not self.output_options.maintain_download_archive:
@@ -246,7 +256,7 @@ class Subscription(Generic[SourceT], ABC):
         """
         Performs the subscription download.
         """
-        with self._maintain_archive_file():
+        with self._prepare_working_directory(), self._maintain_archive_file():
             entries = self._extract_info()
             for entry in entries:
                 self.post_process_entry(entry)

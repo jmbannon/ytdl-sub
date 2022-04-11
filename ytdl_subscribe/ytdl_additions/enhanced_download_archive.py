@@ -1,10 +1,10 @@
 import copy
 import json
 import os.path
-import shutil
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -13,83 +13,40 @@ from typing import Set
 from yt_dlp import DateRange
 
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.exceptions import DownloadArchiveException
 
 
 @dataclass
 class DownloadMapping:
     upload_date: str
-    file_paths: Set[str]
-
-
-class DownloadMappings:
-    _strptime_format = "%Y-%m-%d"
-
-    def __init__(self):
-        self._entry_mappings: Dict[str, DownloadMapping] = {}
-
-    @classmethod
-    def from_file(cls, json_file_path: str) -> "DownloadMappings":
-        entry_mappings_json = json.load(open(json_file_path, "r", encoding="utf8"))
-        for uid in entry_mappings_json.keys():
-            entry_mappings_json[uid] = DownloadMapping(
-                upload_date=entry_mappings_json[uid]["upload_date"],
-                file_paths=set(entry_mappings_json[uid]["file_paths"]),
-            )
-
-        download_mappings = DownloadMappings()
-        download_mappings._entry_mappings = entry_mappings_json
-        return download_mappings
+    extractor: str
+    file_names: Set[str]
 
     @property
-    def entry_ids(self) -> List[str]:
-        return list(self._entry_mappings.keys())
-
-    def add_entry(self, entry: Entry, entry_file_path: str) -> "DownloadMappings":
-        if entry.uid in self.entry_ids:
-            self._entry_mappings[entry.uid].file_paths.add(entry_file_path)
-        else:
-            self._entry_mappings[entry.uid] = DownloadMapping(
-                upload_date=entry.standardized_upload_date, file_paths={entry_file_path}
-            )
-        return self
-
-    def remove_entry(self, entry_id: str) -> "DownloadMappings":
-        if entry_id in self.entry_ids:
-            del self._entry_mappings[entry_id]
-        return self
-
-    def get_entries_out_of_range(self, date_range: DateRange) -> Dict[str, DownloadMapping]:
+    def dict(self) -> Dict[str, Any]:
         """
-        :param date_range: range of dates that entries' upload dates must be within
-        :return: dict of entry_id: mapping if the upload date is not in the date range
+        :return: DownloadMapping as a dict that is serializable
         """
-        out_of_range_entry_mappings = copy.deepcopy(self._entry_mappings)
-        for uid in list(out_of_range_entry_mappings.keys()):
-            upload_date = datetime.strptime(
-                date_string=out_of_range_entry_mappings[uid].upload_date,
-                format=self._strptime_format,
-            ).date()
+        return {
+            "upload_date": self.upload_date,
+            "extractor": self.extractor,
+            "file_names": sorted(list(self.file_names)),
+        }
 
-            if upload_date in date_range:
-                del out_of_range_entry_mappings[uid]
-
-        return out_of_range_entry_mappings
-
-    def to_file(self, output_json_file: str) -> "DownloadMappings":
-        json.dump(
-            obj={
-                uid: mapping
-                for uid, mapping in sorted(
-                    self._entry_mappings.items(),
-                    key=lambda item: item[1]["upload_date"],
-                    reverse=True,
-                )
-            },
-            fp=open(output_json_file, "w", encoding="utf8"),
-            indent=2,
+    @classmethod
+    def from_dict(cls, mapping_dict: dict) -> "DownloadMapping":
+        return DownloadMapping(
+            upload_date=mapping_dict["upload_date"],
+            extractor=mapping_dict["extractor"],
+            file_names=set(mapping_dict["file_names"]),
         )
-        return self
+
+    @classmethod
+    def from_entry(cls, entry: Entry) -> "DownloadMapping":
+        return DownloadMapping(
+            upload_date=entry.standardized_upload_date,
+            extractor=entry.extractor,
+            file_names=set(),
+        )
 
 
 class DownloadArchive:
@@ -102,11 +59,15 @@ class DownloadArchive:
         self._download_archive_lines: List[str] = []
 
     @classmethod
-    def from_file(cls, file_path: str) -> "DownloadArchive":
-        lines = open(file_path, "r", encoding="utf8").readlines()
+    def from_lines(cls, lines: List[str]) -> "DownloadArchive":
         download_archive = DownloadArchive()
         download_archive._download_archive_lines = lines
         return download_archive
+
+    @classmethod
+    def from_file(cls, file_path: str) -> "DownloadArchive":
+        lines = open(file_path, "r", encoding="utf8").readlines()
+        return cls.from_lines(lines=lines)
 
     def to_file(self, file_path: str) -> "DownloadArchive":
         with open(file_path, "w", encoding="utf8") as file:
@@ -123,6 +84,89 @@ class DownloadArchive:
         return self
 
 
+class DownloadMappings:
+    _strptime_format = "%Y-%m-%d"
+
+    def __init__(self):
+        self._entry_mappings: Dict[str, DownloadMapping] = {}
+
+    @classmethod
+    def from_file(cls, json_file_path: str) -> "DownloadMappings":
+        entry_mappings_json = json.load(open(json_file_path, "r", encoding="utf8"))
+        for uid in entry_mappings_json.keys():
+            entry_mappings_json[uid] = DownloadMapping.from_dict(
+                mapping_dict=entry_mappings_json[uid]
+            )
+
+        download_mappings = DownloadMappings()
+        download_mappings._entry_mappings = entry_mappings_json
+        return download_mappings
+
+    @property
+    def entry_ids(self) -> List[str]:
+        return list(self._entry_mappings.keys())
+
+    @property
+    def is_empty(self) -> bool:
+        return len(self._entry_mappings) == 0
+
+    def add_entry(self, entry: Entry, entry_file_path: str) -> "DownloadMappings":
+        if entry.uid not in self.entry_ids:
+            self._entry_mappings[entry.uid] = DownloadMapping.from_entry(entry=entry)
+
+        self._entry_mappings[entry.uid].file_names.add(entry_file_path)
+        return self
+
+    def remove_entry(self, entry_id: str) -> "DownloadMappings":
+        if entry_id in self.entry_ids:
+            del self._entry_mappings[entry_id]
+        return self
+
+    def get_entries_out_of_range(self, date_range: DateRange) -> Dict[str, DownloadMapping]:
+        """
+        :param date_range: range of dates that entries' upload dates must be within
+        :return: dict of entry_id: mapping if the upload date is not in the date range
+        """
+        out_of_range_entry_mappings = copy.deepcopy(self._entry_mappings)
+        for uid in list(out_of_range_entry_mappings.keys()):
+            upload_date = datetime.strptime(
+                out_of_range_entry_mappings[uid].upload_date,
+                self._strptime_format,
+            ).date()
+
+            if upload_date in date_range:
+                del out_of_range_entry_mappings[uid]
+
+        return out_of_range_entry_mappings
+
+    def to_file(self, output_json_file: str) -> "DownloadMappings":
+
+        # Create json string first to ensure it is valid before writing anything to file
+        json_str = json.dumps(
+            obj={
+                uid: mapping.dict
+                for uid, mapping in sorted(
+                    self._entry_mappings.items(),
+                    key=lambda item: item[1].upload_date,
+                    reverse=True,
+                )
+            },
+            indent=2,
+        )
+
+        with open(output_json_file, "w", encoding="utf8") as file:
+            file.write(json_str)
+
+        return self
+
+    def to_download_archive(self) -> DownloadArchive:
+        lines: List[str] = []
+        for entry_id, metadata in self._entry_mappings.items():
+            lines.append(f"{metadata.extractor} {entry_id}")
+
+        return DownloadArchive.from_lines(lines)
+
+
 class EnhancedDownloadArchive:
     """
     Maintains ytdl's download archive file as well as create an additional mapping file to map
@@ -134,13 +178,11 @@ class EnhancedDownloadArchive:
     1. self.prepare_download_archive()
         Internally calls...
         a. self._load()
-            - Checks the output directory to see if existing download archive/mapping files exist.
-              Loads them into the class if they do. If both do not exist, do not load anything since
-              they are getting instantiated for the first time. If only one archive/mapping file
-              exists but not the other, error.
+            - Checks the output directory to see if an existing enhanced download archive file
+              exists. If so, load it into the class. Otherwise, initialize an empty instance of one.
         b. self._copy_to_working_directory()
-            - If the files were loaded successfully, copy them to the working directory. This will
-              let ytdlp reuse the download archive file.
+            - If the download archive was loaded successfully, create a ytdl download archive in the
+              working directory. This will let ytdl know which files are already downloaded.
     2. ( Perform the ytdlp download using a download archive with the same name )
         - An existing archive should have been copied into the working directory for reuse
     3. self.mapping.add_entry(entry, file_path)
@@ -150,7 +192,7 @@ class EnhancedDownloadArchive:
         - After all files have been moved over in the output directory, remove any stale files that
           exist in there.
     5. self.save_download_archive()
-        - Save the updated archive/mapping files to the output directory.
+        - Save the updated mapping file to the output directory.
     6. ( Delete the working directory )
     """
 
@@ -177,13 +219,6 @@ class EnhancedDownloadArchive:
         return f".ytdl-subscribe-{self.subscription_name}-download-mapping.json"
 
     @property
-    def _archive_output_file_path(self) -> str:
-        """
-        :return: The download archive's file path in the output directory.
-        """
-        return str(Path(self.output_directory) / self._archive_file_name)
-
-    @property
     def _mapping_output_file_path(self):
         """
         :return: The download mapping's file path in the output directory.
@@ -195,14 +230,7 @@ class EnhancedDownloadArchive:
         """
         :return: The download archive's file path in the working directory.
         """
-        return str(Path(self.working_directory) / self._archive_file_name)
-
-    @property
-    def _mapping_working_file_path(self):
-        """
-        :return: The download mapping's file path in the working directory.
-        """
-        return str(Path(self.working_directory) / self._mapping_file_name)
+        return str(Path(self.working_directory) / self.archive_file_name)
 
     @property
     def mapping(self) -> DownloadMappings:
@@ -211,28 +239,9 @@ class EnhancedDownloadArchive:
         return self._download_mapping
 
     def _load(self) -> "EnhancedDownloadArchive":
-        download_archive_is_file = os.path.isfile(self._mapping_output_file_path)
-        download_mapping_is_file = os.path.isfile(self._archive_output_file_path)
 
-        if download_archive_is_file ^ download_mapping_is_file:
-            found_file_path, missing_name, missing_file_path = (
-                (self._archive_output_file_path, "mapping", self._mapping_output_file_path)
-                if download_archive_is_file
-                else (self._mapping_output_file_path, "archive", self._archive_output_file_path)
-            )
-
-            raise DownloadArchiveException(
-                f"Error when loading archive files for {self.subscription_name}. Partially loaded "
-                f"the enhanced download archive, but is missing the {missing_name} file located at "
-                f"{missing_file_path}. Either disable 'maintain_download_archive' or delete "
-                f"{found_file_path} to recreate the two missing files."
-            )
-
-        # If both files exist, load them up
-        if download_archive_is_file and download_mapping_is_file:
-            self._download_archive = DownloadArchive.from_file(
-                file_path=self._archive_output_file_path
-            )
+        # If a mapping file exists in the output directory, load it up.
+        if os.path.isfile(self._mapping_output_file_path):
             self._download_mapping = DownloadMappings.from_file(
                 json_file_path=self._mapping_output_file_path
             )
@@ -244,12 +253,13 @@ class EnhancedDownloadArchive:
         return self
 
     def _copy_to_working_directory(self) -> "EnhancedDownloadArchive":
-        # If no download archive was found, then there is nothing to copy
-        if not self._download_archive:
+        # If the download mapping is empty, do nothing since the ytdl downloader will create a new
+        # download archive file
+        if self.mapping.is_empty:
             return self
 
-        shutil.copyfile(self._archive_output_file_path, self._archive_working_file_path)
-        shutil.copyfile(self._mapping_output_file_path, self._mapping_working_file_path)
+        # Otherwise, create a ytdl download archive file in the working directory.
+        self.mapping.to_download_archive().to_file(self._archive_working_file_path)
 
         return self
 
@@ -265,7 +275,8 @@ class EnhancedDownloadArchive:
 
         for uid, mapping in stale_mappings.items():
             print(f"[{uid}] Removing the following stale file(s):")
-            for file_path in mapping.file_paths:
+            for file_name in mapping.file_names:
+                file_path = Path(self.output_directory) / Path(file_name)
                 print(f"  - {file_path}")
                 if os.path.exists(file_path):
                     os.remove(file_path)
@@ -284,8 +295,7 @@ class EnhancedDownloadArchive:
             if not self._download_archive.contains(entry_id):
                 self._download_archive.remove_entry(entry_id)
 
-        # Save the archive/mappign files
-        self._download_archive.to_file(file_path=self._archive_output_file_path)
+        # Save the updated mapping file to the output directory
         self._download_mapping.to_file(output_json_file=self._mapping_output_file_path)
 
         return self
