@@ -1,4 +1,5 @@
 from abc import ABC
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -8,6 +9,13 @@ from sanitize_filename import sanitize
 
 from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
+
+
+@dataclass
+class PlaylistMetadata:
+    order_index: int
+    playlist_id: str
+    playlist_extractor: str
 
 
 # TODO: strip things out of entry into BaseEntry
@@ -41,14 +49,13 @@ class BaseEntry(ABC):
         return self.kwargs("extractor")
 
     @property
-    def order_index(self) -> int:
+    def playlist_metadata(self) -> Optional[PlaylistMetadata]:
         """
-        Reserved for any child entry class that might have some kind of ordering to it.
-        Returns 1 unless overwritten.
+        Reserved for any child entry class that resides in a playlist.
 
-        :return: The order index (1-based)
+        :return: Playlist metadata for this entry
         """
-        return 1
+        return None
 
     def to_dict(self) -> Dict[str, str]:
         """Returns the entry's values as a dictionary"""

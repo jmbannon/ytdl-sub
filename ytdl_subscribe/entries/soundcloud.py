@@ -1,9 +1,11 @@
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from sanitize_filename import sanitize
 
 from ytdl_subscribe.entries.entry import Entry
+from ytdl_subscribe.entries.entry import PlaylistMetadata
 
 
 class SoundcloudTrack(Entry):
@@ -65,23 +67,23 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
     Entry object to represent a Soundcloud track yt-dlp that belongs to an album.
     """
 
-    def __init__(self, album: str, album_year: int, track_number: int, **kwargs):
+    def __init__(self, album: str, album_year: int, playlist_metadata: PlaylistMetadata, **kwargs):
         """
         Initialize the album track using album metadata and ytdl metadata for the specific track.
         """
         super().__init__(**kwargs)
         self._album = album
         self._album_year = album_year
-        self._track_number = track_number
+        self._playlist_metadata = playlist_metadata
+
+    @property
+    def playlist_metadata(self) -> Optional[PlaylistMetadata]:
+        return self._playlist_metadata
 
     @property
     def track_number(self) -> int:
         """Returns the entry's track number"""
-        return self._track_number
-
-    @property
-    def order_index(self) -> int:
-        return self._track_number
+        return self._playlist_metadata.order_index
 
     @property
     def album(self) -> str:
@@ -95,12 +97,16 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
 
     @classmethod
     def from_soundcloud_entry(
-        cls, soundcloud_track: SoundcloudTrack, album: str, album_year: int, track_number: int
+        cls,
+        album: str,
+        album_year: int,
+        soundcloud_track: SoundcloudTrack,
+        playlist_metadata: PlaylistMetadata,
     ) -> "SoundcloudAlbumTrack":
         return SoundcloudAlbumTrack(
             album=album,
             album_year=album_year,
-            track_number=track_number,
+            playlist_metadata=playlist_metadata,
             **soundcloud_track._kwargs,
         )
 
@@ -130,10 +136,12 @@ class SoundcloudAlbum(Entry):
 
         album_tracks = [
             SoundcloudAlbumTrack.from_soundcloud_entry(
-                soundcloud_track=track,
                 album=self.title,
                 album_year=self.album_year,
-                track_number=i + 1,
+                soundcloud_track=track,
+                playlist_metadata=PlaylistMetadata(
+                    playlist_id=self.uid, playlist_extractor=self.extractor, order_index=i + 1
+                ),
             )
             for i, track in enumerate(tracks)
         ]
