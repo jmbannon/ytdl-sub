@@ -6,6 +6,7 @@ from pathlib import Path
 from shutil import copyfile
 from typing import Dict
 from typing import Generic
+from typing import List
 from typing import Optional
 from typing import Type
 from typing import TypeVar
@@ -33,16 +34,18 @@ from ytdl_subscribe.validators.config.source_options.mixins import DownloadDateR
 from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
 from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-S = TypeVar("S", bound=SourceValidator)
-D = TypeVar("D", bound=Downloader)
+SourceT = TypeVar("SourceT", bound=SourceValidator)
+EntryT = TypeVar("EntryT", bound=Entry)
+DownloaderT = TypeVar("DownloaderT", bound=Downloader)
 
 
-class Subscription(Generic[S], ABC):
+class Subscription(Generic[SourceT], ABC):
     def __init__(
         self,
         name: str,
         config_options: ConfigOptionsValidator,
         preset_options: PresetValidator,
+        entry_type: Type[EntryT],
     ):
         """
         Parameters
@@ -55,6 +58,7 @@ class Subscription(Generic[S], ABC):
         self.name = name
         self.__config_options = config_options
         self.__preset_options = preset_options
+        self.__entry_type = entry_type
 
         self._enhanced_download_archive = EnhancedDownloadArchive(
             subscription_name=name,
@@ -63,7 +67,11 @@ class Subscription(Generic[S], ABC):
         )
 
     @property
-    def source_options(self) -> S:
+    def entry_type(self) -> EntryT:
+        return self.__entry_type
+
+    @property
+    def source_options(self) -> SourceT:
         """Returns the source options defined for this subscription"""
         return self.__preset_options.subscription_source
 
@@ -98,8 +106,8 @@ class Subscription(Generic[S], ABC):
             )
 
     def get_downloader(
-        self, downloader_type: Type[D], source_ytdl_options: Optional[Dict] = None
-    ) -> D:
+        self, downloader_type: Type[DownloaderT], source_ytdl_options: Optional[Dict] = None
+    ) -> DownloaderT:
         """Returns the downloader that will be used to download media for this subscription"""
         # if source_ytdl_options are present, override the ytdl_options with them
         ytdl_options = self.__preset_options.ytdl_options.dict
@@ -239,9 +247,11 @@ class Subscription(Generic[S], ABC):
         Performs the subscription download.
         """
         with self._maintain_archive_file():
-            self._extract_info()
+            entries = self._extract_info()
+            for entry in entries:
+                self.post_process_entry(entry)
 
-    def _extract_info(self):
+    def _extract_info(self) -> List[EntryT]:
         """
         Extracts only the info of the source, does not download it
         """

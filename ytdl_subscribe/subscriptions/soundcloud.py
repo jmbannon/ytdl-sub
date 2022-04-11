@@ -1,18 +1,39 @@
+from abc import ABC
 from typing import List
 
 from ytdl_subscribe.downloaders.soundcloud_downloader import SoundcloudDownloader
 from ytdl_subscribe.entries.soundcloud import SoundcloudAlbum
 from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
+from ytdl_subscribe.subscriptions.subscription import SourceT
 from ytdl_subscribe.subscriptions.subscription import Subscription
+from ytdl_subscribe.validators.config.config_options.config_options_validator import (
+    ConfigOptionsValidator,
+)
+from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
     SoundcloudAlbumsAndSinglesSourceValidator,
 )
 
 
+class SoundcloudSubscription(Subscription[SourceT], ABC):
+    def __init__(
+        self,
+        name: str,
+        config_options: ConfigOptionsValidator,
+        preset_options: PresetValidator,
+    ):
+        super().__init__(
+            name=name,
+            config_options=config_options,
+            preset_options=preset_options,
+            entry_type=SoundcloudTrack,
+        )
+
+
 class SoundcloudAlbumsAndSinglesSubscription(
     Subscription[SoundcloudAlbumsAndSinglesSourceValidator]
 ):
-    def _extract_info(self):
+    def _extract_info(self) -> List[SoundcloudTrack]:
         tracks: List[SoundcloudTrack] = []
         downloader = self.get_downloader(SoundcloudDownloader)
 
@@ -33,5 +54,4 @@ class SoundcloudAlbumsAndSinglesSubscription(
             track for track in single_tracks if not any(album.contains(track) for album in albums)
         ]
 
-        for entry in tracks:
-            self.post_process_entry(entry)
+        return tracks
