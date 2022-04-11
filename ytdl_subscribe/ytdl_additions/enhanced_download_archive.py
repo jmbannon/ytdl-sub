@@ -163,7 +163,7 @@ class EnhancedDownloadArchive:
         self._download_mapping: Optional[DownloadMappings] = None
 
     @property
-    def _archive_file_name(self) -> str:
+    def archive_file_name(self) -> str:
         """
         :return: The download archive's file name (no path)
         """
@@ -210,7 +210,7 @@ class EnhancedDownloadArchive:
             raise ValueError("Tried to use download mapping before it was loaded")
         return self._download_mapping
 
-    def load(self) -> "EnhancedDownloadArchive":
+    def _load(self) -> "EnhancedDownloadArchive":
         download_archive_is_file = os.path.isfile(self._mapping_output_file_path)
         download_mapping_is_file = os.path.isfile(self._archive_output_file_path)
 
@@ -243,7 +243,7 @@ class EnhancedDownloadArchive:
 
         return self
 
-    def copy_to_working_directory(self) -> "EnhancedDownloadArchive":
+    def _copy_to_working_directory(self) -> "EnhancedDownloadArchive":
         # If no download archive was found, then there is nothing to copy
         if not self._download_archive:
             return self
@@ -251,6 +251,11 @@ class EnhancedDownloadArchive:
         shutil.copyfile(self._archive_output_file_path, self._archive_working_file_path)
         shutil.copyfile(self._mapping_output_file_path, self._mapping_working_file_path)
 
+        return self
+
+    def prepare_download_archive(self) -> "EnhancedDownloadArchive":
+        self._load()
+        self._copy_to_working_directory()
         return self
 
     def remove_stale_files(self, date_range: DateRange) -> "EnhancedDownloadArchive":

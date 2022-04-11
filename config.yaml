@@ -54,6 +54,7 @@ presets:
       convert_thumbnail: "jpeg"
       thumbnail_name: "{output_file_name}.jpeg"
       maintain_download_archive: True
+      maintain_stale_file_deletion: True
     metadata_options:
       nfo:
         nfo_name: "{output_file_name}.nfo"

@@ -29,7 +29,9 @@ from ytdl_subscribe.validators.config.output_options.output_options_validator im
 )
 from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 from ytdl_subscribe.validators.config.preset_validator import PresetValidator
+from ytdl_subscribe.validators.config.source_options.mixins import DownloadDateRangeSource
 from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
+from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 S = TypeVar("S", bound=SourceValidator)
 D = TypeVar("D", bound=Downloader)
@@ -54,25 +56,16 @@ class Subscription(Generic[S], ABC):
         self.__config_options = config_options
         self.__preset_options = preset_options
 
+        self._enhanced_download_archive = EnhancedDownloadArchive(
+            subscription_name=name,
+            working_directory=self.working_directory,
+            output_directory=self.output_directory,
+        )
+
     @property
     def source_options(self) -> S:
         """Returns the source options defined for this subscription"""
         return self.__preset_options.subscription_source
-
-    def get_downloader(
-        self, downloader_type: Type[D], source_ytdl_options: Optional[Dict] = None
-    ) -> D:
-        """Returns the downloader that will be used to download media for this subscription"""
-        # if source_ytdl_options are present, override the ytdl_options with them
-        ytdl_options = self.__preset_options.ytdl_options.dict
-        if source_ytdl_options:
-            ytdl_options = dict(ytdl_options, **source_ytdl_options)
-
-        return downloader_type(
-            output_directory=self.working_directory,
-            ytdl_options=ytdl_options,
-            download_archive_file_name=self.download_archive_file_name,
-        )
 
     @property
     def output_options(self) -> OutputOptionsValidator:
@@ -98,9 +91,26 @@ class Subscription(Generic[S], ABC):
     def output_directory(self):
         return self._apply_formatter(formatter=self.output_options.output_directory)
 
-    @property
-    def download_archive_file_name(self):
-        return f".ytdl-subscribe-{self.name}-download-archive.txt"
+    def _archive_entry_file_name(self, entry: Optional[Entry], relative_file_name: str) -> None:
+        if entry:
+            self._enhanced_download_archive.mapping.add_entry(
+                entry=entry, entry_file_path=relative_file_name
+            )
+
+    def get_downloader(
+        self, downloader_type: Type[D], source_ytdl_options: Optional[Dict] = None
+    ) -> D:
+        """Returns the downloader that will be used to download media for this subscription"""
+        # if source_ytdl_options are present, override the ytdl_options with them
+        ytdl_options = self.__preset_options.ytdl_options.dict
+        if source_ytdl_options:
+            ytdl_options = dict(ytdl_options, **source_ytdl_options)
+
+        return downloader_type(
+            output_directory=self.working_directory,
+            ytdl_options=ytdl_options,
+            download_archive_file_name=self._enhanced_download_archive.archive_file_name,
+        )
 
     def _apply_formatter(
         self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
@@ -156,20 +166,26 @@ class Subscription(Generic[S], ABC):
         with open(nfo_file_path, "wb") as nfo_file:
             nfo_file.write(xml)
 
+        # Archive the nfo's file name
+        self._archive_entry_file_name(entry=entry, relative_file_name=nfo_file_name)
+
     @contextlib.contextmanager
     def _maintain_archive_file(self):
         if not self.output_options.maintain_download_archive:
             return
 
-        existing_download_archive = Path(self.output_directory) / self.download_archive_file_name
-        working_directory_archive = Path(self.working_directory) / self.download_archive_file_name
-
-        if os.path.exists(existing_download_archive):
-            shutil.copy(existing_download_archive, working_directory_archive)
+        self._enhanced_download_archive.prepare_download_archive()
 
         yield
 
-        shutil.copy(working_directory_archive, existing_download_archive)
+        date_range = None
+        if isinstance(self.source_options, DownloadDateRangeSource):
+            date_range = self.source_options.get_date_range()
+
+        if date_range and self.output_options.maintain_stale_file_deletion:
+            self._enhanced_download_archive.remove_stale_files(date_range=date_range)
+
+        self._enhanced_download_archive.save_download_archive()
 
     def download(self):
         """
@@ -203,6 +219,9 @@ class Subscription(Generic[S], ABC):
         os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
         copyfile(entry_source_file_path, entry_destination_file_path)
 
+        self._archive_entry_file_name(entry=entry, relative_file_name=output_file_name)
+
+        # TODO: move thumbnail to separate function
         # Download the thumbnail if its present
         if self.output_options.thumbnail_name:
             source_thumbnail_path = entry.thumbnail_path(relative_directory=self.working_directory)
@@ -238,6 +257,9 @@ class Subscription(Generic[S], ABC):
             # Otherwise, just copy the downloaded thumbnail
             else:
                 copyfile(source_thumbnail_path, output_thumbnail_path)
+
+            # Archive the thumbnail file name
+            self._archive_entry_file_name(entry=entry, relative_file_name=output_thumbnail_name)
 
         if self.metadata_options.nfo:
             self._post_process_nfo(nfo_options=self.metadata_options.nfo, entry=entry)

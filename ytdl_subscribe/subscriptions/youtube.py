@@ -26,11 +26,9 @@ class YoutubePlaylistSubscription(Subscription[YoutubePlaylistSourceValidator]):
 class YoutubeChannelSubscription(Subscription[YoutubeChannelSourceValidator]):
     def _extract_info(self):
         source_ytdl_options = {}
-        if self.source_options.before or self.source_options.after:
-            source_ytdl_options["daterange"] = DateRange(
-                start=self.source_options.after.datetime_str if self.source_options.after else None,
-                end=self.source_options.before.datetime_str if self.source_options.before else None,
-            )
+        source_date_range = self.source_options.get_date_range()
+        if source_date_range:
+            source_ytdl_options["daterange"] = source_ytdl_options
 
         downloader = self.get_downloader(YoutubeDownloader, source_ytdl_options=source_ytdl_options)
         entries = downloader.download_channel(channel_id=self.source_options.channel_id.value)

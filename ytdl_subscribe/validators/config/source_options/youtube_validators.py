@@ -1,5 +1,6 @@
 from ytdl_subscribe.validators.base.string_datetime import StringDatetimeValidator
 from ytdl_subscribe.validators.base.validators import StringValidator
+from ytdl_subscribe.validators.config.source_options.mixins import DownloadDateRangeSource
 from ytdl_subscribe.validators.config.source_options.source_validators import YoutubeSourceValidator
 
 
@@ -19,12 +20,11 @@ class YoutubeVideoSourceValidator(YoutubeSourceValidator):
         self.video_id = self._validate_key("video_id", StringValidator)
 
 
-class YoutubeChannelSourceValidator(YoutubeSourceValidator):
+class YoutubeChannelSourceValidator(YoutubeSourceValidator, DownloadDateRangeSource):
     _required_keys = {"channel_id"}
     _optional_keys = {"before", "after"}
 
     def __init__(self, name, value):
-        super().__init__(name, value)
+        YoutubeSourceValidator.__init__(self, name, value)
+        DownloadDateRangeSource.__init__(self, name, value)
         self.channel_id = self._validate_key("channel_id", StringValidator)
-        self.before = self._validate_key_if_present("before", StringDatetimeValidator)
-        self.after = self._validate_key_if_present("after", StringDatetimeValidator)
