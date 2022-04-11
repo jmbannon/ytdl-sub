@@ -31,7 +31,7 @@ class SoundcloudSubscription(Subscription[SourceT], ABC):
 
 
 class SoundcloudAlbumsAndSinglesSubscription(
-    Subscription[SoundcloudAlbumsAndSinglesSourceValidator]
+    SoundcloudSubscription[SoundcloudAlbumsAndSinglesSourceValidator]
 ):
     def _extract_info(self) -> List[SoundcloudTrack]:
         tracks: List[SoundcloudTrack] = []

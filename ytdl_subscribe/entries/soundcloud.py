@@ -127,6 +127,14 @@ class SoundcloudAlbum(Entry):
         """Returns the album's year, computed by the max upload year amongst all album tracks"""
         return max(track.upload_year for track in self._single_tracks)
 
+    @property
+    def track_count(self) -> int:
+        return self.kwargs('playlist_count')
+
+    @property
+    def downloaded_track_count(self) -> int:
+        return len(self.kwargs("entries"))
+
     def contains(self, track: SoundcloudTrack) -> bool:
         """Returns whether the album contains a track"""
         return any(track.uid == t.uid for t in self._single_tracks)
