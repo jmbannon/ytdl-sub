@@ -49,7 +49,7 @@ class YoutubeChannelSubscription(YoutubeSubscription[YoutubeChannelSourceValidat
         source_ytdl_options = {}
         source_date_range = self.source_options.get_date_range()
         if source_date_range:
-            source_ytdl_options["daterange"] = source_ytdl_options
+            source_ytdl_options["daterange"] = source_date_range
 
         downloader = self.get_downloader(YoutubeDownloader, source_ytdl_options=source_ytdl_options)
         return downloader.download_channel(channel_id=self.source_options.channel_id.value)
