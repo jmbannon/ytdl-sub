@@ -1,0 +1,6 @@
+-r requirements.txt
+black==21.11b1
+coverage==6.3.2
+isort==5.10.1
+pylint==2.13.3
+pytest==7.1.1

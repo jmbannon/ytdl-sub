@@ -2,7 +2,7 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-from sanitize_filename import sanitize
+from yt_dlp.utils import sanitize_filename
 
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.entries.entry import PlaylistMetadata
@@ -32,7 +32,7 @@ class SoundcloudTrack(Entry):
     @property
     def sanitized_album(self) -> str:
         """Returns the entry's sanitized album name"""
-        return sanitize(self.album)
+        return sanitize_filename(self.album)
 
     @property
     def album_year(self) -> int:

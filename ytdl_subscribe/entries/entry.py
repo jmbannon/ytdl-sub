@@ -4,7 +4,7 @@ from typing import Any
 from typing import Dict
 from typing import Optional
 
-from sanitize_filename import sanitize
+from yt_dlp.utils import sanitize_filename
 
 
 @dataclass
@@ -80,7 +80,7 @@ class Entry(BaseEntry):
     @property
     def sanitized_title(self) -> str:
         """Returns the entry's sanitized title"""
-        return sanitize(self.title)
+        return sanitize_filename(self.title)
 
     @property
     def ext(self) -> str:

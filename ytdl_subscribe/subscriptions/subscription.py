@@ -140,7 +140,7 @@ class Subscription(Generic[SourceT], ABC):
             ytdl_options = dict(ytdl_options, **source_ytdl_options)
 
         return downloader_type(
-            output_directory=self.working_directory,
+            working_directory=self.working_directory,
             ytdl_options=ytdl_options,
             download_archive_file_name=self._enhanced_download_archive.archive_file_name,
         )
