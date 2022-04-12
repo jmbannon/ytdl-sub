@@ -60,7 +60,6 @@ class BaseEntry(ABC):
         """Returns the entry's values as a dictionary"""
         return {
             "uid": self.uid,
-            "extractor": self.extractor,
         }
 
 
@@ -126,32 +125,21 @@ class Entry(BaseEntry):
         return self.kwargs("description")
 
     @property
-    def thumbnail(self) -> str:
-        """Returns the entry's thumbnail url"""
-        return self.kwargs("thumbnail")
-
-    @property
-    def thumbnail_ext(self) -> str:
-        """Returns the entry's thumbnail extension"""
-        return self.thumbnail.split(".")[-1]
-
-    @property
     def download_file_name(self) -> str:
         """Returns the entry's file name when downloaded locally"""
         return f"{self.uid}.{self.ext}"
 
     @property
     def download_thumbnail_name(self) -> str:
-        """Returns the thumbnail's file name when downloaded locally TODO: unit test this"""
-        return f"{self.uid}.{self.thumbnail_ext}"
+        """Returns the thumbnail's file name when downloaded locally"""
+        return self.kwargs("thumbnail")
 
-    def file_path(self, relative_directory: str):
-        """Returns the entry's file path with respect to the relative directory"""
-        return str(Path(relative_directory) / self.download_file_name)
-
-    def thumbnail_path(self, relative_directory: str):
-        """Returns the entry's thumbnail path with respect to the relative directory"""
-        return str(Path(relative_directory) / self.download_thumbnail_name)
+    @property
+    def thumbnail_ext(self) -> str:
+        """
+        :return: The entry's thumbnail extension
+        """
+        return self.download_thumbnail_name.split(".")[-1]
 
     def to_dict(self) -> Dict:
         """Returns the entry's values as a dictionary"""
@@ -162,6 +150,7 @@ class Entry(BaseEntry):
                 "sanitized_title": self.sanitized_title,
                 "description": self.description,
                 "ext": self.ext,
+                "thumbnail_ext": self.thumbnail_ext,
                 "upload_date": self.upload_date,
                 "upload_date_standardized": self.upload_date_standardized,
                 "upload_year": self.upload_year,
@@ -169,7 +158,5 @@ class Entry(BaseEntry):
                 "upload_month_padded": self.upload_month_padded,
                 "upload_day": self.upload_day,
                 "upload_day_padded": self.upload_day_padded,
-                "thumbnail": self.thumbnail,
-                "thumbnail_ext": self.thumbnail_ext,
             },
         )

@@ -137,7 +137,9 @@ class Subscription(Generic[SourceT], ABC):
         Tags the entry's audio file using values defined in the metadata options
         """
         id3_options = self.metadata_options.id3
-        audio_file = music_tag.load_file(entry.file_path(relative_directory=self.working_directory))
+        entry_source_file_path = Path(self.working_directory) / entry.download_file_name
+
+        audio_file = music_tag.load_file(entry_source_file_path)
         for tag, tag_formatter in id3_options.tags.dict.items():
             audio_file[tag] = self._apply_formatter(formatter=tag_formatter, entry=entry)
         audio_file.save()
@@ -175,7 +177,7 @@ class Subscription(Generic[SourceT], ABC):
         self._archive_entry_file_name(entry=entry, relative_file_name=nfo_file_name)
 
     def _post_process_thumbnail(self, entry: Entry):
-        source_thumbnail_path = entry.thumbnail_path(relative_directory=self.working_directory)
+        source_thumbnail_path = Path(self.working_directory) / entry.download_thumbnail_name
 
         # Bug that mismatches webp and jpg extensions. Try to hotfix here
         if not os.path.isfile(source_thumbnail_path):
@@ -214,7 +216,7 @@ class Subscription(Generic[SourceT], ABC):
 
     def _copy_entry_file_to_output_directory(self, entry: Entry):
         # Move the file after all direct file modifications are complete
-        entry_source_file_path = entry.file_path(relative_directory=self.working_directory)
+        entry_source_file_path = Path(self.working_directory) / entry.download_file_name
 
         output_file_name = self._apply_formatter(
             formatter=self.output_options.file_name, entry=entry

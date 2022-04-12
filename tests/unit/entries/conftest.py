@@ -42,7 +42,7 @@ def upload_month():
 
 @pytest.fixture
 def upload_day():
-    return 6
+    return 12
 
 
 @pytest.fixture
@@ -61,8 +61,8 @@ def thumbnail_ext():
 
 
 @pytest.fixture
-def thumbnail(thumbnail_ext):
-    return f"thumb.{thumbnail_ext}"
+def download_thumbnail_name(uid, thumbnail_ext):
+    return f"{uid}.{thumbnail_ext}"
 
 
 @pytest.fixture
@@ -77,9 +77,7 @@ def mock_entry_to_dict(
     ext,
     upload_date,
     upload_year,
-    thumbnail,
     thumbnail_ext,
-    extractor,
     description,
     upload_month,
     upload_day,
@@ -96,22 +94,22 @@ def mock_entry_to_dict(
         "upload_month_padded": _pad(upload_month),
         "upload_day": upload_day,
         "upload_day_padded": _pad(upload_day),
-        "thumbnail": thumbnail,
         "thumbnail_ext": thumbnail_ext,
-        "extractor": extractor,
         "description": description,
     }
 
 
 @pytest.fixture
-def mock_entry_kwargs(uid, title, ext, upload_date, thumbnail, extractor, description):
+def mock_entry_kwargs(
+    uid, title, ext, upload_date, extractor, description, download_thumbnail_name
+):
     return {
         "id": uid,
         "extractor": extractor,
         "title": title,
         "ext": ext,
         "upload_date": upload_date,
-        "thumbnail": thumbnail,
+        "thumbnail": download_thumbnail_name,
         "description": description,
     }
 
@@ -128,9 +126,10 @@ def validate_entry_properties(
     upload_date,
     upload_year,
     ext,
-    thumbnail,
+    extractor,
     thumbnail_ext,
     download_file_name,
+    download_thumbnail_name,
 ):
     def _validate_entry_properties(entry: Entry):
         assert entry.uid == uid
@@ -140,9 +139,11 @@ def validate_entry_properties(
         assert entry.upload_date == upload_date
         assert entry.upload_year == upload_year
         assert entry.ext == ext
-        assert entry.thumbnail == thumbnail
         assert entry.thumbnail_ext == thumbnail_ext
         assert entry.download_file_name == download_file_name
+        assert entry.download_thumbnail_name == download_thumbnail_name
+        assert entry.playlist_metadata is None
+        assert entry.extractor == extractor
 
         return True
 

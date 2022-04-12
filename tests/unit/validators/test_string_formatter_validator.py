@@ -164,3 +164,8 @@ class TestDictFormatterValidator(object):
 
         assert validator.dict["key1"].format_variables == ["variable"]
         assert validator.dict["key2"].format_variables == []
+
+        assert validator.dict_with_format_strings == {
+            "key1": key1_format_string,
+            "key2": key2_format_string,
+        }
