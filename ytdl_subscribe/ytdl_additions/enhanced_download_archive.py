@@ -71,7 +71,8 @@ class DownloadArchive:
 
     def to_file(self, file_path: str) -> "DownloadArchive":
         with open(file_path, "w", encoding="utf8") as file:
-            file.writelines(self._download_archive_lines)
+            for line in self._download_archive_lines:
+                file.write(f"{line}\n")
         return self
 
     def contains(self, entry_id: str) -> bool:

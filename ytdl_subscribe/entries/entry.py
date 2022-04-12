@@ -13,7 +13,7 @@ from ytdl_subscribe.validators.config.overrides.overrides_validator import Overr
 
 @dataclass
 class PlaylistMetadata:
-    order_index: int
+    playlist_index: int
     playlist_id: str
     playlist_extractor: str
 

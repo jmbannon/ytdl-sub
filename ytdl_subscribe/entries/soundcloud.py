@@ -83,7 +83,7 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
     @property
     def track_number(self) -> int:
         """Returns the entry's track number"""
-        return self._playlist_metadata.order_index
+        return self._playlist_metadata.playlist_index
 
     @property
     def album(self) -> str:
@@ -96,7 +96,7 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
         return self._album_year
 
     @classmethod
-    def from_soundcloud_entry(
+    def from_soundcloud_track(
         cls,
         album: str,
         album_year: int,
@@ -129,21 +129,24 @@ class SoundcloudAlbum(Entry):
         Returns all tracks in the album represented as album-tracks. They will share the
         same album name, have ordered track numbers, and a shared album year.
         """
-        tracks = [SoundcloudTrack(**entry) for entry in self.kwargs("entries")]
-
-        if skip_premiere_tracks:
-            tracks = [track for track in tracks if not track.is_premiere]
+        tracks = [
+            track
+            for track in self._single_tracks
+            if not (skip_premiere_tracks and track.is_premiere)
+        ]
 
         album_tracks = [
-            SoundcloudAlbumTrack.from_soundcloud_entry(
+            SoundcloudAlbumTrack.from_soundcloud_track(
                 album=self.title,
                 album_year=self.album_year,
                 soundcloud_track=track,
                 playlist_metadata=PlaylistMetadata(
-                    playlist_id=self.uid, playlist_extractor=self.extractor, order_index=i + 1
+                    playlist_id=self.uid,
+                    playlist_extractor=self.extractor,
+                    playlist_index=track.kwargs("playlist_index"),
                 ),
             )
-            for i, track in enumerate(tracks)
+            for track in tracks
         ]
 
         return album_tracks
