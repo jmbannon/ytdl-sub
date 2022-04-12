@@ -38,7 +38,7 @@ download_parser.add_argument(
 )
 
 if __name__ == "__main__":
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     config: ConfigFileValidator = ConfigFileValidator.from_file_path(args.config)
     if args.subparser == "sub":
