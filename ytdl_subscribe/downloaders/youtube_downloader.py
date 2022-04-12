@@ -62,9 +62,9 @@ class YoutubeDownloader(Downloader):
         entries: List[YoutubeVideo] = []
 
         # Load the entries from info.json, ignore the playlist entry
-        for file_name in os.listdir(self.output_directory):
+        for file_name in os.listdir(self.working_directory):
             if file_name.endswith(".info.json") and not file_name.startswith(playlist_id):
-                with open(Path(self.output_directory) / file_name, "r", encoding="utf-8") as file:
+                with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
                     entries.append(YoutubeVideo(**json.load(file)))
 
         return entries
@@ -72,8 +72,6 @@ class YoutubeDownloader(Downloader):
     def download_channel(self, channel_id: str) -> List[YoutubeVideo]:
         """
         Downloads all videos from a channel
-        TODO: Add caching via ids in the metadata. Scrape output directory for any vid ids and
-        TODO: include it in the archive
         """
         self._download_with_metadata(url=self.channel_url(channel_id))
 
@@ -82,9 +80,9 @@ class YoutubeDownloader(Downloader):
 
         # Load the entries from info.json
         # TODO dupe code between this and playlist
-        for file_name in os.listdir(self.output_directory):
+        for file_name in os.listdir(self.working_directory):
             if file_name.endswith(".info.json") and not file_name.startswith(channel_id):
-                with open(Path(self.output_directory) / file_name, "r", encoding="utf-8") as file:
+                with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
                     entries.append(YoutubeVideo(**json.load(file)))
 
         return entries

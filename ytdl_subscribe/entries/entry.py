@@ -1,24 +1,28 @@
 from abc import ABC
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import Optional
 
 from sanitize_filename import sanitize
 
-from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
-from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
-
 
 @dataclass
 class PlaylistMetadata:
+    """
+    Metadata for storing playlist information.
+    """
+
     playlist_index: int
     playlist_id: str
     playlist_extractor: str
 
 
 class BaseEntry(ABC):
+    """
+    Abstract entry object to represent anything download from ytdl (playlist metadata, media, etc).
+    """
+
     def __init__(self, **kwargs):
         """
         Initialize the entry using ytdl metadata

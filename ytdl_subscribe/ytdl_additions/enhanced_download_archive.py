@@ -66,8 +66,8 @@ class DownloadArchive:
 
     @classmethod
     def from_file(cls, file_path: str) -> "DownloadArchive":
-        lines = open(file_path, "r", encoding="utf8").readlines()
-        return cls.from_lines(lines=lines)
+        with open(file_path, "r", encoding="utf8") as file:
+            return cls.from_lines(lines=file.readlines())
 
     def to_file(self, file_path: str) -> "DownloadArchive":
         with open(file_path, "w", encoding="utf8") as file:
@@ -93,7 +93,9 @@ class DownloadMappings:
 
     @classmethod
     def from_file(cls, json_file_path: str) -> "DownloadMappings":
-        entry_mappings_json = json.load(open(json_file_path, "r", encoding="utf8"))
+        with open(json_file_path, "r", encoding="utf8") as json_file:
+            entry_mappings_json = json.load(json_file)
+
         for uid in entry_mappings_json.keys():
             entry_mappings_json[uid] = DownloadMapping.from_dict(
                 mapping_dict=entry_mappings_json[uid]

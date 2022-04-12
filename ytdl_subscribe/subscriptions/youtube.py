@@ -21,6 +21,10 @@ from ytdl_subscribe.validators.config.source_options.youtube_validators import (
 
 
 class YoutubeSubscription(Subscription[SourceT], ABC):
+    """
+    Abstract class for all Youtube-based subscriptions. Sets entry type to YoutubeVideo
+    """
+
     def __init__(
         self,
         name: str,
@@ -36,6 +40,10 @@ class YoutubeSubscription(Subscription[SourceT], ABC):
 
 
 class YoutubePlaylistSubscription(YoutubeSubscription[YoutubePlaylistSourceValidator]):
+    """
+    Youtube subscription to download videos from a playlist
+    """
+
     def _extract_info(self) -> List[YoutubeVideo]:
         return self.get_downloader(YoutubeDownloader).download_playlist(
             playlist_id=self.source_options.playlist_id.value
@@ -43,6 +51,10 @@ class YoutubePlaylistSubscription(YoutubeSubscription[YoutubePlaylistSourceValid
 
 
 class YoutubeChannelSubscription(YoutubeSubscription[YoutubeChannelSourceValidator]):
+    """
+    Youtube subscription to download videos from a channel
+    """
+
     def _extract_info(self) -> List[YoutubeVideo]:
         source_ytdl_options = {}
         source_date_range = self.source_options.get_date_range()
@@ -54,6 +66,10 @@ class YoutubeChannelSubscription(YoutubeSubscription[YoutubeChannelSourceValidat
 
 
 class YoutubeVideoSubscription(YoutubeSubscription[YoutubeVideoSourceValidator]):
+    """
+    Youtube subscription to download a single video
+    """
+
     def _extract_info(self) -> List[YoutubeVideo]:
         entry = self.get_downloader(YoutubeDownloader).download_video(
             video_id=self.source_options.video_id.value

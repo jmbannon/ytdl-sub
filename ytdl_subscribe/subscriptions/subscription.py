@@ -40,6 +40,19 @@ DownloaderT = TypeVar("DownloaderT", bound=Downloader)
 
 
 class Subscription(Generic[SourceT], ABC):
+    """
+    Subscription classes are the 'controllers' that perform...
+
+    -  Downloading via ytdlp
+    -  Adding metadata
+    -  Placing files in the output directory
+
+    while configuring each step with provided configs. Child classes are expected to
+    provide SourceValidator (SourceT), which defines the source and its configurable options.
+    In addition, they should provide in the init an Entry type (EntryT), which is the entry that
+    will be returned after downloading.
+    """
+
     def __init__(
         self,
         name: str,
@@ -68,6 +81,9 @@ class Subscription(Generic[SourceT], ABC):
 
     @property
     def entry_type(self) -> EntryT:
+        """
+        :return: The Entry type this subscription uses to represent downloaded media
+        """
         return self.__entry_type
 
     @property
@@ -96,10 +112,19 @@ class Subscription(Generic[SourceT], ABC):
         return str(Path(self.__config_options.working_directory.value) / Path(self.name))
 
     @property
-    def output_directory(self):
+    def output_directory(self) -> str:
+        """
+        :return: The formatted output directory
+        """
         return self._apply_formatter(formatter=self.output_options.output_directory)
 
     def _archive_entry_file_name(self, entry: Optional[Entry], relative_file_name: str) -> None:
+        """
+        Adds an entry and a file name that belongs to it into the archive mapping.
+
+        :param entry: Optional. The entry the file belongs to
+        :param relative_file_name: The name of the file
+        """
         if entry:
             self._enhanced_download_archive.mapping.add_entry(
                 entry=entry, entry_file_path=relative_file_name
@@ -181,16 +206,18 @@ class Subscription(Generic[SourceT], ABC):
 
         # Bug that mismatches webp and jpg extensions. Try to hotfix here
         if not os.path.isfile(source_thumbnail_path):
+            to_replace = f".{entry.thumbnail_ext}"
             actual_thumbnail_ext = ".webp"
             if entry.thumbnail_ext == "webp":
                 actual_thumbnail_ext = ".jpg"
 
-            source_thumbnail_path = source_thumbnail_path.replace(
-                f".{entry.thumbnail_ext}", actual_thumbnail_ext
+            source_thumbnail_name = entry.download_thumbnail_name.replace(
+                to_replace, actual_thumbnail_ext
             )
+            source_thumbnail_path = Path(self.working_directory) / source_thumbnail_name
+
             if not os.path.isfile(source_thumbnail_path):
-                # TODO: make more formal
-                raise ValueError("Youtube thumbnails are a lie")
+                raise ValueError("Hotfix for getting thumbnail file extension failed")
 
         output_thumbnail_name = self._apply_formatter(
             formatter=self.output_options.thumbnail_name, entry=entry

@@ -110,9 +110,13 @@ class PresetValidator(StrictDictValidator):
         if validator_dict is None:
             validator_dict = self._validator_dict
 
-        for name, validator in validator_dict.items():
+        for validator in validator_dict.values():
             if isinstance(validator, DictValidator):
+                # Usage of protected variables in other validators is fine. The reason to keep them
+                # protected is for readability when using them in subscriptions.
+                # pylint: disable=protected-access
                 self.__recursive_preset_validate(validator._validator_dict)
+                # pylint: enable=protected-access
 
             if isinstance(validator, OverridesStringFormatterValidator):
                 self.__validate_override_string_formatter_validator(validator)

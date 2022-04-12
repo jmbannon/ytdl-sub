@@ -23,3 +23,7 @@ class OutputDirectoryNFOValidator(NFOValidator):
         self.nfo_name = self._validate_key(
             key="nfo_name", validator=OverridesStringFormatterValidator
         )
+        self.nfo_root = self._validate_key(
+            key="nfo_root", validator=OverridesStringFormatterValidator
+        )
+        self.tags = self._validate_key(key="tags", validator=DictFormatterValidator)

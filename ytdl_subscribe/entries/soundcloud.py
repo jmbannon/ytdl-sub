@@ -107,7 +107,7 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
             album=album,
             album_year=album_year,
             playlist_metadata=playlist_metadata,
-            **soundcloud_track._kwargs,
+            **soundcloud_track._kwargs,  # pylint: disable=protected-access
         )
 
 

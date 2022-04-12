@@ -131,11 +131,13 @@ class DictFormatterValidator(LiteralDictValidator):
     Validates a dictionary made up of key: string_formatters
     """
 
+    _key_validator = StringFormatterValidator
+
     def __init__(self, name, value):
         super().__init__(name, value)
 
         for key in self._keys:
-            self._value[key] = self._validate_key(key=key, validator=StringFormatterValidator)
+            self._value[key] = self._validate_key(key=key, validator=self._key_validator)
 
     @property
     def dict(self) -> Dict[str, StringFormatterValidator]:
@@ -146,3 +148,12 @@ class DictFormatterValidator(LiteralDictValidator):
     def dict_with_format_strings(self) -> Dict[str, str]:
         """Returns dict with the format strings themselves"""
         return {key: string_formatter.format_string for key, string_formatter in self.dict.items()}
+
+
+class OverridesDictFormatterValidator(DictFormatterValidator):
+    """
+    Validates a dictionary made up of key: string_formatters, that must be resolved by overrides
+    only.
+    """
+
+    _key_validator = OverridesStringFormatterValidator

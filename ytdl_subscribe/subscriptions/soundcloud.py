@@ -16,6 +16,10 @@ from ytdl_subscribe.validators.config.source_options.soundcloud_validators impor
 
 
 class SoundcloudSubscription(Subscription[SourceT], ABC):
+    """
+    Abstract class for all Soundcloud-based subscriptions. Sets entry type to SoundcloudTrack
+    """
+
     def __init__(
         self,
         name: str,
@@ -33,6 +37,10 @@ class SoundcloudSubscription(Subscription[SourceT], ABC):
 class SoundcloudAlbumsAndSinglesSubscription(
     SoundcloudSubscription[SoundcloudAlbumsAndSinglesSourceValidator]
 ):
+    """
+    Soundcloud subscription to download albums and tracks as singles.
+    """
+
     def _extract_info(self) -> List[SoundcloudTrack]:
         tracks: List[SoundcloudTrack] = []
         downloader = self.get_downloader(SoundcloudDownloader)

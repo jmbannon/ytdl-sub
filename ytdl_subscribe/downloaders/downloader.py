@@ -1,4 +1,3 @@
-import tempfile
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict
@@ -50,17 +49,14 @@ class Downloader:
 
     def __init__(
         self,
-        output_directory: str,
+        working_directory: str,
         ytdl_options: Optional[Dict] = None,
         download_archive_file_name: Optional[str] = None,
     ):
-        self.output_directory = output_directory
-        if self.output_directory is None:
-            self.output_directory = tempfile.TemporaryDirectory().name
-
+        self.working_directory = working_directory
         self.ytdl_options = Downloader._configure_ytdl_options(
             ytdl_options=ytdl_options,
-            working_directory=self.output_directory,
+            working_directory=self.working_directory,
             download_archive_file_name=download_archive_file_name,
         )
 
