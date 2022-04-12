@@ -154,12 +154,11 @@ def validate_entry_dict_contains_valid_formatters():
     def _validate_entry_dict_contains_valid_formatters(entry: Entry):
         for key, value in entry.to_dict().items():
             expected_string = f"test {value} formatting works"
-            format_string = f"test {{{key}}} formatting works"
-
-            assert (
-                entry.apply_formatter(StringFormatterValidator(name="test", value=format_string))
-                == expected_string
+            formatter = StringFormatterValidator(
+                name="test", value=f"test {{{key}}} formatting works"
             )
+
+            assert formatter.apply_formatter(entry.to_dict()) == expected_string
 
         return True
 

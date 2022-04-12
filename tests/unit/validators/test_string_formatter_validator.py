@@ -89,6 +89,17 @@ class TestStringFormatterValidator(object):
         with pytest.raises(ValidationException, match=expected_error_msg):
             _ = StringFormatterValidator(name="fail", value=format_string)
 
+    def test_entry_formatter_fails_missing_field(self):
+        format_string = StringFormatterValidator(name="test", value=f"prefix {{bah_humbug}} suffix")
+        variable_dict = {"varb": "a", "vara": "b"}
+        expected_error_msg = (
+            f"Validation error in test: Format variable 'bah_humbug' does not exist. "
+            f"Available variables: {', '.join(sorted(variable_dict.keys()))}"
+        )
+
+        with pytest.raises(StringFormattingException, match=expected_error_msg):
+            assert format_string.apply_formatter(variable_dict=variable_dict)
+
     def test_string_formatter_single_field(self):
         uid = "this uid"
         format_string = StringFormatterValidator(name="test", value=f"prefix {{uid}} suffix")

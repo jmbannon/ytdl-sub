@@ -63,21 +63,6 @@ class BaseEntry(ABC):
             "extractor": self.extractor,
         }
 
-    def apply_formatter(
-        self,
-        formatter: StringFormatterValidator,
-        overrides: Optional[OverridesValidator] = None,
-    ) -> str:
-        """
-        Perform a string format on the given format string, using the entry's dict for format
-        values. The override dict will overwrite any values within the entry's dict.
-        """
-        entry_dict = self.to_dict()
-        if overrides:
-            entry_dict = dict(entry_dict, **overrides.dict_with_format_strings)
-
-        return formatter.apply_formatter(variable_dict=entry_dict)
-
 
 class Entry(BaseEntry):
     """

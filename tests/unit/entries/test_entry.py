@@ -39,14 +39,3 @@ class TestEntry(object):
         assert mock_entry.kwargs_contains(key) is False
         with pytest.raises(KeyError, match=expected_error_msg):
             mock_entry.kwargs(key)
-
-    def test_entry_formatter_fails_missing_field(self, mock_entry):
-        format_string = StringFormatterValidator(name="test", value=f"prefix {{bah_humbug}} suffix")
-        available_fields = ", ".join(sorted(mock_entry.to_dict().keys()))
-        expected_error_msg = (
-            f"Validation error in test: Format variable 'bah_humbug' does not exist. "
-            f"Available variables: {available_fields}"
-        )
-
-        with pytest.raises(StringFormattingException, match=expected_error_msg):
-            assert mock_entry.apply_formatter(format_string)
