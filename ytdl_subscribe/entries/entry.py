@@ -18,7 +18,6 @@ class PlaylistMetadata:
     playlist_extractor: str
 
 
-# TODO: strip things out of entry into BaseEntry
 class BaseEntry(ABC):
     def __init__(self, **kwargs):
         """
@@ -131,7 +130,7 @@ class Entry(BaseEntry):
         return int(self.upload_day_padded.lstrip("0"))
 
     @property
-    def standardized_upload_date(self) -> str:
+    def upload_date_standardized(self) -> str:
         """
         :return: upload date as YYYY-MM-DD
         """
@@ -179,12 +178,12 @@ class Entry(BaseEntry):
                 "description": self.description,
                 "ext": self.ext,
                 "upload_date": self.upload_date,
+                "upload_date_standardized": self.upload_date_standardized,
                 "upload_year": self.upload_year,
                 "upload_month": self.upload_month,
                 "upload_month_padded": self.upload_month_padded,
                 "upload_day": self.upload_day,
                 "upload_day_padded": self.upload_day_padded,
-                "standardized_upload_date": self.standardized_upload_date,
                 "thumbnail": self.thumbnail,
                 "thumbnail_ext": self.thumbnail_ext,
             },

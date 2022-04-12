@@ -4,6 +4,12 @@ from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 
 
+def _pad(num):
+    if num < 10:
+        return f"0{num}"
+    return str(num)
+
+
 @pytest.fixture
 def uid():
     return "abc123"
@@ -20,13 +26,28 @@ def title():
 
 
 @pytest.fixture
+def description():
+    return "a description"
+
+
+@pytest.fixture
 def upload_year():
     return 2021
 
 
 @pytest.fixture
-def upload_date(upload_year):
-    return f"{upload_year}-01-06"
+def upload_month():
+    return 1
+
+
+@pytest.fixture
+def upload_day():
+    return 6
+
+
+@pytest.fixture
+def upload_date(upload_year, upload_month, upload_day):
+    return f"{upload_year}{_pad(upload_month)}{_pad(upload_day)}"
 
 
 @pytest.fixture
@@ -51,7 +72,17 @@ def download_file_name(uid, ext):
 
 @pytest.fixture
 def mock_entry_to_dict(
-    uid, title, ext, upload_date, upload_year, thumbnail, thumbnail_ext, extractor
+    uid,
+    title,
+    ext,
+    upload_date,
+    upload_year,
+    thumbnail,
+    thumbnail_ext,
+    extractor,
+    description,
+    upload_month,
+    upload_day,
 ):
     return {
         "uid": uid,
@@ -59,15 +90,21 @@ def mock_entry_to_dict(
         "sanitized_title": title,
         "ext": ext,
         "upload_date": upload_date,
+        "upload_date_standardized": f"{upload_year}-{_pad(upload_month)}-{_pad(upload_day)}",
         "upload_year": upload_year,
+        "upload_month": upload_month,
+        "upload_month_padded": _pad(upload_month),
+        "upload_day": upload_day,
+        "upload_day_padded": _pad(upload_day),
         "thumbnail": thumbnail,
         "thumbnail_ext": thumbnail_ext,
         "extractor": extractor,
+        "description": description,
     }
 
 
 @pytest.fixture
-def mock_entry_kwargs(uid, title, ext, upload_date, thumbnail):
+def mock_entry_kwargs(uid, title, ext, upload_date, thumbnail, extractor, description):
     return {
         "id": uid,
         "extractor": extractor,
@@ -75,6 +112,7 @@ def mock_entry_kwargs(uid, title, ext, upload_date, thumbnail):
         "ext": ext,
         "upload_date": upload_date,
         "thumbnail": thumbnail,
+        "description": description,
     }
 
 

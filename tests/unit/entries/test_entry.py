@@ -3,9 +3,7 @@ import tempfile
 import pytest
 
 from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
-from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
 from ytdl_subscribe.validators.exceptions import StringFormattingException
-from ytdl_subscribe.validators.exceptions import ValidationException
 
 
 class TestEntry(object):

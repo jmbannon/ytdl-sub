@@ -43,7 +43,7 @@ class DownloadMapping:
     @classmethod
     def from_entry(cls, entry: Entry) -> "DownloadMapping":
         return DownloadMapping(
-            upload_date=entry.standardized_upload_date,
+            upload_date=entry.upload_date_standardized,
             extractor=entry.extractor,
             file_names=set(),
         )

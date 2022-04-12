@@ -13,6 +13,7 @@ presets:
       file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
       convert_thumbnail: "jpeg"
       thumbnail_name: "[{album_year}] {sanitized_album}/folder.jpeg"
+      maintain_download_archive: True
     metadata_options:
       id3:
         id3_version: "2.4"
@@ -65,7 +66,7 @@ presets:
           episode: "{upload_month}{upload_day_padded}"
           plot: "{description}"
           year: "{upload_year}"
-          aired: "{upload_year}-{upload_month_padded}-{upload_day_padded}"
+          aired: "{upload_date_standardized}"
       output_directory_nfo:
         nfo_name: "tvshow.nfo"
         nfo_root: "tvshow"
