@@ -1,0 +1,2 @@
+# Run within root folder. Runs tests with coverage, and reports it to html
+coverage run -m pytest && coverage html

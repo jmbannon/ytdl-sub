@@ -1,0 +1,4 @@
+# Run within root directory. Runs isort, black, then pylint
+isort .
+black .
+pylint ytdl_subscribe/
