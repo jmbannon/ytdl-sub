@@ -3,12 +3,7 @@ from typing import List
 
 from ytdl_subscribe.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_subscribe.entries.youtube import YoutubeVideo
-from ytdl_subscribe.subscriptions.subscription import SourceT
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.validators.config.config_options.config_options_validator import (
-    ConfigOptionsValidator,
-)
-from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.source_options.youtube_validators import (
     YoutubeChannelSourceValidator,
 )
@@ -20,26 +15,7 @@ from ytdl_subscribe.validators.config.source_options.youtube_validators import (
 )
 
 
-class YoutubeSubscription(Subscription[SourceT], ABC):
-    """
-    Abstract class for all Youtube-based subscriptions. Sets entry type to YoutubeVideo
-    """
-
-    def __init__(
-        self,
-        name: str,
-        config_options: ConfigOptionsValidator,
-        preset_options: PresetValidator,
-    ):
-        super().__init__(
-            name=name,
-            config_options=config_options,
-            preset_options=preset_options,
-            entry_type=YoutubeVideo,
-        )
-
-
-class YoutubePlaylistSubscription(YoutubeSubscription[YoutubePlaylistSourceValidator]):
+class YoutubePlaylistSubscription(Subscription[YoutubePlaylistSourceValidator, YoutubeVideo]):
     """
     Youtube subscription to download videos from a playlist
     """
@@ -50,7 +26,7 @@ class YoutubePlaylistSubscription(YoutubeSubscription[YoutubePlaylistSourceValid
         )
 
 
-class YoutubeChannelSubscription(YoutubeSubscription[YoutubeChannelSourceValidator]):
+class YoutubeChannelSubscription(Subscription[YoutubeChannelSourceValidator, YoutubeVideo]):
     """
     Youtube subscription to download videos from a channel
     """
@@ -65,7 +41,7 @@ class YoutubeChannelSubscription(YoutubeSubscription[YoutubeChannelSourceValidat
         return downloader.download_channel(channel_id=self.source_options.channel_id.value)
 
 
-class YoutubeVideoSubscription(YoutubeSubscription[YoutubeVideoSourceValidator]):
+class YoutubeVideoSubscription(Subscription[YoutubeVideoSourceValidator, YoutubeVideo]):
     """
     Youtube subscription to download a single video
     """

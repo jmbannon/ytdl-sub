@@ -39,7 +39,7 @@ EntryT = TypeVar("EntryT", bound=Entry)
 DownloaderT = TypeVar("DownloaderT", bound=Downloader)
 
 
-class Subscription(Generic[SourceT], ABC):
+class Subscription(Generic[SourceT, EntryT], ABC):
     """
     Subscription classes are the 'controllers' that perform...
 
@@ -58,7 +58,6 @@ class Subscription(Generic[SourceT], ABC):
         name: str,
         config_options: ConfigOptionsValidator,
         preset_options: PresetValidator,
-        entry_type: Type[EntryT],
     ):
         """
         Parameters
@@ -71,7 +70,6 @@ class Subscription(Generic[SourceT], ABC):
         self.name = name
         self.__config_options = config_options
         self.__preset_options = preset_options
-        self.__entry_type = entry_type
 
         self._enhanced_download_archive = EnhancedDownloadArchive(
             subscription_name=name,
@@ -80,11 +78,11 @@ class Subscription(Generic[SourceT], ABC):
         )
 
     @property
-    def entry_type(self) -> EntryT:
+    def entry_type(self) -> Type[EntryT]:
         """
         :return: The Entry type this subscription uses to represent downloaded media
         """
-        return self.__entry_type
+        return EntryT.__class__
 
     @property
     def source_options(self) -> SourceT:

@@ -4,38 +4,14 @@ from typing import List
 from ytdl_subscribe.downloaders.soundcloud_downloader import SoundcloudDownloader
 from ytdl_subscribe.entries.soundcloud import SoundcloudAlbum
 from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
-from ytdl_subscribe.subscriptions.subscription import SourceT
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.validators.config.config_options.config_options_validator import (
-    ConfigOptionsValidator,
-)
-from ytdl_subscribe.validators.config.preset_validator import PresetValidator
 from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
     SoundcloudAlbumsAndSinglesSourceValidator,
 )
 
 
-class SoundcloudSubscription(Subscription[SourceT], ABC):
-    """
-    Abstract class for all Soundcloud-based subscriptions. Sets entry type to SoundcloudTrack
-    """
-
-    def __init__(
-        self,
-        name: str,
-        config_options: ConfigOptionsValidator,
-        preset_options: PresetValidator,
-    ):
-        super().__init__(
-            name=name,
-            config_options=config_options,
-            preset_options=preset_options,
-            entry_type=SoundcloudTrack,
-        )
-
-
 class SoundcloudAlbumsAndSinglesSubscription(
-    SoundcloudSubscription[SoundcloudAlbumsAndSinglesSourceValidator]
+    Subscription[SoundcloudAlbumsAndSinglesSourceValidator, SoundcloudTrack]
 ):
     """
     Soundcloud subscription to download albums and tracks as singles.
