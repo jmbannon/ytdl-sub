@@ -134,16 +134,16 @@ class Entry(BaseEntry):
         return f"{self.uid}.{self.ext}"
 
     @property
-    def download_thumbnail_name(self) -> str:
-        """Returns the thumbnail's file name when downloaded locally"""
-        return self.kwargs("thumbnail")
-
-    @property
     def thumbnail_ext(self) -> str:
         """
         :return: The entry's thumbnail extension
         """
-        return self.download_thumbnail_name.split(".")[-1]
+        return self.kwargs("thumbnail").split(".")[-1]
+
+    @property
+    def download_thumbnail_name(self) -> str:
+        """Returns the thumbnail's file name when downloaded locally"""
+        return f"{self.uid}.{self.thumbnail_ext}"
 
     def to_dict(self) -> Dict:
         """Returns the entry's values as a dictionary"""
