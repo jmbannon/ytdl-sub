@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ytdl_subscribe.ytdl_additions package &mdash; ytdl-subscribe  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ytdl-subscribe
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ytdl_subscribe.ytdl_additions package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ytdl_subscribe.ytdl_additions.enhanced_download_archive">ytdl_subscribe.ytdl_additions.enhanced_download_archive module</a></li>
+<li><a class="reference internal" href="#module-ytdl_subscribe.ytdl_additions">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ytdl-subscribe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>ytdl_subscribe.ytdl_additions package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/ytdl_subscribe.ytdl_additions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ytdl-subscribe-ytdl-additions-package">
+<h1>ytdl_subscribe.ytdl_additions package<a class="headerlink" href="#ytdl-subscribe-ytdl-additions-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-ytdl_subscribe.ytdl_additions.enhanced_download_archive">
+<span id="ytdl-subscribe-ytdl-additions-enhanced-download-archive-module"></span><h2>ytdl_subscribe.ytdl_additions.enhanced_download_archive module<a class="headerlink" href="#module-ytdl_subscribe.ytdl_additions.enhanced_download_archive" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.</span></span><span class="sig-name descname"><span class="pre">DownloadArchive</span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to handle any operations to the ytdl download archive. Try to keep it as barebones as
+possible in case of future changes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.contains" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.from_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.from_lines">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.from_lines" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.remove_entry">
+<span class="sig-name descname"><span class="pre">remove_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.remove_entry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.to_file">
+<span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive.to_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.</span></span><span class="sig-name descname"><span class="pre">DownloadMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">upload_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extractor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.dict">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.dict" title="Permalink to this definition"></a></dt>
+<dd><p>DownloadMapping as a dict that is serializable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>return</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.extractor">
+<span class="sig-name descname"><span class="pre">extractor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.extractor" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.file_names">
+<span class="sig-name descname"><span class="pre">file_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.file_names" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping_dict:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f7b567bc1d0&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.from_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.from_entry">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ytdl_subscribe.entries.html#ytdl_subscribe.entries.entry.Entry" title="ytdl_subscribe.entries.entry.Entry"><span class="pre">ytdl_subscribe.entries.entry.Entry</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.from_entry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.upload_date">
+<span class="sig-name descname"><span class="pre">upload_date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping.upload_date" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.</span></span><span class="sig-name descname"><span class="pre">DownloadMappings</span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.add_entry">
+<span class="sig-name descname"><span class="pre">add_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ytdl_subscribe.entries.html#ytdl_subscribe.entries.entry.Entry" title="ytdl_subscribe.entries.entry.Entry"><span class="pre">ytdl_subscribe.entries.entry.Entry</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.add_entry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.entry_ids">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">entry_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.entry_ids" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.from_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.get_entries_out_of_range">
+<span class="sig-name descname"><span class="pre">get_entries_out_of_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">yt_dlp.utils.DateRange</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMapping</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.get_entries_out_of_range" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date_range</strong> – range of dates that entries’ upload dates must be within</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dict of entry_id: mapping if the upload date is not in the date range</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.is_empty">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_empty</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.is_empty" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.remove_entry">
+<span class="sig-name descname"><span class="pre">remove_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.remove_entry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.to_download_archive">
+<span class="sig-name descname"><span class="pre">to_download_archive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadArchive</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.to_download_archive" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.to_file">
+<span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_json_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings.to_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.</span></span><span class="sig-name descname"><span class="pre">EnhancedDownloadArchive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subscription_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Maintains ytdl’s download archive file as well as create an additional mapping file to map
+ytdl ids to multiple files. Used to delete ‘stale’ files that are out of range based on the
+file’s entry’s upload date.</p>
+<p>Should be used in this order:</p>
+<ol class="arabic">
+<li><dl>
+<dt>self.prepare_download_archive()</dt><dd><p>Internally calls…
+a. self._load()</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Checks the output directory to see if an existing enhanced download archive file
+exists. If so, load it into the class. Otherwise, initialize an empty instance of one.</p></li>
+</ul>
+</div></blockquote>
+<ol class="loweralpha simple" start="2">
+<li><dl class="simple">
+<dt>self._copy_to_working_directory()</dt><dd><ul class="simple">
+<li><p>If the download archive was loaded successfully, create a ytdl download archive in the
+working directory. This will let ytdl know which files are already downloaded.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>( Perform the ytdlp download using a download archive with the same name )</dt><dd><ul class="simple">
+<li><p>An existing archive should have been copied into the working directory for reuse</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>self.mapping.add_entry(entry, file_path)</dt><dd><ul class="simple">
+<li><p>Should be called for any file created for the given entry that gets moved to the output
+directory</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>OPTIONAL: self.remove_stale_files()</dt><dd><ul class="simple">
+<li><p>After all files have been moved over in the output directory, remove any stale files that
+exist in there.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>self.save_download_archive()</dt><dd><ul class="simple">
+<li><p>Save the updated mapping file to the output directory.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>( Delete the working directory )</p></li>
+</ol>
+<dl class="py property">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.archive_file_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">archive_file_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.archive_file_name" title="Permalink to this definition"></a></dt>
+<dd><p>The download archive’s file name (no path)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>return</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.mapping">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mapping</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.DownloadMappings</span></a></em><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.mapping" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.prepare_download_archive">
+<span class="sig-name descname"><span class="pre">prepare_download_archive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.prepare_download_archive" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.remove_stale_files">
+<span class="sig-name descname"><span class="pre">remove_stale_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">yt_dlp.utils.DateRange</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.remove_stale_files" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.save_download_archive">
+<span class="sig-name descname"><span class="pre">save_download_archive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive" title="ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive"><span class="pre">ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive</span></a></span></span><a class="headerlink" href="#ytdl_subscribe.ytdl_additions.enhanced_download_archive.EnhancedDownloadArchive.save_download_archive" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ytdl_subscribe.ytdl_additions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ytdl_subscribe.ytdl_additions" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Jesse Bannon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

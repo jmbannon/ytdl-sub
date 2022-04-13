@@ -1,0 +1,37 @@
+tests.unit.entries package
+==========================
+
+Submodules
+----------
+
+tests.unit.entries.conftest module
+----------------------------------
+
+.. automodule:: tests.unit.entries.conftest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.unit.entries.test\_entry module
+-------------------------------------
+
+.. automodule:: tests.unit.entries.test_entry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.unit.entries.test\_soundcloud\_entries module
+---------------------------------------------------
+
+.. automodule:: tests.unit.entries.test_soundcloud_entries
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tests.unit.entries
+   :members:
+   :undoc-members:
+   :show-inheritance:

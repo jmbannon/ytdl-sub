@@ -1,0 +1,3 @@
+sphinx-apidoc -o docs/source ytdl_subscribe
+sphinx-build -b html docs docs/_html
+

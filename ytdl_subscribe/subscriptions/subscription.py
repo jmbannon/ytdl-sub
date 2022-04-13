@@ -298,9 +298,9 @@ class Subscription(Generic[SourceT, EntryT], ABC):
         """
         After downloading an entry to the working directory, perform all post-processing, which
         includes:
-            - Adding metadata to the entry file itself (music tags)
-            - Moving the entry file + thumbnail to the output directory with its formatted name
-            - Creating new metadata files (NFO) to reside alongside the entry files
+          - Adding metadata to the entry file itself (music tags)
+          - Moving the entry file + thumbnail to the output directory with its formatted name
+          - Creating new metadata files (NFO) to reside alongside the entry files
 
         :param entry: The entry to post-process
         """
