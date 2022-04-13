@@ -60,7 +60,7 @@ class SubscriptionValidator(StrictDictValidator):
 
         if preset_name not in self.config.presets.keys:
             raise self._validation_exception(
-                f"'preset '{preset_name}' does not exist in the provided config. "
+                f"preset '{preset_name}' does not exist in the provided config. "
                 f"Available presets: {', '.join(self.config.presets.keys)}"
             )
 

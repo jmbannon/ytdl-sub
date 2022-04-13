@@ -1,3 +1,4 @@
+import hashlib
 from argparse import ArgumentError
 from typing import Dict
 from typing import List
@@ -5,7 +6,7 @@ from typing import List
 from mergedeep import mergedeep
 
 
-class SubscriptionArgsParser:
+class DownloadArgsParser:
     """
     'Extra' arguments can be given to `ytdl-sub dl` which are meant to represent fields
     in a subscription yaml. This class will convert those extra args into a dict that can be
@@ -50,7 +51,6 @@ class SubscriptionArgsParser:
         # Remove the argument --'s, then split on period
         arg_name_split = arg_name.replace("--", "", 1).split(".")
 
-        next_arg_name = arg_name_split[0]
         next_dict = argument_dict
         for next_arg_name in arg_name_split[:-1]:
             next_dict[next_arg_name] = {}
@@ -82,3 +82,10 @@ class SubscriptionArgsParser:
             mergedeep.merge(subscription_dict, argument_dict, strategy=mergedeep.Strategy.REPLACE)
 
         return subscription_dict
+
+    def get_args_hash(self) -> str:
+        """
+        :return: Hash of the arguments provided
+        """
+        hash_string = str(sorted(self._unknown_arguments))
+        return hashlib.sha256(hash_string.encode()).hexdigest()[-8:]
