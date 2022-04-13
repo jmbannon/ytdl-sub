@@ -1,5 +1,6 @@
 import copy
 from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Type
@@ -94,6 +95,12 @@ class SubscriptionValidator(StrictDictValidator):
         )
 
     @classmethod
+    def from_dict(
+        cls, config: ConfigFileValidator, subscription_name, subscription_dict: Dict
+    ) -> "SubscriptionValidator":
+        return SubscriptionValidator(config=config, name=subscription_name, value=subscription_dict)
+
+    @classmethod
     def from_file_path(
         cls, config: ConfigFileValidator, subscription_path: str
     ) -> List["SubscriptionValidator"]:
@@ -104,8 +111,10 @@ class SubscriptionValidator(StrictDictValidator):
         subscriptions: List["SubscriptionValidator"] = []
         for subscription_key, subscription_object in subscription_dict.items():
             subscriptions.append(
-                SubscriptionValidator(
-                    config=config, name=subscription_key, value=subscription_object
+                SubscriptionValidator.from_dict(
+                    config=config,
+                    subscription_name=subscription_key,
+                    subscription_dict=subscription_object,
                 )
             )
 

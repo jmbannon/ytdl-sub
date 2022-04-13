@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import List
 
 from ytdl_subscribe.downloaders.youtube_downloader import YoutubeDownloader

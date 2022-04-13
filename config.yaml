@@ -10,6 +10,7 @@ presets:
     ytdl_options:
       format: 'bestaudio[ext=mp3]'
     output_options:
+      output_directory: "/tmp/{sanitized_artist}"
       file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
       convert_thumbnail: "jpeg"
       thumbnail_name: "[{album_year}] {sanitized_album}/folder.jpeg"
