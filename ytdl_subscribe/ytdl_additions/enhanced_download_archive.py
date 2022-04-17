@@ -180,22 +180,23 @@ class EnhancedDownloadArchive:
 
     1. self.prepare_download_archive()
         Internally calls...
+
         a. self._load()
-            - Checks the output directory to see if an existing enhanced download archive file
-              exists. If so, load it into the class. Otherwise, initialize an empty instance of one.
+           Checks the output directory to see if an existing enhanced download archive file
+           exists. If so, load it into the class. Otherwise, initialize an empty instance of one.
         b. self._copy_to_working_directory()
-            - If the download archive was loaded successfully, create a ytdl download archive in the
-              working directory. This will let ytdl know which files are already downloaded.
+           If the download archive was loaded successfully, create a ytdl download archive in the
+           working directory. This will let ytdl know which files are already downloaded.
     2. ( Perform the ytdlp download using a download archive with the same name )
-        - An existing archive should have been copied into the working directory for reuse
+        a. An existing archive should have been copied into the working directory for reuse
     3. self.mapping.add_entry(entry, file_path)
-        - Should be called for any file created for the given entry that gets moved to the output
-          directory
+        a. Should be called for any file created for the given entry that gets moved to the output
+           directory
     4. OPTIONAL: self.remove_stale_files()
-        - After all files have been moved over in the output directory, remove any stale files that
-          exist in there.
+        a. After all files have been moved over in the output directory, remove any stale files that
+           exist in there.
     5. self.save_download_archive()
-        - Save the updated mapping file to the output directory.
+        a. Save the updated mapping file to the output directory.
     6. ( Delete the working directory )
     """
 
