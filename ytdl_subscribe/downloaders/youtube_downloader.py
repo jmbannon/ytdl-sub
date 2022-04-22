@@ -39,21 +39,6 @@ class YoutubeDownloader(
 
     downloader_entry_type = YoutubeVideo
 
-    @classmethod
-    def playlist_url(cls, playlist_id: str) -> str:
-        """Returns full playlist url"""
-        return f"https://youtube.com/playlist?list={playlist_id}"
-
-    @classmethod
-    def video_url(cls, video_id: str) -> str:
-        """Returns full video url"""
-        return f"https://youtube.com/watch?v={video_id}"
-
-    @classmethod
-    def channel_url(cls, channel_id: str) -> str:
-        """Returns full channel url"""
-        return f"https://youtube.com/channel/{channel_id}"
-
     def _download_using_metadata(
         self,
         url: str,
@@ -92,31 +77,6 @@ class YoutubeDownloader(
 
         return entries
 
-    def download_video(self, video_id: str) -> YoutubeVideo:
-        """Download a single Youtube video"""
-        entry = self.extract_info(url=self.video_url(video_id))
-        return YoutubeVideo(entry_dict=entry, working_directory=self.working_directory)
-
-    def download_playlist(self, playlist_id: str) -> List[YoutubeVideo]:
-        """
-        Downloads all videos in a Youtube playlist
-        """
-        return self._download_using_metadata(
-            url=self.playlist_url(playlist_id=playlist_id), ignore_prefix=playlist_id
-        )
-
-    def download_channel(
-        self, channel_id: str, ytdl_options_overrides: Optional[Dict] = None
-    ) -> List[YoutubeVideo]:
-        """
-        Downloads all videos from a channel
-        """
-        return self._download_using_metadata(
-            url=self.channel_url(channel_id),
-            ignore_prefix=channel_id,
-            ytdl_options_overrides=ytdl_options_overrides,
-        )
-
 
 ###############################################################################
 # Youtube single video downloader + options
@@ -133,9 +93,18 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
 class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions]):
     downloader_options_type = YoutubeVideoDownloaderOptions
 
+    @classmethod
+    def video_url(cls, video_id: str) -> str:
+        """Returns full video url"""
+        return f"https://youtube.com/watch?v={video_id}"
+
     def download(self) -> List[YoutubeVideo]:
-        video = self.download_video(video_id=self.download_options.video_id.value)
-        return [video]
+        """Download a single Youtube video"""
+        video_id = self.download_options.video_id.value
+        video_url = self.video_url(video_id=video_id)
+
+        entry = self.extract_info(url=video_url)
+        return [YoutubeVideo(entry_dict=entry, working_directory=self.working_directory)]
 
 
 ###############################################################################
@@ -153,8 +122,19 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
 class YoutubePlaylistDownloader(YoutubeDownloader[YoutubePlaylistDownloaderOptions]):
     downloader_options_type = YoutubePlaylistDownloaderOptions
 
+    @classmethod
+    def playlist_url(cls, playlist_id: str) -> str:
+        """Returns full playlist url"""
+        return f"https://youtube.com/playlist?list={playlist_id}"
+
     def download(self) -> List[YoutubeVideo]:
-        return self.download_playlist(playlist_id=self.download_options.playlist_id.value)
+        """
+        Downloads all videos in a Youtube playlist
+        """
+        playlist_id = self.download_options.playlist_id.value
+        playlist_url = self.playlist_url(playlist_id=playlist_id)
+
+        return self._download_using_metadata(url=playlist_url, ignore_prefix=playlist_id)
 
 
 ###############################################################################
@@ -174,13 +154,26 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
 class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions]):
     downloader_options_type = YoutubeChannelDownloaderOptions
 
+    @classmethod
+    def channel_url(cls, channel_id: str) -> str:
+        """Returns full channel url"""
+        return f"https://youtube.com/channel/{channel_id}"
+
     def download(self) -> List[YoutubeVideo]:
+        """
+        Downloads all videos from a channel
+        """
+        channel_id = self.download_options.channel_id.value
+        channel_url = self.channel_url(channel_id=channel_id)
+
+        # If a date range is specified when download a YT channel, add it into the ytdl options
         ytdl_options_overrides = {}
         source_date_range = self.download_options.get_date_range()
         if source_date_range:
             ytdl_options_overrides["daterange"] = source_date_range
 
-        return self.download_channel(
-            channel_id=self.download_options.channel_id.value,
+        return self._download_using_metadata(
+            url=channel_url,
+            ignore_prefix=channel_id,
             ytdl_options_overrides=ytdl_options_overrides,
         )
