@@ -9,6 +9,8 @@ from ytdl_subscribe.config.config_file import ConfigFile
 from ytdl_subscribe.config.subscription import SubscriptionValidator
 from ytdl_subscribe.utils.exceptions import ValidationException
 
+DEBUGGER_MODE = True
+
 
 def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.Namespace) -> None:
     """
@@ -66,9 +68,13 @@ if __name__ == "__main__":
     try:
         _main()
     except ValidationException as validation_exception:
+        if DEBUGGER_MODE:
+            raise
         print(validation_exception)
         sys.exit(1)
     except Exception as exc:  # pylint: disable=broad-except
+        if DEBUGGER_MODE:
+            raise
         print(traceback.format_exc())
         print(
             "A fatal error occurred. Please copy and paste the stacktrace above and make a Github "

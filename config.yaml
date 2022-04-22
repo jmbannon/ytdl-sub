@@ -55,7 +55,6 @@ presets:
       file_name: "{output_file_name}.{ext}"
       convert_thumbnail: "jpeg"
       thumbnail_name: "{output_file_name}.jpg"
-      maintain_download_archive: True
     convert_thumbnail:
       to: "jpg"
     nfo_tags:

@@ -79,7 +79,7 @@ class OutputOptions(StrictDictValidator):
             key="maintain_download_archive", validator=BoolValidator, default=False
         )
         self.maintain_stale_file_deletion = self._validate_key_if_present(
-            key="maintain_stale_file_deletion", validator=DateRangeValidator, default=False
+            key="maintain_stale_file_deletion", validator=DateRangeValidator
         )
 
         if self.maintain_stale_file_deletion and not self.maintain_download_archive:

@@ -99,7 +99,7 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
 class SoundcloudAlbumsAndSinglesDownloader(
     SoundcloudDownloader[SoundcloudAlbumsAndSinglesDownloadOptions]
 ):
-    downloader_options_type = SoundcloudDownloaderOptions
+    downloader_options_type = SoundcloudAlbumsAndSinglesDownloadOptions
 
     def download(self) -> List[SoundcloudTrack]:
         """
