@@ -11,20 +11,11 @@ from typing import Optional
 from typing import Type
 from typing import TypeVar
 
-import dicttoxml
-import music_tag
-from PIL import Image
-
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
 from ytdl_subscribe.validators.config.config_options.config_options_validator import (
     ConfigOptionsValidator,
 )
-from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
-    MetadataOptionsValidator,
-)
-from ytdl_subscribe.validators.config.metadata_options.nfo_validator import NFOValidator
 from ytdl_subscribe.validators.config.output_options.output_options_validator import (
     OutputOptionsValidator,
 )
@@ -95,11 +86,6 @@ class Subscription(Generic[SourceT, EntryT], ABC):
         return self.__preset_options.output_options
 
     @property
-    def metadata_options(self) -> MetadataOptionsValidator:
-        """Returns the metadata options defined for this subscription"""
-        return self.__preset_options.metadata_options
-
-    @property
     def overrides(self) -> OverridesValidator:
         """Returns the overrides defined for this subscription"""
         return self.__preset_options.overrides
@@ -114,19 +100,7 @@ class Subscription(Generic[SourceT, EntryT], ABC):
         """
         :return: The formatted output directory
         """
-        return self._apply_formatter(formatter=self.output_options.output_directory)
-
-    def _archive_entry_file_name(self, entry: Optional[Entry], relative_file_name: str) -> None:
-        """
-        Adds an entry and a file name that belongs to it into the archive mapping.
-
-        :param entry: Optional. The entry the file belongs to
-        :param relative_file_name: The name of the file
-        """
-        if entry:
-            self._enhanced_download_archive.mapping.add_entry(
-                entry=entry, entry_file_path=relative_file_name
-            )
+        return self.overrides.apply_formatter(formatter=self.output_options.output_directory)
 
     def get_downloader(
         self, downloader_type: Type[DownloaderT], source_ytdl_options: Optional[Dict] = None
@@ -143,113 +117,30 @@ class Subscription(Generic[SourceT, EntryT], ABC):
             download_archive_file_name=self._enhanced_download_archive.archive_file_name,
         )
 
-    def _apply_formatter(
-        self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
-    ) -> str:
-        """
-        Returns the format_string after .format has been called on it using entry (if provided) and
-        override values
-        """
-        variable_dict = self.overrides.dict_with_format_strings
-        if entry:
-            variable_dict = dict(entry.to_dict(), **variable_dict)
-        return formatter.apply_formatter(variable_dict)
+    def _copy_file_to_output_directory(self, source_file_path: str, output_file_name: str):
+        destination_file_path = Path(self.output_directory) / Path(output_file_name)
+        os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
+        copyfile(source_file_path, destination_file_path)
 
-    def _post_process_tagging(self, entry: Entry):
-        """
-        Tags the entry's audio file using values defined in the metadata options
-        """
-        id3_options = self.metadata_options.id3
-        entry_source_file_path = Path(self.working_directory) / entry.download_file_name
-
-        audio_file = music_tag.load_file(entry_source_file_path)
-        for tag, tag_formatter in id3_options.tags.dict.items():
-            audio_file[tag] = self._apply_formatter(formatter=tag_formatter, entry=entry)
-        audio_file.save()
-
-    def _post_process_nfo(self, nfo_options: NFOValidator, entry: Optional[Entry] = None):
-        """
-        Creates an entry's NFO file using values defined in the metadata options
-
-        :param nfo_options: Options for the NFO
-        :param entry: Optional. Will pass entry values to nfo string formatters. If None, will only
-        use override variables that must resolve.
-        """
-        nfo = {}
-
-        for tag, tag_formatter in nfo_options.tags.dict.items():
-            nfo[tag] = self._apply_formatter(formatter=tag_formatter, entry=entry)
-
-        # Write the nfo tags to XML with the nfo_root
-        nfo_root = self._apply_formatter(formatter=nfo_options.nfo_root, entry=entry)
-        xml = dicttoxml.dicttoxml(
-            obj=nfo,
-            root=True,  # We assume all NFOs have a root. Maybe we should not?
-            custom_root=nfo_root,
-            attr_type=False,
-        )
-
-        nfo_file_name = self._apply_formatter(formatter=nfo_options.nfo_name, entry=entry)
-
-        # Save the nfo's XML to file
-        nfo_file_path = Path(self.output_directory) / Path(nfo_file_name)
-        with open(nfo_file_path, "wb") as nfo_file:
-            nfo_file.write(xml)
-
-        # Archive the nfo's file name
-        self._archive_entry_file_name(entry=entry, relative_file_name=nfo_file_name)
-
-    def _post_process_thumbnail(self, entry: Entry):
-        source_thumbnail_path = Path(self.working_directory) / entry.download_thumbnail_name
-
-        # Bug that mismatches webp and jpg extensions. Try to hotfix here
-        if not os.path.isfile(source_thumbnail_path):
-            to_replace = f".{entry.thumbnail_ext}"
-            actual_thumbnail_ext = ".webp"
-            if entry.thumbnail_ext == "webp":
-                actual_thumbnail_ext = ".jpg"
-
-            source_thumbnail_name = entry.download_thumbnail_name.replace(
-                to_replace, actual_thumbnail_ext
-            )
-            source_thumbnail_path = Path(self.working_directory) / source_thumbnail_name
-
-            if not os.path.isfile(source_thumbnail_path):
-                raise ValueError("Hotfix for getting thumbnail file extension failed")
-
-        output_thumbnail_name = self._apply_formatter(
-            formatter=self.output_options.thumbnail_name, entry=entry
-        )
-        output_thumbnail_path = Path(self.output_directory) / Path(output_thumbnail_name)
-
-        os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
-
-        # If the thumbnail is to be converted, then save the converted thumbnail to the
-        # output filepath
-        if self.output_options.convert_thumbnail:
-            image = Image.open(source_thumbnail_path).convert("RGB")
-            image.save(
-                fp=output_thumbnail_path,
-                format=self.output_options.convert_thumbnail.value,
-            )
-        # Otherwise, just copy the downloaded thumbnail
-        else:
-            copyfile(source_thumbnail_path, output_thumbnail_path)
-
-        # Archive the thumbnail file name
-        self._archive_entry_file_name(entry=entry, relative_file_name=output_thumbnail_name)
-
-    def _copy_entry_file_to_output_directory(self, entry: Entry):
+    def _copy_entry_files_to_output_directory(self, entry: Entry):
         # Move the file after all direct file modifications are complete
-        entry_source_file_path = Path(self.working_directory) / entry.download_file_name
-
-        output_file_name = self._apply_formatter(
+        output_file_name = self.overrides.apply_formatter(
             formatter=self.output_options.file_name, entry=entry
         )
-        entry_destination_file_path = Path(self.output_directory) / Path(output_file_name)
+        self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
+        self._copy_file_to_output_directory(
+            source_file_path=entry.download_file_path, output_file_name=output_file_name
+        )
 
-        os.makedirs(os.path.dirname(entry_destination_file_path), exist_ok=True)
-        copyfile(entry_source_file_path, entry_destination_file_path)
+        if self.output_options.thumbnail_name:
+            output_thumbnail_name = self.overrides.apply_formatter(
+                formatter=self.output_options.thumbnail_name, entry=entry
+            )
+            self._enhanced_download_archive.mapping.add_entry(entry, output_thumbnail_name)
+            self._copy_file_to_output_directory(
+                source_file_path=entry.download_thumbnail_path,
+                output_file_name=output_thumbnail_name,
+            )
 
         self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
 
@@ -305,16 +196,7 @@ class Subscription(Generic[SourceT, EntryT], ABC):
 
         :param entry: The entry to post-process
         """
-        if self.metadata_options.id3:
-            self._post_process_tagging(entry)
+        # before move
+        self._copy_entry_files_to_output_directory(entry=entry)
 
-        self._copy_entry_file_to_output_directory(entry=entry)
-
-        if self.output_options.thumbnail_name:
-            self._post_process_thumbnail(entry=entry)
-
-        if self.metadata_options.nfo:
-            self._post_process_nfo(nfo_options=self.metadata_options.nfo, entry=entry)
-
-        if self.metadata_options.output_directory_nfo:
-            self._post_process_nfo(nfo_options=self.metadata_options.output_directory_nfo)
+        # after move

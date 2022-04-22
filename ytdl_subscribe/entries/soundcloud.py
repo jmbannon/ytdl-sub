@@ -67,11 +67,18 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
     Entry object to represent a Soundcloud track yt-dlp that belongs to an album.
     """
 
-    def __init__(self, album: str, album_year: int, playlist_metadata: PlaylistMetadata, **kwargs):
+    def __init__(
+        self,
+        working_directory: str,
+        album: str,
+        album_year: int,
+        playlist_metadata: PlaylistMetadata,
+        **kwargs,
+    ):
         """
         Initialize the album track using album metadata and ytdl metadata for the specific track.
         """
-        super().__init__(**kwargs)
+        super().__init__(working_directory=working_directory, **kwargs)
         self._album = album
         self._album_year = album_year
         self._playlist_metadata = playlist_metadata
@@ -104,6 +111,7 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
         playlist_metadata: PlaylistMetadata,
     ) -> "SoundcloudAlbumTrack":
         return SoundcloudAlbumTrack(
+            working_directory=soundcloud_track.working_directory,
             album=album,
             album_year=album_year,
             playlist_metadata=playlist_metadata,
@@ -122,7 +130,10 @@ class SoundcloudAlbum(Entry):
         Returns all tracks in the album represented by singles. Use this to fetch any
         data needed from the tracks before representing it as an album track.
         """
-        return [SoundcloudTrack(**entry) for entry in self.kwargs("entries")]
+        return [
+            SoundcloudTrack(working_directory=self._working_directory, **entry)
+            for entry in self.kwargs("entries")
+        ]
 
     def album_tracks(self, skip_premiere_tracks: bool = True) -> List[SoundcloudAlbumTrack]:
         """

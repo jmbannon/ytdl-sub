@@ -3,14 +3,7 @@ from ytdl_subscribe.validators.base.string_formatter_validators import (
     OverridesStringFormatterValidator,
 )
 from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
-from ytdl_subscribe.validators.base.string_select_validator import StringSelectValidator
 from ytdl_subscribe.validators.base.validators import BoolValidator
-
-
-class ConvertThumbnailValidator(StringSelectValidator):
-    """Valid image types that thumbnails can be converted to"""
-
-    _select_values = {"jpeg"}
 
 
 class OutputOptionsValidator(StrictDictValidator):
@@ -18,7 +11,6 @@ class OutputOptionsValidator(StrictDictValidator):
 
     _required_keys = {"output_directory", "file_name"}
     _optional_keys = {
-        "convert_thumbnail",
         "thumbnail_name",
         "maintain_download_archive",
         "maintain_stale_file_deletion",
@@ -36,9 +28,6 @@ class OutputOptionsValidator(StrictDictValidator):
         # file name and thumbnails however can use entry variables
         self.file_name: StringFormatterValidator = self._validate_key(
             key="file_name", validator=StringFormatterValidator
-        )
-        self.convert_thumbnail = self._validate_key_if_present(
-            key="convert_thumbnail", validator=ConvertThumbnailValidator
         )
         self.thumbnail_name = self._validate_key_if_present(
             key="thumbnail_name", validator=StringFormatterValidator

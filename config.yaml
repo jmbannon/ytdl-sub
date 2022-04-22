@@ -12,20 +12,19 @@ presets:
     output_options:
       output_directory: "/tmp/{sanitized_artist}"
       file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
-      convert_thumbnail: "jpeg"
-      thumbnail_name: "[{album_year}] {sanitized_album}/folder.jpeg"
+      thumbnail_name: "[{album_year}] {sanitized_album}/folder.jpg"
       maintain_download_archive: True
-    metadata_options:
-      id3:
-        id3_version: "2.4"
-        tags:
-          artist: "{artist}"
-          albumartist: "{artist}"
-          title: "{title}"
-          album: "{album}"
-          tracknumber: "{track_number}"
-          year: "{album_year}"
-          genre: "{genre}"
+    convert_thumbnail:
+      to: "jpg"
+    music_tags:
+      tags:
+        artist: "{artist}"
+        albumartist: "{artist}"
+        title: "{title}"
+        album: "{album}"
+        tracknumber: "{track_number}"
+        year: "{album_year}"
+        genre: "{genre}"
 
   music_videos:
     youtube:
@@ -35,16 +34,17 @@ presets:
     output_options:
       file_name: "{sanitized_artist} - {sanitized_title}.{ext}"
       convert_thumbnail: "jpeg"
-      thumbnail_name: "{sanitized_artist} - {sanitized_title}.jpeg"
-    metadata_options:
-      nfo:
-        nfo_name: "{sanitized_artist} - {sanitized_title}.nfo"
-        nfo_root: "musicvideo"
-        tags:
-          artist: "{artist}"
-          title: "{title}"
-          album: "Music Videos"
-          year: "{upload_year}"
+      thumbnail_name: "{sanitized_artist} - {sanitized_title}.jpg"
+    convert_thumbnail:
+      to: "jpg"
+    nfo_tags:
+      nfo_name: "{sanitized_artist} - {sanitized_title}.nfo"
+      nfo_root: "musicvideo"
+      tags:
+        artist: "{artist}"
+        title: "{title}"
+        album: "Music Videos"
+        year: "{upload_year}"
 
   yt_channel:
     youtube:
@@ -54,24 +54,25 @@ presets:
     output_options:
       file_name: "{output_file_name}.{ext}"
       convert_thumbnail: "jpeg"
-      thumbnail_name: "{output_file_name}.jpeg"
+      thumbnail_name: "{output_file_name}.jpg"
       maintain_download_archive: True
       maintain_stale_file_deletion: True
-    metadata_options:
-      nfo:
-        nfo_name: "{output_file_name}.nfo"
-        nfo_root: "episodedetails"
-        tags:
-          title: "{title}"
-          season: "{upload_year}"
-          episode: "{upload_month}{upload_day_padded}"
-          plot: "{description}"
-          year: "{upload_year}"
-          aired: "{upload_date_standardized}"
-      output_directory_nfo:
-        nfo_name: "tvshow.nfo"
-        nfo_root: "tvshow"
-        tags:
-          title: "{tv_show_name}"
+    convert_thumbnail:
+      to: "jpg"
+    nfo_tags:
+      nfo_name: "{output_file_name}.nfo"
+      nfo_root: "episodedetails"
+      tags:
+        title: "{title}"
+        season: "{upload_year}"
+        episode: "{upload_month}{upload_day_padded}"
+        plot: "{description}"
+        year: "{upload_year}"
+        aired: "{upload_date_standardized}"
+    output_directory_nfo_tags:
+      nfo_name: "tvshow.nfo"
+      nfo_root: "tvshow"
+      tags:
+        title: "{tv_show_name}"
     overrides:
       output_file_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {sanitized_title}"

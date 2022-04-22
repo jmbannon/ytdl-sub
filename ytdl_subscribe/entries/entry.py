@@ -1,5 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -23,10 +24,18 @@ class BaseEntry(ABC):
     Abstract entry object to represent anything download from ytdl (playlist metadata, media, etc).
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, working_directory: Optional[str] = None, **kwargs):
         """
         Initialize the entry using ytdl metadata
+
+        Parameters
+        ----------
+        working_directory
+            Optional. Directory that the entry is downloaded to
+        kwargs
+            Entry metadata
         """
+        self._working_directory = working_directory
         self._kwargs = kwargs
 
     def kwargs_contains(self, key: str) -> bool:
@@ -38,6 +47,14 @@ class BaseEntry(ABC):
         if not self.kwargs_contains(key):
             raise KeyError(f"Expected '{key}' in {self.__class__.__name__} but does not exist.")
         return self._kwargs[key]
+
+    @property
+    def working_directory(self) -> str:
+        if self._working_directory is None:
+            raise ValueError(
+                "Entry working directory is not set when trying to access its download file path"
+            )
+        return self._working_directory
 
     @property
     def uid(self) -> str:
@@ -134,6 +151,11 @@ class Entry(BaseEntry):
         return f"{self.uid}.{self.ext}"
 
     @property
+    def download_file_path(self) -> str:
+        """Returns the entry's file path to where it was downloaded"""
+        return str(Path(self.working_directory) / self.download_file_name)
+
+    @property
     def thumbnail_ext(self) -> str:
         """
         :return: The entry's thumbnail extension
@@ -144,6 +166,11 @@ class Entry(BaseEntry):
     def download_thumbnail_name(self) -> str:
         """Returns the thumbnail's file name when downloaded locally"""
         return f"{self.uid}.{self.thumbnail_ext}"
+
+    @property
+    def download_thumbnail_path(self) -> str:
+        """Returns the entry's thumbnail's file path to where it was downloaded"""
+        return str(Path(self.working_directory) / self.download_thumbnail_name)
 
     def to_dict(self) -> Dict:
         """Returns the entry's values as a dictionary"""
