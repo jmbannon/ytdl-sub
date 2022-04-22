@@ -4,12 +4,12 @@ import dicttoxml
 
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.plugins.plugin import Plugin
-from ytdl_subscribe.plugins.plugin import PluginValidator
+from ytdl_subscribe.plugins.plugin import PluginOptions
 from ytdl_subscribe.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_subscribe.validators.string_formatter_validators import StringFormatterValidator
 
 
-class NfoTagsValidator(PluginValidator):
+class NfoTagsOptions(PluginOptions):
     _required_keys = {"nfo_name", "nfo_root", "tags"}
 
     def __init__(self, name, value):
@@ -20,7 +20,9 @@ class NfoTagsValidator(PluginValidator):
         self.tags = self._validate_key(key="tags", validator=DictFormatterValidator)
 
 
-class NfoTags(Plugin[NfoTagsValidator]):
+class NfoTagsPlugin(Plugin[NfoTagsOptions]):
+    plugin_options_type = NfoTagsOptions
+
     def post_process_entry(self, entry: Entry):
         """
         Creates an entry's NFO file using values defined in the metadata options

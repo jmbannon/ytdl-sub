@@ -35,14 +35,16 @@ SoundcloudDownloaderOptionsT = TypeVar(
 
 
 class SoundcloudDownloader(
-    Generic[SoundcloudDownloaderOptionsT],
     Downloader[SoundcloudDownloaderOptionsT, SoundcloudTrack],
+    Generic[SoundcloudDownloaderOptionsT],
     ABC,
 ):
     """
     Class that handles downloading soundcloud entries via ytdl and converting them into
     SoundcloudTrack / SoundcloudAlbumTrack objects
     """
+
+    downloader_entry_type = SoundcloudTrack
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
@@ -97,6 +99,8 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
 class SoundcloudAlbumsAndSinglesDownloader(
     SoundcloudDownloader[SoundcloudAlbumsAndSinglesDownloadOptions]
 ):
+    downloader_options_type = SoundcloudDownloaderOptions
+
     def download(self) -> List[SoundcloudTrack]:
         """
         Soundcloud subscription to download albums and tracks as singles.

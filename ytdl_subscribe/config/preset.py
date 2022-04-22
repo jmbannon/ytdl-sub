@@ -1,16 +1,20 @@
+from abc import ABC
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Tuple
 from typing import Type
 
 from yt_dlp.utils import sanitize_filename
 
-from ytdl_subscribe.config.download_strategy_validators import DownloadStrategyValidator
-from ytdl_subscribe.config.download_strategy_validators import SoundcloudDownloadStrategyValidator
-from ytdl_subscribe.config.download_strategy_validators import YoutubeDownloadStrategyValidator
+from ytdl_subscribe.config.preset_class_mappings import DownloadStrategyMapping
+from ytdl_subscribe.config.preset_class_mappings import PluginMapping
+from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.entries.entry import Entry
+from ytdl_subscribe.plugins.plugin import Plugin
+from ytdl_subscribe.plugins.plugin import PluginOptions
 from ytdl_subscribe.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_subscribe.utils.exceptions import ValidationException
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
@@ -20,19 +24,15 @@ from ytdl_subscribe.validators.string_formatter_validators import StringFormatte
 from ytdl_subscribe.validators.validators import BoolValidator
 from ytdl_subscribe.validators.validators import DictValidator
 from ytdl_subscribe.validators.validators import LiteralDictValidator
+from ytdl_subscribe.validators.validators import StringValidator
 from ytdl_subscribe.validators.validators import Validator
-
-PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[DownloadStrategyValidator]] = {
-    "soundcloud": SoundcloudDownloadStrategyValidator,
-    "youtube": YoutubeDownloadStrategyValidator,
-}
 
 PRESET_REQUIRED_KEYS = {"output_options"}
 PRESET_OPTIONAL_KEYS = {
-    "metadata_options",
     "ytdl_options",
     "overrides",
-    *PRESET_SOURCE_VALIDATOR_MAPPING.keys(),
+    *DownloadStrategyMapping.sources(),
+    *PluginMapping.plugins(),
 }
 
 
@@ -109,38 +109,95 @@ class OutputOptions(StrictDictValidator):
             )
 
 
+class DownloadStrategyValidator(StrictDictValidator, ABC):
+    """
+    Ensures a download strategy exists for a source. Does not validate any more than that.
+    The respective Downloader's option validator will do that.
+    """
+
+    # All media sources must define a download strategy
+    _required_keys = {"download_strategy"}
+
+    # Extra fields will be strict-validated using other StictDictValidators
+    _allow_extra_keys = True
+
+    def __init__(self, name: str, value: Any):
+        super().__init__(name=name, value=value)
+        self.name = self._validate_key(
+            key="download_strategy",
+            validator=StringValidator,
+        ).value
+
+
 class PresetValidator(StrictDictValidator):
     _required_keys = PRESET_REQUIRED_KEYS
     _optional_keys = PRESET_OPTIONAL_KEYS
 
-    @property
-    def __available_sources(self) -> List[str]:
-        return sorted(list(PRESET_SOURCE_VALIDATOR_MAPPING.keys()))
+    def __validate_and_get_downloader(self, downloader_source: str) -> Type[Downloader]:
+        downloader_strategy = self._validate_key(
+            key=downloader_source, validator=DownloadStrategyValidator
+        ).name
 
-    def __validate_and_get_subscription_source(self) -> DownloaderValidator:
-        download_strategy_validator: Optional[DownloadStrategyValidator] = None
+        return DownloadStrategyMapping.get(
+            source=downloader_source, download_strategy=downloader_strategy
+        )
+
+    def __validate_and_get_downloader_options(
+        self, downloader_source: str, downloader: Type[Downloader]
+    ) -> DownloaderValidator:
+        # Remove the download_strategy key before validating it against the downloader options
+        # TODO: make this cleaner
+        del self._dict[downloader_source]["download_strategy"]
+        return self._validate_key(
+            key=downloader_source, validator=downloader.downloader_options_type
+        )
+
+    def __validate_and_get_downloader_and_options(
+        self,
+    ) -> Tuple[Type[Downloader], DownloaderValidator]:
+        downloader: Optional[Type[Downloader]] = None
+        download_options: Optional[DownloaderValidator] = None
+        downloader_sources = DownloadStrategyMapping.sources()
 
         for key in self._keys:
+            # skip if the key is not a download source
+            if key not in downloader_sources:
+                continue
+
             # Ensure there are not multiple sources, i.e. youtube and soundcloud
-            if key in self.__available_sources and download_strategy_validator:
+            if downloader:
                 raise ValidationException(
                     f"'{self._name}' can only have one of the following sources: "
-                    f"{', '.join(self.__available_sources)}"
+                    f"{', '.join(downloader_sources)}"
                 )
 
-            if key in PRESET_SOURCE_VALIDATOR_MAPPING:
-                download_strategy_validator = self._validate_key(
-                    key=key, validator=PRESET_SOURCE_VALIDATOR_MAPPING[key]
-                )
-
-        # If subscription source was not set, error
-        if not download_strategy_validator:
-            raise ValidationException(
-                f"'{self._name} must have one of the following sources: "
-                f"{', '.join(self.__available_sources)}"
+            downloader = self.__validate_and_get_downloader(downloader_source=key)
+            download_options = self.__validate_and_get_downloader_options(
+                downloader_source=key, downloader=downloader
             )
 
-        return download_strategy_validator.source_validator
+        # If downloader was not set, error since it is required
+        if not downloader:
+            raise ValidationException(
+                f"'{self._name} must have one of the following sources: "
+                f"{', '.join(downloader_sources)}"
+            )
+
+        return downloader, download_options
+
+    def __validate_and_get_plugins(self) -> List[Tuple[Type[Plugin], PluginOptions]]:
+        plugins: List[Tuple[Type[Plugin], PluginOptions]] = []
+
+        for key in self._keys:
+            if key not in PluginMapping.plugins():
+                continue
+
+            plugin = PluginMapping.get(plugin=key)
+            plugin_options = self._validate_key(key=key, validator=plugin.plugin_options_type)
+
+            plugins.append((plugin, plugin_options))
+
+        return plugins
 
     def __validate_override_string_formatter_validator(
         self, formatter_validator: OverridesStringFormatterValidator
@@ -186,20 +243,19 @@ class PresetValidator(StrictDictValidator):
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)
 
-        self.subscription_source = self.__validate_and_get_subscription_source()
+        self.downloader, self.downloader_options = self.__validate_and_get_downloader_and_options()
 
         self.output_options = self._validate_key(
             key="output_options",
             validator=OutputOptions,
         )
 
-        # TODO: REPLACE METADATA OPTIONS WITH PLUGINS
-
         self.ytdl_options = self._validate_key(
             key="ytdl_options", validator=YTDLOptions, default={}
         )
 
         self.overrides = self._validate_key(key="overrides", validator=Overrides, default={})
+        self.plugins = self.__validate_and_get_plugins()
 
         # After all options are initialized, perform a recursive post-validate that requires
         # values from multiple validators

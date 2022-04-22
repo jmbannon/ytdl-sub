@@ -6,6 +6,7 @@ from typing import Dict
 from typing import Generic
 from typing import List
 from typing import Optional
+from typing import Type
 from typing import TypeVar
 
 import yt_dlp as ytdl
@@ -24,11 +25,14 @@ DownloaderOptionsT = TypeVar("DownloaderOptionsT", bound=DownloaderValidator)
 DownloaderEntryT = TypeVar("DownloaderEntryT", bound=Entry)
 
 
-class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT]):
+class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
     """
+
+    downloader_options_type: Type[DownloaderOptionsT] = NotImplemented
+    downloader_entry_type: Type[DownloaderEntryT] = NotImplemented
 
     @classmethod
     def ytdl_option_overrides(cls) -> Dict:

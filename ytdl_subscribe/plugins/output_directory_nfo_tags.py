@@ -3,12 +3,12 @@ from pathlib import Path
 import dicttoxml
 
 from ytdl_subscribe.plugins.plugin import Plugin
-from ytdl_subscribe.plugins.plugin import PluginValidator
+from ytdl_subscribe.plugins.plugin import PluginOptions
 from ytdl_subscribe.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_subscribe.validators.string_formatter_validators import OverridesStringFormatterValidator
 
 
-class OutputDirectoryNfoTagsValidator(PluginValidator):
+class OutputDirectoryNfoTagsOptions(PluginOptions):
     """
     Validates config values for the output directory nfo tags plugin.
     """
@@ -28,7 +28,9 @@ class OutputDirectoryNfoTagsValidator(PluginValidator):
         self.tags = self._validate_key(key="tags", validator=OverridesDictFormatterValidator)
 
 
-class NfoTags(Plugin[OutputDirectoryNfoTagsValidator]):
+class OutputDirectoryNfoTagsPlugin(Plugin[OutputDirectoryNfoTagsOptions]):
+    plugin_options_type = OutputDirectoryNfoTagsOptions
+
     def post_process_subscription(self):
         """
         Creates an NFO file in the root of the output directory

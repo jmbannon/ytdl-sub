@@ -4,7 +4,7 @@ from PIL.Image import Image
 
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.plugins.plugin import Plugin
-from ytdl_subscribe.plugins.plugin import PluginValidator
+from ytdl_subscribe.plugins.plugin import PluginOptions
 from ytdl_subscribe.validators.string_select_validator import StringSelectValidator
 
 
@@ -14,7 +14,7 @@ class ThumbnailTypes(StringSelectValidator):
     _select_values = {"jpg"}
 
 
-class ConvertThumbnailValidator(PluginValidator):
+class ConvertThumbnailOptions(PluginOptions):
     _required_keys = {"to"}
 
     def __init__(self, name, value):
@@ -22,7 +22,9 @@ class ConvertThumbnailValidator(PluginValidator):
         self.convert_to = self._validate_key(key="to", validator=ThumbnailTypes)
 
 
-class ConvertThumbnail(Plugin[ConvertThumbnailValidator]):
+class ConvertThumbnailPlugin(Plugin[ConvertThumbnailOptions]):
+    plugin_options_type = ConvertThumbnailOptions
+
     def post_process_entry(self, entry: Entry):
         """
         Convert the source thumbnail to the desired type. Leave the original file name and

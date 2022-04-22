@@ -58,25 +58,11 @@ class SubscriptionValidator(StrictDictValidator):
         )
 
     def to_subscription(self) -> Subscription:
-        # TODO: Fix this abomination
-        return None
-        # subscription_class: Optional[Type[Subscription]] = None
-        # if isinstance(self.preset.subscription_source, SoundcloudAlbumsAndSinglesDownloadOptions):
-        #     subscription_class = SoundcloudAlbumsAndSinglesSubscription
-        # elif isinstance(self.preset.subscription_source, YoutubePlaylistDownloaderValidator):
-        #     subscription_class = YoutubePlaylistSubscription
-        # elif isinstance(self.preset.subscription_source, YoutubeVideoDownloaderValidator):
-        #     subscription_class = YoutubeVideoSubscription
-        # elif isinstance(self.preset.subscription_source, YoutubeChannelDownloaderValidator):
-        #     subscription_class = YoutubeChannelSubscription
-        # if subscription_class is None:
-        #     raise ValueError("subscription source class not found")
-        #
-        # return subscription_class(
-        #     name=self._name,
-        #     config_options=self.config.config_options,
-        #     preset_options=self.preset,
-        # )
+        return Subscription(
+            name=self._name,
+            config_options=self.config.config_options,
+            preset_options=self.preset,
+        )
 
     @classmethod
     def from_dict(

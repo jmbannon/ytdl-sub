@@ -2,12 +2,12 @@ import music_tag
 
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.plugins.plugin import Plugin
-from ytdl_subscribe.plugins.plugin import PluginValidator
+from ytdl_subscribe.plugins.plugin import PluginOptions
 from ytdl_subscribe.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_subscribe.validators.validators import StringValidator
 
 
-class MusicTagsValidator(PluginValidator):
+class MusicTagsOptions(PluginOptions):
     _required_keys = {"tags"}
     _optional_keys = {"multi_value_separator"}
 
@@ -21,7 +21,9 @@ class MusicTagsValidator(PluginValidator):
         )
 
 
-class MusicTags(Plugin[MusicTagsValidator]):
+class MusicTagsPlugin(Plugin[MusicTagsOptions]):
+    plugin_options_type = MusicTagsOptions
+
     def post_process_entry(self, entry: Entry):
         """
         Tags the entry's audio file using values defined in the metadata options

@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import Generic
+from typing import Type
 from typing import TypeVar
 from typing import final
 
@@ -9,24 +10,26 @@ from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
-class PluginValidator(StrictDictValidator):
+class PluginOptions(StrictDictValidator):
     """
     Class that defines the parameters to a plugin
     """
 
 
-PluginValidatorT = TypeVar("PluginValidatorT", bound=PluginValidator)
+PluginOptionsT = TypeVar("PluginOptionsT", bound=PluginOptions)
 
 
-class Plugin(Generic[PluginValidatorT], ABC):
+class Plugin(Generic[PluginOptionsT], ABC):
     """
     Class to define the new plugin functionality
     """
 
+    plugin_options_type: Type[PluginOptionsT] = NotImplemented
+
     @final
     def __init__(
         self,
-        plugin_options: PluginValidatorT,
+        plugin_options: PluginOptionsT,
         output_directory: str,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,

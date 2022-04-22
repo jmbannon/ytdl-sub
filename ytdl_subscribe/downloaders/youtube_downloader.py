@@ -30,12 +30,14 @@ YoutubeDownloaderOptionsT = TypeVar("YoutubeDownloaderOptionsT", bound=YoutubeDo
 
 
 class YoutubeDownloader(
-    Generic[YoutubeDownloaderOptionsT], Downloader[YoutubeDownloaderOptionsT, YoutubeVideo], ABC
+    Downloader[YoutubeDownloaderOptionsT, YoutubeVideo], Generic[YoutubeDownloaderOptionsT], ABC
 ):
     """
     Class that handles downloading youtube entries via ytdl and converting them into
     YoutubeVideo objects
     """
+
+    downloader_entry_type = YoutubeVideo
 
     @classmethod
     def playlist_url(cls, playlist_id: str) -> str:
@@ -131,6 +133,8 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
 
 
 class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions]):
+    downloader_options_type = YoutubeVideoDownloaderOptions
+
     def download(self) -> List[YoutubeVideo]:
         video = self.download_video(video_id=self.download_options.video_id.value)
         return [video]
@@ -149,6 +153,8 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
 
 
 class YoutubePlaylistDownloader(YoutubeDownloader[YoutubePlaylistDownloaderOptions]):
+    downloader_options_type = YoutubePlaylistDownloaderOptions
+
     def download(self) -> List[YoutubeVideo]:
         return self.download_playlist(playlist_id=self.download_options.playlist_id.value)
 
@@ -168,6 +174,8 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DownloadDateRang
 
 
 class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions]):
+    downloader_options_type = YoutubeChannelDownloaderOptions
+
     def download(self) -> List[YoutubeVideo]:
         ytdl_options_overrides = {}
         source_date_range = self.download_options.get_date_range()

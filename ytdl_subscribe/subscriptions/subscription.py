@@ -1,32 +1,29 @@
 import contextlib
 import os
 import shutil
-from abc import ABC
 from pathlib import Path
 from shutil import copyfile
 from typing import Dict
-from typing import Generic
 from typing import List
 from typing import Optional
+from typing import Tuple
 from typing import Type
-from typing import TypeVar
 
 from ytdl_subscribe.config.config_file import ConfigOptions
 from ytdl_subscribe.config.preset import OutputOptions
 from ytdl_subscribe.config.preset import Overrides
 from ytdl_subscribe.config.preset import PresetValidator
+from ytdl_subscribe.config.preset import YTDLOptions
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.entries.entry import Entry
+from ytdl_subscribe.plugins.plugin import Plugin
+from ytdl_subscribe.plugins.plugin import PluginOptions
 from ytdl_subscribe.validators.date_range_validator import DownloadDateRangeSource
 from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-SourceT = TypeVar("SourceT", bound=DownloaderValidator)
-EntryT = TypeVar("EntryT", bound=Entry)
-DownloaderT = TypeVar("DownloaderT", bound=Downloader)
 
-
-class Subscription(Generic[SourceT, EntryT], ABC):
+class Subscription:
     """
     Subscription classes are the 'controllers' that perform...
 
@@ -65,16 +62,20 @@ class Subscription(Generic[SourceT, EntryT], ABC):
         )
 
     @property
-    def entry_type(self) -> Type[EntryT]:
-        """
-        :return: The Entry type this subscription uses to represent downloaded media
-        """
-        return EntryT.__class__
+    def downloader_class(self) -> Type[Downloader]:
+        return self.__preset_options.downloader
 
     @property
-    def source_options(self) -> SourceT:
-        """Returns the source options defined for this subscription"""
-        return self.__preset_options.subscription_source
+    def downloader_options(self) -> DownloaderValidator:
+        return self.__preset_options.downloader_options
+
+    @property
+    def plugins(self) -> List[Tuple[Type[Plugin], PluginOptions]]:
+        return self.__preset_options.plugins
+
+    @property
+    def ytdl_options(self) -> YTDLOptions:
+        return self.__preset_options.ytdl_options
 
     @property
     def output_options(self) -> OutputOptions:
@@ -97,21 +98,6 @@ class Subscription(Generic[SourceT, EntryT], ABC):
         :return: The formatted output directory
         """
         return self.overrides.apply_formatter(formatter=self.output_options.output_directory)
-
-    def get_downloader(
-        self, downloader_type: Type[DownloaderT], source_ytdl_options: Optional[Dict] = None
-    ) -> DownloaderT:
-        """Returns the downloader that will be used to download media for this subscription"""
-        # if source_ytdl_options are present, override the ytdl_options with them
-        ytdl_options = self.__preset_options.ytdl_options.dict
-        if source_ytdl_options:
-            ytdl_options = dict(ytdl_options, **source_ytdl_options)
-
-        return downloader_type(
-            working_directory=self.working_directory,
-            ytdl_options=ytdl_options,
-            download_archive_file_name=self._enhanced_download_archive.archive_file_name,
-        )
 
     def _copy_file_to_output_directory(self, source_file_path: str, output_file_name: str):
         destination_file_path = Path(self.output_directory) / Path(output_file_name)
@@ -157,42 +143,49 @@ class Subscription(Generic[SourceT, EntryT], ABC):
 
         yield
 
-        date_range = None
-        if isinstance(self.source_options, DownloadDateRangeSource):
-            date_range = self.source_options.get_date_range()
+        # TODO: add date range in output options
+        # date_range = None
+        # if isinstance(self.source_options, DownloadDateRangeSource):
+        #     date_range = self.source_options.get_date_range()
+        #
+        # if date_range and self.output_options.maintain_stale_file_deletion:
+        #     self._enhanced_download_archive.remove_stale_files(date_range=date_range)
+        #
+        # self._enhanced_download_archive.save_download_archive()
 
-        if date_range and self.output_options.maintain_stale_file_deletion:
-            self._enhanced_download_archive.remove_stale_files(date_range=date_range)
+    def _initialize_plugins(self) -> List[Plugin]:
+        plugins: List[Plugin] = []
+        for plugin_type, plugin_options in self.plugins:
+            plugin = plugin_type(
+                plugin_options=plugin_options,
+                output_directory=self.output_directory,
+                overrides=self.overrides,
+                enhanced_download_archive=self._enhanced_download_archive,
+            )
 
-        self._enhanced_download_archive.save_download_archive()
+            plugins.append(plugin)
+
+        return plugins
 
     def download(self):
         """
         Performs the subscription download.
         """
+        plugins = self._initialize_plugins()
         with self._prepare_working_directory(), self._maintain_archive_file():
-            entries = self._extract_info()
+            downloader = self.downloader_class(
+                working_directory=self.working_directory,
+                download_options=self.downloader_options,
+                ytdl_options=self.ytdl_options.dict,
+                download_archive_file_name=self._enhanced_download_archive.archive_file_name,
+            )
+
+            entries = downloader.download()
+            for plugin in plugins:
+                for entry in entries:
+                    plugin.post_process_entry(entry)
+
+                plugin.post_process_subscription()
+
             for entry in entries:
-                self.post_process_entry(entry)
-
-    def _extract_info(self) -> List[EntryT]:
-        """
-        Extracts only the info of the source, does not download it
-        """
-        raise NotImplementedError("Each source needs to implement how it extracts info")
-
-    def post_process_entry(self, entry: Entry) -> None:
-        """
-        After downloading an entry to the working directory, perform all post-processing, which
-        includes:
-
-        * Adding metadata to the entry file itself (music tags)
-        * Moving the entry file + thumbnail to the output directory with its formatted name
-        * Creating new metadata files (NFO) to reside alongside the entry files
-
-        :param entry: The entry to post-process
-        """
-        # before move
-        self._copy_entry_files_to_output_directory(entry=entry)
-
-        # after move
+                self._copy_entry_files_to_output_directory(entry=entry)
