@@ -69,16 +69,16 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
 
     def __init__(
         self,
+        entry_dict: Dict,
         working_directory: str,
         album: str,
         album_year: int,
         playlist_metadata: PlaylistMetadata,
-        **kwargs,
     ):
         """
         Initialize the album track using album metadata and ytdl metadata for the specific track.
         """
-        super().__init__(working_directory=working_directory, **kwargs)
+        super().__init__(entry_dict=entry_dict, working_directory=working_directory)
         self._album = album
         self._album_year = album_year
         self._playlist_metadata = playlist_metadata
@@ -111,11 +111,11 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
         playlist_metadata: PlaylistMetadata,
     ) -> "SoundcloudAlbumTrack":
         return SoundcloudAlbumTrack(
+            entry_dict=soundcloud_track._kwargs,  # pylint: disable=protected-access
             working_directory=soundcloud_track.working_directory,
             album=album,
             album_year=album_year,
             playlist_metadata=playlist_metadata,
-            **soundcloud_track._kwargs,  # pylint: disable=protected-access
         )
 
 
@@ -131,7 +131,7 @@ class SoundcloudAlbum(Entry):
         data needed from the tracks before representing it as an album track.
         """
         return [
-            SoundcloudTrack(working_directory=self._working_directory, **entry)
+            SoundcloudTrack(entry_dict=entry, working_directory=self._working_directory)
             for entry in self.kwargs("entries")
         ]
 

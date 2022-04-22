@@ -127,9 +127,10 @@ class Subscription:
     def _prepare_working_directory(self):
         os.makedirs(self.working_directory, exist_ok=True)
 
-        yield
-
-        shutil.rmtree(self.working_directory)
+        try:
+            yield
+        finally:
+            shutil.rmtree(self.working_directory)
 
     @contextlib.contextmanager
     def _maintain_archive_file(self):

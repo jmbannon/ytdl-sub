@@ -1,7 +1,6 @@
 from typing import List
 from typing import Set
 
-from ytdl_subscribe.utils.exceptions import ValidationException
 from ytdl_subscribe.validators.validators import DictValidator
 
 

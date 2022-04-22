@@ -24,19 +24,19 @@ class BaseEntry(ABC):
     Abstract entry object to represent anything download from ytdl (playlist metadata, media, etc).
     """
 
-    def __init__(self, working_directory: Optional[str] = None, **kwargs):
+    def __init__(self, entry_dict: Dict, working_directory: Optional[str] = None):
         """
         Initialize the entry using ytdl metadata
 
         Parameters
         ----------
+        entry_dict
+            Entry metadata
         working_directory
             Optional. Directory that the entry is downloaded to
-        kwargs
-            Entry metadata
         """
         self._working_directory = working_directory
-        self._kwargs = kwargs
+        self._kwargs = entry_dict
 
     def kwargs_contains(self, key: str) -> bool:
         """Returns whether internal kwargs contains the specified key"""

@@ -1,6 +1,7 @@
 import os
 
 from PIL.Image import Image
+from PIL.Image import open as pil_open
 
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.plugins.plugin import Plugin
@@ -33,7 +34,7 @@ class ConvertThumbnailPlugin(Plugin[ConvertThumbnailOptions]):
         if not os.path.isfile(entry.download_thumbnail_path):
             raise ValueError("Thumbnail not found")
 
-        image = Image.open(entry.download_thumbnail_path).convert("RGB")
+        image: Image = pil_open(entry.download_thumbnail_path).convert("RGB")
 
         # Pillow likes the formal 'jpeg' name and not 'jpg'
         thumbnail_format = self.plugin_options.convert_to.value

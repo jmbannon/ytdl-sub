@@ -66,7 +66,8 @@ class SoundcloudDownloader(
 
         info = self.extract_info(url=artist_albums_url)
         albums = [
-            SoundcloudAlbum(working_direcotry=self.working_directory, **e) for e in info["entries"]
+            SoundcloudAlbum(entry_dict=e, working_directory=self.working_directory)
+            for e in info["entries"]
         ]
 
         return [album for album in albums if album.track_count > 0]
@@ -79,7 +80,7 @@ class SoundcloudDownloader(
 
         info = self.extract_info(url=artist_tracks_url)
         return [
-            SoundcloudTrack(working_directory=self.working_directory, kwargs=e)
+            SoundcloudTrack(entry_dict=e, working_directory=self.working_directory)
             for e in info["entries"]
         ]
 

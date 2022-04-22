@@ -1,5 +1,3 @@
-from abc import ABC
-from typing import Any
 from typing import Optional
 
 from yt_dlp.utils import sanitize_filename
@@ -12,7 +10,6 @@ from ytdl_subscribe.validators.string_formatter_validators import OverridesStrin
 from ytdl_subscribe.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_subscribe.validators.validators import BoolValidator
 from ytdl_subscribe.validators.validators import LiteralDictValidator
-from ytdl_subscribe.validators.validators import StringValidator
 
 
 class YTDLOptions(LiteralDictValidator):

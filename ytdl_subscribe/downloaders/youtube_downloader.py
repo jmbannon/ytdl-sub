@@ -80,16 +80,22 @@ class YoutubeDownloader(
 
         # Load the entries from info.json, ignore the playlist entry
         for file_name in os.listdir(self.working_directory):
-            if file_name.endswith(".info.json") and not file_name.startswith(ignore_prefix):
-                with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
-                    entries.append(YoutubeVideo(**json.load(file)))
+            if file_name.startswith(ignore_prefix) or not file_name.endswith(".info.json"):
+                continue
+
+            with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
+                entries.append(
+                    YoutubeVideo(
+                        entry_dict=json.load(file), working_directory=self.working_directory
+                    )
+                )
 
         return entries
 
     def download_video(self, video_id: str) -> YoutubeVideo:
         """Download a single Youtube video"""
         entry = self.extract_info(url=self.video_url(video_id))
-        return YoutubeVideo(**entry)
+        return YoutubeVideo(entry_dict=entry, working_directory=self.working_directory)
 
     def download_playlist(self, playlist_id: str) -> List[YoutubeVideo]:
         """

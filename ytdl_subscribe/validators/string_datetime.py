@@ -1,6 +1,5 @@
 from yt_dlp.utils import datetime_from_str
 
-from ytdl_subscribe.utils.exceptions import ValidationException
 from ytdl_subscribe.validators.validators import Validator
 
 
