@@ -13,7 +13,7 @@ from yt_dlp.utils import RejectedVideoReached
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.entries.youtube import YoutubeVideo
-from ytdl_subscribe.validators.date_range_validator import DownloadDateRangeSource
+from ytdl_subscribe.validators.date_range_validator import DateRangeValidator
 from ytdl_subscribe.validators.validators import StringValidator
 
 ###############################################################################
@@ -54,14 +54,19 @@ class YoutubeDownloader(
         """Returns full channel url"""
         return f"https://youtube.com/channel/{channel_id}"
 
-    def _download_with_metadata(
-        self, url: str, ytdl_options_overrides: Optional[Dict] = None
-    ) -> None:
+    def _download_using_metadata(
+        self,
+        url: str,
+        ignore_prefix: str,
+        ytdl_options_overrides: Optional[Dict] = None,
+    ) -> List[YoutubeVideo]:
         """
         Do not get entries from the extract info, let it write to the info.json file and load
         that instead. This is because if the video is already downloaded in a playlist, it will
         not fetch the metadata (maybe there is a way??)
         """
+        entries: List[YoutubeVideo] = []
+
         ytdl_overrides = {
             "writeinfojson": True,
         }
@@ -73,6 +78,14 @@ class YoutubeDownloader(
         except RejectedVideoReached:
             pass
 
+        # Load the entries from info.json, ignore the playlist entry
+        for file_name in os.listdir(self.working_directory):
+            if file_name.endswith(".info.json") and not file_name.startswith(ignore_prefix):
+                with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
+                    entries.append(YoutubeVideo(**json.load(file)))
+
+        return entries
+
     def download_video(self, video_id: str) -> YoutubeVideo:
         """Download a single Youtube video"""
         entry = self.extract_info(url=self.video_url(video_id))
@@ -82,20 +95,9 @@ class YoutubeDownloader(
         """
         Downloads all videos in a Youtube playlist
         """
-        playlist_url = self.playlist_url(playlist_id=playlist_id)
-
-        self._download_with_metadata(url=playlist_url)
-
-        # Load the entries from info.json, ignore the playlist entry
-        entries: List[YoutubeVideo] = []
-
-        # Load the entries from info.json, ignore the playlist entry
-        for file_name in os.listdir(self.working_directory):
-            if file_name.endswith(".info.json") and not file_name.startswith(playlist_id):
-                with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
-                    entries.append(YoutubeVideo(**json.load(file)))
-
-        return entries
+        return self._download_using_metadata(
+            url=self.playlist_url(playlist_id=playlist_id), ignore_prefix=playlist_id
+        )
 
     def download_channel(
         self, channel_id: str, ytdl_options_overrides: Optional[Dict] = None
@@ -103,21 +105,11 @@ class YoutubeDownloader(
         """
         Downloads all videos from a channel
         """
-        self._download_with_metadata(
-            url=self.channel_url(channel_id), ytdl_options_overrides=ytdl_options_overrides
+        return self._download_using_metadata(
+            url=self.channel_url(channel_id),
+            ignore_prefix=channel_id,
+            ytdl_options_overrides=ytdl_options_overrides,
         )
-
-        # Load the entries from info.json
-        entries: List[YoutubeVideo] = []
-
-        # Load the entries from info.json
-        # TODO dupe code between this and playlist
-        for file_name in os.listdir(self.working_directory):
-            if file_name.endswith(".info.json") and not file_name.startswith(channel_id):
-                with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
-                    entries.append(YoutubeVideo(**json.load(file)))
-
-        return entries
 
 
 ###############################################################################
@@ -163,13 +155,13 @@ class YoutubePlaylistDownloader(YoutubeDownloader[YoutubePlaylistDownloaderOptio
 # Youtube channel downloader + options
 
 
-class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DownloadDateRangeSource):
+class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidator):
     _required_keys = {"channel_id"}
     _optional_keys = {"before", "after"}
 
     def __init__(self, name, value):
         YoutubeDownloaderOptions.__init__(self, name, value)
-        DownloadDateRangeSource.__init__(self, name, value)
+        DateRangeValidator.__init__(self, name, value)
         self.channel_id = self._validate_key("channel_id", StringValidator)
 
 

@@ -3,23 +3,20 @@ import os
 import shutil
 from pathlib import Path
 from shutil import copyfile
-from typing import Dict
 from typing import List
-from typing import Optional
 from typing import Tuple
 from typing import Type
 
 from ytdl_subscribe.config.config_file import ConfigOptions
-from ytdl_subscribe.config.preset import OutputOptions
-from ytdl_subscribe.config.preset import Overrides
-from ytdl_subscribe.config.preset import PresetValidator
-from ytdl_subscribe.config.preset import YTDLOptions
+from ytdl_subscribe.config.preset import Preset
+from ytdl_subscribe.config.preset_options import OutputOptions
+from ytdl_subscribe.config.preset_options import Overrides
+from ytdl_subscribe.config.preset_options import YTDLOptions
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.plugins.plugin import Plugin
 from ytdl_subscribe.plugins.plugin import PluginOptions
-from ytdl_subscribe.validators.date_range_validator import DownloadDateRangeSource
 from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
@@ -41,7 +38,7 @@ class Subscription:
         self,
         name: str,
         config_options: ConfigOptions,
-        preset_options: PresetValidator,
+        preset_options: Preset,
     ):
         """
         Parameters
@@ -49,7 +46,7 @@ class Subscription:
         name: str
             Name of the subscription
         config_options: ConfigOptions
-        preset_options: PresetValidator
+        preset_options: Preset
         """
         self.name = name
         self.__config_options = config_options
@@ -143,15 +140,14 @@ class Subscription:
 
         yield
 
-        # TODO: add date range in output options
-        # date_range = None
-        # if isinstance(self.source_options, DownloadDateRangeSource):
-        #     date_range = self.source_options.get_date_range()
-        #
-        # if date_range and self.output_options.maintain_stale_file_deletion:
-        #     self._enhanced_download_archive.remove_stale_files(date_range=date_range)
-        #
-        # self._enhanced_download_archive.save_download_archive()
+        # If output options maintains stale file deletion, perform the delete here prior to saving
+        # the download archive
+        if self.output_options.maintain_stale_file_deletion:
+            self._enhanced_download_archive.remove_stale_files(
+                date_range=self.output_options.maintain_stale_file_deletion.get_date_range()
+            )
+
+        self._enhanced_download_archive.save_download_archive()
 
     def _initialize_plugins(self) -> List[Plugin]:
         plugins: List[Plugin] = []

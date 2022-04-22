@@ -9,8 +9,8 @@ from mergedeep import mergedeep
 from ytdl_subscribe.config.config_file import ConfigFile
 from ytdl_subscribe.config.preset import PRESET_OPTIONAL_KEYS
 from ytdl_subscribe.config.preset import PRESET_REQUIRED_KEYS
-from ytdl_subscribe.config.preset import Overrides
-from ytdl_subscribe.config.preset import PresetValidator
+from ytdl_subscribe.config.preset import Preset
+from ytdl_subscribe.config.preset_options import Overrides
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.validators import StringValidator
@@ -52,7 +52,7 @@ class SubscriptionValidator(StrictDictValidator):
         preset_dict = mergedeep.merge(preset_dict, self._dict, strategy=mergedeep.Strategy.REPLACE)
         del preset_dict["preset"]
 
-        self.preset = PresetValidator(
+        self.preset = Preset(
             name=f"{self._name}.{preset_name}",
             value=preset_dict,
         )

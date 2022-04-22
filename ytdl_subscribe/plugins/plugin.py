@@ -4,7 +4,7 @@ from typing import Type
 from typing import TypeVar
 from typing import final
 
-from ytdl_subscribe.config.preset import Overrides
+from ytdl_subscribe.config.preset_options import Overrides
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
