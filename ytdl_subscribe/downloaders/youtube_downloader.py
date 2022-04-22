@@ -2,7 +2,11 @@ import json
 import os
 from abc import ABC
 from pathlib import Path
+from typing import Dict
+from typing import Generic
 from typing import List
+from typing import Optional
+from typing import TypeVar
 
 from yt_dlp.utils import RejectedVideoReached
 
@@ -12,14 +16,22 @@ from ytdl_subscribe.entries.youtube import YoutubeVideo
 from ytdl_subscribe.validators.date_range_validator import DownloadDateRangeSource
 from ytdl_subscribe.validators.validators import StringValidator
 
+###############################################################################
+# Abstract Youtube downloader + options
 
-class YoutubeDownloaderValidator(DownloaderValidator, ABC):
+
+class YoutubeDownloaderOptions(DownloaderValidator, ABC):
     """
     Abstract source validator for all soundcloud sources.
     """
 
 
-class YoutubeDownloader(Downloader):
+YoutubeDownloaderOptionsT = TypeVar("YoutubeDownloaderOptionsT", bound=YoutubeDownloaderOptions)
+
+
+class YoutubeDownloader(
+    Generic[YoutubeDownloaderOptionsT], Downloader[YoutubeDownloaderOptionsT, YoutubeVideo], ABC
+):
     """
     Class that handles downloading youtube entries via ytdl and converting them into
     YoutubeVideo objects
@@ -40,18 +52,22 @@ class YoutubeDownloader(Downloader):
         """Returns full channel url"""
         return f"https://youtube.com/channel/{channel_id}"
 
-    def _download_with_metadata(self, url: str) -> None:
+    def _download_with_metadata(
+        self, url: str, ytdl_options_overrides: Optional[Dict] = None
+    ) -> None:
         """
         Do not get entries from the extract info, let it write to the info.json file and load
         that instead. This is because if the video is already downloaded in a playlist, it will
         not fetch the metadata (maybe there is a way??)
         """
-        ytdl_metadata_override = {
+        ytdl_overrides = {
             "writeinfojson": True,
         }
+        if ytdl_options_overrides:
+            ytdl_overrides = dict(ytdl_overrides, **ytdl_options_overrides)
 
         try:
-            _ = self.extract_info(ytdl_options_overrides=ytdl_metadata_override, url=url)
+            _ = self.extract_info(ytdl_options_overrides=ytdl_overrides, url=url)
         except RejectedVideoReached:
             pass
 
@@ -79,11 +95,15 @@ class YoutubeDownloader(Downloader):
 
         return entries
 
-    def download_channel(self, channel_id: str) -> List[YoutubeVideo]:
+    def download_channel(
+        self, channel_id: str, ytdl_options_overrides: Optional[Dict] = None
+    ) -> List[YoutubeVideo]:
         """
         Downloads all videos from a channel
         """
-        self._download_with_metadata(url=self.channel_url(channel_id))
+        self._download_with_metadata(
+            url=self.channel_url(channel_id), ytdl_options_overrides=ytdl_options_overrides
+        )
 
         # Load the entries from info.json
         entries: List[YoutubeVideo] = []
@@ -98,7 +118,29 @@ class YoutubeDownloader(Downloader):
         return entries
 
 
-class YoutubePlaylistDownloaderValidator(YoutubeDownloaderValidator):
+###############################################################################
+# Youtube single video downloader + options
+
+
+class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
+    _required_keys = {"video_id"}
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        self.video_id = self._validate_key("video_id", StringValidator)
+
+
+class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions]):
+    def download(self) -> List[YoutubeVideo]:
+        video = self.download_video(video_id=self.download_options.video_id.value)
+        return [video]
+
+
+###############################################################################
+# Youtube playlist downloader + options
+
+
+class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
     _required_keys = {"playlist_id"}
 
     def __init__(self, name, value):
@@ -106,19 +148,33 @@ class YoutubePlaylistDownloaderValidator(YoutubeDownloaderValidator):
         self.playlist_id = self._validate_key("playlist_id", StringValidator)
 
 
-class YoutubeChannelDownloaderValidator(YoutubeDownloaderValidator, DownloadDateRangeSource):
+class YoutubePlaylistDownloader(YoutubeDownloader[YoutubePlaylistDownloaderOptions]):
+    def download(self) -> List[YoutubeVideo]:
+        return self.download_playlist(playlist_id=self.download_options.playlist_id.value)
+
+
+###############################################################################
+# Youtube channel downloader + options
+
+
+class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DownloadDateRangeSource):
     _required_keys = {"channel_id"}
     _optional_keys = {"before", "after"}
 
     def __init__(self, name, value):
-        YoutubeDownloaderValidator.__init__(self, name, value)
+        YoutubeDownloaderOptions.__init__(self, name, value)
         DownloadDateRangeSource.__init__(self, name, value)
         self.channel_id = self._validate_key("channel_id", StringValidator)
 
 
-class YoutubeVideoDownloaderValidator(YoutubeDownloaderValidator):
-    _required_keys = {"video_id"}
+class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions]):
+    def download(self) -> List[YoutubeVideo]:
+        ytdl_options_overrides = {}
+        source_date_range = self.download_options.get_date_range()
+        if source_date_range:
+            ytdl_options_overrides["daterange"] = source_date_range
 
-    def __init__(self, name, value):
-        super().__init__(name, value)
-        self.video_id = self._validate_key("video_id", StringValidator)
+        return self.download_channel(
+            channel_id=self.download_options.channel_id.value,
+            ytdl_options_overrides=ytdl_options_overrides,
+        )

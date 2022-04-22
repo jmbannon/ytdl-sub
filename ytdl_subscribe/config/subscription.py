@@ -2,8 +2,6 @@ import copy
 from typing import Any
 from typing import Dict
 from typing import List
-from typing import Optional
-from typing import Type
 
 import yaml
 from mergedeep import mergedeep
@@ -13,17 +11,7 @@ from ytdl_subscribe.config.preset import PRESET_OPTIONAL_KEYS
 from ytdl_subscribe.config.preset import PRESET_REQUIRED_KEYS
 from ytdl_subscribe.config.preset import Overrides
 from ytdl_subscribe.config.preset import PresetValidator
-from ytdl_subscribe.downloaders.soundcloud_downloader import (
-    SoundcloudAlbumsAndSinglesSourceValidator,
-)
-from ytdl_subscribe.downloaders.youtube_downloader import YoutubeChannelDownloaderValidator
-from ytdl_subscribe.downloaders.youtube_downloader import YoutubePlaylistDownloaderValidator
-from ytdl_subscribe.downloaders.youtube_downloader import YoutubeVideoDownloaderValidator
-from ytdl_subscribe.subscriptions.soundcloud import SoundcloudAlbumsAndSinglesSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.subscriptions.youtube import YoutubeChannelSubscription
-from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription
-from ytdl_subscribe.subscriptions.youtube import YoutubeVideoSubscription
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.validators import StringValidator
 
@@ -70,23 +58,25 @@ class SubscriptionValidator(StrictDictValidator):
         )
 
     def to_subscription(self) -> Subscription:
-        subscription_class: Optional[Type[Subscription]] = None
-        if isinstance(self.preset.subscription_source, SoundcloudAlbumsAndSinglesSourceValidator):
-            subscription_class = SoundcloudAlbumsAndSinglesSubscription
-        elif isinstance(self.preset.subscription_source, YoutubePlaylistDownloaderValidator):
-            subscription_class = YoutubePlaylistSubscription
-        elif isinstance(self.preset.subscription_source, YoutubeVideoDownloaderValidator):
-            subscription_class = YoutubeVideoSubscription
-        elif isinstance(self.preset.subscription_source, YoutubeChannelDownloaderValidator):
-            subscription_class = YoutubeChannelSubscription
-        if subscription_class is None:
-            raise ValueError("subscription source class not found")
-
-        return subscription_class(
-            name=self._name,
-            config_options=self.config.config_options,
-            preset_options=self.preset,
-        )
+        # TODO: Fix this abomination
+        return None
+        # subscription_class: Optional[Type[Subscription]] = None
+        # if isinstance(self.preset.subscription_source, SoundcloudAlbumsAndSinglesDownloadOptions):
+        #     subscription_class = SoundcloudAlbumsAndSinglesSubscription
+        # elif isinstance(self.preset.subscription_source, YoutubePlaylistDownloaderValidator):
+        #     subscription_class = YoutubePlaylistSubscription
+        # elif isinstance(self.preset.subscription_source, YoutubeVideoDownloaderValidator):
+        #     subscription_class = YoutubeVideoSubscription
+        # elif isinstance(self.preset.subscription_source, YoutubeChannelDownloaderValidator):
+        #     subscription_class = YoutubeChannelSubscription
+        # if subscription_class is None:
+        #     raise ValueError("subscription source class not found")
+        #
+        # return subscription_class(
+        #     name=self._name,
+        #     config_options=self.config.config_options,
+        #     preset_options=self.preset,
+        # )
 
     @classmethod
     def from_dict(

@@ -14,8 +14,6 @@ class PluginValidator(StrictDictValidator):
     Class that defines the parameters to a plugin
     """
 
-    pass
-
 
 PluginValidatorT = TypeVar("PluginValidatorT", bound=PluginValidator)
 
@@ -62,10 +60,8 @@ class Plugin(Generic[PluginValidatorT], ABC):
         ----------
         entry: Entry to post process
         """
-        pass
 
     def post_process_subscription(self):
         """
         After all downloaded files have been post-processed, apply a subscription-wide post process
         """
-        pass

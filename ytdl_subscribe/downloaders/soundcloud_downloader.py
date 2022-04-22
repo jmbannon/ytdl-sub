@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Dict
+from typing import Generic
 from typing import List
+from typing import TypeVar
 
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
@@ -9,8 +11,11 @@ from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
 from ytdl_subscribe.validators.validators import BoolValidator
 from ytdl_subscribe.validators.validators import StringValidator
 
+###############################################################################
+# Abstract Soundcloud downloader + options
 
-class SoundcloudDownloaderValidator(DownloaderValidator, ABC):
+
+class SoundcloudDownloaderOptions(DownloaderValidator, ABC):
     """
     Abstract source validator for all soundcloud sources.
     """
@@ -24,7 +29,16 @@ class SoundcloudDownloaderValidator(DownloaderValidator, ABC):
         )
 
 
-class SoundcloudDownloader(Downloader):
+SoundcloudDownloaderOptionsT = TypeVar(
+    "SoundcloudDownloaderOptionsT", bound=SoundcloudDownloaderOptions
+)
+
+
+class SoundcloudDownloader(
+    Generic[SoundcloudDownloaderOptionsT],
+    Downloader[SoundcloudDownloaderOptionsT, SoundcloudTrack],
+    ABC,
+):
     """
     Class that handles downloading soundcloud entries via ytdl and converting them into
     SoundcloudTrack / SoundcloudAlbumTrack objects
@@ -68,9 +82,42 @@ class SoundcloudDownloader(Downloader):
         ]
 
 
-class SoundcloudAlbumsAndSinglesSourceValidator(SoundcloudDownloaderValidator):
+###############################################################################
+# Soundcloud albums and singles downloader + options
+
+
+class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
     _required_keys = {"username"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
         self.username = self._validate_key(key="username", validator=StringValidator)
+
+
+class SoundcloudAlbumsAndSinglesDownloader(
+    SoundcloudDownloader[SoundcloudAlbumsAndSinglesDownloadOptions]
+):
+    def download(self) -> List[SoundcloudTrack]:
+        """
+        Soundcloud subscription to download albums and tracks as singles.
+        """
+        tracks: List[SoundcloudTrack] = []
+
+        # Get the album info first. This tells us which track ids belong
+        # to an album. Unfortunately we cannot use download_archive or info.json for this
+        albums: List[SoundcloudAlbum] = self.download_albums(
+            artist_name=self.download_options.username.value
+        )
+
+        for album in albums:
+            tracks += album.album_tracks(
+                skip_premiere_tracks=self.download_options.skip_premiere_tracks.value
+            )
+
+        # only add tracks that are not part of an album
+        single_tracks = self.download_tracks(artist_name=self.download_options.username.value)
+        tracks += [
+            track for track in single_tracks if not any(album.contains(track) for album in albums)
+        ]
+
+        return tracks

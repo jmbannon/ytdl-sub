@@ -1,11 +1,16 @@
+import abc
 from abc import ABC
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict
+from typing import Generic
+from typing import List
 from typing import Optional
+from typing import TypeVar
 
 import yt_dlp as ytdl
 
+from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 
 
@@ -15,7 +20,11 @@ class DownloaderValidator(StrictDictValidator, ABC):
     """
 
 
-class Downloader:
+DownloaderOptionsT = TypeVar("DownloaderOptionsT", bound=DownloaderValidator)
+DownloaderEntryT = TypeVar("DownloaderEntryT", bound=Entry)
+
+
+class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT]):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
@@ -59,10 +68,12 @@ class Downloader:
     def __init__(
         self,
         working_directory: str,
+        download_options: DownloaderOptionsT,
         ytdl_options: Optional[Dict] = None,
         download_archive_file_name: Optional[str] = None,
     ):
         self.working_directory = working_directory
+        self.download_options = download_options
         self.ytdl_options = Downloader._configure_ytdl_options(
             ytdl_options=ytdl_options,
             working_directory=self.working_directory,
@@ -88,3 +99,7 @@ class Downloader:
         """
         with self.ytdl_downloader(ytdl_options_overrides) as ytdl_downloader:
             return ytdl_downloader.extract_info(**kwargs)
+
+    @abc.abstractmethod
+    def download(self) -> List[DownloaderEntryT]:
+        """The function to perform the download"""

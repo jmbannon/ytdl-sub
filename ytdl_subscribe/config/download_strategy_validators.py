@@ -6,11 +6,11 @@ from typing import Type
 
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.downloaders.soundcloud_downloader import (
-    SoundcloudAlbumsAndSinglesSourceValidator,
+    SoundcloudAlbumsAndSinglesDownloadOptions,
 )
-from ytdl_subscribe.downloaders.youtube_downloader import YoutubeChannelDownloaderValidator
-from ytdl_subscribe.downloaders.youtube_downloader import YoutubePlaylistDownloaderValidator
-from ytdl_subscribe.downloaders.youtube_downloader import YoutubeVideoDownloaderValidator
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubeChannelDownloaderOptions
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubePlaylistDownloaderOptions
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubeVideoDownloaderOptions
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.validators import StringValidator
 
@@ -56,13 +56,13 @@ class DownloadStrategyValidator(StrictDictValidator, ABC):
 
 class SoundcloudDownloadStrategyValidator(DownloadStrategyValidator):
     _download_strategy_to_source_mapping = {
-        "albums_and_singles": SoundcloudAlbumsAndSinglesSourceValidator
+        "albums_and_singles": SoundcloudAlbumsAndSinglesDownloadOptions
     }
 
 
 class YoutubeDownloadStrategyValidator(DownloadStrategyValidator):
     _download_strategy_to_source_mapping = {
-        "channel": YoutubeChannelDownloaderValidator,
-        "playlist": YoutubePlaylistDownloaderValidator,
-        "video": YoutubeVideoDownloaderValidator,
+        "channel": YoutubeChannelDownloaderOptions,
+        "playlist": YoutubePlaylistDownloaderOptions,
+        "video": YoutubeVideoDownloaderOptions,
     }
