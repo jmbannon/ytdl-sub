@@ -26,7 +26,7 @@ class DownloadStrategyMapping:
             "channel": YoutubeChannelDownloader,
         },
         "soundcloud": {
-            "albums and singles": SoundcloudAlbumsAndSinglesDownloader,
+            "albums_and_singles": SoundcloudAlbumsAndSinglesDownloader,
         },
     }
 
@@ -45,7 +45,10 @@ class DownloadStrategyMapping:
         Ensure the source exists
         """
         if source not in cls.sources():
-            raise ValueError(f"Tried to use source '{source}' that does not exist")
+            raise ValueError(
+                f"Tried to use source '{source}' which does not exist. Available sources: "
+                f"{', '.join(cls.sources())}"
+            )
 
     @classmethod
     def source_download_strategies(cls, source: str) -> List[str]:
@@ -70,7 +73,8 @@ class DownloadStrategyMapping:
         if download_strategy not in cls.source_download_strategies(source):
             raise ValueError(
                 f"Tried to use download strategy '{download_strategy}' with source '{source}', "
-                f"which does not exist"
+                f"which does not exist. Available download strategies: "
+                f"{', '.join(cls.source_download_strategies(source))}"
             )
 
     @classmethod
@@ -103,5 +107,8 @@ class PluginMapping:
     @classmethod
     def get(cls, plugin: str) -> Type[Plugin]:
         if plugin not in cls.plugins():
-            raise ValueError(f"Tried to use plugin '{plugin}' that does not exist")
+            raise ValueError(
+                f"Tried to use plugin '{plugin}' that does not exist. Available plugins: "
+                f"{', '.join(cls.plugins())}"
+            )
         return cls._MAPPING[plugin]

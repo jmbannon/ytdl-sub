@@ -7,7 +7,6 @@ from typing import Type
 
 from ytdl_subscribe.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_subscribe.config.preset_class_mappings import PluginMapping
-from ytdl_subscribe.config.preset_options import DownloadStrategyValidator
 from ytdl_subscribe.config.preset_options import OutputOptions
 from ytdl_subscribe.config.preset_options import Overrides
 from ytdl_subscribe.config.preset_options import YTDLOptions
@@ -16,10 +15,10 @@ from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.plugins.plugin import Plugin
 from ytdl_subscribe.plugins.plugin import PluginOptions
 from ytdl_subscribe.utils.exceptions import StringFormattingVariableNotFoundException
-from ytdl_subscribe.utils.exceptions import ValidationException
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_subscribe.validators.validators import DictValidator
+from ytdl_subscribe.validators.validators import StringValidator
 from ytdl_subscribe.validators.validators import Validator
 
 PRESET_REQUIRED_KEYS = {"output_options"}
@@ -31,17 +30,41 @@ PRESET_OPTIONAL_KEYS = {
 }
 
 
+class DownloadStrategyValidator(StrictDictValidator):
+    """
+    Ensures a download strategy exists for a source. Does not validate any more than that.
+    The respective Downloader's option validator will do that.
+    """
+
+    # All media sources must define a download strategy
+    _required_keys = {"download_strategy"}
+
+    # Extra fields will be strict-validated using other StictDictValidators
+    _allow_extra_keys = True
+
+    def __init__(self, name: str, value: Any):
+        super().__init__(name=name, value=value)
+        self.download_strategy_name = self._validate_key(
+            key="download_strategy",
+            validator=StringValidator,
+        ).value
+
+    def get(self, downloader_source: str) -> Type[Downloader]:
+        try:
+            return DownloadStrategyMapping.get(
+                source=downloader_source, download_strategy=self.download_strategy_name
+            )
+        except ValueError as value_exc:
+            raise self._validation_exception(error_message=value_exc)
+
+
 class Preset(StrictDictValidator):
     _required_keys = PRESET_REQUIRED_KEYS
     _optional_keys = PRESET_OPTIONAL_KEYS
 
     def __validate_and_get_downloader(self, downloader_source: str) -> Type[Downloader]:
-        downloader_strategy = self._validate_key(
-            key=downloader_source, validator=DownloadStrategyValidator
-        ).name
-
-        return DownloadStrategyMapping.get(
-            source=downloader_source, download_strategy=downloader_strategy
+        return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(
+            downloader_source=downloader_source
         )
 
     def __validate_and_get_downloader_options(
@@ -68,7 +91,7 @@ class Preset(StrictDictValidator):
 
             # Ensure there are not multiple sources, i.e. youtube and soundcloud
             if downloader:
-                raise ValidationException(
+                raise self._validation_exception(
                     f"'{self._name}' can only have one of the following sources: "
                     f"{', '.join(downloader_sources)}"
                 )
@@ -80,7 +103,8 @@ class Preset(StrictDictValidator):
 
         # If downloader was not set, error since it is required
         if not downloader:
-            raise ValidationException(
+
+            raise self._validation_exception(
                 f"'{self._name} must have one of the following sources: "
                 f"{', '.join(downloader_sources)}"
             )

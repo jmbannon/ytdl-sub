@@ -18,7 +18,7 @@ class StringDatetimeValidator(Validator):
         try:
             _ = datetime_from_str(self._value)
         except Exception as exc:
-            raise ValidationException(exc) from exc
+            raise self._validation_exception(str(exc))
 
     @property
     def datetime_str(self) -> str:

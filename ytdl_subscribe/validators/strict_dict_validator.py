@@ -43,7 +43,7 @@ class StrictDictValidator(DictValidator):
                         f"'{self._name}' contains the field '{object_key}' which is not allowed. "
                         f"Allowed fields: {', '.join(self._allowed_keys)}"
                     )
-                    raise ValidationException(error_msg)
+                    raise self._validation_exception(str(error_msg))
 
     @property
     def _allowed_keys(self) -> List[str]:

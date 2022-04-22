@@ -39,7 +39,7 @@ class Validator(ABC):
             )
 
     def _validation_exception(
-        self, error_message: str, exception_class: Type[V] = ValidationException
+        self, error_message: str | Exception, exception_class: Type[V] = ValidationException
     ) -> V:
         """
         Parameters

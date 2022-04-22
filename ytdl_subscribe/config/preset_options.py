@@ -86,23 +86,3 @@ class OutputOptions(StrictDictValidator):
             raise self._validation_exception(
                 "maintain_stale_file_deletion requires maintain_download_archive set to True"
             )
-
-
-class DownloadStrategyValidator(StrictDictValidator, ABC):
-    """
-    Ensures a download strategy exists for a source. Does not validate any more than that.
-    The respective Downloader's option validator will do that.
-    """
-
-    # All media sources must define a download strategy
-    _required_keys = {"download_strategy"}
-
-    # Extra fields will be strict-validated using other StictDictValidators
-    _allow_extra_keys = True
-
-    def __init__(self, name: str, value: Any):
-        super().__init__(name=name, value=value)
-        self.name = self._validate_key(
-            key="download_strategy",
-            validator=StringValidator,
-        ).value
