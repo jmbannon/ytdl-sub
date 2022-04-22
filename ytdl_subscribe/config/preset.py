@@ -4,18 +4,22 @@ from typing import List
 from typing import Optional
 from typing import Type
 
+from yt_dlp.utils import sanitize_filename
+
 from ytdl_subscribe.config.download_strategy_validators import DownloadStrategyValidator
 from ytdl_subscribe.config.download_strategy_validators import SoundcloudDownloadStrategyValidator
 from ytdl_subscribe.config.download_strategy_validators import YoutubeDownloadStrategyValidator
-from ytdl_subscribe.config.output_options_validator import OutputOptionsValidator
-from ytdl_subscribe.config.overrides_validator import OverridesValidator
-from ytdl_subscribe.config.ytdl_options_validator import YTDLOptionsValidator
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
+from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_subscribe.utils.exceptions import ValidationException
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_subscribe.validators.string_formatter_validators import OverridesStringFormatterValidator
+from ytdl_subscribe.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_subscribe.validators.validators import BoolValidator
 from ytdl_subscribe.validators.validators import DictValidator
+from ytdl_subscribe.validators.validators import LiteralDictValidator
 from ytdl_subscribe.validators.validators import Validator
 
 PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[DownloadStrategyValidator]] = {
@@ -30,6 +34,79 @@ PRESET_OPTIONAL_KEYS = {
     "overrides",
     *PRESET_SOURCE_VALIDATOR_MAPPING.keys(),
 }
+
+
+class YTDLOptions(LiteralDictValidator):
+    """Ensures `ytdl_options` is a dict"""
+
+
+class Overrides(DictFormatterValidator):
+    """Ensures `overrides` is a dict"""
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        for key in self._keys:
+            sanitized_key_name = f"sanitized_{key}"
+            # First, sanitize the format string
+            self._value[sanitized_key_name] = sanitize_filename(self._value[key].format_string)
+
+            # Then, convert it into a StringFormatterValidator
+            self._value[sanitized_key_name] = StringFormatterValidator(
+                name="__should_never_fail__",
+                value=self._value[sanitized_key_name],
+            )
+
+    def apply_formatter(
+        self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
+    ) -> str:
+        """
+        Returns the format_string after .format has been called on it using entry (if provided) and
+        override values
+        """
+        variable_dict = self.dict_with_format_strings
+        if entry:
+            variable_dict = dict(entry.to_dict(), **variable_dict)
+        return formatter.apply_formatter(variable_dict)
+
+
+class OutputOptions(StrictDictValidator):
+    """Where to output the final files and thumbnails"""
+
+    _required_keys = {"output_directory", "file_name"}
+    _optional_keys = {
+        "thumbnail_name",
+        "maintain_download_archive",
+        "maintain_stale_file_deletion",
+    }
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        # Output directory should resolve without any entry variables.
+        # This is to check the directory for any download-archives before any downloads begin
+        self.output_directory: OverridesStringFormatterValidator = self._validate_key(
+            key="output_directory", validator=OverridesStringFormatterValidator
+        )
+
+        # file name and thumbnails however can use entry variables
+        self.file_name: StringFormatterValidator = self._validate_key(
+            key="file_name", validator=StringFormatterValidator
+        )
+        self.thumbnail_name = self._validate_key_if_present(
+            key="thumbnail_name", validator=StringFormatterValidator
+        )
+
+        self.maintain_download_archive = self._validate_key_if_present(
+            key="maintain_download_archive", validator=BoolValidator, default=False
+        )
+        self.maintain_stale_file_deletion = self._validate_key_if_present(
+            key="maintain_stale_file_deletion", validator=BoolValidator, default=False
+        )
+
+        if self.maintain_stale_file_deletion.value and not self.maintain_download_archive.value:
+            raise self._validation_exception(
+                "maintain_stale_file_deletion requires maintain_download_archive set to True"
+            )
 
 
 class PresetValidator(StrictDictValidator):
@@ -113,18 +190,16 @@ class PresetValidator(StrictDictValidator):
 
         self.output_options = self._validate_key(
             key="output_options",
-            validator=OutputOptionsValidator,
+            validator=OutputOptions,
         )
 
         # TODO: REPLACE METADATA OPTIONS WITH PLUGINS
 
         self.ytdl_options = self._validate_key(
-            key="ytdl_options", validator=YTDLOptionsValidator, default={}
+            key="ytdl_options", validator=YTDLOptions, default={}
         )
 
-        self.overrides = self._validate_key(
-            key="overrides", validator=OverridesValidator, default={}
-        )
+        self.overrides = self._validate_key(key="overrides", validator=Overrides, default={})
 
         # After all options are initialized, perform a recursive post-validate that requires
         # values from multiple validators

@@ -5,14 +5,12 @@ from typing import List
 
 from ytdl_subscribe.cli.download_args_parser import DownloadArgsParser
 from ytdl_subscribe.cli.main_args_parser import parser
-from ytdl_subscribe.config.config_file_validator import ConfigFileValidator
-from ytdl_subscribe.config.subscription_validator import SubscriptionValidator
+from ytdl_subscribe.config.config_file import ConfigFile
+from ytdl_subscribe.config.subscription import SubscriptionValidator
 from ytdl_subscribe.utils.exceptions import ValidationException
 
 
-def _download_subscriptions_from_yaml_files(
-    config: ConfigFileValidator, args: argparse.Namespace
-) -> None:
+def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.Namespace) -> None:
     """
     Downloads all subscriptions from one or many subscription yaml files.
 
@@ -31,7 +29,7 @@ def _download_subscriptions_from_yaml_files(
         subscription.to_subscription().download()
 
 
-def _download_subscription_from_cli(config: ConfigFileValidator, extra_args: List[str]) -> None:
+def _download_subscription_from_cli(config: ConfigFile, extra_args: List[str]) -> None:
     """
     Downloads a one-off subscription using the CLI
 
@@ -53,7 +51,7 @@ def _main():
     """Entrypoint for ytdl-subscribe"""
     args, extra_args = parser.parse_known_args()
 
-    config: ConfigFileValidator = ConfigFileValidator.from_file_path(args.config)
+    config: ConfigFile = ConfigFile.from_file_path(args.config)
     if args.subparser == "sub":
         _download_subscriptions_from_yaml_files(config=config, args=args)
         print("Subscription download complete!")

@@ -3,7 +3,7 @@ from typing import Generic
 from typing import TypeVar
 from typing import final
 
-from ytdl_subscribe.config.overrides_validator import OverridesValidator
+from ytdl_subscribe.config.preset import Overrides
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -30,7 +30,7 @@ class Plugin(Generic[PluginValidatorT], ABC):
         self,
         plugin_options: PluginValidatorT,
         output_directory: str,
-        overrides: OverridesValidator,
+        overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
         self.plugin_options = plugin_options

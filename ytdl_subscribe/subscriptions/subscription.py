@@ -11,10 +11,10 @@ from typing import Optional
 from typing import Type
 from typing import TypeVar
 
-from ytdl_subscribe.config.config_options_validator import ConfigOptionsValidator
-from ytdl_subscribe.config.output_options_validator import OutputOptionsValidator
-from ytdl_subscribe.config.overrides_validator import OverridesValidator
-from ytdl_subscribe.config.preset_validator import PresetValidator
+from ytdl_subscribe.config.config_file import ConfigOptions
+from ytdl_subscribe.config.preset import OutputOptions
+from ytdl_subscribe.config.preset import Overrides
+from ytdl_subscribe.config.preset import PresetValidator
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.entries.entry import Entry
@@ -43,7 +43,7 @@ class Subscription(Generic[SourceT, EntryT], ABC):
     def __init__(
         self,
         name: str,
-        config_options: ConfigOptionsValidator,
+        config_options: ConfigOptions,
         preset_options: PresetValidator,
     ):
         """
@@ -51,7 +51,7 @@ class Subscription(Generic[SourceT, EntryT], ABC):
         ----------
         name: str
             Name of the subscription
-        config_options: ConfigOptionsValidator
+        config_options: ConfigOptions
         preset_options: PresetValidator
         """
         self.name = name
@@ -77,12 +77,12 @@ class Subscription(Generic[SourceT, EntryT], ABC):
         return self.__preset_options.subscription_source
 
     @property
-    def output_options(self) -> OutputOptionsValidator:
+    def output_options(self) -> OutputOptions:
         """Returns the output options defined for this subscription"""
         return self.__preset_options.output_options
 
     @property
-    def overrides(self) -> OverridesValidator:
+    def overrides(self) -> Overrides:
         """Returns the overrides defined for this subscription"""
         return self.__preset_options.overrides
 

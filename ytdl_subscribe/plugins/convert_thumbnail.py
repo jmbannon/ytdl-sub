@@ -19,7 +19,7 @@ class ConvertThumbnailValidator(PluginValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.to = self._validate_key(key="to", validator=ThumbnailTypes)
+        self.convert_to = self._validate_key(key="to", validator=ThumbnailTypes)
 
 
 class ConvertThumbnail(Plugin[ConvertThumbnailValidator]):
@@ -34,7 +34,7 @@ class ConvertThumbnail(Plugin[ConvertThumbnailValidator]):
         image = Image.open(entry.download_thumbnail_path).convert("RGB")
 
         # Pillow likes the formal 'jpeg' name and not 'jpg'
-        thumbnail_format = self.plugin_options.to.value
+        thumbnail_format = self.plugin_options.convert_to.value
         if thumbnail_format == "jpg":
             thumbnail_format = "jpeg"
 

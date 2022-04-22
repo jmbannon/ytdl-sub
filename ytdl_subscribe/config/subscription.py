@@ -8,11 +8,11 @@ from typing import Type
 import yaml
 from mergedeep import mergedeep
 
-from ytdl_subscribe.config.config_file_validator import ConfigFileValidator
-from ytdl_subscribe.config.overrides_validator import OverridesValidator
-from ytdl_subscribe.config.preset_validator import PRESET_OPTIONAL_KEYS
-from ytdl_subscribe.config.preset_validator import PRESET_REQUIRED_KEYS
-from ytdl_subscribe.config.preset_validator import PresetValidator
+from ytdl_subscribe.config.config_file import ConfigFile
+from ytdl_subscribe.config.preset import PRESET_OPTIONAL_KEYS
+from ytdl_subscribe.config.preset import PRESET_REQUIRED_KEYS
+from ytdl_subscribe.config.preset import Overrides
+from ytdl_subscribe.config.preset import PresetValidator
 from ytdl_subscribe.downloaders.soundcloud_downloader import (
     SoundcloudAlbumsAndSinglesSourceValidator,
 )
@@ -36,14 +36,14 @@ class SubscriptionValidator(StrictDictValidator):
     _required_keys = {"preset"}
     _optional_keys = PRESET_REQUIRED_KEYS.union(PRESET_OPTIONAL_KEYS)
 
-    def __init__(self, config: ConfigFileValidator, name: str, value: Any):
+    def __init__(self, config: ConfigFile, name: str, value: Any):
         super().__init__(name, value)
         self.config = config
 
         # Ensure the overrides defined here are valid
         _ = self._validate_key(
             key="overrides",
-            validator=OverridesValidator,
+            validator=Overrides,
             default={},
         )
 
@@ -90,13 +90,13 @@ class SubscriptionValidator(StrictDictValidator):
 
     @classmethod
     def from_dict(
-        cls, config: ConfigFileValidator, subscription_name, subscription_dict: Dict
+        cls, config: ConfigFile, subscription_name, subscription_dict: Dict
     ) -> "SubscriptionValidator":
         return SubscriptionValidator(config=config, name=subscription_name, value=subscription_dict)
 
     @classmethod
     def from_file_path(
-        cls, config: ConfigFileValidator, subscription_path: str
+        cls, config: ConfigFile, subscription_path: str
     ) -> List["SubscriptionValidator"]:
         # TODO: Create separate yaml file loader class
         with open(subscription_path, "r", encoding="utf-8") as file:
