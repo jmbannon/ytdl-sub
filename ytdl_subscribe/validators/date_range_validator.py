@@ -3,8 +3,8 @@ from typing import Optional
 
 from yt_dlp import DateRange
 
-from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.string_datetime import StringDatetimeValidator
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.string_datetime import StringDatetimeValidator
 
 
 class DownloadDateRangeSource(StrictDictValidator, ABC):

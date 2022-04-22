@@ -5,9 +5,9 @@ from typing import List
 
 from ytdl_subscribe.cli.download_args_parser import DownloadArgsParser
 from ytdl_subscribe.cli.main_args_parser import parser
-from ytdl_subscribe.validators.config.config_file_validator import ConfigFileValidator
-from ytdl_subscribe.validators.config.subscription_validator import SubscriptionValidator
-from ytdl_subscribe.validators.exceptions import ValidationException
+from ytdl_subscribe.config.config_file_validator import ConfigFileValidator
+from ytdl_subscribe.config.subscription_validator import SubscriptionValidator
+from ytdl_subscribe.utils.exceptions import ValidationException
 
 
 def _download_subscriptions_from_yaml_files(

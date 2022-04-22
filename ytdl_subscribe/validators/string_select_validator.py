@@ -1,6 +1,6 @@
 from typing import Set
 
-from ytdl_subscribe.validators.base.validators import StringValidator
+from ytdl_subscribe.validators.validators import StringValidator
 
 
 class StringSelectValidator(StringValidator):

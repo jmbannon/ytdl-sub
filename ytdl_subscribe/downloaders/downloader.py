@@ -1,9 +1,18 @@
+from abc import ABC
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict
 from typing import Optional
 
 import yt_dlp as ytdl
+
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+
+
+class DownloaderValidator(StrictDictValidator, ABC):
+    """
+    Placeholder class to define downloader options
+    """
 
 
 class Downloader:

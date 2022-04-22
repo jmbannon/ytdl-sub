@@ -1,9 +1,7 @@
-from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    OverridesStringFormatterValidator,
-)
-from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
-from ytdl_subscribe.validators.base.validators import BoolValidator
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.string_formatter_validators import OverridesStringFormatterValidator
+from ytdl_subscribe.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_subscribe.validators.validators import BoolValidator
 
 
 class OutputOptionsValidator(StrictDictValidator):

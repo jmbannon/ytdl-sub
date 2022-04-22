@@ -4,12 +4,8 @@ import dicttoxml
 
 from ytdl_subscribe.plugins.plugin import Plugin
 from ytdl_subscribe.plugins.plugin import PluginValidator
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    OverridesDictFormatterValidator,
-)
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    OverridesStringFormatterValidator,
-)
+from ytdl_subscribe.validators.string_formatter_validators import OverridesDictFormatterValidator
+from ytdl_subscribe.validators.string_formatter_validators import OverridesStringFormatterValidator
 
 
 class OutputDirectoryNfoTagsValidator(PluginValidator):

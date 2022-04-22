@@ -8,30 +8,24 @@ from typing import Type
 import yaml
 from mergedeep import mergedeep
 
+from ytdl_subscribe.config.config_file_validator import ConfigFileValidator
+from ytdl_subscribe.config.overrides_validator import OverridesValidator
+from ytdl_subscribe.config.preset_validator import PRESET_OPTIONAL_KEYS
+from ytdl_subscribe.config.preset_validator import PRESET_REQUIRED_KEYS
+from ytdl_subscribe.config.preset_validator import PresetValidator
+from ytdl_subscribe.downloaders.soundcloud_downloader import (
+    SoundcloudAlbumsAndSinglesSourceValidator,
+)
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubeChannelDownloaderValidator
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubePlaylistDownloaderValidator
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubeVideoDownloaderValidator
 from ytdl_subscribe.subscriptions.soundcloud import SoundcloudAlbumsAndSinglesSubscription
 from ytdl_subscribe.subscriptions.subscription import Subscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeChannelSubscription
 from ytdl_subscribe.subscriptions.youtube import YoutubePlaylistSubscription
 from ytdl_subscribe.subscriptions.youtube import YoutubeVideoSubscription
-from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.validators import StringValidator
-from ytdl_subscribe.validators.config.config_file_validator import ConfigFileValidator
-from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
-from ytdl_subscribe.validators.config.preset_validator import PRESET_OPTIONAL_KEYS
-from ytdl_subscribe.validators.config.preset_validator import PRESET_REQUIRED_KEYS
-from ytdl_subscribe.validators.config.preset_validator import PresetValidator
-from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
-    SoundcloudAlbumsAndSinglesSourceValidator,
-)
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubeChannelSourceValidator,
-)
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubePlaylistSourceValidator,
-)
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubeVideoSourceValidator,
-)
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.validators import StringValidator
 
 
 class SubscriptionValidator(StrictDictValidator):
@@ -79,11 +73,11 @@ class SubscriptionValidator(StrictDictValidator):
         subscription_class: Optional[Type[Subscription]] = None
         if isinstance(self.preset.subscription_source, SoundcloudAlbumsAndSinglesSourceValidator):
             subscription_class = SoundcloudAlbumsAndSinglesSubscription
-        elif isinstance(self.preset.subscription_source, YoutubePlaylistSourceValidator):
+        elif isinstance(self.preset.subscription_source, YoutubePlaylistDownloaderValidator):
             subscription_class = YoutubePlaylistSubscription
-        elif isinstance(self.preset.subscription_source, YoutubeVideoSourceValidator):
+        elif isinstance(self.preset.subscription_source, YoutubeVideoDownloaderValidator):
             subscription_class = YoutubeVideoSubscription
-        elif isinstance(self.preset.subscription_source, YoutubeChannelSourceValidator):
+        elif isinstance(self.preset.subscription_source, YoutubeChannelDownloaderValidator):
             subscription_class = YoutubeChannelSubscription
         if subscription_class is None:
             raise ValueError("subscription source class not found")

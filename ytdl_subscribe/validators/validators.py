@@ -8,7 +8,7 @@ from typing import Type
 from typing import TypeVar
 from typing import final
 
-from ytdl_subscribe.validators.exceptions import ValidationException
+from ytdl_subscribe.utils.exceptions import ValidationException
 
 V = TypeVar("V", bound=ValidationException)
 

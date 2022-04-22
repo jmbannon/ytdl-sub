@@ -1,7 +1,7 @@
 from yt_dlp.utils import datetime_from_str
 
-from ytdl_subscribe.validators.base.validators import Validator
-from ytdl_subscribe.validators.exceptions import ValidationException
+from ytdl_subscribe.utils.exceptions import ValidationException
+from ytdl_subscribe.validators.validators import Validator
 
 
 class StringDatetimeValidator(Validator):

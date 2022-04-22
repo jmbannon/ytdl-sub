@@ -11,21 +11,17 @@ from typing import Optional
 from typing import Type
 from typing import TypeVar
 
+from ytdl_subscribe.config.config_options_validator import ConfigOptionsValidator
+from ytdl_subscribe.config.output_options_validator import OutputOptionsValidator
+from ytdl_subscribe.config.overrides_validator import OverridesValidator
+from ytdl_subscribe.config.preset_validator import PresetValidator
 from ytdl_subscribe.downloaders.downloader import Downloader
+from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.config.config_options.config_options_validator import (
-    ConfigOptionsValidator,
-)
-from ytdl_subscribe.validators.config.output_options.output_options_validator import (
-    OutputOptionsValidator,
-)
-from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
-from ytdl_subscribe.validators.config.preset_validator import PresetValidator
-from ytdl_subscribe.validators.config.source_options.mixins import DownloadDateRangeSource
-from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
+from ytdl_subscribe.validators.date_range_validator import DownloadDateRangeSource
 from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-SourceT = TypeVar("SourceT", bound=SourceValidator)
+SourceT = TypeVar("SourceT", bound=DownloaderValidator)
 EntryT = TypeVar("EntryT", bound=Entry)
 DownloaderT = TypeVar("DownloaderT", bound=Downloader)
 

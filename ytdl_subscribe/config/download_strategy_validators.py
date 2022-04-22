@@ -4,21 +4,15 @@ from typing import Any
 from typing import Dict
 from typing import Type
 
-from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.validators import StringValidator
-from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
+from ytdl_subscribe.downloaders.downloader import DownloaderValidator
+from ytdl_subscribe.downloaders.soundcloud_downloader import (
     SoundcloudAlbumsAndSinglesSourceValidator,
 )
-from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubeChannelSourceValidator,
-)
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubePlaylistSourceValidator,
-)
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubeVideoSourceValidator,
-)
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubeChannelDownloaderValidator
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubePlaylistDownloaderValidator
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubeVideoDownloaderValidator
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.validators import StringValidator
 
 
 class DownloadStrategyValidator(StrictDictValidator, ABC):
@@ -32,7 +26,7 @@ class DownloadStrategyValidator(StrictDictValidator, ABC):
     # Extra fields will be strict-validated using other StictDictValidators
     _allow_extra_keys = True
 
-    _download_strategy_to_source_mapping: Dict[str, Type[SourceValidator]] = {}
+    _download_strategy_to_source_mapping: Dict[str, Type[DownloaderValidator]] = {}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name=name, value=value)
@@ -68,7 +62,7 @@ class SoundcloudDownloadStrategyValidator(DownloadStrategyValidator):
 
 class YoutubeDownloadStrategyValidator(DownloadStrategyValidator):
     _download_strategy_to_source_mapping = {
-        "channel": YoutubeChannelSourceValidator,
-        "playlist": YoutubePlaylistSourceValidator,
-        "video": YoutubeVideoSourceValidator,
+        "channel": YoutubeChannelDownloaderValidator,
+        "playlist": YoutubePlaylistDownloaderValidator,
+        "video": YoutubeVideoDownloaderValidator,
     }

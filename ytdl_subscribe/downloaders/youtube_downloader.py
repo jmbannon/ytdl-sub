@@ -1,12 +1,22 @@
 import json
 import os
+from abc import ABC
 from pathlib import Path
 from typing import List
 
 from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_subscribe.downloaders.downloader import Downloader
+from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.entries.youtube import YoutubeVideo
+from ytdl_subscribe.validators.date_range_validator import DownloadDateRangeSource
+from ytdl_subscribe.validators.validators import StringValidator
+
+
+class YoutubeDownloaderValidator(DownloaderValidator, ABC):
+    """
+    Abstract source validator for all soundcloud sources.
+    """
 
 
 class YoutubeDownloader(Downloader):
@@ -86,3 +96,29 @@ class YoutubeDownloader(Downloader):
                     entries.append(YoutubeVideo(**json.load(file)))
 
         return entries
+
+
+class YoutubePlaylistDownloaderValidator(YoutubeDownloaderValidator):
+    _required_keys = {"playlist_id"}
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        self.playlist_id = self._validate_key("playlist_id", StringValidator)
+
+
+class YoutubeChannelDownloaderValidator(YoutubeDownloaderValidator, DownloadDateRangeSource):
+    _required_keys = {"channel_id"}
+    _optional_keys = {"before", "after"}
+
+    def __init__(self, name, value):
+        YoutubeDownloaderValidator.__init__(self, name, value)
+        DownloadDateRangeSource.__init__(self, name, value)
+        self.channel_id = self._validate_key("channel_id", StringValidator)
+
+
+class YoutubeVideoDownloaderValidator(YoutubeDownloaderValidator):
+    _required_keys = {"video_id"}
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        self.video_id = self._validate_key("video_id", StringValidator)

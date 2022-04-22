@@ -1,7 +1,7 @@
 from typing import Any
 
-from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.validators import StringValidator
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.validators import StringValidator
 
 
 class ConfigOptionsValidator(StrictDictValidator):

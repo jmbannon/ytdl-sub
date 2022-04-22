@@ -2,11 +2,9 @@ from typing import Any
 
 import yaml
 
-from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.validators import LiteralDictValidator
-from ytdl_subscribe.validators.config.config_options.config_options_validator import (
-    ConfigOptionsValidator,
-)
+from ytdl_subscribe.config.config_options_validator import ConfigOptionsValidator
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.validators import LiteralDictValidator
 
 
 class ConfigPresetsValidator(LiteralDictValidator):

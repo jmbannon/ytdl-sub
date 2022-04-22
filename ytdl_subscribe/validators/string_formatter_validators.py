@@ -5,10 +5,10 @@ from typing import Dict
 from typing import List
 from typing import final
 
-from ytdl_subscribe.validators.base.validators import LiteralDictValidator
-from ytdl_subscribe.validators.base.validators import Validator
-from ytdl_subscribe.validators.exceptions import StringFormattingException
-from ytdl_subscribe.validators.exceptions import StringFormattingVariableNotFoundException
+from ytdl_subscribe.utils.exceptions import StringFormattingException
+from ytdl_subscribe.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_subscribe.validators.validators import LiteralDictValidator
+from ytdl_subscribe.validators.validators import Validator
 
 
 class StringFormatterValidator(Validator):

@@ -5,7 +5,7 @@ from PIL.Image import Image
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.plugins.plugin import Plugin
 from ytdl_subscribe.plugins.plugin import PluginValidator
-from ytdl_subscribe.validators.base.string_select_validator import StringSelectValidator
+from ytdl_subscribe.validators.string_select_validator import StringSelectValidator
 
 
 class ThumbnailTypes(StringSelectValidator):

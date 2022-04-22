@@ -3,8 +3,8 @@ import music_tag
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.plugins.plugin import Plugin
 from ytdl_subscribe.plugins.plugin import PluginValidator
-from ytdl_subscribe.validators.base.string_formatter_validators import DictFormatterValidator
-from ytdl_subscribe.validators.base.validators import StringValidator
+from ytdl_subscribe.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_subscribe.validators.validators import StringValidator
 
 
 class MusicTagsValidator(PluginValidator):

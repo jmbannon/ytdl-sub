@@ -1,7 +1,7 @@
 import pytest
 
-from ytdl_subscribe.validators.base.validators import BoolValidator
-from ytdl_subscribe.validators.exceptions import ValidationException
+from ytdl_subscribe.utils.exceptions import ValidationException
+from ytdl_subscribe.validators.validators import BoolValidator
 
 
 @pytest.mark.parametrize("value", [True, False])

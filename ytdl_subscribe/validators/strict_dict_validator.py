@@ -1,8 +1,8 @@
 from typing import List
 from typing import Set
 
-from ytdl_subscribe.validators.base.validators import DictValidator
-from ytdl_subscribe.validators.exceptions import ValidationException
+from ytdl_subscribe.utils.exceptions import ValidationException
+from ytdl_subscribe.validators.validators import DictValidator
 
 
 class StrictDictValidator(DictValidator):

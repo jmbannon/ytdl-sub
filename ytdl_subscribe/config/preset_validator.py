@@ -4,34 +4,19 @@ from typing import List
 from typing import Optional
 from typing import Type
 
-from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    OverridesStringFormatterValidator,
-)
-from ytdl_subscribe.validators.base.validators import DictValidator
-from ytdl_subscribe.validators.base.validators import Validator
-from ytdl_subscribe.validators.config.metadata_options.metadata_options_validator import (
-    MetadataOptionsValidator,
-)
-from ytdl_subscribe.validators.config.output_options.output_options_validator import (
-    OutputOptionsValidator,
-)
-from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
-from ytdl_subscribe.validators.config.source_options.download_strategy_validators import (
-    DownloadStrategyValidator,
-)
-from ytdl_subscribe.validators.config.source_options.download_strategy_validators import (
-    SoundcloudDownloadStrategyValidator,
-)
-from ytdl_subscribe.validators.config.source_options.download_strategy_validators import (
-    YoutubeDownloadStrategyValidator,
-)
-from ytdl_subscribe.validators.config.source_options.source_validators import SourceValidator
-from ytdl_subscribe.validators.config.ytdl_options.ytdl_options_validator import (
-    YTDLOptionsValidator,
-)
-from ytdl_subscribe.validators.exceptions import StringFormattingVariableNotFoundException
-from ytdl_subscribe.validators.exceptions import ValidationException
+from ytdl_subscribe.config.download_strategy_validators import DownloadStrategyValidator
+from ytdl_subscribe.config.download_strategy_validators import SoundcloudDownloadStrategyValidator
+from ytdl_subscribe.config.download_strategy_validators import YoutubeDownloadStrategyValidator
+from ytdl_subscribe.config.output_options_validator import OutputOptionsValidator
+from ytdl_subscribe.config.overrides_validator import OverridesValidator
+from ytdl_subscribe.config.ytdl_options_validator import YTDLOptionsValidator
+from ytdl_subscribe.downloaders.downloader import DownloaderValidator
+from ytdl_subscribe.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_subscribe.utils.exceptions import ValidationException
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
+from ytdl_subscribe.validators.string_formatter_validators import OverridesStringFormatterValidator
+from ytdl_subscribe.validators.validators import DictValidator
+from ytdl_subscribe.validators.validators import Validator
 
 PRESET_SOURCE_VALIDATOR_MAPPING: Dict[str, Type[DownloadStrategyValidator]] = {
     "soundcloud": SoundcloudDownloadStrategyValidator,
@@ -55,7 +40,7 @@ class PresetValidator(StrictDictValidator):
     def __available_sources(self) -> List[str]:
         return sorted(list(PRESET_SOURCE_VALIDATOR_MAPPING.keys()))
 
-    def __validate_and_get_subscription_source(self) -> SourceValidator:
+    def __validate_and_get_subscription_source(self) -> DownloaderValidator:
         download_strategy_validator: Optional[DownloadStrategyValidator] = None
 
         for key in self._keys:
@@ -130,9 +115,8 @@ class PresetValidator(StrictDictValidator):
             key="output_options",
             validator=OutputOptionsValidator,
         )
-        self.metadata_options = self._validate_key(
-            key="metadata_options", validator=MetadataOptionsValidator
-        )
+
+        # TODO: REPLACE METADATA OPTIONS WITH PLUGINS
 
         self.ytdl_options = self._validate_key(
             key="ytdl_options", validator=YTDLOptionsValidator, default={}

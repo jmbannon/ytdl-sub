@@ -3,8 +3,8 @@ from typing import Optional
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.base.string_formatter_validators import DictFormatterValidator
-from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
+from ytdl_subscribe.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_subscribe.validators.string_formatter_validators import StringFormatterValidator
 
 
 class OverridesValidator(DictFormatterValidator):

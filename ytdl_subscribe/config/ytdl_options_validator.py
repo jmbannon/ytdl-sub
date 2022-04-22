@@ -1,4 +1,4 @@
-from ytdl_subscribe.validators.base.validators import LiteralDictValidator
+from ytdl_subscribe.validators.validators import LiteralDictValidator
 
 
 class YTDLOptionsValidator(LiteralDictValidator):

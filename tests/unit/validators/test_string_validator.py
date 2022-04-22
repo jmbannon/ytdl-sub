@@ -1,7 +1,7 @@
 import pytest
 
-from ytdl_subscribe.validators.base.validators import StringValidator
-from ytdl_subscribe.validators.exceptions import ValidationException
+from ytdl_subscribe.utils.exceptions import ValidationException
+from ytdl_subscribe.validators.validators import StringValidator
 
 
 @pytest.mark.parametrize("value", ["a", "unicode 💩", ""])

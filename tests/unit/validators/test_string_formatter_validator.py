@@ -1,15 +1,11 @@
 import pytest
 
-from ytdl_subscribe.validators.base.string_formatter_validators import DictFormatterValidator
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    OverridesDictFormatterValidator,
-)
-from ytdl_subscribe.validators.base.string_formatter_validators import (
-    OverridesStringFormatterValidator,
-)
-from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
-from ytdl_subscribe.validators.exceptions import StringFormattingException
-from ytdl_subscribe.validators.exceptions import ValidationException
+from ytdl_subscribe.utils.exceptions import StringFormattingException
+from ytdl_subscribe.utils.exceptions import ValidationException
+from ytdl_subscribe.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_subscribe.validators.string_formatter_validators import OverridesDictFormatterValidator
+from ytdl_subscribe.validators.string_formatter_validators import OverridesStringFormatterValidator
+from ytdl_subscribe.validators.string_formatter_validators import StringFormatterValidator
 
 
 @pytest.fixture

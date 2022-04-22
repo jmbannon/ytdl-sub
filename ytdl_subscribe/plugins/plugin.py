@@ -1,13 +1,11 @@
 from abc import ABC
 from typing import Generic
-from typing import Optional
 from typing import TypeVar
 from typing import final
 
+from ytdl_subscribe.config.overrides_validator import OverridesValidator
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.base.strict_dict_validator import StrictDictValidator
-from ytdl_subscribe.validators.base.string_formatter_validators import StringFormatterValidator
-from ytdl_subscribe.validators.config.overrides.overrides_validator import OverridesValidator
+from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 

@@ -1,20 +1,14 @@
 from typing import List
 
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubeChannelDownloaderValidator
 from ytdl_subscribe.downloaders.youtube_downloader import YoutubeDownloader
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubePlaylistDownloaderValidator
+from ytdl_subscribe.downloaders.youtube_downloader import YoutubeVideoDownloaderValidator
 from ytdl_subscribe.entries.youtube import YoutubeVideo
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubeChannelSourceValidator,
-)
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubePlaylistSourceValidator,
-)
-from ytdl_subscribe.validators.config.source_options.youtube_validators import (
-    YoutubeVideoSourceValidator,
-)
 
 
-class YoutubePlaylistSubscription(Subscription[YoutubePlaylistSourceValidator, YoutubeVideo]):
+class YoutubePlaylistSubscription(Subscription[YoutubePlaylistDownloaderValidator, YoutubeVideo]):
     """
     Youtube subscription to download videos from a playlist
     """
@@ -25,7 +19,7 @@ class YoutubePlaylistSubscription(Subscription[YoutubePlaylistSourceValidator, Y
         )
 
 
-class YoutubeChannelSubscription(Subscription[YoutubeChannelSourceValidator, YoutubeVideo]):
+class YoutubeChannelSubscription(Subscription[YoutubeChannelDownloaderValidator, YoutubeVideo]):
     """
     Youtube subscription to download videos from a channel
     """
@@ -40,7 +34,7 @@ class YoutubeChannelSubscription(Subscription[YoutubeChannelSourceValidator, You
         return downloader.download_channel(channel_id=self.source_options.channel_id.value)
 
 
-class YoutubeVideoSubscription(Subscription[YoutubeVideoSourceValidator, YoutubeVideo]):
+class YoutubeVideoSubscription(Subscription[YoutubeVideoDownloaderValidator, YoutubeVideo]):
     """
     Youtube subscription to download a single video
     """

@@ -1,12 +1,12 @@
 from typing import List
 
+from ytdl_subscribe.downloaders.soundcloud_downloader import (
+    SoundcloudAlbumsAndSinglesSourceValidator,
+)
 from ytdl_subscribe.downloaders.soundcloud_downloader import SoundcloudDownloader
 from ytdl_subscribe.entries.soundcloud import SoundcloudAlbum
 from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
 from ytdl_subscribe.subscriptions.subscription import Subscription
-from ytdl_subscribe.validators.config.source_options.soundcloud_validators import (
-    SoundcloudAlbumsAndSinglesSourceValidator,
-)
 
 
 class SoundcloudAlbumsAndSinglesSubscription(
