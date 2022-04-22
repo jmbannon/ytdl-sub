@@ -33,7 +33,6 @@ presets:
       ignoreerrors: True
     output_options:
       file_name: "{sanitized_artist} - {sanitized_title}.{ext}"
-      convert_thumbnail: "jpeg"
       thumbnail_name: "{sanitized_artist} - {sanitized_title}.jpg"
     convert_thumbnail:
       to: "jpg"
@@ -53,7 +52,6 @@ presets:
       ignoreerrors: True
     output_options:
       file_name: "{output_file_name}.{ext}"
-      convert_thumbnail: "jpeg"
       thumbnail_name: "{output_file_name}.jpg"
     convert_thumbnail:
       to: "jpg"

@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import Optional
 
 from yt_dlp import DateRange
@@ -7,8 +6,8 @@ from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 from ytdl_subscribe.validators.string_datetime import StringDatetimeValidator
 
 
-class DateRangeValidator(StrictDictValidator, ABC):
-    optional_keys = {"before", "after"}
+class DateRangeValidator(StrictDictValidator):
+    _optional_keys = {"before", "after"}
 
     def __init__(self, name, value):
         super().__init__(name, value)

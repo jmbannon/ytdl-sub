@@ -134,21 +134,20 @@ class Subscription:
 
     @contextlib.contextmanager
     def _maintain_archive_file(self):
-        if not self.output_options.maintain_download_archive:
-            return
-
-        self._enhanced_download_archive.prepare_download_archive()
+        if self.output_options.maintain_download_archive:
+            self._enhanced_download_archive.prepare_download_archive()
 
         yield
 
         # If output options maintains stale file deletion, perform the delete here prior to saving
         # the download archive
-        if self.output_options.maintain_stale_file_deletion:
-            self._enhanced_download_archive.remove_stale_files(
-                date_range=self.output_options.maintain_stale_file_deletion.get_date_range()
-            )
+        if self.output_options.maintain_download_archive:
+            if self.output_options.delete_stale_files:
+                self._enhanced_download_archive.remove_stale_files(
+                    date_range=self.output_options.delete_stale_files.get_date_range()
+                )
 
-        self._enhanced_download_archive.save_download_archive()
+            self._enhanced_download_archive.save_download_archive()
 
     def _initialize_plugins(self) -> List[Plugin]:
         plugins: List[Plugin] = []

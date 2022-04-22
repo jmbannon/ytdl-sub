@@ -52,7 +52,7 @@ class OutputOptions(StrictDictValidator):
     _optional_keys = {
         "thumbnail_name",
         "maintain_download_archive",
-        "maintain_stale_file_deletion",
+        "keep_files",
     }
 
     def __init__(self, name, value):
@@ -75,11 +75,11 @@ class OutputOptions(StrictDictValidator):
         self.maintain_download_archive = self._validate_key_if_present(
             key="maintain_download_archive", validator=BoolValidator, default=False
         )
-        self.maintain_stale_file_deletion = self._validate_key_if_present(
-            key="maintain_stale_file_deletion", validator=DateRangeValidator
+        self.delete_stale_files = self._validate_key_if_present(
+            key="keep_files", validator=DateRangeValidator
         )
 
-        if self.maintain_stale_file_deletion and not self.maintain_download_archive:
+        if self.delete_stale_files and not self.maintain_download_archive:
             raise self._validation_exception(
-                "maintain_stale_file_deletion requires maintain_download_archive set to True"
+                "keep_files requires maintain_download_archive set to True"
             )

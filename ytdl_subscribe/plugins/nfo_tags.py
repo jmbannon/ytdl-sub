@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import dicttoxml
@@ -53,6 +54,7 @@ class NfoTagsPlugin(Plugin[NfoTagsOptions]):
 
         # Save the nfo's XML to file
         nfo_file_path = Path(self.output_directory) / nfo_file_name
+        os.makedirs(os.path.dirname(nfo_file_path), exist_ok=True)
         with open(nfo_file_path, "wb") as nfo_file:
             nfo_file.write(xml)
 
