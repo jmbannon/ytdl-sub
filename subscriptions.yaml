@@ -61,7 +61,6 @@ recent_channel_test:
   ytdl_options:
     break_on_reject: True
   youtube:
-    download_strategy: "channel"
     channel_id: "UCsvn_Po0SmunchJYOWpOxMg"
     after: today-13days
   output_options:

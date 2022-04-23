@@ -7,13 +7,18 @@ from typing import Generic
 from typing import List
 from typing import Optional
 from typing import TypeVar
+from urllib.request import urlopen
 
+from PIL.Image import Image
+from PIL.Image import open as pil_open
 from yt_dlp.utils import RejectedVideoReached
 
+from ytdl_subscribe.config.preset_options import Overrides
 from ytdl_subscribe.downloaders.downloader import Downloader
 from ytdl_subscribe.downloaders.downloader import DownloaderValidator
 from ytdl_subscribe.entries.youtube import YoutubeVideo
 from ytdl_subscribe.validators.date_range_validator import DateRangeValidator
+from ytdl_subscribe.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_subscribe.validators.validators import StringValidator
 
 ###############################################################################
@@ -143,12 +148,18 @@ class YoutubePlaylistDownloader(YoutubeDownloader[YoutubePlaylistDownloaderOptio
 
 class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidator):
     _required_keys = {"channel_id"}
-    _optional_keys = {"before", "after"}
+    _optional_keys = {"before", "after", "channel_avatar_path", "channel_banner_path"}
 
     def __init__(self, name, value):
         YoutubeDownloaderOptions.__init__(self, name, value)
         DateRangeValidator.__init__(self, name, value)
         self.channel_id = self._validate_key("channel_id", StringValidator)
+        self.channel_avatar_path = self._validate_key_if_present(
+            "channel_avatar_path", OverridesStringFormatterValidator
+        )
+        self.channel_banner_path = self._validate_key_if_present(
+            "channel_banner_path", OverridesStringFormatterValidator
+        )
 
 
 class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions]):
@@ -159,12 +170,20 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         """Returns full channel url"""
         return f"https://youtube.com/channel/{channel_id}"
 
+    @property
+    def channel_id(self) -> str:
+        """
+        Returns
+        -------
+        Channel ID
+        """
+        return self.download_options.channel_id.value
+
     def download(self) -> List[YoutubeVideo]:
         """
         Downloads all videos from a channel
         """
-        channel_id = self.download_options.channel_id.value
-        channel_url = self.channel_url(channel_id=channel_id)
+        channel_url = self.channel_url(channel_id=self.channel_id)
 
         # If a date range is specified when download a YT channel, add it into the ytdl options
         ytdl_options_overrides = {}
@@ -174,6 +193,58 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
 
         return self._download_using_metadata(
             url=channel_url,
-            ignore_prefix=channel_id,
+            ignore_prefix=self.channel_id,
             ytdl_options_overrides=ytdl_options_overrides,
         )
+
+    def __download_thumbnail(
+        self,
+        channel_dict: dict,
+        thumbnail_id: str,
+        output_thumbnail_path: str,
+    ):
+        thumbnail_url = None
+        for thumbnail in channel_dict.get("thumbnails", []):
+            if thumbnail["id"] == thumbnail_id:
+                thumbnail_url = thumbnail["url"]
+                break
+
+        if not thumbnail_url:
+            # TODO: add logger with warn here
+            return
+
+        with urlopen(thumbnail_url) as file:
+            image: Image = pil_open(file).convert("RGB")
+
+        image.save(fp=output_thumbnail_path, format="jpeg")
+
+    def post_download(self, overrides: Overrides, output_directory: str):
+        """
+        Downloads and moves channel avatar and banner images to the output directory.
+
+        Parameters
+        ----------
+        overrides
+            Overrides that can contain variables in the avatar or banner file path
+        output_directory
+            Output directory path
+        """
+        channel_json_file_path = Path(self.working_directory) / f"{self.channel_id}.info.json"
+        with open(channel_json_file_path) as channel_json:
+            channel_entry = json.load(channel_json)
+
+        if self.download_options.channel_avatar_path:
+            thumbnail_name = overrides.apply_formatter(self.download_options.channel_avatar_path)
+            self.__download_thumbnail(
+                channel_dict=channel_entry,
+                thumbnail_id="avatar_uncropped",
+                output_thumbnail_path=str(Path(output_directory) / thumbnail_name),
+            )
+
+        if self.download_options.channel_banner_path:
+            thumbnail_name = overrides.apply_formatter(self.download_options.channel_banner_path)
+            self.__download_thumbnail(
+                channel_dict=channel_entry,
+                thumbnail_id="banner_uncropped",
+                output_thumbnail_path=str(Path(output_directory) / thumbnail_name),
+            )

@@ -185,3 +185,7 @@ class Subscription:
 
             for entry in entries:
                 self._copy_entry_files_to_output_directory(entry=entry)
+
+            downloader.post_download(
+                overrides=self.overrides, output_directory=self.output_directory
+            )

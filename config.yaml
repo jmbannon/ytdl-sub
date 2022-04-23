@@ -47,6 +47,9 @@ presets:
 
   yt_channel:
     youtube:
+      download_strategy: "channel"
+      channel_avatar_path: "poster.jpg"
+      channel_banner_path: "fanart.jpg"
     ytdl_options:
       format: 'best'
       ignoreerrors: True

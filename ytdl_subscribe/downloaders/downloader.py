@@ -11,6 +11,7 @@ from typing import TypeVar
 
 import yt_dlp as ytdl
 
+from ytdl_subscribe.config.preset_options import Overrides
 from ytdl_subscribe.entries.entry import Entry
 from ytdl_subscribe.validators.strict_dict_validator import StrictDictValidator
 
@@ -106,4 +107,19 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
 
     @abc.abstractmethod
     def download(self) -> List[DownloaderEntryT]:
-        """The function to perform the download"""
+        """The function to perform the download of all media entries"""
+
+    def post_download(self, overrides: Overrides, output_directory: str):
+        """
+        After all media entries have been downloaded, post processed, and moved to the output
+        directory, run this function. This lets the downloader add any extra files directly to the
+        output directory, for things like YT channel image, banner.
+
+        This ideally should not perform  any extra downloads, but rather, use the content already
+        downloaded in the working directory and use it in the output directory.
+
+        Parameters
+        ----------
+        output_directory
+            Output directory to potentially store extra files downloaded
+        """
