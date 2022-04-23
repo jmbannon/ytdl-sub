@@ -29,7 +29,6 @@ presets:
   music_videos:
     youtube:
     ytdl_options:
-      format: 'best'
       ignoreerrors: True
     output_options:
       file_name: "{sanitized_artist} - {sanitized_title}.{ext}"
@@ -51,7 +50,6 @@ presets:
       channel_avatar_path: "poster.jpg"
       channel_banner_path: "fanart.jpg"
     ytdl_options:
-      format: 'best'
       ignoreerrors: True
     output_options:
       file_name: "{output_file_name}.{ext}"
