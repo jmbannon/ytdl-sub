@@ -40,7 +40,6 @@ def mock_soundcloud_track_to_dict(
             "album": title,
             "sanitized_album": title,
             "album_year": upload_year,
-            "is_premiere": is_premiere,
         }
     )
 
@@ -71,7 +70,8 @@ def validate_soundcloud_track_properties(
         assert soundcloud_track.album == title
         assert soundcloud_track.sanitized_album == title
         assert soundcloud_track.album_year == upload_year
-        assert soundcloud_track.is_premiere == is_premiere
+
+        assert soundcloud_track.is_premiere() == is_premiere
 
         return True
 

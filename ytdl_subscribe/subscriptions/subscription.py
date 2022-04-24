@@ -108,7 +108,7 @@ class Subscription:
         )
         self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
         self._copy_file_to_output_directory(
-            source_file_path=entry.download_file_path, output_file_name=output_file_name
+            source_file_path=entry.get_download_file_path(), output_file_name=output_file_name
         )
 
         if self.output_options.thumbnail_name:
@@ -117,7 +117,7 @@ class Subscription:
             )
             self._enhanced_download_archive.mapping.add_entry(entry, output_thumbnail_name)
             self._copy_file_to_output_directory(
-                source_file_path=entry.download_thumbnail_path,
+                source_file_path=entry.get_download_thumbnail_path(),
                 output_file_name=output_thumbnail_name,
             )
 

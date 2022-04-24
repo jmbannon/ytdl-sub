@@ -28,7 +28,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         """
         Tags the entry's audio file using values defined in the metadata options
         """
-        audio_file = music_tag.load_file(entry.download_file_path)
+        audio_file = music_tag.load_file(entry.get_download_file_path())
         for tag, tag_formatter in self.plugin_options.tags.dict.items():
             audio_file[tag] = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
         audio_file.save()

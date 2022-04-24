@@ -75,6 +75,7 @@ def mock_entry_to_dict(
     uid,
     title,
     ext,
+    extractor,
     upload_date,
     upload_year,
     thumbnail_ext,
@@ -87,6 +88,7 @@ def mock_entry_to_dict(
         "title": title,
         "sanitized_title": title,
         "ext": ext,
+        "extractor": extractor,
         "upload_date": upload_date,
         "upload_date_standardized": f"{upload_year}-{_pad(upload_month)}-{_pad(upload_day)}",
         "upload_year": upload_year,
@@ -134,15 +136,11 @@ def validate_entry_properties(
     def _validate_entry_properties(entry: Entry):
         assert entry.uid == uid
         assert entry.title == title
-        # Title does not require sanitizing, so should be the same
         assert entry.sanitized_title == title
         assert entry.upload_date == upload_date
         assert entry.upload_year == upload_year
         assert entry.ext == ext
         assert entry.thumbnail_ext == thumbnail_ext
-        assert entry.download_file_name == download_file_name
-        assert entry.download_thumbnail_name == download_thumbnail_name
-        assert entry.playlist_metadata is None
         assert entry.extractor == extractor
 
         return True

@@ -31,14 +31,14 @@ class ConvertThumbnailPlugin(Plugin[ConvertThumbnailOptions]):
         Convert the source thumbnail to the desired type. Leave the original file name and
         extension intact to let output_options deal with renaming it.
         """
-        if not os.path.isfile(entry.download_thumbnail_path):
+        if not os.path.isfile(entry.get_download_thumbnail_path()):
             raise ValueError("Thumbnail not found")
 
-        image: Image = pil_open(entry.download_thumbnail_path).convert("RGB")
+        image: Image = pil_open(entry.get_download_thumbnail_path()).convert("RGB")
 
         # Pillow likes the formal 'jpeg' name and not 'jpg'
         thumbnail_format = self.plugin_options.convert_to.value
         if thumbnail_format == "jpg":
             thumbnail_format = "jpeg"
 
-        image.save(fp=entry.download_thumbnail_path, format=thumbnail_format)
+        image.save(fp=entry.get_download_thumbnail_path(), format=thumbnail_format)

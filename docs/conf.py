@@ -57,3 +57,5 @@ html_static_path = ["_static"]
 # Do not show full module path in api docs
 add_module_names = False
 python_use_unqualified_type_names = True
+napoleon_numpy_docstrings = True
+napoleon_use_rtype = False

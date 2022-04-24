@@ -1,65 +1,23 @@
 from typing import Dict
 from typing import List
-from typing import Optional
 
-from yt_dlp.utils import sanitize_filename
-
+from ytdl_subscribe.entries.base_entry import PlaylistMetadata
 from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.entries.entry import PlaylistMetadata
+from ytdl_subscribe.entries.variables.soundcloud_variables import SoundcloudVariables
 
 
-class SoundcloudTrack(Entry):
+class SoundcloudTrack(SoundcloudVariables, Entry):
     """
     Entry object to represent a Soundcloud track yt-dlp that is a single, which implies
     it does not belong to an album.
     """
 
-    @property
-    def track_number(self) -> int:
-        """Returns the entry's track number. Since this is a single, it will always be 1"""
-        return 1
-
-    @property
-    def track_number_padded(self) -> str:
-        """Returns the entry's padded track number, to the tens-place"""
-        return f"{self.track_number:02d}"
-
-    @property
-    def album(self) -> str:
-        """Returns the entry's album name. Since this is a single, set the album to the title"""
-        return self.title
-
-    @property
-    def sanitized_album(self) -> str:
-        """Returns the entry's sanitized album name"""
-        return sanitize_filename(self.album)
-
-    @property
-    def album_year(self) -> int:
-        """Returns the entry's album year. Since this is a single, use the upload year"""
-        return self.upload_year
-
-    @property
     def is_premiere(self) -> bool:
         """
         Returns whether the entry is a premier track. Check this by seeing if the track's url is
         a preview.
         """
         return "/preview/" in self.kwargs("url")
-
-    def to_dict(self) -> Dict:
-        """Returns the entry's values as a dictionary."""
-        return dict(
-            super().to_dict(),
-            **{
-                "track_number": self.track_number,
-                "track_number_padded": self.track_number_padded,
-                "album": self.album,
-                "sanitized_album": self.sanitized_album,
-                "album_year": self.album_year,
-                "is_premiere": self.is_premiere,
-            },
-        )
 
 
 class SoundcloudAlbumTrack(SoundcloudTrack):
@@ -82,10 +40,6 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
         self._album = album
         self._album_year = album_year
         self._playlist_metadata = playlist_metadata
-
-    @property
-    def playlist_metadata(self) -> Optional[PlaylistMetadata]:
-        return self._playlist_metadata
 
     @property
     def track_number(self) -> int:
@@ -112,7 +66,7 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
     ) -> "SoundcloudAlbumTrack":
         return SoundcloudAlbumTrack(
             entry_dict=soundcloud_track._kwargs,  # pylint: disable=protected-access
-            working_directory=soundcloud_track.working_directory,
+            working_directory=soundcloud_track.working_directory(),
             album=album,
             album_year=album_year,
             playlist_metadata=playlist_metadata,
@@ -143,7 +97,7 @@ class SoundcloudAlbum(Entry):
         tracks = [
             track
             for track in self._single_tracks
-            if not (skip_premiere_tracks and track.is_premiere)
+            if not (skip_premiere_tracks and track.is_premiere())
         ]
 
         album_tracks = [

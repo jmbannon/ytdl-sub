@@ -8,9 +8,12 @@ Subpackages
    :maxdepth: 4
 
    ytdl_subscribe.cli
+   ytdl_subscribe.config
    ytdl_subscribe.downloaders
    ytdl_subscribe.entries
+   ytdl_subscribe.plugins
    ytdl_subscribe.subscriptions
+   ytdl_subscribe.utils
    ytdl_subscribe.validators
    ytdl_subscribe.ytdl_additions
 
