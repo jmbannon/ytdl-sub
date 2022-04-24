@@ -4,7 +4,8 @@ Format Variables
 Hello, WIP
 
 .. toctree::
-   :maxdepth: 3
+   :titlesonly:
+   :maxdepth: 2
 
    soundcloud
    youtube

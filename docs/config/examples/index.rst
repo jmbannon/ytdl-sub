@@ -4,6 +4,7 @@ Examples
 Hello, WIP
 
 .. toctree::
-   :maxdepth: 3
+   :titlesonly:
+   :maxdepth: 2
 
    kodi_tv_shows

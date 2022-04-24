@@ -1,10 +1,5 @@
-.. ytdl-subscribe documentation master file, created by
-   sphinx-quickstart on Wed Apr 13 06:43:04 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-ytdl-sub: Automate ytdl downloads and metadata creation
-===================================================================
+ytdl-sub: to enjoy media in your favorite player
+================================================
 
 ytdl-sub is an `open-source <https://github.com/jmbannon/ytdl-sub>`_
 python app that strives to automate downloading media and preparing it for
@@ -15,21 +10,12 @@ If you are new to ytdl-sub, head over to the Getting Started page. This guide
 shows how you can install ytdl-sub, configure it to download various types
 of media, and start downloading.
 
-:doc:`test link to variable </config/index>`
-
 Contents
 ========
 
 .. toctree::
+   :titlesonly:
    :maxdepth: 2
 
-   guides/index
+   getting_started/index
    config/index
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
