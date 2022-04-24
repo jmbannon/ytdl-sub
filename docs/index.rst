@@ -3,10 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Youtube-DL-Subscribe: Automate ytdl downloads and metadata creation
+ytdl-sub: Automate ytdl downloads and metadata creation
 ===================================================================
 
-Youtube-DL-Subscribe (ytdl-sub) is an `open-source <https://github.com/jmbannon/ytdl-subscribe>`_
+ytdl-sub is an `open-source <https://github.com/jmbannon/ytdl-sub>`_
 python app that strives to automate downloading media and preparing it for
 consumption in your favorite media player in the most hassle-free way
 possible.

@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "ytdl-subscribe"
+project = "ytdl-sub"
 copyright = "2022, Jesse Bannon"
 author = "Jesse Bannon"
 
