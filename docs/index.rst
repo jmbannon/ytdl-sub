@@ -15,12 +15,16 @@ If you are new to ytdl-sub, head over to the Getting Started page. This guide
 shows how you can install ytdl-sub, configure it to download various types
 of media, and start downloading.
 
+:doc:`test link to variable </config/index>`
 
+Contents
+========
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   guides/index
+   config/index
 
 
 Indices and tables
