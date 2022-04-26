@@ -1,7 +1,7 @@
 import pytest
 
-from ytdl_subscribe.entries.entry import Entry
-from ytdl_subscribe.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.entries.entry import Entry
+from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 
 
 def _pad(num):

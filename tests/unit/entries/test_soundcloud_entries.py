@@ -1,6 +1,6 @@
 import pytest
 
-from ytdl_subscribe.entries.soundcloud import SoundcloudTrack
+from ytdl_sub.entries.soundcloud import SoundcloudTrack
 
 
 @pytest.fixture
