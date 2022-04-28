@@ -122,6 +122,11 @@ class SoundcloudAlbum(Entry):
         return max(track.upload_year for track in self._single_tracks)
 
     @property
+    def total_tracks(self) -> int:
+        """Returns total tracks in album, for singles this is 1"""
+        return len(self.album_tracks(self, False))
+        
+    @property
     def track_count(self) -> int:
         return self.kwargs("playlist_count")
 
