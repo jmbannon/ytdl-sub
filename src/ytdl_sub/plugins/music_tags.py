@@ -1,4 +1,4 @@
-import music_tag
+import mediafile
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
@@ -28,7 +28,16 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         """
         Tags the entry's audio file using values defined in the metadata options
         """
-        audio_file = music_tag.load_file(entry.get_download_file_path())
+        audio_file = mediafile.MediaFile(entry.get_download_file_path())
         for tag, tag_formatter in self.plugin_options.tags.dict.items():
-            audio_file[tag] = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
+            if tag not in audio_file.fields():
+                # TODO: Add proper logger and warn here
+                print(
+                    f"[ytld-sub: WARN] tag {tag} is not supported for {entry.ext} files. Supported "
+                    f"tags: {', '.join(audio_file.sorted_fields())}"
+                )
+
+            tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
+            setattr(audio_file, tag, tag_value)
+
         audio_file.save()

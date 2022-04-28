@@ -22,7 +22,7 @@ presets:
         albumartist: "{artist}"
         title: "{title}"
         album: "{album}"
-        tracknumber: "{track_number}"
+        track: "{track_number}"
         year: "{album_year}"
         genre: "{genre}"
 

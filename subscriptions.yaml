@@ -18,13 +18,13 @@
 #    artist: "DeLorra"
 #    genre: "Synthwave / Electronic"
 #
-#bl00dwave:
-#  preset: "soundcloud_with_id3_tags"
-#  soundcloud:
-#    username: bl00dwave
-#  overrides:
-#    artist: "bl00dwave"
-#    genre: "Synthwave / Electronic"
+bl00dwave:
+  preset: "soundcloud_with_id3_tags"
+  soundcloud:
+    username: bl00dwave
+  overrides:
+    artist: "bl00dwave"
+    genre: "Synthwave / Electronic"
 #
 #tom_petty:
 #  preset: "music_videos"
@@ -56,16 +56,16 @@
 #  overrides:
 #    artist: "The Gogos"
 
-recent_channel_test:
-  preset: "yt_channel"
-  ytdl_options:
-    break_on_reject: True
-  youtube:
-    channel_id: "UCsvn_Po0SmunchJYOWpOxMg"
-    after: today-13days
-  output_options:
-    output_directory: "/tmp/dunkey"
-    keep_files:
-      after: today-3days
-  overrides:
-    tv_show_name: "Youtube: Dunkey"
+#recent_channel_test:
+#  preset: "yt_channel"
+#  ytdl_options:
+#    break_on_reject: True
+#  youtube:
+#    channel_id: "UCsvn_Po0SmunchJYOWpOxMg"
+#    after: today-13days
+#  output_options:
+#    output_directory: "/tmp/dunkey"
+#    keep_files:
+#      after: today-3days
+#  overrides:
+#    tv_show_name: "Youtube: Dunkey"
