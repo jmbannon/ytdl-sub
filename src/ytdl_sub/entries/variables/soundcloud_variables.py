@@ -26,6 +26,16 @@ class SoundcloudVariables(EntryVariables):
         return f"{self.track_number:02d}"
 
     @property
+    def total_tracks(self) -> int:
+        """
+        Returns
+        -------
+        The total tracks in album. For singles, it will always be 1.
+        """
+        if self.kwargs_contains("total_tracks"):
+            return self.kwargs("total_tracks")
+        return 1 #i.e. single does not contain total_tracks
+    @property
     def album(self) -> str:
         """
         Returns
