@@ -41,7 +41,7 @@ def mock_soundcloud_track_to_dict(
     track_number,
     track_number_padded,
     is_premiere,
-    track_count
+    track_count,
 ):
     return dict(
         mock_entry_to_dict,
