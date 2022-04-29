@@ -7,9 +7,12 @@ from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.subscription import SubscriptionValidator
+from ytdl_sub.logging import YtdlSubLogger
 from ytdl_sub.utils.exceptions import ValidationException
 
 DEBUGGER_MODE = True
+
+logger = YtdlSubLogger.logger()
 
 
 def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.Namespace) -> None:
@@ -28,6 +31,7 @@ def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.N
         )
 
     for subscription in subscriptions:
+        logger.info("Beginning subscription download for %s", subscription.name)
         subscription.to_subscription().download()
 
 
@@ -56,12 +60,12 @@ def main():
     config: ConfigFile = ConfigFile.from_file_path(args.config)
     if args.subparser == "sub":
         _download_subscriptions_from_yaml_files(config=config, args=args)
-        print("Subscription download complete!")
+        logger.info("Subscription download complete!")
 
     # One-off download
     if args.subparser == "dl":
         _download_subscription_from_cli(config=config, extra_args=extra_args)
-        print("Download complete!")
+        logger.info("Download complete!")
 
 
 if __name__ == "__main__":
@@ -70,7 +74,7 @@ if __name__ == "__main__":
     except ValidationException as validation_exception:
         if DEBUGGER_MODE:
             raise
-        print(validation_exception)
+        logger.error(validation_exception)
         sys.exit(1)
     except Exception as exc:  # pylint: disable=broad-except
         if DEBUGGER_MODE:
