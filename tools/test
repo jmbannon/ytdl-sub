@@ -2,6 +2,8 @@
 
 if [[ $1 = "html" ]]; then
     coverage run -m pytest && coverage html
+elif [[ $1 = "unit" ]]; then
+    coverage run -m pytest tests/unit && coverage report
 else
     coverage run -m pytest && coverage report
 fi

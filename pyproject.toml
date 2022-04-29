@@ -35,3 +35,8 @@ ignore = [
     "D413", # Missing blank line after last section
     "D415", # Should end with a period
 ]
+
+[tool.coverage.run]
+include = [
+    "src/*"
+]

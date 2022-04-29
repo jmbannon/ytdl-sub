@@ -38,7 +38,7 @@ class OutputDirectoryNfoTagsPlugin(Plugin[OutputDirectoryNfoTagsOptions]):
         """
         nfo = {}
 
-        for tag, tag_formatter in self.plugin_options.tags.dict.items():
+        for tag, tag_formatter in sorted(self.plugin_options.tags.dict.items()):
             nfo[tag] = self.overrides.apply_formatter(formatter=tag_formatter)
 
         # Write the nfo tags to XML with the nfo_root
