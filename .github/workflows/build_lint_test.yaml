@@ -17,7 +17,17 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install .[lint]
+        pip install .
     - name: Run linters
       run: |
+        pip install .[lint]
         ./tools/linter check
+    - name: Run tests with coverage
+      run: |
+        pip install .[test]
+        ./tools/test
+    - name: Test Coverage
+      id: html_preview
+      uses: pavi2410/html-preview-action@v2
+      with:
+        html_file: htmlcov/index.html
