@@ -1,4 +1,4 @@
-name: ytld-sub build
+name: ytld-sub build, lint, test
 
 on: [push]
 
@@ -22,12 +22,7 @@ jobs:
       run: |
         pip install .[lint]
         ./tools/linter check
-    - name: Run tests
+    - name: Run tests with coverage
       run: |
         pip install .[test]
-        ./tools/test lcov
-    - name: Report coverage
-      uses: vebr/jest-lcov-reporter@v0.2.0
-      with:
-        lcov-file: coverage.lcov
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        ./tools/test
