@@ -52,7 +52,7 @@ class BaseEntry(ABC):
         The working directory
 
         Raises
-        -------
+        ------
         ValueError
             The working directory was never defined in the init
         """

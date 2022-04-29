@@ -31,7 +31,7 @@ class StringFormatterValidator(Validator):
             List of format variables in the format string
 
         Raises
-        -------
+        ------
         ValidationException
             If the format string contains invalid variable formatting
         """

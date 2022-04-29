@@ -129,7 +129,7 @@ class PluginMapping:
         The plugin class
 
         Raises
-        -------
+        ------
         ValueError
             Raised if the plugin does not exist
         """

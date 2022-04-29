@@ -207,7 +207,7 @@ class Subscription:
                     date_range=self.output_options.delete_stale_files.get_date_range()
                 )
 
-            self._enhanced_download_archive.save_download_archive()
+            self._enhanced_download_archive.save_download_mappings()
 
     def _initialize_plugins(self) -> List[Plugin]:
         """

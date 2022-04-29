@@ -2,3 +2,4 @@
 isort .
 black .
 pylint src/
+pydocstyle src/*
