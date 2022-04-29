@@ -114,8 +114,8 @@ class SoundcloudAlbum(Entry):
                 playlist_metadata=PlaylistMetadata(
                     playlist_id=self.uid,
                     playlist_extractor=self.extractor,
-                    playlist_index= track.kwargs("playlist_index"),
-                    playlist_count = self.track_count
+                    playlist_index=track.kwargs("playlist_index"),
+                    playlist_count=self.track_count,
                 ),
             )
             for track in tracks
