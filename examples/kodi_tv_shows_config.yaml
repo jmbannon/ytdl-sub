@@ -16,6 +16,9 @@
 #
 # The idea is to use dates as the numeric to represent season and episode
 # numbers. Once downloaded, it can immediately be recognized by Kodi.
+configuration:
+  working_directory: '.ytdl-sub-downloads'
+
 presets:
   yt_channel_as_tv:
     # Youtube channels are our source/download strategy

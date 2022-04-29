@@ -13,14 +13,15 @@ class ExpectedDownload:
     def __init__(self, expected_md5_file_hashes: Dict[Path, str]):
         self.expected_md5_file_hashes = expected_md5_file_hashes
 
-    def assert_files_exist(self):
+    def assert_files_exist(self, relative_directory: Path):
         """
         Assert each expected file exists and that its respective md5 hash matches.
         """
-        for path, expected_md5_hash in self.expected_md5_file_hashes.items():
-            assert os.path.isfile(path), f"Expected {str(path)} to be a file but it is not"
+        for relative_path, expected_md5_hash in self.expected_md5_file_hashes.items():
+            full_path = Path(relative_directory) / relative_path
+            assert os.path.isfile(full_path), f"Expected {str(relative_path)} to be a file but it is not"
 
-            with open(path, "rb") as file:
+            with open(full_path, "rb") as file:
                 md5_hash = hashlib.md5(file.read()).hexdigest()
 
-            assert md5_hash == expected_md5_hash, f"MD5  hash for {str(path)} does not match"
+            assert md5_hash == expected_md5_hash, f"MD5  hash for {str(relative_path)} does not match"

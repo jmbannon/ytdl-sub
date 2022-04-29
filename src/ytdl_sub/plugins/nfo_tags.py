@@ -35,7 +35,7 @@ class NfoTagsPlugin(Plugin[NfoTagsOptions]):
         """
         nfo = {}
 
-        for tag, tag_formatter in self.plugin_options.tags.dict.items():
+        for tag, tag_formatter in sorted(self.plugin_options.tags.dict.items()):
             nfo[tag] = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
 
         # Write the nfo tags to XML with the nfo_root
