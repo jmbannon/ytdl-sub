@@ -31,3 +31,4 @@ jobs:
       with:
         path: coverage.xml
         repo_token: ${{ secrets.GITHUB_TOKEN }}
+        minimum_coverage: 5  # TODO: Add more tests
