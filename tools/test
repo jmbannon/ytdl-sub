@@ -1,2 +1,10 @@
-# Run within root folder. Runs tests with coverage, and reports it to html
-coverage run -m pytest && coverage html
+# Run within root directory
+
+if [ $1 = "html" ]; then
+    coverage run -m pytest && coverage html
+elif [ $1 = "xml" ]; then
+    coverage run -m pytest && coverage xml
+else
+    coverage run -m pytest && coverage report
+fi
+

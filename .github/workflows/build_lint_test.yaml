@@ -22,13 +22,12 @@ jobs:
       run: |
         pip install .[lint]
         ./tools/linter check
-    - name: Run tests with coverage
+    - name: Run tests
       run: |
         pip install .[test]
-        ./tools/test
-    - name: Upload test coverage
-      uses: actions/upload-artifact@v3
+        ./tools/test xml
+    - name: Report coverage
+      uses: 5monkeys/cobertura-action@master
       with:
-        name: test-coverage
-        path: htmlcov/index.html
-        retention-days: 5
+        path: coverage.xml
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
