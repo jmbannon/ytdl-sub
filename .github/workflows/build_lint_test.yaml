@@ -1,4 +1,4 @@
-name: Pylint
+name: ytld-sub build
 
 on: [push]
 
@@ -26,8 +26,9 @@ jobs:
       run: |
         pip install .[test]
         ./tools/test
-    - name: Test Coverage
-      id: html_preview
-      uses: pavi2410/html-preview-action@v2
+    - name: Upload test coverage
+      uses: actions/upload-artifact@v3
       with:
+        name: test-coverage
         html_file: htmlcov/index.html
+        retention-days: 5
