@@ -27,8 +27,7 @@ jobs:
         pip install .[test]
         ./tools/test lcov
     - name: Report coverage
-      uses: zgosalvez/github-actions-report-lcov@v1
+      uses: vebr/jest-lcov-reporter@v0.2.0
       with:
-        coverage-files: coverage.lcov
-        artifact-name: code-coverage-report
+        lcov-file: coverage.lcov
         github-token: ${{ secrets.GITHUB_TOKEN }}
