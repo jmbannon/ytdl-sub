@@ -2,9 +2,10 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from config.config_file import ConfigFile
-from config.subscription import SubscriptionValidator
 from e2e.expected_download import ExpectedDownload
+
+from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.config.subscription import SubscriptionValidator
 
 
 @pytest.fixture()
@@ -55,7 +56,7 @@ def full_channel_subscription(config, subscription_name, subscription_dict):
 
 @pytest.fixture
 def expected_full_channel_download():
-    # turn of black formatter here for readability
+    # turn off black formatter here for readability
     # fmt: off
     return ExpectedDownload(
         expected_md5_file_hashes={
@@ -121,6 +122,13 @@ def expected_full_channel_download():
 
 
 class TestChannelAsKodiTvShow:
-    def test_full_channel_download(self, full_channel_subscription, expected_full_channel_download, output_directory):
+    """
+    Downloads my old minecraft youtube channel. Ensure the above files exist and have the
+    expected md5 file hashes.
+    """
+
+    def test_full_channel_download(
+        self, full_channel_subscription, expected_full_channel_download, output_directory
+    ):
         full_channel_subscription.download()
         expected_full_channel_download.assert_files_exist(relative_directory=output_directory)

@@ -19,9 +19,13 @@ class ExpectedDownload:
         """
         for relative_path, expected_md5_hash in self.expected_md5_file_hashes.items():
             full_path = Path(relative_directory) / relative_path
-            assert os.path.isfile(full_path), f"Expected {str(relative_path)} to be a file but it is not"
+            assert os.path.isfile(
+                full_path
+            ), f"Expected {str(relative_path)} to be a file but it is not"
 
             with open(full_path, "rb") as file:
                 md5_hash = hashlib.md5(file.read()).hexdigest()
 
-            assert md5_hash == expected_md5_hash, f"MD5  hash for {str(relative_path)} does not match"
+            assert (
+                md5_hash == expected_md5_hash
+            ), f"MD5  hash for {str(relative_path)} does not match"
