@@ -1,6 +1,6 @@
 # Run within root directory
 
-if [ $1 = "check" ]; then
+if [[ $1 = "check" ]]; then
     isort . --check-only --diff     \
       && black . --check            \
       && pylint src/                \
