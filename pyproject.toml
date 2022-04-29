@@ -37,6 +37,6 @@ ignore = [
 ]
 
 [tool.coverage.run]
-source = [
-    "src/ytdl_sub"
+include = [
+    "src/*"
 ]
