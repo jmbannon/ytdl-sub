@@ -25,10 +25,10 @@ jobs:
     - name: Run tests
       run: |
         pip install .[test]
-        ./tools/test xml
+        ./tools/test lcov
     - name: Report coverage
-      uses: 5monkeys/cobertura-action@master
+      uses: zgosalvez/github-actions-report-lcov@v1
       with:
-        path: coverage.xml
+        coverage-files: coverage.lcov
+        artifact-name: code-coverage-report
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        minimum_coverage: 5  # TODO: Add more tests

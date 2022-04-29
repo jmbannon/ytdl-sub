@@ -2,8 +2,8 @@
 
 if [ $1 = "html" ]; then
     coverage run -m pytest && coverage html
-elif [ $1 = "xml" ]; then
-    coverage run -m pytest && coverage xml
+elif [ $1 = "lcov" ]; then
+    coverage run -m pytest && coverage lcov
 else
     coverage run -m pytest && coverage report
 fi
