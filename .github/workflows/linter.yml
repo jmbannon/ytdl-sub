@@ -20,4 +20,4 @@ jobs:
         pip install .[lint]
     - name: Analysing the code with pylint
       run: |
-        find . && ./tools/lint
+        ./tools/linter
