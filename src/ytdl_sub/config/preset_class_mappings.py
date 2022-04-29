@@ -79,6 +79,18 @@ class DownloadStrategyMapping:
 
     @classmethod
     def get(cls, source: str, download_strategy: str) -> Type[Downloader]:
+        """
+        Parameters
+        ----------
+        source:
+            The source (i.e. 'youtube', 'soundcloud') of the downloader
+        download_strategy:
+            The download strategy name
+
+        Returns
+        -------
+        The downloader class
+        """
         cls._validate_is_download_strategy(source, download_strategy)
         return cls._MAPPING[source][download_strategy]
 
@@ -106,6 +118,21 @@ class PluginMapping:
 
     @classmethod
     def get(cls, plugin: str) -> Type[Plugin]:
+        """
+        Parameters
+        ----------
+        plugin
+            Name of the plugin
+
+        Returns
+        -------
+        The plugin class
+
+        Raises
+        -------
+        ValueError
+            Raised if the plugin does not exist
+        """
         if plugin not in cls.plugins():
             raise ValueError(
                 f"Tried to use plugin '{plugin}' that does not exist. Available plugins: "

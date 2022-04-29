@@ -120,6 +120,8 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
 
         Parameters
         ----------
-        output_directory
+        overrides:
+            Subscription overrides
+        output_directory:
             Output directory to potentially store extra files downloaded
         """

@@ -197,14 +197,27 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             ytdl_options_overrides=ytdl_options_overrides,
         )
 
+    @classmethod
     def __download_thumbnail(
-        self,
-        channel_dict: dict,
+        cls,
+        entry_dict: dict,
         thumbnail_id: str,
         output_thumbnail_path: str,
     ):
+        """
+        Downloads a specific thumbnail from a YTDL entry's thumbnail list
+
+        Parameters
+        ----------
+        entry_dict:
+            YTDL entry dict
+        thumbnail_id:
+            Id of the thumbnail defined in the YTDL thumnail
+        output_thumbnail_path:
+            Path to store the thumbnail after downloading
+        """
         thumbnail_url = None
-        for thumbnail in channel_dict.get("thumbnails", []):
+        for thumbnail in entry_dict.get("thumbnails", []):
             if thumbnail["id"] == thumbnail_id:
                 thumbnail_url = thumbnail["url"]
                 break
@@ -230,13 +243,13 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             Output directory path
         """
         channel_json_file_path = Path(self.working_directory) / f"{self.channel_id}.info.json"
-        with open(channel_json_file_path) as channel_json:
+        with open(channel_json_file_path, "r", encoding="utf-8") as channel_json:
             channel_entry = json.load(channel_json)
 
         if self.download_options.channel_avatar_path:
             thumbnail_name = overrides.apply_formatter(self.download_options.channel_avatar_path)
             self.__download_thumbnail(
-                channel_dict=channel_entry,
+                entry_dict=channel_entry,
                 thumbnail_id="avatar_uncropped",
                 output_thumbnail_path=str(Path(output_directory) / thumbnail_name),
             )
@@ -244,7 +257,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         if self.download_options.channel_banner_path:
             thumbnail_name = overrides.apply_formatter(self.download_options.channel_banner_path)
             self.__download_thumbnail(
-                channel_dict=channel_entry,
+                entry_dict=channel_entry,
                 thumbnail_id="banner_uncropped",
                 output_thumbnail_path=str(Path(output_directory) / thumbnail_name),
             )

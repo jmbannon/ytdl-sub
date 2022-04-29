@@ -30,7 +30,8 @@ class NfoTagsPlugin(Plugin[NfoTagsOptions]):
 
         Parameters
         ----------
-        entry: Entry to create an NFO file for
+        entry:
+            Entry to create an NFO file for
         """
         nfo = {}
 

@@ -1,5 +1,9 @@
 [MASTER]
 disable=
+    C0115, # Missing class docstring
     C0114, # missing-module-docstring
     R0903, # too-few-public-methods
     R0801, # similar lines
+    W0511, # TODO
+
+load-plugins=pylint.extensions.docparams

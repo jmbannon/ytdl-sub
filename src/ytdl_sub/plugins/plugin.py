@@ -61,7 +61,8 @@ class Plugin(Generic[PluginOptionsT], ABC):
 
         Parameters
         ----------
-        entry: Entry to post process
+        entry:
+            Entry to post process
         """
 
     def post_process_subscription(self):

@@ -100,6 +100,18 @@ class StringFormatterValidator(Validator):
 
     @final
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
+        """
+        Calls `format` on the format string using the variable_dict as input kwargs
+
+        Parameters
+        ----------
+        variable_dict
+            kwargs to pass to the format string
+
+        Returns
+        -------
+        Format string formatted
+        """
         # Keep formatting the format string until no format_variables are present
         formatter = self
         recursion_depth = 0

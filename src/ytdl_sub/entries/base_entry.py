@@ -46,6 +46,16 @@ class BaseEntry(ABC):
         return self._kwargs[key]
 
     def working_directory(self) -> str:
+        """
+        Returns
+        -------
+        The working directory
+
+        Raises
+        -------
+        ValueError
+            The working directory was never defined in the init
+        """
         if self._working_directory is None:
             raise ValueError(
                 "Entry working directory is not set when trying to access its download file path"
