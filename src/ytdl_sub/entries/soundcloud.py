@@ -33,7 +33,6 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
         album_year: int,
         total_tracks: int,
         playlist_metadata: PlaylistMetadata,
-        
     ):
         """
         Initialize the album track using album metadata and ytdl metadata for the specific track.
@@ -113,7 +112,7 @@ class SoundcloudAlbum(Entry):
                 album=self.title,
                 album_year=self.album_year,
                 soundcloud_track=track,
-                total_tracks = self.track_count,
+                total_tracks=self.track_count,
                 playlist_metadata=PlaylistMetadata(
                     playlist_id=self.uid,
                     playlist_extractor=self.extractor,
@@ -129,7 +128,7 @@ class SoundcloudAlbum(Entry):
     def album_year(self) -> int:
         """Returns the album's year, computed by the max upload year amongst all album tracks"""
         return max(track.upload_year for track in self._single_tracks)
-        
+
     @property
     def track_count(self) -> int:
         return self.kwargs("playlist_count")
