@@ -1,6 +1,6 @@
 # Run within root directory
 
-if [ $1 = "html" ]; then
+if [[ $1 = "html" ]]; then
     coverage run -m pytest && coverage html
 else
     coverage run -m pytest && coverage report
