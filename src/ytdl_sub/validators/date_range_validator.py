@@ -15,6 +15,11 @@ class DateRangeValidator(StrictDictValidator):
         self.after = self._validate_key_if_present("after", StringDatetimeValidator)
 
     def get_date_range(self) -> Optional[DateRange]:
+        """
+        Returns
+        -------
+        Date range if the 'before' or 'after' is defined. None otherwise.
+        """
         if self.before or self.after:
             return DateRange(
                 start=self.after.datetime_str if self.after else None,

@@ -64,6 +64,22 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
         soundcloud_track: SoundcloudTrack,
         playlist_metadata: PlaylistMetadata,
     ) -> "SoundcloudAlbumTrack":
+        """
+        Parameters
+        ----------
+        album:
+            Album name
+        album_year:
+            Album year
+        soundcloud_track:
+            Track to convert to an album track
+        playlist_metadata:
+            Metadata for playlist ordering
+
+        Returns
+        -------
+        SoundcloudTrack converted to a SoundcloudAlbumTrack
+        """
         return SoundcloudAlbumTrack(
             entry_dict=soundcloud_track._kwargs,  # pylint: disable=protected-access
             working_directory=soundcloud_track.working_directory(),
@@ -91,7 +107,9 @@ class SoundcloudAlbum(Entry):
 
     def album_tracks(self, skip_premiere_tracks: bool = True) -> List[SoundcloudAlbumTrack]:
         """
-        Returns all tracks in the album represented as album-tracks. They will share the
+        Returns
+        -------
+        All tracks in the album represented as album-tracks. They will share the
         same album name, have ordered track numbers, and a shared album year.
         """
         tracks = [
@@ -118,17 +136,26 @@ class SoundcloudAlbum(Entry):
 
     @property
     def album_year(self) -> int:
-        """Returns the album's year, computed by the max upload year amongst all album tracks"""
+        """
+        Returns
+        -------
+        The album's year, computed by the max upload year amongst all album tracks
+        """
         return max(track.upload_year for track in self._single_tracks)
 
     @property
     def track_count(self) -> int:
+        """
+        Returns
+        -------
+        Number of tracks in the album (technically a playlist)
+        """
         return self.kwargs("playlist_count")
 
-    @property
-    def downloaded_track_count(self) -> int:
-        return len(self.kwargs("entries"))
-
     def contains(self, track: SoundcloudTrack) -> bool:
-        """Returns whether the album contains a track"""
+        """
+        Returns
+        -------
+        True if this album contains this track. False otherwise.
+        """
         return any(track.uid == t.uid for t in self._single_tracks)

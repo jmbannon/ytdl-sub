@@ -50,6 +50,16 @@ class DownloadStrategyValidator(StrictDictValidator):
         ).value
 
     def get(self, downloader_source: str) -> Type[Downloader]:
+        """
+        Parameters
+        ----------
+        downloader_source:
+            Name of the download source
+
+        Returns
+        -------
+        The downloader class
+        """
         try:
             return DownloadStrategyMapping.get(
                 source=downloader_source, download_strategy=self.download_strategy_name

@@ -31,11 +31,31 @@ class ConfigFile(StrictDictValidator):
         self.presets = self._validate_key("presets", LiteralDictValidator)
 
     @classmethod
-    def from_dict(cls, config_dict) -> "ConfigFile":
+    def from_dict(cls, config_dict: dict) -> "ConfigFile":
+        """
+        Parameters
+        ----------
+        config_dict:
+            The config in dictionary format
+
+        Returns
+        -------
+        Config file validator
+        """
         return ConfigFile(name="", value=config_dict)
 
     @classmethod
-    def from_file_path(cls, config_path) -> "ConfigFile":
+    def from_file_path(cls, config_path: str) -> "ConfigFile":
+        """
+        Parameters
+        ----------
+        config_path:
+            Path to the config yaml
+
+        Returns
+        -------
+        Config file validator
+        """
         # TODO: Create separate yaml file loader class
         with open(config_path, "r", encoding="utf-8") as file:
             config_dict = yaml.safe_load(file)

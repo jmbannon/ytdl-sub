@@ -77,6 +77,18 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         ytdl_options: Optional[Dict] = None,
         download_archive_file_name: Optional[str] = None,
     ):
+        """
+        Parameters
+        ----------
+        working_directory
+            Path to the working directory
+        download_options
+            Options validator for this downloader
+        ytdl_options
+            YTDL options validator
+        download_archive_file_name
+            Optional. Name of the download archive file that should reside in the working directory
+        """
         self.working_directory = working_directory
         self.download_options = download_options
         self.ytdl_options = Downloader._configure_ytdl_options(
@@ -120,6 +132,8 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
 
         Parameters
         ----------
-        output_directory
+        overrides:
+            Subscription overrides
+        output_directory:
             Output directory to potentially store extra files downloaded
         """

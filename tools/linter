@@ -1,4 +1,13 @@
-# Run within root directory. Runs isort, black, then pylint
-isort .
-black .
-pylint src/
+# Run within root directory
+
+if [ $1 = "check" ]; then
+    isort . --check-only --diff     \
+      && black . --check            \
+      && pylint src/                \
+      && pydocstyle src/*
+else
+    isort .
+    black .
+    pylint src/
+    pydocstyle src/*
+fi

@@ -58,6 +58,11 @@ class SubscriptionValidator(StrictDictValidator):
         )
 
     def to_subscription(self) -> Subscription:
+        """
+        Returns
+        -------
+        The subscription after the config and preset have been validated
+        """
         return Subscription(
             name=self._name,
             config_options=self.config.config_options,
@@ -66,14 +71,40 @@ class SubscriptionValidator(StrictDictValidator):
 
     @classmethod
     def from_dict(
-        cls, config: ConfigFile, subscription_name, subscription_dict: Dict
+        cls, config: ConfigFile, subscription_name: str, subscription_dict: Dict
     ) -> "SubscriptionValidator":
+        """
+        Parameters
+        ----------
+        config:
+            Validated instance of the config
+        subscription_name:
+            Name of the subscription
+        subscription_dict:
+            The subscription config in dict format
+
+        Returns
+        -------
+        The Subscription validator
+        """
         return SubscriptionValidator(config=config, name=subscription_name, value=subscription_dict)
 
     @classmethod
     def from_file_path(
         cls, config: ConfigFile, subscription_path: str
     ) -> List["SubscriptionValidator"]:
+        """
+        Parameters
+        ----------
+        config:
+            Validated instance of the config
+        subscription_path:
+            File path to the subscription yaml file
+
+        Returns
+        -------
+        List of subscription validators, for each one in the subscription yaml
+        """
         # TODO: Create separate yaml file loader class
         with open(subscription_path, "r", encoding="utf-8") as file:
             subscription_dict = yaml.safe_load(file)
