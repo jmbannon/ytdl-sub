@@ -26,7 +26,7 @@ class SoundcloudVariables(EntryVariables):
         return f"{self.track_number:02d}"
 
     @property
-    def total_tracks(self) -> int:
+    def track_count(self) -> int:
         """
         Returns
         -------
