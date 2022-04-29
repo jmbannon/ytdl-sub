@@ -3,11 +3,11 @@ from abc import ABC
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict
-from typing import TypeVar
 from typing import Generic
 from typing import List
 from typing import Optional
 from typing import Type
+from typing import TypeVar
 
 import yt_dlp as ytdl
 
