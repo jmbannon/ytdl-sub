@@ -14,6 +14,7 @@ class PlaylistMetadata:
     playlist_index: int
     playlist_id: str
     playlist_extractor: str
+    playlist_count: int
 
 
 class BaseEntry(ABC):
