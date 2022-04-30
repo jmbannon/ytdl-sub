@@ -18,3 +18,22 @@ class YoutubeVideoVariables(EntryVariables):
             return self.kwargs("track")
 
         return super().title
+
+    @property
+    def playlist_index(self) -> int:
+        """
+        Returns
+        -------
+        The index of the video in the playlist. For non-playlist download strategies, this will
+        always return 1.
+        """
+        return 1
+
+    @property
+    def playlist_size(self) -> int:
+        """
+        Returns
+        -------
+        The size of the playlist. For non-playlist download strategies, this will always return 1.
+        """
+        return 1
