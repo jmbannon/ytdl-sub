@@ -69,6 +69,15 @@ class SubscriptionValidator(StrictDictValidator):
             preset_options=self.preset,
         )
 
+    @property
+    def name(self) -> str:
+        """
+        Returns
+        -------
+        Name of the subscription
+        """
+        return self._name
+
     @classmethod
     def from_dict(
         cls, config: ConfigFile, subscription_name: str, subscription_dict: Dict

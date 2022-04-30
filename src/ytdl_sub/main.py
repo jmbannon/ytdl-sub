@@ -1,6 +1,5 @@
 import argparse
 import sys
-import traceback
 from typing import List
 
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
@@ -8,8 +7,9 @@ from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.subscription import SubscriptionValidator
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.logger import Logger
 
-DEBUGGER_MODE = True
+logger = Logger.get()
 
 
 def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.Namespace) -> None:
@@ -28,6 +28,7 @@ def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.N
         )
 
     for subscription in subscriptions:
+        logger.info("Beginning subscription download for %s", subscription.name)
         subscription.to_subscription().download()
 
 
@@ -56,27 +57,22 @@ def main():
     config: ConfigFile = ConfigFile.from_file_path(args.config)
     if args.subparser == "sub":
         _download_subscriptions_from_yaml_files(config=config, args=args)
-        print("Subscription download complete!")
+        logger.info("Subscription download complete!")
 
     # One-off download
     if args.subparser == "dl":
         _download_subscription_from_cli(config=config, extra_args=extra_args)
-        print("Download complete!")
+        logger.info("Download complete!")
 
 
 if __name__ == "__main__":
     try:
         main()
     except ValidationException as validation_exception:
-        if DEBUGGER_MODE:
-            raise
-        print(validation_exception)
+        logger.error(validation_exception)
         sys.exit(1)
     except Exception as exc:  # pylint: disable=broad-except
-        if DEBUGGER_MODE:
-            raise
-        print(traceback.format_exc())
-        print(
+        logger.exception(
             "A fatal error occurred. Please copy and paste the stacktrace above and make a Github "
             "issue at https://github.com/jmbannon/ytdl-subscribe/issues with your config and "
             "command/subscription yaml file to reproduce. Thanks for trying ytdl-subscribe!"

@@ -13,6 +13,7 @@ from typing import Set
 from yt_dlp import DateRange
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.utils.logger import Logger
 
 
 @dataclass
@@ -336,6 +337,8 @@ class EnhancedDownloadArchive:
         self._download_archive: Optional[DownloadArchive] = None
         self._download_mapping: Optional[DownloadMappings] = None
 
+        self._logger = Logger.get(name=subscription_name)
+
     @property
     def archive_file_name(self) -> str:
         """
@@ -460,10 +463,10 @@ class EnhancedDownloadArchive:
         )
 
         for uid, mapping in stale_mappings.items():
-            print(f"[{uid}] Removing the following stale file(s):")
+            self._logger.info("[%s] Removing the following stale file(s):", uid)
             for file_name in mapping.file_names:
                 file_path = Path(self.output_directory) / Path(file_name)
-                print(f"  - {file_path}")
+                self._logger.info("  - %s", file_path)
                 if os.path.exists(file_path):
                     os.remove(file_path)
 
