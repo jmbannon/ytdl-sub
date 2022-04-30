@@ -37,48 +37,29 @@ john_smith:
 # to download a single video instead.
 #
 # The only difference between this example and the one above is
-# - youtube.after
-#     This is saying 'only download videos in the last 14 days'
-# - ytdl_options.break_on_reject
-#     This is getting into YTDL voodoo. By default, YTDL will try to
-#     download all channel videos beginning with the most recent one.
-#     By setting break_on_reject, we will break this full-download on
-#     the first video that gets rejected. Since we have youtube.after
-#     defined, all videos after today-14days will be rejected. Therefore,
-#     the first video that is out of range that it tries to download, it
-#     will stop there, and save a significant amount of time.
+# - youtube.download_strategy
+#     We defined this as 'playlist' in the config. We must override it
+#     with 'video' to perform a single video download
+# - youtube.video_id
+#     The id of the video to download
+#
+# Of course, defining yaml configuration to download a single video once
+# and never again seems weird. Instead, we can perform this download via
+# command:
+#
+#     ytdl-sub dl                                                     \
+#         --preset "yt_channel_as_tv"                                 \
+#         --youtube.download_strategy "video"                         \
+#         --youtube.video_id "QhY6r6oAErg"                            \
+#         --overrides.artist "John Smith and the Instrument Players"
+#
+# The --preset and --youtube.download_strategy args will always be the
+# same. We will try to simplify the dl command to make it shorter.
+
 john_smith_one_hit_wonder:
   preset: "yt_channel_as_tv"
   youtube:
     download_strategy: "video"
     video_id: "QhY6r6oAErg"
   overrides:
-    tv_show_name: "John /\ Smith"
-  ytdl_options:
-    break_on_reject: True
-
-###############################################################################
-# LEVEL 3 - ROLLING ARCHIVE
-
-# If you put the recent archive example in a cron job, then in a year or so
-# you will basically be datahoarding that channel unless you manually delete
-# old videos. We automate because we are lazy. This example shows how to
-# only keep the last 14-days worth of videos, and delete the rest.
-#
-# The only difference between this example and the one above is
-# - output_options.keep_files.after
-#     This is saying "only keep files if they were uploaded in the last 14 days".
-#     All other files that this subscription had previously downloaded will be
-#     deleted.
-john_smith_rolling_archive:
-  preset: "yt_channel_as_tv"
-  youtube:
-    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
-    after: today-14days
-  overrides:
-    tv_show_name: "John /\ Smith"
-  ytdl_options:
-    break_on_reject: True
-  output_options:
-    keep_files:
-      after: today-14days
+    artist: "John Smith and the Instrument Players"
