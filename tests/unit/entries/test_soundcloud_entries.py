@@ -28,11 +28,6 @@ def is_premiere():
     return False
 
 
-@pytest.fixture()
-def track_count():
-    return 1
-
-
 @pytest.fixture
 def mock_soundcloud_track_to_dict(
     mock_entry_to_dict,

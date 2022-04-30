@@ -52,11 +52,6 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
         return self._album
 
     @property
-    def total_tracks(self) -> int:
-        """Returns the entry's total tracks in album for singles this is 1"""
-        return self._playlist_metadata.playlist_count
-
-    @property
     def album_year(self) -> int:
         """Returns the entry's album year, fetched from its internal album"""
         return self._album_year
