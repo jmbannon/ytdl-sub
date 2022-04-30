@@ -26,6 +26,15 @@ class SoundcloudVariables(EntryVariables):
         return f"{self.track_number:02d}"
 
     @property
+    def track_count(self) -> int:
+        """
+        Returns
+        -------
+        The total tracks in album. For singles, it will always be 1.
+        """
+        return 1
+
+    @property
     def album(self) -> str:
         """
         Returns

@@ -14,6 +14,11 @@ def track_number_padded():
 
 
 @pytest.fixture
+def track_count():
+    return 1
+
+
+@pytest.fixture
 def url():
     return "soundcloud.com/artist/track-asdfasdf"
 
@@ -31,6 +36,7 @@ def mock_soundcloud_track_to_dict(
     track_number,
     track_number_padded,
     is_premiere,
+    track_count,
 ):
     return dict(
         mock_entry_to_dict,
@@ -40,6 +46,7 @@ def mock_soundcloud_track_to_dict(
             "album": title,
             "sanitized_album": title,
             "album_year": upload_year,
+            "track_count": track_count,
         }
     )
 
@@ -62,6 +69,7 @@ def validate_soundcloud_track_properties(
     track_number,
     track_number_padded,
     is_premiere,
+    track_count,
 ):
     def _validate_soundcloud_track_properties(soundcloud_track: SoundcloudTrack):
         assert validate_entry_properties(soundcloud_track)
@@ -70,7 +78,7 @@ def validate_soundcloud_track_properties(
         assert soundcloud_track.album == title
         assert soundcloud_track.sanitized_album == title
         assert soundcloud_track.album_year == upload_year
-
+        assert soundcloud_track.track_count == track_count
         assert soundcloud_track.is_premiere() == is_premiere
 
         return True
