@@ -6,6 +6,7 @@ from typing import final
 
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -38,6 +39,8 @@ class Plugin(Generic[PluginOptionsT], ABC):
         self.output_directory = output_directory
         self.overrides = overrides
         self.__enhanced_download_archive = enhanced_download_archive
+        # TODO pass yaml snake case name in the class somewhere, and use it for the logger
+        self._logger = Logger.get(self.__class__.__name__)
 
     @final
     def archive_entry_file_name(self, entry: Entry, relative_file_path: str) -> None:

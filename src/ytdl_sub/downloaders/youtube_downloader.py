@@ -17,9 +17,12 @@ from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.youtube import YoutubeVideo
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.date_range_validator import DateRangeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.validators import StringValidator
+
+logger = Logger.get()
 
 ###############################################################################
 # Abstract Youtube downloader + options
@@ -223,7 +226,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
                 break
 
         if not thumbnail_url:
-            # TODO: add logger with warn here
+            logger.warning("Could not find a thumbnail for %s", entry_dict.get("id"))
             return
 
         with urlopen(thumbnail_url) as file:

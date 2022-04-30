@@ -31,10 +31,11 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         audio_file = mediafile.MediaFile(entry.get_download_file_path())
         for tag, tag_formatter in self.plugin_options.tags.dict.items():
             if tag not in audio_file.fields():
-                # TODO: Add proper logger and warn here
-                print(
-                    f"[ytld-sub: WARN] tag {tag} is not supported for {entry.ext} files. Supported "
-                    f"tags: {', '.join(audio_file.sorted_fields())}"
+                self._logger.warning(
+                    "tag '%s' is not supported for %s files. Supported tags: %s",
+                    tag,
+                    entry.ext,
+                    ", ".join(audio_file.sorted_fields()),
                 )
 
             tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)

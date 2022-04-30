@@ -3,7 +3,7 @@ import sys
 from typing import Optional
 
 
-class YtdlSubLogger:
+class Logger:
     @classmethod
     def _get_formatter(cls) -> logging.Formatter:
         """
@@ -26,7 +26,7 @@ class YtdlSubLogger:
         return handler
 
     @classmethod
-    def logger(cls, name: Optional[str] = None) -> logging.Logger:
+    def get(cls, name: Optional[str] = None) -> logging.Logger:
         """
         Parameters
         ----------

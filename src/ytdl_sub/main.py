@@ -1,18 +1,15 @@
 import argparse
 import sys
-import traceback
 from typing import List
 
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.subscription import SubscriptionValidator
-from ytdl_sub.logging import YtdlSubLogger
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.logger import Logger
 
-DEBUGGER_MODE = True
-
-logger = YtdlSubLogger.logger()
+logger = Logger.get()
 
 
 def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.Namespace) -> None:
@@ -72,15 +69,10 @@ if __name__ == "__main__":
     try:
         main()
     except ValidationException as validation_exception:
-        if DEBUGGER_MODE:
-            raise
         logger.error(validation_exception)
         sys.exit(1)
     except Exception as exc:  # pylint: disable=broad-except
-        if DEBUGGER_MODE:
-            raise
-        print(traceback.format_exc())
-        print(
+        logger.exception(
             "A fatal error occurred. Please copy and paste the stacktrace above and make a Github "
             "issue at https://github.com/jmbannon/ytdl-subscribe/issues with your config and "
             "command/subscription yaml file to reproduce. Thanks for trying ytdl-subscribe!"
