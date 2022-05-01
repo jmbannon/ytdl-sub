@@ -1,20 +1,7 @@
 from abc import ABC
-from dataclasses import dataclass
 from typing import Any
 from typing import Dict
 from typing import Optional
-
-
-@dataclass
-class PlaylistMetadata:
-    """
-    Metadata for storing playlist information.
-    """
-
-    playlist_index: int
-    playlist_id: str
-    playlist_extractor: str
-    playlist_count: int
 
 
 class BaseEntry(ABC):

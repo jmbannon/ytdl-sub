@@ -58,32 +58,6 @@ class SoundcloudDownloader(
         """Returns full artist url"""
         return f"https://soundcloud.com/{artist_name}"
 
-    def download_albums(self, artist_name: str) -> List[SoundcloudAlbum]:
-        """
-        Given an artist name, download all of their albums
-        """
-        artist_albums_url = f"{self.artist_url(artist_name)}/albums"
-
-        info = self.extract_info(url=artist_albums_url)
-        albums = [
-            SoundcloudAlbum(entry_dict=e, working_directory=self.working_directory)
-            for e in info["entries"]
-        ]
-
-        return [album for album in albums if album.track_count > 0]
-
-    def download_tracks(self, artist_name) -> List[SoundcloudTrack]:
-        """
-        Given an artist name, download all of their tracks
-        """
-        artist_tracks_url = f"{self.artist_url(artist_name)}/tracks"
-
-        info = self.extract_info(url=artist_tracks_url)
-        return [
-            SoundcloudTrack(entry_dict=e, working_directory=self.working_directory)
-            for e in info["entries"]
-        ]
-
 
 ###############################################################################
 # Soundcloud albums and singles downloader + options
@@ -102,27 +76,77 @@ class SoundcloudAlbumsAndSinglesDownloader(
 ):
     downloader_options_type = SoundcloudAlbumsAndSinglesDownloadOptions
 
+    def _get_albums(self, entry_dicts: List[Dict]) -> List[SoundcloudAlbum]:
+        """
+        Parameters
+        ----------
+        entry_dicts
+            Entry dicts from extracting info jsons
+
+        Returns
+        -------
+        Dict containing album_id: album class
+        """
+        albums: Dict[str, SoundcloudAlbum] = {}
+
+        # First, get the albums themselves
+        for entry_dict in entry_dicts:
+            if entry_dict.get("extractor") == "soundcloud:set":
+                albums[entry_dict["id"]] = SoundcloudAlbum(
+                    entry_dict=entry_dict, working_directory=self.working_directory
+                )
+
+        # Then, get all tracks that belong to the album
+        for entry_dict in entry_dicts:
+            album_id = entry_dict.get("playlist_id")
+            if entry_dict.get("extractor") == "soundcloud" and album_id in albums:
+                albums[album_id].tracks.append(
+                    SoundcloudTrack(entry_dict=entry_dict, working_directory=self.working_directory)
+                )
+
+        return list(albums.values())
+
+    def _get_singles(self, entry_dicts: List[Dict]) -> List[SoundcloudTrack]:
+        artist_id = None
+        tracks: List[SoundcloudTrack] = []
+
+        # First, get the artist entry. All single tracks that do not belong to an album will belong
+        # to the 'artist' playlist
+        for entry_dict in entry_dicts:
+            if entry_dict.get("extractor") == "soundcloud:user":
+                artist_id = entry_dict["id"]
+
+        # Then, get all singles that belong to the 'artist' playlist
+        for entry_dict in entry_dicts:
+            if (
+                entry_dict.get("extractor") == "soundcloud"
+                and entry_dict.get("playlist_id") == artist_id
+            ):
+                tracks.append(
+                    SoundcloudTrack(entry_dict=entry_dict, working_directory=self.working_directory)
+                )
+
+        return tracks
+
     def download(self) -> List[SoundcloudTrack]:
         """
         Soundcloud subscription to download albums and tracks as singles.
         """
-        tracks: List[SoundcloudTrack] = []
+        artist_url = self.artist_url(artist_name=self.download_options.username.value)
+        entry_dicts = self.extract_info_via_info_json(url=artist_url)
 
-        # Get the album info first. This tells us which track ids belong
-        # to an album. Unfortunately we cannot use download_archive or info.json for this
-        albums: List[SoundcloudAlbum] = self.download_albums(
-            artist_name=self.download_options.username.value
-        )
+        # Get all of the artist's albums
+        albums = self._get_albums(entry_dicts=entry_dicts)
 
+        # Then, get all singles
+        tracks = self._get_singles(entry_dicts=entry_dicts)
+
+        # Append all album tracks as SoundcloudAlbumTrack classes to the singles
         for album in albums:
-            tracks += album.album_tracks(
-                skip_premiere_tracks=self.download_options.skip_premiere_tracks.value
-            )
+            tracks += album.album_tracks()
 
-        # only add tracks that are not part of an album
-        single_tracks = self.download_tracks(artist_name=self.download_options.username.value)
-        tracks += [
-            track for track in single_tracks if not any(album.contains(track) for album in albums)
-        ]
+        # Filter any premiere tracks if specified
+        if self.download_options.skip_premiere_tracks.value:
+            tracks = [track for track in tracks if not track.is_premiere()]
 
         return tracks
