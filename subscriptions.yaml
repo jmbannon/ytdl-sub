@@ -18,23 +18,23 @@
 #    artist: "DeLorra"
 #    genre: "Synthwave / Electronic"
 #
-bl00dwave:
-  preset: "soundcloud_with_id3_tags"
-  soundcloud:
-    username: bl00dwave
-  overrides:
-    artist: "bl00dwave"
-    genre: "Synthwave / Electronic"
-#
-#tom_petty:
-#  preset: "music_videos"
-#  youtube:
-#    download_strategy: "playlist"
-#    playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
-#  output_options:
-#    output_directory: "/tmp/Tom Petty"
+#bl00dwave:
+#  preset: "soundcloud_with_id3_tags"
+#  soundcloud:
+#    username: bl00dwave
 #  overrides:
-#    artist: "Tom Petty and the Heartbreakers"
+#    artist: "bl00dwave"
+#    genre: "Synthwave / Electronic"
+#
+tom_petty:
+  preset: "music_videos"
+  youtube:
+    download_strategy: "playlist"
+    playlist_id: PLoopXDarluPBnuxs4PTC55Sc_2ShAXC0i
+  output_options:
+    output_directory: "/tmp/Tom Petty"
+  overrides:
+    artist: "Tom Petty and the Heartbreakers"
 #
 #rammstein:
 #  preset: "music_videos"

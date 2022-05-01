@@ -1,8 +1,8 @@
 import os.path
 from pathlib import Path
-from typing import List, Dict
+from typing import List
+from typing import Optional
 
-from ytdl_sub.entries.base_entry import PlaylistMetadata
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.youtube_variables import YoutubeVideoVariables
 
@@ -36,42 +36,6 @@ class YoutubeVideo(YoutubeVideoVariables, Entry):
 
 
 class YoutubePlaylistVideo(YoutubeVideo):
-    def __init__(
-        self,
-        entry_dict: Dict,
-        working_directory: str,
-        playlist_metadata: PlaylistMetadata,
-    ):
-        """
-        Initialize the playlist video with playlist metadata
-        """
-        super().__init__(entry_dict=entry_dict, working_directory=working_directory)
-        self._playlist_metadata = playlist_metadata
-
-    @classmethod
-    def from_youtube_video(
-        cls,
-        youtube_video: YoutubeVideo,
-        playlist_metadata: PlaylistMetadata,
-    ) -> "YoutubePlaylistVideo":
-        """
-        Parameters
-        ----------
-        youtube_video:
-            Video to convert to an playlist video
-        playlist_metadata:
-            Metadata for playlist ordering
-
-        Returns
-        -------
-        YoutubeVideo converted to a YoutubePlaylistVideo
-        """
-        return YoutubePlaylistVideo(
-            entry_dict=youtube_video._kwargs,  # pylint: disable=protected-access
-            working_directory=youtube_video.working_directory(),
-            playlist_metadata=playlist_metadata,
-        )
-
     @property
     def playlist_index(self) -> int:
         """
@@ -79,7 +43,7 @@ class YoutubePlaylistVideo(YoutubeVideo):
         -------
         The playlist index
         """
-        return self._playlist_metadata.playlist_index
+        return self.kwargs("playlist_index")
 
     @property
     def playlist_size(self) -> int:
@@ -88,22 +52,17 @@ class YoutubePlaylistVideo(YoutubeVideo):
         -------
         The size of the playlist
         """
-        return self._playlist_metadata.playlist_count
+        return self.kwargs("playlist_count")
 
 
 class YoutubePlaylist(Entry):
-    @property
-    def _videos(self) -> List[YoutubeVideo]:
-        """
-        Returns all videos in the playlist represented by non-playlist Videos. Use this to fetch any
-        data needed from the videos before representing it as a playlist video.
-        """
-        return [
-            YoutubeVideo(entry_dict=entry, working_directory=self._working_directory)
-            for entry in self.kwargs("entries")
-        ]
+    """
+    Class placeholder for youtube playlists
+    """
 
-    def playlist_videos(self) -> List[YoutubePlaylistVideo]:
+
+class YoutubeChannel(Entry):
+    def videos(self) -> List[YoutubeVideo]:
         """
         Returns
         -------
@@ -111,14 +70,40 @@ class YoutubePlaylist(Entry):
         playlist-specific fields like playlist_index and playlist_size with its actual value.
         """
         return [
-            YoutubePlaylistVideo.from_youtube_video(
-                youtube_video=video,
-                playlist_metadata=PlaylistMetadata(
-                    playlist_id=self.uid,
-                    playlist_extractor=self.extractor,
-                    playlist_index=video.kwargs("playlist_index"),
-                    playlist_count=self.kwargs('playlist_count'),
-                ),
-            )
-            for video in self._videos
+            YoutubeVideo(entry_dict=entry, working_directory=self._working_directory)
+            for entry in self.kwargs("entries")
         ]
+
+    def _get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
+        """
+        Downloads a specific thumbnail from a YTDL entry's thumbnail list
+
+        Parameters
+        ----------
+        thumbnail_id:
+            Id of the thumbnail defined in the channel's thumbnail
+
+        Returns
+        -------
+        Desired thumbnail url if it exists. None if it does not.
+        """
+        for thumbnail in self.kwargs("thumbnails"):
+            if thumbnail["id"] == thumbnail_id:
+                return thumbnail["url"]
+        return None
+
+    def avatar_thumbnail_url(self) -> str:
+        """
+        Returns
+        -------
+        The channel's uncropped avatar image url
+        """
+        return self._get_thumbnail_url(thumbnail_id="avatar_uncropped")
+
+    def banner_thumbnail_url(self) -> str:
+        """
+        Returns
+        -------
+        The channel's uncropped banner image url
+        """
+        return self._get_thumbnail_url(thumbnail_id="banner_uncropped")
