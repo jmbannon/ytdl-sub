@@ -13,10 +13,26 @@ class ExpectedDownload:
     def __init__(self, expected_md5_file_hashes: Dict[Path, str]):
         self.expected_md5_file_hashes = expected_md5_file_hashes
 
+    @property
+    def file_count(self) -> int:
+        return len(self.expected_md5_file_hashes)
+
     def assert_files_exist(self, relative_directory: Path):
         """
         Assert each expected file exists and that its respective md5 hash matches.
         """
+        num_files = 0
+        for path in Path(relative_directory).rglob("*"):
+            if path.is_file():
+                num_files += 1
+
+                relative_path = Path(*path.parts[3:])
+                assert (
+                    relative_path in self.expected_md5_file_hashes
+                ), f"File {relative_path} was created but not expected"
+
+        assert num_files == self.file_count, "Mismatch in number of created files"
+
         for relative_path, expected_md5_hash in self.expected_md5_file_hashes.items():
             full_path = Path(relative_directory) / relative_path
             assert os.path.isfile(

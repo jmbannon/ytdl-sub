@@ -1,6 +1,7 @@
 import tempfile
 from pathlib import Path
 
+import mergedeep
 import pytest
 from e2e.expected_download import ExpectedDownload
 
@@ -43,6 +44,10 @@ def subscription_dict(output_directory, subscription_name):
         },
         "overrides": {"tv_show_name": "Project / Zombie"},
     }
+
+
+####################################################################################################
+# FULL CHANNEL FIXTURES
 
 
 @pytest.fixture
@@ -121,6 +126,101 @@ def expected_full_channel_download():
     # fmt: on
 
 
+####################################################################################################
+# RECENT CHANNEL FIXTURES
+@pytest.fixture
+def recent_channel_subscription_dict(subscription_dict):
+    return mergedeep.merge(
+        subscription_dict,
+        {
+            "youtube": {"after": "20150101"},
+            "ytdl_options": {
+                "break_on_reject": True,
+                "break_on_existing": True,
+            },
+        },
+    )
+
+
+@pytest.fixture
+def recent_channel_subscription(config, subscription_name, recent_channel_subscription_dict):
+    return SubscriptionValidator.from_dict(
+        config=config,
+        subscription_name=subscription_name,
+        subscription_dict=recent_channel_subscription_dict,
+    ).to_subscription()
+
+
+@pytest.fixture
+def expected_recent_channel_download():
+    # turn off black formatter here for readability
+    # fmt: off
+    return ExpectedDownload(
+        expected_md5_file_hashes={
+            # Download mapping
+            Path("pz/.ytdl-subscribe-pz-download-mapping.json"): "a133d9ea8a63e239cd41b799b9031fd5",
+
+            # Output directory files
+            Path("pz/fanart.jpg"): "e6e323373c8902568e96e374817179cf",
+            Path("pz/poster.jpg"): "a14c593bcc75bb8d2c7145de4767ad01",
+            Path("pz/tvshow.nfo"): "83c7db96081ac5bdf289fcf396bec157",
+
+            # Recent Entry files
+            Path("pz/Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.jpg"): "2a24de903059f48c7d0df0476046c975",
+            Path("pz/Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.mp4"): "82f6ee7253e1dbb83ae7215af08ffacc",
+            Path("pz/Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.nfo"): "cc7886aae3af6b7b0facd82f95390242",
+
+            Path("pz/Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.jpg"): "c8baea83b9edeb081657f1130a1031f7",
+            Path("pz/Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.mp4"): "e733b4cc385b953b08c8eb0f47e03c1e",
+            Path("pz/Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.nfo"): "2b3ccb3f1ef81ee49fe1afb88f275a09",
+        }
+    )
+    # fmt: on
+
+
+####################################################################################################
+# ROLLING RECENT CHANNEL FIXTURES
+@pytest.fixture
+def rolling_recent_channel_subscription_dict(recent_channel_subscription_dict):
+    return mergedeep.merge(
+        recent_channel_subscription_dict, {"output_options": {"keep_files": {"after": "20181101"}}}
+    )
+
+
+@pytest.fixture
+def rolling_recent_channel_subscription(
+    config, subscription_name, rolling_recent_channel_subscription_dict
+):
+    return SubscriptionValidator.from_dict(
+        config=config,
+        subscription_name=subscription_name,
+        subscription_dict=rolling_recent_channel_subscription_dict,
+    ).to_subscription()
+
+
+@pytest.fixture
+def expected_rolling_recent_channel_download():
+    # turn off black formatter here for readability
+    # fmt: off
+    return ExpectedDownload(
+        expected_md5_file_hashes={
+            # Download mapping
+            Path("pz/.ytdl-subscribe-pz-download-mapping.json"): "8013b4d2ba6921c9347c014ac915e3f6",
+
+            # Output directory files
+            Path("pz/fanart.jpg"): "e6e323373c8902568e96e374817179cf",
+            Path("pz/poster.jpg"): "a14c593bcc75bb8d2c7145de4767ad01",
+            Path("pz/tvshow.nfo"): "83c7db96081ac5bdf289fcf396bec157",
+
+            # Rolling Recent Entry files
+            Path("pz/Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.jpg"): "c8baea83b9edeb081657f1130a1031f7",
+            Path("pz/Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.mp4"): "e733b4cc385b953b08c8eb0f47e03c1e",
+            Path("pz/Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.nfo"): "2b3ccb3f1ef81ee49fe1afb88f275a09",
+        }
+    )
+    # fmt: on
+
+
 class TestChannelAsKodiTvShow:
     """
     Downloads my old minecraft youtube channel. Ensure the above files exist and have the
@@ -132,3 +232,39 @@ class TestChannelAsKodiTvShow:
     ):
         full_channel_subscription.download()
         expected_full_channel_download.assert_files_exist(relative_directory=output_directory)
+
+    def test_recent_channel_download(
+        self, recent_channel_subscription, expected_recent_channel_download, output_directory
+    ):
+        recent_channel_subscription.download()
+        expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+
+        # try downloading again, ensure nothing more was downloaded
+        # TODO: add patch around the output of download to see what entry dicts were returned
+        recent_channel_subscription.download()
+        expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+
+    def test_rolling_recent_channel_download(
+        self,
+        recent_channel_subscription,
+        rolling_recent_channel_subscription,
+        expected_recent_channel_download,
+        expected_rolling_recent_channel_download,
+        output_directory,
+    ):
+        # First, download recent vids
+        recent_channel_subscription.download()
+        expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+
+        # Then, download the rolling recent vids subscription. This should remove one of the
+        # two videos
+        rolling_recent_channel_subscription.download()
+        expected_rolling_recent_channel_download.assert_files_exist(
+            relative_directory=output_directory
+        )
+
+        # Invoke the rolling download again, ensure nothing has changed
+        rolling_recent_channel_subscription.download()
+        expected_rolling_recent_channel_download.assert_files_exist(
+            relative_directory=output_directory
+        )

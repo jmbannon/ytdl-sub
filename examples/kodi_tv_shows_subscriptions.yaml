@@ -44,6 +44,12 @@ john_smith_archive:
 #     defined, all videos after today-14days will be rejected. Therefore,
 #     the first video that is out of range that it tries to download, it
 #     will stop there, and save a significant amount of time.
+# - ytdl_options.break_on_existing
+#     Similar to break_on_reject, but instead, breaks if a video has
+#     already been downloaded. If you were to perform a download on this
+#     subscription one-after-the-other, the second invocation would stop
+#     after looking at the first (most recent) video since it would exist
+#     in the download archive.
 john_smith_recent_archive:
   preset: "yt_channel_as_tv"
   youtube:
@@ -53,6 +59,7 @@ john_smith_recent_archive:
     tv_show_name: "John /\ Smith"
   ytdl_options:
     break_on_reject: True
+    break_on_existing: True
 
 ###############################################################################
 # LEVEL 3 - ROLLING ARCHIVE
@@ -76,6 +83,7 @@ john_smith_rolling_archive:
     tv_show_name: "John /\ Smith"
   ytdl_options:
     break_on_reject: True
+    break_on_existing: True
   output_options:
     keep_files:
       after: today-14days
