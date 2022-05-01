@@ -8,7 +8,6 @@ from typing import Dict
 from typing import Generic
 from typing import List
 from typing import Optional
-from typing import Tuple
 from typing import Type
 from typing import TypeVar
 
@@ -132,14 +131,35 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         with self.ytdl_downloader(ytdl_options_overrides) as ytdl_downloader:
             return ytdl_downloader.extract_info(**kwargs)
 
-    def extract_info_json(self, ytdl_options_overrides: Optional[Dict] = None, **kwargs) -> None:
+    def _get_entry_dicts_from_info_json_files(self) -> List[Dict]:
         """
-        Wrapper around yt_dlp.YoutubeDL.YoutubeDL.extract_info
+        Returns
+        -------
+        List of all info.json files read as JSON dicts
+        """
+        entry_dicts: List[Dict] = []
+        info_json_paths = [
+            Path(self.working_directory) / file_name
+            for file_name in os.listdir(self.working_directory)
+            if file_name.endswith(".info.json")
+        ]
 
-        All kwargs will passed to the extract_info function. This also enables ytdl to write
-        .info.json files for all media downloaded.
+        for info_json_path in info_json_paths:
+            with open(info_json_path, "r", encoding="utf-8") as file:
+                entry_dicts.append(json.load(file))
 
-        Catches RejectedVideoReached and ExistingVideoReached exceptions.
+        return entry_dicts
+
+    def extract_info_via_info_json(
+        self, ytdl_options_overrides: Optional[Dict] = None, **kwargs
+    ) -> List[Dict]:
+        """
+        Wrapper around yt_dlp.YoutubeDL.YoutubeDL.extract_info with infojson enabled. Entry dicts
+        are extracted via reading all info.json files in the working directory rather than
+        from the output of extract_info.
+
+        This allows us to catch RejectedVideoReached and ExistingVideoReached exceptions, and
+        simply ignore while still being able to read downloaded entry metadata.
 
         Parameters
         ----------
@@ -158,45 +178,7 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         except (RejectedVideoReached, ExistingVideoReached):
             pass
 
-    def extract_from_info_json(
-        self, parent_prefix: str, parent_entry_type: Type[DownloaderParentEntryT]
-    ) -> Tuple[DownloaderParentEntryT, List[DownloaderEntryT]]:
-        """
-        Reads all .info.json files in the working directory, and casts them to the
-        parent_entry_type (i.e. YoutubeChannel) and downloader_entry_type (i.e. YoutubeVideo)
-
-        Parameters
-        ----------
-        parent_prefix
-            info.json file name prefix to indicate its the parent (i.e. the YT channel id)
-        parent_entry_type
-            Class type for the parent entry
-
-        Returns
-        -------
-        Tuple containing parent, list of videos belong to the parent
-        """
-        # Load the entries from info.json
-
-        parent_entry: Optional[DownloaderParentEntryT] = None
-        entries: List[DownloaderEntryT] = []
-
-        for file_name in os.listdir(self.working_directory):
-            if file_name.endswith(".info.json"):
-                with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
-
-                    if file_name.startswith(parent_prefix):
-                        parent_entry = parent_entry_type(
-                            entry_dict=json.load(file), working_directory=self.working_directory
-                        )
-                    else:
-                        entries.append(
-                            self.downloader_entry_type(
-                                entry_dict=json.load(file), working_directory=self.working_directory
-                            )
-                        )
-
-        return parent_entry, entries
+        return self._get_entry_dicts_from_info_json_files()
 
     @abc.abstractmethod
     def download(self) -> List[DownloaderEntryT]:

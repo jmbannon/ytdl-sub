@@ -1,6 +1,5 @@
 import os.path
 from pathlib import Path
-from typing import List
 from typing import Optional
 
 from ytdl_sub.entries.entry import Entry
@@ -55,25 +54,7 @@ class YoutubePlaylistVideo(YoutubeVideo):
         return self.kwargs("playlist_count")
 
 
-class YoutubePlaylist(Entry):
-    """
-    Class placeholder for youtube playlists
-    """
-
-
 class YoutubeChannel(Entry):
-    def videos(self) -> List[YoutubeVideo]:
-        """
-        Returns
-        -------
-        All videos in the playlist represented as YoutubePlaylistVideos. This updates
-        playlist-specific fields like playlist_index and playlist_size with its actual value.
-        """
-        return [
-            YoutubeVideo(entry_dict=entry, working_directory=self._working_directory)
-            for entry in self.kwargs("entries")
-        ]
-
     def _get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
         """
         Downloads a specific thumbnail from a YTDL entry's thumbnail list

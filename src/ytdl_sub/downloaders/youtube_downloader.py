@@ -15,7 +15,6 @@ from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderOptionsT
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.youtube import YoutubeChannel
-from ytdl_sub.entries.youtube import YoutubePlaylist
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.logger import Logger
@@ -110,14 +109,18 @@ class YoutubePlaylistDownloader(
         """
         playlist_id = self.download_options.playlist_id.value
         playlist_url = self.playlist_url(playlist_id=playlist_id)
+        playlist_videos: List[YoutubePlaylistVideo] = []
 
-        self.extract_info_json(url=playlist_url)
+        entry_dicts = self.extract_info_via_info_json(url=playlist_url)
+        for entry_dict in entry_dicts:
+            if entry_dict.get("extractor") == "youtube":
+                playlist_videos.append(
+                    YoutubePlaylistVideo(
+                        entry_dict=entry_dict, working_directory=self.working_directory
+                    )
+                )
 
-        _, videos = self.extract_from_info_json(
-            parent_prefix=playlist_id, parent_entry_type=YoutubePlaylist
-        )
-
-        return videos
+        return playlist_videos
 
 
 ###############################################################################
@@ -178,6 +181,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         Downloads all videos from a channel
         """
         channel_url = self.channel_url(channel_id=self.channel_id)
+        channel_videos: List[YoutubeVideo] = []
         ytdl_options_overrides = {}
 
         # If a date range is specified when download a YT channel, add it into the ytdl options
@@ -185,13 +189,21 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         if source_date_range:
             ytdl_options_overrides["daterange"] = source_date_range
 
-        self.extract_info_json(ytdl_options_overrides=ytdl_options_overrides, url=channel_url)
-
-        self.channel, videos = self.extract_from_info_json(
-            parent_prefix=self.channel_id, parent_entry_type=YoutubeChannel
+        entry_dicts = self.extract_info_via_info_json(
+            ytdl_options_overrides=ytdl_options_overrides, url=channel_url
         )
 
-        return videos
+        for entry_dict in entry_dicts:
+            if entry_dict.get("extractor") == "youtube":
+                channel_videos.append(
+                    YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+                )
+            if entry_dict.get("extractor") == "youtube:tab":
+                self.channel = YoutubeChannel(
+                    entry_dict=entry_dict, working_directory=self.working_directory
+                )
+
+        return channel_videos
 
     def _download_thumbnail(
         self,
