@@ -1,5 +1,3 @@
-import json
-import os
 from abc import ABC
 from pathlib import Path
 from typing import Dict
@@ -11,11 +9,14 @@ from urllib.request import urlopen
 
 from PIL.Image import Image
 from PIL.Image import open as pil_open
-from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.downloaders.downloader import DownloaderOptionsT
 from ytdl_sub.downloaders.downloader import DownloaderValidator
+from ytdl_sub.entries.youtube import YoutubeChannel
+from ytdl_sub.entries.youtube import YoutubePlaylist
+from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.date_range_validator import DateRangeValidator
@@ -35,55 +36,19 @@ class YoutubeDownloaderOptions(DownloaderValidator, ABC):
 
 
 YoutubeDownloaderOptionsT = TypeVar("YoutubeDownloaderOptionsT", bound=YoutubeDownloaderOptions)
+YoutubeVideoT = TypeVar("YoutubeVideoT", bound=YoutubeVideo)
 
 
 class YoutubeDownloader(
-    Downloader[YoutubeDownloaderOptionsT, YoutubeVideo], Generic[YoutubeDownloaderOptionsT], ABC
+    Downloader[YoutubeDownloaderOptionsT, YoutubeVideoT],
+    Generic[YoutubeDownloaderOptionsT, YoutubeVideoT],
+    ABC,
 ):
     """
     Class that handles downloading youtube entries via ytdl and converting them into
-    YoutubeVideo objects
+    YoutubeVideo like objects. Reserved for any future logic that is shared amongst all YT
+    downloaders.
     """
-
-    downloader_entry_type = YoutubeVideo
-
-    def _download_using_metadata(
-        self,
-        url: str,
-        ignore_prefix: str,
-        ytdl_options_overrides: Optional[Dict] = None,
-    ) -> List[YoutubeVideo]:
-        """
-        Do not get entries from the extract info, let it write to the info.json file and load
-        that instead. This is because if the video is already downloaded in a playlist, it will
-        not fetch the metadata (maybe there is a way??)
-        """
-        entries: List[YoutubeVideo] = []
-
-        ytdl_overrides = {
-            "writeinfojson": True,
-        }
-        if ytdl_options_overrides:
-            ytdl_overrides = dict(ytdl_overrides, **ytdl_options_overrides)
-
-        try:
-            _ = self.extract_info(ytdl_options_overrides=ytdl_overrides, url=url)
-        except RejectedVideoReached:
-            pass
-
-        # Load the entries from info.json, ignore the playlist entry
-        for file_name in os.listdir(self.working_directory):
-            if file_name.startswith(ignore_prefix) or not file_name.endswith(".info.json"):
-                continue
-
-            with open(Path(self.working_directory) / file_name, "r", encoding="utf-8") as file:
-                entries.append(
-                    YoutubeVideo(
-                        entry_dict=json.load(file), working_directory=self.working_directory
-                    )
-                )
-
-        return entries
 
 
 ###############################################################################
@@ -98,8 +63,9 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
         self.video_id = self._validate_key("video_id", StringValidator)
 
 
-class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions]):
+class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, YoutubeVideo]):
     downloader_options_type = YoutubeVideoDownloaderOptions
+    downloader_entry_type = YoutubeVideo
 
     @classmethod
     def video_url(cls, video_id: str) -> str:
@@ -111,8 +77,8 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions]):
         video_id = self.download_options.video_id.value
         video_url = self.video_url(video_id=video_id)
 
-        entry = self.extract_info(url=video_url)
-        return [YoutubeVideo(entry_dict=entry, working_directory=self.working_directory)]
+        entry_dict = self.extract_info(url=video_url)
+        return [YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)]
 
 
 ###############################################################################
@@ -127,22 +93,31 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
         self.playlist_id = self._validate_key("playlist_id", StringValidator)
 
 
-class YoutubePlaylistDownloader(YoutubeDownloader[YoutubePlaylistDownloaderOptions]):
+class YoutubePlaylistDownloader(
+    YoutubeDownloader[YoutubePlaylistDownloaderOptions, YoutubePlaylistVideo]
+):
     downloader_options_type = YoutubePlaylistDownloaderOptions
+    downloader_entry_type = YoutubePlaylistVideo
 
     @classmethod
     def playlist_url(cls, playlist_id: str) -> str:
         """Returns full playlist url"""
         return f"https://youtube.com/playlist?list={playlist_id}"
 
-    def download(self) -> List[YoutubeVideo]:
+    def download(self) -> List[YoutubePlaylistVideo]:
         """
         Downloads all videos in a Youtube playlist
         """
         playlist_id = self.download_options.playlist_id.value
         playlist_url = self.playlist_url(playlist_id=playlist_id)
 
-        return self._download_using_metadata(url=playlist_url, ignore_prefix=playlist_id)
+        self.extract_info_json(url=playlist_url)
+
+        _, videos = self.extract_from_info_json(
+            parent_prefix=playlist_id, parent_entry_type=YoutubePlaylist
+        )
+
+        return videos
 
 
 ###############################################################################
@@ -165,8 +140,24 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
         )
 
 
-class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions]):
+class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions, YoutubeVideo]):
     downloader_options_type = YoutubeChannelDownloaderOptions
+    downloader_entry_type = YoutubeVideo
+
+    def __init__(
+        self,
+        working_directory: str,
+        download_options: DownloaderOptionsT,
+        ytdl_options: Optional[Dict] = None,
+        download_archive_file_name: Optional[str] = None,
+    ):
+        super().__init__(
+            working_directory=working_directory,
+            download_options=download_options,
+            ytdl_options=ytdl_options,
+            download_archive_file_name=download_archive_file_name,
+        )
+        self.channel: Optional[YoutubeChannel] = None
 
     @classmethod
     def channel_url(cls, channel_id: str) -> str:
@@ -187,46 +178,38 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         Downloads all videos from a channel
         """
         channel_url = self.channel_url(channel_id=self.channel_id)
+        ytdl_options_overrides = {}
 
         # If a date range is specified when download a YT channel, add it into the ytdl options
-        ytdl_options_overrides = {}
         source_date_range = self.download_options.get_date_range()
         if source_date_range:
             ytdl_options_overrides["daterange"] = source_date_range
 
-        return self._download_using_metadata(
-            url=channel_url,
-            ignore_prefix=self.channel_id,
-            ytdl_options_overrides=ytdl_options_overrides,
+        self.extract_info_json(ytdl_options_overrides=ytdl_options_overrides, url=channel_url)
+
+        self.channel, videos = self.extract_from_info_json(
+            parent_prefix=self.channel_id, parent_entry_type=YoutubeChannel
         )
 
-    @classmethod
-    def __download_thumbnail(
-        cls,
-        entry_dict: dict,
-        thumbnail_id: str,
+        return videos
+
+    def _download_thumbnail(
+        self,
+        thumbnail_url: str,
         output_thumbnail_path: str,
     ):
         """
-        Downloads a specific thumbnail from a YTDL entry's thumbnail list
+        Downloads a thumbnail and stores it in the output directory
 
         Parameters
         ----------
-        entry_dict:
-            YTDL entry dict
-        thumbnail_id:
-            Id of the thumbnail defined in the YTDL thumnail
+        thumbnail_url:
+            Url of the thumbnail
         output_thumbnail_path:
             Path to store the thumbnail after downloading
         """
-        thumbnail_url = None
-        for thumbnail in entry_dict.get("thumbnails", []):
-            if thumbnail["id"] == thumbnail_id:
-                thumbnail_url = thumbnail["url"]
-                break
-
         if not thumbnail_url:
-            logger.warning("Could not find a thumbnail for %s", entry_dict.get("id"))
+            logger.warning("Could not find a thumbnail for %s", self.channel.uid)
             return
 
         with urlopen(thumbnail_url) as file:
@@ -245,22 +228,14 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         output_directory
             Output directory path
         """
-        channel_json_file_path = Path(self.working_directory) / f"{self.channel_id}.info.json"
-        with open(channel_json_file_path, "r", encoding="utf-8") as channel_json:
-            channel_entry = json.load(channel_json)
+        avatar_thumbnail_name = overrides.apply_formatter(self.download_options.channel_avatar_path)
+        self._download_thumbnail(
+            thumbnail_url=self.channel.avatar_thumbnail_url(),
+            output_thumbnail_path=str(Path(output_directory) / avatar_thumbnail_name),
+        )
 
-        if self.download_options.channel_avatar_path:
-            thumbnail_name = overrides.apply_formatter(self.download_options.channel_avatar_path)
-            self.__download_thumbnail(
-                entry_dict=channel_entry,
-                thumbnail_id="avatar_uncropped",
-                output_thumbnail_path=str(Path(output_directory) / thumbnail_name),
-            )
-
-        if self.download_options.channel_banner_path:
-            thumbnail_name = overrides.apply_formatter(self.download_options.channel_banner_path)
-            self.__download_thumbnail(
-                entry_dict=channel_entry,
-                thumbnail_id="banner_uncropped",
-                output_thumbnail_path=str(Path(output_directory) / thumbnail_name),
-            )
+        banner_thumbnail_name = overrides.apply_formatter(self.download_options.channel_banner_path)
+        self._download_thumbnail(
+            thumbnail_url=self.channel.banner_thumbnail_url(),
+            output_thumbnail_path=str(Path(output_directory) / banner_thumbnail_name),
+        )

@@ -1,5 +1,7 @@
 import os.path
 from pathlib import Path
+from typing import List
+from typing import Optional
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.youtube_variables import YoutubeVideoVariables
@@ -31,3 +33,77 @@ class YoutubeVideo(YoutubeVideoVariables, Entry):
                 return possible_thumbnail_path
 
         return super().get_download_thumbnail_path()
+
+
+class YoutubePlaylistVideo(YoutubeVideo):
+    @property
+    def playlist_index(self) -> int:
+        """
+        Returns
+        -------
+        The playlist index
+        """
+        return self.kwargs("playlist_index")
+
+    @property
+    def playlist_size(self) -> int:
+        """
+        Returns
+        -------
+        The size of the playlist
+        """
+        return self.kwargs("playlist_count")
+
+
+class YoutubePlaylist(Entry):
+    """
+    Class placeholder for youtube playlists
+    """
+
+
+class YoutubeChannel(Entry):
+    def videos(self) -> List[YoutubeVideo]:
+        """
+        Returns
+        -------
+        All videos in the playlist represented as YoutubePlaylistVideos. This updates
+        playlist-specific fields like playlist_index and playlist_size with its actual value.
+        """
+        return [
+            YoutubeVideo(entry_dict=entry, working_directory=self._working_directory)
+            for entry in self.kwargs("entries")
+        ]
+
+    def _get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
+        """
+        Downloads a specific thumbnail from a YTDL entry's thumbnail list
+
+        Parameters
+        ----------
+        thumbnail_id:
+            Id of the thumbnail defined in the channel's thumbnail
+
+        Returns
+        -------
+        Desired thumbnail url if it exists. None if it does not.
+        """
+        for thumbnail in self.kwargs("thumbnails"):
+            if thumbnail["id"] == thumbnail_id:
+                return thumbnail["url"]
+        return None
+
+    def avatar_thumbnail_url(self) -> str:
+        """
+        Returns
+        -------
+        The channel's uncropped avatar image url
+        """
+        return self._get_thumbnail_url(thumbnail_id="avatar_uncropped")
+
+    def banner_thumbnail_url(self) -> str:
+        """
+        Returns
+        -------
+        The channel's uncropped banner image url
+        """
+        return self._get_thumbnail_url(thumbnail_id="banner_uncropped")
