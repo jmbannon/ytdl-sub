@@ -78,7 +78,7 @@ john_smith_rolling_archive:
   preset: "yt_channel_as_tv"
   youtube:
     channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
-    after: today-14days
+    after: today-2weeks
   overrides:
     tv_show_name: "John /\ Smith"
   ytdl_options:
@@ -86,4 +86,4 @@ john_smith_rolling_archive:
     break_on_existing: True
   output_options:
     keep_files:
-      after: today-14days
+      after: today-2weeks

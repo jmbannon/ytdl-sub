@@ -1,262 +1,173 @@
-# YoutubeDL-Subscribe
+# ytdl-sub: Youtube-DL-Subscribe
 Automate downloading and adding metadata with YoutubeDL.
 
-The motivation behind this package is to download media via [youtube-dlp](https://github.com/yt-dlp/yt-dlp)
-and prepare it for consumption in your favorite media player in the most hassle-free way possible. 
+This package strives to download media via 
+[yt-dlp](https://github.com/yt-dlp/yt-dlp)
+and prepare it for consumption in your favorite media player
+([Kodi](https://github.com/xbmc/xbmc), 
+[Jellyfin](https://github.com/jellyfin/jellyfin), 
+[Plex](https://github.com/plexinc/pms-docker),
+[Emby](https://github.com/plexinc/pms-docker),
+modern music players)
+in the most hassle-free way possible. We recognize that everyone stores their 
+media differently. Our approach for file and metadata formatting is to provide
+maximum flexibility while maintaining simplicity.
 
-Everyone stores their media differently, so it is critical to provide comprehensive customization to this process
-while maintaining simplicity. In addition, we treat media sources differently from each other. We may want to...
+## Supported Features
+Below lists supported download schemes. You can see our
+[various example configurations](examples/README.md)
+we personally use to get an idea on how to use ytdl-sub to your liking.
 
-- Automatically download any and all audio/video file from a channel, user, playlist, etc. 
-  - Download a soundcloud artist's discography, keep it up to date
-  - Download any new music videos from a YouTube channel playlist
+- Download any and all audio/video from a channel or playlist
+  - Format videos to look like
+    - Movies
+    - TV Shows
+    - TV Show Seasons
+    - Music Videos
+  - Format and tag audio files to look like
+    - Albums, Singles
+    - Audiobooks
+  - Download thumbnails, channel avatars, and banners to set as
+    - Posters
+    - Fanart
+    - Banners
+    - Album Artwork
+- Download a soundcloud artist's albums and singles
+  - Format the music tags and save any artwork for album covers
 - Manually download a single audio/video file
-  - Download one particular music video
-- Only download recent audio/video, and remove stale files
-  - Download and only keep recent podcasts, news videos
+  - Reuse configs you have defined to format it as anything you like
+- Only download recent audio/video, optionally remove old files
 
-We want to cover each of these use cases.
 
 ## Configuration
-Below is the proposed way to define a `preset` for how you want to download and add metadata. We have two examples,
-one for downloading Soundcloud discographies, and the other for downloading YouTube playlists, and treating them as
-music videos. Both are intended to be consumed by [Kodi](https://github.com/xbmc/xbmc), 
-[Jellyfin](https://github.com/jellyfin/jellyfin), and any mp3 music player that supports id3v2.4 tags. For videos, this
-should (hopefully) be customizable enough to support other use-cases like downloading a playlist as a TV show or
-multiple movies.
+Formatting video and audio files are defined by presets. The `{variables}` used
+in the strings are derived from the media itself or defined by you in the `overrides`
+section. Below shows what a `config.yaml` and `subscription.yaml` look like to 
+download a Youtube channel as a TV show with artwork. The files are formatted
+to look like:
+```
+/path/to/youtube_tv_shows/Your Favorite YT Channel
+  /Season 2021
+    s2021.e0317 - St Pattys Day Video.jpg
+    s2021.e0317 - St Pattys Day Video.mp4
+    s2021.e0317 - St Pattys Day Video.nfo
+  /Season 2022
+    s2022.e1225 - Merry Christmas.jpg
+    s2022.e1225 - Merry Christmas.mp4
+    s2022.e1225 - Merry Christmas.nfo
+  poster.jpg
+  fanart.jpg
+  tvshow.nfo
+```
 
-The `{variables}` used in the strings are derived from the media itself or defined in the `overrides` section.
-
-#### config.yaml
+### config.yaml
+The config file defines _how_ to download and format media. You can define any
+number of presets to represent media as whatever you want.
 ```yaml
-# [Required]
-# All presets live under this section. Other configurable things for ytdl-sub will
-# reside in a different section.
+configuration:
+  working_directory: '.ytdl-sub-downloads'
+
 presets:
-
-  # [Required]
-  # Custom name that you define for your preset. This preset is intended to download
-  # a soundcloud artist's discography.
-  soundcloud_discography:
-    
-    # [Required]
-    # This section defines the source you intend on using, with specific
-    # configurations for each source. Supports [soundcloud, youtube]
-    soundcloud:
-      
-      # [Required]
-      # How to download media from the source, soundcloud supports [albums_and_singles]
-      download_strategy: "albums_and_singles"
-      
-      # [Optional] 
-      # Each source has specific options, this is one for soundcloud that skips
-      # premiere tracks
-      skip_premiere_tracks: True
-      
-      # [Required, defined dynamically]
-      # The username of the soundcloud artist you want to download from
-      # username: alis_on
-      
-    # [Optional]
-    # Defines any arguments you want to directly pass to yt_dlp. Use with caution!
-    ytdl_options:
-      
-      # For my case, I want the best audio converted to mp3
-      format: 'bestaudio[ext=mp3]'
-    
-    # [Required]
-    # This section defines where and how you want to save files
-    output_options:
-      
-      # [Required]
-      # Directory for where you want all your files to land for this preset
-      output_directory: "{music_path}/{sanitized_artist}"
-      
-      # [Required]
-      # How you want to name each file that gets downloaded in this preset
-      file_name: "[{album_year}] {sanitized_album}/{track_number_padded} - {sanitized_title}.{ext}"
-      
-      # [Optional]
-      # If a thumbnail is available, convert it to your desired file type (webp, ugh)
-      convert_thumbnail: "jpg"
-      
-      # [Optional]
-      # If you want to store a thumbnail, define how it gets named
-      thumbnail_name: "[{album_year}] {sanitized_album}/folder.jpg"
-    
-    # [Optional]
-    # Define how you want to add metadata to your downloaded media
-    metadata_options:
-      
-      # [Optional]
-      # If your final file is mp3, add id3 tags (TODO: support for more file types)
-      id3_tags:
-        
-        # [Optional]
-        # id3 version, defaults to 2.4
-        id3_version: 2.4
-        
-        # [Optional]
-        # For 2.4 multi-tags, define which character to use for the null separator
-        null_separator_char: ";"
-        
-        # [Required]
-        # Define the tag names and values to add to your audio
-        tags:
-          artist: "{artist}"
-          albumartist: "{artist}"
-          title: "{title}"
-          album: "{album}"
-          tracknumber: "{track_number}"
-          year: "{album_year}"
-          genre: "{genre}"
-
-    # [Optional]
-    # This will lazily add/override any media variable that can be used in
-    # output or metadata options
-    overrides:
-      
-      # Notice how we use music_path in the output_options.output_directory field above
-      music_path: "/mnt/nas/music"
-
-  ######################################################################################
-  # Another preset, intended to download all music videos in a YouTube playlist.
-  youtube_music_video_playlist:
-    
-    # [Required]
-    # Our source is YouTube, so define the youtube section.
+  yt_channel_as_tv:
     youtube:
-      
-      # [Required]
-      # Download strategies are different for each source. For YouTube, we want to
-      # download the whole playlist (also the only supported download_strategy for now).
-      download_strategy: "playlist"
-      
-      # [Required, defined dynamically]
-      # The YouTube playlist id you want to download from
-      # playlist_id: "PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
-    
-    # [Optional]
+      download_strategy: "channel"
+      channel_avatar_path: "poster.jpg"
+      channel_banner_path: "fanart.jpg"
+
+    # Pass any ytdl parameter to the downloader. It is recommended to leave
+    # ignoreerrors=True for things like age-restricted or hidden videos.
     ytdl_options:
-      # In my case, I want the best format possible, and ignore any errors like
-      # geo/age restricted videos.
-      format: 'best'
       ignoreerrors: True
-    
-    # [Required]
+
     output_options:
-      
-      # Notice in my overrides, I defined the both music_video_path and kodi_music_video_name.
-      output_directory: "{music_video_path}"
-      file_name: "{kodi_music_video_name}.{ext}"
-      convert_thumbnail: "jpg"
-      thumbnail_name: "{kodi_music_video_name}.jpg"
-    
-    # [Optional]
-    metadata_options:
-  
-      # [Optional]
-      # Kodi works with NFO files for videos. I want to format this to be read in as a music video
-      nfo:
-        
-        # [Required]
-        # Name of the nfo file
-        nfo_name: "{kodi_music_video_name}.nfo"
-        
-        # [Required]
-        # Inside the nfo XML, define the root section.
-        nfo_root: "musicvideo"
-        
-        # [Required]
-        # Within the nfo root, define any tags you want set
-        tags:
-          artist: "{artist}"
-          title: "{title}"
-          album: "Music Videos"
-          year: "{upload_year}"
-    
-    # [Optional]
+      output_directory: "{youtube_tv_shows_directory}/{sanitized_tv_show_name}"
+      file_name: "{episode_name}.{ext}"
+      thumbnail_name: "{episode_name}.jpg"
+      maintain_download_archive: True
+
+    convert_thumbnail:
+      to: "jpg"
+
+    nfo_tags:
+      nfo_name: "{episode_name}.nfo"
+      nfo_root: "episodedetails"
+      tags:
+        title: "{title}"
+        season: "{upload_year}"
+        episode: "{upload_month}{upload_day_padded}"
+        plot: "{description}"
+        year: "{upload_year}"
+        aired: "{upload_date_standardized}"
+
+    output_directory_nfo_tags:
+      nfo_name: "tvshow.nfo"
+      nfo_root: "tvshow"
+      tags:
+        title: "{tv_show_name}"
+
     overrides:
-      
-      # I personally like my paths defined explicitly as variables.
-      music_video_path: "/mnt/nas/music"
-      
-      # Kodi wants music videos all in one folder, named like 'artist - title'
-      # This format is used for the video file, thumbnail, and nfo file. So
-      # create a shared variable that each of them will use.
-      kodi_music_video_name: "{sanitized_artist} - {sanitized_title}"
+      youtube_tv_shows_directory: "/path/to/youtube_tv_shows"
+      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {sanitized_title}"
+```
+
+#### subscription.yaml
+The subscription file defines _what_ to download. Anything in the preset can be
+overwritten by a subscription.
+
+```yaml
+# Downloads the entire channel
+john_smith_archive:
+  preset: "yt_channel_as_tv"
+  youtube:
+    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+  # Any user-defined override variables will automatically create a `_sanitized`
+  # variable name, which is safe to use for file names and paths
+  overrides:
+    tv_show_name: "John /\ Smith"
+
+# Downloads and only keeps videos uploaded in the last 2 weeks
+john_doe_recent_archive:
+  preset: "yt_channel_as_tv"
+  youtube:
+    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+    after: "today-2weeks"
+  overrides:
+    tv_show_name: "John /\ Smith"
+  # Will stop looking at channel videos if it already exists or the upload date
+  # is out of range
+  ytdl_options:
+    break_on_existing: True
+    break_on_reject: True
+  output_options:
+    keep_files:
+      after: "today-2weeks"
 ```
 
 ## Usage
-That was a lot! If you have made it this far, thanks for your interest. Now we can see how to use our presets to
-actually download. There are three methods this project aims to build.
-
-### Subscriptions
-Defining a subscription is for media that you will continually want to download, whether that be performed manually
-or in a cron job. We implement this by defining yet another yaml.
-
-#### subscription.yaml
-```yaml
-# [Required]
-# Custom name that you define for your subscription. Any fields defined here will override anything defined in the
-# preset.
-ALISON:
-  
-  # [Required]
-  # Name of the preset to use
-  preset: "soundcloud_discography"
-  
-  # We did not define soundcloud.username in the preset on purpose, so we can define it here
-  soundcloud:
-    username: alis_on
-  
-  # For this artist, I want to explicitly define the artist name and genres that will get used in the metadata
-  # and output paths. An implicit feature is all overrides also create a sanitized variable as well. So
-  # `sanitized_artist` can be used, and will run the sanitize function on my artist override.
-  overrides:
-    artist: "A.L.I.S.O.N."
-    genre: "Synthwave;Electronic;Instrumental"
-
-######################################################################################
-# Another subscription that can use a different preset, overrides, etc.
-Rammstein:
-
-  # [Required]
-  preset: "youtube_music_video_playlist"
-  
-  # [Required]
-  # We did not define youtube.playlist_id in the preset on purpose, to define it here.
-  youtube:
-    playlist_id: "PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
-  
-  # [Optional]
-  overrides:
-    artist: "Rammstein"
-```
-
-You can have multiple subscription files for better organizing. We can invoke the subscriptoin download
-using the command below. This makes it easy to use `ytdl-sub` in a cron job.
+You can have multiple subscription files for better organizing. We can invoke
+the subscription download using the command below. For cron jobs, this is the
+recommended command to use.
 ```shell
 ytdl-sub sub subscription.yaml
 ```
 
-### One-time Downloads [not available yet]
-There are things I want to download, but not subscribe to. In this case, I can invoke `ytdl-sub dl` and add any
-required/optional/override fields. This example is equivalent to using the subscription yaml above, but without
-the yaml.
+### One-time Downloads
+There are things we want to download, but not subscribe to. In this case, you
+can invoke `ytdl-sub dl` and add any fields like a subscription. This example is
+equivalent to using the subscription yaml above, but without the yaml.
 ```shell
-ytdl-sub dl                                                \
-    --preset "soundcloud_discography"                      \
-    --soundcloud.username "alis_on"                        \
-    --overrides.artist "A.L.I.S.O.N."                      \
-    --overrides.genre "Synthwave;Electronic;Instrumental"
-
+ytdl-sub dl                                             \
+    --preset "yt_channel_as_tv"                         \
+    --youtube.channel_id "UCsvn_Po0SmunchJYtttWpOxMg"   \
+    --overrides.tv_show_name "John /\ Smith"
 ```
 
 ### REST API [not available yet]
-The dream will be to create mobile apps or browser extensions to invoke downloads from the couch. My short-term
-plan is to self-host a swaggerhub io instance and invoke the rest api from my browser. It will be a while before
-this gets implemented, but when it does, it will look like this.
+The dream will be to create mobile apps or browser extensions to invoke
+downloads from the couch. Once the server and API is written, the short-term
+plan is to self-host a swaggerhub io instance and invoke the rest api from the
+browser. It will be a while before this gets implemented, but when it does, it
+will look like this.
 ```commandline
 # spin-up the server
 ytdl-sub server
@@ -265,36 +176,22 @@ POST request to invoke the same one-time download example via REST.
 ```commandline
 curl -X POST -H "Content-type: application/json"                \
     -d '{                                                       \
-        "soundcloud.username": "alis_on",                       \
-        "overrides.artist": "A.L.I.S.O.N.",                     \
-        "overrides.genre": "Synthwave;Electronic;Instrumental"  \
+        "youtube.channel_id": "UCsvn_Po0SmunchJYtttWpOxMg"      \
+        "overrides.tv_show_name": "John /\ Smith"               \
     }'                                                          \
-    'localhost:8080/soundcloud_discography'
+    'localhost:8080/yt_channel_as_tv'
 ```
 
-## Other Nice-To-Have Feature Ideas [not available yet]
-### Check existing media before downloading
-Right now, ytdl-sub will naively download everything in the given playlist/artist url. We should check the destination
-directory first to see if it has already been downloaded. Might involve including a tag with its ytdl id.
-
-### More download strategies
-Only full artist (soundcloud) and playlists (youtube) are currently supported. Add new ones for single song/video
-downloads.
-
-### Make adding new sources easy to implement
-Developers should not have to work around spaghetti to add new sources to ytdl-subscribe. It should be very modularized
-and definable in a separate file as a plugin.
-
-### Musicbrainz Integration
-Integration with musicbrainz to fetch correct artist names, song titles, ids, etc and make those tags usable would be
-a great feature for OCD music hoarders like myself, and would play nicely with existing collections to ensure
-files land in the same directory. This can be worked around for now by using overrides.
-
-### Configurable Time Windows to Delete Stale Media
-There are some news channels and podcasts that I'd like to download but only keep the prior 2 weeks-worth of videos.
-This would have to introspect files that reside in the host filesystem. Extreme caution would be required since we are
-perma-deleting files.
+## Additional Documentation
+We are actively working on documenting all ytdl-sub features
+[within our readthedocs page](https://ytdl-sub.readthedocs.io/en/latest/).
+It is still a work-in-progress, but you can still find some useful things
+in there like
+[available format variables](https://ytdl-sub.readthedocs.io/en/latest/config/format_variables/index.html)
+for Youtube and Soundcloud media.
 
 ## Contributing
-I would like to get this to a point where I create a stable release before I accept PRs from the outside world. In the
-meantime, any feedback in the form of a Github issue would be greatly appreciated and taken into consideration.
+There are many ways to contribute, even without coding. Please take a look in
+our [Github Issues](https://github.com/jmbannon/ytdl-sub/issues) to ask
+questions, submit a feature request, or pick up a bug. I try to be responsive
+and provide constructive PR feedback to maintain excellent code quality ;)
