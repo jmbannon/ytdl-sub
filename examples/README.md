@@ -1,0 +1,16 @@
+# Example Configurations
+This directory shows how you can use ytdl-sub for various use cases. These
+are the configs I personally use and have incorporated as part of the e2e tests.
+
+Each example has a `config.yaml` and `subscription.yaml`. The config defines
+_how_ you format your media, whereas the subscription defines _what_ you 
+download plus some additional configuring if needed.
+
+Also note that `kodi` examples are applicable for `jellyfin`, `emby`, and
+`plex` with the
+[XBMC Movies](https://github.com/gboudreau/XBMCnfoMoviesImporter.bundle)
+or
+[XBMC TV Show](https://github.com/gboudreau/XBMCnfoTVImporter.bundle)
+Plex importer. We would like to improve Plex support, please chime in
+[here](https://github.com/jmbannon/ytdl-sub/issues/6)
+if you have experience with importing custom videos with metadata.
