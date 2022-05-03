@@ -182,6 +182,20 @@ curl -X POST -H "Content-type: application/json"                \
     'localhost:8080/yt_channel_as_tv'
 ```
 
+## Installation
+Once we are ready for our first release, we will add this package to pypi. Then,
+we plan to create a docker image that uses the
+[LinuxServer.io](https://www.linuxserver.io/)
+base image, and hopefully become a part of their fleet someday.
+
+Until then, you will have to clone this repo and run it using python 3.10
+```commandline
+git clone https://github.com/jmbannon/ytdl-sub.git
+cd ytdl-sub
+
+pip install -e .
+```
+
 ## Additional Documentation
 We are actively working on documenting all ytdl-sub features
 [within our readthedocs page](https://ytdl-sub.readthedocs.io/en/latest/).
