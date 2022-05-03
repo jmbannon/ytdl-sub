@@ -15,7 +15,7 @@ maximum flexibility while maintaining simplicity.
 
 ## Supported Features
 Below lists supported download schemes. You can see our
-[various example configurations](examples/README.md)
+[various example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
 we personally use to get an idea on how to use ytdl-sub to your liking.
 
 - Download any and all audio/video from a channel or playlist
