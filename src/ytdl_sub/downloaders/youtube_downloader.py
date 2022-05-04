@@ -134,13 +134,36 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
     def __init__(self, name, value):
         YoutubeDownloaderOptions.__init__(self, name, value)
         DateRangeValidator.__init__(self, name, value)
-        self.channel_id = self._validate_key("channel_id", StringValidator)
-        self.channel_avatar_path = self._validate_key_if_present(
+        self._channel_id = self._validate_key("channel_id", StringValidator)
+        self._channel_avatar_path = self._validate_key_if_present(
             "channel_avatar_path", OverridesStringFormatterValidator
         )
-        self.channel_banner_path = self._validate_key_if_present(
+        self._channel_banner_path = self._validate_key_if_present(
             "channel_banner_path", OverridesStringFormatterValidator
         )
+
+    @property
+    def channel_id(self) -> str:
+        """
+        The channel's ID. Not to be confused with the username. It should look something like
+        `UCsvn_Po0SmunchJYOWpOxMg`. You can get this by opening a video and clicking on the
+        channel's avatar image to take you to their channel, then check the url.
+        """
+        return self.channel_id
+
+    @property
+    def channel_avatar_path(self) -> Optional[OverridesStringFormatterValidator]:
+        """
+        Optional. Path to store the channel's avatar thumbnail image to.
+        """
+        return self._channel_avatar_path
+
+    @property
+    def channel_banner_path(self) -> Optional[OverridesStringFormatterValidator]:
+        """
+        Optional. Path to store the channel's banner image to.
+        """
+        return self._channel_banner_path
 
 
 class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions, YoutubeVideo]):

@@ -11,8 +11,18 @@ class DateRangeValidator(StrictDictValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.before = self._validate_key_if_present("before", StringDatetimeValidator)
-        self.after = self._validate_key_if_present("after", StringDatetimeValidator)
+        self._before = self._validate_key_if_present("before", StringDatetimeValidator)
+        self._after = self._validate_key_if_present("after", StringDatetimeValidator)
+
+    @property
+    def before(self) -> Optional[StringDatetimeValidator]:
+        """Optional. Only download videos before this datetime."""
+        return self._before
+
+    @property
+    def after(self) -> Optional[StringDatetimeValidator]:
+        """Optional. Only download videos after this datetime."""
+        return self._after
 
     def get_date_range(self) -> Optional[DateRange]:
         """
@@ -20,9 +30,9 @@ class DateRangeValidator(StrictDictValidator):
         -------
         Date range if the 'before' or 'after' is defined. None otherwise.
         """
-        if self.before or self.after:
+        if self._before or self._after:
             return DateRange(
-                start=self.after.datetime_str if self.after else None,
-                end=self.before.datetime_str if self.before else None,
+                start=self._after.datetime_str if self._after else None,
+                end=self._before.datetime_str if self._before else None,
             )
         return None
