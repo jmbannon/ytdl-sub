@@ -14,8 +14,8 @@ Contents
 ========
 
 .. toctree::
-   :titlesonly:
-   :maxdepth: 2
+   :maxdepth: 3
 
    getting_started/index
    config/index
+   examples/index

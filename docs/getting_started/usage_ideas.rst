@@ -24,5 +24,5 @@ prefer.
     * Add tags and album cover images so it shows up nicely in your music player
 
 If you want to jump the gun to see how ytdl-sub can be configured to do these things, head over to the
-:doc:`examples <../config/examples/index>`.
+:doc:`examples <../examples/index>`.
 
