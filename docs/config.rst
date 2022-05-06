@@ -73,6 +73,34 @@ soundcloud: albums_and_singles
 .. autoclass:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions()
    :members:
    :inherited-members:
+   :member-order: bysource
+
+Required: Output Options
+^^^^^^^^^^^^^^^^^^^^^^^^
+TODO
+
+YTDL Options
+^^^^^^^^^^^^
+TODO
+
+Overrides
+^^^^^^^^^
+TODO
+
+Plugins
+^^^^^^^
+
+Music Tags
+""""""""""
+TODO
+
+NFO
+"""
+TODO
+
+NFO Output Directory
+""""""""""""""""""""
+TODO
 
 Format Variables
 ----------------
@@ -97,4 +125,3 @@ Soundcloud Variables
    :members:
    :inherited-members:
    :undoc-members:
-

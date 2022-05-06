@@ -31,7 +31,7 @@ class SoundcloudDownloaderOptions(DownloaderValidator, ABC):
     @property
     def skip_premiere_tracks(self) -> bool:
         """
-        True to skip tracks that require purchasing. False otherwise.
+        Optional. True to skip tracks that require purchasing. False otherwise. Defaults to True.
         """
         return self._skip_premiere_tracks.value
 
@@ -80,7 +80,7 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
     @property
     def username(self) -> str:
         """
-        The Soundcloud username
+        Required. The Soundcloud username found in the url of their page.
         """
         return self._username.value
 
