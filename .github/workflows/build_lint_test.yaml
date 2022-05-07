@@ -28,7 +28,7 @@ jobs:
         ./tools/linter check
     - name: Run tests with coverage
       run: |
-        ./tools/test
+        ./tools/test xml
     - uses: actions/checkout@master
     - uses: codecov/codecov-action@v2
       with:
