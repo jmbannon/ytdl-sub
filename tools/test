@@ -1,7 +1,9 @@
 # Run within root directory
 
 if [[ $1 = "html" ]]; then
-    coverage run -m pytest && coverage html
+    coverage run -m pytest && coverage report && coverage html
+elif [[ $1 = "xml" ]]; then
+    coverage run -m pytest && coverage report && coverage xml
 elif [[ $1 = "unit" ]]; then
     coverage run -m pytest tests/unit && coverage report
 else

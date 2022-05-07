@@ -28,4 +28,8 @@ jobs:
         ./tools/linter check
     - name: Run tests with coverage
       run: |
-        ./tools/test
+        ./tools/test xml
+    - name: Upload code coverage to codecov.io
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml
