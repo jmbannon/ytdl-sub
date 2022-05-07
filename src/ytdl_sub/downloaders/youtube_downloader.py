@@ -162,7 +162,7 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
         like `UCsvn_Po0SmunchJYOWpOxMg`. You can get this by opening a video and clicking on the
         channel's avatar image to take you to their channel, then check the url.
         """
-        return self.channel_id
+        return self._channel_id.value
 
     @property
     def channel_avatar_path(self) -> Optional[OverridesStringFormatterValidator]:
@@ -203,20 +203,11 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         """Returns full channel url"""
         return f"https://youtube.com/channel/{channel_id}"
 
-    @property
-    def channel_id(self) -> str:
-        """
-        Returns
-        -------
-        Channel ID
-        """
-        return self.download_options.channel_id.value
-
     def download(self) -> List[YoutubeVideo]:
         """
         Downloads all videos from a channel
         """
-        channel_url = self.channel_url(channel_id=self.channel_id)
+        channel_url = self.channel_url(channel_id=self.download_options.channel_id)
         channel_videos: List[YoutubeVideo] = []
         ytdl_options_overrides = {}
 

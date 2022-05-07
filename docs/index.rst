@@ -15,7 +15,7 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 10
 
    getting_started
    config

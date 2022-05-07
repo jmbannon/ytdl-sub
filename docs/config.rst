@@ -7,30 +7,28 @@ ytdl-sub is configured in the ``config.yaml`` and consists of two sections:
    configuration:
    presets:
 
-config.yaml
------------
 
 configuration
-^^^^^^^^^^^^^
+-------------
 
 The ``configuration`` section contains app-wide configs.
 
 presets
-^^^^^^^
+-------
 
 ``presets`` define a `formula` for how to format downloaded media and metadata.
 
 source
-""""""
+^^^^^^
 Download strategies dictate what exactly is getting downloaded from which
 source. By having separate strategies, we can define strategy-dependent
 parameters to better fine-tune how we download things.
 
 youtube
-'''''''
+"""""""
 
 channel
-.......
+'''''''
 .. code-block:: yaml
 
    presets:
@@ -61,7 +59,7 @@ _____
 --------
 
 playlist
-........
+''''''''
 .. code-block:: yaml
 
    presets:
@@ -76,7 +74,7 @@ ___________
 --------
 
 video
-.....
+'''''
 .. code-block:: yaml
 
    presets:
@@ -91,10 +89,10 @@ ________
 --------
 
 soundcloud
-''''''''''
+""""""""""
 
 albums_and_singles
-..................
+''''''''''''''''''
 .. code-block:: yaml
 
    presets:
@@ -113,49 +111,49 @@ ____________________
 --------
 
 output_options
-""""""""""""""
+^^^^^^^^^^^^^^
 
 output_directory
-''''''''''''''''
+""""""""""""""""
   .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.output_directory
 
 file_name
-'''''''''
+"""""""""
   .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.file_name
 
 thumbnail_name
-''''''''''''''
+""""""""""""""
   .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.thumbnail_name
 
 maintain_download_archive
-'''''''''''''''''''''''''
+"""""""""""""""""""""""""
   .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.maintain_download_archive
 
 keep_files
-''''''''''
+""""""""""
   .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.keep_files
 
 YTDL Options
-""""""""""""
+^^^^^^^^^^^^
 TODO
 
 Overrides
-"""""""""
+^^^^^^^^^
 TODO
 
 Plugins
-"""""""
+^^^^^^^
 
 Music Tags
-''''''''''
+""""""""""
 TODO
 
 NFO
-'''
+"""
 TODO
 
 NFO Output Directory
-''''''''''''''''''''
+""""""""""""""""""""
 TODO
 
 Format Variables
