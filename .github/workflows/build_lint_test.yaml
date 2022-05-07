@@ -29,10 +29,7 @@ jobs:
     - name: Run tests with coverage
       run: |
         ./tools/test xml
-    - uses: actions/checkout@master
-    - uses: codecov/codecov-action@v2
+    - name: Upload code coverage to codecov.io
+    - uses: codecov/codecov-action@v3
       with:
         files: ./coverage.xml
-        name: codecov-umbrella # optional
-        fail_ci_if_error: true # optional (default = false)
-        verbose: true # optional (default = false)
