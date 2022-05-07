@@ -60,26 +60,94 @@ class OutputOptions(StrictDictValidator):
 
         # Output directory should resolve without any entry variables.
         # This is to check the directory for any download-archives before any downloads begin
-        self.output_directory: OverridesStringFormatterValidator = self._validate_key(
+        self._output_directory: OverridesStringFormatterValidator = self._validate_key(
             key="output_directory", validator=OverridesStringFormatterValidator
         )
 
         # file name and thumbnails however can use entry variables
-        self.file_name: StringFormatterValidator = self._validate_key(
+        self._file_name: StringFormatterValidator = self._validate_key(
             key="file_name", validator=StringFormatterValidator
         )
-        self.thumbnail_name = self._validate_key_if_present(
+        self._thumbnail_name = self._validate_key_if_present(
             key="thumbnail_name", validator=StringFormatterValidator
         )
 
-        self.maintain_download_archive = self._validate_key_if_present(
+        self._maintain_download_archive = self._validate_key_if_present(
             key="maintain_download_archive", validator=BoolValidator, default=False
         )
-        self.delete_stale_files = self._validate_key_if_present(
+        self._keep_files = self._validate_key_if_present(
             key="keep_files", validator=DateRangeValidator
         )
 
-        if self.delete_stale_files and not self.maintain_download_archive:
+        if self._keep_files and not self.maintain_download_archive:
             raise self._validation_exception(
                 "keep_files requires maintain_download_archive set to True"
             )
+
+    @property
+    def output_directory(self) -> OverridesStringFormatterValidator:
+        """
+        Required. The output directory to store all media files downloaded.
+        """
+        return self._output_directory
+
+    @property
+    def file_name(self) -> StringFormatterValidator:
+        """
+        Required. The file name for the media file. This can include directories such as
+        ``"Season {upload_year}/{title}.{ext}"``, and will be placed in the output directory.
+        """
+        return self._file_name
+
+    @property
+    def thumbnail_name(self) -> Optional[StringFormatterValidator]:
+        """
+        Optional. The file name for the media's thumbnail image. This can include directories such
+        as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
+        directory.
+        """
+        return self._thumbnail_name
+
+    @property
+    def maintain_download_archive(self) -> bool:
+        """
+        Optional. Maintains a download archive file in the output directory for a subscription.
+        It is named ``.ytdl-sub-{subscription_name}-download-archive.json``, stored in the
+        output directory.
+
+        The download archive contains a mapping of ytdl IDs to downloaded files. This is used to
+        create a ytdl download-archive file when invoking a download on a subscription. This will
+        prevent ytdl from redownloading media already downloaded.
+
+        Defaults to False.
+        """
+        return self._maintain_download_archive.value
+
+    @property
+    def keep_files(self) -> DateRangeValidator:
+        """
+        Optional. Requires ``maintain_download_archive`` set to True.
+
+        Only keeps files that are uploaded in the defined range. Should be formatted as:
+
+        .. code-block:: yaml
+
+           output_options:
+             keep_files:
+               before:
+               after:
+
+        where ``before`` and ``after`` are date-times. A common usage of this option is to only
+        fill in the after, such as:
+
+        .. code-block:: yaml
+
+           output_options:
+             keep_files:
+               after: today-2weeks
+
+        Which translates to 'keep files uploaded in the last two weeks'.
+
+        By default, ytdl-sub will keep all files.
+        """
+        return self._keep_files

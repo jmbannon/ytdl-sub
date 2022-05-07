@@ -33,7 +33,7 @@ subscriptions.yaml
    :literal:
 
 Kodi/Jellyfin Music Videos
-----------------------
+--------------------------
 
 config.yaml
 ^^^^^^^^^^^

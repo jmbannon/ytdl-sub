@@ -355,7 +355,7 @@ class EnhancedDownloadArchive:
         -------
         The download mapping's file name (no path)
         """
-        return f".ytdl-subscribe-{self.subscription_name}-download-mapping.json"
+        return f".ytdl-sub-{self.subscription_name}-download-archive.json"
 
     @property
     def _mapping_output_file_path(self):

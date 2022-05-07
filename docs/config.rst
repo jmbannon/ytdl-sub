@@ -1,5 +1,5 @@
-Configuration
-=============
+Config
+======
 ytdl-sub is configured in the ``config.yaml`` and consists of two sections:
 
 .. code-block:: yaml
@@ -7,21 +7,30 @@ ytdl-sub is configured in the ``config.yaml`` and consists of two sections:
    configuration:
    presets:
 
+config.yaml
+-----------
+
+configuration
+^^^^^^^^^^^^^
+
 The ``configuration`` section contains app-wide configs.
 
-Presets
--------
+presets
+^^^^^^^
 
 ``presets`` define a `formula` for how to format downloaded media and metadata.
 
-Required: Source Download Strategy
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+source
+""""""
 Download strategies dictate what exactly is getting downloaded from which
 source. By having separate strategies, we can define strategy-dependent
 parameters to better fine-tune how we download things.
 
-youtube: channel
-""""""""""""""""
+youtube
+'''''''
+
+channel
+.......
 .. code-block:: yaml
 
    presets:
@@ -29,14 +38,30 @@ youtube: channel
        youtube:
          download_strategy: "channel"
 
-.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions()
-   :members:
-   :inherited-members:
-   :member-order: bysource
-   :exclude-members: get_date_range
+channel_id
+__________
+  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.channel_id
 
-youtube: playlist
-"""""""""""""""""
+channel_avatar_path
+___________________
+  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.channel_avatar_path
+
+channel_banner_path
+___________________
+  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.channel_banner_path
+
+before
+______
+  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.before
+
+after
+_____
+  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.after
+
+--------
+
+playlist
+........
 .. code-block:: yaml
 
    presets:
@@ -44,12 +69,14 @@ youtube: playlist
        youtube:
          download_strategy: "playlist"
 
-.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloaderOptions()
-   :members:
-   :inherited-members:
+playlist_id
+___________
+  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloaderOptions.playlist_id
 
-youtube: video
-""""""""""""""
+--------
+
+video
+.....
 .. code-block:: yaml
 
    presets:
@@ -57,12 +84,17 @@ youtube: video
        youtube:
          download_strategy: "video"
 
-.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubeVideoDownloaderOptions()
-   :members:
-   :inherited-members:
+video_id
+________
+  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeVideoDownloaderOptions.video_id
 
-soundcloud: albums_and_singles
-""""""""""""""""""""""""""""""
+--------
+
+soundcloud
+''''''''''
+
+albums_and_singles
+..................
 .. code-block:: yaml
 
    presets:
@@ -70,36 +102,60 @@ soundcloud: albums_and_singles
        soundcloud:
          download_strategy: "albums_and_singles"
 
-.. autoclass:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions()
-   :members:
-   :inherited-members:
-   :member-order: bysource
+username
+________
+  .. autoproperty:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions.username
 
-Required: Output Options
-^^^^^^^^^^^^^^^^^^^^^^^^
-TODO
+skip_premiere_tracks
+____________________
+  .. autoproperty:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions.skip_premiere_tracks
+
+--------
+
+output_options
+""""""""""""""
+
+output_directory
+''''''''''''''''
+  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.output_directory
+
+file_name
+'''''''''
+  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.file_name
+
+thumbnail_name
+''''''''''''''
+  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.thumbnail_name
+
+maintain_download_archive
+'''''''''''''''''''''''''
+  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.maintain_download_archive
+
+keep_files
+''''''''''
+  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.keep_files
 
 YTDL Options
-^^^^^^^^^^^^
+""""""""""""
 TODO
 
 Overrides
-^^^^^^^^^
+"""""""""
 TODO
 
 Plugins
-^^^^^^^
+"""""""
 
 Music Tags
-""""""""""
+''''''''''
 TODO
 
 NFO
-"""
+'''
 TODO
 
 NFO Output Directory
-""""""""""""""""""""
+''''''''''''''''''''
 TODO
 
 Format Variables
