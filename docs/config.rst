@@ -18,8 +18,8 @@ presets
 
 ``presets`` define a `formula` for how to format downloaded media and metadata.
 
-source
-^^^^^^
+download strategy
+^^^^^^^^^^^^^^^^^
 Download strategies dictate what exactly is getting downloaded from which
 source. By having separate strategies, we can define strategy-dependent
 parameters to better fine-tune how we download things.
@@ -133,26 +133,26 @@ keep_files
 """"""""""
   .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.keep_files
 
-YTDL Options
+ytdl_options
 ^^^^^^^^^^^^
-TODO
+.. autoclass:: ytdl_sub.config.preset_options.YTDLOptions
 
-Overrides
+overrides
 ^^^^^^^^^
-TODO
+.. autoclass:: ytdl_sub.config.preset_options.Overrides
 
 Plugins
 ^^^^^^^
 
-Music Tags
+music_tags
 """"""""""
 TODO
 
-NFO
+nfo
 """
 TODO
 
-NFO Output Directory
+nfo_output_directory
 """"""""""""""""""""
 TODO
 
