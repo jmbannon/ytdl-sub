@@ -24,9 +24,16 @@ class SoundcloudDownloaderOptions(DownloaderValidator, ABC):
 
     def __init__(self, name: str, value: dict):
         super().__init__(name=name, value=value)
-        self.skip_premiere_tracks = self._validate_key(
+        self._skip_premiere_tracks = self._validate_key(
             "skip_premiere_tracks", BoolValidator, default=True
         )
+
+    @property
+    def skip_premiere_tracks(self) -> bool:
+        """
+        Optional. True to skip tracks that require purchasing. False otherwise. Defaults to True.
+        """
+        return self._skip_premiere_tracks.value
 
 
 SoundcloudDownloaderOptionsT = TypeVar(
@@ -68,7 +75,14 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.username = self._validate_key(key="username", validator=StringValidator)
+        self._username = self._validate_key(key="username", validator=StringValidator)
+
+    @property
+    def username(self) -> str:
+        """
+        Required. The Soundcloud username found in the url of their page.
+        """
+        return self._username.value
 
 
 class SoundcloudAlbumsAndSinglesDownloader(
@@ -132,7 +146,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
         """
         Soundcloud subscription to download albums and tracks as singles.
         """
-        artist_url = self.artist_url(artist_name=self.download_options.username.value)
+        artist_url = self.artist_url(artist_name=self.download_options.username)
         entry_dicts = self.extract_info_via_info_json(url=artist_url)
 
         # Get all of the artist's albums
@@ -146,7 +160,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
             tracks += album.album_tracks()
 
         # Filter any premiere tracks if specified
-        if self.download_options.skip_premiere_tracks.value:
+        if self.download_options.skip_premiere_tracks:
             tracks = [track for track in tracks if not track.is_premiere()]
 
         return tracks

@@ -59,7 +59,15 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.video_id = self._validate_key("video_id", StringValidator)
+        self._video_id = self._validate_key("video_id", StringValidator)
+
+    @property
+    def video_id(self) -> str:
+        """
+        Required. The ID of the video. Looks like the ``VMAPTo7RVDo`` in
+        ``youtube.com/watch?v=VMAPTo7RVDo``.
+        """
+        return self._video_id.value
 
 
 class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, YoutubeVideo]):
@@ -73,8 +81,7 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
 
     def download(self) -> List[YoutubeVideo]:
         """Download a single Youtube video"""
-        video_id = self.download_options.video_id.value
-        video_url = self.video_url(video_id=video_id)
+        video_url = self.video_url(video_id=self.download_options.video_id)
 
         entry_dict = self.extract_info(url=video_url)
         return [YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)]
@@ -89,7 +96,14 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.playlist_id = self._validate_key("playlist_id", StringValidator)
+        self._playlist_id = self._validate_key("playlist_id", StringValidator)
+
+    @property
+    def playlist_id(self) -> str:
+        """
+        Required. The playlist's ID.
+        """
+        return self._playlist_id.value
 
 
 class YoutubePlaylistDownloader(
@@ -107,8 +121,7 @@ class YoutubePlaylistDownloader(
         """
         Downloads all videos in a Youtube playlist
         """
-        playlist_id = self.download_options.playlist_id.value
-        playlist_url = self.playlist_url(playlist_id=playlist_id)
+        playlist_url = self.playlist_url(playlist_id=self.download_options.playlist_id)
         playlist_videos: List[YoutubePlaylistVideo] = []
 
         entry_dicts = self.extract_info_via_info_json(url=playlist_url)
@@ -134,13 +147,36 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
     def __init__(self, name, value):
         YoutubeDownloaderOptions.__init__(self, name, value)
         DateRangeValidator.__init__(self, name, value)
-        self.channel_id = self._validate_key("channel_id", StringValidator)
-        self.channel_avatar_path = self._validate_key_if_present(
+        self._channel_id = self._validate_key("channel_id", StringValidator)
+        self._channel_avatar_path = self._validate_key_if_present(
             "channel_avatar_path", OverridesStringFormatterValidator
         )
-        self.channel_banner_path = self._validate_key_if_present(
+        self._channel_banner_path = self._validate_key_if_present(
             "channel_banner_path", OverridesStringFormatterValidator
         )
+
+    @property
+    def channel_id(self) -> str:
+        """
+        Required. The channel's ID. Not to be confused with the username. It should look something
+        like `UCsvn_Po0SmunchJYOWpOxMg`. You can get this by opening a video and clicking on the
+        channel's avatar image to take you to their channel, then check the url.
+        """
+        return self._channel_id.value
+
+    @property
+    def channel_avatar_path(self) -> Optional[OverridesStringFormatterValidator]:
+        """
+        Optional. Path to store the channel's avatar thumbnail image to.
+        """
+        return self._channel_avatar_path
+
+    @property
+    def channel_banner_path(self) -> Optional[OverridesStringFormatterValidator]:
+        """
+        Optional. Path to store the channel's banner image to.
+        """
+        return self._channel_banner_path
 
 
 class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions, YoutubeVideo]):
@@ -167,20 +203,11 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         """Returns full channel url"""
         return f"https://youtube.com/channel/{channel_id}"
 
-    @property
-    def channel_id(self) -> str:
-        """
-        Returns
-        -------
-        Channel ID
-        """
-        return self.download_options.channel_id.value
-
     def download(self) -> List[YoutubeVideo]:
         """
         Downloads all videos from a channel
         """
-        channel_url = self.channel_url(channel_id=self.channel_id)
+        channel_url = self.channel_url(channel_id=self.download_options.channel_id)
         channel_videos: List[YoutubeVideo] = []
         ytdl_options_overrides = {}
 
