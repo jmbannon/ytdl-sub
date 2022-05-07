@@ -1,4 +1,4 @@
-name: ytld-sub build, lint, test
+name: ytld-sub CI
 
 on:
   pull_request:
