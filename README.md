@@ -1,6 +1,6 @@
 # ytdl-sub: Youtube-DL-Subscribe
+[<img src="https://img.shields.io/badge/readthedocs-link-blue?logo=readthedocs">](https://ytdl-sub.readthedocs.io/en/latest/index.html)
 ![Checks](https://img.shields.io/github/checks-status/jmbannon/ytdl-sub/master)
-![Docs](https://img.shields.io/readthedocs/ytdl-sub)
 ![Code Coverage](https://img.shields.io/codecov/c/github/jmbannon/ytdl-sub)
 ![Code Qaulity](https://img.shields.io/badge/pylint-10%2F10-brightgreen)
 ![License](https://img.shields.io/github/license/jmbannon/ytdl-sub?color=blue)
