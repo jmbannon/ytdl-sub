@@ -1,4 +1,11 @@
 # ytdl-sub: Youtube-DL-Subscribe
+![Checks](https://img.shields.io/github/checks-status/jmbannon/ytdl-sub/master)
+![Docs](https://img.shields.io/readthedocs/ytdl-sub)
+![Code Coverage](https://img.shields.io/codecov/c/github/jmbannon/ytdl-sub)
+![Code Qaulity](https://img.shields.io/badge/pylint-10%2F10-brightgreen)
+![License](https://img.shields.io/github/license/jmbannon/ytdl-sub?color=blue)
+
+
 Automate downloading and adding metadata with YoutubeDL.
 
 This package strives to download media via 
@@ -11,7 +18,8 @@ and prepare it for consumption in your favorite media player
 modern music players)
 in the most hassle-free way possible. We recognize that everyone stores their 
 media differently. Our approach for file and metadata formatting is to provide
-maximum flexibility while maintaining simplicity.
+maximum flexibility while maintaining simplicity. Read more about it
+[here](https://ytdl-sub.readthedocs.io/en/latest/).
 
 ## Supported Features
 Below lists supported download schemes. You can see our
@@ -200,9 +208,7 @@ pip install -e .
 We are actively working on documenting all ytdl-sub features
 [within our readthedocs page](https://ytdl-sub.readthedocs.io/en/latest/).
 It is still a work-in-progress, but you can still find some useful things
-in there like
-[available format variables](https://ytdl-sub.readthedocs.io/en/latest/config/format_variables/index.html)
-for Youtube and Soundcloud media.
+in there.
 
 ## Contributing
 There are many ways to contribute, even without coding. Please take a look in
