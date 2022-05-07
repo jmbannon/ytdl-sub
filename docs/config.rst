@@ -1,28 +1,32 @@
 Config
 ======
-ytdl-sub is configured in the ``config.yaml`` and consists of two sections:
+ytdl-sub is configured using a ``config.yaml`` file. You can view our
+:doc:`examples <examples>` and read detailed documentation for every configurable
+field below.
+
+The ``config.yaml`` is made up of two sections:
 
 .. code-block:: yaml
 
    configuration:
    presets:
 
+You can jump to any section and subsection of the config using the navigation
+section to the left.
 
 configuration
 -------------
-
-The ``configuration`` section contains app-wide configs.
+The ``configuration`` section contains app-wide configs applied to all presets
+and subscriptions.
 
 presets
 -------
-
 ``presets`` define a `formula` for how to format downloaded media and metadata.
 
-download strategy
+download_strategy
 ^^^^^^^^^^^^^^^^^
-Download strategies dictate what exactly is getting downloaded from which
-source. By having separate strategies, we can define strategy-dependent
-parameters to better fine-tune how we download things.
+Download strategies dictate what is getting downloaded from a source. Each
+download strategy has its own set of parameters.
 
 youtube
 """""""
@@ -56,7 +60,7 @@ after
 _____
   .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.after
 
---------
+-------------------------------------------------------------------------------
 
 playlist
 ''''''''
@@ -71,7 +75,7 @@ playlist_id
 ___________
   .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloaderOptions.playlist_id
 
---------
+-------------------------------------------------------------------------------
 
 video
 '''''
@@ -86,7 +90,7 @@ video_id
 ________
   .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeVideoDownloaderOptions.video_id
 
---------
+-------------------------------------------------------------------------------
 
 soundcloud
 """"""""""
@@ -108,7 +112,7 @@ skip_premiere_tracks
 ____________________
   .. autoproperty:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions.skip_premiere_tracks
 
---------
+-------------------------------------------------------------------------------
 
 output_options
 ^^^^^^^^^^^^^^
@@ -133,40 +137,40 @@ keep_files
 """"""""""
   .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.keep_files
 
+-------------------------------------------------------------------------------
+
 ytdl_options
 ^^^^^^^^^^^^
-.. autoclass:: ytdl_sub.config.preset_options.YTDLOptions
+.. autoclass:: ytdl_sub.config.preset_options.YTDLOptions()
+
+-------------------------------------------------------------------------------
 
 overrides
 ^^^^^^^^^
-.. autoclass:: ytdl_sub.config.preset_options.Overrides
+.. autoclass:: ytdl_sub.config.preset_options.Overrides()
 
 Plugins
 ^^^^^^^
 
 music_tags
 """"""""""
-TODO
+.. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()
 
 nfo
 """
-TODO
+.. autoclass:: ytdl_sub.plugins.nfo_tags.NfoTagsOptions()
 
 nfo_output_directory
 """"""""""""""""""""
-TODO
+.. autoclass:: ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions()
 
-Format Variables
+Source Variables
 ----------------
-Format variables are ``{variables}`` that contain metadata from downloaded
-media.
-
-.. contents:: Source Format Variables
-   :local:
+Source variables are ``{variables}`` that contain metadata from downloaded media.
+These variables can be used in StringFormatters, but not OverrideFormatters.
 
 Youtube Variables
 ^^^^^^^^^^^^^^^^^
-
 .. automodule:: ytdl_sub.entries.variables.youtube_variables
    :members:
    :inherited-members:
@@ -174,8 +178,21 @@ Youtube Variables
 
 Soundcloud Variables
 ^^^^^^^^^^^^^^^^^^^^
-
 .. automodule:: ytdl_sub.entries.variables.soundcloud_variables
    :members:
    :inherited-members:
    :undoc-members:
+
+Formatters
+----------
+Formatters are strings that can contain ``{variables}`` that are overwritten at
+run-time with values assigned to that variable. There are two different types of
+formatters.
+
+String Formatter
+^^^^^^^^^^^^^^^^
+.. autoclass:: ytdl_sub.validators.string_formatter_validators.StringFormatterValidator()
+
+Overrides Formatter
+^^^^^^^^^^^^^^^^^^^
+.. autoclass:: ytdl_sub.validators.string_formatter_validators.OverridesStringFormatterValidator()

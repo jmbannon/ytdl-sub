@@ -13,12 +13,52 @@ from ytdl_sub.validators.validators import LiteralDictValidator
 
 
 class YTDLOptions(LiteralDictValidator):
-    """Ensures `ytdl_options` is a dict"""
+    """
+    Optional. This section allows you to add any ytdl argument to ytdl-sub's downloader.
+    The argument names can differ slightly from the command-line argument names. See
+    `this docstring <https://github.com/yt-dlp/yt-dlp/blob/2022.04.08/yt_dlp/YoutubeDL.py#L197>`_
+    for more details.
+
+    ytdl_options should be formatted like:
+
+    .. code-block:: yaml
+
+           presets:
+             my_example_preset:
+               ytdl_options:
+                 ignoreerrors: True
+
+    where each key is a ytdl argument.
+    """
 
 
+# Disable for proper docstring formatting
+# pylint: disable=line-too-long
 class Overrides(DictFormatterValidator):
-    """Ensures `overrides` is a dict"""
+    """
+    Optional. This section allows you to define variables that can be used in any string formatter.
+    For example, if you want your file and thumbnail files to match without copy-pasting a large
+    format string, you can define something like:
 
+    .. code-block:: yaml
+
+       presets:
+         my_example_preset:
+           overrides:
+             output_directory: "/path/to/media"
+             custom_file_name: "{upload_year}.{upload_month_padded}.{upload_day_padded}.{sanitized_title}"
+
+           # Then use the override variables in the output options
+           output_options:
+             output_directory: "{output_directory}"
+             file_name: "{custom_file_name}.{ext}"
+             thumbnail_name: "{custom_file_name}.{thumbnail_ext}"
+
+    Override variables can contain explicit values and other variables, including both override
+    and source variables.
+    """
+
+    # pylint: enable=line-too-long
     def __init__(self, name, value):
         super().__init__(name, value)
         for key in self._keys:
@@ -132,19 +172,23 @@ class OutputOptions(StrictDictValidator):
 
         .. code-block:: yaml
 
-           output_options:
-             keep_files:
-               before:
-               after:
+           presets:
+             my_example_preset:
+               output_options:
+                 keep_files:
+                   before:
+                   after:
 
         where ``before`` and ``after`` are date-times. A common usage of this option is to only
         fill in the after, such as:
 
         .. code-block:: yaml
 
-           output_options:
-             keep_files:
-               after: today-2weeks
+           presets:
+             my_example_preset:
+               output_options:
+                 keep_files:
+                   after: today-2weeks
 
         Which translates to 'keep files uploaded in the last two weeks'.
 
