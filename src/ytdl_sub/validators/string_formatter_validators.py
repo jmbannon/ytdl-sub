@@ -13,7 +13,28 @@ from ytdl_sub.validators.validators import Validator
 
 class StringFormatterValidator(Validator):
     """
-    Ensures user-created formatter strings are valid
+    String that can use
+    :class:`source variables <ytdl_sub.entries.variables.entry_variables.SourceVariables>`
+    and
+    :class:`overrides <ytdl_sub.config.preset_options.Overrides>`
+    for populating things like file paths and metadata.
+
+    .. code-block:: python
+
+       "{tv_show_file_name}.s{upload_year}.e{upload_month}{upload_day_padded}.{ext}"
+
+    is valid when using
+    :class:`youtube variables <ytdl_sub.entries.variables.youtube_variables.YoutubeVideoVariables>`
+    with the following overrides:
+
+    .. code-block:: yaml
+
+       presets:
+         my_example_preset:
+           overrides:
+             tv_show_file_name: "sweet_tv_show"
+
+    and would resolve to something like ``sweet_tv_show.s2022.e502.mp4``.
     """
 
     _expected_value_type = str
@@ -132,10 +153,20 @@ class StringFormatterValidator(Validator):
         return formatter.format_string
 
 
+# pylint: disable=line-too-long
 class OverridesStringFormatterValidator(StringFormatterValidator):
     """
-    A string formatter that should strictly use overrides that resolve without any entry variables.
+    String that can `only` use :class:`overrides <ytdl_sub.config.preset_options.Overrides>`.
+
+    Used in fields that do not touch the downloaded files themselves, but instead, `single`
+    things like
+    :func:`output_directory <ytdl_sub.config.preset_options.OutputOptions.output_directory>`
+    or the fields in
+    :class:`nfo_output_directory <ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions>`
     """
+
+
+# pylint: enable=line-too-long
 
 
 class DictFormatterValidator(LiteralDictValidator):
