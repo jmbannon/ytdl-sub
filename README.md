@@ -8,18 +8,18 @@
 
 Automate downloading and adding metadata with YoutubeDL.
 
-This package strives to download media via 
+This package downloads media via 
 [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-and prepare it for consumption in your favorite media player
+and prepares it for consumption in your favorite media player
 ([Kodi](https://github.com/xbmc/xbmc), 
 [Jellyfin](https://github.com/jellyfin/jellyfin), 
 [Plex](https://github.com/plexinc/pms-docker),
 [Emby](https://github.com/plexinc/pms-docker),
-modern music players)
-in the most hassle-free way possible. We recognize that everyone stores their 
+modern music players).
+We recognize that everyone stores their 
 media differently. Our approach for file and metadata formatting is to provide
 maximum flexibility while maintaining simplicity. Read more about it
-[here](https://ytdl-sub.readthedocs.io/en/latest/).
+[here](https://ytdl-sub.readthedocs.io/en/latest/getting_started.html).
 
 ## Supported Features
 Below lists supported download schemes. You can see our

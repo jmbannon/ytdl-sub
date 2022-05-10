@@ -86,7 +86,26 @@ class Overrides(DictFormatterValidator):
 
 
 class OutputOptions(StrictDictValidator):
-    """Where to output the final files and thumbnails"""
+    """
+    Defines where to output files and thumbnails after all post-processing has completed.
+
+    Usage:
+
+    .. code-block:: yaml
+
+       presets:
+         my_example_preset:
+           output_options:
+             # required
+             output_directory: "/path/to/videos_or_music"
+             file_name: "{sanitized_title}.{ext}"
+             # optional
+             thumbnail_name: "{sanitized_title}.{thumbnail_ext}"
+             maintain_download_archive: True
+             keep_files:
+               before: now
+               after: today-2weeks
+    """
 
     _required_keys = {"output_directory", "file_name"}
     _optional_keys = {
@@ -168,19 +187,8 @@ class OutputOptions(StrictDictValidator):
         """
         Optional. Requires ``maintain_download_archive`` set to True.
 
-        Only keeps files that are uploaded in the defined range. Should be formatted as:
-
-        .. code-block:: yaml
-
-           presets:
-             my_example_preset:
-               output_options:
-                 keep_files:
-                   before:
-                   after:
-
-        where ``before`` and ``after`` are date-times. A common usage of this option is to only
-        fill in the after, such as:
+        Only keeps files that are uploaded in the defined range. ``before`` and ``after`` are
+        date-times. A common usage of this option is to only fill in the after, such as:
 
         .. code-block:: yaml
 

@@ -30,112 +30,60 @@ download strategy has its own set of parameters.
 
 youtube
 """""""
+Download strategies for downloading videos (or audio if you configure `ytdl_options`_ correctly) from Youtube. See
+Download strategies for downloading music from Soundcloud. See
+:class:`Youtube Variables <ytdl_sub.entries.variables.youtube_variables>`
+for available source variables to use.
 
 channel
 '''''''
-.. code-block:: yaml
-
-   presets:
-     my_example_preset:
-       youtube:
-         download_strategy: "channel"
-
-channel_id
-__________
-  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.channel_id
-
-channel_avatar_path
-___________________
-  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.channel_avatar_path
-
-channel_banner_path
-___________________
-  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.channel_banner_path
-
-before
-______
-  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.before
-
-after
-_____
-  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions.after
+.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions()
+  :members:
+  :member-order: bysource
+  :inherited-members:
+  :exclude-members: get_date_range
 
 -------------------------------------------------------------------------------
 
 playlist
 ''''''''
-.. code-block:: yaml
-
-   presets:
-     my_example_preset:
-       youtube:
-         download_strategy: "playlist"
-
-playlist_id
-___________
-  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloaderOptions.playlist_id
+.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloaderOptions()
+  :members:
+  :member-order: bysource
+  :inherited-members:
 
 -------------------------------------------------------------------------------
 
 video
 '''''
-.. code-block:: yaml
-
-   presets:
-     my_example_preset:
-       youtube:
-         download_strategy: "video"
-
-video_id
-________
-  .. autoproperty:: ytdl_sub.downloaders.youtube_downloader.YoutubeVideoDownloaderOptions.video_id
+.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubeVideoDownloaderOptions()
+  :members:
+  :member-order: bysource
+  :inherited-members:
 
 -------------------------------------------------------------------------------
 
 soundcloud
 """"""""""
+Download strategies for downloading music from Soundcloud. See
+:class:`Soundcloud Variables <ytdl_sub.entries.variables.soundcloud_variables>`
+for available source variables to use.
 
 albums_and_singles
 ''''''''''''''''''
-.. code-block:: yaml
-
-   presets:
-     my_example_preset:
-       soundcloud:
-         download_strategy: "albums_and_singles"
-
-username
-________
-  .. autoproperty:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions.username
-
-skip_premiere_tracks
-____________________
-  .. autoproperty:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions.skip_premiere_tracks
+.. autoclass:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions()
+  :members:
+  :member-order: bysource
+  :inherited-members:
 
 -------------------------------------------------------------------------------
 
 output_options
 ^^^^^^^^^^^^^^
 
-output_directory
-""""""""""""""""
-  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.output_directory
-
-file_name
-"""""""""
-  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.file_name
-
-thumbnail_name
-""""""""""""""
-  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.thumbnail_name
-
-maintain_download_archive
-"""""""""""""""""""""""""
-  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.maintain_download_archive
-
-keep_files
-""""""""""
-  .. autoproperty:: ytdl_sub.config.preset_options.OutputOptions.keep_files
+.. autoclass:: ytdl_sub.config.preset_options.OutputOptions()
+  :members:
+  :member-order: bysource
 
 -------------------------------------------------------------------------------
 
@@ -151,14 +99,18 @@ overrides
 
 Plugins
 ^^^^^^^
+Plugins are used to perform any type of post-processing to the already downloaded files.
 
 music_tags
 """"""""""
 .. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()
+  :members:
 
 nfo
 """
 .. autoclass:: ytdl_sub.plugins.nfo_tags.NfoTagsOptions()
+  :members:
+  :member-order: bysource
 
 nfo_output_directory
 """"""""""""""""""""

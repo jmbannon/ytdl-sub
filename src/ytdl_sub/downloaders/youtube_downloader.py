@@ -55,6 +55,29 @@ class YoutubeDownloader(
 
 
 class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
+    """
+    Downloads a single youtube video. This download strategy is intended for CLI usage performing
+    a one-time download of a video, not a subscription.
+
+    Usage:
+
+    .. code-block:: yaml
+
+      presets:
+        my_example_preset:
+          youtube:
+            # required
+            download_strategy: "video"
+            video_id: "VMAPTo7RVDo"
+
+    CLI usage:
+
+    .. code-block:: bash
+
+       ytdl-sub dl --preset "my_example_preset" --youtube.video_id "VMAPTo7RVDo"
+
+    """
+
     _required_keys = {"video_id"}
 
     def __init__(self, name, value):
@@ -64,7 +87,7 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
     @property
     def video_id(self) -> str:
         """
-        Required. The ID of the video. Looks like the ``VMAPTo7RVDo`` in
+        Required. The ID of the video. Looks like the ``VMAPTo7RVDo`` from
         ``youtube.com/watch?v=VMAPTo7RVDo``.
         """
         return self._video_id.value
@@ -92,6 +115,21 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
 
 
 class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
+    """
+    Downloads all videos from a youtube playlist.
+
+    Usage:
+
+    .. code-block:: yaml
+
+      presets:
+        my_example_preset:
+          youtube:
+            # required
+            download_strategy: "playlist"
+            playlist_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+    """
+
     _required_keys = {"playlist_id"}
 
     def __init__(self, name, value):
@@ -101,7 +139,8 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
     @property
     def playlist_id(self) -> str:
         """
-        Required. The playlist's ID.
+        Required. The playlist's ID. Looks like "UCsvn_Po0SmunchJYtttWpOxMg"
+        from ``https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg``.
         """
         return self._playlist_id.value
 
@@ -141,6 +180,26 @@ class YoutubePlaylistDownloader(
 
 
 class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidator):
+    """
+    Downloads all videos from a youtube channel.
+
+    Usage:
+
+    .. code-block:: yaml
+
+      presets:
+        my_example_preset:
+          youtube:
+            # required
+            download_strategy: "channel"
+            channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+            # optional
+            channel_avatar_path: "poster.jpg"
+            channel_banner_path: "fanart.jpg"
+            before: "now"
+            after: "today-2weeks"
+    """
+
     _required_keys = {"channel_id"}
     _optional_keys = {"before", "after", "channel_avatar_path", "channel_banner_path"}
 
@@ -159,8 +218,10 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
     def channel_id(self) -> str:
         """
         Required. The channel's ID. Not to be confused with the username. It should look something
-        like `UCsvn_Po0SmunchJYOWpOxMg`. You can get this by opening a video and clicking on the
-        channel's avatar image to take you to their channel, then check the url.
+        like ``UCsvn_Po0SmunchJYOWpOxMg`` from
+        ``https://www.youtube.com/channel/UCsvn_Po0SmunchJYOWpOxMg``. You can get this by opening a
+        video and clicking on the channel's avatar image to take you to their channel, then check
+        the url.
         """
         return self._channel_id.value
 
