@@ -203,10 +203,9 @@ class Subscription:
         # If output options maintains stale file deletion, perform the delete here prior to saving
         # the download archive
         if self.output_options.maintain_download_archive:
-            if self.output_options.keep_files:
-                self._enhanced_download_archive.remove_stale_files(
-                    date_range=self.output_options.keep_files.get_date_range()
-                )
+            date_range_to_keep = self.output_options.get_upload_date_range_to_keep()
+            if date_range_to_keep:
+                self._enhanced_download_archive.remove_stale_files(date_range=date_range_to_keep)
 
             self._enhanced_download_archive.save_download_mappings()
 

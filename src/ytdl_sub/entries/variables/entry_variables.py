@@ -9,9 +9,13 @@ from ytdl_sub.entries.base_entry import BaseEntry
 # pylint: disable=no-member
 
 
-class BaseEntryVariables:
+class SourceVariables:
     """
-    Abstract entry object to represent usable variables for formatting presets and subscriptions
+    Source variables are ``{variables}`` that contain metadata from downloaded media.
+    These variables can be used with fields that expect
+    :class:`~ytdl_sub.validators.string_formatter_validators.StringFormatterValidator`,
+    but not
+    :class:`~ytdl_sub.validators.string_formatter_validators.OverridesStringFormatterValidator`.
     """
 
     @property
@@ -45,7 +49,7 @@ class BaseEntryVariables:
         return {property_name: getattr(self, property_name) for property_name in property_names}
 
 
-class EntryVariables(BaseEntryVariables):
+class EntryVariables(SourceVariables):
     @property
     def title(self: BaseEntry) -> str:
         """

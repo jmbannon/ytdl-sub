@@ -5,7 +5,14 @@ from ytdl_sub.validators.validators import Validator
 
 class StringDatetimeValidator(Validator):
     """
-    Validates a ytdl datetime string value
+    String that contains a yt-dlp datetime. From their docs:
+
+    .. code-block:: Markdown
+
+       A string in the format YYYYMMDD or
+       (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
+
+    Valid examples are ``now-2weeks`` or ``20200101``.
     """
 
     _expected_value_type = str

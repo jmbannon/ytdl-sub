@@ -61,3 +61,7 @@ add_module_names = False
 python_use_unqualified_type_names = False
 napoleon_numpy_docstrings = True
 napoleon_use_rtype = False
+
+# -- Options for autodocs -------------------------------------------------
+
+autodoc_default_options = {"autodoc_typehints_format": "short"}

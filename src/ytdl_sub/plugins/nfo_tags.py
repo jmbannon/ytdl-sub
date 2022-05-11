@@ -11,14 +11,69 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 
 
 class NfoTagsOptions(PluginOptions):
+    """
+    Adds an NFO file for every download file. An NFO file is simply an XML file
+    with a ``.nfo`` extension. You can add any values into the NFO.
+
+    Usage:
+
+    .. code-block:: yaml
+
+       presets:
+         my_example_preset:
+           nfo:
+            nfo_name: "{sanitized_title}.nfo"
+            nfo_root: "episodedetails"
+            tags:
+              title: "{title}"
+              season: "{upload_year}"
+              episode: "{upload_month}{upload_day_padded}"
+    """
+
     _required_keys = {"nfo_name", "nfo_root", "tags"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self.nfo_name = self._validate_key(key="nfo_name", validator=StringFormatterValidator)
-        self.nfo_root = self._validate_key(key="nfo_root", validator=StringFormatterValidator)
-        self.tags = self._validate_key(key="tags", validator=DictFormatterValidator)
+        self._nfo_name = self._validate_key(key="nfo_name", validator=StringFormatterValidator)
+        self._nfo_root = self._validate_key(key="nfo_root", validator=StringFormatterValidator)
+        self._tags = self._validate_key(key="tags", validator=DictFormatterValidator)
+
+    @property
+    def nfo_name(self) -> StringFormatterValidator:
+        """
+        The NFO file name.
+        """
+        return self._nfo_name
+
+    @property
+    def nfo_root(self) -> StringFormatterValidator:
+        """
+        The root tag of the NFO's XML. In the usage above, it would look like
+
+        .. code-block:: xml
+
+           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+           <episodedetails>
+           </episodedetails>
+        """
+        return self._nfo_root
+
+    @property
+    def tags(self) -> DictFormatterValidator:
+        """
+        Tags within the nfo_root tag. In the usage above, it would look like
+
+        .. code-block:: xml
+
+           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+           <episodedetails>
+             <title>Awesome Youtube Video</title>
+             <season>2022</season>
+             <episode>502</episode>
+           </episodedetails>
+        """
+        return self._tags
 
 
 class NfoTagsPlugin(Plugin[NfoTagsOptions]):
