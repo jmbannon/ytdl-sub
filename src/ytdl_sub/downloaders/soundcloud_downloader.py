@@ -71,6 +71,25 @@ class SoundcloudDownloader(
 
 
 class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
+    """
+    Downloads a soundcloud user's entire discography. Groups together album tracks and considers
+    any track not in an album as a single. Also includes any collaboration tracks.
+
+    Usage:
+
+    .. code-block:: yaml
+
+      presets:
+        my_example_preset:
+          soundcloud:
+            # required
+            download_strategy: "albums_and_singles"
+            username: soundcloud_username_from_url
+            # optional
+            skip_premiere_tracks: True
+
+    """
+
     _required_keys = {"username"}
 
     def __init__(self, name, value):
