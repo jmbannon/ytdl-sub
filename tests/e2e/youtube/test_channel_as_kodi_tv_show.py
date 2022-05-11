@@ -183,7 +183,7 @@ def expected_recent_channel_download():
 @pytest.fixture
 def rolling_recent_channel_subscription_dict(recent_channel_subscription_dict):
     return mergedeep.merge(
-        recent_channel_subscription_dict, {"output_options": {"keep_files": {"after": "20181101"}}}
+        recent_channel_subscription_dict, {"output_options": {"keep_files_after": "20181101"}}
     )
 
 

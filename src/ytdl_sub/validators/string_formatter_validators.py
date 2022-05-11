@@ -171,7 +171,8 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 
 class DictFormatterValidator(LiteralDictValidator):
     """
-    Validates a dictionary made up of key: string_formatters
+    A dict made up of
+    :class:`~ytdl_sub.validators.string_formatter_validators.StringFormatterValidator`.
     """
 
     _key_validator = StringFormatterValidator
@@ -195,8 +196,8 @@ class DictFormatterValidator(LiteralDictValidator):
 
 class OverridesDictFormatterValidator(DictFormatterValidator):
     """
-    Validates a dictionary made up of key: string_formatters, that must be resolved by overrides
-    only.
+    A dict made up of
+    :class:`~ytdl_sub.validators.string_formatter_validators.OverridesStringFormatterValidator`.
     """
 
     _key_validator = OverridesStringFormatterValidator

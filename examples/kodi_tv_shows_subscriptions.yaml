@@ -70,7 +70,7 @@ john_smith_recent_archive:
 # only keep the last 14-days worth of videos, and delete the rest.
 #
 # The only difference between this example and the one above is
-# - output_options.keep_files.after
+# - output_options.keep_files_after
 #     This is saying "only keep files if they were uploaded in the last 14 days".
 #     All other files that this subscription had previously downloaded will be
 #     deleted.
@@ -85,5 +85,4 @@ john_smith_rolling_archive:
     break_on_reject: True
     break_on_existing: True
   output_options:
-    keep_files:
-      after: today-2weeks
+    keep_files_after: today-2weeks

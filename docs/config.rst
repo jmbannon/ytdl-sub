@@ -87,6 +87,7 @@ output_options
 .. autoclass:: ytdl_sub.config.preset_options.OutputOptions()
   :members:
   :member-order: bysource
+  :exclude-members: get_upload_date_range_to_keep
 
 -------------------------------------------------------------------------------
 

@@ -1,10 +1,11 @@
 from typing import Optional
 
+from yt_dlp.utils import DateRange
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.validators.date_range_validator import DateRangeValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
+from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -102,16 +103,16 @@ class OutputOptions(StrictDictValidator):
              # optional
              thumbnail_name: "{sanitized_title}.{thumbnail_ext}"
              maintain_download_archive: True
-             keep_files:
-               before: now
-               after: today-2weeks
+             keep_files_before: now
+             keep_files_after: 19000101
     """
 
     _required_keys = {"output_directory", "file_name"}
     _optional_keys = {
         "thumbnail_name",
         "maintain_download_archive",
-        "keep_files",
+        "keep_files_before",
+        "keep_files_after",
     }
 
     def __init__(self, name, value):
@@ -134,11 +135,17 @@ class OutputOptions(StrictDictValidator):
         self._maintain_download_archive = self._validate_key_if_present(
             key="maintain_download_archive", validator=BoolValidator, default=False
         )
-        self._keep_files = self._validate_key_if_present(
-            key="keep_files", validator=DateRangeValidator
+
+        self._keep_files_before = self._validate_key_if_present(
+            "keep_files_before", StringDatetimeValidator
+        )
+        self._keep_files_after = self._validate_key_if_present(
+            "keep_files_after", StringDatetimeValidator
         )
 
-        if self._keep_files and not self.maintain_download_archive:
+        if (
+            self._keep_files_before or self._keep_files_after
+        ) and not self.maintain_download_archive:
             raise self._validation_exception(
                 "keep_files requires maintain_download_archive set to True"
             )
@@ -183,23 +190,34 @@ class OutputOptions(StrictDictValidator):
         return self._maintain_download_archive.value
 
     @property
-    def keep_files(self) -> DateRangeValidator:
+    def keep_files_before(self) -> Optional[StringDatetimeValidator]:
         """
         Optional. Requires ``maintain_download_archive`` set to True.
 
-        Only keeps files that are uploaded in the defined range. ``before`` and ``after`` are
-        date-times. A common usage of this option is to only fill in the after, such as:
-
-        .. code-block:: yaml
-
-           presets:
-             my_example_preset:
-               output_options:
-                 keep_files:
-                   after: today-2weeks
-
-        Which translates to 'keep files uploaded in the last two weeks'.
-
-        By default, ytdl-sub will keep all files.
+        Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
+        files before ``now``, which implies all files.
         """
-        return self._keep_files
+        return self._keep_files_before
+
+    @property
+    def keep_files_after(self) -> Optional[StringDatetimeValidator]:
+        """
+        Optional. Requires ``maintain_download_archive`` set to True.
+
+        Only keeps files that are uploaded after this datetime. By default, ytdl-sub will keep
+        files after ``19000101``, which implies all files.
+        """
+        return self._keep_files_after
+
+    def get_upload_date_range_to_keep(self) -> Optional[DateRange]:
+        """
+        Returns
+        -------
+        Date range if the 'before' or 'after' is defined. None otherwise.
+        """
+        if self.keep_files_before or self.keep_files_after:
+            return DateRange(
+                start=self.keep_files_after.datetime_str if self.keep_files_after else None,
+                end=self.keep_files_before.datetime_str if self.keep_files_before else None,
+            )
+        return None
