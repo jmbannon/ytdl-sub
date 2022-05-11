@@ -1,3 +1,4 @@
+import copy
 from typing import Any
 from typing import Dict
 from typing import List
@@ -5,6 +6,10 @@ from typing import Optional
 from typing import Tuple
 from typing import Type
 
+import yaml
+from mergedeep import mergedeep
+
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.config.preset_options import OutputOptions
@@ -21,8 +26,9 @@ from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
 
-PRESET_REQUIRED_KEYS = {"output_options"}
-PRESET_OPTIONAL_KEYS = {
+PRESET_KEYS = {
+    "preset",
+    "output_options",
     "ytdl_options",
     "overrides",
     *DownloadStrategyMapping.sources(),
@@ -69,8 +75,10 @@ class DownloadStrategyValidator(StrictDictValidator):
 
 
 class Preset(StrictDictValidator):
-    _required_keys = PRESET_REQUIRED_KEYS
-    _optional_keys = PRESET_OPTIONAL_KEYS
+    # Have all present keys optional since parent presets could not have all the
+    # required keys. They will get validated in the init after the mergedeep of dicts
+    # and ensure required keys are present.
+    _optional_keys = PRESET_KEYS
 
     def __validate_and_get_downloader(self, downloader_source: str) -> Type[Downloader]:
         return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(
@@ -176,8 +184,42 @@ class Preset(StrictDictValidator):
             if isinstance(validator, OverridesStringFormatterValidator):
                 self.__validate_override_string_formatter_validator(validator)
 
-    def __init__(self, name: str, value: Any):
+    def __merge_parent_preset_dicts_if_present(self, config: ConfigFile):
+        parent_presets = set()
+        parent_preset_validator = self._validate_key_if_present(
+            key="preset", validator=StringValidator
+        )
+        parent_preset = parent_preset_validator.value if parent_preset_validator else None
+
+        while parent_preset:
+            # Make sure the parent preset actually exists
+            if parent_preset not in config.presets.keys:
+                raise self._validation_exception(
+                    f"preset '{parent_preset}' does not exist in the provided config. "
+                    f"Available presets: {', '.join(config.presets.keys)}"
+                )
+
+            # Make sure we do not hit an infinite loop
+            if parent_preset in parent_presets:
+                raise self._validation_exception(
+                    f"preset loop detected with the preset '{parent_preset}'"
+                )
+
+            parent_preset_dict = copy.deepcopy(config.presets.dict[parent_preset])
+
+            parent_presets.add(parent_preset)
+            parent_preset = parent_preset_dict.get("preset")
+
+            # Override the parent preset with the contents of this preset
+            self._value = mergedeep.merge(
+                parent_preset_dict, self._value, strategy=mergedeep.Strategy.REPLACE
+            )
+
+    def __init__(self, config: ConfigFile, name: str, value: Any):
         super().__init__(name=name, value=value)
+
+        # Perform the merge of parent presets before validating any keys
+        self.__merge_parent_preset_dicts_if_present(config=config)
 
         self.downloader, self.downloader_options = self.__validate_and_get_downloader_and_options()
 
@@ -196,3 +238,60 @@ class Preset(StrictDictValidator):
         # After all options are initialized, perform a recursive post-validate that requires
         # values from multiple validators
         self.__recursive_preset_validate()
+
+    @property
+    def name(self) -> str:
+        """
+        Returns
+        -------
+        Name of the preset
+        """
+        return self._name
+
+    @classmethod
+    def from_dict(cls, config: ConfigFile, preset_name: str, preset_dict: Dict) -> "Preset":
+        """
+        Parameters
+        ----------
+        config:
+            Validated instance of the config
+        preset_name:
+            Name of the preset
+        preset_dict:
+            The preset config in dict format
+
+        Returns
+        -------
+        The Subscription validator
+        """
+        return cls(config=config, name=preset_name, value=preset_dict)
+
+    @classmethod
+    def from_file_path(cls, config: ConfigFile, subscription_path: str) -> List["Preset"]:
+        """
+        Parameters
+        ----------
+        config:
+            Validated instance of the config
+        subscription_path:
+            File path to the subscription yaml file
+
+        Returns
+        -------
+        List of presets, for each one in the subscription yaml
+        """
+        # TODO: Create separate yaml file loader class
+        with open(subscription_path, "r", encoding="utf-8") as file:
+            subscription_dict = yaml.safe_load(file)
+
+        subscriptions: List["Preset"] = []
+        for subscription_key, subscription_object in subscription_dict.items():
+            subscriptions.append(
+                Preset.from_dict(
+                    config=config,
+                    preset_name=subscription_key,
+                    preset_dict=subscription_object,
+                )
+            )
+
+        return subscriptions

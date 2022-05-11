@@ -5,7 +5,8 @@ from typing import List
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.config.subscription import SubscriptionValidator
+from ytdl_sub.config.preset import Preset
+from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
 
@@ -19,17 +20,17 @@ def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.N
     :param config: Configuration file
     :param args: Arguments from argparse
     """
-    subscription_paths: List[str] = args.subscription_paths
-    subscriptions: List[SubscriptionValidator] = []
+    preset_paths: List[str] = args.subscription_paths
+    presets: List[Preset] = []
 
-    for subscription_path in subscription_paths:
-        subscriptions += SubscriptionValidator.from_file_path(
-            config=config, subscription_path=subscription_path
-        )
+    for preset_path in preset_paths:
+        presets += Preset.from_file_path(config=config, subscription_path=preset_path)
 
-    for subscription in subscriptions:
+    for preset in presets:
+        subscription = Subscription.from_preset(preset=preset, config=config)
+
         logger.info("Beginning subscription download for %s", subscription.name)
-        subscription.to_subscription().download()
+        subscription.download()
 
 
 def _download_subscription_from_cli(config: ConfigFile, extra_args: List[str]) -> None:
@@ -43,11 +44,18 @@ def _download_subscription_from_cli(config: ConfigFile, extra_args: List[str]) -
     subscription_args_dict = dl_args_parser.to_subscription_dict()
 
     subscription_name = f"cli-dl-{dl_args_parser.get_args_hash()}"
-    SubscriptionValidator.from_dict(
+    subscription_preset = Preset.from_dict(
         config=config,
-        subscription_name=subscription_name,
-        subscription_dict=subscription_args_dict,
-    ).to_subscription().download()
+        preset_name=subscription_name,
+        preset_dict=subscription_args_dict,
+    )
+
+    subscription = Subscription.from_preset(
+        preset=subscription_preset,
+        config=config,
+    )
+
+    subscription.download()
 
 
 def main():

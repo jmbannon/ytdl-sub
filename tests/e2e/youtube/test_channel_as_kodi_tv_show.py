@@ -6,7 +6,8 @@ import pytest
 from e2e.expected_download import ExpectedDownload
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.config.subscription import SubscriptionValidator
+from ytdl_sub.config.preset import Preset
+from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture()
@@ -52,11 +53,16 @@ def subscription_dict(output_directory, subscription_name):
 
 @pytest.fixture
 def full_channel_subscription(config, subscription_name, subscription_dict):
-    return SubscriptionValidator.from_dict(
+    full_channel_preset = Preset.from_dict(
         config=config,
-        subscription_name=subscription_name,
-        subscription_dict=subscription_dict,
-    ).to_subscription()
+        preset_name=subscription_name,
+        preset_dict=subscription_dict,
+    )
+
+    return Subscription.from_preset(
+        preset=full_channel_preset,
+        config=config,
+    )
 
 
 @pytest.fixture
@@ -144,11 +150,16 @@ def recent_channel_subscription_dict(subscription_dict):
 
 @pytest.fixture
 def recent_channel_subscription(config, subscription_name, recent_channel_subscription_dict):
-    return SubscriptionValidator.from_dict(
+    recent_channel_preset = Preset.from_dict(
         config=config,
-        subscription_name=subscription_name,
-        subscription_dict=recent_channel_subscription_dict,
-    ).to_subscription()
+        preset_name=subscription_name,
+        preset_dict=recent_channel_subscription_dict,
+    )
+
+    return Subscription.from_preset(
+        preset=recent_channel_preset,
+        config=config,
+    )
 
 
 @pytest.fixture
@@ -191,11 +202,16 @@ def rolling_recent_channel_subscription_dict(recent_channel_subscription_dict):
 def rolling_recent_channel_subscription(
     config, subscription_name, rolling_recent_channel_subscription_dict
 ):
-    return SubscriptionValidator.from_dict(
+    rolling_recent_channel_preset = Preset.from_dict(
         config=config,
-        subscription_name=subscription_name,
-        subscription_dict=rolling_recent_channel_subscription_dict,
-    ).to_subscription()
+        preset_name=subscription_name,
+        preset_dict=rolling_recent_channel_subscription_dict,
+    )
+
+    return Subscription.from_preset(
+        preset=rolling_recent_channel_preset,
+        config=config,
+    )
 
 
 @pytest.fixture
