@@ -105,6 +105,8 @@ overrides
 """""""""
 .. autoclass:: ytdl_sub.config.preset_options.Overrides()
 
+.. _parent preset:
+
 preset
 """"""
 Presets support inheritance by defining a parent preset:
@@ -166,7 +168,7 @@ Below is an example that downloads YouTube videos:
   :caption: config.yaml
 
    presets:
-     youtube_playlist_dl_example:
+     playlist_preset_ex:
        youtube:
          download_strategy: "playlist"
        output_options:
@@ -179,16 +181,16 @@ Below is an example that downloads YouTube videos:
   :caption: subscription.yaml
 
    my_subscription_name:
-     preset: "youtube_playlist_dl_example"
+     preset: "playlist_preset_ex"
      youtube:
        playlist_id: "UCsvn_Po0SmunchJYtttWpOxMg"
      overrides:
        playlist_name: "diy-playlist"
 
-Our preset uses the `YouTube Playlist`_ download strategy, and defines two
-custom variables: ``{output_directory}`` and ``{playlist_name}``. The subscription needs
-to define the ``playlist_id`` field and the ``{playlist_name}`` variable since the preset
-did not define it.
+Our preset ``playlist_preset_ex`` uses the `YouTube Playlist`_ download strategy, and defines two
+custom variables: ``{output_directory}`` and ``{playlist_name}``. The subscription sets
+the `parent preset`_ to ``playlist_preset_ex``, and must define the ``playlist_id`` field and
+the ``{playlist_name}`` variable since the preset did not.
 
 -------------------------------------------------------------------------------
 
