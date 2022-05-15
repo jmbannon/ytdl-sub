@@ -16,7 +16,7 @@ configuration:
   working_directory: '.ytdl-sub-downloads'
 
 presets:
-  yt_music_video:
+  yt_music_video_playlist:
     # Youtube playlists are our source/download strategy. However, this
     # can be overwritten to download music videos from a 'channel' or a
     # single 'video'
@@ -66,3 +66,11 @@ presets:
     overrides:
       music_video_directory: "path/to/Music Videos"
       music_video_name: "{sanitized_artist} - {sanitized_title}"
+
+  # It is not always ideal to download all of an artist's music videos.
+  # Maybe you only like one song of theirs. We can reuse our preset above
+  # to download a single video instead.
+  yt_music_video:
+    preset: "yt_music_video_playlist"
+    youtube:
+      download_strategy: "video"

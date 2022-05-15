@@ -7,6 +7,7 @@ from typing import List
 from typing import Tuple
 from typing import Type
 
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.config_file import ConfigOptions
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.config.preset_options import OutputOptions
@@ -253,3 +254,25 @@ class Subscription:
             downloader.post_download(
                 overrides=self.overrides, output_directory=self.output_directory
             )
+
+    @classmethod
+    def from_preset(cls, preset: Preset, config: ConfigFile) -> "Subscription":
+        """
+        Creates a subscription from a preset
+
+        Parameters
+        ----------
+        preset
+            Preset to make the subscription out of
+        config
+            The config file that should contain this preset
+
+        Returns
+        -------
+        Initialized subscription
+        """
+        return cls(
+            name=preset.name,
+            preset_options=preset,
+            config_options=config.config_options,
+        )

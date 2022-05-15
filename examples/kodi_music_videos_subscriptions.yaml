@@ -12,7 +12,7 @@
 john_smith:
   # We must define a preset to use from our config. We named the one in the
   # config example "yt_music_video", so set that here.
-  preset: "yt_music_video"
+  preset: "yt_music_video_playlist"
 
   # Since our preset download strategy is set to 'playlist', set the playlist id.
   youtube:
@@ -37,9 +37,8 @@ john_smith:
 # to download a single video instead.
 #
 # The only difference between this example and the one above is
-# - youtube.download_strategy
-#     We defined this as 'playlist' in the config. We must override it
-#     with 'video' to perform a single video download
+# - preset
+#     Use the music video preset, not the playlist preset
 # - youtube.video_id
 #     The id of the video to download
 #
@@ -48,18 +47,13 @@ john_smith:
 # command:
 #
 #     ytdl-sub dl                                                     \
-#         --preset "yt_channel_as_tv"                                 \
-#         --youtube.download_strategy "video"                         \
+#         --preset "yt_music_video"                                   \
 #         --youtube.video_id "QhY6r6oAErg"                            \
 #         --overrides.artist "John Smith and the Instrument Players"
 #
-# The --preset and --youtube.download_strategy args will always be the
-# same. We will try to simplify the dl command to make it shorter.
-
 john_smith_one_hit_wonder:
-  preset: "yt_channel_as_tv"
+  preset: "yt_music_video"
   youtube:
-    download_strategy: "video"
     video_id: "QhY6r6oAErg"
   overrides:
     artist: "John Smith and the Instrument Players"

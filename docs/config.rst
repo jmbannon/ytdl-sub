@@ -48,6 +48,8 @@ _______
 
 -------------------------------------------------------------------------------
 
+.. _YouTube Playlist:
+
 playlist
 ________
 .. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloaderOptions()
@@ -103,6 +105,24 @@ overrides
 """""""""
 .. autoclass:: ytdl_sub.config.preset_options.Overrides()
 
+.. _parent preset:
+
+preset
+""""""
+Presets support inheritance by defining a parent preset:
+
+.. code-block:: yaml
+
+   presets:
+     parent_preset:
+       ...
+     child_preset:
+       preset: "parent_preset"
+
+In the example above, ``child_preset`` inherits all fields defined in ``parent_preset``.
+It is advantageous to use parent presets where possible to reduce duplicate yaml
+definitions.
+
 -------------------------------------------------------------------------------
 
 
@@ -130,6 +150,47 @@ nfo_output_directory
 .. autoclass:: ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions()
   :members:
   :member-order: bysource
+
+-------------------------------------------------------------------------------
+
+subscription.yaml
+-----------------
+The ``subscription.yaml`` file is where we use our `presets`_ in the `config.yaml`_
+to define a `subscription`: something we want to recurrently download such as a specific
+channel or playlist.
+
+The only difference between a ``subscription`` and ``preset`` is that the subscription
+must have all required fields and ``{variables}`` defined so it can perform a download.
+
+Below is an example that downloads YouTube videos:
+
+.. code-block:: yaml
+  :caption: config.yaml
+
+   presets:
+     playlist_preset_ex:
+       youtube:
+         download_strategy: "playlist"
+       output_options:
+         output_directory: "{output_directory}/{playlist_name}"
+         file_name: "{playlist_name}.{title}.{ext}"
+       overrides:
+         output_directory: "/path/to/ytdl-sub-videos"
+
+.. code-block:: yaml
+  :caption: subscription.yaml
+
+   my_subscription_name:
+     preset: "playlist_preset_ex"
+     youtube:
+       playlist_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+     overrides:
+       playlist_name: "diy-playlist"
+
+Our preset ``playlist_preset_ex`` uses the `YouTube Playlist`_ download strategy, and defines two
+custom variables: ``{output_directory}`` and ``{playlist_name}``. The subscription sets
+the `parent preset`_ to ``playlist_preset_ex``, and must define the ``playlist_id`` field and
+the ``{playlist_name}`` variable since the preset did not.
 
 -------------------------------------------------------------------------------
 
