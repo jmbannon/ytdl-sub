@@ -48,6 +48,8 @@ _______
 
 -------------------------------------------------------------------------------
 
+.. _YouTube Playlist:
+
 playlist
 ________
 .. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloaderOptions()
@@ -103,6 +105,22 @@ overrides
 """""""""
 .. autoclass:: ytdl_sub.config.preset_options.Overrides()
 
+preset
+""""""
+Presets support inheritance by defining a parent preset:
+
+.. code-block:: yaml
+
+   presets:
+     parent_preset:
+       ...
+     child_preset:
+       preset: "parent_preset"
+
+In the example above, ``child_preset`` inherits all fields defined in ``parent_preset``.
+It is advantageous to use parent presets where possible to reduce duplicate yaml
+definitions.
+
 -------------------------------------------------------------------------------
 
 
@@ -139,9 +157,38 @@ The ``subscription.yaml`` file is where we use our `presets`_ in the `config.yam
 to define a `subscription`: something we want to recurrently download such as a specific
 channel or playlist.
 
-The subscription file looks nearly identical to the `presets`_ section with a few
-exceptions. TODO: work in progress!
+The only difference between a ``subscription`` and ``preset`` is that the subscription
+must have all required fields and ``{variables}`` defined so it can perform a download.
 
+Below is an example that downloads YouTube videos:
+
+.. code-block:: yaml
+  :caption: config.yaml
+
+   presets:
+     youtube_playlist_dl_example:
+       youtube:
+         download_strategy: "playlist"
+       output_options:
+         output_directory: "{output_directory}/{playlist_name}"
+         file_name: "{playlist_name}.{title}.{ext}"
+       overrides:
+         output_directory: "/path/to/ytdl-sub-videos"
+
+.. code-block:: yaml
+  :caption: subscription.yaml
+
+   my_subscription_name:
+     preset: "youtube_playlist_dl_example"
+     youtube:
+       playlist_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+     overrides:
+       playlist_name: "diy-playlist"
+
+Our preset uses the `YouTube Playlist`_ download strategy, and defines two
+custom variables: ``{output_directory}`` and ``{playlist_name}``. The subscription needs
+to define the ``playlist_id`` field and the ``{playlist_name}`` variable since the preset
+did not define it.
 
 -------------------------------------------------------------------------------
 
