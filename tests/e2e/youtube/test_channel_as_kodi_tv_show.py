@@ -139,11 +139,8 @@ def recent_channel_subscription_dict(subscription_dict):
     return mergedeep.merge(
         subscription_dict,
         {
+            "preset": "yt_channel_as_tv__recent",
             "youtube": {"after": "20150101"},
-            "ytdl_options": {
-                "break_on_reject": True,
-                "break_on_existing": True,
-            },
         },
     )
 
@@ -194,7 +191,11 @@ def expected_recent_channel_download():
 @pytest.fixture
 def rolling_recent_channel_subscription_dict(recent_channel_subscription_dict):
     return mergedeep.merge(
-        recent_channel_subscription_dict, {"output_options": {"keep_files_after": "20181101"}}
+        recent_channel_subscription_dict,
+        {
+            "preset": "yt_channel_as_tv__only_recent",
+            "output_options": {"keep_files_after": "20181101"},
+        },
     )
 
 

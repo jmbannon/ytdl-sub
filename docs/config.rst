@@ -133,6 +133,18 @@ nfo_output_directory
 
 -------------------------------------------------------------------------------
 
+subscription.yaml
+-----------------
+The ``subscription.yaml`` file is where we use our `presets`_ in the `config.yaml`_
+to define a `subscription`: something we want to recurrently download such as a specific
+channel or playlist.
+
+The subscription file looks nearly identical to the `presets`_ section with a few
+exceptions. TODO: work in progress!
+
+
+-------------------------------------------------------------------------------
+
 .. _source-variables:
 
 Source Variables
