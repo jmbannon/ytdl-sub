@@ -1,15 +1,15 @@
 ytdl-sub: to enjoy media in your favorite player
 ================================================
 
-ytdl-sub is an `open-source <https://github.com/jmbannon/ytdl-sub>`_
-python app that automates downloading media and preparing it for
-consumption in your favorite media player in the most hassle-free way
-possible.
+ytdl-sub automates downloading media and preparing it for
+consumption in your favorite media player. It is
+`open-source <https://github.com/jmbannon/ytdl-sub>`_
+and written entirely in Python.
 
 If you are new to ytdl-sub, head over to the
 :doc:`Getting Started <getting_started>`
-page. This guide explains how you can use ytdl-sub, install, configure it to download
-various types of media, and start downloading.
+page to see how you can use ytdl-sub, install, configure it
+to your liking, and start downloading.
 
 Contents
 ========
