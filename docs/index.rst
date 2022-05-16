@@ -20,3 +20,4 @@ Contents
    getting_started
    config
    examples
+   faq

@@ -93,6 +93,8 @@ output_options
 
 -------------------------------------------------------------------------------
 
+.. _ytdl_options:
+
 ytdl_options
 """"""""""""
 .. autoclass:: ytdl_sub.config.preset_options.YTDLOptions()
