@@ -16,6 +16,7 @@ and prepares it for consumption in your favorite media player
 [Plex](https://github.com/plexinc/pms-docker),
 [Emby](https://github.com/plexinc/pms-docker),
 modern music players).
+
 We recognize that everyone stores their 
 media differently. Our approach for file and metadata formatting is to provide
 maximum flexibility while maintaining simplicity. Read more about it
@@ -24,7 +25,7 @@ maximum flexibility while maintaining simplicity. Read more about it
 ## Supported Features
 Below lists supported download schemes. You can see our
 [various example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
-we personally use to get an idea on how to use ytdl-sub to your liking.
+to get an idea on how to use ytdl-sub to your liking.
 
 - Download any and all audio/video from a channel or playlist
   - Format videos to look like
@@ -70,7 +71,7 @@ to look like:
 
 ### config.yaml
 The config file defines _how_ to download and format media. You can define any
-number of presets to represent media as whatever you want.
+number of presets to represent media how you see fit.
 ```yaml
 configuration:
   working_directory: '.ytdl-sub-downloads'
@@ -168,26 +169,6 @@ ytdl-sub dl                                             \
     --preset "yt_channel_as_tv"                         \
     --youtube.channel_id "UCsvn_Po0SmunchJYtttWpOxMg"   \
     --overrides.tv_show_name "John /\ Smith"
-```
-
-### REST API [not available yet]
-The dream will be to create mobile apps or browser extensions to invoke
-downloads from the couch. Once the server and API is written, the short-term
-plan is to self-host a swaggerhub io instance and invoke the rest api from the
-browser. It will be a while before this gets implemented, but when it does, it
-will look like this.
-```commandline
-# spin-up the server
-ytdl-sub server
-```
-POST request to invoke the same one-time download example via REST.
-```commandline
-curl -X POST -H "Content-type: application/json"                \
-    -d '{                                                       \
-        "youtube.channel_id": "UCsvn_Po0SmunchJYtttWpOxMg"      \
-        "overrides.tv_show_name": "John /\ Smith"               \
-    }'                                                          \
-    'localhost:8080/yt_channel_as_tv'
 ```
 
 ## Installation
