@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+
+# copy config
+[[ ! -e /config/config.yaml ]] && \
+    cp /defaults/config.yaml /config/config.yaml
+[[ ! -e /config/subscriptions.yaml ]] && \
+    cp /defaults/subscriptions.yaml /config/subscriptions.yaml
+
+# permissions
+chown -R abc:abc \
+    /config

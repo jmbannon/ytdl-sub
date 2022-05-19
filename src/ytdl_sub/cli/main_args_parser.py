@@ -3,7 +3,7 @@ import argparse
 ###################################################################################################
 # GLOBAL PARSER
 parser = argparse.ArgumentParser(
-    description="YoutubeDL-Subscribe: Download and organize your favorite media hassle-free."
+    description="ytdl-sub: Automate download and adding metadata with YoutubeDL"
 )
 parser.add_argument(
     "-c",
@@ -21,8 +21,8 @@ subscription_parser.add_argument(
     "subscription_paths",
     metavar="SUBPATH",
     nargs="*",
-    help="path to subscription files, uses config.yaml if not provided",
-    default="config.yaml",
+    help="path to subscription files, uses subscriptions.yaml if not provided",
+    default="subscriptions.yaml",
 )
 ###################################################################################################
 # DOWNLOAD PARSER
