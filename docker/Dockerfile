@@ -1,48 +1,34 @@
-FROM python:3.10.4-alpine3.15
-
-###############################################################################
-# S6 OVERLAY
-
-ARG S6_OVERLAY_VERSION=3.1.0.1
-
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz
+FROM ghcr.io/linuxserver/baseimage-alpine:3.15
 
 ###############################################################################
 # YTDL-SUB INSTALL
 
 COPY root/ /
-RUN apk update && apk add \
-    gcc \
-    g++ \
-    make \
-    libffi-dev \
-    openssl-dev \
-    vim \
-    bash \
-    shadow && \
-    echo "**** create abc user and make our folders ****" && \
-    groupmod -g 1000 users && \
-    useradd -u 911 -U -d /config -s /bin/false abc && \
-    usermod -G users abc && \
+RUN apk update && \
+    apk add \
+      gcc \
+      g++ \
+      make \
+      libffi-dev \
+      openssl-dev && \
+    apk del \
+      python3 \
+      py3-pip && \
+    apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
+      python3=3.10.4-r0 \
+      py3-setuptools=59.4.0-r0 && \
+    apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/community/ \
+      py3-pip=22.0.4-r0 && \
     mkdir -p /config && \
-    pip install ytdl_sub-*.whl
+    pip install --no-cache-dir ytdl_sub-*.whl
 
 ###############################################################################
 # CONTAINER CONFIGS
 
-# Environment Variables
-ENV EDITOR="nano"   \
+ENV EDITOR="nano" \
 HOME="/config"
 
-
-
-USER ${PUID}:${PGID}
 VOLUME /config
-
-ENTRYPOINT ["/init"]
 
 
 
