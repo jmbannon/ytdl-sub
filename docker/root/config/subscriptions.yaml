@@ -1,0 +1,13 @@
+#recent_channel_test:
+#  preset: "yt_channel"
+#  ytdl_options:
+#    break_on_reject: True
+#  youtube:
+#    channel_id: "UCsvn_Po0SmunchJYOWpOxMg"
+#    after: today-13days
+#  output_options:
+#    output_directory: "/tmp/dunkey"
+#    keep_files:
+#      after: today-3days
+#  overrides:
+#    tv_show_name: "Youtube: Dunkey"

@@ -140,3 +140,4 @@ dmypy.json
 .idea/
 
 docker/*.whl
+docker/root/*.whl

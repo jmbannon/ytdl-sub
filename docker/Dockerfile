@@ -1,14 +1,5 @@
 FROM python:3.10.4-alpine3.15
 
-# Needed for py deps
-RUN apk add gcc g++ make libffi-dev openssl-dev
-
-USER ${PUID}:${PGID}
-COPY ytdl_sub-0.0.1-py3-none-any.whl .
-
-RUN ls -lh
-RUN pip install ytdl_sub-0.0.1-py3-none-any.whl
-
 ###############################################################################
 # S6 OVERLAY
 
@@ -18,6 +9,39 @@ ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLA
 RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz
+
+###############################################################################
+# YTDL-SUB INSTALL
+
+COPY root/ /
+RUN apk update && apk add \
+    gcc \
+    g++ \
+    make \
+    libffi-dev \
+    openssl-dev \
+    vim \
+    bash \
+    shadow && \
+    echo "**** create abc user and make our folders ****" && \
+    groupmod -g 1000 users && \
+    useradd -u 911 -U -d /config -s /bin/false abc && \
+    usermod -G users abc && \
+    mkdir -p /config && \
+    pip install ytdl_sub-*.whl
+
+###############################################################################
+# CONTAINER CONFIGS
+
+# Environment Variables
+ENV EDITOR="nano"   \
+HOME="/config"
+
+
+
+USER ${PUID}:${PGID}
+VOLUME /config
+
 ENTRYPOINT ["/init"]
 
 
