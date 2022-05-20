@@ -58,9 +58,9 @@ def _download_subscription_from_cli(config: ConfigFile, extra_args: List[str]) -
     subscription.download()
 
 
-def main():
+def _main():
     """
-    Entrypoint for ytdl-subscribe
+    Entrypoint for ytdl-sub, without the error handling
     """
     # If no args are provided, print help and exit
     if len(sys.argv) < 2:
@@ -80,18 +80,26 @@ def main():
         logger.info("Download complete!")
 
 
-if __name__ == "__main__":
+def main():
+    """
+    Entrypoint for ytdl-sub
+    """
     try:
-        main()
+        _main()
     except ValidationException as validation_exception:
         logger.error(validation_exception)
         sys.exit(1)
-    except Exception as exc:  # pylint: disable=broad-except
-        logger.exception(
-            "A fatal error occurred. Please copy and paste the stacktrace above and make a Github "
-            "issue at https://github.com/jmbannon/ytdl-subscribe/issues with your config and "
-            "command/subscription yaml file to reproduce. Thanks for trying ytdl-subscribe!"
+    except Exception:  # pylint: disable=broad-except
+        logger.exception("An uncaught error occurred:")
+        logger.error(
+            "Please copy and paste the stacktrace above and make a Github "
+            "issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
+            "command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!"
         )
         sys.exit(1)
 
     sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
