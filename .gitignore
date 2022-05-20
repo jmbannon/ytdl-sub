@@ -138,3 +138,6 @@ dmypy.json
 
 *.DS_Store
 .idea/
+
+docker/*.whl
+docker/root/*.whl

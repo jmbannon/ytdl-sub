@@ -1,0 +1,7 @@
+rammstein_music_videos:
+  preset: "yt_music_video_playlist"
+  youtube:
+    playlist_id: "PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
+  overrides:
+    artist: "Rammstein"
+

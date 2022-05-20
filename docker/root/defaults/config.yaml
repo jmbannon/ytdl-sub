@@ -1,0 +1,53 @@
+configuration:
+  working_directory: '/tmp/ytdl-sub-downloads'
+
+# All example presets are included in this default config.yaml,
+# feel free to change it as you see fit. For a detailed explanation
+# of the examples, see https://ytdl-sub.readthedocs.io/en/latest/examples.html
+presets:
+
+  #############################################################################
+  # Downloads single videos and stores them as Kodi/Jellyfin/Emby music videos,
+  # which all live in a single directory.
+  yt_music_video:
+    youtube:
+      download_strategy: "video"
+
+    ytdl_options:
+      ignoreerrors: True
+
+    output_options:
+      output_directory: "{music_video_directory}"
+      file_name: "{music_video_name}.{ext}"
+      thumbnail_name: "{music_video_name}.jpg"
+
+    convert_thumbnail:
+      to: "jpg"
+
+    nfo_tags:
+      nfo_name: "{music_video_name}.nfo"
+      nfo_root: "musicvideo"
+      tags:
+        artist: "{artist}"
+        title: "{title}"
+        album: "Music Videos"
+        year: "{upload_year}"
+
+    overrides:
+      music_video_directory: "/music_videos"
+      music_video_name: "{sanitized_artist} - {sanitized_title}"
+      # artist: # FILL THIS OUT IN THE SUBSCRIPTION
+
+  #############################################################################
+  # Downloads playlists and stores all videos as Kodi/Jellyfin/Emby music
+  # videos, which all live in a single directory.
+  yt_music_video_playlist:
+    preset: "yt_music_video"
+    youtube:
+      download_strategy: "playlist"
+
+    output_options:
+      maintain_download_archive: True
+
+    ytdl_options:
+      break_on_existing: True

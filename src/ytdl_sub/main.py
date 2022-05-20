@@ -59,7 +59,14 @@ def _download_subscription_from_cli(config: ConfigFile, extra_args: List[str]) -
 
 
 def main():
-    """Entrypoint for ytdl-subscribe"""
+    """
+    Entrypoint for ytdl-subscribe
+    """
+    # If no args are provided, print help and exit
+    if len(sys.argv) < 2:
+        parser.print_help()
+        return
+
     args, extra_args = parser.parse_known_args()
 
     config: ConfigFile = ConfigFile.from_file_path(args.config)
