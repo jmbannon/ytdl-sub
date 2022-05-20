@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import Generic
+from typing import Optional
 from typing import Type
 from typing import TypeVar
 from typing import final
@@ -33,7 +34,7 @@ class Plugin(Generic[PluginOptionsT], ABC):
         plugin_options: PluginOptionsT,
         output_directory: str,
         overrides: Overrides,
-        enhanced_download_archive: EnhancedDownloadArchive,
+        enhanced_download_archive: Optional[EnhancedDownloadArchive],
     ):
         self.plugin_options = plugin_options
         self.output_directory = output_directory
@@ -46,6 +47,7 @@ class Plugin(Generic[PluginOptionsT], ABC):
     def archive_entry_file_name(self, entry: Entry, relative_file_path: str) -> None:
         """
         Adds an entry and a file name that belongs to it into the archive mapping.
+        If maintain_download_archive is False for the subscription, this method will do nothing.
 
         Parameters
         ----------
@@ -54,9 +56,10 @@ class Plugin(Generic[PluginOptionsT], ABC):
         relative_file_path:
             The name of the file path relative to the output directory
         """
-        self.__enhanced_download_archive.mapping.add_entry(
-            entry=entry, entry_file_path=relative_file_path
-        )
+        if self.__enhanced_download_archive:
+            self.__enhanced_download_archive.mapping.add_entry(
+                entry=entry, entry_file_path=relative_file_path
+            )
 
     def post_process_entry(self, entry: Entry):
         """

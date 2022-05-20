@@ -131,12 +131,17 @@ class Subscription:
         """
         return self.overrides.apply_formatter(formatter=self.output_options.output_directory)
 
-    def _copy_file_to_output_directory(self, source_file_path: str, output_file_name: str):
+    def _copy_file_to_output_directory(
+        self, entry: Entry, source_file_path: str, output_file_name: str
+    ):
         """
         Helper function to move a file from the working directory to the output directory.
+        Will add it to the download archive mapping if the archive is being maintained.
 
         Parameters
         ----------
+        entry:
+            Entry that the file belongs to
         source_file_path:
             Path to the source file
         output_file_name:
@@ -145,6 +150,9 @@ class Subscription:
         destination_file_path = Path(self.output_directory) / Path(output_file_name)
         os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
         copyfile(source_file_path, destination_file_path)
+
+        if self.output_options.maintain_download_archive:
+            self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
 
     def _copy_entry_files_to_output_directory(self, entry: Entry):
         """
@@ -160,22 +168,21 @@ class Subscription:
         output_file_name = self.overrides.apply_formatter(
             formatter=self.output_options.file_name, entry=entry
         )
-        self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
         self._copy_file_to_output_directory(
-            source_file_path=entry.get_download_file_path(), output_file_name=output_file_name
+            entry=entry,
+            source_file_path=entry.get_download_file_path(),
+            output_file_name=output_file_name,
         )
 
         if self.output_options.thumbnail_name:
             output_thumbnail_name = self.overrides.apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry
             )
-            self._enhanced_download_archive.mapping.add_entry(entry, output_thumbnail_name)
             self._copy_file_to_output_directory(
+                entry=entry,
                 source_file_path=entry.get_download_thumbnail_path(),
                 output_file_name=output_thumbnail_name,
             )
-
-        self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
 
     @contextlib.contextmanager
     def _prepare_working_directory(self):
@@ -221,7 +228,9 @@ class Subscription:
                 plugin_options=plugin_options,
                 output_directory=self.output_directory,
                 overrides=self.overrides,
-                enhanced_download_archive=self._enhanced_download_archive,
+                enhanced_download_archive=self._enhanced_download_archive
+                if self.output_options.maintain_download_archive
+                else None,
             )
 
             plugins.append(plugin)
@@ -238,7 +247,9 @@ class Subscription:
                 working_directory=self.working_directory,
                 download_options=self.downloader_options,
                 ytdl_options=self.ytdl_options.dict,
-                download_archive_file_name=self._enhanced_download_archive.archive_file_name,
+                download_archive_file_name=self._enhanced_download_archive.archive_file_name
+                if self.output_options.maintain_download_archive
+                else None,
             )
 
             entries = downloader.download()
