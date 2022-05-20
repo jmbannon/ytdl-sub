@@ -1,0 +1,16 @@
+version: "2.1"
+services:
+  ytdl-sub:
+    image: ytdl-sub:latest
+    container_name: ytdl-sub
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - <path/to/ytdl-sub/config>:/config
+      - <path/to/tv_shows>:/tv_shows # optional
+      - <path/to/movies>:/movies # optional
+      - <path/to/music_videos>:/music_videos # optional
+      - <path/to/music>:/music # optional
+    restart: unless-stopped

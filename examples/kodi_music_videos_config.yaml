@@ -16,12 +16,12 @@ configuration:
   working_directory: '.ytdl-sub-downloads'
 
 presets:
-  yt_music_video_playlist:
-    # Youtube playlists are our source/download strategy. However, this
-    # can be overwritten to download music videos from a 'channel' or a
-    # single 'video'
+  yt_music_video:
+    # A single YouTube video is our source/download strategy. However, this
+    # can be overwritten to download music videos from a "playlist", as we
+    # will see in a preset below
     youtube:
-      download_strategy: "playlist"
+      download_strategy: "video"
 
     # For advanced YTDL users only.
     # It is wise to leave ignoreerrors=True to avoid errors for things
@@ -32,16 +32,10 @@ presets:
     # For each video downloaded, set the file and thumbnail name here.
     # We set both with {music_video_name}, which is a variable we define in
     # the overrides section further below to represent consistent naming format.
-    #
-    # Another field worth mentioning is maintain_download_archive=True. This
-    # is generally a good thing to enable with playlists because it will
-    # store previously downloaded video ids to tell YTDL not to re-download
-    # them on a successive invocation.
     output_options:
-      output_directory: "{music_video_directory}"
+      output_directory: "{music_video_directory}/{sanitized_artist}"
       file_name: "{music_video_name}.{ext}"
       thumbnail_name: "{music_video_name}.jpg"
-      maintain_download_archive: True
 
     # Always convert the video thumbnail to jpg
     # TODO: always convert all thumbnails to jpg in code
@@ -70,7 +64,19 @@ presets:
   # It is not always ideal to download all of an artist's music videos.
   # Maybe you only like one song of theirs. We can reuse our preset above
   # to download a single video instead.
-  yt_music_video:
-    preset: "yt_music_video_playlist"
+  yt_music_video_playlist:
+    preset: "yt_music_video"
     youtube:
-      download_strategy: "video"
+      download_strategy: "playlist"
+
+    # Setting maintain_download_archive=True is generally a good thing to enable
+    # with playlists and channels because it will store previously downloaded
+    # video ids to tell YTDL not to re-download them on a successive invocation.
+    output_options:
+      maintain_download_archive: True
+
+    # Setting break_on_existing=True is also a good thing anytime you are using
+    # a download archive, because it will tell the downloader to stop trying
+    # to download videos that have already been downloaded.
+    ytdl_options:
+      break_on_existing: True

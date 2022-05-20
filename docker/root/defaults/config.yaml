@@ -2,79 +2,52 @@ configuration:
   working_directory: '/tmp/ytdl-sub-downloads'
 
 # All example presets are included in this default config.yaml,
-# feel free to change it as you see fit.
+# feel free to change it as you see fit. For a detailed explanation
+# of the examples, see https://ytdl-sub.readthedocs.io/en/latest/examples.html
 presets:
-  yt_music_video_playlist:
-      youtube:
-        download_strategy: "playlist"
-      ytdl_options:
-        ignoreerrors: True
-      output_options:
-        output_directory: "{music_video_directory}"
-        file_name: "{music_video_name}.{ext}"
-        thumbnail_name: "{music_video_name}.jpg"
-        maintain_download_archive: True
-      convert_thumbnail:
-        to: "jpg"
-      nfo_tags:
-        nfo_name: "{music_video_name}.nfo"
-        nfo_root: "musicvideo"
-        tags:
-          artist: "{artist}"
-          title: "{title}"
-          album: "Music Videos"
-          year: "{upload_year}"
-      overrides:
-        music_video_directory: "path/to/Music Videos"
-        music_video_name: "{sanitized_artist} - {sanitized_title}"
 
-    yt_music_video:
-      preset: "yt_music_video_playlist"
-      youtube:
-        download_strategy: "video"
-
-  yt_channel_as_tv:
+  #############################################################################
+  # Downloads single videos and stores them as Kodi/Jellyfin/Emby music videos,
+  # which all live in a single directory.
+  yt_music_video:
     youtube:
-      download_strategy: "channel"
-      channel_avatar_path: "poster.jpg"
-      channel_banner_path: "fanart.jpg"
+      download_strategy: "video"
+
     ytdl_options:
       ignoreerrors: True
+
     output_options:
-      output_directory: "{youtube_tv_shows_directory}/{sanitized_tv_show_name}"
-      file_name: "{episode_name}.{ext}"
-      thumbnail_name: "{episode_name}.jpg"
-      maintain_download_archive: True
+      output_directory: "{music_video_directory}"
+      file_name: "{music_video_name}.{ext}"
+      thumbnail_name: "{music_video_name}.jpg"
+
     convert_thumbnail:
       to: "jpg"
+
     nfo_tags:
-      nfo_name: "{episode_name}.nfo"
-      nfo_root: "episodedetails"
+      nfo_name: "{music_video_name}.nfo"
+      nfo_root: "musicvideo"
       tags:
+        artist: "{artist}"
         title: "{title}"
-        season: "{upload_year}"
-        episode: "{upload_month}{upload_day_padded}"
-        plot: "{description}"
+        album: "Music Videos"
         year: "{upload_year}"
-        aired: "{upload_date_standardized}"
-    output_directory_nfo_tags:
-      nfo_name: "tvshow.nfo"
-      nfo_root: "tvshow"
-      tags:
-        title: "{tv_show_name}"
+
     overrides:
-      youtube_tv_shows_directory: "/path/to/youtube_tv_shows"
-      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {sanitized_title}"
+      music_video_directory: "/music_videos"
+      music_video_name: "{sanitized_artist} - {sanitized_title}"
+      # artist: # FILL THIS OUT IN THE SUBSCRIPTION
 
-  yt_channel_as_tv__recent:
-    preset: "yt_channel_as_tv"
+  #############################################################################
+  # Downloads playlists and stores all videos as Kodi/Jellyfin/Emby music
+  # videos, which all live in a single directory.
+  yt_music_video_playlist:
+    preset: "yt_music_video"
     youtube:
-      after: "today-2weeks"
-    ytdl_options:
-      break_on_reject: True
-      break_on_existing: True
+      download_strategy: "playlist"
 
-  yt_channel_as_tv__only_recent:
-    preset: "yt_channel_as_tv__recent"
     output_options:
-      keep_files_after: "today-2weeks"
+      maintain_download_archive: True
+
+    ytdl_options:
+      break_on_existing: True
