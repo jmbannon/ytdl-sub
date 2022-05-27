@@ -18,8 +18,8 @@ RUN apk update && \
     apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
       python3=3.10.4-r0 \
       py3-setuptools=59.4.0-r0 && \
-    apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/community/ \
-      py3-pip=22.0.4-r0 && \
+    apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/community/ \ 
+      py3-pip && \
     mkdir -p /config && \
     pip install --no-cache-dir ytdl_sub-*.whl && \
     rm ytdl_sub-*.whl
