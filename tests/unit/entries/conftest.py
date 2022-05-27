@@ -86,7 +86,7 @@ def mock_entry_to_dict(
     return {
         "uid": uid,
         "title": title,
-        "sanitized_title": title,
+        "title_sanitized": title,
         "ext": ext,
         "extractor": extractor,
         "upload_date": upload_date,
@@ -136,7 +136,7 @@ def validate_entry_properties(
     def _validate_entry_properties(entry: Entry):
         assert entry.uid == uid
         assert entry.title == title
-        assert entry.sanitized_title == title
+        assert entry.title_sanitized == title
         assert entry.upload_date == upload_date
         assert entry.upload_year == upload_year
         assert entry.ext == ext

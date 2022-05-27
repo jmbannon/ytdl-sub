@@ -89,7 +89,7 @@ presets:
       ignoreerrors: True
 
     output_options:
-      output_directory: "{youtube_tv_shows_directory}/{sanitized_tv_show_name}"
+      output_directory: "{youtube_tv_shows_directory}/{tv_show_name_sanitized}"
       file_name: "{episode_name}.{ext}"
       thumbnail_name: "{episode_name}.jpg"
       maintain_download_archive: True
@@ -116,7 +116,7 @@ presets:
 
     overrides:
       youtube_tv_shows_directory: "/path/to/youtube_tv_shows"
-      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {sanitized_title}"
+      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {title_sanitized}"
 ```
 
 #### subscription.yaml
@@ -130,7 +130,8 @@ john_smith_archive:
   youtube:
     channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
   # Any user-defined override variables will automatically create a `_sanitized`
-  # variable name, which is safe to use for file names and paths
+  # variable name, which is safe to use for file names and paths.
+  # In this example, `tv_show_name` will produce `tv_show_name_sanitized` 
   overrides:
     tv_show_name: "John /\ Smith"
 

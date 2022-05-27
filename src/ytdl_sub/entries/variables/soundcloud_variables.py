@@ -44,7 +44,7 @@ class SoundcloudVariables(EntryVariables):
         return self.title
 
     @property
-    def sanitized_album(self) -> str:
+    def album_sanitized(self) -> str:
         """
         Returns
         -------

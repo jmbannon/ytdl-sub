@@ -35,7 +35,7 @@ presets:
 
     overrides:
       music_video_directory: "/music_videos"
-      music_video_name: "{sanitized_artist} - {sanitized_title}"
+      music_video_name: "{artist_sanitized} - {title_sanitized}"
       # artist: # FILL THIS OUT IN THE SUBSCRIPTION
 
   #############################################################################

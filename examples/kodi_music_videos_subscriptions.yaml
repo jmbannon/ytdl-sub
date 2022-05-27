@@ -19,9 +19,9 @@ john_smith:
     playlist_id: "UCsvn_Po0SmunchJYtttWpOxMg"
 
   # Overrides can be defined per-subscription. If you noticed, we used {artist}
-  # and {sanitized_artist} in our "yt_music_video" preset. We intended to reserve
+  # and {artist_sanitized} in our "yt_music_video" preset. We intended to reserve
   # that variable to be defined for each individual subscription. Each override
-  # defined here will create a 'sanitized_' version that is safe for file systems.
+  # defined here will create a '_sanitized' version that is safe for file systems.
   #
   # A note for Kodi music videos, it is important to make sure your artist name
   # exactly matches how it is formatted in Kodi itself, otherwise it will be
