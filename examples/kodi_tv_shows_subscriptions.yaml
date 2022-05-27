@@ -19,10 +19,10 @@ john_smith_archive:
     channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
 
   # Overrides can be defined per-subscription. If you noticed, we used
-  # {tv_show_name} and {sanitized_tv_show_name} in our "yt_channel_as_tv"
+  # {tv_show_name} and {tv_show_name_sanitized} in our "yt_channel_as_tv"
   # preset. We intended to reserve that variable to be defined for each
   # individual subscription. Each override defined here will create a
-  # 'sanitized_' version that is safe for file systems.
+  # '_sanitized' version that is safe for file systems.
   overrides:
     tv_show_name: "John /\ Smith"
 

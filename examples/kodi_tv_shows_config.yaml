@@ -50,7 +50,7 @@ presets:
     # store previously downloaded video ids to tell YTDL not to re-download
     # them on a successive invocation.
     output_options:
-      output_directory: "{youtube_tv_shows_directory}/{sanitized_tv_show_name}"
+      output_directory: "{youtube_tv_shows_directory}/{tv_show_name_sanitized}"
       file_name: "{episode_name}.{ext}"
       thumbnail_name: "{episode_name}.jpg"
       maintain_download_archive: True
@@ -87,7 +87,7 @@ presets:
     # which gets reused above for the video, thumbnail, and NFO file.
     overrides:
       youtube_tv_shows_directory: "/path/to/youtube_tv_shows"
-      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {sanitized_title}"
+      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {title_sanitized}"
 
   ###############################################################################
   # LEVEL 2 - RECENT ARCHIVE

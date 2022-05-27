@@ -47,7 +47,7 @@ class Overrides(DictFormatterValidator):
          my_example_preset:
            overrides:
              output_directory: "/path/to/media"
-             custom_file_name: "{upload_year}.{upload_month_padded}.{upload_day_padded}.{sanitized_title}"
+             custom_file_name: "{upload_year}.{upload_month_padded}.{upload_day_padded}.{title_sanitized}"
 
            # Then use the override variables in the output options
            output_options:
@@ -63,14 +63,14 @@ class Overrides(DictFormatterValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
         for key in self._keys:
-            sanitized_key_name = f"sanitized_{key}"
+            key_name_sanitized = f"{key}_sanitized"
             # First, sanitize the format string
-            self._value[sanitized_key_name] = sanitize_filename(self._value[key].format_string)
+            self._value[key_name_sanitized] = sanitize_filename(self._value[key].format_string)
 
             # Then, convert it into a StringFormatterValidator
-            self._value[sanitized_key_name] = StringFormatterValidator(
+            self._value[key_name_sanitized] = StringFormatterValidator(
                 name="__should_never_fail__",
-                value=self._value[sanitized_key_name],
+                value=self._value[key_name_sanitized],
             )
 
     def apply_formatter(
@@ -99,9 +99,9 @@ class OutputOptions(StrictDictValidator):
            output_options:
              # required
              output_directory: "/path/to/videos_or_music"
-             file_name: "{sanitized_title}.{ext}"
+             file_name: "{title_sanitized}.{ext}"
              # optional
-             thumbnail_name: "{sanitized_title}.{thumbnail_ext}"
+             thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
              maintain_download_archive: True
              keep_files_before: now
              keep_files_after: 19000101

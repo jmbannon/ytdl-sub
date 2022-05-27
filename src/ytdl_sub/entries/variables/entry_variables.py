@@ -60,7 +60,7 @@ class EntryVariables(SourceVariables):
         return self.kwargs("title")
 
     @property
-    def sanitized_title(self) -> str:
+    def title_sanitized(self) -> str:
         """
         Returns
         -------
