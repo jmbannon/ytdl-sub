@@ -1,3 +1,5 @@
+from yt_dlp.utils import sanitize_filename
+
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.variables.entry_variables import EntryVariables
 
@@ -6,6 +8,24 @@ from ytdl_sub.entries.variables.entry_variables import EntryVariables
 
 
 class YoutubeVideoVariables(EntryVariables):
+    @property
+    def channel(self: BaseEntry) -> str:
+        """
+        Returns
+        -------
+        The channel name.
+        """
+        return self.kwargs("channel")
+
+    @property
+    def channel_sanitized(self) -> str:
+        """
+        Returns
+        -------
+        The channel name, sanitized.
+        """
+        return sanitize_filename(self.channel)
+
     @property
     def track_title(self: BaseEntry) -> str:
         """
@@ -18,6 +38,36 @@ class YoutubeVideoVariables(EntryVariables):
             return self.kwargs("track")
 
         return super().title
+
+    @property
+    def track_title_sanitized(self) -> str:
+        """
+        Returns
+        -------
+        The sanitized track title.
+        """
+        return sanitize_filename(self.track_title)
+
+    @property
+    def artist(self: BaseEntry) -> str:
+        """
+        Returns
+        -------
+        The artist of a music video if it is available, otherwise it falls back to the channel.
+        """
+        if self.kwargs_contains("artist"):
+            return self.kwargs("artist")
+
+        return self.kwargs("channel")
+
+    @property
+    def artist_sanitized(self) -> str:
+        """
+        Returns
+        -------
+        The sanitized artist name.
+        """
+        return sanitize_filename(self.artist)
 
     @property
     def playlist_index(self) -> int:

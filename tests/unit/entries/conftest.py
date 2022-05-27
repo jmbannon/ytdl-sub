@@ -92,6 +92,7 @@ def mock_entry_to_dict(
         "upload_date": upload_date,
         "upload_date_standardized": f"{upload_year}-{_pad(upload_month)}-{_pad(upload_day)}",
         "upload_year": upload_year,
+        "upload_year_truncated": int(str(upload_year)[:2]),
         "upload_month": upload_month,
         "upload_month_padded": _pad(upload_month),
         "upload_day": upload_day,

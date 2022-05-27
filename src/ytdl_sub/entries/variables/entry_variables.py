@@ -106,6 +106,15 @@ class EntryVariables(SourceVariables):
         return int(self.upload_date[:4])
 
     @property
+    def upload_year_truncated(self) -> int:
+        """
+        Returns
+        -------
+        The last two digits of the upload year, i.e. 22 in 2022
+        """
+        return int(self.upload_date[:2])
+
+    @property
     def upload_month_padded(self) -> str:
         """
         Returns
