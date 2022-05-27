@@ -72,7 +72,8 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         ytdl_options["outtmpl"] = str(Path(working_directory) / "%(id)s.%(ext)s")
 
         # If a download archive file name is provided, set it to that
-        ytdl_options["download_archive"] = str(Path(working_directory) / download_archive_file_name)
+        if download_archive_file_name:
+            ytdl_options["download_archive"] = str(Path(working_directory) / download_archive_file_name)
 
         return ytdl_options
 
