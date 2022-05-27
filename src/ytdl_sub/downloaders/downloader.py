@@ -73,7 +73,9 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
 
         # If a download archive file name is provided, set it to that
         if download_archive_file_name:
-            ytdl_options["download_archive"] = str(Path(working_directory) / download_archive_file_name)
+            ytdl_options["download_archive"] = str(
+                Path(working_directory) / download_archive_file_name
+            )
 
         return ytdl_options
 
