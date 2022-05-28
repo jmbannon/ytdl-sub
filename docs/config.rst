@@ -22,6 +22,11 @@ configuration
 The ``configuration`` section contains app-wide configs applied to all presets
 and subscriptions.
 
+.. autoclass:: ytdl_sub.config.config_file.ConfigOptions()
+  :members:
+  :member-order: bysource
+
+
 presets
 ^^^^^^^
 ``presets`` define a `formula` for how to format downloaded media and metadata.

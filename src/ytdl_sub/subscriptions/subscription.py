@@ -120,7 +120,7 @@ class Subscription:
         -------
         The directory that the downloader saves files to
         """
-        return str(Path(self.__config_options.working_directory.value) / Path(self.name))
+        return str(Path(self.__config_options.working_directory) / Path(self.name))
 
     @property
     def output_directory(self) -> str:

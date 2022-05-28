@@ -69,7 +69,7 @@ def _main():
 
     args, extra_args = parser.parse_known_args()
 
-    config: ConfigFile = ConfigFile.from_file_path(args.config)
+    config: ConfigFile = ConfigFile.from_file_path(args.config).initialize()
     if args.subparser == "sub":
         _download_subscriptions_from_yaml_files(config=config, args=args)
         logger.info("Subscription download complete!")

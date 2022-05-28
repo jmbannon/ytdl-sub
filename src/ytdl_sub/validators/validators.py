@@ -73,6 +73,24 @@ class BoolValidator(Validator):
         return self._value
 
 
+class IntValidator(Validator):
+    """
+    Validates int fields.
+    """
+
+    _expected_value_type: Type = int
+    _expected_value_type_name = "integer"
+
+    @property
+    def value(self) -> int:
+        """
+        Returns
+        -------
+        Int value
+        """
+        return self._value
+
+
 class StringValidator(Validator):
     """
     Validates string fields.
