@@ -1,7 +1,6 @@
 from typing import Any
 
-import yaml
-
+from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
@@ -56,7 +55,5 @@ class ConfigFile(StrictDictValidator):
         -------
         Config file validator
         """
-        # TODO: Create separate yaml file loader class
-        with open(config_path, "r", encoding="utf-8") as file:
-            config_dict = yaml.safe_load(file)
+        config_dict = load_yaml(file_path=config_path)
         return ConfigFile.from_dict(config_dict)

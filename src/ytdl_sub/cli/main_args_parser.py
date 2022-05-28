@@ -22,7 +22,7 @@ subscription_parser.add_argument(
     metavar="SUBPATH",
     nargs="*",
     help="path to subscription files, uses subscriptions.yaml if not provided",
-    default="subscriptions.yaml",
+    default=["subscriptions.yaml"],
 )
 ###################################################################################################
 # DOWNLOAD PARSER
