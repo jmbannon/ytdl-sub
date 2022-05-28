@@ -6,7 +6,6 @@ from typing import Optional
 from typing import Tuple
 from typing import Type
 
-import yaml
 from mergedeep import mergedeep
 
 from ytdl_sub.config.config_file import ConfigFile
@@ -20,6 +19,7 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
@@ -280,9 +280,7 @@ class Preset(StrictDictValidator):
         -------
         List of presets, for each one in the subscription yaml
         """
-        # TODO: Create separate yaml file loader class
-        with open(subscription_path, "r", encoding="utf-8") as file:
-            subscription_dict = yaml.safe_load(file)
+        subscription_dict = load_yaml(file_path=subscription_path)
 
         subscriptions: List["Preset"] = []
         for subscription_key, subscription_object in subscription_dict.items():

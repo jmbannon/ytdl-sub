@@ -12,3 +12,11 @@ class StringFormattingVariableNotFoundException(StringFormattingException):
 
 class DownloadArchiveException(ValueError):
     """Any user or file errors caused by download archive or mapping files"""
+
+
+class FileNotFoundException(ValidationException):
+    """Any user file that's expected to exist, but is not found"""
+
+
+class InvalidYamlException(ValidationException):
+    """User yaml that is invalid"""
