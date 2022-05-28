@@ -157,14 +157,17 @@ class Preset(StrictDictValidator):
 
         for variable_name in formatter_validator.format_variables:
             if variable_name not in resolvable_override_variables:
+                # pylint: disable=protected-access
                 raise StringFormattingVariableNotFoundException(
-                    f"This variable can only use override variables that resolve without needing "
-                    f"variables from a downloaded file. The only override variables defined that "
-                    f"meet this condition are: {', '.join(sorted(resolvable_override_variables))}"
+                    f"Validation error in {formatter_validator._name}: "
+                    f"This can only use override variables. Available override variables are: "
+                    f"{', '.join(sorted(resolvable_override_variables))}",
                 )
+                # pylint: enable=protected-access
 
     def __recursive_preset_validate(
-        self, validator_dict: Optional[Dict[str, Validator]] = None
+        self,
+        validator_dict: Optional[Dict[str, Validator]] = None,
     ) -> None:
         """
         Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
@@ -175,9 +178,9 @@ class Preset(StrictDictValidator):
 
         for validator in validator_dict.values():
             if isinstance(validator, DictValidator):
+                # pylint: disable=protected-access
                 # Usage of protected variables in other validators is fine. The reason to keep them
                 # protected is for readability when using them in subscriptions.
-                # pylint: disable=protected-access
                 self.__recursive_preset_validate(validator._validator_dict)
                 # pylint: enable=protected-access
 
