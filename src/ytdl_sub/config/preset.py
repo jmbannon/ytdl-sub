@@ -144,7 +144,7 @@ class Preset(StrictDictValidator):
         return plugins
 
     def __validate_override_string_formatter_validator(
-        self, formatter_validator: OverridesStringFormatterValidator, validator_name: str
+        self, formatter_validator: OverridesStringFormatterValidator
     ):
         # Gather all resolvable override variables
         resolvable_override_variables: List[str] = []
@@ -157,18 +157,17 @@ class Preset(StrictDictValidator):
 
         for variable_name in formatter_validator.format_variables:
             if variable_name not in resolvable_override_variables:
-                raise self._validation_exception(
-                    f"Validation error in {validator_name}: "
-                    f"This variable can only use override variables that resolve without needing "
-                    f"variables from a downloaded file. The only override variables defined that "
-                    f"meet this condition are: {', '.join(sorted(resolvable_override_variables))}",
-                    exception_class=StringFormattingVariableNotFoundException,
+                # pylint: disable=protected-access
+                raise StringFormattingVariableNotFoundException(
+                    f"Validation error in {formatter_validator._name}: "
+                    f"This can only use override variables. Available override variables are: "
+                    f"{', '.join(sorted(resolvable_override_variables))}",
                 )
+                # pylint: enable=protected-access
 
     def __recursive_preset_validate(
         self,
         validator_dict: Optional[Dict[str, Validator]] = None,
-        validator_name: Optional[str] = None,
     ) -> None:
         """
         Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
@@ -176,22 +175,16 @@ class Preset(StrictDictValidator):
         """
         if validator_dict is None:
             validator_dict = self._validator_dict
-            validator_name = self.name
 
         for validator in validator_dict.values():
             # pylint: disable=protected-access
             # Usage of protected variables in other validators is fine. The reason to keep them
             # protected is for readability when using them in subscriptions.
-            _validator_name = f"{validator_name}.{validator._name}"
             if isinstance(validator, DictValidator):
-                self.__recursive_preset_validate(
-                    validator._validator_dict, validator_name=_validator_name
-                )
+                self.__recursive_preset_validate(validator._validator_dict)
 
             if isinstance(validator, OverridesStringFormatterValidator):
-                self.__validate_override_string_formatter_validator(
-                    validator, validator_name=_validator_name
-                )
+                self.__validate_override_string_formatter_validator(validator)
             # pylint: enable=protected-access
 
     def __merge_parent_preset_dicts_if_present(self, config: ConfigFile):
