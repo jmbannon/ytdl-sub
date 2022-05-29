@@ -1,0 +1,75 @@
+# This example shows how to download and format a Soundcloud artist's
+# discography with tags and album ar. We will configure this to make
+# the output directory formatted as:
+#
+#   /path/to/music
+#       /The Be Sharps
+#           /[2020] My first upload
+#               01 - My first upload.mp3
+#               folder.jpg
+#           /[2021] My first album
+#               01 - Track one.mp3
+#               02 - Track two.mp3
+#               folder.jpg
+#       /Another artist
+#           ...
+#
+configuration:
+  working_directory: '.ytdl-sub-downloads'
+
+presets:
+  sc_discography:
+    # A Soundcloud artist's albums and singles will be our source/download
+    # strategy. This will group together album tracks, and treat any track
+    # not part of an album as a single.
+    soundcloud:
+      download_strategy: "albums_and_singles"
+      skip_premiere_tracks: True
+
+    # For advanced YTDL users only.
+    # This sets the download format to grab the best mp3 available.
+    # Other formats should work but have not been tested.
+    ytdl_options:
+      format: 'bestaudio[ext=mp3]'
+
+    # For each song downloaded, set the file and thumbnail name here.
+    # The output directory stores all artists in a shared {music_directory}.
+    # We store the audio file in its respective {album_directory_name} folder
+    # with the track number and title. The (thumbnail) album art is stored
+    # in the album folder.
+    #
+    # Another field worth mentioning is maintain_download_archive=True. This
+    # is generally a good thing to enable with artists because it will
+    # store previously downloaded song IDs to tell YTDL not to re-download
+    # them on a successive invocation.
+    output_options:
+      output_directory: "/{music_directory}/{artist_sanitized}"
+      file_name: "{album_directory_name}/{track_number_padded} - {title_sanitized}.{ext}"
+      thumbnail_name: "{album_directory_name}/folder.jpg"
+      maintain_download_archive: True
+
+    # Always convert the video thumbnail to jpg
+    # TODO: always convert all thumbnails to jpg in code
+    convert_thumbnail:
+      to: "jpg"
+
+    # For each song downloaded, populate the audio file with music tags.
+    # Tagging should work with most audio file formats. See
+    # https://ytdl-sub.readthedocs.io/en/latest/config.html#music-tags
+    # for more details.
+    music_tags:
+      tags:
+        artist: "{artist}"
+        albumartist: "{artist}"
+        title: "{title}"
+        album: "{album}"
+        track: "{track_number}"
+        year: "{album_year}"
+        genre: "Unset"
+
+    # Overrides is a section where we can define our own variables, and use them in
+    # any other section. We define our music directory and album directory names here,
+    # which gets reused above for the audio file name and album art path.
+    overrides:
+      album_directory_name: "[{album_year}] {album_sanitized}"
+      music_directory: "/path/to/music"
