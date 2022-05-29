@@ -33,7 +33,7 @@ presets:
     # We set both with {music_video_name}, which is a variable we define in
     # the overrides section further below to represent consistent naming format.
     output_options:
-      output_directory: "{music_video_directory}/{artist_sanitized}"
+      output_directory: "{music_video_directory}"
       file_name: "{music_video_name}.{ext}"
       thumbnail_name: "{music_video_name}.jpg"
 
@@ -50,7 +50,7 @@ presets:
       nfo_root: "musicvideo"
       tags:
         artist: "{artist}"
-        title: "{title}"
+        title: "{track_title}"
         album: "Music Videos"
         year: "{upload_year}"
 
@@ -59,7 +59,7 @@ presets:
     # here, which gets reused above for the video, thumbnail, and NFO file.
     overrides:
       music_video_directory: "path/to/Music Videos"
-      music_video_name: "{artist_sanitized} - {title_sanitized}"
+      music_video_name: "{artist_sanitized} - {track_title_sanitized}"
 
   # It is not always ideal to download all of an artist's music videos.
   # Maybe you only like one song of theirs. We can reuse our preset above

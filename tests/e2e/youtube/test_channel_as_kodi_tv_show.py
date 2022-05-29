@@ -1,4 +1,3 @@
-import tempfile
 from pathlib import Path
 
 import mergedeep
@@ -8,12 +7,6 @@ from e2e.expected_download import ExpectedDownload
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
-
-
-@pytest.fixture()
-def output_directory():
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield temp_dir
 
 
 @pytest.fixture
