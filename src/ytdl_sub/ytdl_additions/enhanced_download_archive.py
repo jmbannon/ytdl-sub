@@ -278,6 +278,7 @@ class DownloadMappings:
                 )
             },
             indent=2,
+            sort_keys=True,
         )
 
         with open(output_json_file, "w", encoding="utf8") as file:

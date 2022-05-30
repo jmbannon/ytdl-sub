@@ -64,7 +64,7 @@ def expected_playlist_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path(".ytdl-sub-jmc-download-archive.json"): "4c368c5a12dc3ddb4c9d68fd9a782f24",
+            Path(".ytdl-sub-jmc-download-archive.json"): "7541aa75606b86bff5ff276895520cf0",
 
             # Entry files
             Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1].jpg"): "048a19cf0f674437351872c3f312ebf1",

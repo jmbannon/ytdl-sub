@@ -134,3 +134,13 @@ class SoundcloudAlbum(Entry):
         Number of tracks in the album (technically a playlist)
         """
         return self.kwargs("playlist_count")
+
+    def __contains__(self, item):
+        """
+        Returns
+        -------
+        True if the the item (entry_dict) has the same id as one of the tracks. False otherwise.
+        """
+        if isinstance(item, dict):
+            return any(item.get("id") == track.uid for track in self.tracks)
+        return False
