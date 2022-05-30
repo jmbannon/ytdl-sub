@@ -93,7 +93,7 @@ If you are familiar with
 [LinuxServer.io](https://www.linuxserver.io/),
 you will be happy to hear that we use their base image for our docker image.
 Documentation on how to build the image locally can be found in the
-[docker directory](https://github.com/jmbannon/ytdl-sub/tree/master/docker).
+[docker readme](https://github.com/jmbannon/ytdl-sub/tree/master/docker#running-ytdl-sub-in-docker).
 
 
 ## Contributing

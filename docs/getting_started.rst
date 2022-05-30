@@ -41,18 +41,24 @@ If you want to jump the gun to see how ytdl-sub can be configured to do these th
 
 Install
 -------
-Once we are ready for our first release, we will add this package to pypi. Then,
-we plan to create a docker image that uses the
-`LinuxServer.io <https://www.linuxserver.io/>`_
-base image, and hopefully become a part of their fleet someday.
 
-Until then, you will have to clone this repo and run it using python 3.10
+Virtualenv
+__________
+With a Python 3.10 virtual environment, you can clone and install the repo using
 
-.. code-block:: Bash
+.. code-block:: shell
 
    git clone https://github.com/jmbannon/ytdl-sub.git
    cd ytdl-sub
 
    pip install -e .
+
+Local Docker
+____________
+If you are familiar with
+`LinuxServer.io <https://www.linuxserver.io/>`_,
+you will be happy to hear that we use their base image for our docker image.
+Documentation on how to build the image locally can be found in the repo's
+`docker readme <https://github.com/jmbannon/ytdl-sub/tree/master/docker#running-ytdl-sub-in-docker>`_.
 
 
