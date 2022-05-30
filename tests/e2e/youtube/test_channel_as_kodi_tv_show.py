@@ -65,7 +65,7 @@ def expected_full_channel_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path("pz/.ytdl-sub-pz-download-archive.json"): "add71021318bf87a3facb965fd38bd7f",
+            Path("pz/.ytdl-sub-pz-download-archive.json"): "b7e7c19d2cf0277e4e42453a64fbaa90",
 
             # Output directory files
             Path("pz/fanart.jpg"): "e6e323373c8902568e96e374817179cf",
@@ -159,7 +159,7 @@ def expected_recent_channel_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path("pz/.ytdl-sub-pz-download-archive.json"): "a133d9ea8a63e239cd41b799b9031fd5",
+            Path("pz/.ytdl-sub-pz-download-archive.json"): "b1675ca4d9f0d4b9c2102b6749e4cdfd",
 
             # Output directory files
             Path("pz/fanart.jpg"): "e6e323373c8902568e96e374817179cf",
@@ -215,7 +215,7 @@ def expected_rolling_recent_channel_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path("pz/.ytdl-sub-pz-download-archive.json"): "8013b4d2ba6921c9347c014ac915e3f6",
+            Path("pz/.ytdl-sub-pz-download-archive.json"): "9ae3463bd2dc39830003aba68a276df4",
 
             # Output directory files
             Path("pz/fanart.jpg"): "e6e323373c8902568e96e374817179cf",

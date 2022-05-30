@@ -59,7 +59,7 @@ def expected_discography_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path("j_b/.ytdl-sub-jb-download-archive.json"): "7d7615294db4be55a75f644d30ff2de1",
+            Path("j_b/.ytdl-sub-jb-download-archive.json"): "ae55de93b71267b5712c9a3d06c07c26",
 
             # Entry files (singles)
             Path("j_b/[2021] Baby Santana's Dorian Groove/01 - Baby Santana's Dorian Groove.mp3"): "bffbd558e12c6a9e029dc136a88342c4",
