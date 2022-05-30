@@ -59,7 +59,7 @@ ytdl-sub dl                                             \
     --overrides.tv_show_name "John Smith Vlogs"
 ```
 
-After ytdl-sub runs, the end result would download and format the channel
+After `ytdl-sub` runs, the end result would download and format the channel
 files into something ready to be consumed by your favorite media player or
 server:
 ```
