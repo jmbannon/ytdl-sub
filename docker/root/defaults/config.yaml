@@ -21,9 +21,6 @@ presets:
       file_name: "{music_video_name}.{ext}"
       thumbnail_name: "{music_video_name}.jpg"
 
-    convert_thumbnail:
-      to: "jpg"
-
     nfo_tags:
       nfo_name: "{music_video_name}.nfo"
       nfo_root: "musicvideo"

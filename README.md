@@ -94,9 +94,6 @@ presets:
       thumbnail_name: "{episode_name}.jpg"
       maintain_download_archive: True
 
-    convert_thumbnail:
-      to: "jpg"
-
     nfo_tags:
       nfo_name: "{episode_name}.nfo"
       nfo_root: "episodedetails"

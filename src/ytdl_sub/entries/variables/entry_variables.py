@@ -82,10 +82,10 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The download entry's thumbnail extension
+        The download entry's thumbnail extension. Will always return 'jpg'. Until there is a need
+        to support other image types, we always convert to jpg.
         """
-        # TODO: Always return jpg
-        return self.kwargs("thumbnail").split(".")[-1]
+        return "jpg"
 
     @property
     def upload_date(self: BaseEntry) -> str:

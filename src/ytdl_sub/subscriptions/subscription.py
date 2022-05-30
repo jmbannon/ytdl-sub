@@ -18,6 +18,7 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
@@ -178,6 +179,10 @@ class Subscription:
             output_thumbnail_name = self.overrides.apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry
             )
+
+            # We always convert entry thumbnails to jpgs, and is performed here
+            convert_download_thumbnail(entry=entry)
+
             self._copy_file_to_output_directory(
                 entry=entry,
                 source_file_path=entry.get_download_thumbnail_path(),

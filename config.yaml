@@ -14,8 +14,6 @@ presets:
       file_name: "[{album_year}] {album_sanitized}/{track_number_padded} - {title_sanitized}.{ext}"
       thumbnail_name: "[{album_year}] {album_sanitized}/folder.jpg"
       maintain_download_archive: True
-    convert_thumbnail:
-      to: "jpg"
     music_tags:
       tags:
         artist: "{artist}"
@@ -46,11 +44,6 @@ presets:
       output_directory: "{music_video_directory}/{artist_sanitized}"
       file_name: "{music_video_name}.{ext}"
       thumbnail_name: "{music_video_name}.jpg"
-
-    # Always convert the video thumbnail to jpg
-    # TODO: always convert all thumbnails to jpg in code
-    convert_thumbnail:
-      to: "jpg"
 
     # For each video downloaded, add a music video NFO file for it. Populate it
     # with tags that Kodi will read and use to display it in the music or music
@@ -101,8 +94,6 @@ presets:
     output_options:
       file_name: "{output_file_name}.{ext}"
       thumbnail_name: "{output_file_name}.jpg"
-    convert_thumbnail:
-      to: "jpg"
     nfo_tags:
       nfo_name: "{output_file_name}.nfo"
       nfo_root: "episodedetails"
