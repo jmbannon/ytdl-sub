@@ -11,7 +11,8 @@ RUN apk update && \
       g++ \
       make \
       libffi-dev \
-      openssl-dev && \
+      openssl-dev \
+      ffmpeg && \
     apk del \
       python3 \
       py3-pip && \
