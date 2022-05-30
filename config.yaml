@@ -47,11 +47,6 @@ presets:
       file_name: "{music_video_name}.{ext}"
       thumbnail_name: "{music_video_name}.jpg"
 
-    # Always convert the video thumbnail to jpg
-    # TODO: always convert all thumbnails to jpg in code
-    convert_thumbnail:
-      to: "jpg"
-
     # For each video downloaded, add a music video NFO file for it. Populate it
     # with tags that Kodi will read and use to display it in the music or music
     # videos section.

@@ -5,10 +5,6 @@ from typing import Generic
 from typing import List
 from typing import Optional
 from typing import TypeVar
-from urllib.request import urlopen
-
-from PIL.Image import Image
-from PIL.Image import open as pil_open
 
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.downloader import Downloader
@@ -18,6 +14,7 @@ from ytdl_sub.entries.youtube import YoutubeChannel
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.date_range_validator import DateRangeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.validators import StringValidator
@@ -312,10 +309,9 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             logger.warning("Could not find a thumbnail for %s", self.channel.uid)
             return
 
-        with urlopen(thumbnail_url) as file:
-            image: Image = pil_open(file).convert("RGB")
-
-        image.save(fp=output_thumbnail_path, format="jpeg")
+        convert_url_thumbnail(
+            thumbnail_url=thumbnail_url, output_thumbnail_path=output_thumbnail_path
+        )
 
     def post_download(self, overrides: Overrides, output_directory: str):
         """

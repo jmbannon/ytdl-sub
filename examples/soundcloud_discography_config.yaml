@@ -48,11 +48,6 @@ presets:
       thumbnail_name: "{album_directory_name}/folder.jpg"
       maintain_download_archive: True
 
-    # Always convert the video thumbnail to jpg
-    # TODO: always convert all thumbnails to jpg in code
-    convert_thumbnail:
-      to: "jpg"
-
     # For each song downloaded, populate the audio file with music tags.
     # Tagging should work with most audio file formats. See
     # https://ytdl-sub.readthedocs.io/en/latest/config.html#music-tags

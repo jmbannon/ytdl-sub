@@ -7,7 +7,6 @@ from ytdl_sub.downloaders.soundcloud_downloader import SoundcloudAlbumsAndSingle
 from ytdl_sub.downloaders.youtube_downloader import YoutubeChannelDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubePlaylistDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubeVideoDownloader
-from ytdl_sub.plugins.convert_thumbnail import ConvertThumbnailPlugin
 from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
@@ -101,7 +100,6 @@ class PluginMapping:
     """
 
     _MAPPING: Dict[str, Type[Plugin]] = {
-        "convert_thumbnail": ConvertThumbnailPlugin,
         "music_tags": MusicTagsPlugin,
         "nfo_tags": NfoTagsPlugin,
         "output_directory_nfo_tags": OutputDirectoryNfoTagsPlugin,

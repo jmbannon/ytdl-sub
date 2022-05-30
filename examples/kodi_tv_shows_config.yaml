@@ -55,11 +55,6 @@ presets:
       thumbnail_name: "{episode_name}.jpg"
       maintain_download_archive: True
 
-    # Always convert the video thumbnail to jpg
-    # TODO: always convert all thumbnails to jpg in code
-    convert_thumbnail:
-      to: "jpg"
-
     # For each video downloaded, add an episode NFO file for it. We give it
     # the same date-like episode name using our {episode_name} variable, and
     # populate the NFO with available video metadata that Kodi will recognize.
