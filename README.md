@@ -10,7 +10,7 @@ Automate downloading and adding metadata with YoutubeDL.
 
 This package downloads media via 
 [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-and prepares it for consumption in your favorite media player
+and prepares it for your favorite media player
 ([Kodi](https://github.com/xbmc/xbmc), 
 [Jellyfin](https://github.com/jellyfin/jellyfin), 
 [Plex](https://github.com/plexinc/pms-docker),
@@ -19,43 +19,51 @@ modern music players).
 
 We recognize that everyone stores their 
 media differently. Our approach for file and metadata formatting is to provide
-maximum flexibility while maintaining simplicity. Read more about it
-[here](https://ytdl-sub.readthedocs.io/en/latest/getting_started.html).
+maximum flexibility while maintaining simplicity.
 
-## Supported Features
-Below lists supported download schemes. You can see our
-[various example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
-to get an idea on how to use ytdl-sub to your liking.
+## How it Works
+`ytdl-sub` uses YAML configs to define a layout for how you want media to look
+after it is downloaded. See our
+[example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
+that we personally use and
+[readthedocs](https://ytdl-sub.readthedocs.io/en/latest/config.html#)
+for detailed information on specific sections or fields.
 
-- Download any and all audio/video from a channel or playlist
-  - Format videos to look like
-    - Movies
-    - TV Shows
-    - TV Show Seasons
-    - Music Videos
-  - Format and tag audio files to look like
-    - Albums, Singles
-    - Audiobooks
-  - Download thumbnails, channel avatars, and banners to set as
-    - Posters
-    - Fanart
-    - Banners
-    - Album Artwork
-- Download a soundcloud artist's albums and singles
-  - Format the music tags and save any artwork for album covers
-- Manually download a single audio/video file
-  - Reuse configs you have defined to format it as anything you like
-- Only download recent audio/video, optionally remove old files
+Once configured, you can begin downloading using two different methods.
 
-
-## Configuration
-Formatting video and audio files are defined by presets. The `{variables}` used
-in the strings are derived from the media itself or defined by you in the `overrides`
-section. Below shows what a `config.yaml` and `subscription.yaml` look like to 
-download a Youtube channel as a TV show with artwork. The files are formatted
-to look like:
+### Subscription
+You can define a `subscriptions.yaml` for things to recurrently
+download, like a YouTube channel to pull new videos. It looks something like:
+```yaml
+john_smith_channel:
+  preset: "yt_channel_as_tv"
+  youtube:
+    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+  overrides:
+    tv_show_name: "John Smith Vlogs"
 ```
-/path/to/youtube_tv_shows/Your Favorite YT Channel
+The download can be performed using:
+```shell
+ytdl-sub sub subscription.yaml
+```
+
+### One-time Download
+There are things we will only want to download once and never again, like
+a one-hit wonder music video. Anything you can define in a subscription can be
+defined using CLI arguments. This example is equivalent to the subscription
+example above:
+```shell
+ytdl-sub dl                                             \
+    --preset "yt_channel_as_tv"                         \
+    --youtube.channel_id "UCsvn_Po0SmunchJYtttWpOxMg"   \
+    --overrides.tv_show_name "John Smith Vlogs"
+```
+
+After ytdl-sub runs, the end result would download and format the channel
+files into something ready to be consumed by your favorite media player or
+server:
+```
+/path/to/youtube_tv_shows/John Smith Vlogs
   /Season 2021
     s2021.e0317 - St Pattys Day Video.jpg
     s2021.e0317 - St Pattys Day Video.mp4
@@ -69,113 +77,10 @@ to look like:
   tvshow.nfo
 ```
 
-### config.yaml
-The config file defines _how_ to download and format media. You can define any
-number of presets to represent media how you see fit.
-```yaml
-configuration:
-  working_directory: '.ytdl-sub-downloads'
-
-presets:
-  yt_channel_as_tv:
-    youtube:
-      download_strategy: "channel"
-      channel_avatar_path: "poster.jpg"
-      channel_banner_path: "fanart.jpg"
-
-    # Pass any ytdl parameter to the downloader. It is recommended to leave
-    # ignoreerrors=True for things like age-restricted or hidden videos.
-    ytdl_options:
-      ignoreerrors: True
-
-    output_options:
-      output_directory: "{youtube_tv_shows_directory}/{tv_show_name_sanitized}"
-      file_name: "{episode_name}.{ext}"
-      thumbnail_name: "{episode_name}.jpg"
-      maintain_download_archive: True
-
-    nfo_tags:
-      nfo_name: "{episode_name}.nfo"
-      nfo_root: "episodedetails"
-      tags:
-        title: "{title}"
-        season: "{upload_year}"
-        episode: "{upload_month}{upload_day_padded}"
-        plot: "{description}"
-        year: "{upload_year}"
-        aired: "{upload_date_standardized}"
-
-    output_directory_nfo_tags:
-      nfo_name: "tvshow.nfo"
-      nfo_root: "tvshow"
-      tags:
-        title: "{tv_show_name}"
-
-    overrides:
-      youtube_tv_shows_directory: "/path/to/youtube_tv_shows"
-      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {title_sanitized}"
-```
-
-#### subscription.yaml
-The subscription file defines _what_ to download. Anything in the preset can be
-overwritten by a subscription.
-
-```yaml
-# Downloads the entire channel
-john_smith_archive:
-  preset: "yt_channel_as_tv"
-  youtube:
-    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
-  # Any user-defined override variables will automatically create a `_sanitized`
-  # variable name, which is safe to use for file names and paths.
-  # In this example, `tv_show_name` will produce `tv_show_name_sanitized` 
-  overrides:
-    tv_show_name: "John /\ Smith"
-
-# Downloads and only keeps videos uploaded in the last 2 weeks
-john_doe_recent_archive:
-  preset: "yt_channel_as_tv"
-  youtube:
-    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
-    after: "today-2weeks"
-  overrides:
-    tv_show_name: "John /\ Smith"
-  # Will stop looking at channel videos if it already exists or the upload date
-  # is out of range
-  ytdl_options:
-    break_on_existing: True
-    break_on_reject: True
-  output_options:
-    keep_files:
-      after: "today-2weeks"
-```
-
-## Usage
-You can have multiple subscription files for better organizing. We can invoke
-the subscription download using the command below. For cron jobs, this is the
-recommended command to use.
-```shell
-ytdl-sub sub subscription.yaml
-```
-
-### One-time Downloads
-There are things we want to download, but not subscribe to. In this case, you
-can invoke `ytdl-sub dl` and add any fields like a subscription. This example is
-equivalent to using the subscription yaml above, but without the yaml.
-```shell
-ytdl-sub dl                                             \
-    --preset "yt_channel_as_tv"                         \
-    --youtube.channel_id "UCsvn_Po0SmunchJYtttWpOxMg"   \
-    --overrides.tv_show_name "John /\ Smith"
-```
-
 ## Installation
-Once we are ready for our first release, we will add this package to pypi. Then,
-we plan to create a docker image that uses the
-[LinuxServer.io](https://www.linuxserver.io/)
-base image, and hopefully become a part of their fleet someday.
 
-Until then, you will have to clone this repo and run it using python 3.10
+### Virtualenv
+With a Python 3.10 virtual environment, you can clone and install the repo using
 ```commandline
 git clone https://github.com/jmbannon/ytdl-sub.git
 cd ytdl-sub
@@ -183,14 +88,15 @@ cd ytdl-sub
 pip install -e .
 ```
 
-## Additional Documentation
-We are actively working on documenting all ytdl-sub features
-[within our readthedocs page](https://ytdl-sub.readthedocs.io/en/latest/).
-It is still a work-in-progress, but you can still find some useful things
-in there.
+### Local Docker
+If you are familiar with
+[LinuxServer.io](https://www.linuxserver.io/),
+you will be happy to hear that we use their base image for our docker image.
+Documentation on how to build the image locally can be found in the
+[docker directory](https://github.com/jmbannon/ytdl-sub/tree/master/docker).
+
 
 ## Contributing
 There are many ways to contribute, even without coding. Please take a look in
 our [Github Issues](https://github.com/jmbannon/ytdl-sub/issues) to ask
-questions, submit a feature request, or pick up a bug. I try to be responsive
-and provide constructive PR feedback to maintain excellent code quality ;)
+questions, submit a feature request, or pick up a bug.
