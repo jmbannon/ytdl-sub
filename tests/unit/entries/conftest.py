@@ -57,7 +57,7 @@ def ext():
 
 @pytest.fixture
 def thumbnail_ext():
-    return "yall"
+    return "jpg"
 
 
 @pytest.fixture
