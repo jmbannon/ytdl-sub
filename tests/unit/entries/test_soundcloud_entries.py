@@ -58,7 +58,7 @@ def mock_soundcloud_track_kwargs(mock_entry_kwargs, url):
 
 @pytest.fixture
 def mock_soundcloud_track(mock_soundcloud_track_kwargs):
-    return SoundcloudTrack(entry_dict=mock_soundcloud_track_kwargs)
+    return SoundcloudTrack(entry_dict=mock_soundcloud_track_kwargs, working_directory=".")
 
 
 @pytest.fixture

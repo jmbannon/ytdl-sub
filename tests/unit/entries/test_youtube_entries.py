@@ -66,7 +66,7 @@ def mock_youtube_video_kwargs(
 
 @pytest.fixture
 def mock_youtube_video(mock_youtube_video_kwargs):
-    return YoutubeVideo(entry_dict=mock_youtube_video_kwargs)
+    return YoutubeVideo(entry_dict=mock_youtube_video_kwargs, working_directory=".")
 
 
 class TestYoutubeVideo(object):

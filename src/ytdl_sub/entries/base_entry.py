@@ -1,7 +1,6 @@
 from abc import ABC
 from typing import Any
 from typing import Dict
-from typing import Optional
 
 
 class BaseEntry(ABC):
@@ -9,7 +8,7 @@ class BaseEntry(ABC):
     Abstract entry object to represent anything download from ytdl (playlist metadata, media, etc).
     """
 
-    def __init__(self, entry_dict: Dict, working_directory: Optional[str] = None):
+    def __init__(self, entry_dict: Dict, working_directory: str):
         """
         Initialize the entry using ytdl metadata
 
@@ -38,14 +37,5 @@ class BaseEntry(ABC):
         Returns
         -------
         The working directory
-
-        Raises
-        ------
-        ValueError
-            The working directory was never defined in the init
         """
-        if self._working_directory is None:
-            raise ValueError(
-                "Entry working directory is not set when trying to access its download file path"
-            )
         return self._working_directory
