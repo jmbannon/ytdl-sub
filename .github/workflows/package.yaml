@@ -39,6 +39,7 @@ jobs:
 
       - name: Build Wheel
         run: |
+          pip install -e .[build]
           python setup.py bdist_wheel
           cp dist/*.whl docker/root
 
