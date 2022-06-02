@@ -56,7 +56,7 @@ jobs:
 
       - name: Push image
         run: |
-          if [[ ${{ github.ref }} == 'refs/head/master' ]]; then
+          if [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
             IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
 
             # Change all uppercase to lowercase
