@@ -53,9 +53,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push image
+      - name: Push image on master or release
         run: |
-          if [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
+          if [[ ${{ github.ref }} =~ ^refs\/heads\/master|^refs\/tags\/v.* ]]; then
             IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
 
             # Change all uppercase to lowercase
