@@ -1,4 +1,4 @@
-name: Demo Push
+name: ytld-sub Docker Build
 
 on:
   push:
