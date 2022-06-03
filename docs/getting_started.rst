@@ -42,23 +42,67 @@ If you want to jump the gun to see how ytdl-sub can be configured to do these th
 Install
 -------
 
+The ytdl-sub docker image uses
+`LinuxServer's <https://www.linuxserver.io/>`_
+`base alpine image <https://github.com/linuxserver/docker-baseimage-alpine>`_.
+It looks, feels, and operates like other LinuxServer images. This is the
+recommended way to use ytdl-sub.
+
+Docker Compose
+______________
+
+.. code-block:: yaml
+
+   version: "2.1"
+   services:
+     ytdl-sub:
+       image: ghcr.io/jmbannon/ytdl-sub:latest
+       container_name: ytdl-sub
+       environment:
+         - PUID=1000
+         - PGID=1000
+         - TZ=America/Los_Angeles
+       volumes:
+         - <path/to/ytdl-sub/config>:/config
+         - <path/to/tv_shows>:/tv_shows # optional
+         - <path/to/movies>:/movies # optional
+         - <path/to/music_videos>:/music_videos # optional
+         - <path/to/music>:/music # optional
+       restart: unless-stopped
+
+Docker CLI
+__________
+
+.. code-block:: bash
+
+   docker run -d \
+     --name=ytdl-sub \
+     -e PUID=1000 \
+     -e PGID=1000 \
+     -e TZ=America/Los_Angeles \
+     -v <path/to/ytdl-sub/config>:/config \
+     -v <OPTIONAL/path/to/tv_shows>:/tv_shows \
+     -v <OPTIONAL/path/to/movies>:/movies \
+     -v <OPTIONAL/path/to/music_videos>:/music_videos \
+     -v <OPTIONAL/path/to/music>:/music \
+     --restart unless-stopped \
+     ghcr.io/jmbannon/ytdl-sub:latest
+
+
+Building Docker Image Locally
+_____________________________
+
+Run `make docker` in the root directory of this repo to build the image. This
+will build the python wheel and install it in the Dockerfile.
+
 Virtualenv
 __________
+
 With a Python 3.10 virtual environment, you can clone and install the repo using
 
-.. code-block:: shell
+.. code-block:: bash
 
-   git clone https://github.com/jmbannon/ytdl-sub.git
-   cd ytdl-sub
+    git clone https://github.com/jmbannon/ytdl-sub.git
+    cd ytdl-sub
 
-   pip install -e .
-
-Local Docker
-____________
-If you are familiar with
-`LinuxServer.io <https://www.linuxserver.io/>`_,
-you will be happy to hear that we use their base image for our docker image.
-Documentation on how to build the image locally can be found in the repo's
-`docker readme <https://github.com/jmbannon/ytdl-sub/tree/master/docker#running-ytdl-sub-in-docker>`_.
-
-
+    pip install -e .
