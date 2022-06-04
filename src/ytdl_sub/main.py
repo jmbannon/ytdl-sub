@@ -40,7 +40,9 @@ def _download_subscription_from_cli(config: ConfigFile, extra_args: List[str]) -
     :param config: Configuration file
     :param extra_args: Extra arguments from argparse that contain dynamic subscription options
     """
-    dl_args_parser = DownloadArgsParser(extra_arguments=extra_args)
+    dl_args_parser = DownloadArgsParser(
+        extra_arguments=extra_args, config_options=config.config_options
+    )
     subscription_args_dict = dl_args_parser.to_subscription_dict()
 
     subscription_name = f"cli-dl-{dl_args_parser.get_args_hash()}"
