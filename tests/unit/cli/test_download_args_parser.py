@@ -1,6 +1,8 @@
 import shlex
+from argparse import ArgumentError
 from typing import Callable
 from typing import Dict
+from typing import List
 from typing import Optional
 
 import pytest
@@ -12,7 +14,7 @@ from ytdl_sub.config.config_file import ConfigOptions
 
 @pytest.fixture
 def config_options_generator() -> Callable:
-    def _config_options_generator(dl_aliases: Optional[Dict[str, str]]):
+    def _config_options_generator(dl_aliases: Optional[Dict[str, str]] = None):
         config_options_dict = {
             "working_directory": ".",
         }
@@ -22,6 +24,18 @@ def config_options_generator() -> Callable:
         return ConfigOptions(name="config_options_unit_test", value=config_options_dict)
 
     return _config_options_generator
+
+
+@pytest.fixture
+def argument_error_msg() -> str:
+    return "dl arguments must be in the form of --subscription.option.name 'value'"
+
+
+def _get_extra_arguments(cmd_string: str) -> List[str]:
+    sys_argv = shlex.split(cmd_string)
+    _, extra_args = parser.parse_known_args(args=sys_argv)
+
+    return extra_args
 
 
 class TestDownloadArgsParser:
@@ -52,12 +66,28 @@ class TestDownloadArgsParser:
     )
     def test_successful_args(self, config_options_generator, aliases, cmd, expected_sub_dict):
         config_options = config_options_generator(dl_aliases=aliases)
-        sys_argv = shlex.split(cmd)
-
-        args, extra_args = parser.parse_known_args(args=sys_argv)
+        extra_args = _get_extra_arguments(cmd_string=cmd)
 
         output_sub_dict = DownloadArgsParser(
             extra_arguments=extra_args, config_options=config_options
         ).to_subscription_dict()
 
         assert output_sub_dict == expected_sub_dict
+
+    def test_error_uneven_args(self, config_options_generator, argument_error_msg):
+        config_options = config_options_generator()
+        extra_args = _get_extra_arguments(cmd_string="dl --preset")
+
+        with pytest.raises(ArgumentError, match=argument_error_msg):
+            DownloadArgsParser(
+                extra_arguments=extra_args, config_options=config_options
+            ).to_subscription_dict()
+
+    def test_error_adjacent_values(self, config_options_generator, argument_error_msg):
+        config_options = config_options_generator()
+        extra_args = _get_extra_arguments(cmd_string="dl --preset buttered toast --test")
+
+        with pytest.raises(ArgumentError, match=argument_error_msg):
+            DownloadArgsParser(
+                extra_arguments=extra_args, config_options=config_options
+            ).to_subscription_dict()
