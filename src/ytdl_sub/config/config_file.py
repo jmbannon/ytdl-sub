@@ -1,5 +1,6 @@
 import os
 from typing import Any
+from typing import Dict
 from typing import Optional
 
 from ytdl_sub.utils.yaml import load_yaml
@@ -10,7 +11,7 @@ from ytdl_sub.validators.validators import StringValidator
 
 class ConfigOptions(StrictDictValidator):
     _required_keys = {"working_directory"}
-    _optional_keys = {"umask"}
+    _optional_keys = {"umask", "dl_aliases"}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
@@ -20,6 +21,9 @@ class ConfigOptions(StrictDictValidator):
         )
         self._umask = self._validate_key_if_present(
             key="umask", validator=StringValidator, default="022"
+        )
+        self._dl_aliases = self._validate_key_if_present(
+            key="dl_aliases", validator=LiteralDictValidator
         )
 
     @property
@@ -36,6 +40,34 @@ class ConfigOptions(StrictDictValidator):
         Umask (octal format) to apply to every created file. Defaults to "022".
         """
         return self._umask.value
+
+    @property
+    def dl_aliases(self) -> Optional[Dict[str, str]]:
+        """
+        Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
+
+        .. code-block:: yaml
+
+           configuration:
+             dl_aliases:
+               mv: "--preset yt_music_video"
+               v: "--youtube.video_id"
+
+        Simplifies
+
+        .. code-block:: bash
+
+           ytdl-sub dl --preset yt_music_video --youtube.video_id a1b2c3
+
+        to
+
+        .. code-block:: bash
+
+           ytdl-sub dl --mv --v a1b2c3
+        """
+        if self._dl_aliases:
+            return self._dl_aliases.dict
+        return {}
 
 
 class ConfigFile(StrictDictValidator):
