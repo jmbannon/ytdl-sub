@@ -108,7 +108,7 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
     def __init__(self, name, value):
         super().__init__(name, value)
         self._url = self._validate_key(
-            key="username", validator=SoundcloudUsernameUrlValidator
+            key="url", validator=SoundcloudUsernameUrlValidator
         ).username_url
 
     @property
