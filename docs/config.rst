@@ -190,13 +190,13 @@ Below is an example that downloads YouTube videos:
    my_subscription_name:
      preset: "playlist_preset_ex"
      youtube:
-       playlist_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+       playlist_url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
      overrides:
        playlist_name: "diy-playlist"
 
 Our preset ``playlist_preset_ex`` uses the `YouTube Playlist`_ download strategy, and defines two
 custom variables: ``{output_directory}`` and ``{playlist_name}``. The subscription sets
-the `parent preset`_ to ``playlist_preset_ex``, and must define the ``playlist_id`` field and
+the `parent preset`_ to ``playlist_preset_ex``, and must define the ``playlist_url`` field and
 the ``{playlist_name}`` variable since the preset did not.
 
 -------------------------------------------------------------------------------

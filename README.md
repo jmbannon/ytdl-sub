@@ -38,7 +38,7 @@ download, like a YouTube channel to pull new videos. It looks something like:
 john_smith_channel:
   preset: "yt_channel_as_tv"
   youtube:
-    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+    channel_url: "https://youtube.com/channe/UCsvn_Po0SmunchJYtttWpOxMg"
   overrides:
     tv_show_name: "John Smith Vlogs"
 ```
@@ -53,9 +53,9 @@ a one-hit wonder music video. Anything you can define in a subscription can be
 defined using CLI arguments. This example is equivalent to the subscription
 example above:
 ```shell
-ytdl-sub dl                                             \
-    --preset "yt_channel_as_tv"                         \
-    --youtube.channel_id "UCsvn_Po0SmunchJYtttWpOxMg"   \
+ytdl-sub dl \
+    --preset "yt_channel_as_tv" \
+    --youtube.channel_url "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg" \
     --overrides.tv_show_name "John Smith Vlogs"
 ```
 
