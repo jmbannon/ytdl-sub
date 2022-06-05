@@ -3,7 +3,6 @@ from typing import Optional
 from urllib.parse import parse_qs
 from urllib.parse import urlparse
 
-from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.validators import StringValidator
 
 
@@ -20,9 +19,9 @@ class YoutubeVideoUrlValidator(StringValidator):
         - https://www.youtube.com/embed/SA2iWivDJiE
         - https://www.youtube.com/v/SA2iWivDJiE?version=3&amp;hl=en_US
         """
-        # If the url doesn't contain youtube, assume it is the video id
+        # If the url doesn't contain youtube or youtu.be, assume it is invalid
         if "youtube.com" not in url and "youtu.be" not in url:
-            return url
+            return None
 
         # If https:// is not present, urlparse will not work
         if not url.startswith("https://"):
@@ -47,16 +46,16 @@ class YoutubeVideoUrlValidator(StringValidator):
 
         self._video_id = self._get_video_id(value)
         if not self._video_id:
-            raise self._validation_exception(f"'{value}' is not a valid Youtube video url or ID.")
+            raise self._validation_exception(f"'{value}' is not a valid Youtube video url.")
 
     @property
-    def video_id(self) -> str:
+    def video_url(self) -> str:
         """
         Returns
         -------
-        ID of the video
+        Full video URL
         """
-        return self._video_id
+        return f"https://youtube.com/watch?v={self._video_id}"
 
 
 class YoutubePlaylistUrlValidator(StringValidator):
@@ -69,9 +68,9 @@ class YoutubePlaylistUrlValidator(StringValidator):
         Examples:
         - https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc
         """
-        # If the url doesn't contain youtube, assume it is the ID
+        # If the url doesn't contain youtube, assume it is invalid
         if "youtube.com" not in url:
-            return url
+            return None
 
         # If https:// is not present, urlparse will not work
         if not url.startswith("https://"):
@@ -90,16 +89,16 @@ class YoutubePlaylistUrlValidator(StringValidator):
 
         self._playlist_id = self._get_playlist_id(value)
         if not self._playlist_id:
-            raise self._validation_exception(f"'{value}' is not a valid Youtube playlist url or ID.")
+            raise self._validation_exception(f"'{value}' is not a valid Youtube playlist url.")
 
     @property
-    def playlist_id(self) -> str:
+    def playlist_url(self) -> str:
         """
         Returns
         -------
-        ID of the channel
+        Full playlist URL
         """
-        return self._playlist_id
+        return f"https://youtube.com/playlist?list={self._playlist_id}"
 
 
 class YoutubeChannelUrlValidator(StringValidator):
@@ -107,23 +106,16 @@ class YoutubeChannelUrlValidator(StringValidator):
     _expected_value_type_name = "Youtube channel url"
 
     @classmethod
-    def _get_channel_id(cls, url: str) -> Optional[str]:
+    def _get_channel_url(cls, url: str) -> Optional[str]:
         """
         Examples:
         - https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw
-
-        NOT:
-        - https://www.youtube.com/user/a_username_that_can_change
-        - https://www.youtube.com/c/a_name_that_can_change
-
-        Raises
-        ------
-        ValidationException
-            If the url is for the user name
+        - https://www.youtube.com/user/username
+        - https://www.youtube.com/c/channel_name
         """
-        # If the url doesn't contain youtube, assume it is the ID
+        # If the url doesn't contain youtube, assume it is invalid
         if "youtube.com" not in url:
-            return url
+            return None
 
         # If https:// is not present, urlparse will not work
         if not url.startswith("https://"):
@@ -131,33 +123,23 @@ class YoutubeChannelUrlValidator(StringValidator):
 
         query = urlparse(url)
         if query.hostname in ("youtube.com", "www.youtube.com"):
-            if query.path == "/channel":
-                parsed_q = parse_qs(query.query)
-                return parsed_q["v"][0]
-            if query.path in ("/user", "/c"):
-                raise ValidationException('user or c not allowed since it can change')
+            if any(query.path.startswith(qpath) for qpath in ("/channel/", "/user/", "/c/")):
+                return f"https://youtube.com{query.path}"
 
         return None
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
 
-        try:
-            self._channel_id = self._get_channel_id(value)
-        except ValidationException:
-            raise self._validation_exception(
-                f"{value} uses a deprecated Youtube url that which can change. "
-                f"Use the /channel/ url instead."
-            )
-
-        if not self._channel_id:
-            raise self._validation_exception(f"'{value}' is not a valid Youtube channel url or ID.")
+        self._channel_url = self._get_channel_url(value)
+        if not self._channel_url:
+            raise self._validation_exception(f"'{value}' is not a valid Youtube channel url.")
 
     @property
-    def channel_id(self) -> str:
+    def channel_url(self) -> str:
         """
         Returns
         -------
-        ID of the channel
+        Full channel URL
         """
-        return self._channel_id
+        return self._channel_url
