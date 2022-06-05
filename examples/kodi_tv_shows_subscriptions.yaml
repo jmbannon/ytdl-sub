@@ -13,10 +13,10 @@ john_smith_archive:
   # entire YouTube channel is called "yt_channel_as_tv", so set that here.
   preset: "yt_channel_as_tv"
 
-  # Our download strategy was Youtube channels. Define the channel id here
+  # Our download strategy was Youtube channels. Define the channel url here
   # in our subscription.
   youtube:
-    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+    channel_url: "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
 
   # Overrides can be defined per-subscription. If you noticed, we used
   # {tv_show_name} and {tv_show_name_sanitized} in our "yt_channel_as_tv"
@@ -34,7 +34,7 @@ john_smith_archive:
 john_smith_recent_archive:
   preset: "yt_channel_as_tv__recent"
   youtube:
-    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+    channel_url: "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
   overrides:
     tv_show_name: "John /\ Smith"
 
@@ -46,6 +46,6 @@ john_smith_recent_archive:
 john_smith_rolling_archive:
   preset: "yt_channel_as_tv__only_recent"
   youtube:
-    channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+    channel_url: "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
   overrides:
     tv_show_name: "John /\ Smith"

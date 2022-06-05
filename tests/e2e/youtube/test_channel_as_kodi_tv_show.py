@@ -28,7 +28,7 @@ def config(config_path):
 def subscription_dict(output_directory, subscription_name):
     return {
         "preset": "yt_channel_as_tv",
-        "youtube": {"channel_id": "UCcRSMoQqXc_JrBZRHDFGbqA"},
+        "youtube": {"channel_url": "https://youtube.com/channel/UCcRSMoQqXc_JrBZRHDFGbqA"},
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": str(Path(output_directory) / subscription_name)},
         # download the worst format so it is fast

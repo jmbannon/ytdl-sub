@@ -27,7 +27,7 @@ def config(config_path):
 def subscription_dict(output_directory, subscription_name):
     return {
         "preset": "sc_discography",
-        "soundcloud": {"username": "jessebannon"},
+        "soundcloud": {"url": "https://soundcloud.com/jessebannon"},
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory + "/{artist_sanitized}"},
         # download the worst format so it is fast

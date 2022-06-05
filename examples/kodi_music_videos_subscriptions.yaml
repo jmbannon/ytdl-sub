@@ -14,9 +14,9 @@ john_smith:
   # config example "yt_music_video", so set that here.
   preset: "yt_music_video_playlist"
 
-  # Since our preset download strategy is set to 'playlist', set the playlist id.
+  # Since our preset download strategy is set to 'playlist', set the playlist url
   youtube:
-    playlist_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+    playlist_url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
 
   # Overrides can be defined per-subscription. If you noticed, we used {artist}
   # and {artist_sanitized} in our "yt_music_video" preset. We intended to reserve
@@ -39,21 +39,21 @@ john_smith:
 # The only difference between this example and the one above is
 # - preset
 #     Use the music video preset, not the playlist preset
-# - youtube.video_id
-#     The id of the video to download
+# - youtube.video_url
+#     The video url to download
 #
 # Of course, defining yaml configuration to download a single video once
 # and never again seems weird. Instead, we can perform this download via
 # command:
 #
-#     ytdl-sub dl                                                     \
-#         --preset "yt_music_video"                                   \
-#         --youtube.video_id "QhY6r6oAErg"                            \
+#     ytdl-sub dl                                                        \
+#         --preset "yt_music_video"                                      \
+#         --youtube.video_url "https://youtube.com/watch?v=QhY6r6oAErg"  \
 #         --overrides.artist "John Smith and the Instrument Players"
 #
 john_smith_one_hit_wonder:
   preset: "yt_music_video"
   youtube:
-    video_id: "QhY6r6oAErg"
+    video_url: "https://youtube.com/watch?v=QhY6r6oAErg"
   overrides:
     artist: "John Smith and the Instrument Players"

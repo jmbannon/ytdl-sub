@@ -43,25 +43,29 @@ class TestDownloadArgsParser:
         "aliases, cmd, expected_sub_dict",
         [
             (
-                {"mv": "--preset yt_music_video", "v": "--youtube.video_id"},
+                {"mv": "--preset yt_music_video", "v": "--youtube.video_url"},
                 "dl --mv --v 123abc",
-                {"preset": "yt_music_video", "youtube": {"video_id": "123abc"}},
+                {"preset": "yt_music_video", "youtube": {"video_url": "123abc"}},
             ),
             (
                 {
                     "ch": "--preset yt_channel",
-                    "c": "--youtube.channel_id",
+                    "c": "--youtube.channel_url",
                     "name": "--overrides.tv_name",
                     "concert": "--overrides.genre 'Some Genre Name'",
                 },
-                "dl --ch --c 123abc --name 'Sweet TV Show' --concert",
+                "dl --ch --c https://youtube.com/channel/123abc --name 'Sweet TV Show' --concert",
                 {
                     "preset": "yt_channel",
-                    "youtube": {"channel_id": "123abc"},
+                    "youtube": {"channel_url": "https://youtube.com/channel/123abc"},
                     "overrides": {"tv_name": "Sweet TV Show", "genre": "Some Genre Name"},
                 },
             ),
-            (None, "dl --youtube.playlist_id 123abc", {"youtube": {"playlist_id": "123abc"}}),
+            (
+                None,
+                "dl --youtube.playlist_url https://youtube.com/playlist?list=123abc",
+                {"youtube": {"playlist_url": "https://youtube.com/playlist?list=123abc"}},
+            ),
         ],
     )
     def test_successful_args(self, config_options_generator, aliases, cmd, expected_sub_dict):

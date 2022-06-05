@@ -28,7 +28,7 @@ def config(config_path):
 def subscription_dict(output_directory, subscription_name):
     return {
         "preset": "yt_music_video_playlist",
-        "youtube": {"playlist_id": "PL5BC0FC26BECA5A35"},
+        "youtube": {"playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
@@ -93,7 +93,7 @@ def single_video_subscription_dict(subscription_dict):
         subscription_dict,
         {
             "preset": "yt_music_video",
-            "youtube": {"video_id": "HKTNxEqsN3Q"},
+            "youtube": {"video_url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
         },
     )
 
