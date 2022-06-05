@@ -3,7 +3,7 @@ import re
 import pytest
 
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.validators.url_validator import SoundcloudArtistUrlValidator
+from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
 from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
 from ytdl_sub.validators.url_validator import YoutubeVideoUrlValidator
@@ -97,7 +97,7 @@ class TestYoutubeChannelUrlValidator:
             YoutubeChannelUrlValidator(name="unit test", value=bad_url)
 
 
-class TestSoundcloudArtistUrlValidator:
+class TestSoundcloudUsernameUrlValidator:
     @pytest.mark.parametrize(
         "url",
         [
@@ -110,11 +110,11 @@ class TestSoundcloudArtistUrlValidator:
         ],
     )
     def test_soundcloud_artist_url_validator_success(self, url):
-        artist_url = SoundcloudArtistUrlValidator(name="unit test", value=url).artist_url
-        assert artist_url == "https://soundcloud.com/poop"
+        username_url = SoundcloudUsernameUrlValidator(name="unit test", value=url).username_url
+        assert username_url == "https://soundcloud.com/poop"
 
     def test_youtube_playlist_url_validator_fail(self):
         bad_url = "soundcloud.com"
-        expected_error_msg = f"'{bad_url}' is not a valid Soundcloud artist url."
+        expected_error_msg = f"'{bad_url}' is not a valid Soundcloud username url."
         with pytest.raises(ValidationException, match=re.escape(expected_error_msg)):
-            SoundcloudArtistUrlValidator(name="unit test", value=bad_url)
+            SoundcloudUsernameUrlValidator(name="unit test", value=bad_url)
