@@ -33,7 +33,8 @@ class YoutubeVideoUrlValidator(StringValidator):
         if query.hostname in ("youtube.com", "www.youtube.com"):
             if query.path == "/watch":
                 parsed_q = parse_qs(query.query)
-                return parsed_q["v"][0]
+                if "v" in parsed_q:
+                    return parsed_q["v"][0]
             if query.path[:7] == "/embed/":
                 return query.path.split("/")[2]
             if query.path[:3] == "/v/":
@@ -80,7 +81,8 @@ class YoutubePlaylistUrlValidator(StringValidator):
         if query.hostname in ("youtube.com", "www.youtube.com"):
             if query.path == "/playlist":
                 parsed_q = parse_qs(query.query)
-                return parsed_q["list"][0]
+                if "list" in parsed_q:
+                    return parsed_q["list"][0]
 
         return None
 
@@ -124,6 +126,10 @@ class YoutubeChannelUrlValidator(StringValidator):
         query = urlparse(url)
         if query.hostname in ("youtube.com", "www.youtube.com"):
             if any(query.path.startswith(qpath) for qpath in ("/channel/", "/user/", "/c/")):
+                # Ensure there is "/path/id".split('/') = ['', 'path', 'id'] at least three
+                query_path_split = query.path.split("/")
+                if len(query_path_split) < 3 or len(query_path_split[2]) == 0:
+                    return None
                 return f"https://youtube.com{query.path}"
 
         return None

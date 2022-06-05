@@ -26,8 +26,19 @@ class TestYoutubeVideoUrlValidator:
         video_url = YoutubeVideoUrlValidator(name="unit test", value=url).video_url
         assert video_url == "https://youtube.com/watch?v=dQw4w9WgXcQ"
 
-    def test_youtube_video_url_validator_fail(self):
-        bad_url = "youtube.cum/asdfd"
+    @pytest.mark.parametrize(
+        "bad_url",
+        [
+            "utube.com/watch?v=sdfsadf",
+            "youtube.com/nope?v=sdfsadf",
+            "youtube.com",
+            "youtube.com/watch",
+            "youtube.com/watch?v=",
+            "youtu.be/",
+            "youtu.be",
+        ],
+    )
+    def test_youtube_video_url_validator_fail(self, bad_url):
         expected_error_msg = f"'{bad_url}' is not a valid Youtube video url."
         with pytest.raises(ValidationException, match=re.escape(expected_error_msg)):
             YoutubeVideoUrlValidator(name="unit test", value=bad_url)
@@ -49,8 +60,18 @@ class TestYoutubePlaylistUrlValidator:
             playlist_url == "https://youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
         )
 
-    def test_youtube_playlist_url_validator_fail(self):
-        bad_url = "youpoop.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
+    @pytest.mark.parametrize(
+        "bad_url",
+        [
+            "youpoop.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc",
+            "youtube.com/playlistlist=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc",
+            "youtube.com",
+            "youtube.com/playlist/asdfsdfsdf",
+            "youtube.com/playlist?list=",
+            "youtube.com/playlist",
+        ],
+    )
+    def test_youtube_playlist_url_validator_fail(self, bad_url):
         expected_error_msg = f"'{bad_url}' is not a valid Youtube playlist url."
         with pytest.raises(ValidationException, match=re.escape(expected_error_msg)):
             YoutubePlaylistUrlValidator(name="unit test", value=bad_url)
@@ -90,8 +111,17 @@ class TestYoutubeChannelUrlValidator:
         channel_url = YoutubeChannelUrlValidator(name="unit test", value=url).channel_url
         assert channel_url == expected_url
 
-    def test_youtube_channel_url_validator_fail(self):
-        bad_url = "www.youtube.com/cha/UCuAXFkgsw1L7xaCfnd5JJOw"
+    @pytest.mark.parametrize(
+        "bad_url",
+        [
+            "www.youtube.com/cha/UCuAXFkgsw1L7xaCfnd5JJOw",
+            "www.nopetube.com/channel/asdfdsf",
+            "www.youtube.com/channel/",
+            "www.youtube.com/channel",
+            "www.youtube.com/channell/asdfasdf",
+        ],
+    )
+    def test_youtube_channel_url_validator_fail(self, bad_url):
         expected_error_msg = f"'{bad_url}' is not a valid Youtube channel url."
         with pytest.raises(ValidationException, match=re.escape(expected_error_msg)):
             YoutubeChannelUrlValidator(name="unit test", value=bad_url)
@@ -113,8 +143,8 @@ class TestSoundcloudUsernameUrlValidator:
         username_url = SoundcloudUsernameUrlValidator(name="unit test", value=url).username_url
         assert username_url == "https://soundcloud.com/poop"
 
-    def test_youtube_playlist_url_validator_fail(self):
-        bad_url = "soundcloud.com"
+    @pytest.mark.parametrize("bad_url", ["soundcloud.com", "soundnope.lol", "soundcloud.comm/"])
+    def test_youtube_playlist_url_validator_fail(self, bad_url):
         expected_error_msg = f"'{bad_url}' is not a valid Soundcloud username url."
         with pytest.raises(ValidationException, match=re.escape(expected_error_msg)):
             SoundcloudUsernameUrlValidator(name="unit test", value=bad_url)
