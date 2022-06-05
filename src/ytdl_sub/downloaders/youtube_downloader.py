@@ -17,7 +17,9 @@ from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.date_range_validator import DateRangeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
-from ytdl_sub.validators.validators import StringValidator
+from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
+from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
+from ytdl_sub.validators.url_validator import YoutubeVideoUrlValidator
 
 logger = Logger.get()
 
@@ -61,49 +63,41 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
     .. code-block:: yaml
 
       presets:
-        my_example_preset:
+        example_preset:
           youtube:
             # required
             download_strategy: "video"
-            video_id: "VMAPTo7RVDo"
+            video_url: "youtube.com/watch?v=VMAPTo7RVDo"
 
     CLI usage:
 
     .. code-block:: bash
 
-       ytdl-sub dl --preset "my_example_preset" --youtube.video_id "VMAPTo7RVDo"
+       ytdl-sub dl --preset "example_preset" --youtube.video_url "youtube.com/watch?v=VMAPTo7RVDo"
 
     """
 
-    _required_keys = {"video_id"}
+    _required_keys = {"video_url"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._video_id = self._validate_key("video_id", StringValidator)
+        self._video_url = self._validate_key("video_url", YoutubeVideoUrlValidator).video_url
 
     @property
-    def video_id(self) -> str:
+    def video_url(self) -> str:
         """
-        Required. The ID of the video. Looks like the ``VMAPTo7RVDo`` from
-        ``youtube.com/watch?v=VMAPTo7RVDo``.
+        Required. The url of the video, i.e. ``youtube.com/watch?v=VMAPTo7RVDo``.
         """
-        return self._video_id.value
+        return self._video_url
 
 
 class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, YoutubeVideo]):
     downloader_options_type = YoutubeVideoDownloaderOptions
     downloader_entry_type = YoutubeVideo
 
-    @classmethod
-    def video_url(cls, video_id: str) -> str:
-        """Returns full video url"""
-        return f"https://youtube.com/watch?v={video_id}"
-
     def download(self) -> List[YoutubeVideo]:
         """Download a single Youtube video"""
-        video_url = self.video_url(video_id=self.download_options.video_id)
-
-        entry_dict = self.extract_info(url=video_url)
+        entry_dict = self.extract_info(url=self.download_options.video_url)
         return [YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)]
 
 
@@ -124,22 +118,24 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
           youtube:
             # required
             download_strategy: "playlist"
-            playlist_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+            playlist_url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
     """
 
-    _required_keys = {"playlist_id"}
+    _required_keys = {"playlist_url"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._playlist_id = self._validate_key("playlist_id", StringValidator)
+        self._playlist_url = self._validate_key(
+            "playlist_url", YoutubePlaylistUrlValidator
+        ).playlist_url
 
     @property
-    def playlist_id(self) -> str:
+    def playlist_url(self) -> str:
         """
-        Required. The playlist's ID. Looks like "UCsvn_Po0SmunchJYtttWpOxMg"
-        from ``https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg``.
+        Required. The playlist's url, i.e.
+        ``https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg``.
         """
-        return self._playlist_id.value
+        return self._playlist_url
 
 
 class YoutubePlaylistDownloader(
@@ -148,19 +144,13 @@ class YoutubePlaylistDownloader(
     downloader_options_type = YoutubePlaylistDownloaderOptions
     downloader_entry_type = YoutubePlaylistVideo
 
-    @classmethod
-    def playlist_url(cls, playlist_id: str) -> str:
-        """Returns full playlist url"""
-        return f"https://youtube.com/playlist?list={playlist_id}"
-
     def download(self) -> List[YoutubePlaylistVideo]:
         """
         Downloads all videos in a Youtube playlist
         """
-        playlist_url = self.playlist_url(playlist_id=self.download_options.playlist_id)
         playlist_videos: List[YoutubePlaylistVideo] = []
 
-        entry_dicts = self.extract_info_via_info_json(url=playlist_url)
+        entry_dicts = self.extract_info_via_info_json(url=self.download_options.playlist_url)
         for entry_dict in entry_dicts:
             if entry_dict.get("extractor") == "youtube":
                 playlist_videos.append(
@@ -189,7 +179,7 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
           youtube:
             # required
             download_strategy: "channel"
-            channel_id: "UCsvn_Po0SmunchJYtttWpOxMg"
+            channel_url: "UCsvn_Po0SmunchJYtttWpOxMg"
             # optional
             channel_avatar_path: "poster.jpg"
             channel_banner_path: "fanart.jpg"
@@ -197,13 +187,15 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
             after: "today-2weeks"
     """
 
-    _required_keys = {"channel_id"}
+    _required_keys = {"channel_url"}
     _optional_keys = {"before", "after", "channel_avatar_path", "channel_banner_path"}
 
     def __init__(self, name, value):
         YoutubeDownloaderOptions.__init__(self, name, value)
         DateRangeValidator.__init__(self, name, value)
-        self._channel_id = self._validate_key("channel_id", StringValidator)
+        self._channel_url = self._validate_key(
+            "channel_url", YoutubeChannelUrlValidator
+        ).channel_url
         self._channel_avatar_path = self._validate_key_if_present(
             "channel_avatar_path", OverridesStringFormatterValidator
         )
@@ -212,15 +204,13 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
         )
 
     @property
-    def channel_id(self) -> str:
+    def channel_url(self) -> str:
         """
-        Required. The channel's ID. Not to be confused with the username. It should look something
-        like ``UCsvn_Po0SmunchJYOWpOxMg`` from
-        ``https://www.youtube.com/channel/UCsvn_Po0SmunchJYOWpOxMg``. You can get this by opening a
-        video and clicking on the channel's avatar image to take you to their channel, then check
-        the url.
+        Required. The channel's url, i.e.
+        ``https://www.youtube.com/channel/UCsvn_Po0SmunchJYOWpOxMg``. URLs with ``/username`` or
+        ``/c`` are valid to use.
         """
-        return self._channel_id.value
+        return self._channel_url
 
     @property
     def channel_avatar_path(self) -> Optional[OverridesStringFormatterValidator]:
@@ -256,16 +246,10 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         )
         self.channel: Optional[YoutubeChannel] = None
 
-    @classmethod
-    def channel_url(cls, channel_id: str) -> str:
-        """Returns full channel url"""
-        return f"https://youtube.com/channel/{channel_id}"
-
     def download(self) -> List[YoutubeVideo]:
         """
         Downloads all videos from a channel
         """
-        channel_url = self.channel_url(channel_id=self.download_options.channel_id)
         channel_videos: List[YoutubeVideo] = []
         ytdl_options_overrides = {}
 
@@ -275,7 +259,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             ytdl_options_overrides["daterange"] = source_date_range
 
         entry_dicts = self.extract_info_via_info_json(
-            ytdl_options_overrides=ytdl_options_overrides, url=channel_url
+            ytdl_options_overrides=ytdl_options_overrides, url=self.download_options.channel_url
         )
 
         for entry_dict in entry_dicts:

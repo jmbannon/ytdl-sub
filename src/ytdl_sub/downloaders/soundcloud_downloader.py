@@ -8,8 +8,8 @@ from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.soundcloud import SoundcloudAlbum
 from ytdl_sub.entries.soundcloud import SoundcloudTrack
+from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
 from ytdl_sub.validators.validators import BoolValidator
-from ytdl_sub.validators.validators import StringValidator
 
 ###############################################################################
 # Abstract Soundcloud downloader + options
@@ -61,27 +61,22 @@ class SoundcloudDownloader(
         }
 
     @classmethod
-    def artist_url(cls, artist_name: str) -> str:
-        """Returns full artist url"""
-        return f"https://soundcloud.com/{artist_name}"
-
-    @classmethod
-    def artist_albums_url(cls, artist_name: str) -> str:
+    def artist_albums_url(cls, artist_url: str) -> str:
         """
         Returns
         -------
         Full artist album url
         """
-        return cls.artist_url(artist_name) + "/albums"
+        return f"{artist_url}/albums"
 
     @classmethod
-    def artist_tracks_url(cls, artist_name: str) -> str:
+    def artist_tracks_url(cls, artist_url: str) -> str:
         """
         Returns
         -------
         Full artist tracks url
         """
-        return cls.artist_url(artist_name) + "/tracks"
+        return f"{artist_url}/tracks"
 
 
 ###############################################################################
@@ -102,24 +97,26 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
           soundcloud:
             # required
             download_strategy: "albums_and_singles"
-            username: soundcloud_username_from_url
+            url: "soundcloud.com/username"
             # optional
             skip_premiere_tracks: True
 
     """
 
-    _required_keys = {"username"}
+    _required_keys = {"url"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._username = self._validate_key(key="username", validator=StringValidator)
+        self._url = self._validate_key(
+            key="username", validator=SoundcloudUsernameUrlValidator
+        ).username_url
 
     @property
-    def username(self) -> str:
+    def url(self) -> str:
         """
-        Required. The Soundcloud username found in the url of their page.
+        Required. The Soundcloud user's url, i.e. ``soundcloud.com/the_username``
         """
-        return self._username.value
+        return self._url
 
 
 class SoundcloudAlbumsAndSinglesDownloader(
@@ -177,8 +174,8 @@ class SoundcloudAlbumsAndSinglesDownloader(
         """
         Soundcloud subscription to download albums and tracks as singles.
         """
-        artist_albums_url = self.artist_albums_url(artist_name=self.download_options.username)
-        artist_tracks_url = self.artist_tracks_url(artist_name=self.download_options.username)
+        artist_albums_url = self.artist_albums_url(artist_url=self.download_options.url)
+        artist_tracks_url = self.artist_tracks_url(artist_url=self.download_options.url)
 
         album_entry_dicts = self.extract_info_via_info_json(url=artist_albums_url)
         tracks_entry_dicts = self.extract_info_via_info_json(url=artist_tracks_url)
