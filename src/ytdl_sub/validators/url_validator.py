@@ -143,3 +143,47 @@ class YoutubeChannelUrlValidator(StringValidator):
         Full channel URL
         """
         return self._channel_url
+
+
+class SoundcloudArtistUrlValidator(StringValidator):
+
+    _expected_value_type_name = "Soundcloud artist url"
+
+    @classmethod
+    def _get_channel_url(cls, url: str) -> Optional[str]:
+        """
+        Examples:
+        - https://www.soundcloud.com/artist_name
+        """
+        # If the url doesn't contain soundcloud, assume it is invalid
+        if "soundcloud.com" not in url:
+            return None
+
+        # If https:// is not present, urlparse will not work
+        if not url.startswith("https://"):
+            url = f"https://{url}"
+
+        query = urlparse(url)
+        if query.hostname in ("soundcloud.com", "www.soundcloud.com"):
+            if len(query.path) > 2:  # /artist_name
+                artist_name = query.path[1:].split("/")[0]  # strip extra paths or slashes
+                artist_name = artist_name.split("?")[0]  # strip extra arguments
+                return f"https://soundcloud.com/{artist_name}"
+
+        return None
+
+    def __init__(self, name: str, value: Any):
+        super().__init__(name, value)
+
+        self._artist_url = self._get_channel_url(value)
+        if not self._artist_url:
+            raise self._validation_exception(f"'{value}' is not a valid Soundcloud artist url.")
+
+    @property
+    def artist_url(self) -> str:
+        """
+        Returns
+        -------
+        Full artist URL
+        """
+        return self._artist_url
