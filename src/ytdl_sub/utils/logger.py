@@ -4,8 +4,16 @@ import logging
 import os
 import sys
 import tempfile
+from dataclasses import dataclass
 from typing import List
 from typing import Optional
+
+
+@dataclass
+class LoggerLevel:
+    name: str
+    level: int
+    logging_level: int
 
 
 class LoggerLevels:
@@ -13,64 +21,15 @@ class LoggerLevels:
     Custom log levels
     """
 
-    # No logs whatsoever
-    QUIET = 0
-
-    # Only ytdl-sub info logs
-    INFO = 10
-
-    # ytdl-sub and yt-dlp info logs
-    VERBOSE = 20
-
-    # ytdl-sub and yt-dlp info + debug logs
-    DEBUG = 30
+    QUIET = LoggerLevel(name="quiet", level=0, logging_level=logging.NOTSET)  # No logs whatsoever
+    INFO = LoggerLevel(name="info", level=10, logging_level=logging.INFO)  # ytdl-sub info logs
+    VERBOSE = LoggerLevel(name="verbose", level=20, logging_level=logging.INFO)  # ytdl-sub + yt-dlp
+    DEBUG = LoggerLevel(
+        name="debug", level=30, logging_level=logging.DEBUG
+    )  # ytdl-sub + yt-dlp debug logs
 
     @classmethod
-    def to_logging_level(cls, logger_level: int) -> int:
-        """
-        Parameters
-        ----------
-        logger_level
-            LoggingLevels enum
-
-        Returns
-        -------
-        logging level
-        """
-        match logger_level:
-            case cls.QUIET:
-                return logging.NOTSET
-            case cls.DEBUG:
-                return logging.DEBUG
-            case _:
-                return logging.INFO
-
-    @classmethod
-    def name_of(cls, log_level: int):
-        """
-        Parameters
-        ----------
-        log_level
-            The log level
-
-        Returns
-        -------
-        Name of the log levels
-        """
-        match log_level:
-            case cls.QUIET:
-                return "quiet"
-            case cls.INFO:
-                return "info"
-            case cls.VERBOSE:
-                return "verbose"
-            case cls.DEBUG:
-                return "debug"
-            case _:
-                raise ValueError("Invalid log level")
-
-    @classmethod
-    def all(cls) -> List[int]:
+    def all(cls) -> List[LoggerLevel]:
         """
         Returns
         -------
@@ -79,25 +38,49 @@ class LoggerLevels:
         return [cls.QUIET, cls.INFO, cls.VERBOSE, cls.DEBUG]
 
     @classmethod
+    def from_str(cls, name: str) -> LoggerLevel:
+        """
+        Parameters
+        ----------
+        name
+            The log level name
+
+        Raises
+        ------
+        ValueError
+            Name is not a valid logger level
+        """
+        for logger_level in cls.all():
+            if name == logger_level.name:
+                return logger_level
+        raise ValueError("Invalid logger level name")
+
+    @classmethod
     def names(cls) -> List[str]:
         """
         Returns
         -------
         All log level names
         """
-        return [cls.name_of(log_level=log_level) for log_level in cls.all()]
+        return [logger_level.name for logger_level in cls.all()]
 
 
 class Logger:
 
     # The level set via CLI arguments
-    _LEVEL = LoggerLevels.DEBUG
+    _LOGGER_LEVEL: LoggerLevel = LoggerLevels.DEBUG
 
     _DEBUG_LOGGER_FILE = None
 
     @classmethod
-    def set_log_level(cls, log_level: int):
-        cls._LEVEL = log_level
+    def set_log_level(cls, log_level_name: str):
+        """
+        Parameters
+        ----------
+        log_level_name
+            Name of the log level to set
+        """
+        cls._LOGGER_LEVEL = LoggerLevels.from_str(name=log_level_name)
 
     @classmethod
     def _get_formatter(cls) -> logging.Formatter:
@@ -116,7 +99,7 @@ class Logger:
         Logger handler
         """
         handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(LoggerLevels.to_logging_level(cls._LEVEL))
+        handler.setLevel(cls._LOGGER_LEVEL.logging_level)
         handler.setFormatter(cls._get_formatter())
         return handler
 
@@ -142,7 +125,7 @@ class Logger:
             logger_name += f":{name}"
 
         logger = logging.Logger(name=logger_name, level=logging.DEBUG)
-        if stdout and cls._LEVEL >= LoggerLevels.INFO:
+        if stdout and cls._LOGGER_LEVEL.level >= LoggerLevels.INFO.level:
             logger.addHandler(cls._get_stdout_handler())
         if debug_file:
             logger.addHandler(cls._get_debug_file_handler())
@@ -177,7 +160,9 @@ class Logger:
             Optional. Name of the logger which is included in the prefix like [ytdl-sub:<name>].
             If None, the prefix is just [ytdl-sub]
         """
-        logger = cls._get(name=name, stdout=cls._LEVEL >= LoggerLevels.VERBOSE, debug_file=True)
+        logger = cls._get(
+            name=name, stdout=cls._LOGGER_LEVEL.level >= LoggerLevels.VERBOSE.level, debug_file=True
+        )
 
         with io.StringIO() as redirect_stream:
             with contextlib.redirect_stdout(new_target=redirect_stream):

@@ -20,7 +20,7 @@ parser.add_argument(
     metavar="|".join(LoggerLevels.names()),
     type=str,
     help="level of logs to print to console, defaults to info",
-    default=LoggerLevels.name_of(LoggerLevels.INFO),
+    default=LoggerLevels.INFO.name,
     choices=LoggerLevels.names(),
 )
 ###################################################################################################

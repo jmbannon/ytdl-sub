@@ -72,7 +72,7 @@ def _main():
     args, extra_args = parser.parse_known_args()
 
     config: ConfigFile = ConfigFile.from_file_path(args.config).initialize()
-    Logger.set_log_level(log_level=args.log_level)
+    Logger.set_log_level(log_level_name=args.log_level)
 
     if args.subparser == "sub":
         _download_subscriptions_from_yaml_files(config=config, args=args)

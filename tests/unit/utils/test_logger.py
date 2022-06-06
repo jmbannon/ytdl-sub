@@ -22,7 +22,7 @@ class TestLogger:
         ],
     )
     def test_logger_info_stdout(self, capsys, log_level, outputs_to_stdout):
-        Logger._LEVEL = log_level
+        Logger._LOGGER_LEVEL = log_level
         logger = Logger.get(name="name_test")
 
         logger.info("test")
@@ -43,7 +43,7 @@ class TestLogger:
         ],
     )
     def test_logger_debug_stdout(self, capsys, log_level, outputs_to_stdout):
-        Logger._LEVEL = log_level
+        Logger._LOGGER_LEVEL = log_level
         logger = Logger.get(name="name_test")
 
         logger.debug("test")
@@ -64,7 +64,7 @@ class TestLogger:
         ],
     )
     def test_logger_always_outputs_to_debug_file(self, log_level):
-        Logger._LEVEL = log_level
+        Logger._LOGGER_LEVEL = log_level
         logger = Logger.get(name="name_test")
 
         logger.info("info test")
@@ -85,7 +85,7 @@ class TestLogger:
         ],
     )
     def test_handle_external_logs(self, capsys, log_level, expected_stdout):
-        Logger._LEVEL = log_level
+        Logger._LOGGER_LEVEL = log_level
         with Logger.handle_external_logs(name="name_test"):
             print("test line 1")
             print("test line 2")
