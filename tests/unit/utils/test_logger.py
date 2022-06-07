@@ -92,6 +92,10 @@ class TestLogger:
     )
     def test_handle_external_logs(self, capsys, log_level, expected_stdout):
         Logger._LOGGER_LEVEL = log_level
+        expected_lines = [
+            "[ytdl-sub:name_test] test line 1\n",
+            "[ytdl-sub:name_test] test line 2\n",
+        ]
         with Logger.handle_external_logs(name="name_test"):
             print("test line 1")
             print("test line 2")
@@ -99,11 +103,11 @@ class TestLogger:
         # Ensure it goes to stdout only if it is expected to
         captured = capsys.readouterr()
         if expected_stdout:
-            assert captured.out == "[ytdl-sub:name_test] test line 1\ntest line 2\n\n"
+            assert captured.out == "".join(expected_lines)
         else:
             assert not captured.out
 
         # Ensure it always go to the debug file
         with open(Logger._DEBUG_LOGGER_FILE.name, "r", encoding="utf-8") as log_file:
             lines = log_file.readlines()
-        assert lines == ["[ytdl-sub:name_test] test line 1\n", "test line 2\n", "\n"]
+        assert lines == expected_lines

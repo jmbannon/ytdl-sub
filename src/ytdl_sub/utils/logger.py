@@ -74,7 +74,8 @@ class StreamToLogger(io.StringIO):
         """
         Writes to the logger and stream
         """
-        self._logger.info(__s.removesuffix("\n"))
+        if __s != "\n":
+            self._logger.info(__s.removesuffix("\n"))
         return super().write(__s)
 
 
