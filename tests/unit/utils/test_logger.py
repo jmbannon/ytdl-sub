@@ -1,3 +1,5 @@
+import os.path
+
 import pytest
 
 from ytdl_sub.utils.logger import Logger
@@ -74,6 +76,10 @@ class TestLogger:
             lines = log_file.readlines()
 
         assert lines == ["[ytdl-sub:name_test] info test\n", "[ytdl-sub:name_test] debug test\n"]
+
+        # Ensure the file cleans up too
+        Logger.cleanup(delete_debug_file=True)
+        assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
 
     @pytest.mark.parametrize(
         "log_level, expected_stdout",

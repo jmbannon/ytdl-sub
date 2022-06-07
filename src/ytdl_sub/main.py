@@ -83,6 +83,9 @@ def _main():
         _download_subscription_from_cli(config=config, extra_args=extra_args)
         logger.info("Download complete!")
 
+    # Ran successfully, so we can delete the debug file
+    Logger.cleanup(delete_debug_file=True)
+
 
 def main():
     """
@@ -96,9 +99,10 @@ def main():
     except Exception:  # pylint: disable=broad-except
         logger.exception("An uncaught error occurred:")
         logger.error(
-            "Please copy and paste the stacktrace above and make a Github "
+            "Please upload the error log file '%s' and make a Github "
             "issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
-            "command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!"
+            "command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!",
+            Logger.debug_log_filename(),
         )
         sys.exit(1)
 

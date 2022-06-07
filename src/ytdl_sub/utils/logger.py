@@ -21,7 +21,7 @@ class LoggerLevels:
     Custom log levels
     """
 
-    QUIET = LoggerLevel(name="quiet", level=0, logging_level=logging.NOTSET)  # No logs whatsoever
+    QUIET = LoggerLevel(name="quiet", level=0, logging_level=logging.WARNING)  # Only warnings
     INFO = LoggerLevel(name="info", level=10, logging_level=logging.INFO)  # ytdl-sub info logs
     VERBOSE = LoggerLevel(name="verbose", level=20, logging_level=logging.INFO)  # ytdl-sub + yt-dlp
     DEBUG = LoggerLevel(
@@ -65,12 +65,37 @@ class LoggerLevels:
         return [logger_level.name for logger_level in cls.all()]
 
 
+class StreamToLogger(io.StringIO):
+    def __init__(self, logger: logging.Logger, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._logger = logger
+
+    def write(self, __s: str) -> int:
+        """
+        Writes to the logger and stream
+        """
+        self._logger.info(__s.removesuffix("\n"))
+        return super().write(__s)
+
+
 class Logger:
 
     # The level set via CLI arguments
     _LOGGER_LEVEL: LoggerLevel = LoggerLevels.DEBUG
 
-    _DEBUG_LOGGER_FILE = None
+    # Ignore 'using with' warning since this will be cleaned up later
+    # pylint: disable=R1732
+    _DEBUG_LOGGER_FILE = tempfile.NamedTemporaryFile(prefix="ytdl-sub.", delete=False)
+    # pylint: enable=R1732
+
+    @classmethod
+    def debug_log_filename(cls) -> str:
+        """
+        Returns
+        -------
+        File name of the debug log file
+        """
+        return cls._DEBUG_LOGGER_FILE.name
 
     @classmethod
     def set_log_level(cls, log_level_name: str):
@@ -105,13 +130,7 @@ class Logger:
 
     @classmethod
     def _get_debug_file_handler(cls) -> logging.FileHandler:
-        if cls._DEBUG_LOGGER_FILE is None:
-            # Ignore 'using with' warning since this must be cleaned up later
-            # pylint: disable=R1732
-            cls._DEBUG_LOGGER_FILE = tempfile.NamedTemporaryFile(prefix="ytdl-sub.", delete=False)
-            # pylint: enable=R1732
-
-        handler = logging.FileHandler(filename=cls._DEBUG_LOGGER_FILE.name, encoding="utf-8")
+        handler = logging.FileHandler(filename=cls.debug_log_filename(), encoding="utf-8")
         handler.setLevel(logging.DEBUG)
         handler.setFormatter(cls._get_formatter())
         return handler
@@ -158,19 +177,16 @@ class Logger:
         ----------
         name
             Optional. Name of the logger which is included in the prefix like [ytdl-sub:<name>].
-            If None, the prefix is just [ytdl-sub]
+            If None, the prefix is just [ytdl-sub]mak
         """
         logger = cls._get(
             name=name, stdout=cls._LOGGER_LEVEL.level >= LoggerLevels.VERBOSE.level, debug_file=True
         )
 
-        with io.StringIO() as redirect_stream:
+        with StreamToLogger(logger=logger) as redirect_stream:
             with contextlib.redirect_stdout(new_target=redirect_stream):
                 with contextlib.redirect_stderr(new_target=redirect_stream):
                     yield
-
-            redirect_stream.flush()
-            logger.info(redirect_stream.getvalue())
 
     @classmethod
     def cleanup(cls, delete_debug_file: bool = True):
@@ -184,5 +200,5 @@ class Logger:
         """
         cls._DEBUG_LOGGER_FILE.close()
 
-        if delete_debug_file and os.path.isfile(cls._DEBUG_LOGGER_FILE.name):
-            os.remove(cls._DEBUG_LOGGER_FILE.name)
+        if delete_debug_file and os.path.isfile(cls.debug_log_filename()):
+            os.remove(cls.debug_log_filename())
