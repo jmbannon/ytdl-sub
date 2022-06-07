@@ -8,12 +8,29 @@ from ytdl_sub.utils.logger import LoggerLevels
 
 @pytest.fixture(autouse=True)
 def cleanup_debug_file():
+    Logger.set_log_level(log_level_name=LoggerLevels.DEBUG.name)
     yield
-
     Logger.cleanup(delete_debug_file=True)
 
 
 class TestLogger:
+    @pytest.mark.parametrize(
+        "log_level",
+        [
+            LoggerLevels.QUIET,
+            LoggerLevels.INFO,
+            LoggerLevels.VERBOSE,
+            LoggerLevels.DEBUG,
+        ],
+    )
+    def test_logger_level_set(self, log_level):
+        Logger.set_log_level(log_level_name=log_level.name)
+        assert Logger._LOGGER_LEVEL == log_level
+
+    def test_logger_level_invalid_name(self):
+        with pytest.raises(ValueError):
+            Logger.set_log_level("nope")
+
     @pytest.mark.parametrize(
         "log_level, outputs_to_stdout",
         [
