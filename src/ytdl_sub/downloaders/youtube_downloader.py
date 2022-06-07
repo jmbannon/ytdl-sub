@@ -95,6 +95,21 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
     downloader_options_type = YoutubeVideoDownloaderOptions
     downloader_entry_type = YoutubeVideo
 
+    @classmethod
+    def ytdl_option_defaults(cls) -> Dict:
+        """
+        Default `ytdl_options`_ for ``video``
+
+        .. code-block:: yaml
+
+           ytdl_options:
+             ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
+        """
+        return dict(
+            super().ytdl_option_defaults(),
+            **{"break_on_existing": True},
+        )
+
     def download(self) -> List[YoutubeVideo]:
         """Download a single Youtube video"""
         entry_dict = self.extract_info(url=self.download_options.video_url)
@@ -143,6 +158,25 @@ class YoutubePlaylistDownloader(
 ):
     downloader_options_type = YoutubePlaylistDownloaderOptions
     downloader_entry_type = YoutubePlaylistVideo
+
+    # pylint: disable=line-too-long
+    @classmethod
+    def ytdl_option_defaults(cls) -> Dict:
+        """
+        Default `ytdl_options`_ for ``playlist``
+
+        .. code-block:: yaml
+
+           ytdl_options:
+             ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
+             break_on_existing: True  # stop downloads (newest to oldest) if a video is already downloaded
+        """
+        return dict(
+            super().ytdl_option_defaults(),
+            **{"break_on_existing": True},
+        )
+
+    # pylint: enable=line-too-long
 
     def download(self) -> List[YoutubePlaylistVideo]:
         """
@@ -230,6 +264,29 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
 class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions, YoutubeVideo]):
     downloader_options_type = YoutubeChannelDownloaderOptions
     downloader_entry_type = YoutubeVideo
+
+    # pylint: disable=line-too-long
+    @classmethod
+    def ytdl_option_defaults(cls) -> Dict:
+        """
+        Default `ytdl_options`_ for ``channel``
+
+        .. code-block:: yaml
+
+           ytdl_options:
+             ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
+             break_on_existing: True  # stop downloads (newest to oldest) if a video is already downloaded
+             break_on_reject: True  # stops downloads if the video's upload date is out of the specified 'before'/'after' range
+        """
+        return dict(
+            super().ytdl_option_defaults(),
+            **{
+                "break_on_existing": True,
+                "break_on_reject": True,
+            },
+        )
+
+    # pylint: enable=line-too-long
 
     def __init__(
         self,

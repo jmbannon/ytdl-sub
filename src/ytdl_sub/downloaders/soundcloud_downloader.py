@@ -54,13 +54,6 @@ class SoundcloudDownloader(
     downloader_entry_type = SoundcloudTrack
 
     @classmethod
-    def ytdl_option_defaults(cls) -> Dict:
-        """Returns default format to be best mp3"""
-        return {
-            "format": "bestaudio[ext=mp3]",
-        }
-
-    @classmethod
     def artist_albums_url(cls, artist_url: str) -> str:
         """
         Returns
@@ -123,6 +116,24 @@ class SoundcloudAlbumsAndSinglesDownloader(
     SoundcloudDownloader[SoundcloudAlbumsAndSinglesDownloadOptions]
 ):
     downloader_options_type = SoundcloudAlbumsAndSinglesDownloadOptions
+
+    @classmethod
+    def ytdl_option_defaults(cls) -> Dict:
+        """
+        Default `ytdl_options`_ for ``albums_and_singles``
+
+        .. code-block:: yaml
+
+           ytdl_options:
+             ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
+             format: "bestaudio[ext=mp3]"  # download format the best possible mp3
+        """
+        return dict(
+            super().ytdl_option_defaults(),
+            **{
+                "format": "bestaudio[ext=mp3]",
+            },
+        )
 
     def _get_albums(self, entry_dicts: List[Dict]) -> List[SoundcloudAlbum]:
         """

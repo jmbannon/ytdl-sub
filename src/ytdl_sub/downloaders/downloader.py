@@ -48,8 +48,13 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
-        """Downloader defaults that can be overwritten from user input"""
-        return {}
+        """
+        .. code-block:: yaml
+
+           ytdl_options:
+             ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
+        """
+        return {"ignoreerrors": True}
 
     @classmethod
     def _configure_ytdl_options(

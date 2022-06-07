@@ -13,9 +13,6 @@ presets:
     youtube:
       download_strategy: "video"
 
-    ytdl_options:
-      ignoreerrors: True
-
     output_options:
       output_directory: "{music_video_directory}"
       file_name: "{music_video_name}.{ext}"
@@ -45,6 +42,3 @@ presets:
 
     output_options:
       maintain_download_archive: True
-
-    ytdl_options:
-      break_on_existing: True
