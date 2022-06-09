@@ -2,6 +2,8 @@ import argparse
 
 ###################################################################################################
 # GLOBAL PARSER
+from ytdl_sub.utils.logger import LoggerLevels
+
 parser = argparse.ArgumentParser(
     description="ytdl-sub: Automate download and adding metadata with YoutubeDL"
 )
@@ -12,6 +14,14 @@ parser.add_argument(
     type=str,
     help="path to the config yaml, uses config.yaml if not provided",
     default="config.yaml",
+)
+parser.add_argument(
+    "--log-level",
+    metavar="|".join(LoggerLevels.names()),
+    type=str,
+    help="level of logs to print to console, defaults to info",
+    default=LoggerLevels.INFO.name,
+    choices=LoggerLevels.names(),
 )
 ###################################################################################################
 # SUBSCRIPTION PARSER

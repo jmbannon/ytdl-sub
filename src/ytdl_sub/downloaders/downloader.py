@@ -18,6 +18,7 @@ from yt_dlp.utils import RejectedVideoReached
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 
 
@@ -115,8 +116,9 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         if ytdl_options_overrides is not None:
             ytdl_options = dict(ytdl_options, **ytdl_options_overrides)
 
-        with ytdl.YoutubeDL(ytdl_options) as ytdl_downloader:
-            yield ytdl_downloader
+        with Logger.handle_external_logs(name="yt-dlp"):
+            with ytdl.YoutubeDL(ytdl_options) as ytdl_downloader:
+                yield ytdl_downloader
 
     def extract_info(self, ytdl_options_overrides: Optional[Dict] = None, **kwargs) -> Dict:
         """
