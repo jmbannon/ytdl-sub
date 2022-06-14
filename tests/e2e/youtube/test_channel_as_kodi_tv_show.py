@@ -37,6 +37,7 @@ def subscription_dict(output_directory, subscription_name):
         "ytdl_options": {
             "format": "worst[ext=mp4]",
             "max_views": 100000,  # do not download the popular PJ concert
+            "RejectedVideoReached": False,  # do not break from max views
         },
         "overrides": {"tv_show_name": "Project / Zombie"},
     }
@@ -131,6 +132,8 @@ def expected_full_channel_download():
 # RECENT CHANNEL FIXTURES
 @pytest.fixture
 def recent_channel_subscription_dict(subscription_dict):
+    # TODO: remove this hack by using a different channel
+    del subscription_dict["ytdl_options"]["RejectedVideoReached"]
     return mergedeep.merge(
         subscription_dict,
         {
