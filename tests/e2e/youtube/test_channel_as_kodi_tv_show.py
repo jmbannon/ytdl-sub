@@ -8,7 +8,6 @@ from e2e.expected_download import ExpectedDownload
 import ytdl_sub.downloaders.downloader
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
-from ytdl_sub.downloaders.youtube_downloader import YoutubeChannelDownloader
 from ytdl_sub.subscriptions.subscription import Subscription
 
 

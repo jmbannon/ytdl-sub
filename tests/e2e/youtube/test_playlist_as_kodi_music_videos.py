@@ -2,8 +2,10 @@ from pathlib import Path
 
 import mergedeep
 import pytest
+from conftest import assert_debug_log
 from e2e.expected_download import ExpectedDownload
 
+import ytdl_sub.downloaders.downloader
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -137,6 +139,14 @@ class TestPlaylistAsKodiMusicVideo:
     ):
         playlist_subscription.download()
         expected_playlist_download.assert_files_exist(relative_directory=output_directory)
+
+        # After the playlist is downloaded, ensure another invocation will hit ExistingVideoReached
+        with assert_debug_log(
+            logger=ytdl_sub.downloaders.downloader.logger,
+            expected_message="ExistingVideoReached, stopping additional downloads",
+        ):
+            playlist_subscription.download()
+            expected_playlist_download.assert_files_exist(relative_directory=output_directory)
 
     def test_single_video_download(
         self, single_video_subscription, expected_single_video_download, output_directory
