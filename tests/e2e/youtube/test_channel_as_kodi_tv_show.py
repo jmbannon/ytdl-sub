@@ -2,10 +2,13 @@ from pathlib import Path
 
 import mergedeep
 import pytest
+from conftest import assert_debug_log
 from e2e.expected_download import ExpectedDownload
 
+import ytdl_sub.downloaders.downloader
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
+from ytdl_sub.downloaders.youtube_downloader import YoutubeChannelDownloader
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -250,9 +253,12 @@ class TestChannelAsKodiTvShow:
         expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
 
         # try downloading again, ensure nothing more was downloaded
-        # TODO: add patch around the output of download to see what entry dicts were returned
-        recent_channel_subscription.download()
-        expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+        with assert_debug_log(
+            logger=ytdl_sub.downloaders.downloader.logger,
+            expected_message="RejectedVideoReached, stopping additional downloads",
+        ):
+            recent_channel_subscription.download()
+            expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
 
     def test_rolling_recent_channel_download(
         self,
@@ -263,18 +269,31 @@ class TestChannelAsKodiTvShow:
         output_directory,
     ):
         # First, download recent vids
-        recent_channel_subscription.download()
-        expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+        with assert_debug_log(
+            logger=ytdl_sub.downloaders.downloader.logger,
+            expected_message="RejectedVideoReached, stopping additional downloads",
+        ):
+            recent_channel_subscription.download()
+            expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
 
         # Then, download the rolling recent vids subscription. This should remove one of the
         # two videos
-        rolling_recent_channel_subscription.download()
-        expected_rolling_recent_channel_download.assert_files_exist(
-            relative_directory=output_directory
-        )
+        with assert_debug_log(
+            logger=ytdl_sub.downloaders.downloader.logger,
+            expected_message="ExistingVideoReached, stopping additional downloads",
+        ):
+            rolling_recent_channel_subscription.download()
+            expected_rolling_recent_channel_download.assert_files_exist(
+                relative_directory=output_directory
+            )
 
-        # Invoke the rolling download again, ensure nothing has changed
-        rolling_recent_channel_subscription.download()
-        expected_rolling_recent_channel_download.assert_files_exist(
-            relative_directory=output_directory
-        )
+        # Invoke the rolling download again, ensure downloading stopped early from it already
+        # existing
+        with assert_debug_log(
+            logger=ytdl_sub.downloaders.downloader.logger,
+            expected_message="ExistingVideoReached, stopping additional downloads",
+        ):
+            rolling_recent_channel_subscription.download()
+            expected_rolling_recent_channel_download.assert_files_exist(
+                relative_directory=output_directory
+            )

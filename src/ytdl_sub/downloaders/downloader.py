@@ -21,6 +21,8 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 
+logger = Logger.get(name="downloader")
+
 
 class DownloaderValidator(StrictDictValidator, ABC):
     """
@@ -106,7 +108,7 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         """
         self.working_directory = working_directory
         self.download_options = download_options
-        self.ytdl_options = Downloader._configure_ytdl_options(
+        self.ytdl_options = self._configure_ytdl_options(
             ytdl_options=ytdl_options,
             working_directory=self.working_directory,
             download_archive_file_name=download_archive_file_name,
@@ -185,8 +187,10 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
 
         try:
             _ = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
-        except (RejectedVideoReached, ExistingVideoReached):
-            pass
+        except RejectedVideoReached:
+            logger.debug("RejectedVideoReached, stopping additional downloads")
+        except ExistingVideoReached:
+            logger.debug("ExistingVideoReached, stopping additional downloads")
 
         return self._get_entry_dicts_from_info_json_files()
 
