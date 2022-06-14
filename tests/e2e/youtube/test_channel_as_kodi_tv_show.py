@@ -257,7 +257,7 @@ class TestChannelAsKodiTvShow:
         # try downloading again, ensure nothing more was downloaded
         with assert_debug_log(
             logger=ytdl_sub.downloaders.downloader.logger,
-            expected_message="RejectedVideoReached, stopping additional downloads",
+            expected_message="ExistingVideoReached, stopping additional downloads",
         ):
             recent_channel_subscription.download()
             expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
