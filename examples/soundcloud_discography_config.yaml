@@ -26,11 +26,11 @@ presets:
       download_strategy: "albums_and_singles"
       skip_premiere_tracks: True
 
-    # For advanced YTDL users only.
-    # This sets the download format to grab the best mp3 available.
-    # Other formats should work but have not been tested.
-    ytdl_options:
-      format: 'bestaudio[ext=mp3]'
+    # For advanced YTDL users only; any YTDL parameter can be set here.
+    # You can set the type of format you prefer YTDL to download here.
+    # By default, soundcloud will download the best mp3.
+    # ytdl_options:
+    #   format: 'bestaudio[ext=mp3]'
 
     # For each song downloaded, set the file and thumbnail name here.
     # The output directory stores all artists in a shared {music_directory}.

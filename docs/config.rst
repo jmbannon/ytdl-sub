@@ -51,6 +51,8 @@ _______
   :inherited-members:
   :exclude-members: get_date_range
 
+.. autofunction:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloader.ytdl_option_defaults()
+
 -------------------------------------------------------------------------------
 
 .. _YouTube Playlist:
@@ -62,6 +64,8 @@ ________
   :member-order: bysource
   :inherited-members:
 
+.. autofunction:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloader.ytdl_option_defaults()
+
 -------------------------------------------------------------------------------
 
 video
@@ -70,6 +74,8 @@ _____
   :members:
   :member-order: bysource
   :inherited-members:
+
+.. autofunction:: ytdl_sub.downloaders.youtube_downloader.YoutubeVideoDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
 
@@ -85,6 +91,8 @@ __________________
   :members:
   :member-order: bysource
   :inherited-members:
+
+.. autofunction:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
 

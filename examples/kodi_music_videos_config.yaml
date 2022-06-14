@@ -23,11 +23,13 @@ presets:
     youtube:
       download_strategy: "video"
 
-    # For advanced YTDL users only.
-    # It is wise to leave ignoreerrors=True to avoid errors for things
-    # like age-restricted videos in case you have not set your cookie.
-    ytdl_options:
-      ignoreerrors: True
+    # For advanced YTDL users only; any YTDL parameter can be set here.
+    # To download age-restricted videos, you will need to set your cookie
+    # file here as a ytdl parameter. For more info, see
+    # https://ytdl-sub.readthedocs.io/en/latest/faq.html#download-age-restricted-youtube-videos
+    #
+    # ytdl_options:
+    #   cookiefile: "path/to/cookie_file.txt
 
     # For each video downloaded, set the file and thumbnail name here.
     # We set both with {music_video_name}, which is a variable we define in
@@ -70,8 +72,3 @@ presets:
     output_options:
       maintain_download_archive: True
 
-    # Setting break_on_existing=True is also a good thing anytime you are using
-    # a download archive, because it will tell the downloader to stop trying
-    # to download videos that have already been downloaded.
-    ytdl_options:
-      break_on_existing: True

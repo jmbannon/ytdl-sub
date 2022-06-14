@@ -22,10 +22,8 @@ configuration:
 presets:
 
   ###############################################################################
-  # LEVEL 1 - FULL ARCHIVE
-  #
-  # We will call this preset `yt_channel_as_tv`, and it will download every single video in
-  # a YouTube channel.
+  # FULL ARCHIVE
+  # This preset will download every single video in a YouTube channel.
   yt_channel_as_tv:
     # YouTube channels are our source/download strategy
     # Use the channel avatar and banner images for Kodi
@@ -34,11 +32,13 @@ presets:
       channel_avatar_path: "poster.jpg"
       channel_banner_path: "fanart.jpg"
 
-    # For advanced YTDL users only.
-    # It is wise to leave ignoreerrors=True to avoid errors for things
-    # like age-restricted videos in case you have not set your cookie.
-    ytdl_options:
-      ignoreerrors: True
+    # For advanced YTDL users only; any YTDL parameter can be set here.
+    # To download age-restricted videos, you will need to set your cookie
+    # file here as a ytdl parameter. For more info, see
+    # https://ytdl-sub.readthedocs.io/en/latest/faq.html#download-age-restricted-youtube-videos
+    #
+    # ytdl_options:
+    #   cookiefile: "path/to/cookie_file.txt
 
     # For each video downloaded, set the file and thumbnail name here.
     # We set both with {episode_name}, which is a variable we define in
@@ -85,11 +85,9 @@ presets:
       episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {title_sanitized}"
 
   ###############################################################################
-  # LEVEL 2 - RECENT ARCHIVE
-  #
-  # It is not always ideal to go full data-hoarder on a channel's videos.
-  # This example shows how you can only download the last 14 days-worth
-  # of videos on each download invocation.
+  # RECENT ARCHIVE
+  # This preset shows how you can download just the last 14 days-worth of videos
+  # on each download invocation.
   yt_channel_as_tv__recent:
     # `preset` can be set to any other preset in the config, and will inherit all its defined fields.
     # This helps reduce copy-paste in the config.yaml
@@ -100,30 +98,10 @@ presets:
     youtube:
       after: "today-2weeks"
 
-    # This is getting into YTDL voodoo. By default, YTDL will try to
-    # download all channel videos beginning with the most recent one.
-    # By setting break_on_reject, we will break this full-download on
-    # the first video that gets rejected. Since we have youtube.after
-    # defined, all videos after today-14days will be rejected. Therefore,
-    # the first video that is out of range that it tries to download, it
-    # will stop there, and save a significant amount of time.
-    #
-    # Similar to break_on_reject, but instead, breaks if a video has
-    # already been downloaded. If you were to perform a download on this
-    # subscription one-after-the-other, the second invocation would stop
-    # after looking at the first (most recent) video since it would exist
-    # in the download archive.
-    ytdl_options:
-      break_on_reject: True
-      break_on_existing: True
-
   ###############################################################################
-  # LEVEL 3 - ROLLING ARCHIVE
-
-  # If you put the recent archive example in a cron job, then in a year or so
-  # you will basically be datahoarding that channel unless you manually delete
-  # old videos. This example shows how to only keep the last 14-days worth of videos,
-  # and delete the rest.
+  # ROLLING ARCHIVE
+  # This example shows how to only keep the last 14-days worth of videos, and
+  # delete the rest.
   yt_channel_as_tv__only_recent:
     # Reuse `yt_channel_as_tv__recent` to only download the last 2 weeks' of videos
     preset: "yt_channel_as_tv__recent"

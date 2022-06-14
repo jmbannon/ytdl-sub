@@ -14,8 +14,8 @@ RUN apk update --no-cache && \
       python3 \
       py3-pip && \
     apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
-      python3=3.10.4-r0 \
-      py3-setuptools=59.4.0-r0 && \
+      python3=~3.10 \
+      py3-setuptools && \
     apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/community/ \
       py3-pip && \
     mkdir -p /config && \
