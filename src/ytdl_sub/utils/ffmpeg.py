@@ -1,4 +1,5 @@
 import subprocess
+from typing import List
 
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
@@ -17,7 +18,7 @@ class FFMPEG:
             ) from subprocess_error
 
     @classmethod
-    def run(cls, ffmpeg_args: str) -> None:
+    def run(cls, ffmpeg_args: List[str]) -> None:
         """
         Runs an ffmpeg command. Should not include 'ffmpeg' as the beginning argument.
 
@@ -28,6 +29,7 @@ class FFMPEG:
         """
         cls._ensure_installed()
 
-        cmd = f"ffmpeg {ffmpeg_args}"
-        logger.debug("Running %s", cmd)
+        cmd = ["ffmpeg"]
+        cmd.extend(ffmpeg_args)
+        logger.debug("Running %s", " ".join(cmd))
         subprocess.run(cmd, check=True)

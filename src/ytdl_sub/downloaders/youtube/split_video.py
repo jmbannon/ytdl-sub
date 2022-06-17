@@ -1,6 +1,8 @@
 import copy
 import os.path
 import re
+from pathlib import Path
+from shutil import copyfile
 from typing import Dict
 from typing import List
 from typing import Tuple
@@ -8,8 +10,10 @@ from typing import Tuple
 from ytdl_sub.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubeVideoDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
+from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
+from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.validators import StringValidator
 
 # Captures the following formats:
@@ -112,7 +116,7 @@ class YoutubeSplitVideoDownloaderOptions(YoutubeVideoDownloaderOptions):
     end at Youtube video's ending.
     """
 
-    _required_keys = super()._required_keys.union("split_timestamps")
+    _required_keys = {"video_url", "split_timestamps"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
@@ -155,32 +159,42 @@ class YoutubeSplitVideoDownloader(
             split_timestamp_path=self.download_options.split_timestamps
         )
         entry_dict = self.extract_info(url=self.download_options.video_url)
-        uid = entry_dict["id"]
-        ext = entry_dict["ext"]
 
-        idx = 0
-        for timestamp, title in timestamp_titles:
+        entry = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+        # convert the entry thumbnail early so we do not have to guess the thumbnail extension
+        # when copying it
+        convert_download_thumbnail(entry=entry)
+
+        for idx, timestamp_title in enumerate(timestamp_titles):
+            timestamp_begin, title = timestamp_title
+            timestamp_end = timestamp_titles[idx + 1][0] if idx + 1 < len(timestamp_titles) else ""
+
+            new_uid = f"{entry.uid}___{idx}"
+
+            input_file = entry.get_download_file_path()
+            output_file = str(Path(self.working_directory) / f"{new_uid}.{entry.ext}")
+            output_thumbnail_file = str(
+                Path(self.working_directory) / f"{new_uid}.{entry.thumbnail_ext}"
+            )
+
             entry_dict_ = copy.deepcopy(entry_dict)
-            new_uid = f"{uid}___{idx}"
             entry_dict_["title"] = title
             entry_dict_["playlist_index"] = idx + 1
             entry_dict_["playlist_count"] = len(timestamp_titles)
             entry_dict_["id"] = new_uid
 
-            timestamp_begin_arg = f"-ss {timestamp}"
-            timestamp_end_arg = (
-                f"-to {timestamp_titles[idx + 1][0]}" if idx + 1 < len(timestamp_titles) else ""
-            )
+            cmd = ["-i", input_file, "-ss", timestamp_begin]
+            if timestamp_end:
+                cmd += ["-to", timestamp_end]
+            cmd += ["-vcodec", "copy", "-acodec", "copy", output_file]
 
-            FFMPEG.run(
-                f"-i {uid}.{ext} "
-                f"{timestamp_begin_arg} {timestamp_end_arg} "
-                f"-vcodec copy -acodec copy {new_uid}.{ext}"
-            )
+            FFMPEG.run(cmd)
+
+            copyfile(src=entry.get_download_thumbnail_path(), dst=output_thumbnail_file)
 
             split_videos.append(
                 YoutubePlaylistVideo(
-                    entry_dict=entry_dict, working_directory=self.working_directory
+                    entry_dict=entry_dict_, working_directory=self.working_directory
                 )
             )
 

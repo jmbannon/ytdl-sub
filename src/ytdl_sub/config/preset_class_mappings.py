@@ -4,6 +4,7 @@ from typing import Type
 
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.soundcloud_downloader import SoundcloudAlbumsAndSinglesDownloader
+from ytdl_sub.downloaders.youtube.split_video import YoutubeSplitVideoDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubeChannelDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubePlaylistDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubeVideoDownloader
@@ -23,6 +24,7 @@ class DownloadStrategyMapping:
             "video": YoutubeVideoDownloader,
             "playlist": YoutubePlaylistDownloader,
             "channel": YoutubeChannelDownloader,
+            "split_video": YoutubeSplitVideoDownloader,
         },
         "soundcloud": {
             "albums_and_singles": SoundcloudAlbumsAndSinglesDownloader,
