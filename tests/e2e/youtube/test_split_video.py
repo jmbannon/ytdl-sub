@@ -21,11 +21,11 @@ def config_path():
 def split_timestamps_file_path():
     timestamps = [
         "0:00 Intro\n",
-        "00:15 Part 1\n",
-        "1:01 Part 2\n",
-        "01:24 Part 3\n",
-        "0:02:01 Part 4\n",
-        "00:02:33 Part 5\n",
+        "00:10 Part 1\n",
+        "0:20 Part 2\n",
+        "00:30 Part 3\n",
+        "0:00:40 Part 4\n",
+        "00:01:01 Part 5\n",
     ]
 
     with NamedTemporaryFile(mode="w", encoding="utf-8", suffix=".txt") as tmp:
@@ -56,7 +56,8 @@ def subscription_dict(output_directory, subscription_name, split_timestamps_file
         # override the output directory with our fixture-generated dir
         "output_options": {
             "output_directory": output_directory,
-            "file_name": "{playlist_index}.{title_sanitized}.{ext}",
+            "file_name": "{channel_sanitized} - {playlist_index}-{playlist_size}"
+            ".{title_sanitized}.{ext}",
         },
         # download the worst format so it is fast
         "ytdl_options": {
@@ -89,9 +90,24 @@ def expected_single_video_download():
     # fmt: off
     return ExpectedDownload(
         expected_md5_file_hashes={
-            Path("JMC - Whale & Wasp.jpg"): "b58377dfe7c39527e1990a24b36bbd77",
-            Path("JMC - Whale & Wasp.mp4"): "931a705864c57d21d6fedebed4af6bbc",
-            Path("JMC - Whale & Wasp.nfo"): "6c2f085adb847c1dcc47c19514c454d8",
+            Path('Project Zombie - 1-6.Intro.mp4'): "eaec6f50f364b13ef1a201e736ec9c05",
+            Path('Project Zombie - 2-6.Part 1.mp4'): "5850b19acb250cc13db36f80fa1bba5a",
+            Path('Project Zombie - 3-6.Part 2.mp4'): "445d95eba437db6df284df7e1ab633e8",
+            Path('Project Zombie - 4-6.Part 3.mp4'): "2b6e7532d515c9e64ed2a33d850cf199",
+            Path('Project Zombie - 5-6.Part 4.mp4'): "842bf3c4d1fcc4c5ab110635935dac66",
+            Path('Project Zombie - 6-6.Part 5.mp4'): "238de99f00f829ab72f042b79da9a33a",
+            Path('Project Zombie - Intro.jpg'): "e87282e4115baa8b5c727fb4de15316d",
+            Path('Project Zombie - Intro.nfo'): "ded59ac906f579312cc3cf98a57e7ea3",
+            Path('Project Zombie - Part 1.jpg'): "e87282e4115baa8b5c727fb4de15316d",
+            Path('Project Zombie - Part 1.nfo'): "70ff5cd0092b8bc22dc4db93a824789b",
+            Path('Project Zombie - Part 2.jpg'): "e87282e4115baa8b5c727fb4de15316d",
+            Path('Project Zombie - Part 2.nfo'): "54450c18a2cbb9d6d2ee5d0a1fb3f279",
+            Path('Project Zombie - Part 3.jpg'): "e87282e4115baa8b5c727fb4de15316d",
+            Path('Project Zombie - Part 3.nfo'): "0effb13fc4039363a95969d1048dde57",
+            Path('Project Zombie - Part 4.jpg'): "e87282e4115baa8b5c727fb4de15316d",
+            Path('Project Zombie - Part 4.nfo'): "74bd0d7c12105469838768a0cc323a8c",
+            Path('Project Zombie - Part 5.jpg'): "e87282e4115baa8b5c727fb4de15316d",
+            Path('Project Zombie - Part 5.nfo'): "a8cf2e77721335ea7c18e22734e7996c",
         }
     )
     # fmt: on
