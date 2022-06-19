@@ -122,7 +122,7 @@ class YoutubeSplitVideoDownloaderOptions(YoutubeVideoDownloaderOptions):
 
     ``split_timestamps`` file format:
 
-    .. code-block:: txt
+    .. code-block:: markdown
 
        0:00 Intro
        0:24 Blackwater Park

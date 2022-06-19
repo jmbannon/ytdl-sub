@@ -79,6 +79,17 @@ _____
 
 -------------------------------------------------------------------------------
 
+split_video
+___________
+.. autoclass:: ytdl_sub.downloaders.youtube.split_video.YoutubeSplitVideoDownloaderOptions()
+  :members:
+  :member-order: bysource
+  :inherited-members:
+
+.. autofunction:: ytdl_sub.downloaders.youtube.split_video.YoutubeSplitVideoDownloader.ytdl_option_defaults()
+
+-------------------------------------------------------------------------------
+
 soundcloud
 ''''''''''
 Download strategies for downloading music from Soundcloud. See
