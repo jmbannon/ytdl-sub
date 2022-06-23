@@ -11,6 +11,8 @@ from ytdl_sub.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubeVideoDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.entries.youtube import YoutubeVideo
+from ytdl_sub.utils.chapters import Chapters
+from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
@@ -29,56 +31,11 @@ def _split_video_uid(source_uid: str, idx: int) -> str:
     return f"{source_uid}___{idx}"
 
 
-def _parse_split_timestamp_file(split_timestamp_path: str) -> Tuple[List[str], List[str]]:
-    """
-    Returns two lists, one containing timestamps in HH:MM:SS format, and the other titles
-    """
-    if not os.path.isfile(split_timestamp_path):
-        raise ValidationException(
-            f"split_timestamp file path '{split_timestamp_path}' does not exist."
-        )
-
-    with open(split_timestamp_path, "r", encoding="utf-8") as file:
-        lines = file.readlines()
-
-    timestamps: List[str] = []
-    titles: List[str] = []
-    idx = 0
-    for idx, line in enumerate(lines):
-        match = _SPLIT_TIMESTAMP_REGEX.match(line)
-        if not match:
-            break
-
-        timestamp = match.group(1)
-        title = match.group(2)
-        match len(timestamp):
-            case 4:  # 0:00
-                timestamp = f"00:0{timestamp}"
-            case 5:  # 00:00
-                timestamp = f"00:{timestamp}"
-            case 7:  # 0:00:00
-                timestamp = f"0{timestamp}"
-            case _:
-                pass
-
-        assert len(timestamp) == 8
-        timestamps.append(timestamp)
-        titles.append(title)
-
-    if idx not in (len(lines) - 1, len(lines) - 2):
-        raise ValidationException(
-            f"split_timestamp file '{split_timestamp_path} is not formatted correctly. "
-            f"Each line must be formatted as '0:00 title' - a timestamp, space, then title."
-        )
-
-    return timestamps, titles
-
-
 def _split_video_ffmpeg_cmd(
-    input_file: str, output_file: str, timestamps: List[str], idx: int
+    input_file: str, output_file: str, timestamps: List[Timestamp], idx: int
 ) -> List[str]:
-    timestamp_begin = timestamps[idx]
-    timestamp_end = timestamps[idx + 1] if idx + 1 < len(timestamps) else ""
+    timestamp_begin = timestamps[idx].timestamp_str
+    timestamp_end = timestamps[idx + 1].timestamp_str if idx + 1 < len(timestamps) else ""
 
     cmd = ["-i", input_file, "-ss", timestamp_begin]
     if timestamp_end:
@@ -192,9 +149,7 @@ class YoutubeSplitVideoDownloader(
         """Download a single Youtube video, then split it into multiple videos"""
         split_videos: List[YoutubePlaylistVideo] = []
 
-        timestamps, titles = _parse_split_timestamp_file(
-            split_timestamp_path=self.download_options.split_timestamps
-        )
+        chapters = Chapters.from_file(chapters_file_path=self.download_options.split_timestamps)
         entry_dict = self.extract_info(url=self.download_options.video_url)
 
         entry = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
@@ -202,7 +157,7 @@ class YoutubeSplitVideoDownloader(
         # when copying it
         convert_download_thumbnail(entry=entry)
 
-        for idx, title in enumerate(titles):
+        for idx, title in enumerate(chapters.titles):
             new_uid = _split_video_uid(source_uid=entry.uid, idx=idx)
 
             # Get the input/output file paths
@@ -215,7 +170,10 @@ class YoutubeSplitVideoDownloader(
             # Run ffmpeg to create the split the video
             FFMPEG.run(
                 _split_video_ffmpeg_cmd(
-                    input_file=input_file, output_file=output_file, timestamps=timestamps, idx=idx
+                    input_file=input_file,
+                    output_file=output_file,
+                    timestamps=chapters.timestamps,
+                    idx=idx,
                 )
             )
             # Copy the thumbnail
@@ -227,7 +185,7 @@ class YoutubeSplitVideoDownloader(
                     source_entry_dict=entry_dict,
                     title=title,
                     idx=idx,
-                    split_video_count=len(timestamps),
+                    split_video_count=len(chapters.timestamps),
                 )
             )
 

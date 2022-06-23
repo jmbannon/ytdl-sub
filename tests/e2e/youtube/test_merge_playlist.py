@@ -32,13 +32,13 @@ def subscription_dict(output_directory, subscription_name):
         "preset": "yt_music_video_playlist",
         "youtube": {
             "download_strategy": "merge_playlist",
-            "playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"
+            "playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
         },
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
         "ytdl_options": {
-            "format": "worst",
+            "format": "best",
         },
         "overrides": {"artist": "JMC"},
     }
@@ -88,7 +88,6 @@ def expected_playlist_download():
     # fmt: on
 
 
-
 class TestYoutubeMergePlaylist:
     """
     Downloads my old minecraft youtube channel, pretends they are music videos. Ensure the above
@@ -100,4 +99,3 @@ class TestYoutubeMergePlaylist:
     ):
         playlist_subscription.download()
         expected_playlist_download.assert_files_exist(relative_directory=output_directory)
-
