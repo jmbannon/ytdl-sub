@@ -1,8 +1,6 @@
 import shutil
 import subprocess
 import tempfile
-import termios
-from typing import Dict
 from typing import List
 from typing import Optional
 
@@ -123,6 +121,7 @@ def add_ffmpeg_metadata(
                 metadata_file.name,
                 "-map_metadata",
                 "1",
+                "-bitexact",  # for reproducibility
                 "-codec",
                 "copy",
                 output_file_path,

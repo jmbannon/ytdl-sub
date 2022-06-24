@@ -94,7 +94,7 @@ class YoutubeMergePlaylistDownloader(
                 "playlistreverse": True,
                 "postprocessors": [
                     {
-                        "key": "FFmpegVideoRemuxer",
+                        "key": "FFmpegVideoConvertor",
                         "when": "post_process",
                         "preferedformat": "mkv",
                     },

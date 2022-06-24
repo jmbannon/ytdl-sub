@@ -36,7 +36,8 @@ def subscription_dict(output_directory, subscription_name):
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
         "ytdl_options": {
-            "format": "best",
+            "format": "best[height<=480]",
+            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
         "overrides": {"artist": "JMC"},
     }
@@ -65,7 +66,7 @@ def expected_playlist_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             Path("JMC - Jesse's Minecraft Server.jpg"): "348e3007fc590d0b1e2f6682501b0b5f",
-            Path("JMC - Jesse's Minecraft Server.mkv"): "a568758afb79f42c7de0af027a4bf62d",
+            Path("JMC - Jesse's Minecraft Server.mkv"): "6053c47a8690519b0a33c13fa4b01ac0",
             Path("JMC - Jesse's Minecraft Server.nfo"): "10df5dcdb65ab18ecf21b3503c77e48b",
         }
     )
