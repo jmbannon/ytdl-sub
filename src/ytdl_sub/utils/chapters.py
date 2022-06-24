@@ -90,16 +90,23 @@ class Chapters:
     Represents a list of (timestamps, titles)
     """
 
-    def __init__(self, timestamps: List[Timestamp], titles: List[str], duration: Timestamp):
+    def __init__(
+        self,
+        timestamps: List[Timestamp],
+        titles: List[str],
+    ):
         self.timestamps = timestamps
         self.titles = titles
-        self.duration = duration
+
+        for idx in range(len(timestamps) - 1):
+            if timestamps[idx].timestamp_sec >= timestamps[idx + 1].timestamp_sec:
+                raise ValueError("Timestamps must be in ascending order")
 
     def contains_zero_timestamp(self) -> bool:
         return self.timestamps[0].timestamp_sec == 0
 
     @classmethod
-    def from_file(cls, chapters_file_path: str, duration: Timestamp) -> "Chapters":
+    def from_file(cls, chapters_file_path: str) -> "Chapters":
         if not os.path.isfile(chapters_file_path):
             raise ValidationException(
                 f"chapter/timestamp file path '{chapters_file_path}' does not exist."
@@ -112,7 +119,7 @@ class Chapters:
         titles: List[str] = []
 
         for idx, line in enumerate(lines):
-            line_split = line.lstrip().split(maxsplit=1)
+            line_split = line.strip().split(maxsplit=1)
 
             # Allow the last line to be blank
             if idx == len(lines) - 1 and not line.strip():
@@ -129,4 +136,4 @@ class Chapters:
             timestamps.append(Timestamp.from_str(timestamp_str))
             titles.append(title)
 
-        return cls(timestamps=timestamps, titles=titles, duration=duration)
+        return cls(timestamps=timestamps, titles=titles)

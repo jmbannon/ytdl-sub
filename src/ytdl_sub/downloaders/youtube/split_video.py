@@ -1,11 +1,9 @@
 import copy
-import os.path
 import re
 from pathlib import Path
 from shutil import copyfile
 from typing import Dict
 from typing import List
-from typing import Tuple
 
 from ytdl_sub.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubeVideoDownloaderOptions
@@ -13,7 +11,6 @@ from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
-from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.validators import StringValidator
