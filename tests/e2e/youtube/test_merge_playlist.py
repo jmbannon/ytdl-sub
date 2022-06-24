@@ -1,11 +1,8 @@
 from pathlib import Path
 
-import mergedeep
 import pytest
-from conftest import assert_debug_log
 from e2e.expected_download import ExpectedDownload
 
-import ytdl_sub.downloaders.downloader
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -33,6 +30,7 @@ def subscription_dict(output_directory, subscription_name):
         "youtube": {
             "download_strategy": "merge_playlist",
             "playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
+            "add_chapters": True,
         },
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
@@ -64,28 +62,13 @@ def playlist_subscription(config, subscription_name, subscription_dict):
 
 @pytest.fixture
 def expected_playlist_download():
-    # turn off black formatter here for readability
-    # fmt: off
     return ExpectedDownload(
         expected_md5_file_hashes={
-            # Download mapping
-            Path(".ytdl-sub-jmc-download-archive.json"): "7541aa75606b86bff5ff276895520cf0",
-
-            # Entry files
-            Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1].jpg"): "048a19cf0f674437351872c3f312ebf1",
-            Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1].mp4"): "e66287b9832277b6a4d1554e29d9fdcc",
-            Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1].nfo"): "3d272fe58487b6011ad049b6000b046f",
-
-            Path("JMC - Given to Fly.jpg"): "2e58e4d5f06ce5d1c3336fa493470135",
-            Path("JMC - Given to Fly.mp4"): "04ab5cb3cc12325d0c96a7cd04a8b91d",
-            Path("JMC - Given to Fly.nfo"): "0dc578bf5f1ceb6e069a57d329894f35",
-
-            Path("JMC - Indifference (Remastered).jpg"): "9baaddc6b62f5b9ae3781eb4eef0e3b3",
-            Path("JMC - Indifference (Remastered).mp4"): "025de6099a5c98e6397153c7a62d517d",
-            Path("JMC - Indifference (Remastered).nfo"): "061b86d9dc8fb39d39feab3292dafeb0",
+            Path("JMC - Jesse's Minecraft Server.jpg"): "348e3007fc590d0b1e2f6682501b0b5f",
+            Path("JMC - Jesse's Minecraft Server.mkv"): "a568758afb79f42c7de0af027a4bf62d",
+            Path("JMC - Jesse's Minecraft Server.nfo"): "10df5dcdb65ab18ecf21b3503c77e48b",
         }
     )
-    # fmt: on
 
 
 class TestYoutubeMergePlaylist:

@@ -1,5 +1,7 @@
+import shutil
 import subprocess
 import tempfile
+import termios
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -49,44 +51,82 @@ class FFMPEG:
         subprocess.run(cmd, check=True)
 
 
-def add_metadata(
-    file_path: str,
-    metadata: Optional[Dict[str, str]],
-    chapters: Optional[Chapters],
+def _create_metadata_chapter_entry(start_sec: int, end_sec: int, title: str) -> List[str]:
+    return [
+        "",
+        "[CHAPTER]",
+        "TIMEBASE=1/1000",
+        f"START={start_sec * 1000}",
+        f"END={end_sec * 1000}",
+        f"title={_ffmpeg_metadata_escape(title)}",
+    ]
+
+
+def _create_metadata_chapters(chapters: Chapters, file_duration_sec: int) -> List[str]:
+    lines: List[str] = []
+
+    if not chapters.contains_zero_timestamp():
+        lines += _create_metadata_chapter_entry(
+            start_sec=0,
+            end_sec=chapters.timestamps[0].timestamp_sec,
+            title="Intro",  # TODO: make this configurable
+        )
+
+    for idx in range(len(chapters.timestamps) - 1):
+        lines += _create_metadata_chapter_entry(
+            start_sec=chapters.timestamps[idx].timestamp_sec,
+            end_sec=chapters.timestamps[idx + 1].timestamp_sec,
+            title=chapters.titles[idx],
+        )
+
+    # Add the last chapter using the file duration
+    lines += _create_metadata_chapter_entry(
+        start_sec=chapters.timestamps[-1].timestamp_sec,
+        end_sec=file_duration_sec,
+        title=chapters.titles[-1],
+    )
+
+    return lines
+
+
+def add_ffmpeg_metadata(
+    file_path: str, chapters: Optional[Chapters], file_duration_sec: int
 ) -> None:
+    """
+    Adds ffmetadata to a file. TODO: support more than just chapters
 
-    if not metadata and not chapters:
-        return
-
+    Parameters
+    ----------
+    file_path
+        Full path to the file to add metadata to
+    chapters
+        Chapters to embed in the file. If a chapter for 0:00 does not exist, one is created
+    file_duration_sec
+        Length of the file in seconds
+    """
     lines = [";FFMETADATA1"]
 
-    if metadata:
-        for key, value in metadata.items():
-            lines.append(f"{_ffmpeg_metadata_escape(key)}={_ffmpeg_metadata_escape(value)}")
-
     if chapters:
-        if not chapters.contains_zero_timestamp():
-            raise ValueError("Chapters must contain a zero timestamp")
+        lines += _create_metadata_chapters(chapters=chapters, file_duration_sec=file_duration_sec)
 
-        for idx in range(len(chapters.timestamps)):
-            start = chapters.timestamps[idx].timestamp_sec
-            end = (
-                chapters.timestamps[idx + 1].timestamp_sec
-                if idx < len(chapters.timestamps) - 1
-                else chapters.duration
-            )
+    file_path_ext = file_path.split(".")[-1]
+    output_file_path = f"{file_path}.out.{file_path_ext}"
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", encoding="utf-8") as metadata_file:
+        metadata_file.write("\n".join(lines))
+        metadata_file.flush()
 
-            lines.append("")
-            lines.append("[CHAPTER]")
-            lines.append("TIMEBASE=1")
-            lines.append(f"START={start}")
-            lines.append(f"END={end}")
-            lines.append(f"title={_ffmpeg_metadata_escape(chapters.titles[idx])}")
+        FFMPEG.run(
+            [
+                "-i",
+                file_path,
+                "-i",
+                metadata_file.name,
+                "-map_metadata",
+                "1",
+                "-codec",
+                "copy",
+                output_file_path,
+            ]
+        )
 
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", encoding="utf-8") as tmp_file:
-        tmp_file.writelines(lines)
-        tmp_file.flush()
-
-        yield tmp_file.name
-
-    return None
+        shutil.move(src=output_file_path, dst=file_path)

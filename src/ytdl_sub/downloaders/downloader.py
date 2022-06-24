@@ -44,6 +44,8 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
     downloader_options_type: Type[DownloaderValidator] = DownloaderValidator
     downloader_entry_type: Type[Entry] = Entry
 
+    supports_download_archive: bool = True
+
     @classmethod
     def ytdl_option_overrides(cls) -> Dict:
         """Global overrides that even overwrite user input"""

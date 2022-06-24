@@ -4,6 +4,9 @@ from typing import List
 from ytdl_sub.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubePlaylistDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubeVideo
+from ytdl_sub.utils.chapters import Chapters
+from ytdl_sub.utils.chapters import Timestamp
+from ytdl_sub.utils.ffmpeg import add_ffmpeg_metadata
 from ytdl_sub.validators.validators import BoolValidator
 
 ###############################################################################
@@ -73,6 +76,7 @@ class YoutubeMergePlaylistDownloader(
 ):
     downloader_options_type = YoutubeMergePlaylistDownloaderOptions
     downloader_entry_type = YoutubeVideo
+    supports_download_archive = False
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
@@ -102,11 +106,45 @@ class YoutubeMergePlaylistDownloader(
             },
         )
 
+    def _add_chapters(self, merged_video: YoutubeVideo) -> None:
+        titles: List[str] = []
+        timestamps: List[Timestamp] = []
+
+        current_timestamp_sec = 0
+        for video_entry in merged_video.kwargs("entries"):
+            timestamps.append(Timestamp(current_timestamp_sec))
+            titles.append(video_entry["title"])
+
+            current_timestamp_sec += video_entry["duration"]
+
+        add_ffmpeg_metadata(
+            file_path=merged_video.get_download_file_path(),
+            chapters=Chapters(timestamps=timestamps, titles=titles),
+            file_duration_sec=merged_video.kwargs("duration"),
+        )
+
+    def _to_merged_video(self, entry_dict: Dict) -> YoutubeVideo:
+        """
+        Adds a few entries not included in a playlist entry to make it look like a merged video
+        entry_dict
+        """
+        # Set the upload date to be the latest playlist video date
+        entry_dict["upload_date"] = max(
+            playlist_entry["upload_date"] for playlist_entry in entry_dict["entries"]
+        )
+        entry_dict["duration"] = sum(
+            playlist_entry["duration"] for playlist_entry in entry_dict["entries"]
+        )
+        entry_dict["ext"] = entry_dict["requested_downloads"][0]["ext"]
+        return YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+
     def download(self) -> List[YoutubeVideo]:
         """Download a single Youtube video, then split it into multiple videos"""
-        entry_dict = self.extract_info(url=self.download_options.playlist_url)
+        merged_video = self._to_merged_video(
+            entry_dict=self.extract_info(url=self.download_options.playlist_url)
+        )
 
         if self.download_options.add_chapters:
-            raise NotImplemented("TODO")
+            self._add_chapters(merged_video=merged_video)
 
-        return [YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)]
+        return [merged_video]
