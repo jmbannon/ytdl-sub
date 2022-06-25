@@ -1,5 +1,6 @@
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from ytdl_sub.downloaders.youtube_downloader import YoutubeDownloader
 from ytdl_sub.downloaders.youtube_downloader import YoutubePlaylistDownloaderOptions
@@ -26,7 +27,7 @@ class YoutubeMergePlaylistDownloaderOptions(YoutubePlaylistDownloaderOptions):
           youtube:
             # required
             download_strategy: "merge_playlist"
-            playlist_url: "TODO"
+            playlist_url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
             # optional
             add_chapters: False
 
@@ -36,22 +37,8 @@ class YoutubeMergePlaylistDownloaderOptions(YoutubePlaylistDownloaderOptions):
 
        ytdl-sub dl \
          --preset "example_preset" \
-         --youtube.video_url "youtube.com/watch?v=VMAPTo7RVDo" \
-         --youtube.split_timestamps "path/to/timestamps.txt"
-
-    ``split_timestamps`` file format:
-
-    .. code-block:: markdown
-
-       0:00 Intro
-       0:24 Blackwater Park
-       10:23 Bleak
-       16:39 Jokes
-       1:02:23 Ending
-
-    The above will create 5 videos in total. The first timestamp must start with ``0:00``
-    and the last timestamp, in this example, would create a video starting at ``1:02:23`` and
-    end at Youtube video's ending.
+         --youtube.playlist_url "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg" \
+         --youtube.add_chapters True
     """
 
     _required_keys = {"playlist_url"}
@@ -64,7 +51,7 @@ class YoutubeMergePlaylistDownloaderOptions(YoutubePlaylistDownloaderOptions):
         ).value
 
     @property
-    def add_chapters(self) -> bool:
+    def add_chapters(self) -> Optional[bool]:
         """
         Whether to add chapters using each video's title in the merged playlist. Defaults to false.
         """
@@ -87,6 +74,15 @@ class YoutubeMergePlaylistDownloader(
 
            ytdl_options:
              ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
+             playlistreverse: True  # Sort the playlist so it begins with the first entry
+             postprocessors:
+               # Convert the videos to mkv format
+               - key: "FFmpegVideoConvertor"
+                 when: "post_process"
+                 preferedformat: "mkv"
+               # Concatenate all the playlist videos into a single file
+               - key: "FFmpegConcat"
+                 when: "playlist"
         """
         return dict(
             super().ytdl_option_defaults(),
@@ -106,7 +102,8 @@ class YoutubeMergePlaylistDownloader(
             },
         )
 
-    def _add_chapters(self, merged_video: YoutubeVideo) -> None:
+    @classmethod
+    def _add_chapters(cls, merged_video: YoutubeVideo) -> None:
         titles: List[str] = []
         timestamps: List[Timestamp] = []
 

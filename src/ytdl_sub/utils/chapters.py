@@ -40,10 +40,20 @@ class Timestamp:
 
     @property
     def timestamp_sec(self) -> int:
+        """
+        Returns
+        -------
+        Timestamp in seconds
+        """
         return self._timestamp_sec
 
     @property
     def timestamp_str(self) -> str:
+        """
+        Returns
+        -------
+        The timestamp in 'HH:MM:SS' format
+        """
         seconds = self.timestamp_sec
 
         hours = int(seconds / 3600)
@@ -71,6 +81,11 @@ class Timestamp:
         ----------
         timestamp_str
             Timestamp in the form of "HH:MM:SS"
+
+        Raises
+        ------
+        ValueError
+            Invalid timestamp string format
         """
         hour_minute_second = cls._normalize_timestamp_str(timestamp_str).split(":")
         if len(hour_minute_second) != 3:
@@ -103,10 +118,26 @@ class Chapters:
                 raise ValueError("Timestamps must be in ascending order")
 
     def contains_zero_timestamp(self) -> bool:
+        """
+        Returns
+        -------
+        True if the first timestamp starts at 0. False otherwise.
+        """
         return self.timestamps[0].timestamp_sec == 0
 
     @classmethod
     def from_file(cls, chapters_file_path: str) -> "Chapters":
+        """
+        Parameters
+        ----------
+        chapters_file_path
+            Path to file containing chapters
+
+        Raises
+        ------
+        ValidationException
+            File path does not exist or contains invalid formatting
+        """
         if not os.path.isfile(chapters_file_path):
             raise ValidationException(
                 f"chapter/timestamp file path '{chapters_file_path}' does not exist."
@@ -126,9 +157,9 @@ class Chapters:
                 break
 
             if len(line_split) != 2:
-                raise ValueError(
-                    f"Chapter/Timestamp file line could not be parsed: '{line}'. "
-                    f"Must be in the format of 'HH:MM:SS title"
+                raise ValidationException(
+                    f"Chapter/Timestamp file '{chapters_file_path}' could not parse '{line}': "
+                    f"must be in the format of 'HH:MM:SS title"
                 )
 
             timestamp_str, title = tuple(x for x in line_split)
