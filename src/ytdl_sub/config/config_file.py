@@ -57,13 +57,13 @@ class ConfigOptions(StrictDictValidator):
 
         .. code-block:: bash
 
-           ytdl-sub dl --preset yt_music_video --youtube.video_url youtube.com/watch?v=a1b2c3
+           ytdl-sub dl --preset "yt_music_video" --youtube.video_url "youtube.com/watch?v=a1b2c3"
 
         to
 
         .. code-block:: bash
 
-           ytdl-sub dl --mv --v youtube.com/watch?v=a1b2c3
+           ytdl-sub dl --mv --v "youtube.com/watch?v=a1b2c3"
         """
         if self._dl_aliases:
             return self._dl_aliases.dict

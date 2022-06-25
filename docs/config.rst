@@ -90,6 +90,17 @@ ___________
 
 -------------------------------------------------------------------------------
 
+merge_playlist
+______________
+.. autoclass:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloaderOptions()
+  :members:
+  :member-order: bysource
+  :inherited-members:
+
+.. autofunction:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloader.ytdl_option_defaults()
+
+-------------------------------------------------------------------------------
+
 soundcloud
 ''''''''''
 Download strategies for downloading music from Soundcloud. See

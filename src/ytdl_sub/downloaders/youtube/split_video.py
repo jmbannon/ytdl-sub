@@ -41,12 +41,8 @@ def _split_video_ffmpeg_cmd(
     return cmd
 
 
-###############################################################################
-# Youtube split video downloader + options
-
-
 class YoutubeSplitVideoDownloaderOptions(YoutubeVideoDownloaderOptions):
-    """
+    r"""
     Downloads a single youtube video, then splits in to separate videos using a file containing
     timestamps. Each separate video will be formatted as if it was downloaded from a playlist.
     This download strategy is intended for CLI usage performing a one-time download of a video,
@@ -84,9 +80,8 @@ class YoutubeSplitVideoDownloaderOptions(YoutubeVideoDownloaderOptions):
        16:39 Jokes
        1:02:23 Ending
 
-    The above will create 5 videos in total. The first timestamp must start with ``0:00``
-    and the last timestamp, in this example, would create a video starting at ``1:02:23`` and
-    end at Youtube video's ending.
+    The above will create 5 videos in total. The last timestamp, in this example, would create a
+    video starting at ``1:02:23`` and end at Youtube video's ending.
     """
 
     _required_keys = {"video_url", "split_timestamps"}

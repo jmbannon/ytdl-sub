@@ -10,12 +10,9 @@ from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.ffmpeg import add_ffmpeg_metadata
 from ytdl_sub.validators.validators import BoolValidator
 
-###############################################################################
-# Youtube split video downloader + options
-
 
 class YoutubeMergePlaylistDownloaderOptions(YoutubePlaylistDownloaderOptions):
-    """
+    r"""
     Downloads all videos in a playlist and merges them into a single video.
 
     Usage:
@@ -53,7 +50,8 @@ class YoutubeMergePlaylistDownloaderOptions(YoutubePlaylistDownloaderOptions):
     @property
     def add_chapters(self) -> Optional[bool]:
         """
-        Whether to add chapters using each video's title in the merged playlist. Defaults to false.
+        Optional. Whether to add chapters using each video's title in the merged playlist.
+        Defaults to False.
         """
         return self._add_chapters
 
@@ -68,7 +66,7 @@ class YoutubeMergePlaylistDownloader(
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
         """
-        Default `ytdl_options`_ for ``split_video``
+        Default `ytdl_options`_ for ``merge_playlist``
 
         .. code-block:: yaml
 
