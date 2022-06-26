@@ -10,8 +10,8 @@ from ytdl_sub.entries.entry import Entry
 
 
 def _get_downloaded_thumbnail_path(entry: Entry) -> Optional[str]:
-    thumbnails = entry.kwargs("thumbnails")
-    possible_thumbnail_exts = set()
+    thumbnails = entry.kwargs("thumbnails") or []
+    possible_thumbnail_exts = {"jpg", "webp"}  # Always check for jpg and webp thumbs
 
     # The source `thumbnail` value and the actual downloaded thumbnail extension sometimes do
     # not match. Find all possible extensions by checking all available thumbnails.

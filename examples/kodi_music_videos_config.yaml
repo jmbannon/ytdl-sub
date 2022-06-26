@@ -47,7 +47,7 @@ presets:
       nfo_root: "musicvideo"
       tags:
         artist: "{artist}"
-        title: "{track_title}"
+        title: "{title}"
         album: "Music Videos"
         year: "{upload_year}"
 
@@ -56,7 +56,7 @@ presets:
     # here, which gets reused above for the video, thumbnail, and NFO file.
     overrides:
       music_video_directory: "path/to/Music Videos"
-      music_video_name: "{artist_sanitized} - {track_title_sanitized}"
+      music_video_name: "{artist_sanitized} - {title_sanitized}"
 
   # It is not always ideal to download all of an artist's music videos.
   # Maybe you only like one song of theirs. We can reuse our preset above

@@ -88,7 +88,7 @@ def expected_full_channel_download():
             Path("pz/Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].mp4"): "e66287b9832277b6a4d1554e29d9fdcc",
             Path("pz/Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].nfo"): "f7c0de89038f8c491bded8a3968720a2",
 
-            Path("pz/Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].jpg"): "2e58e4d5f06ce5d1c3336fa493470135",
+            Path("pz/Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].jpg"): None,
             Path("pz/Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].mp4"): "04ab5cb3cc12325d0c96a7cd04a8b91d",
             Path("pz/Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].nfo"): "ee1eda78fa0980bc703e602b5012dd1f",
 

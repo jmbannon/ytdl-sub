@@ -132,6 +132,18 @@ class Subscription:
         """
         return self.overrides.apply_formatter(formatter=self.output_options.output_directory)
 
+    @property
+    def maintain_download_archive(self) -> bool:
+        """
+        Returns
+        -------
+        Whether to maintain a download archive
+        """
+        return (
+            self.output_options.maintain_download_archive
+            and self.downloader_class.supports_download_archive
+        )
+
     def _copy_file_to_output_directory(
         self, entry: Entry, source_file_path: str, output_file_name: str
     ):
@@ -152,7 +164,7 @@ class Subscription:
         os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
         copyfile(source_file_path, destination_file_path)
 
-        if self.output_options.maintain_download_archive:
+        if self.maintain_download_archive:
             self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
 
     def _copy_entry_files_to_output_directory(self, entry: Entry):
@@ -207,14 +219,14 @@ class Subscription:
         """
         Context manager to initialize the enhanced download archive
         """
-        if self.output_options.maintain_download_archive:
+        if self.maintain_download_archive:
             self._enhanced_download_archive.prepare_download_archive()
 
         yield
 
         # If output options maintains stale file deletion, perform the delete here prior to saving
         # the download archive
-        if self.output_options.maintain_download_archive:
+        if self.maintain_download_archive:
             date_range_to_keep = self.output_options.get_upload_date_range_to_keep()
             if date_range_to_keep:
                 self._enhanced_download_archive.remove_stale_files(date_range=date_range_to_keep)
@@ -234,7 +246,7 @@ class Subscription:
                 output_directory=self.output_directory,
                 overrides=self.overrides,
                 enhanced_download_archive=self._enhanced_download_archive
-                if self.output_options.maintain_download_archive
+                if self.maintain_download_archive
                 else None,
             )
 
@@ -253,7 +265,7 @@ class Subscription:
                 download_options=self.downloader_options,
                 ytdl_options=self.ytdl_options.dict,
                 download_archive_file_name=self._enhanced_download_archive.archive_file_name
-                if self.output_options.maintain_download_archive
+                if self.maintain_download_archive
                 else None,
             )
 
