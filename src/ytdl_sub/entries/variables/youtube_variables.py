@@ -32,6 +32,8 @@ class YoutubeVideoVariables(EntryVariables):
         Returns
         -------
         The track title of a music video if it is available, otherwise it falls back to the title.
+        NOTE: Even if a video has music metadata, this variable does not always get pulled via
+        yt-dlp. Use with caution.
         """
         # Try to get the track, fall back on title
         if self.kwargs_contains("track"):
@@ -54,6 +56,8 @@ class YoutubeVideoVariables(EntryVariables):
         Returns
         -------
         The artist of a music video if it is available, otherwise it falls back to the channel.
+        NOTE: Even if a video has music metadata, this variable does not always get pulled via
+        yt-dlp. Use with caution.
         """
         if self.kwargs_contains("artist"):
             return self.kwargs("artist")
