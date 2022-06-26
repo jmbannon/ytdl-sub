@@ -132,8 +132,10 @@ class YoutubeSplitVideoDownloader(
         entry_dict["id"] = _split_video_uid(source_uid=entry_dict["id"], idx=idx)
 
         # Remove track and artist since its now split
-        del entry_dict["track"]
-        del entry_dict["artist"]
+        if "track" in entry_dict:
+            del entry_dict["track"]
+        if "artist" in entry_dict:
+            del entry_dict["artist"]
 
         return YoutubePlaylistVideo(entry_dict=entry_dict, working_directory=self.working_directory)
 
