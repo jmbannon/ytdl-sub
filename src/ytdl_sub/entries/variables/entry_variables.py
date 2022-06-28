@@ -1,4 +1,5 @@
 from typing import Dict
+from typing import List
 from typing import final
 
 from yt_dlp.utils import sanitize_filename
@@ -36,6 +37,16 @@ class SourceVariables:
         """
         return self.kwargs("extractor")
 
+    @classmethod
+    def source_variables(cls) -> List[str]:
+        """
+        Returns
+        -------
+        List of all source variables
+        """
+        property_names = [prop for prop in dir(cls) if isinstance(getattr(cls, prop), property)]
+        return property_names
+
     @final
     def _to_dict(self) -> Dict[str, str]:
         """
@@ -43,10 +54,7 @@ class SourceVariables:
         -------
         Dictionary containing all variables
         """
-        cls = self.__class__
-        property_names = [prop for prop in dir(cls) if isinstance(getattr(cls, prop), property)]
-
-        return {property_name: getattr(self, property_name) for property_name in property_names}
+        return {source_var: getattr(self, source_var) for source_var in self.source_variables()}
 
 
 class EntryVariables(SourceVariables):

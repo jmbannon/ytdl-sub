@@ -105,6 +105,11 @@ class TestStringFormatterValidator(object):
             f"Validation error in test: Format variable 'bah_humbug' does not exist. "
             f"Available variables: {', '.join(sorted(variable_dict.keys()))}"
         )
+        if string_formatter_class == OverridesStringFormatterValidator:
+            expected_error_msg = (
+                f"Validation error in test: Override variable 'bah_humbug' does not exist. "
+                f"Available override variables: {', '.join(sorted(variable_dict.keys()))}"
+            )
 
         with pytest.raises(StringFormattingException, match=expected_error_msg):
             assert format_string.apply_formatter(variable_dict=variable_dict)

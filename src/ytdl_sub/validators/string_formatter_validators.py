@@ -39,6 +39,9 @@ class StringFormatterValidator(Validator):
 
     _expected_value_type = str
     _expected_value_type_name = "format string"
+    _variable_not_found_error_msg_formatter = (
+        "Format variable '{variable_name}' does not exist. Available variables: {available_fields}"
+    )
 
     __fields_validator = re.compile(r"{([a-z_]+?)}")
 
@@ -103,14 +106,14 @@ class StringFormatterValidator(Validator):
     def __apply_formatter(
         self, formatter: "StringFormatterValidator", variable_dict: Dict[str, str]
     ) -> "StringFormatterValidator":
-        """TODO: test recursive case where variable not found"""
         # Ensure the variable names exist within the entry and overrides
         for variable_name in formatter.format_variables:
             if variable_name not in variable_dict:
                 available_fields = ", ".join(sorted(variable_dict.keys()))
                 raise self._validation_exception(
-                    f"Format variable '{variable_name}' does not exist. "
-                    f"Available variables: {available_fields}",
+                    self._variable_not_found_error_msg_formatter.format(
+                        variable_name=variable_name, available_fields=available_fields
+                    ),
                     exception_class=StringFormattingVariableNotFoundException,
                 )
 
@@ -164,6 +167,11 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
     or the fields in
     :class:`nfo_output_directory <ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions>`
     """
+
+    _variable_not_found_error_msg_formatter = (
+        "Override variable '{variable_name}' does not exist. "
+        "Available override variables: {available_fields}"
+    )
 
 
 # pylint: enable=line-too-long
