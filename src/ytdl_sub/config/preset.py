@@ -5,6 +5,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Type
+from typing import Union
 
 from mergedeep import mergedeep
 
@@ -18,10 +19,12 @@ from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
-from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
+from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
@@ -144,26 +147,22 @@ class Preset(StrictDictValidator):
         return plugins
 
     def __validate_override_string_formatter_validator(
-        self, formatter_validator: OverridesStringFormatterValidator
+        self,
+        formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
     ):
-        # Gather all resolvable override variables
-        resolvable_override_variables: List[str] = []
-        for name, override_variable in self.overrides.dict.items():
-            try:
-                _ = override_variable.apply_formatter(self.overrides.dict_with_format_strings)
-            except StringFormattingVariableNotFoundException:
-                continue
-            resolvable_override_variables.append(name)
+        # Set the formatter variables to be the overrides
+        variable_dict = self.overrides.dict_with_format_strings
 
-        for variable_name in formatter_validator.format_variables:
-            if variable_name not in resolvable_override_variables:
-                # pylint: disable=protected-access
-                raise StringFormattingVariableNotFoundException(
-                    f"Validation error in {formatter_validator._name}: "
-                    f"This can only use override variables. Available override variables are: "
-                    f"{', '.join(sorted(resolvable_override_variables))}",
-                )
-                # pylint: enable=protected-access
+        # If the formatter supports source variables, set the formatter variables to include
+        # both source and override variables
+        if not isinstance(formatter_validator, OverridesStringFormatterValidator):
+            source_variables = {
+                source_var: "dummy_string"
+                for source_var in self.downloader.downloader_entry_type.source_variables()
+            }
+            variable_dict = dict(source_variables, **variable_dict)
+
+        _ = formatter_validator.apply_formatter(variable_dict=variable_dict)
 
     def __recursive_preset_validate(
         self,
@@ -184,8 +183,11 @@ class Preset(StrictDictValidator):
                 self.__recursive_preset_validate(validator._validator_dict)
                 # pylint: enable=protected-access
 
-            if isinstance(validator, OverridesStringFormatterValidator):
+            if isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
                 self.__validate_override_string_formatter_validator(validator)
+            if isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
+                for validator_value in validator.dict.values():
+                    self.__validate_override_string_formatter_validator(validator_value)
 
     def __merge_parent_preset_dicts_if_present(self, config: ConfigFile):
         parent_presets = set()
