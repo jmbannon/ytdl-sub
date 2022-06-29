@@ -159,7 +159,7 @@ class Subscription:
             formatter=self.output_options.file_name, entry=entry
         )
         self._enhanced_download_archive.save_file(
-            file_name=entry.get_download_file_path(), output_file_name=output_file_name, entry=entry
+            file_name=entry.get_download_file_name(), output_file_name=output_file_name, entry=entry
         )
 
         if self.output_options.thumbnail_name:
@@ -171,7 +171,7 @@ class Subscription:
             convert_download_thumbnail(entry=entry)
 
             self._enhanced_download_archive.save_file(
-                file_name=entry.get_download_file_name(),
+                file_name=entry.get_download_thumbnail_name(),
                 output_file_name=output_thumbnail_name,
                 entry=entry,
             )
