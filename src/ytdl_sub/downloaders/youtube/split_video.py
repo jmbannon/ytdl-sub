@@ -1,7 +1,6 @@
 import copy
 import re
 from pathlib import Path
-from shutil import copyfile
 from typing import Dict
 from typing import List
 
@@ -12,8 +11,6 @@ from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.ffmpeg import FFMPEG
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
-from ytdl_sub.validators.validators import StringValidator
 
 # Captures the following formats:
 # 0:00 title
@@ -21,6 +18,10 @@ from ytdl_sub.validators.validators import StringValidator
 # 1:00:00 title
 # 01:00:00 title
 # where capture group 1 and 2 are the timestamp and title, respectively
+from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.thumbnail import convert_download_thumbnail
+from ytdl_sub.validators.validators import StringValidator
+
 _SPLIT_TIMESTAMP_REGEX = re.compile(r"^((?:\d\d:)?(?:\d:)?(?:\d)?\d:\d\d) (.+)$")
 
 
@@ -171,7 +172,10 @@ class YoutubeSplitVideoDownloader(
                 )
             )
             # Copy the thumbnail
-            copyfile(src=entry.get_download_thumbnail_path(), dst=output_thumbnail_file)
+            FileHandler.copy(
+                src_file_path=entry.get_download_thumbnail_path(),
+                dst_file_path=output_thumbnail_file,
+            )
 
             # Format the split video as a YoutubePlaylistVideo
             split_videos.append(

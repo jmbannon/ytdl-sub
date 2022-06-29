@@ -32,34 +32,33 @@ class Plugin(Generic[PluginOptionsT], ABC):
     def __init__(
         self,
         plugin_options: PluginOptionsT,
-        output_directory: str,
         overrides: Overrides,
-        enhanced_download_archive: Optional[EnhancedDownloadArchive],
+        enhanced_download_archive: EnhancedDownloadArchive,
     ):
         self.plugin_options = plugin_options
-        self.output_directory = output_directory
         self.overrides = overrides
         self.__enhanced_download_archive = enhanced_download_archive
         # TODO pass yaml snake case name in the class somewhere, and use it for the logger
         self._logger = Logger.get(self.__class__.__name__)
 
-    @final
-    def archive_entry_file_name(self, entry: Entry, relative_file_path: str) -> None:
+    @property
+    def working_directory(self) -> str:
+        return self.__enhanced_download_archive.working_directory
+
+    def save_file(self, file_name: str, entry: Optional[Entry] = None) -> None:
         """
-        Adds an entry and a file name that belongs to it into the archive mapping.
-        If maintain_download_archive is False for the subscription, this method will do nothing.
+        Saves a file in the working directory to the output directory.
 
         Parameters
         ----------
-        entry:
-            Optional. The entry the file belongs to
-        relative_file_path:
-            The name of the file path relative to the output directory
+        file_name
+            Name of the file relative to the working directory
+        entry
+            Optional. Entry that the file belongs to
         """
-        if self.__enhanced_download_archive:
-            self.__enhanced_download_archive.mapping.add_entry(
-                entry=entry, entry_file_path=relative_file_path
-            )
+        self.__enhanced_download_archive.save_file(
+            file_name=file_name, output_file_name=file_name, entry=entry
+        )
 
     def post_process_entry(self, entry: Entry):
         """

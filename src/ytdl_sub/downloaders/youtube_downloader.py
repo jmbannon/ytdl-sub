@@ -293,13 +293,11 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         working_directory: str,
         download_options: DownloaderOptionsT,
         ytdl_options: Optional[Dict] = None,
-        download_archive_file_name: Optional[str] = None,
     ):
         super().__init__(
             working_directory=working_directory,
             download_options=download_options,
             ytdl_options=ytdl_options,
-            download_archive_file_name=download_archive_file_name,
         )
         self.channel: Optional[YoutubeChannel] = None
 

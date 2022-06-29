@@ -66,7 +66,6 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         cls,
         working_directory: str,
         ytdl_options: Optional[Dict],
-        download_archive_file_name: Optional[str],
     ) -> Dict:
         """Configure the ytdl options for the downloader"""
         if ytdl_options is None:
@@ -81,12 +80,6 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         # Overwrite the output location with the specified working directory
         ytdl_options["outtmpl"] = str(Path(working_directory) / "%(id)s.%(ext)s")
 
-        # If a download archive file name is provided, set it to that
-        if download_archive_file_name:
-            ytdl_options["download_archive"] = str(
-                Path(working_directory) / download_archive_file_name
-            )
-
         return ytdl_options
 
     def __init__(
@@ -94,7 +87,6 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         working_directory: str,
         download_options: DownloaderOptionsT,
         ytdl_options: Optional[Dict] = None,
-        download_archive_file_name: Optional[str] = None,
     ):
         """
         Parameters
@@ -105,15 +97,12 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
             Options validator for this downloader
         ytdl_options
             YTDL options validator
-        download_archive_file_name
-            Optional. Name of the download archive file that should reside in the working directory
         """
         self.working_directory = working_directory
         self.download_options = download_options
         self.ytdl_options = self._configure_ytdl_options(
             ytdl_options=ytdl_options,
             working_directory=self.working_directory,
-            download_archive_file_name=download_archive_file_name,
         )
 
     @contextmanager
@@ -128,6 +117,15 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
         with Logger.handle_external_logs(name="yt-dlp"):
             with ytdl.YoutubeDL(ytdl_options) as ytdl_downloader:
                 yield ytdl_downloader
+
+    @property
+    def is_dry_run(self) -> bool:
+        """
+        Returns
+        -------
+        True if dry-run is enabled. False otherwise.
+        """
+        return self.ytdl_options.get("skip_download", False)
 
     def extract_info(self, ytdl_options_overrides: Optional[Dict] = None, **kwargs) -> Dict:
         """
