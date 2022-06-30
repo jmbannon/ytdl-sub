@@ -98,6 +98,10 @@ class DownloadArchive:
         -------
         Instantiated DownloadArchive class
         """
+        # If no download archive file exists, instantiate an empty one
+        if not os.path.isfile(file_path):
+            return cls(download_archive_lines=[])
+
         with open(file_path, "r", encoding="utf8") as file:
             return cls(download_archive_lines=file.readlines())
 

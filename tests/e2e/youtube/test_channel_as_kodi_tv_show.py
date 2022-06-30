@@ -185,6 +185,55 @@ def expected_recent_channel_download():
 
 
 ####################################################################################################
+# RECENT CHANNEL FIXTURES -- NO VIDS IN RANGE
+@pytest.fixture
+def recent_channel_no_vids_in_range_subscription_dict(subscription_dict):
+    # TODO: remove this hack by using a different channel
+    del subscription_dict["ytdl_options"]["break_on_reject"]
+    return mergedeep.merge(
+        subscription_dict,
+        {
+            "preset": "yt_channel_as_tv__recent",
+            "youtube": {"after": "20880101"},
+        },
+    )
+
+
+@pytest.fixture
+def recent_channel_no_vids_in_range_subscription(
+    config, subscription_name, recent_channel_no_vids_in_range_subscription_dict
+):
+    recent_channel_preset = Preset.from_dict(
+        config=config,
+        preset_name=subscription_name,
+        preset_dict=recent_channel_no_vids_in_range_subscription_dict,
+    )
+
+    return Subscription.from_preset(
+        preset=recent_channel_preset,
+        config=config,
+    )
+
+
+@pytest.fixture
+def expected_recent_channel_no_vids_in_range_download():
+    # turn off black formatter here for readability
+    # fmt: off
+    return ExpectedDownload(
+        expected_md5_file_hashes={
+            # Download mapping
+            Path("pz/.ytdl-sub-pz-download-archive.json"): "99914b932bd37a50b983c5e7c90ae93b",
+
+            # Output directory files
+            Path("pz/fanart.jpg"): "e6e323373c8902568e96e374817179cf",
+            Path("pz/poster.jpg"): "a14c593bcc75bb8d2c7145de4767ad01",
+            Path("pz/tvshow.nfo"): "83c7db96081ac5bdf289fcf396bec157",
+        }
+    )
+    # fmt: on
+
+
+####################################################################################################
 # ROLLING RECENT CHANNEL FIXTURES
 @pytest.fixture
 def rolling_recent_channel_subscription_dict(recent_channel_subscription_dict):
@@ -261,6 +310,23 @@ class TestChannelAsKodiTvShow:
         ):
             recent_channel_subscription.download()
             expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+
+    def test_recent_channel_download__no_vids_in_range(
+        self,
+        recent_channel_no_vids_in_range_subscription,
+        expected_recent_channel_no_vids_in_range_download,
+        output_directory,
+    ):
+        recent_channel_no_vids_in_range_subscription.download()
+        expected_recent_channel_no_vids_in_range_download.assert_files_exist(
+            relative_directory=output_directory
+        )
+
+        # Try again, make sure its the same
+        recent_channel_no_vids_in_range_subscription.download()
+        expected_recent_channel_no_vids_in_range_download.assert_files_exist(
+            relative_directory=output_directory
+        )
 
     def test_rolling_recent_channel_download(
         self,
