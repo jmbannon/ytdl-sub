@@ -7,6 +7,7 @@ from typing import final
 
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -60,7 +61,7 @@ class Plugin(Generic[PluginOptionsT], ABC):
             file_name=file_name, output_file_name=file_name, entry=entry
         )
 
-    def post_process_entry(self, entry: Entry):
+    def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
         """
         For each file downloaded, apply post processing to it.
 
@@ -68,6 +69,10 @@ class Plugin(Generic[PluginOptionsT], ABC):
         ----------
         entry:
             Entry to post process
+
+        Returns
+        -------
+        Optional file metadata for the entry media file.
         """
 
     def post_process_subscription(self):
