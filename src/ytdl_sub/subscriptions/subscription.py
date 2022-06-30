@@ -236,6 +236,8 @@ class Subscription:
             If true, do not download any video/audio files or move anything to the output
             directory.
         """
+        self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+
         # TODO: Move this logic to separate function
         # TODO: set id here as well
         ytdl_options = copy.deepcopy(self.ytdl_options.dict)

@@ -350,6 +350,28 @@ class EnhancedDownloadArchive:
 
         self._logger = Logger.get(name=subscription_name)
 
+    def reinitialize(self, dry_run: bool) -> "EnhancedDownloadArchive":
+        """
+        Re-initialize the enhanced download archive for successive downloads w/the same
+        subscription.
+
+        Parameters
+        ----------
+        dry_run
+            Whether to actually move files to the output directory
+
+        Returns
+        -------
+        self
+        """
+        self._file_handler = FileHandler(
+            working_directory=self.working_directory,
+            output_directory=self.output_directory,
+            dry_run=dry_run,
+        )
+        self._download_mapping = DownloadMappings()
+        return self
+
     @property
     def archive_file_name(self) -> str:
         """

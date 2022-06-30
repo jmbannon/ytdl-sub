@@ -151,5 +151,5 @@ class TestPlaylistAsKodiMusicVideo:
     def test_single_video_download(
         self, single_video_subscription, expected_single_video_download, output_directory
     ):
-        single_video_subscription.download()
+        single_video_subscription.download(dry_run=True)
         expected_single_video_download.assert_files_exist(relative_directory=output_directory)
