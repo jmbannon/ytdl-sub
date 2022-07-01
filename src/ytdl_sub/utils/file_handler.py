@@ -32,11 +32,6 @@ class FileHandlerTransactionLog:
         if not file_metadata:
             file_metadata = FileMetadata()
 
-        if file_name in self.files_created:
-            raise ValueError(
-                "Adding a file to the file handler transaction log that already exists"
-            )
-
         self.files_created[file_name] = file_metadata
         return self
 
@@ -55,6 +50,15 @@ class FileHandler:
         self.working_directory = working_directory
         self.output_directory = output_directory
         self._file_handler_transaction_log = FileHandlerTransactionLog()
+
+    @property
+    def file_handler_transaction_log(self) -> FileHandlerTransactionLog:
+        """
+        Returns
+        -------
+        Transaction logs of this file handler
+        """
+        return self._file_handler_transaction_log
 
     @classmethod
     def copy(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):

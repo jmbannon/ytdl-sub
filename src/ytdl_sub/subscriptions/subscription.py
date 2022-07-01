@@ -18,6 +18,7 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -226,7 +227,7 @@ class Subscription:
 
         return plugins
 
-    def download(self, dry_run: bool = False):
+    def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
         Performs the subscription download
 
@@ -269,6 +270,8 @@ class Subscription:
             downloader.post_download(
                 overrides=self.overrides, output_directory=self.output_directory
             )
+
+        return self._enhanced_download_archive.get_file_handler_transaction_log()
 
     @classmethod
     def from_preset(cls, preset: Preset, config: ConfigFile) -> "Subscription":

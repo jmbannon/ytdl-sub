@@ -14,6 +14,7 @@ from yt_dlp import DateRange
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 
 
@@ -399,13 +400,22 @@ class EnhancedDownloadArchive:
         return f".ytdl-sub-{self.subscription_name}-download-archive.json"
 
     @property
-    def _mapping_output_file_path(self):
+    def _mapping_output_file_path(self) -> str:
         """
         Returns
         -------
         The download mapping's file path in the output directory.
         """
         return str(Path(self.output_directory) / self._mapping_file_name)
+
+    @property
+    def _mapping_working_file_path(self) -> str:
+        """
+        Returns
+        -------
+        The download mapping's file path in the working directory.
+        """
+        return str(Path(self.working_directory) / self._mapping_file_name)
 
     @property
     def _archive_working_file_path(self) -> str:
@@ -524,7 +534,10 @@ class EnhancedDownloadArchive:
                 download_archive.remove_entry(entry_id)
 
         # Save the updated mapping file to the output directory
-        self._download_mapping.to_file(output_json_file=self._mapping_output_file_path)
+        # TODO: Make this cleaner. It writes the file to the working dir, the copies it to the
+        # output dir. Should be just a single write
+        self._download_mapping.to_file(output_json_file=self._mapping_working_file_path)
+        self.save_file(file_name=self._mapping_file_name, output_file_name=self._mapping_file_name)
 
         return self
 
@@ -547,3 +560,6 @@ class EnhancedDownloadArchive:
         self._file_handler.copy_file_to_output_directory(
             file_name=file_name, output_file_name=output_file_name
         )
+
+    def get_file_handler_transaction_log(self) -> FileHandlerTransactionLog:
+        return self._file_handler.file_handler_transaction_log
