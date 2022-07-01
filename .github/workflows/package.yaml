@@ -43,15 +43,16 @@ jobs:
           python setup.py bdist_wheel
           cp dist/*.whl docker/root
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
+
       - name: Docker Setup Buildx
         uses: docker/setup-buildx-action@v2.0.0
-        with:
-          use: true
-          driver-opts: |
-            platforms=amd64,arm64
 
       - name: Build Docker Image
-        run: docker buildx --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}" docker/
+        run: docker buildx build --platform=linux/amd64,linux/arm64 --cache-to=type=local,dest=/tmp/build-cache --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}" docker/
 
       - name: login to GitHub Container Registry
         uses: docker/login-action@v1
@@ -60,9 +61,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push image on master or release
+      - name: Build preparations
+        if: ${{ github.ref }} =~ ^refs\/heads\/master|^refs\/tags\/v.*
+        id: preperations
         run: |
-          if [[ ${{ github.ref }} =~ ^refs\/heads\/master|^refs\/tags\/v.* ]]; then
             IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
 
             # Change all uppercase to lowercase
@@ -75,9 +77,10 @@ jobs:
             [ "$VERSION" == "master" ] && VERSION=latest
             echo IMAGE_ID=$IMAGE_ID
             echo VERSION=$VERSION
-            docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-            docker push $IMAGE_ID:$VERSION
-          else
-            echo "Skipped on PRs"
-          fi
+            echo "::set-output name=IMAGE_TAG::$(
+              echo $IMAGE_ID:$VERSION
+            )"
 
+      - name: Build Docker Image and push to registry
+        if: ${{ github.ref }} =~ ^refs\/heads\/master|^refs\/tags\/v.*
+        run: docker buildx build --push --platform=linux/amd64,linux/arm64 --cache-from=type=local,src=/tmp/build-cache --tag ${{ steps.preperations.outputs.IMAGE_TAG }} --label "runnumber=${GITHUB_RUN_ID}" docker/
