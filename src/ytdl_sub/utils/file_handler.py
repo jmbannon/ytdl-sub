@@ -12,9 +12,30 @@ class FileMetadata:
     def __init__(self, metadata: Optional[List[str]] = None):
         self.metadata: List[str] = metadata if metadata else []
 
-    def append(self, other: "FileMetadata") -> "FileMetadata":
+    def append(self, line: str) -> "FileMetadata":
+        self.metadata.append(line)
+        return self
+
+    def extend(self, other: "FileMetadata") -> "FileMetadata":
         self.metadata.extend(other.metadata)
         return self
+
+    @classmethod
+    def from_dict(cls, value_dict: Dict[str, str], title: Optional[str] = None) -> "FileMetadata":
+        lines: List[str] = []
+        if title is not None:
+            lines.append(title)
+
+        def _recursive_add_dict_lines(rdict: Dict, indent: int):
+            for key, value in sorted(rdict.items()):
+                if isinstance(value, Dict):
+                    _recursive_add_dict_lines(rdict=value, indent=indent + 2)
+
+                _indent = " " * indent
+                lines.append(f"{_indent}{key}: {value}")
+
+        _recursive_add_dict_lines(rdict=value_dict, indent=2)
+        return cls(metadata=lines)
 
 
 class FileHandlerTransactionLog:

@@ -5,6 +5,7 @@ import dicttoxml
 
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 
@@ -106,3 +107,4 @@ class OutputDirectoryNfoTagsPlugin(Plugin[OutputDirectoryNfoTagsOptions]):
             nfo_file.write(xml)
 
         self.save_file(file_name=nfo_file_name)
+        return FileMetadata.from_dict(value_dict={nfo_root: nfo}, title="NFO tags:")

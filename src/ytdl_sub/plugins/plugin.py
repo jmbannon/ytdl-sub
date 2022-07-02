@@ -46,6 +46,14 @@ class Plugin(Generic[PluginOptionsT], ABC):
     def working_directory(self) -> str:
         return self.__enhanced_download_archive.working_directory
 
+    @property
+    def output_directory(self) -> str:
+        return self.__enhanced_download_archive.output_directory
+
+    @property
+    def is_dry_run(self) -> bool:
+        return self.__enhanced_download_archive.is_dry_run
+
     def save_file(self, file_name: str, entry: Optional[Entry] = None) -> None:
         """
         Saves a file in the working directory to the output directory.

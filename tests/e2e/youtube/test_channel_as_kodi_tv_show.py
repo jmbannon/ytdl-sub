@@ -297,6 +297,12 @@ class TestChannelAsKodiTvShow:
         full_channel_subscription.download()
         expected_full_channel_download.assert_files_exist(relative_directory=output_directory)
 
+    def test_full_channel_dry_run(
+        self, full_channel_subscription, expected_full_channel_download, output_directory
+    ):
+        transaction_log = full_channel_subscription.download(dry_run=True)
+        expected_full_channel_download.assert_dry_run_files_logged(transaction_log=transaction_log)
+
     def test_recent_channel_download(
         self, recent_channel_subscription, expected_recent_channel_download, output_directory
     ):
@@ -310,6 +316,14 @@ class TestChannelAsKodiTvShow:
         ):
             recent_channel_subscription.download()
             expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+
+    def test_recent_channel_dry_run(
+        self, recent_channel_subscription, expected_recent_channel_download, output_directory
+    ):
+        transaction_log = recent_channel_subscription.download(dry_run=True)
+        expected_recent_channel_download.assert_dry_run_files_logged(
+            transaction_log=transaction_log
+        )
 
     def test_recent_channel_download__no_vids_in_range(
         self,
@@ -326,6 +340,17 @@ class TestChannelAsKodiTvShow:
         recent_channel_no_vids_in_range_subscription.download()
         expected_recent_channel_no_vids_in_range_download.assert_files_exist(
             relative_directory=output_directory
+        )
+
+    def test_recent_channel_dry_run__no_vids_in_range(
+        self,
+        recent_channel_no_vids_in_range_subscription,
+        expected_recent_channel_no_vids_in_range_download,
+        output_directory,
+    ):
+        transaction_log = recent_channel_no_vids_in_range_subscription.download(dry_run=True)
+        expected_recent_channel_no_vids_in_range_download.assert_dry_run_files_logged(
+            transaction_log=transaction_log
         )
 
     def test_rolling_recent_channel_download(

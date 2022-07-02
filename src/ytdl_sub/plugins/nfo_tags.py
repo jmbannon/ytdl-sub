@@ -6,6 +6,7 @@ import dicttoxml
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 
@@ -116,3 +117,5 @@ class NfoTagsPlugin(Plugin[NfoTagsOptions]):
 
         # Archive the nfo's file name
         self.save_file(file_name=nfo_file_name, entry=entry)
+
+        return FileMetadata.from_dict(value_dict={nfo_root: nfo}, title="NFO tags:")

@@ -374,6 +374,10 @@ class EnhancedDownloadArchive:
         return self
 
     @property
+    def is_dry_run(self) -> bool:
+        return self._file_handler.dry_run
+
+    @property
     def archive_file_name(self) -> str:
         """
         Returns
