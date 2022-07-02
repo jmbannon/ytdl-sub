@@ -100,8 +100,7 @@ class YoutubeMergePlaylistDownloader(
             },
         )
 
-    @classmethod
-    def _add_chapters(cls, merged_video: YoutubeVideo) -> None:
+    def _add_chapters(self, merged_video: YoutubeVideo) -> None:
         titles: List[str] = []
         timestamps: List[Timestamp] = []
 
@@ -112,11 +111,13 @@ class YoutubeMergePlaylistDownloader(
 
             current_timestamp_sec += video_entry["duration"]
 
-        add_ffmpeg_metadata(
-            file_path=merged_video.get_download_file_path(),
-            chapters=Chapters(timestamps=timestamps, titles=titles),
-            file_duration_sec=merged_video.kwargs("duration"),
-        )
+        # TODO: return chapter metadata here
+        if not self.is_dry_run:
+            add_ffmpeg_metadata(
+                file_path=merged_video.get_download_file_path(),
+                chapters=Chapters(timestamps=timestamps, titles=titles),
+                file_duration_sec=merged_video.kwargs("duration"),
+            )
 
     def _to_merged_video(self, entry_dict: Dict) -> YoutubeVideo:
         """
@@ -130,7 +131,11 @@ class YoutubeMergePlaylistDownloader(
         entry_dict["duration"] = sum(
             playlist_entry["duration"] for playlist_entry in entry_dict["entries"]
         )
-        entry_dict["ext"] = entry_dict["requested_downloads"][0]["ext"]
+        entry_dict["ext"] = (
+            entry_dict["requested_downloads"][0]["ext"]
+            if "requested_downloads" in entry_dict
+            else "mkv"
+        )
         return YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
 
     def download(self) -> List[YoutubeVideo]:

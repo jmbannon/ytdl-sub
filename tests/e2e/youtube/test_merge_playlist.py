@@ -81,8 +81,14 @@ class TestYoutubeMergePlaylist:
     files exist and have the expected md5 file hashes.
     """
 
-    def test_playlist_download(
+    def test_merge_playlist_download(
         self, playlist_subscription, expected_playlist_download, output_directory
     ):
         playlist_subscription.download()
         expected_playlist_download.assert_files_exist(relative_directory=output_directory)
+
+    def test_merge_playlist_dry_run(
+        self, playlist_subscription, expected_playlist_download, output_directory
+    ):
+        transaction_log = playlist_subscription.download(dry_run=True)
+        expected_playlist_download.assert_dry_run_files_logged(transaction_log=transaction_log)

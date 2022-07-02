@@ -155,26 +155,26 @@ class YoutubeSplitVideoDownloader(
         for idx, title in enumerate(chapters.titles):
             new_uid = _split_video_uid(source_uid=entry.uid, idx=idx)
 
-            # Get the input/output file paths
-            input_file = entry.get_download_file_path()
-            output_file = str(Path(self.working_directory) / f"{new_uid}.{entry.ext}")
-            output_thumbnail_file = str(
-                Path(self.working_directory) / f"{new_uid}.{entry.thumbnail_ext}"
-            )
+            if not self.is_dry_run:
+                # Get the input/output file paths
+                input_file = entry.get_download_file_path()
+                output_file = str(Path(self.working_directory) / f"{new_uid}.{entry.ext}")
 
-            # Run ffmpeg to create the split the video
-            FFMPEG.run(
-                _split_video_ffmpeg_cmd(
-                    input_file=input_file,
-                    output_file=output_file,
-                    timestamps=chapters.timestamps,
-                    idx=idx,
+                # Run ffmpeg to create the split the video
+                FFMPEG.run(
+                    _split_video_ffmpeg_cmd(
+                        input_file=input_file,
+                        output_file=output_file,
+                        timestamps=chapters.timestamps,
+                        idx=idx,
+                    )
                 )
-            )
-            # Copy the thumbnail
+
+            # Copy the original vid thumbnail to the working directory with the new uid. This so
+            # downstream logic thinks this split video has its own thumbnail
             FileHandler.copy(
                 src_file_path=entry.get_download_thumbnail_path(),
-                dst_file_path=output_thumbnail_file,
+                dst_file_path=Path(self.working_directory) / f"{new_uid}.{entry.thumbnail_ext}",
             )
 
             # Format the split video as a YoutubePlaylistVideo

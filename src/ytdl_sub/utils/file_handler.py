@@ -11,7 +11,7 @@ from typing import Union
 
 class FileMetadata:
     """
-    Stores pretty-printed information about a file
+    Stores pretty-printed information about a file. Each line in the metadata represents a newline
     """
 
     def __init__(self, metadata: Optional[List[str]] = None):
@@ -27,14 +27,15 @@ class FileMetadata:
         self.metadata.append(line)
         return self
 
-    def extend(self, other: "FileMetadata") -> "FileMetadata":
+    def extend(self, other: Optional["FileMetadata"]) -> "FileMetadata":
         """
         Parameters
         ----------
         other
             Other metadata to extend to this one in its entirety
         """
-        self.metadata.extend(other.metadata)
+        if other is not None:
+            self.metadata.extend(other.metadata)
         return self
 
     @classmethod
@@ -146,7 +147,9 @@ class FileHandler:
         if os.path.isfile(file_path):
             os.remove(file_path)
 
-    def copy_file_to_output_directory(self, file_name: str, output_file_name: str):
+    def copy_file_to_output_directory(
+        self, file_name: str, output_file_name: str, file_metadata: Optional[FileMetadata] = None
+    ):
         """
         Copies a file from the working directory to the output directory.
         All file copies from working to output directory should use this function for tracking and
@@ -158,8 +161,12 @@ class FileHandler:
             File in the working directory
         output_file_name
             Desired output file name in the output_directory
+        file_metadata
+            Optional. Metadata to record to the transaction log for this file
         """
-        self._file_handler_transaction_log.log_created_file(output_file_name)
+        self._file_handler_transaction_log.log_created_file(
+            file_name=output_file_name, file_metadata=file_metadata
+        )
 
         if not self.dry_run:
             output_file_path = Path(self.output_directory) / output_file_name

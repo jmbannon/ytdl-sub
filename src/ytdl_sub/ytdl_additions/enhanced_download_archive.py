@@ -15,6 +15,7 @@ from yt_dlp import DateRange
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 
 
@@ -547,15 +548,22 @@ class EnhancedDownloadArchive:
         return self
 
     def save_file_to_output_directory(
-        self, file_name: str, output_file_name: Optional[str] = None, entry: Optional[Entry] = None
+        self,
+        file_name: str,
+        file_metadata: Optional[FileMetadata] = None,
+        output_file_name: Optional[str] = None,
+        entry: Optional[Entry] = None,
     ):
         """
-        Saves a file from the working directory to the output directory
+        Saves a file from the working directory to the output directory and record it in the
+        transaction log.
 
         Parameters
         ----------
         file_name
             Name of the file to move (does not include working directory path)
+        file_metadata
+            Optional. Metadata to record to the transaction log for this file
         output_file_name
             Optional. Final name of the file in the output directory (does not include output
             directory path). If None, use the same working_directory file_name
@@ -569,7 +577,7 @@ class EnhancedDownloadArchive:
             self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
 
         self._file_handler.copy_file_to_output_directory(
-            file_name=file_name, output_file_name=output_file_name
+            file_name=file_name, file_metadata=file_metadata, output_file_name=output_file_name
         )
 
     def get_file_handler_transaction_log(self) -> FileHandlerTransactionLog:
@@ -609,7 +617,9 @@ class DownloadArchiver:
         """
         return self.__enhanced_download_archive.is_dry_run
 
-    def save_file(self, file_name: str, entry: Optional[Entry] = None) -> None:
+    def save_file(
+        self, file_name: str, output_file_name: Optional[str] = None, entry: Optional[Entry] = None
+    ) -> None:
         """
         Saves a file in the working directory to the output directory.
 
@@ -617,9 +627,12 @@ class DownloadArchiver:
         ----------
         file_name
             Name of the file relative to the working directory
+        output_file_name
+            Optional. Final name of the file in the output directory (does not include output
+            directory path). If None, use the same working_directory file_name
         entry
             Optional. Entry that the file belongs to
         """
         self.__enhanced_download_archive.save_file_to_output_directory(
-            file_name=file_name, entry=entry
+            file_name=file_name, output_file_name=output_file_name, entry=entry
         )

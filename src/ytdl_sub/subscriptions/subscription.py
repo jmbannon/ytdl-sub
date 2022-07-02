@@ -4,6 +4,7 @@ import os
 import shutil
 from pathlib import Path
 from typing import List
+from typing import Optional
 from typing import Tuple
 from typing import Type
 
@@ -19,6 +20,7 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -145,7 +147,9 @@ class Subscription:
             and self.downloader_class.supports_download_archive
         )
 
-    def _copy_entry_files_to_output_directory(self, entry: Entry):
+    def _copy_entry_files_to_output_directory(
+        self, entry: Entry, entry_metadata: Optional[FileMetadata] = None
+    ):
         """
         Helper function to move the media file and optionally thumbnail file to the output directory
         for a single entry.
@@ -154,13 +158,18 @@ class Subscription:
         ----------
         entry:
             The entry with files to move
+        entry_metadata
+            Optional. Metadata to record to the transaction log for this entry
         """
         # Move the file after all direct file modifications are complete
         output_file_name = self.overrides.apply_formatter(
             formatter=self.output_options.file_name, entry=entry
         )
         self._enhanced_download_archive.save_file_to_output_directory(
-            file_name=entry.get_download_file_name(), output_file_name=output_file_name, entry=entry
+            file_name=entry.get_download_file_name(),
+            file_metadata=entry_metadata,
+            output_file_name=output_file_name,
+            entry=entry,
         )
 
         if self.output_options.thumbnail_name:
@@ -257,17 +266,19 @@ class Subscription:
                 ytdl_options=ytdl_options,
             )
 
-            entries = downloader.download()
-            for plugin in plugins:
-                for entry in entries:
-                    plugin.post_process_entry(entry)
+            for entry in downloader.download():
+                # TODO: Add entry metadata from the downloader.download function
+                entry_metadata = FileMetadata()
+                for plugin in plugins:
+                    entry_metadata.extend(plugin.post_process_entry(entry))
 
-                plugin.post_process_subscription()
-
-            for entry in entries:
-                self._copy_entry_files_to_output_directory(entry=entry)
+                self._copy_entry_files_to_output_directory(
+                    entry=entry, entry_metadata=entry_metadata
+                )
 
             downloader.post_download(overrides=self.overrides)
+            for plugin in plugins:
+                plugin.post_process_subscription()
 
         return self._enhanced_download_archive.get_file_handler_transaction_log()
 
