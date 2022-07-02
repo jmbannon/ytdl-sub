@@ -20,6 +20,7 @@ from ytdl_sub.validators.string_formatter_validators import OverridesStringForma
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
 from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
 from ytdl_sub.validators.url_validator import YoutubeVideoUrlValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get()
 
@@ -290,13 +291,13 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
 
     def __init__(
         self,
-        working_directory: str,
         download_options: DownloaderOptionsT,
+        enhanced_download_archive: EnhancedDownloadArchive,
         ytdl_options: Optional[Dict] = None,
     ):
         super().__init__(
-            working_directory=working_directory,
             download_options=download_options,
+            enhanced_download_archive=enhanced_download_archive,
             ytdl_options=ytdl_options,
         )
         self.channel: Optional[YoutubeChannel] = None
@@ -352,7 +353,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             thumbnail_url=thumbnail_url, output_thumbnail_path=output_thumbnail_path
         )
 
-    def post_download(self, overrides: Overrides, output_directory: str):
+    def post_download(self, overrides: Overrides):
         """
         Downloads and moves channel avatar and banner images to the output directory.
 
@@ -360,17 +361,17 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         ----------
         overrides
             Overrides that can contain variables in the avatar or banner file path
-        output_directory
-            Output directory path
         """
         avatar_thumbnail_name = overrides.apply_formatter(self.download_options.channel_avatar_path)
         self._download_thumbnail(
             thumbnail_url=self.channel.avatar_thumbnail_url(),
-            output_thumbnail_path=str(Path(output_directory) / avatar_thumbnail_name),
+            output_thumbnail_path=str(Path(self.working_directory) / avatar_thumbnail_name),
         )
+        self.save_file(file_name=avatar_thumbnail_name)
 
         banner_thumbnail_name = overrides.apply_formatter(self.download_options.channel_banner_path)
         self._download_thumbnail(
             thumbnail_url=self.channel.banner_thumbnail_url(),
-            output_thumbnail_path=str(Path(output_directory) / banner_thumbnail_name),
+            output_thumbnail_path=str(Path(self.working_directory) / banner_thumbnail_name),
         )
+        self.save_file(file_name=banner_thumbnail_name)

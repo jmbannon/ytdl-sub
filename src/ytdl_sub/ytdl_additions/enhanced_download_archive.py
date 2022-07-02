@@ -541,11 +541,13 @@ class EnhancedDownloadArchive:
         # TODO: Make this cleaner. It writes the file to the working dir, the copies it to the
         # output dir. Should be just a single write
         self._download_mapping.to_file(output_json_file=self._mapping_working_file_path)
-        self.save_file(file_name=self._mapping_file_name, output_file_name=self._mapping_file_name)
+        self.save_file_to_output_directory(file_name=self._mapping_file_name)
 
         return self
 
-    def save_file(self, file_name: str, output_file_name: str, entry: Optional[Entry] = None):
+    def save_file_to_output_directory(
+        self, file_name: str, output_file_name: Optional[str] = None, entry: Optional[Entry] = None
+    ):
         """
         Saves a file from the working directory to the output directory
 
@@ -554,10 +556,14 @@ class EnhancedDownloadArchive:
         file_name
             Name of the file to move (does not include working directory path)
         output_file_name
-            Final name of the file in the output directory (does not include output directory path)
+            Optional. Final name of the file in the output directory (does not include output
+            directory path). If None, use the same working_directory file_name
         entry
             Optional. Entry that this file belongs to
         """
+        if output_file_name is None:
+            output_file_name = file_name
+
         if entry:
             self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
 
@@ -567,3 +573,37 @@ class EnhancedDownloadArchive:
 
     def get_file_handler_transaction_log(self) -> FileHandlerTransactionLog:
         return self._file_handler.file_handler_transaction_log
+
+
+class DownloadArchiver:
+    """
+    Used for any class that saves files. Does not allow direct access to output_directory,
+    forcing the user of the class to use ``save_file`` so it gets archived and avoids any writes
+    during dry-run.
+    """
+
+    def __init__(self, enhanced_download_archive: EnhancedDownloadArchive):
+        self.__enhanced_download_archive = enhanced_download_archive
+
+    @property
+    def working_directory(self) -> str:
+        return self.__enhanced_download_archive.working_directory
+
+    @property
+    def is_dry_run(self) -> bool:
+        return self.__enhanced_download_archive.is_dry_run
+
+    def save_file(self, file_name: str, entry: Optional[Entry] = None) -> None:
+        """
+        Saves a file in the working directory to the output directory.
+
+        Parameters
+        ----------
+        file_name
+            Name of the file relative to the working directory
+        entry
+            Optional. Entry that the file belongs to
+        """
+        self.__enhanced_download_archive.save_file_to_output_directory(
+            file_name=file_name, entry=entry
+        )

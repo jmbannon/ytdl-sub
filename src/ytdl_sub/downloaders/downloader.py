@@ -20,6 +20,8 @@ from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get(name="downloader")
 
@@ -35,7 +37,7 @@ DownloaderEntryT = TypeVar("DownloaderEntryT", bound=Entry)
 DownloaderParentEntryT = TypeVar("DownloaderParentEntryT", bound=BaseEntry)
 
 
-class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
+class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
@@ -84,21 +86,21 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
 
     def __init__(
         self,
-        working_directory: str,
         download_options: DownloaderOptionsT,
+        enhanced_download_archive: EnhancedDownloadArchive,
         ytdl_options: Optional[Dict] = None,
     ):
         """
         Parameters
         ----------
-        working_directory
-            Path to the working directory
         download_options
             Options validator for this downloader
+        enhanced_download_archive
+            Download archive
         ytdl_options
             YTDL options validator
         """
-        self.working_directory = working_directory
+        DownloadArchiver.__init__(self=self, enhanced_download_archive=enhanced_download_archive)
         self.download_options = download_options
         self.ytdl_options = self._configure_ytdl_options(
             ytdl_options=ytdl_options,
@@ -198,19 +200,14 @@ class Downloader(Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
     def download(self) -> List[DownloaderEntryT]:
         """The function to perform the download of all media entries"""
 
-    def post_download(self, overrides: Overrides, output_directory: str):
+    def post_download(self, overrides: Overrides):
         """
         After all media entries have been downloaded, post processed, and moved to the output
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
 
-        This ideally should not perform  any extra downloads, but rather, use the content already
-        downloaded in the working directory and use it in the output directory.
-
         Parameters
         ----------
         overrides:
             Subscription overrides
-        output_directory:
-            Output directory to potentially store extra files downloaded
         """

@@ -159,7 +159,7 @@ class Subscription:
         output_file_name = self.overrides.apply_formatter(
             formatter=self.output_options.file_name, entry=entry
         )
-        self._enhanced_download_archive.save_file(
+        self._enhanced_download_archive.save_file_to_output_directory(
             file_name=entry.get_download_file_name(), output_file_name=output_file_name, entry=entry
         )
 
@@ -171,7 +171,7 @@ class Subscription:
             # We always convert entry thumbnails to jpgs, and is performed here
             convert_download_thumbnail(entry=entry)
 
-            self._enhanced_download_archive.save_file(
+            self._enhanced_download_archive.save_file_to_output_directory(
                 file_name=entry.get_download_thumbnail_name(),
                 output_file_name=output_thumbnail_name,
                 entry=entry,
@@ -252,8 +252,8 @@ class Subscription:
         plugins = self._initialize_plugins()
         with self._prepare_working_directory(), self._maintain_archive_file():
             downloader = self.downloader_class(
-                working_directory=self.working_directory,
                 download_options=self.downloader_options,
+                enhanced_download_archive=self._enhanced_download_archive,
                 ytdl_options=ytdl_options,
             )
 
@@ -267,9 +267,7 @@ class Subscription:
             for entry in entries:
                 self._copy_entry_files_to_output_directory(entry=entry)
 
-            downloader.post_download(
-                overrides=self.overrides, output_directory=self.output_directory
-            )
+            downloader.post_download(overrides=self.overrides)
 
         return self._enhanced_download_archive.get_file_handler_transaction_log()
 

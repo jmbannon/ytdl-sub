@@ -10,6 +10,7 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
@@ -22,7 +23,7 @@ class PluginOptions(StrictDictValidator):
 PluginOptionsT = TypeVar("PluginOptionsT", bound=PluginOptions)
 
 
-class Plugin(Generic[PluginOptionsT], ABC):
+class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
     """
     Class to define the new plugin functionality
     """
@@ -36,38 +37,11 @@ class Plugin(Generic[PluginOptionsT], ABC):
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
+        DownloadArchiver.__init__(self=self, enhanced_download_archive=enhanced_download_archive)
         self.plugin_options = plugin_options
         self.overrides = overrides
-        self.__enhanced_download_archive = enhanced_download_archive
         # TODO pass yaml snake case name in the class somewhere, and use it for the logger
         self._logger = Logger.get(self.__class__.__name__)
-
-    @property
-    def working_directory(self) -> str:
-        return self.__enhanced_download_archive.working_directory
-
-    @property
-    def output_directory(self) -> str:
-        return self.__enhanced_download_archive.output_directory
-
-    @property
-    def is_dry_run(self) -> bool:
-        return self.__enhanced_download_archive.is_dry_run
-
-    def save_file(self, file_name: str, entry: Optional[Entry] = None) -> None:
-        """
-        Saves a file in the working directory to the output directory.
-
-        Parameters
-        ----------
-        file_name
-            Name of the file relative to the working directory
-        entry
-            Optional. Entry that the file belongs to
-        """
-        self.__enhanced_download_archive.save_file(
-            file_name=file_name, output_file_name=file_name, entry=entry
-        )
 
     def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
         """
