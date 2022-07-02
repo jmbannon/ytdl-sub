@@ -119,8 +119,12 @@ class TestPlaylistAsKodiMusicVideo:
     files exist and have the expected md5 file hashes.
     """
 
-    def test_single_video_download(
+    def test_split_video_download(
         self, single_video_subscription, expected_single_video_download, output_directory
     ):
         single_video_subscription.download()
         expected_single_video_download.assert_files_exist(relative_directory=output_directory)
+
+    def test_split_video_dry_run(self, single_video_subscription, expected_single_video_download):
+        transaction_log = single_video_subscription.download(dry_run=True)
+        expected_single_video_download.assert_dry_run_files_logged(transaction_log=transaction_log)

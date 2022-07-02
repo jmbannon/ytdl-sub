@@ -13,6 +13,9 @@ from typing import Set
 from yt_dlp import DateRange
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 
 
@@ -210,7 +213,7 @@ class DownloadMappings:
         entry
             Entry that this file belongs to
         entry_file_path
-            Relative path to the file that belongs to the entry
+            Relative path to the file that lives in the output directory
 
         Returns
         -------
@@ -334,15 +337,51 @@ class EnhancedDownloadArchive:
     6. ( Delete the working directory )
     """
 
-    def __init__(self, subscription_name: str, working_directory: str, output_directory: str):
+    def __init__(
+        self,
+        subscription_name: str,
+        working_directory: str,
+        output_directory: str,
+        dry_run: bool = False,
+    ):
         self.subscription_name = subscription_name
-        self.working_directory = working_directory
-        self.output_directory = output_directory
-
-        self._download_archive: Optional[DownloadArchive] = None
-        self._download_mapping: Optional[DownloadMappings] = None
+        self._file_handler = FileHandler(
+            working_directory=working_directory, output_directory=output_directory, dry_run=dry_run
+        )
+        self._download_mapping = DownloadMappings()
 
         self._logger = Logger.get(name=subscription_name)
+
+    def reinitialize(self, dry_run: bool) -> "EnhancedDownloadArchive":
+        """
+        Re-initialize the enhanced download archive for successive downloads w/the same
+        subscription.
+
+        Parameters
+        ----------
+        dry_run
+            Whether to actually move files to the output directory
+
+        Returns
+        -------
+        self
+        """
+        self._file_handler = FileHandler(
+            working_directory=self.working_directory,
+            output_directory=self.output_directory,
+            dry_run=dry_run,
+        )
+        self._download_mapping = DownloadMappings()
+        return self
+
+    @property
+    def is_dry_run(self) -> bool:
+        """
+        Returns
+        -------
+        True if this session is a dry-run. False otherwise.
+        """
+        return self._file_handler.dry_run
 
     @property
     def archive_file_name(self) -> str:
@@ -354,6 +393,24 @@ class EnhancedDownloadArchive:
         return f".ytdl-subscribe-{self.subscription_name}-download-archive.txt"
 
     @property
+    def working_directory(self) -> str:
+        """
+        Returns
+        -------
+        Path to the working directory
+        """
+        return self._file_handler.working_directory
+
+    @property
+    def output_directory(self) -> str:
+        """
+        Returns
+        -------
+        Path to the output directory
+        """
+        return self._file_handler.output_directory
+
+    @property
     def _mapping_file_name(self) -> str:
         """
         Returns
@@ -363,13 +420,22 @@ class EnhancedDownloadArchive:
         return f".ytdl-sub-{self.subscription_name}-download-archive.json"
 
     @property
-    def _mapping_output_file_path(self):
+    def _mapping_output_file_path(self) -> str:
         """
         Returns
         -------
         The download mapping's file path in the output directory.
         """
         return str(Path(self.output_directory) / self._mapping_file_name)
+
+    @property
+    def _mapping_working_file_path(self) -> str:
+        """
+        Returns
+        -------
+        The download mapping's file path in the working directory.
+        """
+        return str(Path(self.working_directory) / self._mapping_file_name)
 
     @property
     def _archive_working_file_path(self) -> str:
@@ -399,7 +465,6 @@ class EnhancedDownloadArchive:
     def _load(self) -> "EnhancedDownloadArchive":
         """
         Tries to load download mappings if they are present in the output directory.
-        If they are not, initialize an empty mapping.
 
         Returns
         -------
@@ -410,14 +475,9 @@ class EnhancedDownloadArchive:
             self._download_mapping = DownloadMappings.from_file(
                 json_file_path=self._mapping_output_file_path
             )
-        # Otherwise, init an empty download mappings object. Keep _download_archive as None to
-        # indicate it was not loaded
-        else:
-            self._download_mapping = DownloadMappings()
-
         return self
 
-    def _copy_to_working_directory(self) -> "EnhancedDownloadArchive":
+    def _copy_mapping_to_working_directory(self) -> "EnhancedDownloadArchive":
         """
         If the mapping is not empty, create a download archive from it and save it into the
         working directory. This will tell YTDL to not redownload already downloaded entries.
@@ -446,7 +506,7 @@ class EnhancedDownloadArchive:
         self
         """
         self._load()
-        self._copy_to_working_directory()
+        self._copy_mapping_to_working_directory()
         return self
 
     def remove_stale_files(self, date_range: DateRange) -> "EnhancedDownloadArchive":
@@ -468,12 +528,8 @@ class EnhancedDownloadArchive:
         )
 
         for uid, mapping in stale_mappings.items():
-            self._logger.info("[%s] Removing the following stale file(s):", uid)
             for file_name in mapping.file_names:
-                file_path = Path(self.output_directory) / Path(file_name)
-                self._logger.info("  - %s", file_path)
-                if os.path.exists(file_path):
-                    os.remove(file_path)
+                self._file_handler.delete_file_from_output_directory(file_name=file_name)
 
             self.mapping.remove_entry(entry_id=uid)
 
@@ -487,17 +543,96 @@ class EnhancedDownloadArchive:
         -------
         self
         """
-        # TODO: Make sure this logic is actually right...
-        # Load the download archive from the working directory, which should contain any past
-        # and new entries downloaded in this session
-        self._download_archive = DownloadArchive.from_file(self._archive_working_file_path)
-
-        # Keep the download archive in sync with the mapping
-        for entry_id in self.mapping.entry_ids:
-            if not self._download_archive.contains(entry_id):
-                self._download_archive.remove_entry(entry_id)
-
-        # Save the updated mapping file to the output directory
-        self._download_mapping.to_file(output_json_file=self._mapping_output_file_path)
-
+        self._download_mapping.to_file(output_json_file=self._mapping_working_file_path)
+        self.save_file_to_output_directory(file_name=self._mapping_file_name)
         return self
+
+    def save_file_to_output_directory(
+        self,
+        file_name: str,
+        file_metadata: Optional[FileMetadata] = None,
+        output_file_name: Optional[str] = None,
+        entry: Optional[Entry] = None,
+    ):
+        """
+        Saves a file from the working directory to the output directory and record it in the
+        transaction log.
+
+        Parameters
+        ----------
+        file_name
+            Name of the file to move (does not include working directory path)
+        file_metadata
+            Optional. Metadata to record to the transaction log for this file
+        output_file_name
+            Optional. Final name of the file in the output directory (does not include output
+            directory path). If None, use the same working_directory file_name
+        entry
+            Optional. Entry that this file belongs to
+        """
+        if output_file_name is None:
+            output_file_name = file_name
+
+        if entry:
+            self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
+
+        self._file_handler.copy_file_to_output_directory(
+            file_name=file_name, file_metadata=file_metadata, output_file_name=output_file_name
+        )
+
+    def get_file_handler_transaction_log(self) -> FileHandlerTransactionLog:
+        """
+        Returns
+        -------
+        File handler transaction log for this session
+        """
+        return self._file_handler.file_handler_transaction_log
+
+
+class DownloadArchiver:
+    """
+    Used for any class that saves files. Does not allow direct access to output_directory,
+    forcing the user of the class to use ``save_file`` so it gets archived and avoids any writes
+    during dry-run.
+    """
+
+    def __init__(self, enhanced_download_archive: EnhancedDownloadArchive):
+        self.__enhanced_download_archive = enhanced_download_archive
+
+    @property
+    def working_directory(self) -> str:
+        """
+        Returns
+        -------
+        Path to the working directory
+        """
+        return self.__enhanced_download_archive.working_directory
+
+    @property
+    def is_dry_run(self) -> bool:
+        """
+        Returns
+        -------
+        True if this session is a dry-run. False otherwise.
+        """
+        return self.__enhanced_download_archive.is_dry_run
+
+    def save_file(
+        self, file_name: str, output_file_name: Optional[str] = None, entry: Optional[Entry] = None
+    ) -> None:
+        """
+        Saves a file in the working directory to the output directory.
+
+        Parameters
+        ----------
+        file_name
+            Name of the file relative to the working directory
+        output_file_name
+            Optional. Final name of the file in the output directory (does not include output
+            directory path). If None, use the same working_directory file_name
+        entry
+            Optional. Entry that the file belongs to
+        """
+        self.__enhanced_download_archive.save_file_to_output_directory(
+            file_name=file_name, output_file_name=output_file_name, entry=entry
+        )

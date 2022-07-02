@@ -1,9 +1,10 @@
 import contextlib
+import copy
 import os
 import shutil
 from pathlib import Path
-from shutil import copyfile
 from typing import List
+from typing import Optional
 from typing import Tuple
 from typing import Type
 
@@ -18,6 +19,8 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -144,30 +147,9 @@ class Subscription:
             and self.downloader_class.supports_download_archive
         )
 
-    def _copy_file_to_output_directory(
-        self, entry: Entry, source_file_path: str, output_file_name: str
+    def _copy_entry_files_to_output_directory(
+        self, entry: Entry, entry_metadata: Optional[FileMetadata] = None
     ):
-        """
-        Helper function to move a file from the working directory to the output directory.
-        Will add it to the download archive mapping if the archive is being maintained.
-
-        Parameters
-        ----------
-        entry:
-            Entry that the file belongs to
-        source_file_path:
-            Path to the source file
-        output_file_name:
-            Desired output file name with the output directory as its relative directory
-        """
-        destination_file_path = Path(self.output_directory) / Path(output_file_name)
-        os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
-        copyfile(source_file_path, destination_file_path)
-
-        if self.maintain_download_archive:
-            self._enhanced_download_archive.mapping.add_entry(entry, output_file_name)
-
-    def _copy_entry_files_to_output_directory(self, entry: Entry):
         """
         Helper function to move the media file and optionally thumbnail file to the output directory
         for a single entry.
@@ -176,15 +158,18 @@ class Subscription:
         ----------
         entry:
             The entry with files to move
+        entry_metadata
+            Optional. Metadata to record to the transaction log for this entry
         """
         # Move the file after all direct file modifications are complete
         output_file_name = self.overrides.apply_formatter(
             formatter=self.output_options.file_name, entry=entry
         )
-        self._copy_file_to_output_directory(
-            entry=entry,
-            source_file_path=entry.get_download_file_path(),
+        self._enhanced_download_archive.save_file_to_output_directory(
+            file_name=entry.get_download_file_name(),
+            file_metadata=entry_metadata,
             output_file_name=output_file_name,
+            entry=entry,
         )
 
         if self.output_options.thumbnail_name:
@@ -195,10 +180,10 @@ class Subscription:
             # We always convert entry thumbnails to jpgs, and is performed here
             convert_download_thumbnail(entry=entry)
 
-            self._copy_file_to_output_directory(
-                entry=entry,
-                source_file_path=entry.get_download_thumbnail_path(),
+            self._enhanced_download_archive.save_file_to_output_directory(
+                file_name=entry.get_download_thumbnail_name(),
                 output_file_name=output_thumbnail_name,
+                entry=entry,
             )
 
     @contextlib.contextmanager
@@ -243,45 +228,59 @@ class Subscription:
         for plugin_type, plugin_options in self.plugins:
             plugin = plugin_type(
                 plugin_options=plugin_options,
-                output_directory=self.output_directory,
                 overrides=self.overrides,
-                enhanced_download_archive=self._enhanced_download_archive
-                if self.maintain_download_archive
-                else None,
+                enhanced_download_archive=self._enhanced_download_archive,
             )
 
             plugins.append(plugin)
 
         return plugins
 
-    def download(self):
+    def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
-        Performs the subscription download.
+        Performs the subscription download
+
+        Parameters
+        ----------
+        dry_run
+            If true, do not download any video/audio files or move anything to the output
+            directory.
         """
+        self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+
+        # TODO: Move this logic to separate function
+        # TODO: set id here as well
+        ytdl_options = copy.deepcopy(self.ytdl_options.dict)
+        if dry_run:
+            ytdl_options["skip_download"] = True
+        if self.downloader_class.supports_download_archive and self.maintain_download_archive:
+            ytdl_options["download_archive"] = str(
+                Path(self.working_directory) / self._enhanced_download_archive.archive_file_name
+            )
+
         plugins = self._initialize_plugins()
         with self._prepare_working_directory(), self._maintain_archive_file():
             downloader = self.downloader_class(
-                working_directory=self.working_directory,
                 download_options=self.downloader_options,
-                ytdl_options=self.ytdl_options.dict,
-                download_archive_file_name=self._enhanced_download_archive.archive_file_name
-                if self.maintain_download_archive
-                else None,
+                enhanced_download_archive=self._enhanced_download_archive,
+                ytdl_options=ytdl_options,
             )
 
-            entries = downloader.download()
-            for plugin in plugins:
-                for entry in entries:
-                    plugin.post_process_entry(entry)
+            for entry in downloader.download():
+                # TODO: Add entry metadata from the downloader.download function
+                entry_metadata = FileMetadata()
+                for plugin in plugins:
+                    entry_metadata.extend(plugin.post_process_entry(entry))
 
+                self._copy_entry_files_to_output_directory(
+                    entry=entry, entry_metadata=entry_metadata
+                )
+
+            downloader.post_download(overrides=self.overrides)
+            for plugin in plugins:
                 plugin.post_process_subscription()
 
-            for entry in entries:
-                self._copy_entry_files_to_output_directory(entry=entry)
-
-            downloader.post_download(
-                overrides=self.overrides, output_directory=self.output_directory
-            )
+        return self._enhanced_download_archive.get_file_handler_transaction_log()
 
     @classmethod
     def from_preset(cls, preset: Preset, config: ConfigFile) -> "Subscription":

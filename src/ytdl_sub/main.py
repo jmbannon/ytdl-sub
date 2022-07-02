@@ -17,8 +17,12 @@ def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.N
     """
     Downloads all subscriptions from one or many subscription yaml files.
 
-    :param config: Configuration file
-    :param args: Arguments from argparse
+    Parameters
+    ----------
+    config
+        Configuration file
+    args
+        Arguments from argparse
     """
     preset_paths: List[str] = args.subscription_paths
     presets: List[Preset] = []
@@ -30,15 +34,23 @@ def _download_subscriptions_from_yaml_files(config: ConfigFile, args: argparse.N
         subscription = Subscription.from_preset(preset=preset, config=config)
 
         logger.info("Beginning subscription download for %s", subscription.name)
-        subscription.download()
+        subscription.download(dry_run=args.dry_run)
 
 
-def _download_subscription_from_cli(config: ConfigFile, extra_args: List[str]) -> None:
+def _download_subscription_from_cli(
+    config: ConfigFile, args: argparse.Namespace, extra_args: List[str]
+) -> None:
     """
     Downloads a one-off subscription using the CLI
 
-    :param config: Configuration file
-    :param extra_args: Extra arguments from argparse that contain dynamic subscription options
+    Parameters
+    ----------
+    config
+        Configuration file
+    args
+        Arguments from argparse
+    extra_args
+        Extra arguments from argparse that contain dynamic subscription options
     """
     dl_args_parser = DownloadArgsParser(
         extra_arguments=extra_args, config_options=config.config_options
@@ -57,7 +69,7 @@ def _download_subscription_from_cli(config: ConfigFile, extra_args: List[str]) -
         config=config,
     )
 
-    subscription.download()
+    subscription.download(dry_run=args.dry_run)
 
 
 def _main():
@@ -80,7 +92,7 @@ def _main():
 
     # One-off download
     if args.subparser == "dl":
-        _download_subscription_from_cli(config=config, extra_args=extra_args)
+        _download_subscription_from_cli(config=config, args=args, extra_args=extra_args)
         logger.info("Download complete!")
 
     # Ran successfully, so we can delete the debug file
