@@ -27,7 +27,12 @@ RUN apk update --no-cache && \
     rm ytdl_sub-*.whl && \
     apk del \
       g++ \
-      make
+      make \
+      py3-setuptools \
+      zlib-dev \
+      jpeg-dev \
+      python3-dev \
+      libwebp-dev
 
 ###############################################################################
 # CONTAINER CONFIGS
