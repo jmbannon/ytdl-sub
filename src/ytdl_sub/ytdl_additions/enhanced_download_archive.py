@@ -375,6 +375,11 @@ class EnhancedDownloadArchive:
 
     @property
     def is_dry_run(self) -> bool:
+        """
+        Returns
+        -------
+        True if this session is a dry-run. False otherwise.
+        """
         return self._file_handler.dry_run
 
     @property
@@ -388,10 +393,20 @@ class EnhancedDownloadArchive:
 
     @property
     def working_directory(self) -> str:
+        """
+        Returns
+        -------
+        Path to the working directory
+        """
         return self._file_handler.working_directory
 
     @property
     def output_directory(self) -> str:
+        """
+        Returns
+        -------
+        Path to the output directory
+        """
         return self._file_handler.output_directory
 
     @property
@@ -527,22 +542,8 @@ class EnhancedDownloadArchive:
         -------
         self
         """
-        # TODO: Make sure this logic is actually right...
-        # Load the download archive from the working directory, which should contain any past
-        # and new entries downloaded in this session
-        download_archive = DownloadArchive.from_file(self._archive_working_file_path)
-
-        # Keep the download archive in sync with the mapping
-        for entry_id in self.mapping.entry_ids:
-            if not download_archive.contains(entry_id):
-                download_archive.remove_entry(entry_id)
-
-        # Save the updated mapping file to the output directory
-        # TODO: Make this cleaner. It writes the file to the working dir, the copies it to the
-        # output dir. Should be just a single write
         self._download_mapping.to_file(output_json_file=self._mapping_working_file_path)
         self.save_file_to_output_directory(file_name=self._mapping_file_name)
-
         return self
 
     def save_file_to_output_directory(
@@ -572,6 +573,11 @@ class EnhancedDownloadArchive:
         )
 
     def get_file_handler_transaction_log(self) -> FileHandlerTransactionLog:
+        """
+        Returns
+        -------
+        File handler transaction log for this session
+        """
         return self._file_handler.file_handler_transaction_log
 
 
@@ -587,10 +593,20 @@ class DownloadArchiver:
 
     @property
     def working_directory(self) -> str:
+        """
+        Returns
+        -------
+        Path to the working directory
+        """
         return self.__enhanced_download_archive.working_directory
 
     @property
     def is_dry_run(self) -> bool:
+        """
+        Returns
+        -------
+        True if this session is a dry-run. False otherwise.
+        """
         return self.__enhanced_download_archive.is_dry_run
 
     def save_file(self, file_name: str, entry: Optional[Entry] = None) -> None:
