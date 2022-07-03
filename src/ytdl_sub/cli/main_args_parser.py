@@ -1,9 +1,9 @@
 import argparse
 
-###################################################################################################
-# GLOBAL PARSER
 from ytdl_sub.utils.logger import LoggerLevels
 
+###################################################################################################
+# GLOBAL PARSER
 parser = argparse.ArgumentParser(
     description="ytdl-sub: Automate download and adding metadata with YoutubeDL"
 )
@@ -14,6 +14,11 @@ parser.add_argument(
     type=str,
     help="path to the config yaml, uses config.yaml if not provided",
     default="config.yaml",
+)
+parser.add_argument(
+    "--dry-run",
+    action="store_true",
+    help="does not perform any video downloads or writes to output directories",
 )
 parser.add_argument(
     "--log-level",

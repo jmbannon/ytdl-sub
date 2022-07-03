@@ -29,7 +29,7 @@ def subscription_dict(output_directory, subscription_name):
         "preset": "sc_discography",
         "soundcloud": {"url": "https://soundcloud.com/jessebannon"},
         # override the output directory with our fixture-generated dir
-        "output_options": {"output_directory": output_directory + "/{artist_sanitized}"},
+        "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp3]",
@@ -59,7 +59,7 @@ def expected_discography_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path("j_b/.ytdl-sub-jb-download-archive.json"): "ae55de93b71267b5712c9a3d06c07c26",
+            Path(".ytdl-sub-jb-download-archive.json"): "1a99156e9ece62539fb2608416a07200",
 
             # Entry files (singles)
             Path("j_b/[2021] Baby Santana's Dorian Groove/01 - Baby Santana's Dorian Groove.mp3"): "bffbd558e12c6a9e029dc136a88342c4",
@@ -99,3 +99,9 @@ class TestSoundcloudDiscography:
     ):
         discography_subscription.download()
         expected_discography_download.assert_files_exist(relative_directory=output_directory)
+
+    def test_discography_dry_run(
+        self, discography_subscription, expected_discography_download, output_directory
+    ):
+        transaction_log = discography_subscription.download(dry_run=True)
+        expected_discography_download.assert_dry_run_files_logged(transaction_log=transaction_log)

@@ -7,8 +7,10 @@ from typing import final
 
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
@@ -21,7 +23,7 @@ class PluginOptions(StrictDictValidator):
 PluginOptionsT = TypeVar("PluginOptionsT", bound=PluginOptions)
 
 
-class Plugin(Generic[PluginOptionsT], ABC):
+class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
     """
     Class to define the new plugin functionality
     """
@@ -32,36 +34,16 @@ class Plugin(Generic[PluginOptionsT], ABC):
     def __init__(
         self,
         plugin_options: PluginOptionsT,
-        output_directory: str,
         overrides: Overrides,
-        enhanced_download_archive: Optional[EnhancedDownloadArchive],
+        enhanced_download_archive: EnhancedDownloadArchive,
     ):
+        DownloadArchiver.__init__(self=self, enhanced_download_archive=enhanced_download_archive)
         self.plugin_options = plugin_options
-        self.output_directory = output_directory
         self.overrides = overrides
-        self.__enhanced_download_archive = enhanced_download_archive
         # TODO pass yaml snake case name in the class somewhere, and use it for the logger
         self._logger = Logger.get(self.__class__.__name__)
 
-    @final
-    def archive_entry_file_name(self, entry: Entry, relative_file_path: str) -> None:
-        """
-        Adds an entry and a file name that belongs to it into the archive mapping.
-        If maintain_download_archive is False for the subscription, this method will do nothing.
-
-        Parameters
-        ----------
-        entry:
-            Optional. The entry the file belongs to
-        relative_file_path:
-            The name of the file path relative to the output directory
-        """
-        if self.__enhanced_download_archive:
-            self.__enhanced_download_archive.mapping.add_entry(
-                entry=entry, entry_file_path=relative_file_path
-            )
-
-    def post_process_entry(self, entry: Entry):
+    def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
         """
         For each file downloaded, apply post processing to it.
 
@@ -69,6 +51,10 @@ class Plugin(Generic[PluginOptionsT], ABC):
         ----------
         entry:
             Entry to post process
+
+        Returns
+        -------
+        Optional file metadata for the entry media file.
         """
 
     def post_process_subscription(self):

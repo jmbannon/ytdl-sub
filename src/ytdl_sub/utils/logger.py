@@ -1,12 +1,13 @@
 import contextlib
 import io
 import logging
-import os
 import sys
 import tempfile
 from dataclasses import dataclass
 from typing import List
 from typing import Optional
+
+from ytdl_sub.utils.file_handler import FileHandler
 
 
 @dataclass
@@ -201,5 +202,5 @@ class Logger:
         """
         cls._DEBUG_LOGGER_FILE.close()
 
-        if delete_debug_file and os.path.isfile(cls.debug_log_filename()):
-            os.remove(cls.debug_log_filename())
+        if delete_debug_file:
+            FileHandler.delete(cls.debug_log_filename())
