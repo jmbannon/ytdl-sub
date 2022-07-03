@@ -106,5 +106,5 @@ class OutputDirectoryNfoTagsPlugin(Plugin[OutputDirectoryNfoTagsOptions]):
         with open(nfo_file_path, "wb") as nfo_file:
             nfo_file.write(xml)
 
-        self.save_file(file_name=nfo_file_name)
-        return FileMetadata.from_dict(value_dict={nfo_root: nfo}, title="NFO tags:")
+        nfo_metadata = FileMetadata.from_dict(value_dict={nfo_root: nfo}, title="NFO tags:")
+        self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata)

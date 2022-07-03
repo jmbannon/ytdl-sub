@@ -58,11 +58,19 @@ class FileMetadata:
 
         def _recursive_add_dict_lines(rdict: Dict, indent: int):
             for key, value in sorted(rdict.items()):
-                if isinstance(value, Dict):
-                    _recursive_add_dict_lines(rdict=value, indent=indent + 2)
-
                 _indent = " " * indent
-                lines.append(f"{_indent}{key}: {value}")
+                if isinstance(value, Dict):
+                    lines.append(f"{_indent}{key}:")
+                    _recursive_add_dict_lines(rdict=value, indent=indent + 2)
+                else:
+                    value = str(value)
+                    # If there are newlines in the value, print them indented
+                    if "\n" in value:
+                        lines.append(f"{_indent}{key}:")
+                        for value_line in value.split("\n"):
+                            lines.append(f"  {_indent}{value_line.strip()}")
+                    else:
+                        lines.append(f"{_indent}{key}: {value}")
 
         _recursive_add_dict_lines(rdict=value_dict, indent=2)
         return cls(metadata=lines)

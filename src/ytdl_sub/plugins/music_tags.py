@@ -56,7 +56,7 @@ class MusicTagsOptions(PluginOptions):
 class MusicTagsPlugin(Plugin[MusicTagsOptions]):
     plugin_options_type = MusicTagsOptions
 
-    def post_process_entry(self, entry: Entry):
+    def post_process_entry(self, entry: Entry) -> FileMetadata:
         """
         Tags the entry's audio file using values defined in the metadata options
         """

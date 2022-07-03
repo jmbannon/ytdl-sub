@@ -80,7 +80,7 @@ class NfoTagsOptions(PluginOptions):
 class NfoTagsPlugin(Plugin[NfoTagsOptions]):
     plugin_options_type = NfoTagsOptions
 
-    def post_process_entry(self, entry: Entry):
+    def post_process_entry(self, entry: Entry) -> None:
         """
         Creates an entry's NFO file using values defined in the metadata options
 
@@ -115,7 +115,6 @@ class NfoTagsPlugin(Plugin[NfoTagsOptions]):
         with open(nfo_file_path, "wb") as nfo_file:
             nfo_file.write(xml)
 
-        # Archive the nfo's file name
-        self.save_file(file_name=nfo_file_name, entry=entry)
-
-        return FileMetadata.from_dict(value_dict={nfo_root: nfo}, title="NFO tags:")
+        # Save the nfo file and log its metadata
+        nfo_metadata = FileMetadata.from_dict(value_dict={nfo_root: nfo}, title="NFO tags:")
+        self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
