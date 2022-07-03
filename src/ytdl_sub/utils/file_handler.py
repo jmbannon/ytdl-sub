@@ -14,8 +14,12 @@ class FileMetadata:
     Stores pretty-printed information about a file. Each line in the metadata represents a newline
     """
 
-    def __init__(self, metadata: Optional[List[str]] = None):
-        self.metadata: List[str] = metadata if metadata else []
+    def __init__(self, metadata: Optional[Union[str, List[str]]] = None):
+        self.metadata = []
+        if isinstance(metadata, str):
+            self.metadata = [metadata]
+        elif isinstance(metadata, list):
+            self.metadata = metadata
 
     def append(self, line: str) -> "FileMetadata":
         """

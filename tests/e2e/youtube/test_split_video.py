@@ -4,7 +4,8 @@ from tempfile import NamedTemporaryFile
 import mergedeep
 import pytest
 from conftest import assert_debug_log
-from e2e.expected_download import ExpectedDownload
+from e2e.expected_download import ExpectedDownloadFile
+from e2e.expected_download import ExpectedDownloads
 
 import ytdl_sub.downloaders.downloader
 from ytdl_sub.config.config_file import ConfigFile
@@ -88,27 +89,27 @@ def single_video_subscription(config, subscription_name, subscription_dict):
 def expected_single_video_download():
     # turn off black formatter here for readability
     # fmt: off
-    return ExpectedDownload(
-        expected_md5_file_hashes={
-            Path('Project Zombie - 1-6.Intro.mp4'): "eaec6f50f364b13ef1a201e736ec9c05",
-            Path('Project Zombie - 2-6.Part 1.mp4'): "5850b19acb250cc13db36f80fa1bba5a",
-            Path('Project Zombie - 3-6.Part 2.mp4'): "445d95eba437db6df284df7e1ab633e8",
-            Path('Project Zombie - 4-6.Part 3.mp4'): "2b6e7532d515c9e64ed2a33d850cf199",
-            Path('Project Zombie - 5-6.Part 4.mp4'): "842bf3c4d1fcc4c5ab110635935dac66",
-            Path('Project Zombie - 6-6.Part 5.mp4'): "238de99f00f829ab72f042b79da9a33a",
-            Path('Project Zombie - Intro.jpg'): "e87282e4115baa8b5c727fb4de15316d",
-            Path('Project Zombie - Intro.nfo'): "ded59ac906f579312cc3cf98a57e7ea3",
-            Path('Project Zombie - Part 1.jpg'): "e87282e4115baa8b5c727fb4de15316d",
-            Path('Project Zombie - Part 1.nfo'): "70ff5cd0092b8bc22dc4db93a824789b",
-            Path('Project Zombie - Part 2.jpg'): "e87282e4115baa8b5c727fb4de15316d",
-            Path('Project Zombie - Part 2.nfo'): "54450c18a2cbb9d6d2ee5d0a1fb3f279",
-            Path('Project Zombie - Part 3.jpg'): "e87282e4115baa8b5c727fb4de15316d",
-            Path('Project Zombie - Part 3.nfo'): "0effb13fc4039363a95969d1048dde57",
-            Path('Project Zombie - Part 4.jpg'): "e87282e4115baa8b5c727fb4de15316d",
-            Path('Project Zombie - Part 4.nfo'): "74bd0d7c12105469838768a0cc323a8c",
-            Path('Project Zombie - Part 5.jpg'): "e87282e4115baa8b5c727fb4de15316d",
-            Path('Project Zombie - Part 5.nfo'): "a8cf2e77721335ea7c18e22734e7996c",
-        }
+    return ExpectedDownloads(
+        expected_downloads=[
+            ExpectedDownloadFile(path=Path('Project Zombie - 1-6.Intro.mp4'), md5="eaec6f50f364b13ef1a201e736ec9c05"),
+            ExpectedDownloadFile(path=Path('Project Zombie - 2-6.Part 1.mp4'), md5="5850b19acb250cc13db36f80fa1bba5a"),
+            ExpectedDownloadFile(path=Path('Project Zombie - 3-6.Part 2.mp4'), md5="445d95eba437db6df284df7e1ab633e8"),
+            ExpectedDownloadFile(path=Path('Project Zombie - 4-6.Part 3.mp4'), md5="2b6e7532d515c9e64ed2a33d850cf199"),
+            ExpectedDownloadFile(path=Path('Project Zombie - 5-6.Part 4.mp4'), md5="842bf3c4d1fcc4c5ab110635935dac66"),
+            ExpectedDownloadFile(path=Path('Project Zombie - 6-6.Part 5.mp4'), md5="238de99f00f829ab72f042b79da9a33a"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Intro.jpg'), md5="e87282e4115baa8b5c727fb4de15316d"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Intro.nfo'), md5="ded59ac906f579312cc3cf98a57e7ea3"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 1.jpg'), md5="e87282e4115baa8b5c727fb4de15316d"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 1.nfo'), md5="70ff5cd0092b8bc22dc4db93a824789b"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 2.jpg'), md5="e87282e4115baa8b5c727fb4de15316d"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 2.nfo'), md5="54450c18a2cbb9d6d2ee5d0a1fb3f279"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 3.jpg'), md5="e87282e4115baa8b5c727fb4de15316d"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 3.nfo'), md5="0effb13fc4039363a95969d1048dde57"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 4.jpg'), md5="e87282e4115baa8b5c727fb4de15316d"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 4.nfo'), md5="74bd0d7c12105469838768a0cc323a8c"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 5.jpg'), md5="e87282e4115baa8b5c727fb4de15316d"),
+            ExpectedDownloadFile(path=Path('Project Zombie - Part 5.nfo'), md5="a8cf2e77721335ea7c18e22734e7996c"),
+        ]
     )
     # fmt: on
 

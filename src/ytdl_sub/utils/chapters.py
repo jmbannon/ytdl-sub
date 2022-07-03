@@ -1,8 +1,11 @@
 import os
 import re
 from typing import List
+from typing import Optional
+from typing import Tuple
 
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.file_handler import FileMetadata
 
 
 class Timestamp:
@@ -48,12 +51,7 @@ class Timestamp:
         return self._timestamp_sec
 
     @property
-    def timestamp_str(self) -> str:
-        """
-        Returns
-        -------
-        The timestamp in 'HH:MM:SS' format
-        """
+    def _hours_minutes_seconds(self) -> Tuple[int, int, int]:
         seconds = self.timestamp_sec
 
         hours = int(seconds / 3600)
@@ -62,6 +60,30 @@ class Timestamp:
         minutes = int(seconds / 60)
         seconds -= minutes * 60
 
+        return hours, minutes, seconds
+
+    @property
+    def readable_str(self) -> str:
+        """
+        Returns
+        -------
+        The timestamp in '0:SS' format (min trim).
+        """
+        hours, minutes, seconds = self._hours_minutes_seconds
+        if hours:
+            return f"{str(hours)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}"
+        if minutes:
+            return f"{str(minutes)}:{str(seconds).zfill(2)}"
+        return f"0:{str(seconds).zfill(2)}"
+
+    @property
+    def standardized_str(self) -> str:
+        """
+        Returns
+        -------
+        The timestamp in 'HH:MM:SS' format
+        """
+        hours, minutes, seconds = self._hours_minutes_seconds
         return f"{str(hours).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}"
 
     @classmethod
@@ -124,6 +146,22 @@ class Chapters:
         True if the first timestamp starts at 0. False otherwise.
         """
         return self.timestamps[0].timestamp_sec == 0
+
+    def to_file_metadata(self, title: Optional[str] = None) -> FileMetadata:
+        """
+        Parameters
+        ----------
+        title
+            Optional title
+
+        Returns
+        -------
+        Chapter metadata in the format of { readable_timestamp_str: title }
+        """
+        return FileMetadata.from_dict(
+            value_dict={ts.readable_str: title for ts, title in zip(self.timestamps, self.titles)},
+            title=title,
+        )
 
     @classmethod
     def from_file(cls, chapters_file_path: str) -> "Chapters":
