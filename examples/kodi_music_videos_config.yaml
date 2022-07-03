@@ -37,7 +37,7 @@ presets:
     output_options:
       output_directory: "{music_video_directory}"
       file_name: "{music_video_name}.{ext}"
-      thumbnail_name: "{music_video_name}.jpg"
+      thumbnail_name: "{music_video_name}-thumb.jpg"
 
     # For each video downloaded, add a music video NFO file for it. Populate it
     # with tags that Kodi will read and use to display it in the music or music
