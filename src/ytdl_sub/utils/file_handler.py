@@ -115,6 +115,38 @@ class FileHandlerTransactionLog:
         self.files_removed.add(file_name)
         return self
 
+    def to_output_message(self, output_directory: str) -> str:
+        """
+        Parameters
+        ----------
+        output_directory
+            Path to the output directory. Included in the output message
+
+        Returns
+        -------
+        The output message to show users what was recorded in the transaction log
+        """
+        lines: List[str] = []
+        if self.files_created:
+            created_line = f"Files created in '{output_directory}'"
+            created_line_dash = "-" * 40
+            lines.extend([created_line, created_line_dash])
+            for file_path, file_metadata in sorted(self.files_created.items()):
+                lines.append(file_path)
+                if file_metadata:
+                    lines.extend(
+                        [f"  {metadata_line.strip()}" for metadata_line in file_metadata.metadata]
+                    )
+
+        if self.files_removed:
+            removed_line = f"Files removed from '{output_directory}'"
+            removed_line_dash = "-" * 40
+            lines.extend([removed_line, removed_line_dash])
+            for file_path in sorted(self.files_removed):
+                lines.append(file_path)
+
+        return "\n".join(lines)
+
 
 class FileHandler:
     """

@@ -5,6 +5,7 @@ import pytest
 from conftest import assert_debug_log
 from e2e.expected_download import ExpectedDownloadFile
 from e2e.expected_download import ExpectedDownloads
+from e2e.expected_transaction_log import assert_transaction_log_matches
 
 import ytdl_sub.downloaders.downloader
 from ytdl_sub.config.config_file import ConfigFile
@@ -302,7 +303,11 @@ class TestChannelAsKodiTvShow:
         self, full_channel_subscription, expected_full_channel_download, output_directory
     ):
         transaction_log = full_channel_subscription.download(dry_run=True)
-        expected_full_channel_download.assert_dry_run_files_logged(transaction_log=transaction_log)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="test_channel_as_kodi_tv_show__full_channel.txt",
+        )
 
     def test_recent_channel_download(
         self, recent_channel_subscription, expected_recent_channel_download, output_directory
