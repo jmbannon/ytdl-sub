@@ -15,11 +15,7 @@ RUN apk update --no-cache && \
       py3-pip && \
     apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
       python3=~3.10 \
-      py3-setuptools \
-      zlib-dev \
-      jpeg-dev \
-      python3-dev \
-      libwebp-dev && \
+      py3-setuptools && \
     apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/community/ \
       py3-pip && \
     mkdir -p /config && \
@@ -28,11 +24,7 @@ RUN apk update --no-cache && \
     apk del \
       g++ \
       make \
-      py3-setuptools \
-      zlib-dev \
-      jpeg-dev \
-      python3-dev \
-      libwebp-dev
+      py3-setuptools
 
 ###############################################################################
 # CONTAINER CONFIGS
