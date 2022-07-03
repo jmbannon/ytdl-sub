@@ -16,7 +16,7 @@ presets:
     output_options:
       output_directory: "{music_video_directory}"
       file_name: "{music_video_name}.{ext}"
-      thumbnail_name: "{music_video_name}.jpg"
+      thumbnail_name: "{music_video_name}-thumb.jpg"
 
     nfo_tags:
       nfo_name: "{music_video_name}.nfo"
