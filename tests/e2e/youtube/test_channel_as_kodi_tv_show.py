@@ -68,59 +68,59 @@ def expected_full_channel_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path(".ytdl-sub-pz-download-archive.json"): "b7e7c19d2cf0277e4e42453a64fbaa90",
+            Path(".ytdl-sub-pz-download-archive.json"): "dd3c6236a107a665b884f701b8d14d4d",
 
             # Output directory files
-            Path("fanart.jpg"): "e6e323373c8902568e96e374817179cf",
-            Path("poster.jpg"): "a14c593bcc75bb8d2c7145de4767ad01",
+            Path("fanart.jpg"): "c16b8b88a82cbd47d217ee80f6a8b5f3",
+            Path("poster.jpg"): "e92872ff94c96ad49e9579501c791578",
             Path("tvshow.nfo"): "83c7db96081ac5bdf289fcf396bec157",
 
             # Entry files
-            Path("Season 2010/s2010.e0813 - Oblivion Mod 'Falcor' p.1.jpg"): "b58377dfe7c39527e1990a24b36bbd77",
+            Path("Season 2010/s2010.e0813 - Oblivion Mod 'Falcor' p.1-thumb.jpg"): "fb95b510681676e81c321171fc23143e",
             Path("Season 2010/s2010.e0813 - Oblivion Mod 'Falcor' p.1.mp4"): "931a705864c57d21d6fedebed4af6bbc",
             Path("Season 2010/s2010.e0813 - Oblivion Mod 'Falcor' p.1.nfo"): "67d8d71d048039080acbba3bce4febaa",
 
-            Path("Season 2010/s2010.e1202 - Oblivion Mod 'Falcor' p.2.jpg"): "a5ee6247c8dce255aec79c9a51d49da4",
+            Path("Season 2010/s2010.e1202 - Oblivion Mod 'Falcor' p.2-thumb.jpg"): "8b32ee9c037fa669e444a0ac181525a1",
             Path("Season 2010/s2010.e1202 - Oblivion Mod 'Falcor' p.2.mp4"): "d3469b4dca7139cb3dbc38712b6796bf",
             Path("Season 2010/s2010.e1202 - Oblivion Mod 'Falcor' p.2.nfo"): "d81f49cedbd7edaee987521e89b37904",
 
-            Path("Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].jpg"): "048a19cf0f674437351872c3f312ebf1",
+            Path("Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg"): "b232d253df621aa770b780c1301d364d",
             Path("Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].mp4"): "e66287b9832277b6a4d1554e29d9fdcc",
             Path("Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].nfo"): "f7c0de89038f8c491bded8a3968720a2",
 
-            Path("Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].jpg"): None,
+            Path("Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg"): "d17c379ea8b362f5b97c6b213b0342cb",
             Path("Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].mp4"): "04ab5cb3cc12325d0c96a7cd04a8b91d",
             Path("Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].nfo"): "ee1eda78fa0980bc703e602b5012dd1f",
 
-            Path("Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].jpg"): "9baaddc6b62f5b9ae3781eb4eef0e3b3",
+            Path("Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg"): "e7830aa8a64b0cde65ba3f7e5fc56530",
             Path("Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].mp4"): "025de6099a5c98e6397153c7a62d517d",
             Path("Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].nfo"): "61eb6369430da0ab6134d78829a7621b",
 
-            Path("Season 2011/s2011.e0529 - Project Zombie _Official Trailer_ (IP - mc.projectzombie.beastnode.net).jpg"): "ce1df7f623fffaefe04606ecbafcfec6",
+            Path("Season 2011/s2011.e0529 - Project Zombie _Official Trailer_ (IP - mc.projectzombie.beastnode.net)-thumb.jpg"): "c956192a379b3661595c9920972d4819",
             Path("Season 2011/s2011.e0529 - Project Zombie _Official Trailer_ (IP - mc.projectzombie.beastnode.net).mp4"): "3d9c19835b03355d6fd5d00cd59dbe5b",
             Path("Season 2011/s2011.e0529 - Project Zombie _Official Trailer_ (IP - mc.projectzombie.beastnode.net).nfo"): "60f72b99f5c69f9e03a071a12160928f",
 
-            Path("Season 2011/s2011.e0630 - Project Zombie _Fin.jpg"): "bc3f511915869720c37617a7de706b2b",
+            Path("Season 2011/s2011.e0630 - Project Zombie _Fin-thumb.jpg"): "00ed383591779ffe98291de60f198fe9",
             Path("Season 2011/s2011.e0630 - Project Zombie _Fin.mp4"): "4971cb2d4fa29460361031f3fa8e1ea9",
             Path("Season 2011/s2011.e0630 - Project Zombie _Fin.nfo"): "a7b5d9e57d20852f5daf360a1373bb7a",
 
-            Path("Season 2011/s2011.e1121 - Skyrim 'Ultra HD w_Mods' [PC].jpg"): "12babdb3b86cd868b90b60d013295f66",
+            Path("Season 2011/s2011.e1121 - Skyrim 'Ultra HD w_Mods' [PC]-thumb.jpg"): "1718599d5189c65f7d8cf6acfa5ea851",
             Path("Season 2011/s2011.e1121 - Skyrim 'Ultra HD w_Mods' [PC].mp4"): "55e9b0add08c48c9c66105da0def2426",
             Path("Season 2011/s2011.e1121 - Skyrim 'Ultra HD w_Mods' [PC].nfo"): "fe60e2b6b564f9316b6c7c183e1cf300",
 
-            Path("Season 2012/s2012.e0123 - Project Zombie _Map Trailer.jpg"): "82d303e16aba75acdde30b15c4154231",
+            Path("Season 2012/s2012.e0123 - Project Zombie _Map Trailer-thumb.jpg"): "54ebe9df801b278fdd17b21afa8373a6",
             Path("Season 2012/s2012.e0123 - Project Zombie _Map Trailer.mp4"): "65e4ce53ed5ec4139995469f99477a50",
             Path("Season 2012/s2012.e0123 - Project Zombie _Map Trailer.nfo"): "c8900adcca83c473c79a4afbc7ad2de1",
 
-            Path("Season 2013/s2013.e0719 - Project Zombie Rewind _Trailer.jpg"): "83b1af4c3614d262b2ad419586fff730",
+            Path("Season 2013/s2013.e0719 - Project Zombie Rewind _Trailer-thumb.jpg"): "e29d49433175de8a761af35c5307791f",
             Path("Season 2013/s2013.e0719 - Project Zombie Rewind _Trailer.mp4"): "18620a8257a686beda65e54add4d4cd1",
             Path("Season 2013/s2013.e0719 - Project Zombie Rewind _Trailer.nfo"): "1c993c41d4308a6049333154d0adee16",
 
-            Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.jpg"): "2a24de903059f48c7d0df0476046c975",
+            Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer-thumb.jpg"): "6f8f5e1e031ec2a04b0a4906c04a19ee",
             Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.mp4"): "82f6ee7253e1dbb83ae7215af08ffacc",
             Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.nfo"): "cc7886aae3af6b7b0facd82f95390242",
 
-            Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.jpg"): "c8baea83b9edeb081657f1130a1031f7",
+            Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id-thumb.jpg"): "49cc64b25314155c1b8ab0361ac0c34f",
             Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.mp4"): "e733b4cc385b953b08c8eb0f47e03c1e",
             Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.nfo"): "2b3ccb3f1ef81ee49fe1afb88f275a09",
         }
@@ -164,19 +164,19 @@ def expected_recent_channel_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path(".ytdl-sub-pz-download-archive.json"): "b1675ca4d9f0d4b9c2102b6749e4cdfd",
+            Path(".ytdl-sub-pz-download-archive.json"): "91534d1c5921d121aa35d7a197ba1940",
 
             # Output directory files
-            Path("fanart.jpg"): "e6e323373c8902568e96e374817179cf",
-            Path("poster.jpg"): "a14c593bcc75bb8d2c7145de4767ad01",
+            Path("fanart.jpg"): "c16b8b88a82cbd47d217ee80f6a8b5f3",
+            Path("poster.jpg"): "e92872ff94c96ad49e9579501c791578",
             Path("tvshow.nfo"): "83c7db96081ac5bdf289fcf396bec157",
 
             # Recent Entry files
-            Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.jpg"): "2a24de903059f48c7d0df0476046c975",
+            Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer-thumb.jpg"): "6f8f5e1e031ec2a04b0a4906c04a19ee",
             Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.mp4"): "82f6ee7253e1dbb83ae7215af08ffacc",
             Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.nfo"): "cc7886aae3af6b7b0facd82f95390242",
 
-            Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.jpg"): "c8baea83b9edeb081657f1130a1031f7",
+            Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id-thumb.jpg"): "49cc64b25314155c1b8ab0361ac0c34f",
             Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.mp4"): "e733b4cc385b953b08c8eb0f47e03c1e",
             Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.nfo"): "2b3ccb3f1ef81ee49fe1afb88f275a09",
         }
@@ -225,8 +225,8 @@ def expected_recent_channel_no_vids_in_range_download():
             Path(".ytdl-sub-pz-download-archive.json"): "99914b932bd37a50b983c5e7c90ae93b",
 
             # Output directory files
-            Path("fanart.jpg"): "e6e323373c8902568e96e374817179cf",
-            Path("poster.jpg"): "a14c593bcc75bb8d2c7145de4767ad01",
+            Path("fanart.jpg"): "c16b8b88a82cbd47d217ee80f6a8b5f3",
+            Path("poster.jpg"): "e92872ff94c96ad49e9579501c791578",
             Path("tvshow.nfo"): "83c7db96081ac5bdf289fcf396bec157",
         }
     )
@@ -269,15 +269,15 @@ def expected_rolling_recent_channel_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path(".ytdl-sub-pz-download-archive.json"): "9ae3463bd2dc39830003aba68a276df4",
+            Path(".ytdl-sub-pz-download-archive.json"): "97ff47a7c5d89a426a653493ad1a3f06",
 
             # Output directory files
-            Path("fanart.jpg"): "e6e323373c8902568e96e374817179cf",
-            Path("poster.jpg"): "a14c593bcc75bb8d2c7145de4767ad01",
+            Path("fanart.jpg"): "c16b8b88a82cbd47d217ee80f6a8b5f3",
+            Path("poster.jpg"): "e92872ff94c96ad49e9579501c791578",
             Path("tvshow.nfo"): "83c7db96081ac5bdf289fcf396bec157",
 
             # Rolling Recent Entry files
-            Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.jpg"): "c8baea83b9edeb081657f1130a1031f7",
+            Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id-thumb.jpg"): "49cc64b25314155c1b8ab0361ac0c34f",
             Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.mp4"): "e733b4cc385b953b08c8eb0f47e03c1e",
             Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.nfo"): "2b3ccb3f1ef81ee49fe1afb88f275a09",
         }

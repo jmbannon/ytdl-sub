@@ -1,12 +1,11 @@
 import os
+import tempfile
 from pathlib import Path
 from typing import Optional
 from urllib.request import urlopen
 
-from PIL.Image import Image
-from PIL.Image import open as pil_open
-
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.utils.ffmpeg import FFMPEG
 
 
 def _get_downloaded_thumbnail_path(entry: Entry) -> Optional[str]:
@@ -45,8 +44,8 @@ def convert_download_thumbnail(entry: Entry):
     if not download_thumbnail_path:
         raise ValueError("Thumbnail not found")
 
-    image: Image = pil_open(download_thumbnail_path).convert("RGB")
-    image.save(fp=download_thumbnail_path_as_jpg, format="jpeg")
+    if not download_thumbnail_path == download_thumbnail_path_as_jpg:
+        FFMPEG.run(["-bitexact", "-i", download_thumbnail_path, download_thumbnail_path_as_jpg])
 
 
 def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str):
@@ -61,6 +60,7 @@ def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str):
         Thumbnail file destination after its converted to jpg
     """
     with urlopen(thumbnail_url) as file:
-        image: Image = pil_open(file).convert("RGB")
+        with tempfile.NamedTemporaryFile() as thumbnail:
+            thumbnail.write(file.read())
 
-    image.save(fp=output_thumbnail_path, format="jpeg")
+            FFMPEG.run(["-bitexact", "-i", thumbnail.name, output_thumbnail_path, "-bitexact"])

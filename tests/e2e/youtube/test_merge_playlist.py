@@ -65,7 +65,7 @@ def playlist_subscription(config, subscription_name, subscription_dict):
 def expected_playlist_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
-            Path("JMC - Jesse's Minecraft Server.jpg"): "348e3007fc590d0b1e2f6682501b0b5f",
+            Path("JMC - Jesse's Minecraft Server-thumb.jpg"): "a3f1910f9c51f6442f845a528e190829",
             Path("JMC - Jesse's Minecraft Server.mkv"): [
                 "6053c47a8690519b0a33c13fa4b01ac0",
                 "3ab42b3e6be0a44deb3a9a28e6ebaf16",
