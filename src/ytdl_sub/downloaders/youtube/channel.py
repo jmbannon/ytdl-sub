@@ -1,204 +1,22 @@
-from abc import ABC
 from pathlib import Path
 from typing import Dict
-from typing import Generic
 from typing import List
 from typing import Optional
-from typing import TypeVar
 
 from ytdl_sub.config.preset_options import Overrides
-from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderOptionsT
-from ytdl_sub.downloaders.downloader import DownloaderValidator
+from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
+from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubeChannel
-from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.date_range_validator import DateRangeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
-from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
-from ytdl_sub.validators.url_validator import YoutubeVideoUrlValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get()
-
-###############################################################################
-# Abstract Youtube downloader + options
-
-
-class YoutubeDownloaderOptions(DownloaderValidator, ABC):
-    """
-    Abstract source validator for all soundcloud sources.
-    """
-
-
-YoutubeDownloaderOptionsT = TypeVar("YoutubeDownloaderOptionsT", bound=YoutubeDownloaderOptions)
-YoutubeVideoT = TypeVar("YoutubeVideoT", bound=YoutubeVideo)
-
-
-class YoutubeDownloader(
-    Downloader[YoutubeDownloaderOptionsT, YoutubeVideoT],
-    Generic[YoutubeDownloaderOptionsT, YoutubeVideoT],
-    ABC,
-):
-    """
-    Class that handles downloading youtube entries via ytdl and converting them into
-    YoutubeVideo like objects. Reserved for any future logic that is shared amongst all YT
-    downloaders.
-    """
-
-
-###############################################################################
-# Youtube single video downloader + options
-
-
-class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
-    """
-    Downloads a single youtube video. This download strategy is intended for CLI usage performing
-    a one-time download of a video, not a subscription.
-
-    Usage:
-
-    .. code-block:: yaml
-
-      presets:
-        example_preset:
-          youtube:
-            # required
-            download_strategy: "video"
-            video_url: "youtube.com/watch?v=VMAPTo7RVDo"
-
-    CLI usage:
-
-    .. code-block:: bash
-
-       ytdl-sub dl --preset "example_preset" --youtube.video_url "youtube.com/watch?v=VMAPTo7RVDo"
-
-    """
-
-    _required_keys = {"video_url"}
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-        self._video_url = self._validate_key("video_url", YoutubeVideoUrlValidator).video_url
-
-    @property
-    def video_url(self) -> str:
-        """
-        Required. The url of the video, i.e. ``youtube.com/watch?v=VMAPTo7RVDo``.
-        """
-        return self._video_url
-
-
-class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, YoutubeVideo]):
-    downloader_options_type = YoutubeVideoDownloaderOptions
-    downloader_entry_type = YoutubeVideo
-
-    @classmethod
-    def ytdl_option_defaults(cls) -> Dict:
-        """
-        Default `ytdl_options`_ for ``video``
-
-        .. code-block:: yaml
-
-           ytdl_options:
-             ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
-        """
-        return dict(
-            super().ytdl_option_defaults(),
-            **{"break_on_existing": True},
-        )
-
-    def download(self) -> List[YoutubeVideo]:
-        """Download a single Youtube video"""
-        entry_dict = self.extract_info(url=self.download_options.video_url)
-        return [YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)]
-
-
-###############################################################################
-# Youtube playlist downloader + options
-
-
-class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
-    """
-    Downloads all videos from a youtube playlist.
-
-    Usage:
-
-    .. code-block:: yaml
-
-      presets:
-        my_example_preset:
-          youtube:
-            # required
-            download_strategy: "playlist"
-            playlist_url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
-    """
-
-    _required_keys = {"playlist_url"}
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-        self._playlist_url = self._validate_key(
-            "playlist_url", YoutubePlaylistUrlValidator
-        ).playlist_url
-
-    @property
-    def playlist_url(self) -> str:
-        """
-        Required. The playlist's url, i.e.
-        ``https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg``.
-        """
-        return self._playlist_url
-
-
-class YoutubePlaylistDownloader(
-    YoutubeDownloader[YoutubePlaylistDownloaderOptions, YoutubePlaylistVideo]
-):
-    downloader_options_type = YoutubePlaylistDownloaderOptions
-    downloader_entry_type = YoutubePlaylistVideo
-
-    # pylint: disable=line-too-long
-    @classmethod
-    def ytdl_option_defaults(cls) -> Dict:
-        """
-        Default `ytdl_options`_ for ``playlist``
-
-        .. code-block:: yaml
-
-           ytdl_options:
-             ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
-             break_on_existing: True  # stop downloads (newest to oldest) if a video is already downloaded
-        """
-        return dict(
-            super().ytdl_option_defaults(),
-            **{"break_on_existing": True},
-        )
-
-    # pylint: enable=line-too-long
-
-    def download(self) -> List[YoutubePlaylistVideo]:
-        """
-        Downloads all videos in a Youtube playlist
-        """
-        playlist_videos: List[YoutubePlaylistVideo] = []
-
-        entry_dicts = self.extract_info_via_info_json(url=self.download_options.playlist_url)
-        for entry_dict in entry_dicts:
-            if entry_dict.get("extractor") == "youtube":
-                playlist_videos.append(
-                    YoutubePlaylistVideo(
-                        entry_dict=entry_dict, working_directory=self.working_directory
-                    )
-                )
-
-        return playlist_videos
-
-
-###############################################################################
-# Youtube channel downloader + options
 
 
 class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidator):

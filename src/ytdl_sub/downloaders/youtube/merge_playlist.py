@@ -2,8 +2,8 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-from ytdl_sub.downloaders.youtube_downloader import YoutubeDownloader
-from ytdl_sub.downloaders.youtube_downloader import YoutubePlaylistDownloaderOptions
+from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
+from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
