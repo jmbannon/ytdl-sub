@@ -45,13 +45,13 @@ for available source variables to use.
 
 channel
 _______
-.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloaderOptions()
+.. autoclass:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloaderOptions()
   :members:
   :member-order: bysource
   :inherited-members:
   :exclude-members: get_date_range
 
-.. autofunction:: ytdl_sub.downloaders.youtube_downloader.YoutubeChannelDownloader.ytdl_option_defaults()
+.. autofunction:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
 
@@ -59,23 +59,23 @@ _______
 
 playlist
 ________
-.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloaderOptions()
+.. autoclass:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloaderOptions()
   :members:
   :member-order: bysource
   :inherited-members:
 
-.. autofunction:: ytdl_sub.downloaders.youtube_downloader.YoutubePlaylistDownloader.ytdl_option_defaults()
+.. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
 
 video
 _____
-.. autoclass:: ytdl_sub.downloaders.youtube_downloader.YoutubeVideoDownloaderOptions()
+.. autoclass:: ytdl_sub.downloaders.youtube.video.YoutubeVideoDownloaderOptions()
   :members:
   :member-order: bysource
   :inherited-members:
 
-.. autofunction:: ytdl_sub.downloaders.youtube_downloader.YoutubeVideoDownloader.ytdl_option_defaults()
+.. autofunction:: ytdl_sub.downloaders.youtube.video.YoutubeVideoDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
 
@@ -109,12 +109,12 @@ for available source variables to use.
 
 albums_and_singles
 __________________
-.. autoclass:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloadOptions()
+.. autoclass:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloadOptions()
   :members:
   :member-order: bysource
   :inherited-members:
 
-.. autofunction:: ytdl_sub.downloaders.soundcloud_downloader.SoundcloudAlbumsAndSinglesDownloader.ytdl_option_defaults()
+.. autofunction:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
 
