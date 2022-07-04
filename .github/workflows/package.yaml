@@ -148,7 +148,7 @@ jobs:
       packages: write
       contents: read
 
-    if: contains('refs/heads/master', github.ref) || ${{ github.ref }} =~ ^refs\/tags\/v.*
+    if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
     steps:
       - uses: actions/checkout@v3
 
