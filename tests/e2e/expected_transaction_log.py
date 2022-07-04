@@ -40,7 +40,4 @@ def assert_transaction_log_matches(
     for idx in range(len(summary_lines)):
         line = summary_lines[idx]
         expected_line = expected_summary_lines[idx]
-        assert (
-            summary_lines[idx] == expected_summary_lines[idx],
-            f"Summary line {idx} differs: '{line}' != '{expected_line}'",
-        )
+        assert line == expected_line, f"Summary line {idx} differs: '{line}' != '{expected_line}'"
