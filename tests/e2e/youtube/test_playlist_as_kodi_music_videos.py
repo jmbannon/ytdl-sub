@@ -5,6 +5,7 @@ import pytest
 from conftest import assert_debug_log
 from e2e.expected_download import ExpectedDownloadFile
 from e2e.expected_download import ExpectedDownloads
+from e2e.expected_transaction_log import assert_transaction_log_matches
 
 import ytdl_sub.downloaders.downloader
 from ytdl_sub.config.config_file import ConfigFile
@@ -135,36 +136,37 @@ class TestPlaylistAsKodiMusicVideo:
     files exist and have the expected md5 file hashes.
     """
 
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_playlist_download(
-        self, playlist_subscription, expected_playlist_download, output_directory
+        self, playlist_subscription, expected_playlist_download, output_directory, dry_run
     ):
-        playlist_subscription.download()
-        expected_playlist_download.assert_files_exist(relative_directory=output_directory)
+        transaction_log = playlist_subscription.download()
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="test_playlist.txt",
+        )
 
-        # After the playlist is downloaded, ensure another invocation will hit ExistingVideoReached
-        with assert_debug_log(
-            logger=ytdl_sub.downloaders.downloader.logger,
-            expected_message="ExistingVideoReached, stopping additional downloads",
-        ):
-            playlist_subscription.download()
+        if not dry_run:
             expected_playlist_download.assert_files_exist(relative_directory=output_directory)
 
-    def test_playlist_dry_run(
-        self, playlist_subscription, expected_playlist_download, output_directory
-    ):
-        file_transaction_log = playlist_subscription.download(dry_run=True)
-        expected_playlist_download.assert_dry_run_files_logged(transaction_log=file_transaction_log)
+            # Ensure another invocation will hit ExistingVideoReached
+            with assert_debug_log(
+                logger=ytdl_sub.downloaders.downloader.logger,
+                expected_message="ExistingVideoReached, stopping additional downloads",
+            ):
+                playlist_subscription.download()
+                expected_playlist_download.assert_files_exist(relative_directory=output_directory)
 
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download(
-        self, single_video_subscription, expected_single_video_download, output_directory
+        self, single_video_subscription, expected_single_video_download, output_directory, dry_run
     ):
-        single_video_subscription.download()
-        expected_single_video_download.assert_files_exist(relative_directory=output_directory)
-
-    def test_single_video_dry_run(
-        self, single_video_subscription, expected_single_video_download, output_directory
-    ):
-        file_transaction_log = single_video_subscription.download(dry_run=True)
-        expected_single_video_download.assert_dry_run_files_logged(
-            transaction_log=file_transaction_log
+        transaction_log = single_video_subscription.download()
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="test_video.txt",
         )
+        if not dry_run:
+            expected_single_video_download.assert_files_exist(relative_directory=output_directory)

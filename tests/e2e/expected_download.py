@@ -6,7 +6,6 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
@@ -72,14 +71,3 @@ class ExpectedDownloads:
                 f"MD5  hash for {str(expected_download.path)} does not match: "
                 f"{md5_hash} != {expected_md5_hash}"
             )
-
-    def assert_dry_run_files_logged(self, transaction_log: FileHandlerTransactionLog):
-        assert (
-            len(transaction_log.files_created) == self.file_count
-        ), "Mismatch in number of created files"
-
-        for expected_download in self.expected_downloads:
-            expected_path = str(expected_download.path)
-            assert (
-                expected_path in transaction_log.files_created
-            ), f"Expected {expected_path} to be a file but it is not"

@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from e2e.expected_download import ExpectedDownloadFile
 from e2e.expected_download import ExpectedDownloads
+from e2e.expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
@@ -81,14 +82,16 @@ class TestYoutubeMergePlaylist:
     files exist and have the expected md5 file hashes.
     """
 
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_merge_playlist_download(
-        self, playlist_subscription, expected_playlist_download, output_directory
+        self, playlist_subscription, expected_playlist_download, output_directory, dry_run
     ):
-        playlist_subscription.download()
-        expected_playlist_download.assert_files_exist(relative_directory=output_directory)
+        transaction_log = playlist_subscription.download()
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="test_merge_playlist.txt",
+        )
 
-    def test_merge_playlist_dry_run(
-        self, playlist_subscription, expected_playlist_download, output_directory
-    ):
-        transaction_log = playlist_subscription.download(dry_run=True)
-        expected_playlist_download.assert_dry_run_files_logged(transaction_log=transaction_log)
+        if not dry_run:
+            expected_playlist_download.assert_files_exist(relative_directory=output_directory)

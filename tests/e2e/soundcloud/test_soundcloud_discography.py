@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from e2e.expected_download import ExpectedDownloadFile
 from e2e.expected_download import ExpectedDownloads
+from e2e.expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
@@ -93,14 +94,15 @@ class TestSoundcloudDiscography:
     expected md5 file hashes.
     """
 
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_discography_download(
-        self, discography_subscription, expected_discography_download, output_directory
+        self, discography_subscription, expected_discography_download, output_directory, dry_run
     ):
-        discography_subscription.download()
-        expected_discography_download.assert_files_exist(relative_directory=output_directory)
-
-    def test_discography_dry_run(
-        self, discography_subscription, expected_discography_download, output_directory
-    ):
-        transaction_log = discography_subscription.download(dry_run=True)
-        expected_discography_download.assert_dry_run_files_logged(transaction_log=transaction_log)
+        transaction_log = discography_subscription.download(dry_run=dry_run)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="test_soundcloud_discography.txt",
+        )
+        if not dry_run:
+            expected_discography_download.assert_files_exist(relative_directory=output_directory)

@@ -1,0 +1,9 @@
+Files created in 'FILL_IN'
+----------------------------------------
+.ytdl-sub-pz-download-archive.json
+fanart.jpg
+poster.jpg
+tvshow.nfo
+  NFO tags:
+  tvshow:
+  title: Project / Zombie

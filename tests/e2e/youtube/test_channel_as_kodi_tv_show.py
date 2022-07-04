@@ -293,71 +293,71 @@ class TestChannelAsKodiTvShow:
     expected md5 file hashes.
     """
 
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_full_channel_download(
-        self, full_channel_subscription, expected_full_channel_download, output_directory
+        self, full_channel_subscription, expected_full_channel_download, output_directory, dry_run
     ):
-        full_channel_subscription.download()
-        expected_full_channel_download.assert_files_exist(relative_directory=output_directory)
-
-    def test_full_channel_dry_run(
-        self, full_channel_subscription, expected_full_channel_download, output_directory
-    ):
-        transaction_log = full_channel_subscription.download(dry_run=True)
+        transaction_log = full_channel_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="test_channel_as_kodi_tv_show__full_channel.txt",
+            transaction_log_summary_file_name="test_channel_full.txt",
         )
+        if not dry_run:
+            expected_full_channel_download.assert_files_exist(relative_directory=output_directory)
 
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_recent_channel_download(
-        self, recent_channel_subscription, expected_recent_channel_download, output_directory
+        self,
+        recent_channel_subscription,
+        expected_recent_channel_download,
+        output_directory,
+        dry_run,
     ):
-        recent_channel_subscription.download()
-        expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
-
-        # try downloading again, ensure nothing more was downloaded
-        with assert_debug_log(
-            logger=ytdl_sub.downloaders.downloader.logger,
-            expected_message="ExistingVideoReached, stopping additional downloads",
-        ):
-            recent_channel_subscription.download()
+        transaction_log = recent_channel_subscription.download(dry_run=dry_run)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="test_channel_recent.txt",
+        )
+        if not dry_run:
             expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
 
-    def test_recent_channel_dry_run(
-        self, recent_channel_subscription, expected_recent_channel_download, output_directory
-    ):
-        transaction_log = recent_channel_subscription.download(dry_run=True)
-        expected_recent_channel_download.assert_dry_run_files_logged(
-            transaction_log=transaction_log
-        )
+            # try downloading again, ensure nothing more was downloaded
+            with assert_debug_log(
+                logger=ytdl_sub.downloaders.downloader.logger,
+                expected_message="ExistingVideoReached, stopping additional downloads",
+            ):
+                transaction_log = recent_channel_subscription.download()
+                assert_transaction_log_matches(
+                    output_directory=output_directory,
+                    transaction_log=transaction_log,
+                    transaction_log_summary_file_name="test_channel_no_additional_downloads.txt",
+                )
+                expected_recent_channel_download.assert_files_exist(
+                    relative_directory=output_directory
+                )
 
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_recent_channel_download__no_vids_in_range(
         self,
         recent_channel_no_vids_in_range_subscription,
         expected_recent_channel_no_vids_in_range_download,
         output_directory,
+        dry_run,
     ):
-        recent_channel_no_vids_in_range_subscription.download()
-        expected_recent_channel_no_vids_in_range_download.assert_files_exist(
-            relative_directory=output_directory
-        )
-
-        # Try again, make sure its the same
-        recent_channel_no_vids_in_range_subscription.download()
-        expected_recent_channel_no_vids_in_range_download.assert_files_exist(
-            relative_directory=output_directory
-        )
-
-    def test_recent_channel_dry_run__no_vids_in_range(
-        self,
-        recent_channel_no_vids_in_range_subscription,
-        expected_recent_channel_no_vids_in_range_download,
-        output_directory,
-    ):
-        transaction_log = recent_channel_no_vids_in_range_subscription.download(dry_run=True)
-        expected_recent_channel_no_vids_in_range_download.assert_dry_run_files_logged(
-            transaction_log=transaction_log
-        )
+        # Run twice, ensure nothing changes between runs
+        for _ in range(2):
+            transaction_log = recent_channel_no_vids_in_range_subscription.download(dry_run=dry_run)
+            assert_transaction_log_matches(
+                output_directory=output_directory,
+                transaction_log=transaction_log,
+                transaction_log_summary_file_name="test_channel_no_additional_downloads.txt",
+            )
+            if not dry_run:
+                expected_recent_channel_no_vids_in_range_download.assert_files_exist(
+                    relative_directory=output_directory
+                )
 
     def test_rolling_recent_channel_download(
         self,
