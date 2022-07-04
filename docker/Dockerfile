@@ -23,7 +23,8 @@ RUN apk update --no-cache && \
     rm ytdl_sub-*.whl && \
     apk del \
       g++ \
-      make
+      make \
+      py3-setuptools
 
 ###############################################################################
 # CONTAINER CONFIGS

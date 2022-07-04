@@ -66,18 +66,18 @@ def expected_playlist_download():
     return ExpectedDownload(
         expected_md5_file_hashes={
             # Download mapping
-            Path(".ytdl-sub-jmc-download-archive.json"): "d8e784353c7c3006cb755a034c965160",
+            Path(".ytdl-sub-jmc-download-archive.json"): "9f785c29194a6ecfba6a6b4018763ddc",
 
             # Entry files
-            Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1].jpg"): None,
+            Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg"): "b232d253df621aa770b780c1301d364d",
             Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1].mp4"): "e66287b9832277b6a4d1554e29d9fdcc",
             Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1].nfo"): "3d272fe58487b6011ad049b6000b046f",
 
-            Path("JMC - Jesse's Minecraft Server [Trailer - Feb.27].jpg"): None,
+            Path("JMC - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg"): "d17c379ea8b362f5b97c6b213b0342cb",
             Path("JMC - Jesse's Minecraft Server [Trailer - Feb.27].mp4"): "04ab5cb3cc12325d0c96a7cd04a8b91d",
             Path("JMC - Jesse's Minecraft Server [Trailer - Feb.27].nfo"): "6f99af10bef67276a507d1d9770c5e92",
 
-            Path("JMC - Jesse's Minecraft Server [Trailer - Mar.21].jpg"): None,
+            Path("JMC - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg"): "e7830aa8a64b0cde65ba3f7e5fc56530",
             Path("JMC - Jesse's Minecraft Server [Trailer - Mar.21].mp4"): "025de6099a5c98e6397153c7a62d517d",
             Path("JMC - Jesse's Minecraft Server [Trailer - Mar.21].nfo"): "beec3c1326654bd8c858cecf4e40977a",
         }
@@ -120,7 +120,7 @@ def expected_single_video_download():
     # fmt: off
     return ExpectedDownload(
         expected_md5_file_hashes={
-            Path("JMC - Oblivion Mod 'Falcor' p.1.jpg"): None,
+            Path("JMC - Oblivion Mod 'Falcor' p.1-thumb.jpg"): "fb95b510681676e81c321171fc23143e",
             Path("JMC - Oblivion Mod 'Falcor' p.1.mp4"): "931a705864c57d21d6fedebed4af6bbc",
             Path("JMC - Oblivion Mod 'Falcor' p.1.nfo"): "89f509a8a3d9003e22a9091abeeae5dc",
         }
