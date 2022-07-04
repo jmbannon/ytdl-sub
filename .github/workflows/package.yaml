@@ -19,14 +19,13 @@ env:
 jobs:
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
-  push:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [ "3.10" ]
 
     permissions:
-      packages: write
       contents: read
 
     steps:
@@ -43,8 +42,129 @@ jobs:
           python setup.py bdist_wheel
           cp dist/*.whl docker/root
 
+      - name: Save Python build cache
+        uses: actions/cache@v3
+        with:
+          path: docker/root
+          key: ${{github.sha}}
+
+
+  # Build ARM64 container
+  package-arm64:
+    runs-on: ubuntu-latest
+    needs: [
+      build
+    ]
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore Python build cache
+        uses: actions/cache@v3
+        with:
+          path: docker/root
+          key: ${{github.sha}}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: linux/arm64
+
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.0.0
+
       - name: Build Docker Image
-        run: docker build --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}" docker/
+        run: |
+          docker buildx build \
+          --platform=linux/arm64 \
+          --cache-to=type=local,dest=/tmp/build-cache/arm64 \
+          --tag $IMAGE_NAME \
+          --label "runnumber=${GITHUB_RUN_ID}" \
+          docker/
+
+      - name: Save ARM64 build cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/build-cache/arm64
+          key: ${{github.sha}}
+
+
+  # Build AMD64 container
+  package-amd64:
+    runs-on: ubuntu-latest
+    needs: [
+      build
+    ]
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore Python build cache
+        uses: actions/cache@v3
+        with:
+          path: docker/root
+          key: ${{github.sha}}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: linux/amd64
+
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.0.0
+
+      - name: Build Docker Image
+        run: |
+          docker buildx build \
+          --platform=linux/amd64 \
+          --cache-to=type=local,dest=/tmp/build-cache/amd64 \
+          --tag $IMAGE_NAME \
+          --label "runnumber=${GITHUB_RUN_ID}" \
+          docker/
+
+      - name: Save AMD64 build cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/build-cache/amd64
+          key: ${{github.sha}}
+
+
+  # On master branch, build the docker manifest file from the cached docker builds and push to the registry
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [
+      build,
+      package-arm64,
+      package-amd64
+    ]
+
+    permissions:
+      packages: write
+      contents: read
+
+    if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore Python build cache
+        uses: actions/cache@v3
+        with:
+          path: docker/root
+          key: ${{github.sha}}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
+
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.0.0
 
       - name: login to GitHub Container Registry
         uses: docker/login-action@v1
@@ -53,24 +173,48 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push image on master or release
-        run: |
-          if [[ ${{ github.ref }} =~ ^refs\/heads\/master|^refs\/tags\/v.* ]]; then
-            IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+      - name: Restore ARM64 build cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/build-cache/arm64
+          key: ${{github.sha}}
+
+      - name: Restore AMD64 build cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/build-cache/amd64
+          key: ${{github.sha}}
+
+      - name: Format image_id
+        id: formatted-image_id
+        run:  |
+            IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
 
             # Change all uppercase to lowercase
             IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+            echo IMAGE_ID=${IMAGE_ID}
+            
+            echo ::set-output name=IMAGE_ID::${IMAGE_ID}
+
+      - name: Get the version
+        id: formatted_version
+        run: |
             # Strip git ref prefix from version
             VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
             # Strip "v" prefix from tag name
             [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
             # Use Docker `latest` tag convention
             [ "$VERSION" == "master" ] && VERSION=latest
-            echo IMAGE_ID=$IMAGE_ID
-            echo VERSION=$VERSION
-            docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-            docker push $IMAGE_ID:$VERSION
-          else
-            echo "Skipped on PRs"
-          fi
+            echo VERSION=${VERSION}
+            
+            echo ::set-output name=VERSION::${VERSION}
 
+      - name: Build Docker Image and push to registry
+        run: | 
+          docker buildx build --push \
+          --platform=linux/amd64,linux/arm64 \
+          --cache-from=type=local,src=/tmp/build-cache/amd64 \
+          --cache-from=type=local,src=/tmp/build-cache/arm64 \
+          --tag ${{ steps.formatted-image_id.outputs.IMAGE_ID }}:${{ steps.formatted_version.outputs.VERSION }} \
+          --label "runnumber=${GITHUB_RUN_ID}" \
+          docker/

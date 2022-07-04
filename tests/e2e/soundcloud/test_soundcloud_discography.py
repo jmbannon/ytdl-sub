@@ -65,10 +65,10 @@ def expected_discography_download():
 
             # Entry files (singles)
             ExpectedDownloadFile(path=Path("j_b/[2021] Baby Santana's Dorian Groove/01 - Baby Santana's Dorian Groove.mp3"), md5="bffbd558e12c6a9e029dc136a88342c4"),
-            ExpectedDownloadFile(path=Path("j_b/[2021] Baby Santana's Dorian Groove/folder.jpg"), md5="511c43d7e939c70953cf2cd3cd437072"),
+            ExpectedDownloadFile(path=Path("j_b/[2021] Baby Santana's Dorian Groove/folder.jpg"), md5="967892be44b8c47e1be73f055a7c6f08"),
 
             ExpectedDownloadFile(path=Path("j_b/[2021] Purple Clouds/01 - Purple Clouds.mp3"), md5="038db58aebe2ba875b733932b42a94d6"),
-            ExpectedDownloadFile(path=Path("j_b/[2021] Purple Clouds/folder.jpg"), md5="511c43d7e939c70953cf2cd3cd437072"),
+            ExpectedDownloadFile(path=Path("j_b/[2021] Purple Clouds/folder.jpg"), md5="967892be44b8c47e1be73f055a7c6f08"),
 
             # Entry files (albums)
             ExpectedDownloadFile(path=Path("j_b/[2022] Acoustic Treats/01 - 20160426 184214.mp3"), md5="e145f0a2f6012768280c38655ca58065"),
@@ -82,7 +82,7 @@ def expected_discography_download():
             ExpectedDownloadFile(path=Path("j_b/[2022] Acoustic Treats/09 - Finding Home.mp3"), md5="adbf02eddb2090c008eb497d13ff84b9"),
             ExpectedDownloadFile(path=Path("j_b/[2022] Acoustic Treats/10 - Shallow Water WIP.mp3"), md5="65bb10c84366c71498161734f953e93d"),
             ExpectedDownloadFile(path=Path("j_b/[2022] Acoustic Treats/11 - Untold History.mp3"), md5="6904b2918e5dc38d9a9f72d967eb74bf"),
-            ExpectedDownloadFile(path=Path("j_b/[2022] Acoustic Treats/folder.jpg"), md5="511c43d7e939c70953cf2cd3cd437072"),
+            ExpectedDownloadFile(path=Path("j_b/[2022] Acoustic Treats/folder.jpg"), md5="967892be44b8c47e1be73f055a7c6f08"),
         ]
     )
     # fmt: on

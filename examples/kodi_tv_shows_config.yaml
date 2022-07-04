@@ -52,7 +52,7 @@ presets:
     output_options:
       output_directory: "{youtube_tv_shows_directory}/{tv_show_name_sanitized}"
       file_name: "{episode_name}.{ext}"
-      thumbnail_name: "{episode_name}.jpg"
+      thumbnail_name: "{episode_name}-thumb.jpg"
       maintain_download_archive: True
 
     # For each video downloaded, add an episode NFO file for it. We give it
