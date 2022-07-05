@@ -1,4 +1,4 @@
-Files created in '/tmp/tmptz1msudg'
+Files created in '{output_directory}'
 ----------------------------------------
 JMC - Oblivion Mod 'Falcor' p.1-thumb.jpg
 JMC - Oblivion Mod 'Falcor' p.1.mp4

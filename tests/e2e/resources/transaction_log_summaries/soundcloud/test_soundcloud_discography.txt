@@ -1,4 +1,4 @@
-Files created in '/tmp/tmpw98_9etl'
+Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-jb-download-archive.json
 j_b/[2021] Baby Santana's Dorian Groove/01 - Baby Santana's Dorian Groove.mp3

@@ -10,7 +10,7 @@ def assert_transaction_log_matches(
     output_directory: str,
     transaction_log: FileHandlerTransactionLog,
     transaction_log_summary_file_name: str,
-    regenerate_transaction_log: bool = True,
+    regenerate_transaction_log: bool = False,
 ):
     """
     Parameters
@@ -23,7 +23,7 @@ def assert_transaction_log_matches(
         Name if the transaction log summary to compare.
         Lives in tests/e2e/resources/transaction_log_summaries
     regenerate_transaction_log
-        USE WITH CAUTION
+        USE WITH CAUTION - MANUALLY INSPECT CHANGED FILES TO ENSURE THEY LOOK GOOD!
         Updates the file with the input transaction log. Should only be used to update
         tests after an expected change is made.
     """
@@ -33,7 +33,9 @@ def assert_transaction_log_matches(
     # Write the expected summary file if regenerate is True
     if regenerate_transaction_log:
         with open(transaction_log_path, "w", encoding="utf-8") as summary_file:
-            summary_file.write(summary)
+            summary_file.write(
+                transaction_log.to_output_message(output_directory="{output_directory}")
+            )
 
     # Read the expected summary file
     with open(transaction_log_path, "r", encoding="utf-8") as summary_file:

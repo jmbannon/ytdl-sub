@@ -1,4 +1,4 @@
-Files created in '/tmp/tmpty4f_r8j'
+Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-jmc-download-archive.json
 JMC - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg

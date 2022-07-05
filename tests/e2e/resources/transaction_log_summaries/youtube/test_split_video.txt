@@ -1,4 +1,4 @@
-Files created in '/tmp/tmpjhb4fhk6'
+Files created in '{output_directory}'
 ----------------------------------------
 Project Zombie - 1-6.Intro.mp4
   0:00 - 0:10

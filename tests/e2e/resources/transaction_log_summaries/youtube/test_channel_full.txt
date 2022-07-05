@@ -1,4 +1,4 @@
-Files created in '/tmp/tmps8izxi_f'
+Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-pz-download-archive.json
 Season 2010/s2010.e0813 - Oblivion Mod 'Falcor' p.1-thumb.jpg

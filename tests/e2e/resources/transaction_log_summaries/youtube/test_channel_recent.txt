@@ -1,4 +1,4 @@
-Files created in '/tmp/tmprvao2i5r'
+Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-pz-download-archive.json
 Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer-thumb.jpg
