@@ -1,7 +1,7 @@
-Files created in 'FILL_IN'
+Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-pz-download-archive.json
-Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.jpg
+Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer-thumb.jpg
 Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.mp4
 Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.nfo
   NFO tags:
@@ -21,7 +21,7 @@ Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.nfo
   season: 2018
   title: Jesse's Minecraft Server | Teaser Trailer
   year: 2018
-Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.jpg
+Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id-thumb.jpg
 Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.mp4
 Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.nfo
   NFO tags:

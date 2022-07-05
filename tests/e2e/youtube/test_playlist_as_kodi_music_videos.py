@@ -144,7 +144,7 @@ class TestPlaylistAsKodiMusicVideo:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="test_playlist.txt",
+            transaction_log_summary_file_name="youtube/test_playlist.txt",
         )
 
         if not dry_run:
@@ -166,7 +166,7 @@ class TestPlaylistAsKodiMusicVideo:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="test_video.txt",
+            transaction_log_summary_file_name="youtube/test_video.txt",
         )
         if not dry_run:
             expected_single_video_download.assert_files_exist(relative_directory=output_directory)

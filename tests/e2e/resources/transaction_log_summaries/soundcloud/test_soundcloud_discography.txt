@@ -1,15 +1,15 @@
-Files created in 'FILL_IN'
+Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-jb-download-archive.json
 j_b/[2021] Baby Santana's Dorian Groove/01 - Baby Santana's Dorian Groove.mp3
   Music Tags:
-  album: Baby Santana's Dorian Groove
-  albumartist: j_b
-  artist: j_b
-  genre: Unset
-  title: Baby Santana's Dorian Groove
-  track: 1
-  year: 2021
+    album: Baby Santana's Dorian Groove
+    albumartist: j_b
+    artist: j_b
+    genre: Unset
+    title: Baby Santana's Dorian Groove
+    track: 1
+    year: 2021
 j_b/[2021] Baby Santana's Dorian Groove/folder.jpg
 j_b/[2021] Purple Clouds/01 - Purple Clouds.mp3
   Music Tags:

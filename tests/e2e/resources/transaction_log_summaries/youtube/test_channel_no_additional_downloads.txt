@@ -1,4 +1,4 @@
-Files created in 'FILL_IN'
+Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-pz-download-archive.json
 fanart.jpg

@@ -127,6 +127,12 @@ class FileHandlerTransactionLog:
         The output message to show users what was recorded in the transaction log
         """
         lines: List[str] = []
+
+        def _indent_metadata_line(line: str) -> str:
+            # Do not indent empty lines
+            rstrip_line = line.rstrip()
+            return f"  {rstrip_line}" if rstrip_line else ""
+
         if self.files_created:
             created_line = f"Files created in '{output_directory}'"
             created_line_dash = "-" * 40
@@ -134,9 +140,7 @@ class FileHandlerTransactionLog:
             for file_path, file_metadata in sorted(self.files_created.items()):
                 lines.append(file_path)
                 if file_metadata:
-                    lines.extend(
-                        [f"  {metadata_line.strip()}" for metadata_line in file_metadata.metadata]
-                    )
+                    lines.extend([_indent_metadata_line(line) for line in file_metadata.metadata])
 
         if self.files_removed:
             removed_line = f"Files removed from '{output_directory}'"

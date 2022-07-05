@@ -102,7 +102,7 @@ class TestSoundcloudDiscography:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="test_soundcloud_discography.txt",
+            transaction_log_summary_file_name="soundcloud/test_soundcloud_discography.txt",
         )
         if not dry_run:
             expected_discography_download.assert_files_exist(relative_directory=output_directory)

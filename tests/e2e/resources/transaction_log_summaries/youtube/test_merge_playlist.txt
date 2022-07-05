@@ -1,6 +1,6 @@
-Files created in 'FILL_IN'
+Files created in '{output_directory}'
 ----------------------------------------
-JMC - Jesse's Minecraft Server.jpg
+JMC - Jesse's Minecraft Server-thumb.jpg
 JMC - Jesse's Minecraft Server.mkv
   Timestamps of playlist videos in the merged file:
   0:00: Jesse's Minecraft Server [Trailer - Feb.1]

@@ -301,7 +301,7 @@ class TestChannelAsKodiTvShow:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="test_channel_full.txt",
+            transaction_log_summary_file_name="youtube/test_channel_full.txt",
         )
         if not dry_run:
             expected_full_channel_download.assert_files_exist(relative_directory=output_directory)
@@ -318,7 +318,7 @@ class TestChannelAsKodiTvShow:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="test_channel_recent.txt",
+            transaction_log_summary_file_name="youtube/test_channel_recent.txt",
         )
         if not dry_run:
             expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
@@ -332,7 +332,9 @@ class TestChannelAsKodiTvShow:
                 assert_transaction_log_matches(
                     output_directory=output_directory,
                     transaction_log=transaction_log,
-                    transaction_log_summary_file_name="test_channel_no_additional_downloads.txt",
+                    transaction_log_summary_file_name=(
+                        "youtube/test_channel_no_additional_downloads.txt"
+                    ),
                 )
                 expected_recent_channel_download.assert_files_exist(
                     relative_directory=output_directory
@@ -352,7 +354,7 @@ class TestChannelAsKodiTvShow:
             assert_transaction_log_matches(
                 output_directory=output_directory,
                 transaction_log=transaction_log,
-                transaction_log_summary_file_name="test_channel_no_additional_downloads.txt",
+                transaction_log_summary_file_name="youtube/test_channel_no_additional_downloads.txt",
             )
             if not dry_run:
                 expected_recent_channel_no_vids_in_range_download.assert_files_exist(
