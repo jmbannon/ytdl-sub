@@ -1,30 +1,30 @@
-Files created in '{output_directory}'
+Files created in '/tmp/tmpty4f_r8j'
 ----------------------------------------
 .ytdl-sub-jmc-download-archive.json
 JMC - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
 JMC - Jesse's Minecraft Server [Trailer - Feb.1].mp4
 JMC - Jesse's Minecraft Server [Trailer - Feb.1].nfo
   NFO tags:
-  musicvideo:
-  album: Music Videos
-  artist: JMC
-  title: Jesse's Minecraft Server [Trailer - Feb.1]
-  year: 2011
+    musicvideo:
+      album: Music Videos
+      artist: JMC
+      title: Jesse's Minecraft Server [Trailer - Feb.1]
+      year: 2011
 JMC - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
 JMC - Jesse's Minecraft Server [Trailer - Feb.27].mp4
 JMC - Jesse's Minecraft Server [Trailer - Feb.27].nfo
   NFO tags:
-  musicvideo:
-  album: Music Videos
-  artist: JMC
-  title: Jesse's Minecraft Server [Trailer - Feb.27]
-  year: 2011
+    musicvideo:
+      album: Music Videos
+      artist: JMC
+      title: Jesse's Minecraft Server [Trailer - Feb.27]
+      year: 2011
 JMC - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
 JMC - Jesse's Minecraft Server [Trailer - Mar.21].mp4
 JMC - Jesse's Minecraft Server [Trailer - Mar.21].nfo
   NFO tags:
-  musicvideo:
-  album: Music Videos
-  artist: JMC
-  title: Jesse's Minecraft Server [Trailer - Mar.21]
-  year: 2011
+    musicvideo:
+      album: Music Videos
+      artist: JMC
+      title: Jesse's Minecraft Server [Trailer - Mar.21]
+      year: 2011

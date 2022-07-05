@@ -1,9 +1,9 @@
-Files created in '{output_directory}'
+Files created in '/tmp/tmptwnuinwm'
 ----------------------------------------
 .ytdl-sub-pz-download-archive.json
 fanart.jpg
 poster.jpg
 tvshow.nfo
   NFO tags:
-  tvshow:
-  title: Project / Zombie
+    tvshow:
+      title: Project / Zombie
