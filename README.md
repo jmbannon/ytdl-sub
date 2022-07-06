@@ -48,10 +48,9 @@ ytdl-sub sub subscription.yaml
 ```
 
 ### One-time Download
-There are things we will only want to download once and never again, like
-a one-hit wonder music video. Anything you can define in a subscription can be
-defined using CLI arguments. This example is equivalent to the subscription
-example above:
+There are things we will only want to download once and never again. Anything
+you can define in a subscription can be defined using CLI arguments. This
+example is equivalent to the subscription example above:
 ```shell
 ytdl-sub dl \
     --preset "yt_channel_as_tv" \
@@ -59,9 +58,10 @@ ytdl-sub dl \
     --overrides.tv_show_name "John Smith Vlogs"
 ```
 
-After `ytdl-sub` runs, the end result would download and format the channel
+### Output
+After `ytdl-sub` runs, the end result will download and format the channel
 files into something ready to be consumed by your favorite media player or
-server:
+server. The `--dry-run` flag can be used to view file output before any downloading occurs.
 ```
 /path/to/youtube_tv_shows/John Smith Vlogs
   /Season 2021
