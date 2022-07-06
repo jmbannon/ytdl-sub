@@ -143,6 +143,10 @@ class FileHandlerTransactionLog:
                     lines.extend([_indent_metadata_line(line) for line in file_metadata.metadata])
 
         if self.files_removed:
+            # Add a blank line to separate created/removed files
+            if self.files_created:
+                lines.append("")
+
             removed_line = f"Files removed from '{output_directory}'"
             removed_line_dash = "-" * 40
             lines.extend([removed_line, removed_line_dash])

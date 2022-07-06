@@ -361,6 +361,7 @@ class TestChannelAsKodiTvShow:
                     relative_directory=output_directory
                 )
 
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_rolling_recent_channel_download(
         self,
         recent_channel_subscription,
@@ -368,14 +369,22 @@ class TestChannelAsKodiTvShow:
         expected_recent_channel_download,
         expected_rolling_recent_channel_download,
         output_directory,
+        dry_run,
     ):
-        # First, download recent vids
+        # First, download recent vids. Always download since we want to test dry-run
+        # on the rolling recent portion.
         with assert_debug_log(
             logger=ytdl_sub.downloaders.downloader.logger,
             expected_message="RejectedVideoReached, stopping additional downloads",
         ):
-            recent_channel_subscription.download()
-            expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+            transaction_log = recent_channel_subscription.download()
+
+        expected_recent_channel_download.assert_files_exist(relative_directory=output_directory)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_channel_recent.txt",
+        )
 
         # Then, download the rolling recent vids subscription. This should remove one of the
         # two videos
@@ -383,18 +392,33 @@ class TestChannelAsKodiTvShow:
             logger=ytdl_sub.downloaders.downloader.logger,
             expected_message="ExistingVideoReached, stopping additional downloads",
         ):
-            rolling_recent_channel_subscription.download()
+            transaction_log = rolling_recent_channel_subscription.download(dry_run=dry_run)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_channel_rolling_recent.txt",
+            regenerate_transaction_log=True,
+        )
+        if not dry_run:
             expected_rolling_recent_channel_download.assert_files_exist(
                 relative_directory=output_directory
             )
 
         # Invoke the rolling download again, ensure downloading stopped early from it already
         # existing
-        with assert_debug_log(
-            logger=ytdl_sub.downloaders.downloader.logger,
-            expected_message="ExistingVideoReached, stopping additional downloads",
-        ):
-            rolling_recent_channel_subscription.download()
+        if not dry_run:
+            with assert_debug_log(
+                logger=ytdl_sub.downloaders.downloader.logger,
+                expected_message="ExistingVideoReached, stopping additional downloads",
+            ):
+                transaction_log = rolling_recent_channel_subscription.download()
+
+            assert_transaction_log_matches(
+                output_directory=output_directory,
+                transaction_log=transaction_log,
+                transaction_log_summary_file_name="youtube/test_channel_no_additional_downloads.txt",
+            )
             expected_rolling_recent_channel_download.assert_files_exist(
                 relative_directory=output_directory
             )
