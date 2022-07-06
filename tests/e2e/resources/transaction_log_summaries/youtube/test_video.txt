@@ -1,0 +1,11 @@
+Files created in '{output_directory}'
+----------------------------------------
+JMC - Oblivion Mod 'Falcor' p.1-thumb.jpg
+JMC - Oblivion Mod 'Falcor' p.1.mp4
+JMC - Oblivion Mod 'Falcor' p.1.nfo
+  NFO tags:
+    musicvideo:
+      album: Music Videos
+      artist: JMC
+      title: Oblivion Mod "Falcor" p.1
+      year: 2010

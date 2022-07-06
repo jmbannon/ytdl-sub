@@ -618,7 +618,11 @@ class DownloadArchiver:
         return self.__enhanced_download_archive.is_dry_run
 
     def save_file(
-        self, file_name: str, output_file_name: Optional[str] = None, entry: Optional[Entry] = None
+        self,
+        file_name: str,
+        file_metadata: Optional[FileMetadata] = None,
+        output_file_name: Optional[str] = None,
+        entry: Optional[Entry] = None,
     ) -> None:
         """
         Saves a file in the working directory to the output directory.
@@ -627,6 +631,8 @@ class DownloadArchiver:
         ----------
         file_name
             Name of the file relative to the working directory
+        file_metadata
+            Optional. Metadata to record to the transaction log for this file
         output_file_name
             Optional. Final name of the file in the output directory (does not include output
             directory path). If None, use the same working_directory file_name
@@ -634,5 +640,8 @@ class DownloadArchiver:
             Optional. Entry that the file belongs to
         """
         self.__enhanced_download_archive.save_file_to_output_directory(
-            file_name=file_name, output_file_name=output_file_name, entry=entry
+            file_name=file_name,
+            file_metadata=file_metadata,
+            output_file_name=output_file_name,
+            entry=entry,
         )

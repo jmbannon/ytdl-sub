@@ -1,6 +1,7 @@
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Tuple
 
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloaderOptions
@@ -8,6 +9,7 @@ from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.ffmpeg import add_ffmpeg_metadata
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.validators import BoolValidator
 
 
@@ -100,7 +102,7 @@ class YoutubeMergePlaylistDownloader(
             },
         )
 
-    def _add_chapters(self, merged_video: YoutubeVideo) -> None:
+    def _get_chapters(self, merged_video: YoutubeVideo, add_chapters: bool) -> FileMetadata:
         titles: List[str] = []
         timestamps: List[Timestamp] = []
 
@@ -111,13 +113,16 @@ class YoutubeMergePlaylistDownloader(
 
             current_timestamp_sec += video_entry["duration"]
 
-        # TODO: return chapter metadata here
-        if not self.is_dry_run:
+        chapters = Chapters(timestamps=timestamps, titles=titles)
+
+        if not self.is_dry_run and add_chapters:
             add_ffmpeg_metadata(
                 file_path=merged_video.get_download_file_path(),
-                chapters=Chapters(timestamps=timestamps, titles=titles),
+                chapters=chapters,
                 file_duration_sec=merged_video.kwargs("duration"),
             )
+
+        return chapters.to_file_metadata(title="Timestamps of playlist videos in the merged file:")
 
     def _to_merged_video(self, entry_dict: Dict) -> YoutubeVideo:
         """
@@ -138,13 +143,12 @@ class YoutubeMergePlaylistDownloader(
         )
         return YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
 
-    def download(self) -> List[YoutubeVideo]:
+    def download(self) -> List[Tuple[YoutubeVideo, FileMetadata]]:
         """Download a single Youtube video, then split it into multiple videos"""
         merged_video = self._to_merged_video(
             entry_dict=self.extract_info(url=self.download_options.playlist_url)
         )
-
-        if self.download_options.add_chapters:
-            self._add_chapters(merged_video=merged_video)
-
-        return [merged_video]
+        merged_video_metadata = self._get_chapters(
+            merged_video=merged_video, add_chapters=self.download_options.add_chapters
+        )
+        return [(merged_video, merged_video_metadata)]

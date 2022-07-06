@@ -267,10 +267,14 @@ class Subscription:
             )
 
             for entry in downloader.download():
-                # TODO: Add entry metadata from the downloader.download function
                 entry_metadata = FileMetadata()
+                if isinstance(entry, tuple):
+                    entry, entry_metadata = entry
+
                 for plugin in plugins:
-                    entry_metadata.extend(plugin.post_process_entry(entry))
+                    optional_plugin_entry_metadata = plugin.post_process_entry(entry)
+                    if optional_plugin_entry_metadata:
+                        entry_metadata.extend(optional_plugin_entry_metadata)
 
                 self._copy_entry_files_to_output_directory(
                     entry=entry, entry_metadata=entry_metadata

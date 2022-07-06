@@ -8,6 +8,7 @@ from typing import Dict
 from typing import Generic
 from typing import List
 from typing import Optional
+from typing import Tuple
 from typing import Type
 from typing import TypeVar
 
@@ -18,6 +19,7 @@ from yt_dlp.utils import RejectedVideoReached
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
@@ -197,7 +199,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         return self._get_entry_dicts_from_info_json_files()
 
     @abc.abstractmethod
-    def download(self) -> List[DownloaderEntryT]:
+    def download(self) -> List[DownloaderEntryT] | List[Tuple[DownloaderEntryT, FileMetadata]]:
         """The function to perform the download of all media entries"""
 
     def post_download(self, overrides: Overrides):

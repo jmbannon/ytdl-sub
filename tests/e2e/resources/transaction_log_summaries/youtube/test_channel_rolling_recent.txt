@@ -1,0 +1,15 @@
+Files created in '{output_directory}'
+----------------------------------------
+.ytdl-sub-pz-download-archive.json
+fanart.jpg
+poster.jpg
+tvshow.nfo
+  NFO tags:
+    tvshow:
+      title: Project / Zombie
+
+Files removed from '{output_directory}'
+----------------------------------------
+Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer-thumb.jpg
+Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.mp4
+Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.nfo

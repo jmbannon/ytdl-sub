@@ -14,8 +14,12 @@ class FileMetadata:
     Stores pretty-printed information about a file. Each line in the metadata represents a newline
     """
 
-    def __init__(self, metadata: Optional[List[str]] = None):
-        self.metadata: List[str] = metadata if metadata else []
+    def __init__(self, metadata: Optional[Union[str, List[str]]] = None):
+        self.metadata = []
+        if isinstance(metadata, str):
+            self.metadata = [metadata]
+        elif isinstance(metadata, list):
+            self.metadata = metadata
 
     def append(self, line: str) -> "FileMetadata":
         """
@@ -54,11 +58,19 @@ class FileMetadata:
 
         def _recursive_add_dict_lines(rdict: Dict, indent: int):
             for key, value in sorted(rdict.items()):
-                if isinstance(value, Dict):
-                    _recursive_add_dict_lines(rdict=value, indent=indent + 2)
-
                 _indent = " " * indent
-                lines.append(f"{_indent}{key}: {value}")
+                if isinstance(value, Dict):
+                    lines.append(f"{_indent}{key}:")
+                    _recursive_add_dict_lines(rdict=value, indent=indent + 2)
+                else:
+                    value = str(value)
+                    # If there are newlines in the value, print them indented
+                    if "\n" in value:
+                        lines.append(f"{_indent}{key}:")
+                        for value_line in value.split("\n"):
+                            lines.append(f"  {_indent}{value_line.strip()}")
+                    else:
+                        lines.append(f"{_indent}{key}: {value}")
 
         _recursive_add_dict_lines(rdict=value_dict, indent=2)
         return cls(metadata=lines)
@@ -102,6 +114,46 @@ class FileHandlerTransactionLog:
         """
         self.files_removed.add(file_name)
         return self
+
+    def to_output_message(self, output_directory: str) -> str:
+        """
+        Parameters
+        ----------
+        output_directory
+            Path to the output directory. Included in the output message
+
+        Returns
+        -------
+        The output message to show users what was recorded in the transaction log
+        """
+        lines: List[str] = []
+
+        def _indent_metadata_line(line: str) -> str:
+            # Do not indent empty lines
+            rstrip_line = line.rstrip()
+            return f"  {rstrip_line}" if rstrip_line else ""
+
+        if self.files_created:
+            created_line = f"Files created in '{output_directory}'"
+            created_line_dash = "-" * 40
+            lines.extend([created_line, created_line_dash])
+            for file_path, file_metadata in sorted(self.files_created.items()):
+                lines.append(file_path)
+                if file_metadata:
+                    lines.extend([_indent_metadata_line(line) for line in file_metadata.metadata])
+
+        if self.files_removed:
+            # Add a blank line to separate created/removed files
+            if self.files_created:
+                lines.append("")
+
+            removed_line = f"Files removed from '{output_directory}'"
+            removed_line_dash = "-" * 40
+            lines.extend([removed_line, removed_line_dash])
+            for file_path in sorted(self.files_removed):
+                lines.append(file_path)
+
+        return "\n".join(lines)
 
 
 class FileHandler:

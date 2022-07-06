@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 from typing import Dict
 from typing import List
+from typing import Tuple
 
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.video import YoutubeVideoDownloaderOptions
@@ -19,6 +20,7 @@ from ytdl_sub.utils.ffmpeg import FFMPEG
 # 01:00:00 title
 # where capture group 1 and 2 are the timestamp and title, respectively
 from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.validators import StringValidator
 
@@ -32,8 +34,8 @@ def _split_video_uid(source_uid: str, idx: int) -> str:
 def _split_video_ffmpeg_cmd(
     input_file: str, output_file: str, timestamps: List[Timestamp], idx: int
 ) -> List[str]:
-    timestamp_begin = timestamps[idx].timestamp_str
-    timestamp_end = timestamps[idx + 1].timestamp_str if idx + 1 < len(timestamps) else ""
+    timestamp_begin = timestamps[idx].standardized_str
+    timestamp_end = timestamps[idx + 1].standardized_str if idx + 1 < len(timestamps) else ""
 
     cmd = ["-i", input_file, "-ss", timestamp_begin]
     if timestamp_end:
@@ -121,15 +123,15 @@ class YoutubeSplitVideoDownloader(
         )
 
     def _create_split_video_entry(
-        self, source_entry_dict: Dict, title: str, idx: int, split_video_count: int
-    ) -> YoutubePlaylistVideo:
+        self, source_entry_dict: Dict, title: str, idx: int, chapters: Chapters
+    ) -> Tuple[YoutubePlaylistVideo, FileMetadata]:
         """
         Runs ffmpeg to create the split video
         """
         entry_dict = copy.deepcopy(source_entry_dict)
         entry_dict["title"] = title
         entry_dict["playlist_index"] = idx + 1
-        entry_dict["playlist_count"] = split_video_count
+        entry_dict["playlist_count"] = len(chapters.timestamps)
         entry_dict["id"] = _split_video_uid(source_uid=entry_dict["id"], idx=idx)
 
         # Remove track and artist since its now split
@@ -138,11 +140,20 @@ class YoutubeSplitVideoDownloader(
         if "artist" in entry_dict:
             del entry_dict["artist"]
 
-        return YoutubePlaylistVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+        timestamp_begin = chapters.timestamps[idx].readable_str
+        timestamp_end = Timestamp(source_entry_dict["duration"]).readable_str
+        if idx + 1 < len(chapters.timestamps):
+            timestamp_end = chapters.timestamps[idx + 1].readable_str
 
-    def download(self) -> List[YoutubePlaylistVideo]:
+        metadata = FileMetadata(metadata=f"{timestamp_begin} - {timestamp_end}")
+        return (
+            YoutubePlaylistVideo(entry_dict=entry_dict, working_directory=self.working_directory),
+            metadata,
+        )
+
+    def download(self) -> List[Tuple[YoutubePlaylistVideo, FileMetadata]]:
         """Download a single Youtube video, then split it into multiple videos"""
-        split_videos: List[YoutubePlaylistVideo] = []
+        split_videos_and_metadata: List[Tuple[YoutubePlaylistVideo, FileMetadata]] = []
 
         chapters = Chapters.from_file(chapters_file_path=self.download_options.split_timestamps)
         entry_dict = self.extract_info(url=self.download_options.video_url)
@@ -178,13 +189,10 @@ class YoutubeSplitVideoDownloader(
             )
 
             # Format the split video as a YoutubePlaylistVideo
-            split_videos.append(
+            split_videos_and_metadata.append(
                 self._create_split_video_entry(
-                    source_entry_dict=entry_dict,
-                    title=title,
-                    idx=idx,
-                    split_video_count=len(chapters.timestamps),
+                    source_entry_dict=entry_dict, title=title, idx=idx, chapters=chapters
                 )
             )
 
-        return split_videos
+        return split_videos_and_metadata
