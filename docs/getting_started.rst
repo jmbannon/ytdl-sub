@@ -106,3 +106,74 @@ With a Python 3.10 virtual environment, you can clone and install the repo using
     cd ytdl-sub
 
     pip install -e .
+
+.. _automated_downloads:
+
+Setting Up Automated Downloads
+------------------------------
+Docker is the recommended way to use ``ytdl-sub`` because it is easy to set up a cron job to
+automatically download files via cron job. Setting this up is quite easy since we use the
+LinuxServer base image.
+
+Enabling crontab
+________________
+Crontab is a utility for running cron jobs. To enable it in the docker image, add the following
+file to ``/config/custom-services.d/cron``:
+
+.. code-block:: bash
+
+   #!/usr/bin/with-contenv bash
+   /usr/sbin/crond -f -S -l 0 -c /etc/crontabs
+
+Creating the crontab file
+_________________________
+LinuxServer creates the user ``abc`` in the docker container and assigns it the respective
+``PUID`` and ``PGID`` permissions to it. We want the cron job to run as this user to ensure
+downloaded files get these permissions instead of root permissions.
+
+To do this, we need to create the file ``/etc/crontabs/abc``. Since this path is not part
+of the already mounted volume, we need to mount another path. In docker-compose, this looks
+like:
+
+.. code-block:: yaml
+
+   services:
+     ytdl-sub:
+       image: ghcr.io/jmbannon/ytdl-sub:latest
+       volumes:
+         - </path/to/ytdl-sub/config>:/config
+         - </path/to/ytdl-sub/crontab_files>:/etc/crontabs
+       ...
+
+Now that ``/path/to/ytdl-sub/crontab_files`` is mounted, we can create the ``abc`` crontab file
+there:
+
+.. code-block:: bash
+
+   # min   hour    day     month   weekday command
+   */20     *       *       *       *       /config/run_cron
+
+Creating the download script
+____________________________
+
+This will run the ``run_cron`` script every 20 minutes. The last step is to create this bash
+script in ``/config/run_cron``.
+
+.. code-block:: bash
+
+   #!/bin/bash
+   echo "Cron started, running ytdl-sub..."
+   ytdl-sub --config=/config/config.yaml sub /config/subscriptions.yaml
+
+Ensure this file is executable and has permissions for ``abc``:
+
+.. code-block:: bash
+
+   # run as root
+   chmod +x /config/run_cron
+   chown abc:abc /config/run_cron
+
+This will use the :ref:`config_yaml` and download all subscriptions in :ref:`subscription_yaml`.
+
+You're done! You are now downloading your subscriptions every 20 minutes. New channel uploads,
+videos added to a playlist, or soundcloud artist uploads can now be downloaded automatically.

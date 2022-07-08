@@ -22,3 +22,7 @@ to download your YouTube cookie, then add it to your
 
    ytdl_options:
      cookiefile: "/path/to/cookies/file.txt"
+
+...automate my downloads?
+'''''''''''''''''''''''''
+See :ref:`automated_downloads` on how to set up ``ytdl-sub`` to run in a cron job.

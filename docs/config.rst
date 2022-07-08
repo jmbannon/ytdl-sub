@@ -4,6 +4,8 @@ ytdl-sub is configured using a ``config.yaml`` file. You can view our
 :doc:`examples <examples>` and read detailed documentation for every configurable
 field below.
 
+.. _config_yaml:
+
 config.yaml
 -----------
 
@@ -189,6 +191,8 @@ nfo_output_directory
   :member-order: bysource
 
 -------------------------------------------------------------------------------
+
+.. _subscription_yaml:
 
 subscription.yaml
 -----------------
