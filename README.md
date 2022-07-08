@@ -65,11 +65,11 @@ server. The `--dry-run` flag can be used to view file output before any download
 ```
 /path/to/youtube_tv_shows/John Smith Vlogs
   /Season 2021
-    s2021.e0317 - St Pattys Day Video.jpg
-    s2021.e0317 - St Pattys Day Video.mp4
-    s2021.e0317 - St Pattys Day Video.nfo
+    s2021.e0317 - Pattys Day Video-thumb.jpg
+    s2021.e0317 - Pattys Day Video.mp4
+    s2021.e0317 - Pattys Day Video.nfo
   /Season 2022
-    s2022.e1225 - Merry Christmas.jpg
+    s2022.e1225 - Merry Christmas-thumb.jpg
     s2022.e1225 - Merry Christmas.mp4
     s2022.e1225 - Merry Christmas.nfo
   poster.jpg
