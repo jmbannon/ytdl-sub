@@ -86,7 +86,7 @@ class TestYoutubeMergePlaylist:
     def test_merge_playlist_download(
         self, playlist_subscription, expected_playlist_download, output_directory, dry_run
     ):
-        transaction_log = playlist_subscription.download()
+        transaction_log = playlist_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
