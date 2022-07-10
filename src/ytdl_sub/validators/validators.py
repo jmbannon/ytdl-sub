@@ -120,7 +120,7 @@ class DictValidator(Validator):
     """
 
     _expected_value_type = dict
-    _expected_value_type_name = "map"
+    _expected_value_type_name = "object"
 
     def __init__(self, name, value):
         super().__init__(name, value)
