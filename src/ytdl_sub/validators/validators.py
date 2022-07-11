@@ -2,6 +2,7 @@ import copy
 from abc import ABC
 from typing import Any
 from typing import Dict
+from typing import Generic
 from typing import List
 from typing import Optional
 from typing import Type
@@ -92,6 +93,24 @@ class StringValidator(Validator):
 
 
 T = TypeVar("T", bound=Validator)
+
+
+class ListValidator(Validator, ABC, Generic[T]):
+    """
+    Validates a list of objects to validate
+    """
+
+    _expected_value_type = list
+    _expected_value_type_name = "list"
+
+    _inner_list_type: Type[T]
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        self._list: List[T] = [
+            self._inner_list_type(name=f"{name}.{i+1}", value=val)
+            for i, val in enumerate(self._value)
+        ]
 
 
 class DictValidator(Validator):

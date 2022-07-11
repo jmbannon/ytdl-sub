@@ -43,13 +43,28 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         # TODO pass yaml snake case name in the class somewhere, and use it for the logger
         self._logger = Logger.get(self.__class__.__name__)
 
-    def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
+    def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
-        For each file downloaded, apply post processing to it.
+        For each entry downloaded, modify the entry in some way before sending it to
+        post-processing.
 
         Parameters
         ----------
-        entry:
+        entry
+            Entry to modify
+
+        Returns
+        -------
+        The entry or None, indicating not to move it to the output directory
+        """
+
+    def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
+        """
+        For each entry downloaded, apply post processing to it.
+
+        Parameters
+        ----------
+        entry
             Entry to post process
 
         Returns
