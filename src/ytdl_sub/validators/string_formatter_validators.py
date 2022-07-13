@@ -7,6 +7,7 @@ from typing import final
 
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import Validator
 
@@ -43,7 +44,7 @@ class StringFormatterValidator(Validator):
         "Format variable '{variable_name}' does not exist. Available variables: {available_fields}"
     )
 
-    __fields_validator = re.compile(r"{([a-z_]+?)}")
+    __fields_validator = re.compile(r"{([a-z][a-z0-9_]+?)}")
 
     __max_format_recursion = 3
 
@@ -75,8 +76,8 @@ class StringFormatterValidator(Validator):
 
         if len(format_variables) != open_bracket_count:
             raise self._validation_exception(
-                "{variable_names} should only contain "
-                "lowercase letters and underscores with a single open and close bracket.",
+                "{variable_names} must start with a lowercase letter, should only contain lowercase"
+                "letters, numbers, underscores, and have a single open and close bracket.",
                 exception_class=StringFormattingException,
             )
 
@@ -175,6 +176,10 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 
 
 # pylint: enable=line-too-long
+
+
+class ListFormatterValidator(ListValidator[StringFormatterValidator]):
+    _inner_list_type = StringFormatterValidator
 
 
 class DictFormatterValidator(LiteralDictValidator):

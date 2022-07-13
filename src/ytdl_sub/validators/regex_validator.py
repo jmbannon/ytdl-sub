@@ -70,6 +70,17 @@ class RegexListValidator(ListValidator[RegexValidator]):
                 "each regex in a list must have the same number of capture groups"
             )
 
+        self._num_capture_groups = self._list[0].num_capture_groups
+
+    @property
+    def num_capture_groups(self) -> int:
+        """
+        Returns
+        -------
+        Number of capture groups. All regexes in the list will have the same number.
+        """
+        return self._num_capture_groups
+
     def matches_any(self, input_str: str) -> bool:
         """
         Parameters

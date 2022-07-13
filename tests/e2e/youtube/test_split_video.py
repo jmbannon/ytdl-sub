@@ -1,22 +1,13 @@
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-import mergedeep
 import pytest
-from conftest import assert_debug_log
 from e2e.expected_download import ExpectedDownloadFile
 from e2e.expected_download import ExpectedDownloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
-import ytdl_sub.downloaders.downloader
-from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
-
-
-@pytest.fixture
-def config_path():
-    return "examples/kodi_music_videos_config.yaml"
 
 
 @pytest.fixture
@@ -37,17 +28,7 @@ def split_timestamps_file_path():
 
 
 @pytest.fixture
-def subscription_name():
-    return "jmc"
-
-
-@pytest.fixture
-def config(config_path):
-    return ConfigFile.from_file_path(config_path=config_path)
-
-
-@pytest.fixture
-def subscription_dict(output_directory, subscription_name, split_timestamps_file_path):
+def subscription_dict(output_directory, split_timestamps_file_path):
     return {
         "preset": "yt_music_video",
         "youtube": {
@@ -73,16 +54,16 @@ def subscription_dict(output_directory, subscription_name, split_timestamps_file
 
 
 @pytest.fixture
-def single_video_subscription(config, subscription_name, subscription_dict):
+def single_video_subscription(music_video_config, subscription_dict):
     single_video_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
+        config=music_video_config,
+        preset_name="split_video_test",
         preset_dict=subscription_dict,
     )
 
     return Subscription.from_preset(
         preset=single_video_preset,
-        config=config,
+        config=music_video_config,
     )
 
 

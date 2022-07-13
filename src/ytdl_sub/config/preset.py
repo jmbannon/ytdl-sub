@@ -83,6 +83,10 @@ class Preset(StrictDictValidator):
     # and ensure required keys are present.
     _optional_keys = PRESET_KEYS
 
+    @property
+    def _source_variables(self) -> List[str]:
+        return self.downloader.downloader_entry_type.source_variables()
+
     def __validate_and_get_downloader(self, downloader_source: str) -> Type[Downloader]:
         return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(
             downloader_source=downloader_source
@@ -141,6 +145,7 @@ class Preset(StrictDictValidator):
 
             plugin = PluginMapping.get(plugin=key)
             plugin_options = self._validate_key(key=key, validator=plugin.plugin_options_type)
+            plugin_options.validate_with_source_variables(source_variables=self._source_variables)
 
             plugins.append((plugin, plugin_options))
 
@@ -156,11 +161,19 @@ class Preset(StrictDictValidator):
         # If the formatter supports source variables, set the formatter variables to include
         # both source and override variables
         if not isinstance(formatter_validator, OverridesStringFormatterValidator):
-            source_variables = {
-                source_var: "dummy_string"
-                for source_var in self.downloader.downloader_entry_type.source_variables()
-            }
+            source_variables = {source_var: "dummy_string" for source_var in self._source_variables}
             variable_dict = dict(source_variables, **variable_dict)
+
+        # For all plugins, add in any extra added source variables
+        for _, plugin_options in self.plugins:
+            added_plugin_variables = {
+                source_var: "dummy_string" for source_var in plugin_options.added_source_variables()
+            }
+            # sanity check plugin variables do not override source variables
+            expected_len = len(variable_dict) + len(added_plugin_variables)
+            variable_dict = dict(variable_dict, **added_plugin_variables)
+
+            assert len(variable_dict) == expected_len, "plugin variables overwrote source variables"
 
         _ = formatter_validator.apply_formatter(variable_dict=variable_dict)
 

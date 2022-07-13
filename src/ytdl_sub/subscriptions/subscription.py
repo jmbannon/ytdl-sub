@@ -271,6 +271,11 @@ class Subscription:
                 if isinstance(entry, tuple):
                     entry, entry_metadata = entry
 
+                # First, modify the entry with all plugins
+                for plugin in plugins:
+                    entry = plugin.modify_entry(entry)
+
+                # Then, post-process the entry with all plugins
                 for plugin in plugins:
                     optional_plugin_entry_metadata = plugin.post_process_entry(entry)
                     if optional_plugin_entry_metadata:

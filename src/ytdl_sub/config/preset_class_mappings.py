@@ -13,6 +13,7 @@ from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
 from ytdl_sub.plugins.plugin import Plugin
+from ytdl_sub.plugins.regex_capture import RegexCapturePlugin
 
 
 class DownloadStrategyMapping:
@@ -107,6 +108,7 @@ class PluginMapping:
         "music_tags": MusicTagsPlugin,
         "nfo_tags": NfoTagsPlugin,
         "output_directory_nfo_tags": OutputDirectoryNfoTagsPlugin,
+        "regex_capture": RegexCapturePlugin,
     }
 
     @classmethod
