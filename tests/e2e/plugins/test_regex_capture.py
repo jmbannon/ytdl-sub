@@ -17,22 +17,25 @@ def regex_capture_subscription_dict(output_directory):
             "format": "best[height<=480]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
-        "regex_capture": {
-            "title": {
-                "capture": [
-                    "should not cap (.+) - (.+)",
-                    ".*\\[(.+) - (.+)]",
-                ],
+        "regex": {
+            "skip_if_match_fails": False,
+            "from": {
+                "title": {
+                    "match": [
+                        "should not cap (.+) - (.+)",
+                        ".*\\[(.+) - (.+)]",
+                    ],
+                },
+                "description": {"match": [".*http:\\/\\/(.+).com.*"]},
+                "upload_date_standardized": {
+                    "match": ["([0-9]+)-([0-9]+)-27"],
+                    "defaults": [
+                        "First",
+                        "Second",
+                    ],
+                },
+                "artist": {"match": ["Never (.*) capture"], "defaults": ["Always default"]},
             },
-            "description": {"capture": [".*http:\\/\\/(.+).com.*"]},
-            "upload_date_standardized": {
-                "capture": ["([0-9]+)-([0-9]+)-27"],
-                "defaults": [
-                    "First",
-                    "Second",
-                ],
-            },
-            "artist": {"capture": ["Never (.*) capture"], "defaults": ["Always default"]},
         },
         "nfo_tags": {
             "tags": {

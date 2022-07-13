@@ -6,10 +6,14 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.regex_validator import RegexListValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.validators import BoolValidator
+
+logger = Logger.get(name="regex")
 
 
 def _source_var_name(source_variable: str, capture_group_idx: int) -> str:
@@ -18,24 +22,24 @@ def _source_var_name(source_variable: str, capture_group_idx: int) -> str:
 
 class SourceVariableRegexCapture(StrictDictValidator):
 
-    _required_keys = {"capture"}
+    _required_keys = {"match"}
     _optional_keys = {"defaults"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._capture = self._validate_key(key="capture", validator=RegexListValidator)
+        self._match = self._validate_key(key="match", validator=RegexListValidator)
         self._defaults = self._validate_key_if_present(
             key="defaults", validator=ListFormatterValidator
         )
 
         # If defaults are to be used, ensure there are the same number of defaults as there are
         # capture groups
-        if self._defaults is not None and self._capture.num_capture_groups != len(
+        if self._defaults is not None and self._match.num_capture_groups != len(
             self._defaults.list
         ):
             raise self._validation_exception(
                 f"number of defaults must match number of capture groups, "
-                f"{len(self._defaults.list)} != {self._capture.num_capture_groups}"
+                f"{len(self._defaults.list)} != {self._match.num_capture_groups}"
             )
 
     @property
@@ -45,7 +49,7 @@ class SourceVariableRegexCapture(StrictDictValidator):
         -------
         List of regex captures
         """
-        return self._capture
+        return self._match
 
     @property
     def has_defaults(self) -> bool:
@@ -66,14 +70,30 @@ class SourceVariableRegexCapture(StrictDictValidator):
         return self._defaults.list if self.has_defaults else None
 
 
-class RegexCaptureOptions(PluginOptions):
+class FromSourceVariablesRegexCapture(StrictDictValidator):
 
-    _optional_keys = {"_"}
+    _optional_keys = Entry.source_variables()
     _allow_extra_keys = True
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._source_variable_capture_dict: Dict[str, SourceVariableRegexCapture] = {}
+        self.source_variable_capture_dict: Dict[str, SourceVariableRegexCapture] = {
+            key: self._validate_key(key=key, validator=SourceVariableRegexCapture)
+            for key in self._keys
+        }
+
+
+class RegexCaptureOptions(PluginOptions):
+
+    _required_keys = {"from"}
+    _optional_keys = {"skip_if_match_fails"}
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        self._from = self._validate_key(key="from", validator=FromSourceVariablesRegexCapture)
+        self.skip_if_match_fails: bool = self._validate_key_if_present(
+            key="skip_if_match_fails", validator=BoolValidator, default=False
+        ).value
 
     def validate_with_source_variables(self, source_variables: List[str]) -> None:
         """
@@ -84,15 +104,11 @@ class RegexCaptureOptions(PluginOptions):
         source_variables
             Variables to check against the provided capture groups
         """
-        for key in self._keys:
+        for key in self.source_variable_capture_dict.keys():
             if key not in source_variables:
                 raise self._validation_exception(
                     f"cannot regex capture '{key}' because it is not a source variable"
                 )
-
-            self._source_variable_capture_dict[key] = self._validate_key(
-                key=key, validator=SourceVariableRegexCapture
-            )
 
     @property
     def source_variable_capture_dict(self) -> Dict[str, SourceVariableRegexCapture]:
@@ -101,7 +117,7 @@ class RegexCaptureOptions(PluginOptions):
         -------
         Dict of { source variable: capture options }
         """
-        return self._source_variable_capture_dict
+        return self._from.source_variable_capture_dict
 
     def added_source_variables(self) -> List[str]:
         """
@@ -148,8 +164,16 @@ class RegexCapturePlugin(Plugin[RegexCaptureOptions]):
 
             # If no capture
             if maybe_capture is None:
-                # and no defaults, then error
+                # and no defaults
                 if not regex_options.has_defaults:
+                    # Skip the entry if toggled
+                    if self.plugin_options.skip_if_match_fails:
+                        logger.info(
+                            "Entry with title '%s' failed to match regex, skipping.", entry.title
+                        )
+                        return None
+
+                    # Otherwise, error
                     raise ValidationException(
                         f"Failed to capture {source_var} from an entry with the value:\n"
                         f"{entry_variable_dict[source_var]}"

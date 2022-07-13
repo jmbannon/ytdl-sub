@@ -108,7 +108,7 @@ class PluginMapping:
         "music_tags": MusicTagsPlugin,
         "nfo_tags": NfoTagsPlugin,
         "output_directory_nfo_tags": OutputDirectoryNfoTagsPlugin,
-        "regex_capture": RegexCapturePlugin,
+        "regex": RegexCapturePlugin,
     }
 
     @classmethod
