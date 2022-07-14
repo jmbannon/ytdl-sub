@@ -83,6 +83,37 @@ class FromSourceVariablesRegex(StrictDictValidator):
 
 
 class RegexOptions(PluginOptions):
+    """
+    Performs regex matching on an entry's source variables. Regex can be used to either capture
+    groups to create new source variables or filter entries from proceeding with download.
+
+    Usage:
+
+    .. code-block:: yaml
+
+       presets:
+         my_example_preset:
+           regex:
+            skip_if_match_fails: False
+            from:
+              title:
+                # Match with no defaults act as a filter.
+                # This will only download videos with "Official Video" in it.
+                match: "\[Official Video\]"
+              description:
+                # Match with capture groups and defaults.
+                # This tries to scape a date from the description and produce new source variables
+                # {description_capture_1}, {description_capture_2}, {description_capture_3}
+                match: "([0-9]{4})-([0-9]{2})-([0-9]{2})"
+                capture_group_defaults:
+                  - "{upload_year}"
+                  - "{upload_month}"
+                  - "{upload_day}"
+
+            TODO: add test with override variables in the capture group defaults, and override
+            variable
+            referencing a capture variable
+    """
 
     _required_keys = {"from"}
     _optional_keys = {"skip_if_match_fails"}
