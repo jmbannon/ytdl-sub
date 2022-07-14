@@ -273,7 +273,13 @@ class Subscription:
 
                 # First, modify the entry with all plugins
                 for plugin in plugins:
-                    entry = plugin.modify_entry(entry)
+                    # Break out of this plugin loop if entry is None, it is indicated to not DL it
+                    if (entry := plugin.modify_entry(entry)) is None:
+                        break
+
+                # If entry is None from the broken out loop, continue over the other entries
+                if entry is None:
+                    continue
 
                 # Then, post-process the entry with all plugins
                 for plugin in plugins:

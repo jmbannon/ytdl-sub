@@ -28,7 +28,7 @@ class RegexValidator(StringValidator):
         """
         return self._compiled_regex.groups
 
-    def capture(self, input_str: str) -> Optional[List[str]]:
+    def match(self, input_str: str) -> Optional[List[str]]:
         """
         Parameters
         ----------
@@ -68,7 +68,7 @@ class RegexListValidator(ListValidator[RegexValidator]):
         """
         return self._num_capture_groups
 
-    def capture_any(self, input_str: str) -> Optional[List[str]]:
+    def match_any(self, input_str: str) -> Optional[List[str]]:
         """
         Parameters
         ----------
@@ -77,9 +77,10 @@ class RegexListValidator(ListValidator[RegexValidator]):
 
         Returns
         -------
-        List of captures on the first regex that matches. None if no regexes match.
+        List of captures on the first regex that matches. If the regex has no capture groups, then
+        the list will be emtpy. None is returned if the input_str failed to match
         """
         for reg in self._list:
-            if (maybe_capture := reg.capture(input_str)) is not None:
+            if (maybe_capture := reg.match(input_str)) is not None:
                 return maybe_capture
         return None

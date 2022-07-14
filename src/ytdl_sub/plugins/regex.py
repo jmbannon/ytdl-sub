@@ -5,7 +5,7 @@ from typing import Optional
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
-from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.regex_validator import RegexListValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -20,7 +20,7 @@ def _source_var_name(source_variable: str, capture_group_idx: int) -> str:
     return f"{source_variable}_capture_{capture_group_idx+1}"
 
 
-class SourceVariableRegexCapture(StrictDictValidator):
+class SourceVariableRegex(StrictDictValidator):
 
     _required_keys = {"match"}
     _optional_keys = {"defaults"}
@@ -70,27 +70,26 @@ class SourceVariableRegexCapture(StrictDictValidator):
         return self._defaults.list if self.has_defaults else None
 
 
-class FromSourceVariablesRegexCapture(StrictDictValidator):
+class FromSourceVariablesRegex(StrictDictValidator):
 
     _optional_keys = Entry.source_variables()
     _allow_extra_keys = True
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.source_variable_capture_dict: Dict[str, SourceVariableRegexCapture] = {
-            key: self._validate_key(key=key, validator=SourceVariableRegexCapture)
-            for key in self._keys
+        self.source_variable_capture_dict: Dict[str, SourceVariableRegex] = {
+            key: self._validate_key(key=key, validator=SourceVariableRegex) for key in self._keys
         }
 
 
-class RegexCaptureOptions(PluginOptions):
+class RegexOptions(PluginOptions):
 
     _required_keys = {"from"}
     _optional_keys = {"skip_if_match_fails"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._from = self._validate_key(key="from", validator=FromSourceVariablesRegexCapture)
+        self._from = self._validate_key(key="from", validator=FromSourceVariablesRegex)
         self.skip_if_match_fails: bool = self._validate_key_if_present(
             key="skip_if_match_fails", validator=BoolValidator, default=False
         ).value
@@ -111,7 +110,7 @@ class RegexCaptureOptions(PluginOptions):
                 )
 
     @property
-    def source_variable_capture_dict(self) -> Dict[str, SourceVariableRegexCapture]:
+    def source_variable_capture_dict(self) -> Dict[str, SourceVariableRegex]:
         """
         Returns
         -------
@@ -135,8 +134,8 @@ class RegexCaptureOptions(PluginOptions):
         return added_source_vars
 
 
-class RegexCapturePlugin(Plugin[RegexCaptureOptions]):
-    plugin_options_type = RegexCaptureOptions
+class RegexPlugin(Plugin[RegexOptions]):
+    plugin_options_type = RegexOptions
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
@@ -158,7 +157,7 @@ class RegexCapturePlugin(Plugin[RegexCaptureOptions]):
 
         # Iterate each source var to capture and add to the entry
         for source_var, regex_options in self.plugin_options.source_variable_capture_dict.items():
-            maybe_capture = regex_options.capture_list.capture_any(
+            maybe_capture = regex_options.capture_list.match_any(
                 input_str=entry_variable_dict[source_var]
             )
 
@@ -169,14 +168,15 @@ class RegexCapturePlugin(Plugin[RegexCaptureOptions]):
                     # Skip the entry if toggled
                     if self.plugin_options.skip_if_match_fails:
                         logger.info(
-                            "Entry with title '%s' failed to match regex, skipping.", entry.title
+                            "Regex failed to match '%s' from '%s', skipping.",
+                            source_var,
+                            entry.title,
                         )
                         return None
 
                     # Otherwise, error
-                    raise ValidationException(
-                        f"Failed to capture {source_var} from an entry with the value:\n"
-                        f"{entry_variable_dict[source_var]}"
+                    raise RegexNoMatchException(
+                        f"Regex failed to match '{source_var}' from '{entry.title}'"
                     )
 
                 # otherwise, use defaults (apply them using the original entry source dict)

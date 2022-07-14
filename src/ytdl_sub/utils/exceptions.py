@@ -20,3 +20,7 @@ class FileNotFoundException(ValidationException):
 
 class InvalidYamlException(ValidationException):
     """User yaml that is invalid"""
+
+
+class RegexNoMatchException(ValidationException):
+    """Regex failed to match during download"""

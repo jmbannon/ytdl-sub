@@ -29,17 +29,3 @@ Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27].nfo
       title_cap_2: Feb.27
       upload_date_both_caps: 2011 and 02
       year: 2011
-Project Zombie - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
-Project Zombie - Jesse's Minecraft Server [Trailer - Mar.21].mp4
-Project Zombie - Jesse's Minecraft Server [Trailer - Mar.21].nfo
-  NFO tags:
-    musicvideo:
-      album: Music Videos
-      artist: Project Zombie
-      artist_cap_always_default: Always default
-      desc_cap: jesseminecraft.webs
-      title: Jesse's Minecraft Server [Trailer - Mar.21]
-      title_cap_1: Trailer
-      title_cap_2: Mar.21
-      upload_date_both_caps: First and Second
-      year: 2011
