@@ -211,10 +211,13 @@ class RegexPlugin(Plugin[RegexOptions]):
                     )
 
                 # otherwise, use defaults (apply them using the original entry source dict)
+                source_variables_and_overrides_dict = dict(
+                    entry_variable_dict, **self.overrides.dict_with_format_strings
+                )
                 entry.add_variables(
                     variables_to_add={
                         _source_var_name(source_var, i): default.apply_formatter(
-                            variable_dict=entry_variable_dict
+                            variable_dict=source_variables_and_overrides_dict
                         )
                         for i, default in enumerate(regex_options.defaults)
                     },

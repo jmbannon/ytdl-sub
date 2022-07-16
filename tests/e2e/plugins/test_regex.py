@@ -33,7 +33,7 @@ def regex_subscription_dict(output_directory):
                     "match": ["([0-9]+)-([0-9]+)-27"],
                     "defaults": [
                         "First",
-                        "Second",
+                        "Second containing {in_regex_default}",
                     ],
                 },
                 "artist": {"match": ["Never (.*) capture"], "defaults": ["Always default"]},
@@ -46,8 +46,13 @@ def regex_subscription_dict(output_directory):
                 "desc_cap": "{description_capture_1}",
                 "upload_date_both_caps": "{upload_date_standardized_capture_1} and {upload_date_standardized_capture_2}",
                 "artist_cap_always_default": "{artist_capture_1}",
+                "override_with_capture_variable": "{contains_regex_default}"
             }
         },
+        "overrides": {
+            "in_regex_default": "in regex default",
+            "contains_regex_default": "contains {title_capture_1}"
+        }
     }
 
 
