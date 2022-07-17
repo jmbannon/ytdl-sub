@@ -8,6 +8,7 @@ from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.regex_validator import RegexListValidator
+from ytdl_sub.validators.source_variable_validator import SourceVariableNameListValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -16,20 +17,19 @@ from ytdl_sub.validators.validators import BoolValidator
 logger = Logger.get(name="regex")
 
 
-def _source_var_name(source_variable: str, capture_group_idx: int) -> str:
-    return f"{source_variable}_capture_{capture_group_idx+1}"
-
-
 class SourceVariableRegex(StrictDictValidator):
 
     _required_keys = {"match"}
-    _optional_keys = {"defaults"}
+    _optional_keys = {"defaults", "capture_group_names"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
         self._match = self._validate_key(key="match", validator=RegexListValidator)
         self._defaults = self._validate_key_if_present(
             key="defaults", validator=ListFormatterValidator
+        )
+        self._capture_group_names = self._validate_key_if_present(
+            key="capture_group_names", validator=SourceVariableNameListValidator, default=[]
         )
 
         # If defaults are to be used, ensure there are the same number of defaults as there are
@@ -40,6 +40,13 @@ class SourceVariableRegex(StrictDictValidator):
             raise self._validation_exception(
                 f"number of defaults must match number of capture groups, "
                 f"{len(self._defaults.list)} != {self._match.num_capture_groups}"
+            )
+
+        # If there are capture groups, ensure there are capture group names
+        if len(self._capture_group_names.list) != self._match.num_capture_groups:
+            raise self._validation_exception(
+                f"Number of capture group names must match number of capture groups, "
+                f"{len(self._capture_group_names.list)} != {self._match.num_capture_groups}"
             )
 
     @property
@@ -69,6 +76,15 @@ class SourceVariableRegex(StrictDictValidator):
         """
         return self._defaults.list if self.has_defaults else None
 
+    @property
+    def capture_group_names(self) -> List[str]:
+        """
+        Returns
+        -------
+        List of new capture group names
+        """
+        return [validator.value for validator in self._capture_group_names.list]
+
 
 class FromSourceVariablesRegex(StrictDictValidator):
 
@@ -83,9 +99,9 @@ class FromSourceVariablesRegex(StrictDictValidator):
 
 
 class RegexOptions(PluginOptions):
-    """
-    Performs regex matching on an entry's source variables. Regex can be used to either capture
-    groups to create new source variables or filter entries from proceeding with download.
+    r"""
+    Performs regex matching on an entry's source variables. Regex can be used to filter entries
+    from proceeding with download or capture groups to create new source variables.
 
     Usage:
 
@@ -94,25 +110,32 @@ class RegexOptions(PluginOptions):
        presets:
          my_example_preset:
            regex:
-            skip_if_match_fails: False
-            from:
-              title:
-                # Match with no defaults act as a filter.
-                # This will only download videos with "Official Video" in it.
-                match: "\[Official Video\]"
-              description:
-                # Match with capture groups and defaults.
-                # This tries to scape a date from the description and produce new source variables
-                # {description_capture_1}, {description_capture_2}, {description_capture_3}
-                match: "([0-9]{4})-([0-9]{2})-([0-9]{2})"
-                capture_group_defaults:
-                  - "{upload_year}"
-                  - "{upload_month}"
-                  - "{upload_day}"
+             # By default, if any match fails and has no defaults, the entry will be skipped.
+             # If set to False, ytdl-sub will error and stop all downloads from proceeding.
+             skip_if_match_fails: True
 
-            TODO: add test with override variables in the capture group defaults, and override
-            variable
-            referencing a capture variable
+             from:
+               title:
+                 # Match with capture groups act as a filter.
+                 # This will only download videos with "Official Video" in it.
+                 match: "\[Official Video\]"
+               description:
+                 # Match with capture groups and defaults.
+                 # This tries to scrape a date from the description and produce new source variables
+                 match: "([0-9]{4})-([0-9]{2})-([0-9]{2})"
+
+                 # Each capture group creates these new source variables, respectively
+                 capture_group_names:
+                  - "captured_upload_year"
+                  - "captured_upload_month"
+                  - "captured_upload_day"
+
+                 # And if the string does not match, use these as respective default values for the
+                 # new source variables.
+                 capture_group_defaults:
+                   - "{upload_year}"
+                   - "{upload_month}"
+                   - "{upload_day}"
     """
 
     _required_keys = {"from"}
@@ -156,11 +179,8 @@ class RegexOptions(PluginOptions):
         List of new source variables created via regex capture
         """
         added_source_vars: List[str] = []
-        for source_var, regex_options in self.source_variable_capture_dict.items():
-            added_source_vars.extend(
-                _source_var_name(source_var, idx)
-                for idx in range(regex_options.capture_list.num_capture_groups)
-            )
+        for regex_options in self.source_variable_capture_dict.values():
+            added_source_vars.extend(regex_options.capture_group_names)
 
         return added_source_vars
 
@@ -216,7 +236,7 @@ class RegexPlugin(Plugin[RegexOptions]):
                 )
                 entry.add_variables(
                     variables_to_add={
-                        _source_var_name(source_var, i): default.apply_formatter(
+                        regex_options.capture_group_names[i]: default.apply_formatter(
                             variable_dict=source_variables_and_overrides_dict
                         )
                         for i, default in enumerate(regex_options.defaults)
@@ -227,7 +247,7 @@ class RegexPlugin(Plugin[RegexOptions]):
             else:
                 entry.add_variables(
                     variables_to_add={
-                        _source_var_name(source_var, i): capture
+                        regex_options.capture_group_names[i]: capture
                         for i, capture in enumerate(maybe_capture)
                     },
                 )

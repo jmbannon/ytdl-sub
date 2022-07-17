@@ -27,32 +27,44 @@ def regex_subscription_dict(output_directory):
                         "should not cap (.+) - (.+)",
                         ".*\\[(.+) - (Feb.+)]",  # should filter out march video
                     ],
+                    "capture_group_names": ["title_type", "title_date"],
                 },
-                "description": {"match": [".*http:\\/\\/(.+).com.*"]},
+                "description": {
+                    "match": [".*http:\\/\\/(.+).com.*"],
+                    "capture_group_names": ["description_website"],
+                },
                 "upload_date_standardized": {
                     "match": ["([0-9]+)-([0-9]+)-27"],
+                    "capture_group_names": [
+                        "upload_captured_year",
+                        "upload_captured_month",
+                    ],
                     "defaults": [
                         "First",
                         "Second containing {in_regex_default}",
                     ],
                 },
-                "artist": {"match": ["Never (.*) capture"], "defaults": ["Always default"]},
+                "artist": {
+                    "match": ["Never (.*) capture"],
+                    "capture_group_names": ["always_default"],
+                    "defaults": ["Always default"],
+                },
             },
         },
         "nfo_tags": {
             "tags": {
-                "title_cap_1": "{title_capture_1}",
-                "title_cap_2": "{title_capture_2}",
-                "desc_cap": "{description_capture_1}",
-                "upload_date_both_caps": "{upload_date_standardized_capture_1} and {upload_date_standardized_capture_2}",
-                "artist_cap_always_default": "{artist_capture_1}",
-                "override_with_capture_variable": "{contains_regex_default}"
+                "title_cap_1": "{title_type}",
+                "title_cap_2": "{title_date}",
+                "desc_cap": "{description_website}",
+                "upload_date_both_caps": "{upload_captured_year} and {upload_captured_month}",
+                "artist_cap_always_default": "{always_default}",
+                "override_with_capture_variable": "{contains_regex_default}",
             }
         },
         "overrides": {
             "in_regex_default": "in regex default",
-            "contains_regex_default": "contains {title_capture_1}"
-        }
+            "contains_regex_default": "contains {title_type}",
+        },
     }
 
 
