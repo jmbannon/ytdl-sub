@@ -45,7 +45,7 @@ class SourceVariableRegex(StrictDictValidator):
         # If there are capture groups, ensure there are capture group names
         if len(self._capture_group_names.list) != self._match.num_capture_groups:
             raise self._validation_exception(
-                f"Number of capture group names must match number of capture groups, "
+                f"number of capture group names must match number of capture groups, "
                 f"{len(self._capture_group_names.list)} != {self._match.num_capture_groups}"
             )
 
@@ -148,20 +148,38 @@ class RegexOptions(PluginOptions):
             key="skip_if_match_fails", validator=BoolValidator, default=False
         ).value
 
-    def validate_with_source_variables(self, source_variables: List[str]) -> None:
+    def validate_with_variables(
+        self, source_variables: List[str], override_variables: List[str]
+    ) -> None:
         """
         Ensures each source variable capture group is valid
 
         Parameters
         ----------
         source_variables
-            Variables to check against the provided capture groups
+            Available source variables when running the plugin
+        override_variables
+            Available override variables when running the plugin
         """
-        for key in self.source_variable_capture_dict.keys():
+        for key, regex_options in self.source_variable_capture_dict.items():
+            # Ensure each variable getting captured is a source variable
             if key not in source_variables:
                 raise self._validation_exception(
                     f"cannot regex capture '{key}' because it is not a source variable"
                 )
+
+            # Ensure the capture group names are not existing source/override variables
+            for capture_group_name in regex_options.capture_group_names:
+                if capture_group_name in source_variables:
+                    raise self._validation_exception(
+                        f"'{capture_group_name}' cannot be used as a capture group name because it "
+                        f"is a source variable"
+                    )
+                if capture_group_name in override_variables:
+                    raise self._validation_exception(
+                        f"'{capture_group_name}' cannot be used as a capture group name because it "
+                        f"is an override variable"
+                    )
 
     @property
     def source_variable_capture_dict(self) -> Dict[str, SourceVariableRegex]:

@@ -32,15 +32,18 @@ class PluginOptions(StrictDictValidator):
         return []
 
     # pylint: disable=unused-argument
-    def validate_with_source_variables(self, source_variables: List[str]) -> None:
+    def validate_with_variables(
+        self, source_variables: List[str], override_variables: List[str]
+    ) -> None:
         """
-        Performs validation after init using the source variables, in case the plugin
-        depends on specific source variables.
+        Optional validation after init with the session's source and override variables.
 
         Parameters
         ----------
         source_variables
-            Source variables to be used when running the plugin
+            Available source variables when running the plugin
+        override_variables
+            Available override variables when running the plugin
         """
         return None
 

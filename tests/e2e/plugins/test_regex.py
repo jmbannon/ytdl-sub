@@ -1,3 +1,4 @@
+import copy
 import re
 
 import pytest
@@ -6,6 +7,7 @@ from e2e.expected_transaction_log import assert_transaction_log_matches
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import RegexNoMatchException
+from ytdl_sub.utils.exceptions import ValidationException
 
 
 @pytest.fixture
@@ -123,3 +125,81 @@ class TestRegex:
             ),
         ):
             _ = playlist_subscription_no_match_fails.download(dry_run=True)
+
+    def test_regex_fails_capture_group_is_source_variable(
+        self, regex_subscription_dict, music_video_config
+    ):
+        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"][0] = "uid"
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "'uid' cannot be used as a capture group name because it is a source variable"
+            ),
+        ):
+            _ = Subscription.from_dict(
+                config=music_video_config,
+                preset_name="test_regex_fails_capture_group_is_source_variable",
+                preset_dict=regex_subscription_dict,
+            )
+
+    def test_regex_fails_capture_group_is_override_variable(
+        self, regex_subscription_dict, music_video_config
+    ):
+        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"][
+            0
+        ] = "in_regex_default"
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "'in_regex_default' cannot be used as a capture group name because it is an override variable"
+            ),
+        ):
+            _ = Subscription.from_dict(
+                config=music_video_config,
+                preset_name="test_regex_fails_capture_group_is_override_variable",
+                preset_dict=regex_subscription_dict,
+            )
+
+    def test_regex_fails_source_variable_does_not_exist(
+        self, regex_subscription_dict, music_video_config
+    ):
+        regex_subscription_dict["regex"]["from"]["dne"] = copy.deepcopy(
+            regex_subscription_dict["regex"]["from"]["title"]
+        )
+        with pytest.raises(
+            ValidationException,
+            match=re.escape("cannot regex capture 'dne' because it is not a source variable"),
+        ):
+            _ = Subscription.from_dict(
+                config=music_video_config,
+                preset_name="test_regex_fails_source_variable_does_not_exist",
+                preset_dict=regex_subscription_dict,
+            )
+
+    def test_regex_fails_unequal_defaults(self, regex_subscription_dict, music_video_config):
+        regex_subscription_dict["regex"]["from"]["title"]["defaults"] = ["1 != 2"]
+        with pytest.raises(
+            ValidationException,
+            match=re.escape("number of defaults must match number of capture groups, 1 != 2"),
+        ):
+            _ = Subscription.from_dict(
+                config=music_video_config,
+                preset_name="test_regex_fails_unequal_defaults",
+                preset_dict=regex_subscription_dict,
+            )
+
+    def test_regex_fails_unequal_capture_group_names(
+        self, regex_subscription_dict, music_video_config
+    ):
+        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"].append("unequal")
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "number of capture group names must match number of capture groups, 3 != 2"
+            ),
+        ):
+            _ = Subscription.from_dict(
+                config=music_video_config,
+                preset_name="test_regex_fails_unequal_capture_group_names",
+                preset_dict=regex_subscription_dict,
+            )

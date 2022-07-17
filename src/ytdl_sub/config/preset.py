@@ -145,7 +145,9 @@ class Preset(StrictDictValidator):
 
             plugin = PluginMapping.get(plugin=key)
             plugin_options = self._validate_key(key=key, validator=plugin.plugin_options_type)
-            plugin_options.validate_with_source_variables(source_variables=self._source_variables)
+            plugin_options.validate_with_variables(
+                source_variables=self._source_variables, override_variables=self.overrides.keys
+            )
 
             plugins.append((plugin, plugin_options))
 
