@@ -120,13 +120,15 @@ class RegexOptions(PluginOptions):
                title:
                  # Perform this regex match on it to act as a filter.
                  # This will only download videos with "Official Video" in it.
-                 match: '\[Official Video\]'
+                 match:
+                  - '\[Official Video\]'
 
                # For each entry's `description` value...
                description:
                  # Match with capture groups and defaults.
                  # This tries to scrape a date from the description and produce new source variables
-                 match: "([0-9]{4})-([0-9]{2})-([0-9]{2})"
+                 match:
+                  - "([0-9]{4})-([0-9]{2})-([0-9]{2})"
 
                  # Each capture group creates these new source variables, respectively, as well
                  # a sanitized version, i.e. `captured_upload_year_sanitized`
