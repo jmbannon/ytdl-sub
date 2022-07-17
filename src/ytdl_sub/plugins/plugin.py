@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import Generic
+from typing import List
 from typing import Optional
 from typing import Type
 from typing import TypeVar
@@ -18,6 +19,35 @@ class PluginOptions(StrictDictValidator):
     """
     Class that defines the parameters to a plugin
     """
+
+    # pylint: disable=no-self-use
+    def added_source_variables(self) -> List[str]:
+        """
+        If the plugin adds source variables, list them here.
+
+        Returns
+        -------
+        List of added source variables this plugin creates
+        """
+        return []
+
+    # pylint: disable=unused-argument
+    def validate_with_variables(
+        self, source_variables: List[str], override_variables: List[str]
+    ) -> None:
+        """
+        Optional validation after init with the session's source and override variables.
+
+        Parameters
+        ----------
+        source_variables
+            Available source variables when running the plugin
+        override_variables
+            Available override variables when running the plugin
+        """
+        return None
+
+    # pylint: enable=no-self-use,unused-argument
 
 
 PluginOptionsT = TypeVar("PluginOptionsT", bound=PluginOptions)
@@ -43,6 +73,7 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         # TODO pass yaml snake case name in the class somewhere, and use it for the logger
         self._logger = Logger.get(self.__class__.__name__)
 
+    # pylint: disable=no-self-use
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
         For each entry downloaded, modify the entry in some way before sending it to
@@ -57,6 +88,9 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         -------
         The entry or None, indicating not to move it to the output directory
         """
+        return entry
+
+    # pylint: enable=no-self-use
 
     def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
         """

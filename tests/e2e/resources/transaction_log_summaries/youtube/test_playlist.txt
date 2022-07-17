@@ -1,6 +1,6 @@
 Files created in '{output_directory}'
 ----------------------------------------
-.ytdl-sub-jmc-download-archive.json
+.ytdl-sub-music_video_playlist_test-download-archive.json
 JMC - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
 JMC - Jesse's Minecraft Server [Trailer - Feb.1].mp4
 JMC - Jesse's Minecraft Server [Trailer - Feb.1].nfo

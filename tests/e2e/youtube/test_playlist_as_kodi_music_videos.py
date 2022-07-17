@@ -8,28 +8,12 @@ from e2e.expected_download import ExpectedDownloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 import ytdl_sub.downloaders.downloader
-from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def config_path():
-    return "examples/kodi_music_videos_config.yaml"
-
-
-@pytest.fixture
-def subscription_name():
-    return "jmc"
-
-
-@pytest.fixture
-def config(config_path):
-    return ConfigFile.from_file_path(config_path=config_path)
-
-
-@pytest.fixture
-def subscription_dict(output_directory, subscription_name):
+def subscription_dict(output_directory):
     return {
         "preset": "yt_music_video_playlist",
         "youtube": {"playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
@@ -48,16 +32,16 @@ def subscription_dict(output_directory, subscription_name):
 
 
 @pytest.fixture
-def playlist_subscription(config, subscription_name, subscription_dict):
+def playlist_subscription(music_video_config, subscription_dict):
     playlist_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
+        config=music_video_config,
+        preset_name="music_video_playlist_test",
         preset_dict=subscription_dict,
     )
 
     return Subscription.from_preset(
         preset=playlist_preset,
-        config=config,
+        config=music_video_config,
     )
 
 
@@ -68,7 +52,7 @@ def expected_playlist_download():
     return ExpectedDownloads(
         expected_downloads=[
             # Download mapping
-            ExpectedDownloadFile(path=Path(".ytdl-sub-jmc-download-archive.json"), md5="9f785c29194a6ecfba6a6b4018763ddc"),
+            ExpectedDownloadFile(path=Path(".ytdl-sub-music_video_playlist_test-download-archive.json"), md5="9f785c29194a6ecfba6a6b4018763ddc"),
 
             # Entry files
             ExpectedDownloadFile(path=Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg"), md5="b232d253df621aa770b780c1301d364d"),
@@ -103,16 +87,16 @@ def single_video_subscription_dict(subscription_dict):
 
 
 @pytest.fixture
-def single_video_subscription(config, subscription_name, single_video_subscription_dict):
+def single_video_subscription(music_video_config, single_video_subscription_dict):
     single_video_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
+        config=music_video_config,
+        preset_name="music_video_single_video_test",
         preset_dict=single_video_subscription_dict,
     )
 
     return Subscription.from_preset(
         preset=single_video_preset,
-        config=config,
+        config=music_video_config,
     )
 
 

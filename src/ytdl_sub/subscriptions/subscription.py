@@ -3,6 +3,7 @@ import copy
 import os
 import shutil
 from pathlib import Path
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -271,6 +272,17 @@ class Subscription:
                 if isinstance(entry, tuple):
                     entry, entry_metadata = entry
 
+                # First, modify the entry with all plugins
+                for plugin in plugins:
+                    # Break out of this plugin loop if entry is None, it is indicated to not DL it
+                    if (entry := plugin.modify_entry(entry)) is None:
+                        break
+
+                # If entry is None from the broken out loop, continue over the other entries
+                if entry is None:
+                    continue
+
+                # Then, post-process the entry with all plugins
                 for plugin in plugins:
                     optional_plugin_entry_metadata = plugin.post_process_entry(entry)
                     if optional_plugin_entry_metadata:
@@ -306,4 +318,31 @@ class Subscription:
             name=preset.name,
             preset_options=preset,
             config_options=config.config_options,
+        )
+
+    @classmethod
+    def from_dict(cls, config: ConfigFile, preset_name: str, preset_dict: Dict) -> "Subscription":
+        """
+        Creates a subscription from a preset dict
+
+        Parameters
+        ----------
+        config:
+            Validated instance of the config
+        preset_name:
+            Name of the preset
+        preset_dict:
+            The preset config in dict format
+
+        Returns
+        -------
+        Initialized subscription
+        """
+        return cls.from_preset(
+            preset=Preset.from_dict(
+                config=config,
+                preset_name=preset_name,
+                preset_dict=preset_dict,
+            ),
+            config=config,
         )

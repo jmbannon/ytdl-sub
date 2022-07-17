@@ -5,10 +5,44 @@ from typing import Dict
 from typing import List
 from typing import final
 
+from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import Validator
+
+_fields_validator = re.compile(r"{([a-z][a-z0-9_]+?)}")
+
+_fields_validator_exception_message: str = (
+    "{variable_names} must start with a lowercase letter, should only contain lowercase letters, "
+    "numbers, underscores, and have a single open and close bracket."
+)
+
+
+def is_valid_source_variable_name(input_str: str, raise_exception: bool = False) -> bool:
+    """
+    Parameters
+    ----------
+    input_str
+        String to see if it can be a source variable
+    raise_exception
+        Raise InvalidVariableNameException False.
+
+    Returns
+    -------
+    True if it is. False otherwise.
+
+    Raises
+    ------
+    InvalidVariableNameException
+        If raise_exception and output is False
+    """
+    # Add brackets around it to pretend its a StringFormatter, see if it captures
+    is_source_variable_name = len(re.findall(_fields_validator, f"{{{input_str}}}")) > 0
+    if not is_source_variable_name and raise_exception:
+        raise InvalidVariableNameException(_fields_validator_exception_message)
+    return is_source_variable_name
 
 
 class StringFormatterValidator(Validator):
@@ -43,8 +77,6 @@ class StringFormatterValidator(Validator):
         "Format variable '{variable_name}' does not exist. Available variables: {available_fields}"
     )
 
-    __fields_validator = re.compile(r"{([a-z_]+?)}")
-
     __max_format_recursion = 3
 
     def __validate_and_get_format_variables(self) -> List[str]:
@@ -69,14 +101,11 @@ class StringFormatterValidator(Validator):
                 exception_class=StringFormattingException,
             )
 
-        format_variables: List[str] = list(
-            re.findall(StringFormatterValidator.__fields_validator, self.format_string)
-        )
+        format_variables: List[str] = list(re.findall(_fields_validator, self.format_string))
 
         if len(format_variables) != open_bracket_count:
             raise self._validation_exception(
-                "{variable_names} should only contain "
-                "lowercase letters and underscores with a single open and close bracket.",
+                error_message=_fields_validator_exception_message,
                 exception_class=StringFormattingException,
             )
 
@@ -175,6 +204,10 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 
 
 # pylint: enable=line-too-long
+
+
+class ListFormatterValidator(ListValidator[StringFormatterValidator]):
+    _inner_list_type = StringFormatterValidator
 
 
 class DictFormatterValidator(LiteralDictValidator):

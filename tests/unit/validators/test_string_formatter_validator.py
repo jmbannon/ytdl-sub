@@ -19,8 +19,8 @@ def error_message_unequal_brackets_str():
 @pytest.fixture
 def error_message_unequal_regex_matches_str():
     return (
-        "{variable_names} should only contain lowercase letters and "
-        "underscores with a single open and close bracket."
+        "{variable_names} must start with a lowercase letter, should only contain lowercase "
+        "letters, numbers, underscores, and have a single open and close bracket."
     )
 
 
@@ -29,11 +29,11 @@ def error_message_unequal_regex_matches_str():
 )
 class TestStringFormatterValidator(object):
     def test_parse(self, string_formatter_class):
-        format_string = "Here is my {var_one} and {var_two} 💩"
+        format_string = "Here is my {var_one1} and {var_two} 💩"
         validator = string_formatter_class(name="test_format_variables", value=format_string)
 
         assert validator.format_string == format_string
-        assert validator.format_variables == ["var_one", "var_two"]
+        assert validator.format_variables == ["var_one1", "var_two"]
 
     def test_format_variables(self, string_formatter_class):
         format_string = "No vars 💩"
@@ -64,7 +64,8 @@ class TestStringFormatterValidator(object):
     @pytest.mark.parametrize(
         "format_string",
         [
-            "Try {var1} numbers",
+            "Try {1starting_number}",
+            "Try {_underscore_first}",
             "Try {VAR1} caps w/numbers",
             "Try {internal{bracket}}",
             "Try }backwards{ facing",

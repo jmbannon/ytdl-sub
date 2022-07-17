@@ -112,6 +112,15 @@ class ListValidator(Validator, ABC, Generic[T]):
             for i, val in enumerate(self._value)
         ]
 
+    @property
+    def list(self) -> List[T]:
+        """
+        Returns
+        -------
+        The list
+        """
+        return self._list
+
 
 class DictValidator(Validator):
     """
