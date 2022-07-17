@@ -22,7 +22,7 @@ def regex_subscription_dict(output_directory):
             "format": "best[height<=480]",
         },
         "regex": {
-            "skip_if_match_fails": True,
+            # tests that skip_if_match_fails defaults to True
             "from": {
                 "title": {
                     "match": [
@@ -41,7 +41,7 @@ def regex_subscription_dict(output_directory):
                         "upload_captured_year",
                         "upload_captured_month",
                     ],
-                    "defaults": [
+                    "capture_group_defaults": [
                         "First",
                         "Second containing {in_regex_default}",
                     ],
@@ -49,7 +49,7 @@ def regex_subscription_dict(output_directory):
                 "artist": {
                     "match": ["Never (.*) capture"],
                     "capture_group_names": ["always_default"],
-                    "defaults": ["Always default"],
+                    "capture_group_defaults": ["Always default"],
                 },
             },
         },
@@ -72,8 +72,7 @@ def regex_subscription_dict(output_directory):
 
 @pytest.fixture
 def regex_subscription_dict_no_match_fails(regex_subscription_dict):
-    # tests that skip_if_match_fails defaults to False
-    del regex_subscription_dict["regex"]["skip_if_match_fails"]
+    regex_subscription_dict["regex"]["skip_if_match_fails"] = False
     return regex_subscription_dict
 
 
@@ -177,7 +176,7 @@ class TestRegex:
             )
 
     def test_regex_fails_unequal_defaults(self, regex_subscription_dict, music_video_config):
-        regex_subscription_dict["regex"]["from"]["title"]["defaults"] = ["1 != 2"]
+        regex_subscription_dict["regex"]["from"]["title"]["capture_group_defaults"] = ["1 != 2"]
         with pytest.raises(
             ValidationException,
             match=re.escape("number of defaults must match number of capture groups, 1 != 2"),

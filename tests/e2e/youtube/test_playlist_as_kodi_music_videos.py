@@ -52,7 +52,7 @@ def expected_playlist_download():
     return ExpectedDownloads(
         expected_downloads=[
             # Download mapping
-            ExpectedDownloadFile(path=Path(".ytdl-sub-jmc-download-archive.json"), md5="9f785c29194a6ecfba6a6b4018763ddc"),
+            ExpectedDownloadFile(path=Path(".ytdl-sub-music_video_playlist_test-download-archive.json"), md5="9f785c29194a6ecfba6a6b4018763ddc"),
 
             # Entry files
             ExpectedDownloadFile(path=Path("JMC - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg"), md5="b232d253df621aa770b780c1301d364d"),
@@ -87,16 +87,16 @@ def single_video_subscription_dict(subscription_dict):
 
 
 @pytest.fixture
-def single_video_subscription(config, single_video_subscription_dict):
+def single_video_subscription(music_video_config, single_video_subscription_dict):
     single_video_preset = Preset.from_dict(
-        config=config,
+        config=music_video_config,
         preset_name="music_video_single_video_test",
         preset_dict=single_video_subscription_dict,
     )
 
     return Subscription.from_preset(
         preset=single_video_preset,
-        config=config,
+        config=music_video_config,
     )
 
 
