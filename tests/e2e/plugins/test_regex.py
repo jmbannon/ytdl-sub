@@ -56,16 +56,20 @@ def regex_subscription_dict(output_directory):
         "nfo_tags": {
             "tags": {
                 "title_cap_1": "{title_type}",
+                "title_cap_1_sanitized": "{title_type_sanitized}",
                 "title_cap_2": "{title_date}",
                 "desc_cap": "{description_website}",
                 "upload_date_both_caps": "{upload_captured_year} and {upload_captured_month}",
                 "artist_cap_always_default": "{always_default}",
+                "artist_cap_always_default_sanitized": "{always_default_sanitized}",
                 "override_with_capture_variable": "{contains_regex_default}",
+                "override_with_capture_variable_sanitized": "{contains_regex_sanitized_default}",
             }
         },
         "overrides": {
             "in_regex_default": "in regex default",
             "contains_regex_default": "contains {title_type}",
+            "contains_regex_sanitized_default": "contains {title_type_sanitized}",
         },
     }
 

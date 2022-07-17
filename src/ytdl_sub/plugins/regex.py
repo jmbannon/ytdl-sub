@@ -2,6 +2,8 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
+from yt_dlp.utils import sanitize_filename
+
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
@@ -119,6 +121,7 @@ class RegexOptions(PluginOptions):
                  # Perform this regex match on it to act as a filter.
                  # This will only download videos with "Official Video" in it.
                  match: '\[Official Video\]'
+
                # For each entry's `description` value...
                description:
                  # Match with capture groups and defaults.
@@ -126,7 +129,7 @@ class RegexOptions(PluginOptions):
                  match: "([0-9]{4})-([0-9]{2})-([0-9]{2})"
 
                  # Each capture group creates these new source variables, respectively, as well
-                 # a sanitized version, i.e. `sanitized_captured_upload_year`
+                 # a sanitized version, i.e. `captured_upload_year_sanitized`
                  capture_group_names:
                   - "captured_upload_year"
                   - "captured_upload_month"
@@ -209,6 +212,10 @@ class RegexOptions(PluginOptions):
         added_source_vars: List[str] = []
         for regex_options in self.source_variable_capture_dict.values():
             added_source_vars.extend(regex_options.capture_group_names)
+            added_source_vars.extend(
+                f"{capture_group_name}_sanitized"
+                for capture_group_name in regex_options.capture_group_names
+            )
 
         return added_source_vars
 
@@ -260,6 +267,8 @@ class RegexPlugin(Plugin[RegexOptions]):
                 source_variables_and_overrides_dict = dict(
                     entry_variable_dict, **self.overrides.dict_with_format_strings
                 )
+
+                # add both the default...
                 entry.add_variables(
                     variables_to_add={
                         regex_options.capture_group_names[i]: default.apply_formatter(
@@ -268,12 +277,33 @@ class RegexPlugin(Plugin[RegexOptions]):
                         for i, default in enumerate(regex_options.capture_group_defaults)
                     },
                 )
+                # and sanitized default
+                entry.add_variables(
+                    variables_to_add={
+                        f"{regex_options.capture_group_names[i]}_sanitized": sanitize_filename(
+                            default.apply_formatter(
+                                variable_dict=source_variables_and_overrides_dict
+                            )
+                        )
+                        for i, default in enumerate(regex_options.capture_group_defaults)
+                    },
+                )
             # There is a capture, add the source variables to the entry as
             # {source_var}_capture_1, {source_var}_capture_2, ...
             else:
+                # Add the value...
                 entry.add_variables(
                     variables_to_add={
                         regex_options.capture_group_names[i]: capture
+                        for i, capture in enumerate(maybe_capture)
+                    },
+                )
+                # And the sanitized value
+                entry.add_variables(
+                    variables_to_add={
+                        f"{regex_options.capture_group_names[i]}_sanitized": sanitize_filename(
+                            capture
+                        )
                         for i, capture in enumerate(maybe_capture)
                     },
                 )
