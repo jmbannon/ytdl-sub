@@ -1,6 +1,6 @@
 import os
+import shutil
 from pathlib import Path
-from shutil import copyfile
 from typing import Any
 from typing import Dict
 from typing import List
@@ -177,7 +177,7 @@ class FileHandler:
         return self._file_handler_transaction_log
 
     @classmethod
-    def copy(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):
+    def move(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):
         """
         Parameters
         ----------
@@ -186,7 +186,7 @@ class FileHandler:
         dst_file_path
             Destination file
         """
-        copyfile(src=src_file_path, dst=dst_file_path)
+        shutil.move(src=src_file_path, dst=dst_file_path)
 
     @classmethod
     def delete(cls, file_path: Union[str, Path]):
@@ -199,7 +199,7 @@ class FileHandler:
         if os.path.isfile(file_path):
             os.remove(file_path)
 
-    def copy_file_to_output_directory(
+    def move_file_to_output_directory(
         self, file_name: str, output_file_name: str, file_metadata: Optional[FileMetadata] = None
     ):
         """
@@ -223,7 +223,7 @@ class FileHandler:
         if not self.dry_run:
             output_file_path = Path(self.output_directory) / output_file_name
             os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-            self.copy(
+            self.move(
                 src_file_path=Path(self.working_directory) / file_name,
                 dst_file_path=output_file_path,
             )
