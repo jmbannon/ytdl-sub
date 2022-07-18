@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict
 from typing import Generic
+from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -199,7 +200,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         return self._get_entry_dicts_from_info_json_files()
 
     @abc.abstractmethod
-    def download(self) -> List[DownloaderEntryT] | List[Tuple[DownloaderEntryT, FileMetadata]]:
+    def download(
+        self,
+    ) -> Iterable[DownloaderEntryT] | Iterable[Tuple[DownloaderEntryT, FileMetadata]]:
         """The function to perform the download of all media entries"""
 
     def post_download(self, overrides: Overrides):

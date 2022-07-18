@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Dict
+from typing import Generator
 from typing import List
 from typing import Optional
 
@@ -14,6 +15,7 @@ from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.date_range_validator import DateRangeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
+from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get()
@@ -36,12 +38,19 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
             # optional
             channel_avatar_path: "poster.jpg"
             channel_banner_path: "fanart.jpg"
+            download_individually: True
             before: "now"
             after: "today-2weeks"
     """
 
     _required_keys = {"channel_url"}
-    _optional_keys = {"before", "after", "channel_avatar_path", "channel_banner_path"}
+    _optional_keys = {
+        "before",
+        "after",
+        "channel_avatar_path",
+        "channel_banner_path",
+        "download_individually",
+    }
 
     def __init__(self, name, value):
         YoutubeDownloaderOptions.__init__(self, name, value)
@@ -54,6 +63,9 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
         )
         self._channel_banner_path = self._validate_key_if_present(
             "channel_banner_path", OverridesStringFormatterValidator
+        )
+        self._download_individually = self._validate_key_if_present(
+            "download_individually", BoolValidator, default=True
         )
 
     @property
@@ -78,6 +90,15 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
         Optional. Path to store the channel's banner image to.
         """
         return self._channel_banner_path
+
+    @property
+    def download_individually(self) -> Optional[bool]:
+        """
+        Optional. Downloads files from the channel individually instead of in bulk. Setting to True
+        is safer when downloading large amounts of videos in case an error occurs. Downloading by
+        bulk (by setting to False) can increase speeds. Defaults to True.
+        """
+        return self._download_individually.value
 
 
 class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions, YoutubeVideo]):
@@ -120,12 +141,24 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         )
         self.channel: Optional[YoutubeChannel] = None
 
-    def download(self) -> List[YoutubeVideo]:
+    def _get_channel_from_entry_dicts(self, entry_dicts: List[Dict]) -> YoutubeChannel:
+        channel_entry_dict = [
+            entry_dict for entry_dict in entry_dicts if entry_dict.get("extractor") == "youtube:tab"
+        ][0]
+        return YoutubeChannel(
+            entry_dict=channel_entry_dict, working_directory=self.working_directory
+        )
+
+    def download(self) -> Generator[YoutubeVideo, None, None]:
         """
         Downloads all videos from a channel
         """
-        channel_videos: List[YoutubeVideo] = []
         ytdl_options_overrides = {}
+
+        # If downloading individually, dry-run the entire channel download first, this will get the
+        # videos that will be downloaded. Afterwards, download each video one-by-one
+        if self.download_options.download_individually:
+            ytdl_options_overrides["skip_download"] = True
 
         # If a date range is specified when download a YT channel, add it into the ytdl options
         source_date_range = self.download_options.get_date_range()
@@ -135,18 +168,22 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         entry_dicts = self.extract_info_via_info_json(
             ytdl_options_overrides=ytdl_options_overrides, url=self.download_options.channel_url
         )
+        self.channel = self._get_channel_from_entry_dicts(entry_dicts=entry_dicts)
+
+        # If downloading individually, remove the skip_download to actually download the video
+        if self.download_options.download_individually:
+            del ytdl_options_overrides["skip_download"]
 
         for entry_dict in entry_dicts:
             if entry_dict.get("extractor") == "youtube":
-                channel_videos.append(
-                    YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
-                )
-            if entry_dict.get("extractor") == "youtube:tab":
-                self.channel = YoutubeChannel(
-                    entry_dict=entry_dict, working_directory=self.working_directory
-                )
-
-        return channel_videos
+                # Only do the individual download if it is not dry-run and downloading individually
+                if not self.is_dry_run and self.download_options.download_individually:
+                    ytdl_options_overrides["playlist_items"] = str(entry_dict.get("playlist_index"))
+                    _ = self.extract_info(
+                        ytdl_options_overrides=ytdl_options_overrides,
+                        url=self.download_options.channel_url,
+                    )
+                yield YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
 
     def _download_thumbnail(
         self,

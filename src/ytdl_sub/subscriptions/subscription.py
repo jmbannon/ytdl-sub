@@ -292,6 +292,10 @@ class Subscription:
                     entry=entry, entry_metadata=entry_metadata
                 )
 
+                # Re-save the download archive after each entry is moved to the output directory
+                if self.maintain_download_archive:
+                    self._enhanced_download_archive.save_download_mappings()
+
             downloader.post_download(overrides=self.overrides)
             for plugin in plugins:
                 plugin.post_process_subscription()

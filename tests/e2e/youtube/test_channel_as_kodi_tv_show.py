@@ -1,4 +1,6 @@
+import copy
 from pathlib import Path
+from typing import Dict
 
 import mergedeep
 import pytest
@@ -8,14 +10,7 @@ from e2e.expected_download import ExpectedDownloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 import ytdl_sub.downloaders.downloader
-from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
-
-
-@pytest.fixture
-def config_path():
-    return "examples/kodi_tv_shows_config.yaml"
 
 
 @pytest.fixture
@@ -24,12 +19,7 @@ def subscription_name():
 
 
 @pytest.fixture
-def config(config_path):
-    return ConfigFile.from_file_path(config_path=config_path)
-
-
-@pytest.fixture
-def subscription_dict(output_directory):
+def channel_preset_dict(output_directory):
     return {
         "preset": "yt_channel_as_tv",
         "youtube": {"channel_url": "https://youtube.com/channel/UCcRSMoQqXc_JrBZRHDFGbqA"},
@@ -45,22 +35,18 @@ def subscription_dict(output_directory):
     }
 
 
+@pytest.fixture
+def channel_subscription_generator(channel_as_tv_show_config, subscription_name):
+    def _channel_subscription_generator(preset_dict: Dict):
+        return Subscription.from_dict(
+            config=channel_as_tv_show_config, preset_name=subscription_name, preset_dict=preset_dict
+        )
+
+    return _channel_subscription_generator
+
+
 ####################################################################################################
 # FULL CHANNEL FIXTURES
-
-
-@pytest.fixture
-def full_channel_subscription(config, subscription_name, subscription_dict):
-    full_channel_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=subscription_dict,
-    )
-
-    return Subscription.from_preset(
-        preset=full_channel_preset,
-        config=config,
-    )
 
 
 @pytest.fixture
@@ -133,29 +119,16 @@ def expected_full_channel_download():
 ####################################################################################################
 # RECENT CHANNEL FIXTURES
 @pytest.fixture
-def recent_channel_subscription_dict(subscription_dict):
+def recent_channel_preset_dict(channel_preset_dict):
     # TODO: remove this hack by using a different channel
-    del subscription_dict["ytdl_options"]["break_on_reject"]
+    channel_preset_dict = copy.deepcopy(channel_preset_dict)
+    del channel_preset_dict["ytdl_options"]["break_on_reject"]
     return mergedeep.merge(
-        subscription_dict,
+        channel_preset_dict,
         {
             "preset": "yt_channel_as_tv__recent",
             "youtube": {"after": "20150101"},
         },
-    )
-
-
-@pytest.fixture
-def recent_channel_subscription(config, subscription_name, recent_channel_subscription_dict):
-    recent_channel_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=recent_channel_subscription_dict,
-    )
-
-    return Subscription.from_preset(
-        preset=recent_channel_preset,
-        config=config,
     )
 
 
@@ -188,33 +161,6 @@ def expected_recent_channel_download():
 
 ####################################################################################################
 # RECENT CHANNEL FIXTURES -- NO VIDS IN RANGE
-@pytest.fixture
-def recent_channel_no_vids_in_range_subscription_dict(subscription_dict):
-    # TODO: remove this hack by using a different channel
-    del subscription_dict["ytdl_options"]["break_on_reject"]
-    return mergedeep.merge(
-        subscription_dict,
-        {
-            "preset": "yt_channel_as_tv__recent",
-            "youtube": {"after": "20880101"},
-        },
-    )
-
-
-@pytest.fixture
-def recent_channel_no_vids_in_range_subscription(
-    config, subscription_name, recent_channel_no_vids_in_range_subscription_dict
-):
-    recent_channel_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=recent_channel_no_vids_in_range_subscription_dict,
-    )
-
-    return Subscription.from_preset(
-        preset=recent_channel_preset,
-        config=config,
-    )
 
 
 @pytest.fixture
@@ -238,29 +184,14 @@ def expected_recent_channel_no_vids_in_range_download():
 ####################################################################################################
 # ROLLING RECENT CHANNEL FIXTURES
 @pytest.fixture
-def rolling_recent_channel_subscription_dict(recent_channel_subscription_dict):
+def rolling_recent_channel_preset_dict(recent_channel_preset_dict):
+    recent_channel_preset_dict = copy.deepcopy(recent_channel_preset_dict)
     return mergedeep.merge(
-        recent_channel_subscription_dict,
+        recent_channel_preset_dict,
         {
             "preset": "yt_channel_as_tv__only_recent",
             "output_options": {"keep_files_after": "20181101"},
         },
-    )
-
-
-@pytest.fixture
-def rolling_recent_channel_subscription(
-    config, subscription_name, rolling_recent_channel_subscription_dict
-):
-    rolling_recent_channel_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=rolling_recent_channel_subscription_dict,
-    )
-
-    return Subscription.from_preset(
-        preset=rolling_recent_channel_preset,
-        config=config,
     )
 
 
@@ -294,9 +225,19 @@ class TestChannelAsKodiTvShow:
     """
 
     @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("download_individually", [True, False])
     def test_full_channel_download(
-        self, full_channel_subscription, expected_full_channel_download, output_directory, dry_run
+        self,
+        channel_subscription_generator,
+        channel_preset_dict,
+        expected_full_channel_download,
+        output_directory,
+        dry_run,
+        download_individually,
     ):
+        channel_preset_dict["youtube"]["download_individually"] = download_individually
+
+        full_channel_subscription = channel_subscription_generator(preset_dict=channel_preset_dict)
         transaction_log = full_channel_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
@@ -307,13 +248,22 @@ class TestChannelAsKodiTvShow:
             expected_full_channel_download.assert_files_exist(relative_directory=output_directory)
 
     @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("download_individually", [True, False])
     def test_recent_channel_download(
         self,
-        recent_channel_subscription,
+        channel_subscription_generator,
+        recent_channel_preset_dict,
         expected_recent_channel_download,
         output_directory,
         dry_run,
+        download_individually,
     ):
+        recent_channel_preset_dict["youtube"]["download_individually"] = download_individually
+
+        recent_channel_subscription = channel_subscription_generator(
+            preset_dict=recent_channel_preset_dict
+        )
+
         transaction_log = recent_channel_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
@@ -341,13 +291,22 @@ class TestChannelAsKodiTvShow:
                 )
 
     @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("download_individually", [True, False])
     def test_recent_channel_download__no_vids_in_range(
         self,
-        recent_channel_no_vids_in_range_subscription,
+        channel_subscription_generator,
+        recent_channel_preset_dict,
         expected_recent_channel_no_vids_in_range_download,
         output_directory,
         dry_run,
+        download_individually,
     ):
+        recent_channel_preset_dict["youtube"]["download_individually"] = download_individually
+        recent_channel_preset_dict["youtube"]["after"] = "21000101"
+
+        recent_channel_no_vids_in_range_subscription = channel_subscription_generator(
+            preset_dict=recent_channel_preset_dict
+        )
         # Run twice, ensure nothing changes between runs
         for _ in range(2):
             transaction_log = recent_channel_no_vids_in_range_subscription.download(dry_run=dry_run)
@@ -362,15 +321,30 @@ class TestChannelAsKodiTvShow:
                 )
 
     @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("download_individually", [True, False])
     def test_rolling_recent_channel_download(
         self,
-        recent_channel_subscription,
-        rolling_recent_channel_subscription,
+        channel_subscription_generator,
+        recent_channel_preset_dict,
+        rolling_recent_channel_preset_dict,
         expected_recent_channel_download,
         expected_rolling_recent_channel_download,
         output_directory,
         dry_run,
+        download_individually,
     ):
+        recent_channel_preset_dict["youtube"]["download_individually"] = download_individually
+        rolling_recent_channel_preset_dict["youtube"][
+            "download_individually"
+        ] = download_individually
+
+        recent_channel_subscription = channel_subscription_generator(
+            preset_dict=recent_channel_preset_dict
+        )
+        rolling_recent_channel_subscription = channel_subscription_generator(
+            preset_dict=rolling_recent_channel_preset_dict
+        )
+
         # First, download recent vids. Always download since we want to test dry-run
         # on the rolling recent portion.
         with assert_debug_log(
