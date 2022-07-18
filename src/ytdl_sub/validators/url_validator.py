@@ -132,8 +132,9 @@ class YoutubeChannelUrlValidator(StringValidator):
                 if len(query_path_split) < 3 or len(query_path_split[2]) == 0:
                     return None
                 return f"https://youtube.com{query.path}"
-            elif len(query_path_split) == 2 and len(query_path_split[1]) > 0:
-                # For channels that do not feature a 'c' or 'channel', ensure length of channel string is at least one
+            if len(query_path_split) == 2 and len(query_path_split[1]) > 0:
+                # For channels that do not feature a 'c' or 'channel'
+                # Ensure length of channel string is at least one
                 return f"https://youtube.com{query.path}"
 
         return None
