@@ -105,6 +105,10 @@ class TestYoutubeChannelUrlValidator:
                 "https://www.youtube.com/user/videogamedunkey",
                 "https://youtube.com/user/videogamedunkey",
             ),
+            (
+                "https://youtube.com/extracredits",
+                "https://youtube.com/extracredits",
+            ),
         ],
     )
     def test_youtube_channel_url_validator_success(self, url, expected_url):
@@ -117,7 +121,6 @@ class TestYoutubeChannelUrlValidator:
             "www.youtube.com/cha/UCuAXFkgsw1L7xaCfnd5JJOw",
             "www.nopetube.com/channel/asdfdsf",
             "www.youtube.com/channel/",
-            "www.youtube.com/channel",
             "www.youtube.com/channell/asdfasdf",
         ],
     )
