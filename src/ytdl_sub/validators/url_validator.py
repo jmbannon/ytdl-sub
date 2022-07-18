@@ -114,6 +114,7 @@ class YoutubeChannelUrlValidator(StringValidator):
         - https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw
         - https://www.youtube.com/user/username
         - https://www.youtube.com/c/channel_name
+        - https://youtube.com/channel_name
         """
         # If the url doesn't contain youtube, assume it is invalid
         if "youtube.com" not in url:
@@ -125,11 +126,15 @@ class YoutubeChannelUrlValidator(StringValidator):
 
         query = urlparse(url)
         if query.hostname in ("youtube.com", "www.youtube.com"):
+            query_path_split = query.path.split("/")
             if any(query.path.startswith(qpath) for qpath in ("/channel/", "/user/", "/c/")):
                 # Ensure there is "/path/id".split('/') = ['', 'path', 'id'] at least three
-                query_path_split = query.path.split("/")
                 if len(query_path_split) < 3 or len(query_path_split[2]) == 0:
                     return None
+                return f"https://youtube.com{query.path}"
+            if len(query_path_split) == 2 and len(query_path_split[1]) > 0:
+                # For channels that do not feature a 'c' or 'channel'
+                # Ensure length of channel string is at least one
                 return f"https://youtube.com{query.path}"
 
         return None
