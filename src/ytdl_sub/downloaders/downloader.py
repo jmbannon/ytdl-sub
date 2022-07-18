@@ -54,7 +54,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     @classmethod
     def ytdl_option_overrides(cls) -> Dict:
         """Global overrides that even overwrite user input"""
-        return {"writethumbnail": True, "noplaylist": True}
+        return {}
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:

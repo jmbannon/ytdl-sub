@@ -149,7 +149,10 @@ class Subscription:
         )
 
     def _move_entry_files_to_output_directory(
-        self, entry: Entry, entry_metadata: Optional[FileMetadata] = None
+        self,
+        dry_run: bool,
+        entry: Entry,
+        entry_metadata: Optional[FileMetadata] = None,
     ):
         """
         Helper function to move the media file and optionally thumbnail file to the output directory
@@ -157,6 +160,8 @@ class Subscription:
 
         Parameters
         ----------
+        dry_run
+            Whether this session is a dry-run or not
         entry:
             The entry with files to move
         entry_metadata
@@ -179,7 +184,8 @@ class Subscription:
             )
 
             # We always convert entry thumbnails to jpgs, and is performed here
-            convert_download_thumbnail(entry=entry)
+            if not dry_run:
+                convert_download_thumbnail(entry=entry)
 
             self._enhanced_download_archive.save_file_to_output_directory(
                 file_name=entry.get_download_thumbnail_name(),
@@ -252,8 +258,10 @@ class Subscription:
         # TODO: Move this logic to separate function
         # TODO: set id here as well
         ytdl_options = copy.deepcopy(self.ytdl_options.dict)
+        ytdl_options["writethumbnail"] = True
         if dry_run:
             ytdl_options["skip_download"] = True
+            ytdl_options["writethumbnail"] = False
         if self.downloader_class.supports_download_archive and self.maintain_download_archive:
             ytdl_options["download_archive"] = str(
                 Path(self.working_directory) / self._enhanced_download_archive.archive_file_name
@@ -289,7 +297,7 @@ class Subscription:
                         entry_metadata.extend(optional_plugin_entry_metadata)
 
                 self._move_entry_files_to_output_directory(
-                    entry=entry, entry_metadata=entry_metadata
+                    dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
                 )
 
                 # Re-save the download archive after each entry is moved to the output directory
