@@ -159,6 +159,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         # videos that will be downloaded. Afterwards, download each video one-by-one
         if self.download_options.download_individually:
             ytdl_options_overrides["skip_download"] = True
+            ytdl_options_overrides["writethumbnail"] = False
 
         # If a date range is specified when download a YT channel, add it into the ytdl options
         source_date_range = self.download_options.get_date_range()
@@ -173,6 +174,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         # If downloading individually, remove the skip_download to actually download the video
         if self.download_options.download_individually:
             del ytdl_options_overrides["skip_download"]
+            del ytdl_options_overrides["writethumbnail"]
 
         for entry_dict in entry_dicts:
             if entry_dict.get("extractor") == "youtube":

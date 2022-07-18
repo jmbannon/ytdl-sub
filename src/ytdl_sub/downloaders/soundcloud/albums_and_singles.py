@@ -120,7 +120,14 @@ class SoundcloudAlbumsAndSinglesDownloader(
         artist_albums_url = self.artist_albums_url(artist_url=self.download_options.url)
         artist_tracks_url = self.artist_tracks_url(artist_url=self.download_options.url)
 
-        album_entry_dicts = self.extract_info_via_info_json(url=artist_albums_url)
+        # Albums do not need to download anything since tracks contain all album tracks
+        album_entry_dicts = self.extract_info_via_info_json(
+            ytdl_options_overrides={
+                "skip_download": True,
+                "writethumbnail": False,
+            },
+            url=artist_albums_url,
+        )
         tracks_entry_dicts = self.extract_info_via_info_json(url=artist_tracks_url)
 
         # Get all of the artist's albums
