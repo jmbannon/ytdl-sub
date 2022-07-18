@@ -148,7 +148,7 @@ class Subscription:
             and self.downloader_class.supports_download_archive
         )
 
-    def _copy_entry_files_to_output_directory(
+    def _move_entry_files_to_output_directory(
         self, entry: Entry, entry_metadata: Optional[FileMetadata] = None
     ):
         """
@@ -288,7 +288,7 @@ class Subscription:
                     if optional_plugin_entry_metadata:
                         entry_metadata.extend(optional_plugin_entry_metadata)
 
-                self._copy_entry_files_to_output_directory(
+                self._move_entry_files_to_output_directory(
                     entry=entry, entry_metadata=entry_metadata
                 )
 

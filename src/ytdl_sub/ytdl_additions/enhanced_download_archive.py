@@ -321,7 +321,7 @@ class EnhancedDownloadArchive:
         a. self._load()
            Checks the output directory to see if an existing enhanced download archive file
            exists. If so, load it into the class. Otherwise, initialize an empty instance of one.
-        b. self._copy_to_working_directory()
+        b. self._move_to_working_directory()
            If the download archive was loaded successfully, create a ytdl download archive in the
            working directory. This will let ytdl know which files are already downloaded.
     2. ( Perform the ytdlp download using a download archive with the same name )
@@ -576,7 +576,7 @@ class EnhancedDownloadArchive:
         if entry:
             self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
 
-        self._file_handler.copy_file_to_output_directory(
+        self._file_handler.move_file_to_output_directory(
             file_name=file_name, file_metadata=file_metadata, output_file_name=output_file_name
         )
 
