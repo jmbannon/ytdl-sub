@@ -38,9 +38,9 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
             # optional
             channel_avatar_path: "poster.jpg"
             channel_banner_path: "fanart.jpg"
+            download_individually: True
             before: "now"
             after: "today-2weeks"
-            download_individually: True
     """
 
     _required_keys = {"channel_url"}
