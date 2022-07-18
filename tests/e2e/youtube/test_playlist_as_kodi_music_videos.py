@@ -8,12 +8,11 @@ from e2e.expected_download import ExpectedDownloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 import ytdl_sub.downloaders.downloader
-from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def subscription_dict(output_directory):
+def playlist_preset_dict(output_directory):
     return {
         "preset": "yt_music_video_playlist",
         "youtube": {"playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
@@ -29,20 +28,6 @@ def subscription_dict(output_directory):
 
 ####################################################################################################
 # PLAYLIST FIXTURES
-
-
-@pytest.fixture
-def playlist_subscription(music_video_config, subscription_dict):
-    playlist_preset = Preset.from_dict(
-        config=music_video_config,
-        preset_name="music_video_playlist_test",
-        preset_dict=subscription_dict,
-    )
-
-    return Subscription.from_preset(
-        preset=playlist_preset,
-        config=music_video_config,
-    )
 
 
 @pytest.fixture
@@ -74,29 +59,15 @@ def expected_playlist_download():
 ####################################################################################################
 # SINGLE VIDEO FIXTURES
 @pytest.fixture
-def single_video_subscription_dict(subscription_dict):
-    del subscription_dict["youtube"]
+def single_video_preset_dict(playlist_preset_dict):
+    del playlist_preset_dict["youtube"]
 
     return mergedeep.merge(
-        subscription_dict,
+        playlist_preset_dict,
         {
             "preset": "yt_music_video",
             "youtube": {"video_url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
         },
-    )
-
-
-@pytest.fixture
-def single_video_subscription(music_video_config, single_video_subscription_dict):
-    single_video_preset = Preset.from_dict(
-        config=music_video_config,
-        preset_name="music_video_single_video_test",
-        preset_dict=single_video_subscription_dict,
-    )
-
-    return Subscription.from_preset(
-        preset=single_video_preset,
-        config=music_video_config,
     )
 
 
@@ -121,9 +92,24 @@ class TestPlaylistAsKodiMusicVideo:
     """
 
     @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("download_individually", [True, False])
     def test_playlist_download(
-        self, playlist_subscription, expected_playlist_download, output_directory, dry_run
+        self,
+        music_video_config,
+        playlist_preset_dict,
+        expected_playlist_download,
+        output_directory,
+        dry_run,
+        download_individually,
     ):
+        playlist_preset_dict["youtube"]["download_individually"] = download_individually
+
+        playlist_subscription = Subscription.from_dict(
+            config=music_video_config,
+            preset_name="music_video_playlist_test",
+            preset_dict=playlist_preset_dict,
+        )
+
         transaction_log = playlist_subscription.download()
         assert_transaction_log_matches(
             output_directory=output_directory,
@@ -144,8 +130,19 @@ class TestPlaylistAsKodiMusicVideo:
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download(
-        self, single_video_subscription, expected_single_video_download, output_directory, dry_run
+        self,
+        music_video_config,
+        single_video_preset_dict,
+        expected_single_video_download,
+        output_directory,
+        dry_run,
     ):
+        single_video_subscription = Subscription.from_dict(
+            config=music_video_config,
+            preset_name="music_video_single_video_test",
+            preset_dict=single_video_preset_dict,
+        )
+
         transaction_log = single_video_subscription.download()
         assert_transaction_log_matches(
             output_directory=output_directory,
