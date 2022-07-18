@@ -177,6 +177,18 @@ class FileHandler:
         return self._file_handler_transaction_log
 
     @classmethod
+    def copy(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):
+        """
+        Parameters
+        ----------
+        src_file_path
+            Source file
+        dst_file_path
+            Destination file
+        """
+        shutil.copyfile(src=src_file_path, dst=dst_file_path)
+
+    @classmethod
     def move(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):
         """
         Parameters
