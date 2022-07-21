@@ -5,6 +5,11 @@ from ytdl_sub.entries.youtube import YoutubeVideo
 
 
 @pytest.fixture
+def description():
+    return "a description"
+
+
+@pytest.fixture
 def playlist_index():
     return 1
 
@@ -44,6 +49,7 @@ def mock_youtube_video_to_dict(
             "track_title_sanitized": track_title,
             "artist": artist,
             "artist_sanitized": artist,
+            "description": description,
         }
     )
 
@@ -60,6 +66,7 @@ def mock_youtube_video_kwargs(
             "channel": channel,
             "track": track_title,
             "artist": artist,
+            "description": description,
         }
     )
 
