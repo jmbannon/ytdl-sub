@@ -26,11 +26,6 @@ def title():
 
 
 @pytest.fixture
-def description():
-    return "a description"
-
-
-@pytest.fixture
 def upload_year():
     return 2021
 
@@ -79,7 +74,6 @@ def mock_entry_to_dict(
     upload_date,
     upload_year,
     thumbnail_ext,
-    description,
     upload_month,
     upload_day,
 ):
@@ -98,14 +92,11 @@ def mock_entry_to_dict(
         "upload_day": upload_day,
         "upload_day_padded": _pad(upload_day),
         "thumbnail_ext": thumbnail_ext,
-        "description": description,
     }
 
 
 @pytest.fixture
-def mock_entry_kwargs(
-    uid, title, ext, upload_date, extractor, description, download_thumbnail_name
-):
+def mock_entry_kwargs(uid, title, ext, upload_date, extractor, download_thumbnail_name):
     return {
         "id": uid,
         "extractor": extractor,
@@ -113,7 +104,6 @@ def mock_entry_kwargs(
         "ext": ext,
         "upload_date": upload_date,
         "thumbnail": download_thumbnail_name,
-        "description": description,
     }
 
 

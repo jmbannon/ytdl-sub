@@ -91,3 +91,12 @@ class YoutubeVideoVariables(EntryVariables):
         The size of the playlist. For non-playlist download strategies, this will always return 1.
         """
         return 1
+
+    @property
+    def description(self: BaseEntry) -> str:
+        """
+        Returns
+        -------
+        The description of the entry.
+        """
+        return self.kwargs("description")

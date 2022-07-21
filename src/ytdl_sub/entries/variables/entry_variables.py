@@ -177,12 +177,3 @@ class EntryVariables(SourceVariables):
         The uploaded date formatted as YYYY-MM-DD
         """
         return f"{self.upload_year}-{self.upload_month_padded}-{self.upload_day_padded}"
-
-    @property
-    def description(self: BaseEntry) -> str:
-        """
-        Returns
-        -------
-        The description of the entry.
-        """
-        return self.kwargs("description")
