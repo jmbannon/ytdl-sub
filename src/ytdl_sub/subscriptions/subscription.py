@@ -239,9 +239,10 @@ class Subscription:
 
         info_json_listener.start()
 
-        yield
-
-        info_json_listener.complete = True
+        try:
+            yield
+        finally:
+            info_json_listener.complete = True
 
     @contextlib.contextmanager
     def _subscription_download_context_managers(self) -> None:
