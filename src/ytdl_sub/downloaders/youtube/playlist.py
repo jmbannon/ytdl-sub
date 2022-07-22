@@ -89,7 +89,8 @@ class YoutubePlaylistDownloader(
                 if not self.is_dry_run:
                     _ = self.extract_info(
                         ytdl_options_overrides={
-                            "playlist_items": str(entry_dict.get("playlist_index"))
+                            "playlist_items": str(entry_dict.get("playlist_index")),
+                            "writeinfojson": False,
                         },
                         url=self.download_options.playlist_url,
                     )

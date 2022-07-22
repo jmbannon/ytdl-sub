@@ -163,7 +163,10 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
                 if not self.is_dry_run:
                     ytdl_options_overrides["playlist_items"] = str(entry_dict.get("playlist_index"))
                     _ = self.extract_info(
-                        ytdl_options_overrides=ytdl_options_overrides,
+                        ytdl_options_overrides={
+                            "playlist_items": str(entry_dict.get("playlist_index")),
+                            "writeinfojson": False,
+                        },
                         url=self.download_options.channel_url,
                     )
                 yield YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
