@@ -1,12 +1,10 @@
 from typing import Dict
 from typing import Generator
-from typing import Optional
 
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
-from ytdl_sub.validators.validators import BoolValidator
 
 
 class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
@@ -28,16 +26,12 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
     """
 
     _required_keys = {"playlist_url"}
-    _optional_keys = {"download_individually"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
         self._playlist_url = self._validate_key(
             "playlist_url", YoutubePlaylistUrlValidator
         ).playlist_url
-        self._download_individually = self._validate_key_if_present(
-            "download_individually", BoolValidator, default=True
-        )
 
     @property
     def playlist_url(self) -> str:
@@ -46,15 +40,6 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
         ``https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg``.
         """
         return self._playlist_url
-
-    @property
-    def download_individually(self) -> Optional[bool]:
-        """
-        Optional. Downloads files from the playlist individually instead of in bulk. Setting to True
-        is safer when downloading large amounts of videos in case an error occurs. Downloading by
-        bulk (by setting to False) can increase speeds. Defaults to True.
-        """
-        return self._download_individually.value
 
 
 class YoutubePlaylistDownloader(
@@ -84,33 +69,28 @@ class YoutubePlaylistDownloader(
 
     def download(self) -> Generator[YoutubePlaylistVideo, None, None]:
         """
-        Downloads all videos in a Youtube playlist
+        Downloads all videos in a Youtube playlist.
+
+        Dry-run the entire playlist download first. This will get the videos that will be
+        downloaded. Afterwards, download each video one-by-one
         """
-        ytdl_options_overrides = {}
-
-        # If downloading individually, dry-run the entire channel download first, this will get the
-        # videos that will be downloaded. Afterwards, download each video one-by-one
-        if self.download_options.download_individually:
-            ytdl_options_overrides["skip_download"] = True
-            ytdl_options_overrides["writethumbnail"] = False
-
         entry_dicts = self.extract_info_via_info_json(
-            ytdl_options_overrides=ytdl_options_overrides, url=self.download_options.playlist_url
+            ytdl_options_overrides={
+                "skip_download": True,
+                "writethumbnail": False,
+            },
+            url=self.download_options.playlist_url,
         )
-
-        # If downloading individually, remove the skip_download to actually download the video
-        if self.download_options.download_individually:
-            del ytdl_options_overrides["skip_download"]
-            del ytdl_options_overrides["writethumbnail"]
 
         for entry_dict in entry_dicts:
             if entry_dict.get("extractor") == "youtube":
 
                 # Only do the individual download if it is not dry-run and downloading individually
-                if not self.is_dry_run and self.download_options.download_individually:
-                    ytdl_options_overrides["playlist_items"] = str(entry_dict.get("playlist_index"))
+                if not self.is_dry_run:
                     _ = self.extract_info(
-                        ytdl_options_overrides=ytdl_options_overrides,
+                        ytdl_options_overrides={
+                            "playlist_items": str(entry_dict.get("playlist_index"))
+                        },
                         url=self.download_options.playlist_url,
                     )
 
