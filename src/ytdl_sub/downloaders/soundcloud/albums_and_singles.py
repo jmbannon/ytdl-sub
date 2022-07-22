@@ -137,13 +137,14 @@ class SoundcloudAlbumsAndSinglesDownloader(
                 if self.download_options.skip_premiere_tracks and track.is_premiere():
                     continue
 
-                _ = self.extract_info(
-                    url=album.kwargs("webpage_url"),
-                    ytdl_options_overrides={
-                        "playlist_items": str(track.kwargs("playlist_index")),
-                        "writeinfojson": False,
-                    },
-                )
+                if not self.is_dry_run:
+                    _ = self.extract_info(
+                        url=album.kwargs("webpage_url"),
+                        ytdl_options_overrides={
+                            "playlist_items": str(track.kwargs("playlist_index")),
+                            "writeinfojson": False,
+                        },
+                    )
 
                 yield track
 
@@ -166,9 +167,10 @@ class SoundcloudAlbumsAndSinglesDownloader(
             if self.download_options.skip_premiere_tracks and track.is_premiere():
                 continue
 
-            _ = self.extract_info(
-                url=track.kwargs("webpage_url"), ytdl_options_overrides={"writeinfojson": False}
-            )
+            if not self.is_dry_run:
+                _ = self.extract_info(
+                    url=track.kwargs("webpage_url"), ytdl_options_overrides={"writeinfojson": False}
+                )
 
             yield track
 
