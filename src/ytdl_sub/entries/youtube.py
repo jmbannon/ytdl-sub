@@ -11,6 +11,8 @@ class YoutubeVideo(YoutubeVideoVariables, Entry):
     Entry object to represent a Youtube video. Reserved for shared Youtube entry logic.
     """
 
+    entry_extractor = "youtube"
+
     @property
     def ext(self) -> str:
         """
@@ -45,6 +47,8 @@ class YoutubePlaylistVideo(YoutubeVideo):
 
 
 class YoutubeChannel(Entry):
+    entry_extractor = "youtube:tab"
+
     def _get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
         """
         Downloads a specific thumbnail from a YTDL entry's thumbnail list

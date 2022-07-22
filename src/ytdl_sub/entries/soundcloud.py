@@ -12,6 +12,8 @@ class SoundcloudTrack(SoundcloudVariables, Entry):
     it does not belong to an album.
     """
 
+    entry_extractor = "soundcloud"
+
     def is_premiere(self) -> bool:
         """
         Returns whether the entry is a premier track. Check this by seeing if the track's url is
@@ -86,6 +88,8 @@ class SoundcloudAlbum(Entry):
     """
     Entry object to represent a Soundcloud album.
     """
+
+    entry_extractor = "soundcloud:set"
 
     def __init__(self, entry_dict: Dict, working_directory: Optional[str] = None):
         """
