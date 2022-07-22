@@ -225,7 +225,6 @@ class TestChannelAsKodiTvShow:
     """
 
     @pytest.mark.parametrize("dry_run", [True, False])
-    @pytest.mark.parametrize("download_individually", [True, False])
     def test_full_channel_download(
         self,
         channel_subscription_generator,
@@ -233,10 +232,7 @@ class TestChannelAsKodiTvShow:
         expected_full_channel_download,
         output_directory,
         dry_run,
-        download_individually,
     ):
-        channel_preset_dict["youtube"]["download_individually"] = download_individually
-
         full_channel_subscription = channel_subscription_generator(preset_dict=channel_preset_dict)
         transaction_log = full_channel_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
@@ -248,7 +244,6 @@ class TestChannelAsKodiTvShow:
             expected_full_channel_download.assert_files_exist(relative_directory=output_directory)
 
     @pytest.mark.parametrize("dry_run", [True, False])
-    @pytest.mark.parametrize("download_individually", [True, False])
     def test_recent_channel_download(
         self,
         channel_subscription_generator,
@@ -256,10 +251,7 @@ class TestChannelAsKodiTvShow:
         expected_recent_channel_download,
         output_directory,
         dry_run,
-        download_individually,
     ):
-        recent_channel_preset_dict["youtube"]["download_individually"] = download_individually
-
         recent_channel_subscription = channel_subscription_generator(
             preset_dict=recent_channel_preset_dict
         )
@@ -291,7 +283,6 @@ class TestChannelAsKodiTvShow:
                 )
 
     @pytest.mark.parametrize("dry_run", [True, False])
-    @pytest.mark.parametrize("download_individually", [True, False])
     def test_recent_channel_download__no_vids_in_range(
         self,
         channel_subscription_generator,
@@ -299,9 +290,7 @@ class TestChannelAsKodiTvShow:
         expected_recent_channel_no_vids_in_range_download,
         output_directory,
         dry_run,
-        download_individually,
     ):
-        recent_channel_preset_dict["youtube"]["download_individually"] = download_individually
         recent_channel_preset_dict["youtube"]["after"] = "21000101"
 
         recent_channel_no_vids_in_range_subscription = channel_subscription_generator(
@@ -321,7 +310,6 @@ class TestChannelAsKodiTvShow:
                 )
 
     @pytest.mark.parametrize("dry_run", [True, False])
-    @pytest.mark.parametrize("download_individually", [True, False])
     def test_rolling_recent_channel_download(
         self,
         channel_subscription_generator,
@@ -331,13 +319,7 @@ class TestChannelAsKodiTvShow:
         expected_rolling_recent_channel_download,
         output_directory,
         dry_run,
-        download_individually,
     ):
-        recent_channel_preset_dict["youtube"]["download_individually"] = download_individually
-        rolling_recent_channel_preset_dict["youtube"][
-            "download_individually"
-        ] = download_individually
-
         recent_channel_subscription = channel_subscription_generator(
             preset_dict=recent_channel_preset_dict
         )

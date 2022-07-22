@@ -92,7 +92,6 @@ class TestPlaylistAsKodiMusicVideo:
     """
 
     @pytest.mark.parametrize("dry_run", [True, False])
-    @pytest.mark.parametrize("download_individually", [True, False])
     def test_playlist_download(
         self,
         music_video_config,
@@ -100,10 +99,7 @@ class TestPlaylistAsKodiMusicVideo:
         expected_playlist_download,
         output_directory,
         dry_run,
-        download_individually,
     ):
-        playlist_preset_dict["youtube"]["download_individually"] = download_individually
-
         playlist_subscription = Subscription.from_dict(
             config=music_video_config,
             preset_name="music_video_playlist_test",
