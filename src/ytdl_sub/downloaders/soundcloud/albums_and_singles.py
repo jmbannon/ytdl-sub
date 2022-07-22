@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 from typing import List
 
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloader
@@ -6,6 +6,7 @@ from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloaderOptions
 from ytdl_sub.entries.soundcloud import SoundcloudAlbum
 from ytdl_sub.entries.soundcloud import SoundcloudTrack
 from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
+from ytdl_sub.validators.validators import BoolValidator
 
 
 class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
@@ -35,6 +36,9 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
         self._url = self._validate_key(
             key="url", validator=SoundcloudUsernameUrlValidator
         ).username_url
+        self._download_individually = self._validate_key_if_present(
+            "download_individually", BoolValidator, default=True
+        )
 
     @property
     def url(self) -> str:
@@ -42,6 +46,15 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
         Required. The Soundcloud user's url, i.e. ``soundcloud.com/the_username``
         """
         return self._url
+
+    @property
+    def download_individually(self) -> Optional[bool]:
+        """
+        Optional. Downloads files from the channel individually instead of in bulk. Setting to True
+        is safer when downloading large amounts of videos in case an error occurs. Downloading by
+        bulk (by setting to False) can increase speeds. Defaults to True.
+        """
+        return self._download_individually.value
 
 
 class SoundcloudAlbumsAndSinglesDownloader(
@@ -120,7 +133,8 @@ class SoundcloudAlbumsAndSinglesDownloader(
         artist_albums_url = self.artist_albums_url(artist_url=self.download_options.url)
         artist_tracks_url = self.artist_tracks_url(artist_url=self.download_options.url)
 
-        # Albums do not need to download anything since tracks contain all album tracks
+        # Albums do not need to download anything since tracks contain all album tracks.
+        # We just need to get the metadata from the album itself
         album_entry_dicts = self.extract_info_via_info_json(
             ytdl_options_overrides={
                 "skip_download": True,
