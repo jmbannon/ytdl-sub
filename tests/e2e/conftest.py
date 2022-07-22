@@ -19,3 +19,8 @@ def music_video_config():
 @pytest.fixture()
 def channel_as_tv_show_config():
     return ConfigFile.from_file_path(config_path="examples/kodi_tv_shows_config.yaml")
+
+
+@pytest.fixture
+def soundcloud_discography_config():
+    return ConfigFile.from_file_path(config_path="examples/soundcloud_discography_config.yaml")

@@ -171,18 +171,16 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         )
         self.channel = self._get_channel_from_entry_dicts(entry_dicts=entry_dicts)
 
-        # If downloading individually, remove the skip_download to actually download the video
-        if self.download_options.download_individually:
-            del ytdl_options_overrides["skip_download"]
-            del ytdl_options_overrides["writethumbnail"]
-
         for entry_dict in entry_dicts:
             if entry_dict.get("extractor") == "youtube":
                 # Only do the individual download if it is not dry-run and downloading individually
                 if not self.is_dry_run and self.download_options.download_individually:
                     ytdl_options_overrides["playlist_items"] = str(entry_dict.get("playlist_index"))
                     _ = self.extract_info(
-                        ytdl_options_overrides=ytdl_options_overrides,
+                        ytdl_options_overrides={
+                            "playlist_items": str(entry_dict.get("playlist_index")),
+                            "writeinfojson": False,
+                        },
                         url=self.download_options.channel_url,
                     )
                 yield YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)

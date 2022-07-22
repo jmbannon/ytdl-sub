@@ -1,12 +1,13 @@
-from typing import Dict, Optional
+from typing import Dict
+from typing import Generator
 from typing import List
 
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloader
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloaderOptions
 from ytdl_sub.entries.soundcloud import SoundcloudAlbum
+from ytdl_sub.entries.soundcloud import SoundcloudAlbumTrack
 from ytdl_sub.entries.soundcloud import SoundcloudTrack
 from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
-from ytdl_sub.validators.validators import BoolValidator
 
 
 class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
@@ -36,9 +37,6 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
         self._url = self._validate_key(
             key="url", validator=SoundcloudUsernameUrlValidator
         ).username_url
-        self._download_individually = self._validate_key_if_present(
-            "download_individually", BoolValidator, default=True
-        )
 
     @property
     def url(self) -> str:
@@ -46,15 +44,6 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
         Required. The Soundcloud user's url, i.e. ``soundcloud.com/the_username``
         """
         return self._url
-
-    @property
-    def download_individually(self) -> Optional[bool]:
-        """
-        Optional. Downloads files from the channel individually instead of in bulk. Setting to True
-        is safer when downloading large amounts of videos in case an error occurs. Downloading by
-        bulk (by setting to False) can increase speeds. Defaults to True.
-        """
-        return self._download_individually.value
 
 
 class SoundcloudAlbumsAndSinglesDownloader(
@@ -80,7 +69,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
             },
         )
 
-    def _get_albums(self, entry_dicts: List[Dict]) -> List[SoundcloudAlbum]:
+    def _get_albums_from_entry_dicts(self, entry_dicts: List[Dict]) -> List[SoundcloudAlbum]:
         """
         Parameters
         ----------
@@ -126,36 +115,70 @@ class SoundcloudAlbumsAndSinglesDownloader(
 
         return tracks
 
-    def download(self) -> List[SoundcloudTrack]:
-        """
-        Soundcloud subscription to download albums and tracks as singles.
-        """
+    def _get_albums(self) -> List[SoundcloudAlbum]:
+        # Dry-run to get the info json files
         artist_albums_url = self.artist_albums_url(artist_url=self.download_options.url)
-        artist_tracks_url = self.artist_tracks_url(artist_url=self.download_options.url)
-
-        # Albums do not need to download anything since tracks contain all album tracks.
-        # We just need to get the metadata from the album itself
         album_entry_dicts = self.extract_info_via_info_json(
+            url=artist_albums_url,
             ytdl_options_overrides={
                 "skip_download": True,
                 "writethumbnail": False,
             },
-            url=artist_albums_url,
         )
-        tracks_entry_dicts = self.extract_info_via_info_json(url=artist_tracks_url)
 
-        # Get all of the artist's albums
-        albums = self._get_albums(entry_dicts=album_entry_dicts)
+        albums = self._get_albums_from_entry_dicts(entry_dicts=album_entry_dicts)
+        return albums
+
+    def _get_album_tracks(
+        self, albums: List[SoundcloudAlbum]
+    ) -> Generator[SoundcloudAlbumTrack, None, None]:
+        for album in albums:
+            for track in album.album_tracks():
+                if self.download_options.skip_premiere_tracks and track.is_premiere():
+                    continue
+
+                _ = self.extract_info(
+                    url=album.kwargs("webpage_url"),
+                    ytdl_options_overrides={
+                        "playlist_items": str(track.kwargs("playlist_index")),
+                        "writeinfojson": False,
+                    },
+                )
+
+                yield track
+
+    def _get_single_tracks(
+        self, albums: List[SoundcloudAlbum]
+    ) -> Generator[SoundcloudTrack, None, None]:
+        artist_tracks_url = self.artist_tracks_url(artist_url=self.download_options.url)
+        tracks_entry_dicts = self.extract_info_via_info_json(
+            url=artist_tracks_url,
+            ytdl_options_overrides={
+                "skip_download": True,
+                "writethumbnail": False,
+            },
+        )
 
         # Then, get all singles
         tracks = self._get_singles(entry_dicts=tracks_entry_dicts, albums=albums)
+        for track in tracks:
+            # Filter any premiere tracks if specified
+            if self.download_options.skip_premiere_tracks and track.is_premiere():
+                continue
 
-        # Append all album tracks as SoundcloudAlbumTrack classes to the singles
-        for album in albums:
-            tracks += album.album_tracks()
+            _ = self.extract_info(
+                url=track.kwargs("webpage_url"), ytdl_options_overrides={"writeinfojson": False}
+            )
 
-        # Filter any premiere tracks if specified
-        if self.download_options.skip_premiere_tracks:
-            tracks = [track for track in tracks if not track.is_premiere()]
+            yield track
 
-        return tracks
+    def download(self) -> Generator[SoundcloudTrack, None, None]:
+        """
+        Soundcloud subscription to download albums and tracks as singles.
+        """
+        albums = self._get_albums()
+        for album_track in self._get_album_tracks(albums=albums):
+            yield album_track
+
+        for single_track in self._get_single_tracks(albums=albums):
+            yield single_track

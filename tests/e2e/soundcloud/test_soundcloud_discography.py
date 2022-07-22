@@ -11,22 +11,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def config_path():
-    return "examples/soundcloud_discography_config.yaml"
-
-
-@pytest.fixture
-def subscription_name():
-    return "jb"
-
-
-@pytest.fixture
-def config(config_path):
-    return ConfigFile.from_file_path(config_path=config_path)
-
-
-@pytest.fixture
-def subscription_dict(output_directory, subscription_name):
+def subscription_dict(output_directory):
     return {
         "preset": "sc_discography",
         "soundcloud": {"url": "https://soundcloud.com/jessebannon"},
@@ -38,20 +23,6 @@ def subscription_dict(output_directory, subscription_name):
         },
         "overrides": {"artist": "j_b"},
     }
-
-
-@pytest.fixture
-def discography_subscription(config, subscription_name, subscription_dict):
-    discography_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=subscription_dict,
-    )
-
-    return Subscription.from_preset(
-        preset=discography_preset,
-        config=config,
-    )
 
 
 @pytest.fixture
@@ -96,8 +67,18 @@ class TestSoundcloudDiscography:
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_discography_download(
-        self, discography_subscription, expected_discography_download, output_directory, dry_run
+        self,
+        subscription_dict,
+        soundcloud_discography_config,
+        expected_discography_download,
+        output_directory,
+        dry_run,
     ):
+        discography_subscription = Subscription.from_dict(
+            preset_dict=subscription_dict,
+            preset_name="jb",
+            config=soundcloud_discography_config,
+        )
         transaction_log = discography_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
