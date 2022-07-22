@@ -11,6 +11,9 @@ class Entry(EntryVariables, BaseEntry):
     Entry object to represent a single media object returned from yt-dlp.
     """
 
+    # The ytdl extractor type that the entry represents
+    entry_extractor: str
+
     def get_download_file_name(self) -> str:
         """
         Returns
