@@ -1,4 +1,5 @@
-# ytdl-sub: Automate downloading and adding metadata with youtube-dl.
+# ytdl-sub
+## Automate downloading and metadata generation with YoutubeDL.
 [<img src="https://img.shields.io/badge/readthedocs-link-blue?logo=readthedocs">](https://ytdl-sub.readthedocs.io/en/latest/index.html)
 [<img src="https://img.shields.io/discord/994270357957648404?logo=Discord">](https://discord.gg/v8j9RAHb4k)
 [![codecov](https://img.shields.io/codecov/c/github/jmbannon/ytdl-sub)](https://app.codecov.io/gh/jmbannon/ytdl-sub)
