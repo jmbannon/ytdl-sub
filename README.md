@@ -69,7 +69,7 @@ presets in the `config.yaml`.
 ```yaml
 # The name of our subscription
 john_smith_channel:
-  # Inherit all fields of the 'yt_channel_as_tv' preset
+  # Inherit all fields in the 'yt_channel_as_tv' preset
   preset: "yt_channel_as_tv"
   
   # Add the `channel_url` parameter here since it's unique for each subscription
@@ -108,7 +108,7 @@ configuration:
     channel: "--youtube.channel_url"
     name: "--overrides.tv_show_name"
 ```
-The above command can now be defined as
+The above command can now be shortened to
 ```shell
 ytdl-sub dl \
     --tv \
@@ -143,9 +143,13 @@ The ytdl-sub docker image uses
 It looks, feels, and operates like other LinuxServer images. This is the 
 recommended way to use ytdl-sub.
 
+ytdl-sub is a command-line tool. The docker image is intended to be used
+as a console. For automating `subscriptions.yaml` downloads to pull new media, see
+[this guide](https://ytdl-sub.readthedocs.io/en/latest/getting_started.html#setting-up-automated-downloads)
+on how set up a cron job in the docker container.
+
 ### Docker Compose
 ```yaml
-version: "2.1"
 services:
   ytdl-sub:
     image: ghcr.io/jmbannon/ytdl-sub:latest
