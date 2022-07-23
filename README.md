@@ -5,6 +5,7 @@
 ![Code Qaulity](https://img.shields.io/badge/pylint-10%2F10-brightgreen)
 ![License](https://img.shields.io/github/license/jmbannon/ytdl-sub?color=blue)
 
+[<img src="https://img.shields.io/discord/994270357957648404?logo=Discord&style=for-the-badge">](https://discord.gg/v8j9RAHb4k)
 
 Automate downloading and adding metadata with YoutubeDL.
 
