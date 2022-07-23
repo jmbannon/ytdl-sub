@@ -1,12 +1,12 @@
-# ytdl-sub: Youtube-DL-Subscribe
+# ytdl-sub
 [<img src="https://img.shields.io/badge/readthedocs-link-blue?logo=readthedocs">](https://ytdl-sub.readthedocs.io/en/latest/index.html)
-![Checks](https://img.shields.io/github/checks-status/jmbannon/ytdl-sub/master)
-![Code Coverage](https://img.shields.io/codecov/c/github/jmbannon/ytdl-sub)
+[<img src="https://img.shields.io/discord/994270357957648404?logo=Discord">](https://discord.gg/v8j9RAHb4k)
+[![codecov](https://img.shields.io/codecov/c/github/jmbannon/ytdl-sub)](https://app.codecov.io/gh/jmbannon/ytdl-sub)
 ![Code Qaulity](https://img.shields.io/badge/pylint-10%2F10-brightgreen)
+![Checks](https://img.shields.io/github/checks-status/jmbannon/ytdl-sub/master)
 ![License](https://img.shields.io/github/license/jmbannon/ytdl-sub?color=blue)
 
-
-Automate downloading and adding metadata with YoutubeDL.
+Automate downloading and adding metadata with youtube-dl.
 
 This package downloads media via 
 [yt-dlp](https://github.com/yt-dlp/yt-dlp)
