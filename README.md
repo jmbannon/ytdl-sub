@@ -7,7 +7,7 @@
 ![Checks](https://img.shields.io/github/checks-status/jmbannon/ytdl-sub/master)
 ![License](https://img.shields.io/github/license/jmbannon/ytdl-sub?color=blue)
 
-This package downloads media via 
+`ytdl-sub` is a command-line tool that downloads media via 
 [yt-dlp](https://github.com/yt-dlp/yt-dlp)
 and prepares it for your favorite media player
 ([Kodi](https://github.com/xbmc/xbmc), 
@@ -144,8 +144,8 @@ The ytdl-sub docker image uses
 It looks, feels, and operates like other LinuxServer images. This is the 
 recommended way to use ytdl-sub.
 
-ytdl-sub is a command-line tool. The docker image is intended to be used
-as a console. For automating `subscriptions.yaml` downloads to pull new media, see
+The docker image is intended to be used as a console. For automating 
+`subscriptions.yaml` downloads to pull new media, see
 [this guide](https://ytdl-sub.readthedocs.io/en/latest/getting_started.html#setting-up-automated-downloads)
 on how set up a cron job in the docker container.
 
