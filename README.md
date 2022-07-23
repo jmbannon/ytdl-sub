@@ -27,18 +27,59 @@ after it is downloaded. See our
 [example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
 that we personally use and
 [readthedocs](https://ytdl-sub.readthedocs.io/en/latest/config.html#)
-for detailed information on specific sections or fields.
+for detailed information on specific sections or fields. Downloading looks like this.
 
-Once configured, you can begin downloading using two different methods.
+### Config
+The `config.yaml` defines how our downloads will look. For this example, let's
+download YouTube channels to look like TV shows, and generate `.nfo` files
+so they appear in Kodi/Jellyfin/Emby.
 
-### Subscription
-You can define a `subscriptions.yaml` for things to recurrently
-download, like a YouTube channel to pull new videos. It looks something like:
 ```yaml
+presets:
+  # Each 'preset' defines a source, download strategy, and options for
+  # configuring the download. We will name this preset 'yt_channel_as_tv'
+  yt_channel_as_tv:
+    
+    # Use YouTube as our source. Our strategy is download the entire channel.
+    # Configure channel-specific parameters to make images appear as artwork
+    youtube:
+      download_strategy: "channel"
+      channel_avatar_path: "poster.jpg"
+      channel_banner_path: "fanart.jpg"
+    
+    # Define media file output options using variables
+    output_options:
+      output_directory: "{youtube_tv_shows_directory}/{tv_show_name_sanitized}"
+      file_name: "{episode_name}.{ext}"
+      thumbnail_name: "{episode_name}-thumb.jpg"
+    
+    # Define 'override' variables, which can contain a mix of hardcoded strings
+    # and 'source' variables that are derived from the video itself.
+    overrides:
+      youtube_tv_shows_directory: "/path/to/youtube_tv_shows"
+      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {title_sanitized}"
+     
+    # Use the 'nfo_tags' plugin to generate an NFO file for each video.
+    # See the config in the `examples/` directory for a full example
+    nfo_tags:
+      ...
+```
+
+### Subscriptions
+The `subscriptions.yaml` file is where we define content to download using
+presets in the `config.yaml`.
+```yaml
+# The name of our subscription
 john_smith_channel:
+  # Inherit all fields of the 'yt_channel_as_tv' preset
   preset: "yt_channel_as_tv"
+  
+  # Add the `channel_url` parameter here since it's unique for each subscription
   youtube:
     channel_url: "https://youtube.com/channe/UCsvn_Po0SmunchJYtttWpOxMg"
+    
+  # Similarly, define the {tv_show_name} variable since it's also unique to each
+  # subscription.
   overrides:
     tv_show_name: "John Smith Vlogs"
 ```
@@ -46,6 +87,7 @@ The download can be performed using:
 ```shell
 ytdl-sub sub subscription.yaml
 ```
+This method makes it easy to pull new videos from channels or playlists.
 
 ### One-time Download
 There are things we will only want to download once and never again. Anything
