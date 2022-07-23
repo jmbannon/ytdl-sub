@@ -81,11 +81,12 @@ john_smith_channel:
   overrides:
     tv_show_name: "John Smith Vlogs"
 ```
-The download can be performed using:
+The download can now be performed using:
 ```shell
-ytdl-sub sub subscription.yaml
+ytdl-sub sub subscriptions.yaml
 ```
-This method makes it easy to pull new videos from channels or playlists.
+This method makes it easy to pull new videos from channels or playlists, or
+experiment with new configurations.
 
 ### One-time Download
 There are things we will only want to download once and never again. Anything
@@ -96,6 +97,23 @@ ytdl-sub dl \
     --preset "yt_channel_as_tv" \
     --youtube.channel_url "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg" \
     --overrides.tv_show_name "John Smith Vlogs"
+```
+
+#### Download Aliases
+In the `config.yaml`, we can define alias to make `dl` commands shorter.
+```yaml
+configuration:
+  dl_aliases:
+    tv: "--preset yt_channel_as_tv"
+    channel: "--youtube.channel_url"
+    name: "--overrides.tv_show_name"
+```
+The above command can now be defined as
+```shell
+ytdl-sub dl \
+    --tv \
+    --channel "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg" \
+    --name "John Smith Vlogs"
 ```
 
 ### Output
