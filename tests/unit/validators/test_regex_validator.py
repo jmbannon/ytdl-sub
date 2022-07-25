@@ -37,6 +37,12 @@ def test_regex_list_validator_matches():
         assert regex_list.match_any(raw_val) == []
 
 
+def test_regex_list_with_string_value():
+    regest_list_with_string_value = "try matching this"
+    regex_list = RegexListValidator(name="list val", value=regest_list_with_string_value)
+    assert regex_list.match_any(regest_list_with_string_value) == []
+
+
 def test_regex_list_validator_captures():
     regex_list_validator_raw_value = ["try (.+) this", "try (.+) that", "how (.+) this"]
 
