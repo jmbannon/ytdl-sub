@@ -11,7 +11,8 @@ from typing import final
 
 from ytdl_sub.utils.exceptions import ValidationException
 
-V = TypeVar("V", bound=ValidationException)
+ValidationExceptionT = TypeVar("ValidationExceptionT", bound=ValidationException)
+ValidatorT = TypeVar("ValidatorT", bound="Validator")
 
 
 class Validator(ABC):
@@ -40,8 +41,10 @@ class Validator(ABC):
             )
 
     def _validation_exception(
-        self, error_message: str | Exception, exception_class: Type[V] = ValidationException
-    ) -> V:
+        self,
+        error_message: str | Exception,
+        exception_class: Type[ValidationExceptionT] = ValidationException,
+    ) -> ValidationExceptionT:
         """
         Parameters
         ----------
@@ -92,10 +95,7 @@ class StringValidator(Validator):
         return self._value
 
 
-T = TypeVar("T", bound=Validator)
-
-
-class ListValidator(Validator, ABC, Generic[T]):
+class ListValidator(Validator, ABC, Generic[ValidatorT]):
     """
     Validates a list of objects to validate
     """
@@ -103,17 +103,22 @@ class ListValidator(Validator, ABC, Generic[T]):
     _expected_value_type = list
     _expected_value_type_name = "list"
 
-    _inner_list_type: Type[T]
+    _inner_list_type: Type[ValidatorT]
 
     def __init__(self, name, value):
+        # If the value isn't actually a list, but a single value with the same type as the
+        # _inner_list_type, cast it to a list with a single element
+        if isinstance(value, self._inner_list_type._expected_value_type):
+            value = [value]
+
         super().__init__(name, value)
-        self._list: List[T] = [
+        self._list: List[ValidatorT] = [
             self._inner_list_type(name=f"{name}.{i+1}", value=val)
             for i, val in enumerate(self._value)
         ]
 
     @property
-    def list(self) -> List[T]:
+    def list(self) -> List[ValidatorT]:
         """
         Returns
         -------
@@ -168,9 +173,9 @@ class DictValidator(Validator):
     def _validate_key(
         self,
         key: str,
-        validator: Type[T],
+        validator: Type[ValidatorT],
         default: Optional[Any] = None,
-    ) -> T:
+    ) -> ValidatorT:
         """
         Parameters
         ----------
@@ -201,9 +206,9 @@ class DictValidator(Validator):
     def _validate_key_if_present(
         self,
         key: str,
-        validator: Type[T],
+        validator: Type[ValidatorT],
         default: Optional[Any] = None,
-    ) -> Optional[T]:
+    ) -> Optional[ValidatorT]:
         """
         If the key does not exist in the dict, and no default is provided, return None.
         Otherwise, validate the key.
@@ -239,3 +244,24 @@ class LiteralDictValidator(DictValidator):
     def keys(self) -> List[str]:
         """Returns a sorted list of the dict's keys"""
         return super()._keys
+
+
+class UniformDictValidator(DictValidator, Generic[ValidatorT], ABC):
+    """DictValidator where all values have the same validator"""
+
+    uniform_validator_class: Type[ValidatorT]
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        for key in self._keys:
+            _ = self._validate_key_if_present(key=key, validator=self.uniform_validator_class)
+
+    @property
+    def validator_dict(self) -> Dict[str, ValidatorT]:
+        """
+        Returns
+        -------
+        Dict of name: validator
+        """
+        return self._validator_dict
