@@ -28,3 +28,7 @@ class InvalidYamlException(ValidationException):
 
 class RegexNoMatchException(ValidationException):
     """Regex failed to match during download"""
+
+
+class InvalidDlArguments(ValidationException):
+    """dl arguments that are invalid"""

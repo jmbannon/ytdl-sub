@@ -1,5 +1,4 @@
 import shlex
-from argparse import ArgumentError
 from typing import Callable
 from typing import Dict
 from typing import List
@@ -10,6 +9,7 @@ import pytest
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigOptions
+from ytdl_sub.utils.exceptions import InvalidDlArguments
 
 
 @pytest.fixture
@@ -66,6 +66,31 @@ class TestDownloadArgsParser:
                 "dl --youtube.playlist_url https://youtube.com/playlist?list=123abc",
                 {"youtube": {"playlist_url": "https://youtube.com/playlist?list=123abc"}},
             ),
+            (
+                None,
+                "dl --parameter.using.list[1] 'v1'",
+                {"parameter": {"using": {"list": ["v1"]}}},
+            ),
+            (
+                None,
+                "dl --parameter.using.list[1] 'v1' --parameter.using.list[2] 'v2'",
+                {"parameter": {"using": {"list": ["v1", "v2"]}}},
+            ),
+            (
+                None,
+                "dl --parameter.using.list[2] 'v2' --parameter.using.list[1] 'v1'",
+                {"parameter": {"using": {"list": ["v1", "v2"]}}},
+            ),
+            (
+                None,
+                "dl --parameter.using.list[2] 'v3' --parameter.using.list[1] 'v1' --parameter.using.list[2] 'v2'",
+                {"parameter": {"using": {"list": ["v1", "v2"]}}},
+            ),
+            (
+                None,
+                "dl --parameter.not.using.list[0] 'v0'",
+                {"parameter": {"not": {"using": {"list[0]": "v0"}}}},
+            ),
         ],
     )
     def test_successful_args(self, config_options_generator, aliases, cmd, expected_sub_dict):
@@ -82,7 +107,7 @@ class TestDownloadArgsParser:
         config_options = config_options_generator()
         extra_args = _get_extra_arguments(cmd_string="dl --preset")
 
-        with pytest.raises(ArgumentError, match=argument_error_msg):
+        with pytest.raises(InvalidDlArguments, match=argument_error_msg):
             DownloadArgsParser(
                 extra_arguments=extra_args, config_options=config_options
             ).to_subscription_dict()
@@ -91,7 +116,31 @@ class TestDownloadArgsParser:
         config_options = config_options_generator()
         extra_args = _get_extra_arguments(cmd_string="dl --preset buttered toast --test")
 
-        with pytest.raises(ArgumentError, match=argument_error_msg):
+        with pytest.raises(InvalidDlArguments, match=argument_error_msg):
+            DownloadArgsParser(
+                extra_arguments=extra_args, config_options=config_options
+            ).to_subscription_dict()
+
+    def test_error_incomplete_list(self, config_options_generator):
+        config_options = config_options_generator()
+        extra_args = _get_extra_arguments(cmd_string="dl --parameter.using.list[3] 'v3'")
+
+        with pytest.raises(InvalidDlArguments, match="Incomplete list"):
+            DownloadArgsParser(
+                extra_arguments=extra_args, config_options=config_options
+            ).to_subscription_dict()
+
+    def test_error_two_different_types(self, config_options_generator):
+        config_options = config_options_generator()
+        extra_args = _get_extra_arguments(
+            cmd_string="dl --parameter.using.list 'v2' --parameter.using.list[1] 'v1'"
+        )
+
+        with pytest.raises(
+            InvalidDlArguments,
+            match=f"Invalid dl argument --parameter.using.list: "
+            "Cannot specify an argument to be two different types",
+        ):
             DownloadArgsParser(
                 extra_arguments=extra_args, config_options=config_options
             ).to_subscription_dict()
