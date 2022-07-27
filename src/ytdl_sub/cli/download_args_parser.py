@@ -88,7 +88,7 @@ class DownloadArgsParser:
         :param indices: List of indices
         :return: Largest integer n + 1 so that all the integers from 0 up to n exist
                  in the indices.
-                 -1 if indices list is empty or the smallest integer in indices is larger that 0.
+                 0 if indices list is empty or the smallest integer in indices is larger than 0.
         """
         largest_consecutive = -1
         indices.sort()

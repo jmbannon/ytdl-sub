@@ -88,6 +88,11 @@ class TestDownloadArgsParser:
             ),
             (
                 None,
+                "dl --parameter.using.list[3] 'v3' --parameter.using.list[1] 'v1'",
+                {"parameter": {"using": {"list": ["v1"]}}},
+            ),
+            (
+                None,
                 "dl --parameter.not.using.list[0] 'v0'",
                 {"parameter": {"not": {"using": {"list[0]": "v0"}}}},
             ),
