@@ -6,18 +6,16 @@ from typing import Optional
 
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.downloader import DownloaderOptionsT
+from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubeChannel
 from ytdl_sub.entries.youtube import YoutubeVideo
-from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.date_range_validator import DateRangeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
-
-logger = Logger.get()
 
 
 class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidator):
@@ -149,27 +147,30 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         # dry-run the entire channel download first, this will get the
         # videos that will be downloaded. Afterwards, download each video one-by-one
         entry_dicts = self.extract_info_via_info_json(
-            ytdl_options_overrides=dict(
-                {"skip_download": True, "write_thumbnail": False}, **ytdl_options_overrides
-            ),
+            ytdl_options_overrides=ytdl_options_overrides,
+            only_info_json=True,
+            log_prefix_on_info_json_dl="Downloading metadata for",
             url=self.download_options.channel_url,
         )
         self.channel = self._get_channel_from_entry_dicts(entry_dicts=entry_dicts)
 
-        for entry_dict in entry_dicts:
-            if entry_dict.get("extractor") == "youtube":
+        for idx, entry_dict in enumerate(entry_dicts, start=1):
+            if entry_dict.get("extractor") == self.downloader_entry_type.entry_extractor:
+                video = YoutubeVideo(
+                    entry_dict=entry_dict, working_directory=self.working_directory
+                )
+                download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
+
                 # Only do the individual download if it is not dry-run
-                # TODO: Respect the Reject/Exist exceptions
                 if not self.is_dry_run:
-                    ytdl_options_overrides["playlist_items"] = str(entry_dict.get("playlist_index"))
                     _ = self.extract_info(
                         ytdl_options_overrides={
-                            "playlist_items": str(entry_dict.get("playlist_index")),
+                            "playlist_items": str(video.kwargs("playlist_index")),
                             "writeinfojson": False,
                         },
                         url=self.download_options.channel_url,
                     )
-                yield YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+                yield video
 
     def _download_thumbnail(
         self,
@@ -187,7 +188,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             Path to store the thumbnail after downloading
         """
         if not thumbnail_url:
-            logger.warning("Could not find a thumbnail for %s", self.channel.uid)
+            download_logger.warning("Could not find a thumbnail for %s", self.channel.uid)
             return
 
         convert_url_thumbnail(

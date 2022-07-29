@@ -20,7 +20,6 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
-from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
@@ -227,29 +226,10 @@ class Subscription:
             self._enhanced_download_archive.save_download_mappings()
 
     @contextlib.contextmanager
-    def _listen_and_log_downloaded_entries(self):
-        """
-        Context manager that starts a separate thread that listens for new .info.json files,
-        prints their titles as they appear
-        """
-        info_json_listener = LogEntriesDownloadedListener(
-            working_directory=self.working_directory,
-            info_json_extractor=self.downloader_class.downloader_entry_type.entry_extractor,
-        )
-
-        info_json_listener.start()
-
-        try:
-            yield
-        finally:
-            info_json_listener.complete = True
-
-    @contextlib.contextmanager
     def _subscription_download_context_managers(self) -> None:
         with (
             self._prepare_working_directory(),
             self._maintain_archive_file(),
-            self._listen_and_log_downloaded_entries(),
         ):
             yield
 

@@ -1,4 +1,5 @@
 import abc
+import contextlib
 import json
 import os
 from abc import ABC
@@ -20,13 +21,14 @@ from yt_dlp.utils import RejectedVideoReached
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-logger = Logger.get(name="downloader")
+download_logger = Logger.get(name="downloader")
 
 
 class DownloaderValidator(StrictDictValidator, ABC):
@@ -167,8 +169,35 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
         return entry_dicts
 
+    @contextlib.contextmanager
+    def _listen_and_log_downloaded_info_json(self, log_prefix: Optional[str]):
+        """
+        Context manager that starts a separate thread that listens for new .info.json files,
+        prints their titles as they appear
+        """
+        if not log_prefix:
+            yield
+            return
+
+        info_json_listener = LogEntriesDownloadedListener(
+            working_directory=self.working_directory,
+            info_json_extractor=self.downloader_entry_type.entry_extractor,
+            log_prefix=log_prefix,
+        )
+
+        info_json_listener.start()
+
+        try:
+            yield
+        finally:
+            info_json_listener.complete = True
+
     def extract_info_via_info_json(
-        self, ytdl_options_overrides: Optional[Dict] = None, **kwargs
+        self,
+        ytdl_options_overrides: Optional[Dict] = None,
+        only_info_json: bool = False,
+        log_prefix_on_info_json_dl: Optional[str] = None,
+        **kwargs
     ) -> List[Dict]:
         """
         Wrapper around yt_dlp.YoutubeDL.YoutubeDL.extract_info with infojson enabled. Entry dicts
@@ -182,20 +211,31 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         ----------
         ytdl_options_overrides
             Optional. Dict containing ytdl args to override other predefined ytdl args
+        only_info_json
+            Default false. Skip download and thumbnail download if True.
+        log_prefix_on_info_json_dl
+            Optional. Spin a new thread to listen for new info.json files. Log
+            f'{log_prefix_on_info_json_dl} {title}' when a new one appears
         **kwargs
             arguments passed directory to YoutubeDL extract_info
         """
         if ytdl_options_overrides is None:
             ytdl_options_overrides = {}
 
-        ytdl_options_overrides = dict(ytdl_options_overrides, **{"writeinfojson": True})
+        extract_info_ytdl_options = {"writeinfojson": True}
+        if only_info_json:
+            extract_info_ytdl_options["skip_download"] = True
+            extract_info_ytdl_options["writethumbnail"] = False
+
+        ytdl_options_overrides = dict(ytdl_options_overrides, **extract_info_ytdl_options)
 
         try:
-            _ = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
+            with self._listen_and_log_downloaded_info_json(log_prefix=log_prefix_on_info_json_dl):
+                _ = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
-            logger.debug("RejectedVideoReached, stopping additional downloads")
+            download_logger.debug("RejectedVideoReached, stopping additional downloads")
         except ExistingVideoReached:
-            logger.debug("ExistingVideoReached, stopping additional downloads")
+            download_logger.debug("ExistingVideoReached, stopping additional downloads")
 
         return self._get_entry_dicts_from_info_json_files()
 

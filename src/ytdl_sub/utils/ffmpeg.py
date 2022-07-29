@@ -46,7 +46,8 @@ class FFMPEG:
         cmd = ["ffmpeg"]
         cmd.extend(ffmpeg_args)
         logger.debug("Running %s", " ".join(cmd))
-        subprocess.run(cmd, check=True)
+        with Logger.handle_external_logs(name="ffmpeg"):
+            subprocess.run(cmd, check=True, capture_output=True)
 
 
 def _create_metadata_chapter_entry(start_sec: int, end_sec: int, title: str) -> List[str]:
