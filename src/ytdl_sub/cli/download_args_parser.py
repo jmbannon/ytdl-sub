@@ -3,6 +3,7 @@ import re
 import shlex
 from typing import Dict
 from typing import List
+from typing import Tuple
 
 from mergedeep import mergedeep
 
@@ -17,6 +18,9 @@ class DownloadArgsParser:
     passed in to instantiate a
     :class:`~ytdl_subscribe.validators.config.preset_validator.PresetValidator`
     """
+
+    # pattern to search for the [...] part in the argument name
+    _list_index_pattern = re.compile(r"\[([1-9]\d*)\]$")
 
     def __init__(self, extra_arguments: List[str], config_options: ConfigOptions):
         """
@@ -62,25 +66,23 @@ class DownloadArgsParser:
         return arg_name[2:]
 
     @classmethod
-    def _uses_list(cls, argument_name: str) -> bool:
+    def _get_list_index_if_exists(cls, argument_name: str) -> Tuple[str, int]:
         """
-        :param argument_name: The argument name which might be using list
-        :return: True if the argument uses list, denoted by ending with '[<positive integer>]'.
-                 False otherwise.
-        """
-        pattern = re.compile(r"\[[1-9]\d*\]$")
+        :param argument_name: Argument name
+        :return: Argument name and -1 if argument name does not use list.
+                 Argument name and list index (a non-negative integer) otherwise.
 
-        return bool(pattern.search(argument_name))
-
-    @classmethod
-    def _extract_list_index(cls, argument_name: str) -> int:
+        Examples
+        --------
+            _get_list_index_if_exists("--key1.key2") -> ("--key1.key2", -1)
+            _get_list_index_if_exists("--key1.key2[5]") -> ("--key1.key2", 5)
         """
-        :param argument_name: The argument name using list
-        :return: Splits the argument and returns the name and the list index.
-        """
-        prefix, _, last = argument_name.rpartition("[")
+        search = cls._list_index_pattern.search(argument_name)
 
-        return prefix, int(last[:-1]) - 1
+        if search is None:
+            return argument_name, -1
+
+        return argument_name[: search.start()], int(search.group(1)) - 1
 
     @classmethod
     def _find_largest_consecutive(cls, indices: List[int]) -> int:
@@ -148,13 +150,12 @@ class DownloadArgsParser:
 
         for idx in range(0, len(arguments), 2):
             argument_name, argument_value = arguments[idx], arguments[idx + 1]
+            argument_name, list_index = cls._get_list_index_if_exists(argument_name=argument_name)
 
-            if not cls._uses_list(argument_name=argument_name):
+            if list_index == -1:
                 new_arguments.append(argument_name)
                 new_arguments.append(argument_value)
                 continue
-
-            argument_name, list_index = cls._extract_list_index(argument_name=argument_name)
 
             if argument_name not in list_arguments:
                 list_arguments[argument_name] = ([], [])
