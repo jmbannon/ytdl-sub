@@ -2,6 +2,7 @@ from typing import Dict
 from typing import Generator
 from typing import List
 
+from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloader
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloaderOptions
 from ytdl_sub.entries.soundcloud import SoundcloudAlbum
@@ -119,11 +120,9 @@ class SoundcloudAlbumsAndSinglesDownloader(
         # Dry-run to get the info json files
         artist_albums_url = self.artist_albums_url(artist_url=self.download_options.url)
         album_entry_dicts = self.extract_info_via_info_json(
+            only_info_json=True,
+            log_prefix_on_info_json_dl="Downloading metadata for",
             url=artist_albums_url,
-            ytdl_options_overrides={
-                "skip_download": True,
-                "writethumbnail": False,
-            },
         )
 
         albums = self._get_albums_from_entry_dicts(entry_dicts=album_entry_dicts)
@@ -133,10 +132,19 @@ class SoundcloudAlbumsAndSinglesDownloader(
         self, albums: List[SoundcloudAlbum]
     ) -> Generator[SoundcloudAlbumTrack, None, None]:
         for album in albums:
+            if len(album.album_tracks()) > 0:
+                download_logger.info("Downloading album %s", album.title)
+
             for track in album.album_tracks():
                 if self.download_options.skip_premiere_tracks and track.is_premiere():
                     continue
 
+                download_logger.info(
+                    "Downloading album track %d/%d %s",
+                    track.track_number,
+                    track.track_count,
+                    track.title,
+                )
                 if not self.is_dry_run:
                     _ = self.extract_info(
                         url=album.kwargs("webpage_url"),
@@ -153,11 +161,9 @@ class SoundcloudAlbumsAndSinglesDownloader(
     ) -> Generator[SoundcloudTrack, None, None]:
         artist_tracks_url = self.artist_tracks_url(artist_url=self.download_options.url)
         tracks_entry_dicts = self.extract_info_via_info_json(
+            only_info_json=True,
+            log_prefix_on_info_json_dl="Downloading metadata for",
             url=artist_tracks_url,
-            ytdl_options_overrides={
-                "skip_download": True,
-                "writethumbnail": False,
-            },
         )
 
         # Then, get all singles
@@ -167,6 +173,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
             if self.download_options.skip_premiere_tracks and track.is_premiere():
                 continue
 
+            download_logger.info("Downloading single track %s", track.title)
             if not self.is_dry_run:
                 _ = self.extract_info(
                     url=track.kwargs("webpage_url"), ytdl_options_overrides={"writeinfojson": False}

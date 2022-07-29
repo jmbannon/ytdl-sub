@@ -1,6 +1,7 @@
 from typing import Dict
 from typing import Generator
 
+from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
@@ -75,15 +76,17 @@ class YoutubePlaylistDownloader(
         downloaded. Afterwards, download each video one-by-one
         """
         entry_dicts = self.extract_info_via_info_json(
-            ytdl_options_overrides={
-                "skip_download": True,
-                "writethumbnail": False,
-            },
+            only_info_json=True,
+            log_prefix_on_info_json_dl="Downloading metadata for",
             url=self.download_options.playlist_url,
         )
 
-        for entry_dict in entry_dicts:
-            if entry_dict.get("extractor") == "youtube":
+        for idx, entry_dict in enumerate(entry_dicts, start=1):
+            if entry_dict.get("extractor") == self.downloader_entry_type.entry_extractor:
+                video = YoutubePlaylistVideo(
+                    entry_dict=entry_dict, working_directory=self.working_directory
+                )
+                download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
 
                 # Only do the individual download if it is not dry-run and downloading individually
                 if not self.is_dry_run:
@@ -95,6 +98,4 @@ class YoutubePlaylistDownloader(
                         url=self.download_options.playlist_url,
                     )
 
-                yield YoutubePlaylistVideo(
-                    entry_dict=entry_dict, working_directory=self.working_directory
-                )
+                yield video

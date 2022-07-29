@@ -2,6 +2,7 @@ import json
 import os.path
 import threading
 import time
+from json import JSONDecodeError
 from pathlib import Path
 from typing import Optional
 from typing import Set
@@ -12,7 +13,7 @@ logger = Logger.get(name="downloader")
 
 
 class LogEntriesDownloadedListener(threading.Thread):
-    def __init__(self, working_directory, info_json_extractor):
+    def __init__(self, working_directory: str, info_json_extractor: str, log_prefix: str):
         """
         To be ran in a thread while download via ytdl-sub. Listens for new .info.json files in the
         working directory, checks the extractor value, and if it matches the input arg, log the
@@ -24,17 +25,24 @@ class LogEntriesDownloadedListener(threading.Thread):
             subscription download working directory
         info_json_extractor
             print the titles of the info.json file with this extractor
+        log_prefix
+            The message to print prefixed to the title, i.e. '{log_prefix} {title}'
         """
         threading.Thread.__init__(self)
         self.working_directory = working_directory
         self.info_json_extractor = info_json_extractor
+        self.log_prefix = log_prefix
         self.complete = False
 
         self._files_read: Set[str] = set()
 
     def _get_title_from_info_json(self, path: Path) -> Optional[str]:
-        with open(path, "r", encoding="utf-8") as file:
-            file_json = json.load(file)
+        try:
+            with open(path, "r", encoding="utf-8") as file:
+                file_json = json.load(file)
+        except JSONDecodeError:
+            # swallow the error since this is only printing logs
+            return None
 
         if file_json.get("extractor") == self.info_json_extractor:
             return file_json.get("title")
@@ -57,7 +65,7 @@ class LogEntriesDownloadedListener(threading.Thread):
                 title = self._get_title_from_info_json(path)
                 self._files_read.add(path.name)
                 if title:
-                    logger.info("Downloading %s", title)
+                    logger.info("%s %s", self.log_prefix, title)
 
     def run(self):
         """

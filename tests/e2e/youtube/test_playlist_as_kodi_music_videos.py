@@ -118,7 +118,7 @@ class TestPlaylistAsKodiMusicVideo:
 
             # Ensure another invocation will hit ExistingVideoReached
             with assert_debug_log(
-                logger=ytdl_sub.downloaders.downloader.logger,
+                logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
             ):
                 playlist_subscription.download()

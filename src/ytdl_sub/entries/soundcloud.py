@@ -119,7 +119,7 @@ class SoundcloudAlbum(Entry):
             for track in self.tracks
         ]
 
-        return album_tracks
+        return sorted(album_tracks, key=lambda track: track.track_number)
 
     @property
     def album_year(self) -> int:

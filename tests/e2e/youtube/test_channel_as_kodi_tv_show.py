@@ -267,7 +267,7 @@ class TestChannelAsKodiTvShow:
 
             # try downloading again, ensure nothing more was downloaded
             with assert_debug_log(
-                logger=ytdl_sub.downloaders.downloader.logger,
+                logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
             ):
                 transaction_log = recent_channel_subscription.download()
@@ -330,7 +330,7 @@ class TestChannelAsKodiTvShow:
         # First, download recent vids. Always download since we want to test dry-run
         # on the rolling recent portion.
         with assert_debug_log(
-            logger=ytdl_sub.downloaders.downloader.logger,
+            logger=ytdl_sub.downloaders.downloader.download_logger,
             expected_message="RejectedVideoReached, stopping additional downloads",
         ):
             transaction_log = recent_channel_subscription.download()
@@ -345,7 +345,7 @@ class TestChannelAsKodiTvShow:
         # Then, download the rolling recent vids subscription. This should remove one of the
         # two videos
         with assert_debug_log(
-            logger=ytdl_sub.downloaders.downloader.logger,
+            logger=ytdl_sub.downloaders.downloader.download_logger,
             expected_message="ExistingVideoReached, stopping additional downloads",
         ):
             transaction_log = rolling_recent_channel_subscription.download(dry_run=dry_run)
@@ -365,7 +365,7 @@ class TestChannelAsKodiTvShow:
         # existing
         if not dry_run:
             with assert_debug_log(
-                logger=ytdl_sub.downloaders.downloader.logger,
+                logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
             ):
                 transaction_log = rolling_recent_channel_subscription.download()
