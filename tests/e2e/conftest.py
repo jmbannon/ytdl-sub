@@ -24,3 +24,20 @@ def channel_as_tv_show_config():
 @pytest.fixture
 def soundcloud_discography_config():
     return ConfigFile.from_file_path(config_path="examples/soundcloud_discography_config.yaml")
+
+
+@pytest.fixture
+def timestamps_file_path():
+    timestamps = [
+        "0:00 Intro\n",
+        "00:10 Part 1\n",
+        "0:20 Part 2\n",
+        "00:30 Part 3\n",
+        "0:00:40 Part 4\n",
+        "00:01:01 Part 5\n",
+    ]
+
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", suffix=".txt") as tmp:
+        tmp.writelines(timestamps)
+        tmp.seek(0)
+        yield tmp.name
