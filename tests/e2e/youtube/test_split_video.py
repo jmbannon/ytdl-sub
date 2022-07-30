@@ -11,30 +11,13 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def split_timestamps_file_path():
-    timestamps = [
-        "0:00 Intro\n",
-        "00:10 Part 1\n",
-        "0:20 Part 2\n",
-        "00:30 Part 3\n",
-        "0:00:40 Part 4\n",
-        "00:01:01 Part 5\n",
-    ]
-
-    with NamedTemporaryFile(mode="w", encoding="utf-8", suffix=".txt") as tmp:
-        tmp.writelines(timestamps)
-        tmp.seek(0)
-        yield tmp.name
-
-
-@pytest.fixture
-def subscription_dict(output_directory, split_timestamps_file_path):
+def subscription_dict(output_directory, timestamps_file_path):
     return {
         "preset": "yt_music_video",
         "youtube": {
             "download_strategy": "split_video",
             "video_url": "https://youtube.com/watch?v=HKTNxEqsN3Q",
-            "split_timestamps": split_timestamps_file_path,
+            "split_timestamps": timestamps_file_path,
         },
         # override the output directory with our fixture-generated dir
         "output_options": {
