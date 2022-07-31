@@ -43,7 +43,9 @@ class FileMetadata:
         return self
 
     @classmethod
-    def from_dict(cls, value_dict: Dict[str, Any], title: Optional[str] = None) -> "FileMetadata":
+    def from_dict(
+        cls, value_dict: Dict[str, Any], title: Optional[str] = None, sort_dict: bool = True
+    ) -> "FileMetadata":
         """
         Parameters
         ----------
@@ -51,13 +53,19 @@ class FileMetadata:
             Dict of things to print indented
         title
             Optional. Title line to put above the dict
+        sort_dict
+            Whether to sort dicts in the value_dict. Defaults to true.
         """
         lines: List[str] = []
         if title is not None:
             lines.append(title)
 
         def _recursive_add_dict_lines(rdict: Dict, indent: int):
-            for key, value in sorted(rdict.items()):
+            rdict_items = rdict.items()
+            if sort_dict:
+                rdict_items = sorted(rdict_items)
+
+            for key, value in rdict_items:
                 _indent = " " * indent
                 if isinstance(value, Dict):
                     lines.append(f"{_indent}{key}:")
