@@ -161,6 +161,7 @@ class Chapters:
         return FileMetadata.from_dict(
             value_dict={ts.readable_str: title for ts, title in zip(self.timestamps, self.titles)},
             title=title,
+            sort_dict=False,  # timestamps + titles are already sorted
         )
 
     @classmethod
