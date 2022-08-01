@@ -65,8 +65,8 @@ class Entry(EntryVariables, BaseEntry):
         -------
         True if the file and thumbnail exist locally. False otherwise.
         """
-        thumbnail_exists = os.path.isfile(
-            self.get_download_thumbnail_path()
+        thumbnail_exists = (
+            os.path.isfile(self.get_download_thumbnail_path())
             or self.get_ytdlp_download_thumbnail_path() is not None
         )
         file_exists = os.path.isfile(self.get_download_file_path())

@@ -1,5 +1,6 @@
 import abc
 import contextlib
+import copy
 import json
 import os
 import time
@@ -185,6 +186,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         """
         num_tries = 0
         entry_files_exist = False
+        ytdl_options_overrides = copy.deepcopy(ytdl_options_overrides)
 
         while not entry_files_exist and num_tries < self._extract_entry_num_retries:
             entry_dict = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
@@ -193,6 +195,11 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
             time.sleep(self._extract_entry_retry_wait_sec)
             num_tries += 1
+
+            # Remove the download archive so it can retry without thinking its already downloaded,
+            # even though it is not
+            ytdl_options_overrides["download_archive"] = None
+
             if num_tries < self._extract_entry_retry_wait_sec:
                 download_logger.debug(
                     "Failed to download entry. Retrying %d / %d",
