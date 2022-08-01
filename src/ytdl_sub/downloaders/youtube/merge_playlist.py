@@ -74,7 +74,6 @@ class YoutubeMergePlaylistDownloader(
 
            ytdl_options:
              ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
-             playlistreverse: True  # Sort the playlist so it begins with the first entry
              postprocessors:
                # Convert the videos to mkv format
                - key: "FFmpegVideoConvertor"
@@ -87,7 +86,6 @@ class YoutubeMergePlaylistDownloader(
         return dict(
             super().ytdl_option_defaults(),
             **{
-                "playlistreverse": True,
                 "postprocessors": [
                     {
                         "key": "FFmpegVideoConvertor",
