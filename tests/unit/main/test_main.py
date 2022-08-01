@@ -1,4 +1,5 @@
 import contextlib
+import logging
 import sys
 from unittest.mock import patch
 
@@ -39,25 +40,27 @@ def test_main_success(mock_sys_exit):
 
 def test_main_validation_error(capsys, mock_sys_exit):
     validation_exception = ValidationException("test")
-    with mock_sys_exit(expected_exit_code=1):
-        with patch("src.ytdl_sub.main._main", side_effect=validation_exception):
-            with patch("src.ytdl_sub.main.logger") as mock_logger:
-                main()
+    with mock_sys_exit(expected_exit_code=1), patch(
+        "src.ytdl_sub.main._main", side_effect=validation_exception
+    ), patch.object(logging.Logger, "error") as mock_logger:
+        main()
 
-    assert mock_logger.error.call_count == 1
-    assert mock_logger.error.call_args.args[0] == validation_exception
+    assert mock_logger.call_count == 1
+    assert mock_logger.call_args.args[0] == validation_exception
 
 
 def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_message):
     uncaught_error = ValueError("test")
-    with mock_sys_exit(expected_exit_code=1):
-        with patch("src.ytdl_sub.main._main", side_effect=uncaught_error):
-            with patch("src.ytdl_sub.main.logger") as mock_logger:
-                main()
+    with mock_sys_exit(expected_exit_code=1), patch(
+        "src.ytdl_sub.main._main", side_effect=uncaught_error
+    ), patch.object(logging.Logger, "exception") as mock_exception, patch.object(
+        logging.Logger, "error"
+    ) as mock_error:
+        main()
 
-    assert mock_logger.exception.call_count == 1
-    assert mock_logger.exception.call_args.args[0] == "An uncaught error occurred:"
+    assert mock_exception.call_count == 1
+    assert mock_exception.call_args.args[0] == "An uncaught error occurred:"
 
-    assert mock_logger.error.call_count == 1
-    assert mock_logger.error.call_args.args[0] == expected_uncaught_error_message
-    assert mock_logger.error.call_args.args[1] == Logger.debug_log_filename()
+    assert mock_error.call_count == 1
+    assert mock_error.call_args.args[0] == expected_uncaught_error_message
+    assert mock_error.call_args.args[1] == Logger.debug_log_filename()

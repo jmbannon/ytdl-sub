@@ -27,6 +27,7 @@ parser.add_argument(
     help="level of logs to print to console, defaults to info",
     default=LoggerLevels.INFO.name,
     choices=LoggerLevels.names(),
+    dest="ytdl_sub_log_level",
 )
 ###################################################################################################
 # SUBSCRIPTION PARSER
