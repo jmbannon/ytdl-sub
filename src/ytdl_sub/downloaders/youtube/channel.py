@@ -163,7 +163,8 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
 
                 # Only do the individual download if it is not dry-run
                 if not self.is_dry_run:
-                    _ = self.extract_info(
+                    _ = self.extract_info_with_retry(
+                        is_downloaded_fn=video.is_downloaded,
                         ytdl_options_overrides={
                             "playlist_items": str(video.kwargs("playlist_index")),
                             "writeinfojson": False,

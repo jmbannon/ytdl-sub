@@ -32,3 +32,7 @@ class RegexNoMatchException(ValidationException):
 
 class InvalidDlArguments(ValidationException):
     """dl arguments that are invalid"""
+
+
+class FileNotDownloadedException(ValueError):
+    """ytdlp failed to download something"""
