@@ -5,21 +5,26 @@ from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
 
 
-def main():
-    """
-    Entrypoint for ytdl-sub
-    """
+def _main():
     # Set log level before any other ytdl-sub files are imported. That way, when loggers
     # get initialized, they will see the set log level
     args, _ = parser.parse_known_args()
     Logger.set_log_level(log_level_name=args.ytdl_sub_log_level)
+
+    # pylint: disable=import-outside-toplevel
+    import ytdl_sub.cli.main
+
+    # pylint: enable=import-outside-toplevel
+
+    ytdl_sub.cli.main.main()
+
+
+def main():
+    """
+    Entrypoint for ytdl-sub
+    """
     logger = Logger.get()
-
     try:
-        # pylint: disable=import-outside-toplevel
-        from ytdl_sub.cli.main import main as _main
-        # pylint: enable=import-outside-toplevel
-
         _main()
     except ValidationException as validation_exception:
         logger.error(validation_exception)
