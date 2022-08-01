@@ -100,7 +100,7 @@ def main():
 
     args, extra_args = parser.parse_known_args()
 
-    config: ConfigFile = ConfigFile.from_file_path(args.CONFIG).initialize()
+    config: ConfigFile = ConfigFile.from_file_path(args.config).initialize()
     transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
     if args.subparser == "sub":
         transaction_logs = _download_subscriptions_from_yaml_files(config=config, args=args)
