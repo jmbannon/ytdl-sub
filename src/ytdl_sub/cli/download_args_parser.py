@@ -7,6 +7,7 @@ from typing import Tuple
 
 from mergedeep import mergedeep
 
+from ytdl_sub.cli.main_args_parser import MainArgs
 from ytdl_sub.config.config_file import ConfigOptions
 from ytdl_sub.utils.exceptions import InvalidDlArguments
 
@@ -30,9 +31,20 @@ class DownloadArgsParser:
           List of extra arguments from argparse
         config_options
           Configuration portion of config.yaml
+
+        Raises
+        ------
+        InvalidDlArguments
+            If extra arguments contains a ytdl-sub arg
         """
         self._unknown_arguments = extra_arguments
         self._config_options = config_options
+
+        for arg in extra_arguments:
+            if arg in MainArgs.all():
+                raise InvalidDlArguments(
+                    f"'{arg}' is a ytdl-sub argument and must placed behind 'dl'"
+                )
 
     @property
     def _argument_exception(self) -> InvalidDlArguments:
