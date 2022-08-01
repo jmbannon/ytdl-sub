@@ -1,6 +1,24 @@
 import argparse
+from enum import Enum
+from typing import List
 
 from ytdl_sub.utils.logger import LoggerLevels
+
+
+class MainArgs(Enum):
+    CONFIG = "--config"
+    DRY_RUN = "--dry-run"
+    LOG_LEVEL = "--log-level"
+
+    @classmethod
+    def all(cls) -> List[str]:
+        """
+        Returns
+        -------
+        List of all args used in main CLI
+        """
+        return list(map(lambda arg: arg.value, cls))
+
 
 ###################################################################################################
 # GLOBAL PARSER
@@ -9,19 +27,19 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument(
     "-c",
-    "--config",
+    MainArgs.CONFIG.value,
     metavar="CONFIGPATH",
     type=str,
     help="path to the config yaml, uses config.yaml if not provided",
     default="config.yaml",
 )
 parser.add_argument(
-    "--dry-run",
+    MainArgs.DRY_RUN.value,
     action="store_true",
     help="does not perform any video downloads or writes to output directories",
 )
 parser.add_argument(
-    "--log-level",
+    MainArgs.LOG_LEVEL.value,
     metavar="|".join(LoggerLevels.names()),
     type=str,
     help="level of logs to print to console, defaults to info",
