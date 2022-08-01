@@ -1,10 +1,13 @@
 import abc
 import contextlib
+import copy
 import json
 import os
+import time
 from abc import ABC
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Callable
 from typing import Dict
 from typing import Generic
 from typing import Iterable
@@ -22,6 +25,7 @@ from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
+from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -52,6 +56,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     downloader_entry_type: Type[Entry] = Entry
 
     supports_download_archive: bool = True
+
+    _extract_entry_num_retries: int = 5
+    _extract_entry_retry_wait_sec: int = 1
 
     @classmethod
     def ytdl_option_overrides(cls) -> Dict:
@@ -121,6 +128,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         if ytdl_options_overrides is not None:
             ytdl_options = dict(ytdl_options, **ytdl_options_overrides)
 
+        download_logger.debug("ytdl_options: %s", str(ytdl_options))
         with Logger.handle_external_logs(name="yt-dlp"):
             with ytdl.YoutubeDL(ytdl_options) as ytdl_downloader:
                 yield ytdl_downloader
@@ -145,10 +153,64 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
             Optional. Dict containing ytdl args to override other predefined ytdl args
         **kwargs
             arguments passed directory to YoutubeDL extract_info
-
         """
         with self.ytdl_downloader(ytdl_options_overrides) as ytdl_downloader:
             return ytdl_downloader.extract_info(**kwargs)
+
+    def extract_info_with_retry(
+        self,
+        is_downloaded_fn: Callable[[], bool],
+        ytdl_options_overrides: Optional[Dict] = None,
+        **kwargs,
+    ) -> Dict:
+        """
+        Wrapper around yt_dlp.YoutubeDL.YoutubeDL.extract_info
+        All kwargs will passed to the extract_info function.
+
+        This should be used when downloading a single entry. Checks if the entry's video
+        and thumbnail files exist - retry if they do not.
+
+        Parameters
+        ----------
+        is_downloaded_fn
+            Function to check if the entry is downloaded
+        ytdl_options_overrides
+            Optional. Dict containing ytdl args to override other predefined ytdl args
+        **kwargs
+            arguments passed directory to YoutubeDL extract_info
+
+        Raises
+        ------
+        FileNotDownloadedException
+            If the entry fails to download
+        """
+        num_tries = 0
+        entry_files_exist = False
+        ytdl_options_overrides = copy.deepcopy(ytdl_options_overrides)
+
+        while not entry_files_exist and num_tries < self._extract_entry_num_retries:
+            entry_dict = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
+            if is_downloaded_fn():
+                return entry_dict
+
+            time.sleep(self._extract_entry_retry_wait_sec)
+            num_tries += 1
+
+            # Remove the download archive so it can retry without thinking its already downloaded,
+            # even though it is not
+            ytdl_options_overrides["download_archive"] = None
+
+            if num_tries < self._extract_entry_retry_wait_sec:
+                download_logger.debug(
+                    "Failed to download entry. Retrying %d / %d",
+                    num_tries,
+                    self._extract_entry_num_retries,
+                )
+
+        error_dict = {"ytdl_options": ytdl_options_overrides, "kwargs": kwargs}
+        raise FileNotDownloadedException(
+            f"yt-dlp failed to download an entry with these arguments: {error_dict}"
+        )
 
     def _get_entry_dicts_from_info_json_files(self) -> List[Dict]:
         """
@@ -197,7 +259,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         ytdl_options_overrides: Optional[Dict] = None,
         only_info_json: bool = False,
         log_prefix_on_info_json_dl: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> List[Dict]:
         """
         Wrapper around yt_dlp.YoutubeDL.YoutubeDL.extract_info with infojson enabled. Entry dicts
