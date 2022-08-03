@@ -20,6 +20,15 @@ We recognize that everyone stores their
 media differently. Our approach for file and metadata formatting is to provide
 maximum flexibility while maintaining simplicity.
 
+### YouTube Channels as TV Shows in Jellyfin
+![jellyfin](https://user-images.githubusercontent.com/10107080/182677243-b4184e51-9780-4094-bd40-ea4ff58555d0.PNG)
+
+### Music Videos/Concerts in Jellyfin
+![jelly_mv](https://user-images.githubusercontent.com/10107080/182677256-43aeb029-0c3f-4648-9fd2-352b9666b262.PNG)
+
+### Music Videos/Concerts in Kodi
+![kodi](https://user-images.githubusercontent.com/10107080/182677268-d1bf2ff0-9b9c-4a04-98ec-443a67ada734.png)
+
 ## How it Works
 `ytdl-sub` uses YAML configs to define a layout for how you want media to look
 after it is downloaded. See our
