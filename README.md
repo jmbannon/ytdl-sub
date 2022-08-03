@@ -29,6 +29,10 @@ maximum flexibility while maintaining simplicity.
 ### Music Videos/Concerts in Kodi
 ![kodi](https://user-images.githubusercontent.com/10107080/182677268-d1bf2ff0-9b9c-4a04-98ec-443a67ada734.png)
 
+### SoundCloud Albums and Singles in MusicBee
+![sc_mb](https://user-images.githubusercontent.com/10107080/182685415-06adf477-3dd3-475d-bbcd-53b0152b9f0a.PNG)
+
+
 ## How it Works
 `ytdl-sub` uses YAML configs to define a layout for how you want media to look
 after it is downloaded. See our
