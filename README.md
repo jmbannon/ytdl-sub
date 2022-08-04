@@ -23,10 +23,10 @@ maximum flexibility while maintaining simplicity.
 ### YouTube Channels as TV Shows in Jellyfin
 ![jellyfin](https://user-images.githubusercontent.com/10107080/182677243-b4184e51-9780-4094-bd40-ea4ff58555d0.PNG)
 
-### Music Videos/Concerts in Jellyfin
+### Music Videos and Concerts in Jellyfin
 ![jelly_mv](https://user-images.githubusercontent.com/10107080/182677256-43aeb029-0c3f-4648-9fd2-352b9666b262.PNG)
 
-### Music Videos/Concerts in Kodi
+### Music Videos and Concerts in Kodi
 ![kodi](https://user-images.githubusercontent.com/10107080/182677268-d1bf2ff0-9b9c-4a04-98ec-443a67ada734.png)
 
 ### SoundCloud Albums and Singles in MusicBee
