@@ -160,6 +160,7 @@ class TestStringFormatterValidator(object):
         )
 
         format_string = string_formatter_class(name="test", value="{level_a}")
+        format_string._max_format_recursion = 3
 
         with pytest.raises(StringFormattingException, match=expected_error_msg):
             _ = format_string.apply_formatter(variable_dict=variable_dict)
