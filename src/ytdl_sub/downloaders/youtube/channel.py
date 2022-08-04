@@ -205,16 +205,22 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         overrides
             Overrides that can contain variables in the avatar or banner file path
         """
-        avatar_thumbnail_name = overrides.apply_formatter(self.download_options.channel_avatar_path)
-        self._download_thumbnail(
-            thumbnail_url=self.channel.avatar_thumbnail_url(),
-            output_thumbnail_path=str(Path(self.working_directory) / avatar_thumbnail_name),
-        )
-        self.save_file(file_name=avatar_thumbnail_name)
+        if self.download_options.channel_avatar_path:
+            avatar_thumbnail_name = overrides.apply_formatter(
+                self.download_options.channel_avatar_path
+            )
+            self._download_thumbnail(
+                thumbnail_url=self.channel.avatar_thumbnail_url(),
+                output_thumbnail_path=str(Path(self.working_directory) / avatar_thumbnail_name),
+            )
+            self.save_file(file_name=avatar_thumbnail_name)
 
-        banner_thumbnail_name = overrides.apply_formatter(self.download_options.channel_banner_path)
-        self._download_thumbnail(
-            thumbnail_url=self.channel.banner_thumbnail_url(),
-            output_thumbnail_path=str(Path(self.working_directory) / banner_thumbnail_name),
-        )
-        self.save_file(file_name=banner_thumbnail_name)
+        if self.download_options.channel_banner_path:
+            banner_thumbnail_name = overrides.apply_formatter(
+                self.download_options.channel_banner_path
+            )
+            self._download_thumbnail(
+                thumbnail_url=self.channel.banner_thumbnail_url(),
+                output_thumbnail_path=str(Path(self.working_directory) / banner_thumbnail_name),
+            )
+            self.save_file(file_name=banner_thumbnail_name)
