@@ -77,7 +77,7 @@ class StringFormatterValidator(Validator):
         "Format variable '{variable_name}' does not exist. Available variables: {available_fields}"
     )
 
-    __max_format_recursion = 3
+    _max_format_recursion = 8
 
     def __validate_and_get_format_variables(self) -> List[str]:
         """
@@ -168,7 +168,7 @@ class StringFormatterValidator(Validator):
         # Keep formatting the format string until no format_variables are present
         formatter = self
         recursion_depth = 0
-        max_depth = StringFormatterValidator.__max_format_recursion
+        max_depth = self._max_format_recursion
 
         while formatter.format_variables and recursion_depth < max_depth:
             formatter = self.__apply_formatter(formatter=formatter, variable_dict=variable_dict)
