@@ -22,8 +22,6 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
             # required
             download_strategy: "playlist"
             playlist_url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
-            # optional
-            download_individually: True
     """
 
     _required_keys = {"playlist_url"}
