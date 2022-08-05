@@ -20,6 +20,7 @@ class TestYoutubeVideoUrlValidator:
             "https://www.youtube.com/watch?v=dQw4w9WgXcQ&feature=feedu",
             "https://www.youtube.com/embed/dQw4w9WgXcQ",
             "https://www.youtube.com/v/dQw4w9WgXcQ?version=3&amp;hl=en_US",
+            "https://www.youtube.com/shorts/dQw4w9WgXcQ",
         ],
     )
     def test_youtube_video_url_validator_success(self, url):
@@ -36,6 +37,7 @@ class TestYoutubeVideoUrlValidator:
             "youtube.com/watch?v=",
             "youtu.be/",
             "youtu.be",
+            "youtube.com/shorts",
         ],
     )
     def test_youtube_video_url_validator_fail(self, bad_url):
