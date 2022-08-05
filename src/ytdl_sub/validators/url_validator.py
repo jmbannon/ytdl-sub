@@ -14,10 +14,16 @@ class YoutubeVideoUrlValidator(StringValidator):
     def _get_video_id(cls, url: str) -> Optional[str]:
         """
         Examples:
-        - https://youtu.be/SA2iWivDJiE
-        - https://www.youtube.com/watch?v=_oPAwA_Udwc&feature=feedu
-        - https://www.youtube.com/embed/SA2iWivDJiE
-        - https://www.youtube.com/v/SA2iWivDJiE?version=3&amp;hl=en_US
+
+        https://youtu.be/SA2iWivDJiE
+        https://www.youtube.com/watch?v=_oPAwA_Udwc&feature=feedu
+        https://www.youtube.com/embed/SA2iWivDJiE
+        https://www.youtube.com/v/SA2iWivDJiE?version=3&amp;hl=en_US
+        https://www.youtube.com/shorts/ucYmEqmlhFw
+
+        Returns
+        -------
+        The video id if it is parsed correctly. None if parsing fails
         """
         # If the url doesn't contain youtube or youtu.be, assume it is invalid
         if "youtube.com" not in url and "youtu.be" not in url:
@@ -35,9 +41,7 @@ class YoutubeVideoUrlValidator(StringValidator):
                 parsed_q = parse_qs(query.query)
                 if "v" in parsed_q:
                     return parsed_q["v"][0]
-            if query.path[:7] == "/embed/":
-                return query.path.split("/")[2]
-            if query.path[:3] == "/v/":
+            if query.path.startswith(("/embed/", "/v/", "/shorts/")):
                 return query.path.split("/")[2]
 
         return None

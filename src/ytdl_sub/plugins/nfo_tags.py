@@ -1,14 +1,17 @@
 import os
 from pathlib import Path
-
-import dicttoxml
+from typing import Optional
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
+from ytdl_sub.utils.xml import to_max_3_byte_utf8_string
+from ytdl_sub.utils.xml import to_xml
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.validators import BoolValidator
 
 
 class NfoTagsOptions(PluginOptions):
@@ -23,15 +26,19 @@ class NfoTagsOptions(PluginOptions):
        presets:
          my_example_preset:
            nfo:
-            nfo_name: "{title_sanitized}.nfo"
-            nfo_root: "episodedetails"
-            tags:
-              title: "{title}"
-              season: "{upload_year}"
-              episode: "{upload_month}{upload_day_padded}"
+             # required
+             nfo_name: "{title_sanitized}.nfo"
+             nfo_root: "episodedetails"
+             tags:
+               title: "{title}"
+               season: "{upload_year}"
+               episode: "{upload_month}{upload_day_padded}"
+             # optional
+             kodi_safe: False
     """
 
     _required_keys = {"nfo_name", "nfo_root", "tags"}
+    _optional_keys = {"kodi_safe"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
@@ -39,6 +46,9 @@ class NfoTagsOptions(PluginOptions):
         self._nfo_name = self._validate_key(key="nfo_name", validator=StringFormatterValidator)
         self._nfo_root = self._validate_key(key="nfo_root", validator=StringFormatterValidator)
         self._tags = self._validate_key(key="tags", validator=DictFormatterValidator)
+        self._kodi_safe = self._validate_key_if_present(
+            key="kodi_safe", validator=BoolValidator, default=False
+        ).value
 
     @property
     def nfo_name(self) -> StringFormatterValidator:
@@ -76,6 +86,15 @@ class NfoTagsOptions(PluginOptions):
         """
         return self._tags
 
+    @property
+    def kodi_safe(self) -> Optional[bool]:
+        """
+        Optional. Kodi does not support > 3-byte unicode characters, which include emojis and some
+        foreign language characters. Setting this to True will replace those characters with '□'.
+        Defaults to False.
+        """
+        return self._kodi_safe
+
 
 class NfoTagsPlugin(Plugin[NfoTagsOptions]):
     plugin_options_type = NfoTagsOptions
@@ -98,12 +117,12 @@ class NfoTagsPlugin(Plugin[NfoTagsOptions]):
         nfo_root = self.overrides.apply_formatter(
             formatter=self.plugin_options.nfo_root, entry=entry
         )
-        xml = dicttoxml.dicttoxml(
-            obj=nfo,
-            root=True,  # We assume all NFOs have a root. Maybe we should not?
-            custom_root=nfo_root,
-            attr_type=False,
-        )
+
+        if self.plugin_options.kodi_safe:
+            nfo = to_max_3_byte_utf8_dict(nfo)
+            nfo_root = to_max_3_byte_utf8_string(nfo_root)
+
+        xml = to_xml(nfo_dict=nfo, nfo_root=nfo_root)
 
         nfo_file_name = self.overrides.apply_formatter(
             formatter=self.plugin_options.nfo_name, entry=entry

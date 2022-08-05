@@ -1,13 +1,16 @@
 import os
 from pathlib import Path
-
-import dicttoxml
+from typing import Optional
 
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
+from ytdl_sub.utils.xml import to_max_3_byte_utf8_string
+from ytdl_sub.utils.xml import to_xml
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
+from ytdl_sub.validators.validators import BoolValidator
 
 
 class OutputDirectoryNfoTagsOptions(PluginOptions):
@@ -22,13 +25,17 @@ class OutputDirectoryNfoTagsOptions(PluginOptions):
        presets:
          my_example_preset:
            output_directory_nfo_tags:
+             # required
              nfo_name: "tvshow.nfo"
              nfo_root: "tvshow"
              tags:
                title: "Sweet youtube TV show"
+             # optional
+             kodi_safe: False
     """
 
     _required_keys = {"nfo_name", "nfo_root", "tags"}
+    _optional_keys = {"kodi_safe"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
@@ -41,6 +48,9 @@ class OutputDirectoryNfoTagsOptions(PluginOptions):
             key="nfo_root", validator=OverridesStringFormatterValidator
         )
         self._tags = self._validate_key(key="tags", validator=OverridesDictFormatterValidator)
+        self._kodi_safe = self._validate_key_if_present(
+            key="kodi_safe", validator=BoolValidator, default=False
+        ).value
 
     @property
     def nfo_name(self) -> OverridesStringFormatterValidator:
@@ -76,6 +86,15 @@ class OutputDirectoryNfoTagsOptions(PluginOptions):
         """
         return self._tags
 
+    @property
+    def kodi_safe(self) -> Optional[bool]:
+        """
+        Optional. Kodi does not support > 3-byte unicode characters, which include emojis and some
+        foreign language characters. Setting this to True will replace those characters with '□'.
+        Defaults to False.
+        """
+        return self._kodi_safe
+
 
 class OutputDirectoryNfoTagsPlugin(Plugin[OutputDirectoryNfoTagsOptions]):
     plugin_options_type = OutputDirectoryNfoTagsOptions
@@ -91,13 +110,12 @@ class OutputDirectoryNfoTagsPlugin(Plugin[OutputDirectoryNfoTagsOptions]):
 
         # Write the nfo tags to XML with the nfo_root
         nfo_root = self.overrides.apply_formatter(formatter=self.plugin_options.nfo_root)
-        xml = dicttoxml.dicttoxml(
-            obj=nfo,
-            root=True,  # We assume all NFOs have a root. Maybe we should not?
-            custom_root=nfo_root,
-            attr_type=False,
-        )
 
+        if self.plugin_options.kodi_safe:
+            nfo = to_max_3_byte_utf8_dict(nfo)
+            nfo_root = to_max_3_byte_utf8_string(nfo_root)
+
+        xml = to_xml(nfo_dict=nfo, nfo_root=nfo_root)
         nfo_file_name = self.overrides.apply_formatter(formatter=self.plugin_options.nfo_name)
 
         # Save the nfo's XML to file
