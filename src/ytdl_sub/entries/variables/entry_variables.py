@@ -24,7 +24,8 @@ class SourceVariables:
         """
         Returns
         -------
-        The entry's unique ID
+        str
+            The entry's unique ID
         """
         return self.kwargs("id")
 
@@ -33,7 +34,8 @@ class SourceVariables:
         """
         Returns
         -------
-        The ytdl extractor name
+        str
+            The ytdl extractor name
         """
         return self.kwargs("extractor")
 
@@ -74,7 +76,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The title of the entry
+        str
+            The title of the entry
         """
         return self.kwargs("title")
 
@@ -83,7 +86,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The sanitized title of the entry, which is safe to use for Unix and Windows file names.
+        str
+            The sanitized title of the entry, which is safe to use for Unix and Windows file names.
         """
         return sanitize_filename(self.title)
 
@@ -92,7 +96,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The downloaded entry's file extension
+        str
+            The downloaded entry's file extension
         """
         return self.kwargs("ext")
 
@@ -101,8 +106,9 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The download entry's thumbnail extension. Will always return 'jpg'. Until there is a need
-        to support other image types, we always convert to jpg.
+        str
+            The download entry's thumbnail extension. Will always return 'jpg'. Until there is a
+            need to support other image types, we always convert to jpg.
         """
         return "jpg"
 
@@ -111,7 +117,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The entry's uploaded date, in YYYYMMDD format.
+        str
+            The entry's uploaded date, in YYYYMMDD format.
         """
         return self.kwargs("upload_date")
 
@@ -120,7 +127,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The entry's upload year
+        int
+            The entry's upload year
         """
         return int(self.upload_date[:4])
 
@@ -129,7 +137,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The last two digits of the upload year, i.e. 22 in 2022
+        int
+            The last two digits of the upload year, i.e. 22 in 2022
         """
         return int(self.upload_date[:2])
 
@@ -138,7 +147,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The entry's upload month padded to two digits, i.e. March returns "03"
+        str
+            The entry's upload month padded to two digits, i.e. March returns "03"
         """
         return self.upload_date[4:6]
 
@@ -147,7 +157,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The entry's upload day padded to two digits, i.e. the fifth returns "05"
+        str
+            The entry's upload day padded to two digits, i.e. the fifth returns "05"
         """
         return self.upload_date[6:8]
 
@@ -156,7 +167,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The upload month as an integer (no padding).
+        int
+            The upload month as an integer (no padding).
         """
         return int(self.upload_month_padded.lstrip("0"))
 
@@ -165,7 +177,8 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The upload day as an integer (no padding).
+        int
+            The upload day as an integer (no padding).
         """
         return int(self.upload_day_padded.lstrip("0"))
 
@@ -174,6 +187,7 @@ class EntryVariables(SourceVariables):
         """
         Returns
         -------
-        The uploaded date formatted as YYYY-MM-DD
+        str
+            The uploaded date formatted as YYYY-MM-DD
         """
         return f"{self.upload_year}-{self.upload_month_padded}-{self.upload_day_padded}"

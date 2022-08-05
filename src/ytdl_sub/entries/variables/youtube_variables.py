@@ -13,7 +13,8 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The channel name.
+        str
+            The channel name.
         """
         return self.kwargs("channel")
 
@@ -22,7 +23,8 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The channel name, sanitized.
+        str
+            The channel name, sanitized.
         """
         return sanitize_filename(self.channel)
 
@@ -31,9 +33,10 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The track title of a music video if it is available, otherwise it falls back to the title.
-        NOTE: Even if a video has music metadata, this variable does not always get pulled via
-        yt-dlp. Use with caution.
+        str
+            The track title of a music video if it is available, otherwise it falls back to the
+            title. NOTE: Even if a video has music metadata, this variable does not always get
+            pulled via yt-dlp. Use with caution.
         """
         # Try to get the track, fall back on title
         if self.kwargs_contains("track"):
@@ -46,7 +49,8 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The sanitized track title.
+        str
+            The sanitized track title.
         """
         return sanitize_filename(self.track_title)
 
@@ -55,9 +59,10 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The artist of a music video if it is available, otherwise it falls back to the channel.
-        NOTE: Even if a video has music metadata, this variable does not always get pulled via
-        yt-dlp. Use with caution.
+        str
+            The artist of a music video if it is available, otherwise it falls back to the channel.
+            NOTE: Even if a video has music metadata, this variable does not always get pulled via
+            yt-dlp. Use with caution.
         """
         if self.kwargs_contains("artist"):
             return self.kwargs("artist")
@@ -69,7 +74,8 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The sanitized artist name.
+        str
+            The sanitized artist name.
         """
         return sanitize_filename(self.artist)
 
@@ -78,8 +84,9 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The index of the video in the playlist. For non-playlist download strategies, this will
-        always return 1.
+        int
+            The index of the video in the playlist. For non-playlist download strategies, this will
+            always return 1.
         """
         return 1
 
@@ -88,7 +95,9 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The size of the playlist. For non-playlist download strategies, this will always return 1.
+        int
+            The size of the playlist. For non-playlist download strategies, this will always return
+            1.
         """
         return 1
 
@@ -97,6 +106,7 @@ class YoutubeVideoVariables(EntryVariables):
         """
         Returns
         -------
-        The description of the entry.
+        str
+            The video description.
         """
         return self.kwargs("description")
