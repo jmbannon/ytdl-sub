@@ -35,9 +35,11 @@ maximum flexibility while maintaining simplicity.
 
 ## How it Works
 `ytdl-sub` uses YAML configs to define a layout for how you want media to look
-after it is downloaded. See our
+after it is downloaded. See the 
+[walk-through in our wiki](https://github.com/jmbannon/ytdl-sub/wiki)
+to learn how `ytdl-sub` works, our
 [example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
-that we personally use and
+that we personally use, and
 [readthedocs](https://ytdl-sub.readthedocs.io/en/latest/config.html#)
 for detailed information on specific sections or fields. Downloading looks like this.
 
