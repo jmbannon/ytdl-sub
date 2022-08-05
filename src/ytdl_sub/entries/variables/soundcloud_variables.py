@@ -12,7 +12,8 @@ class SoundcloudVariables(EntryVariables):
         """
         Returns
         -------
-        The entry's track number within an album. For singles, it will always be 1.
+        int
+            The entry's track number within an album. For singles, it will always be 1.
         """
         return 1
 
@@ -21,7 +22,8 @@ class SoundcloudVariables(EntryVariables):
         """
         Returns
         -------
-        The entry's track number, padded two digits.
+        str
+            The entry's track number, padded two digits.
         """
         return f"{self.track_number:02d}"
 
@@ -30,7 +32,8 @@ class SoundcloudVariables(EntryVariables):
         """
         Returns
         -------
-        The total tracks in album. For singles, it will always be 1.
+        int
+            The total tracks in album. For singles, it will always be 1.
         """
         return 1
 
@@ -39,7 +42,8 @@ class SoundcloudVariables(EntryVariables):
         """
         Returns
         -------
-        The entry's album name. For singles, it will be the same as the title.
+        str
+            The entry's album name. For singles, it will be the same as the title.
         """
         return self.title
 
@@ -48,7 +52,8 @@ class SoundcloudVariables(EntryVariables):
         """
         Returns
         -------
-        The entry's sanitized album name, which is safe to use for Unix and Windows file names.
+        str
+            The entry's sanitized album name, which is safe to use for Unix and Windows file names.
         """
         return sanitize_filename(self.album)
 
@@ -57,7 +62,8 @@ class SoundcloudVariables(EntryVariables):
         """
         Returns
         -------
-        The entry's album year, which is determined by the latest year amongst all tracks in the
-        album.
+        int
+            The entry's album year, which is determined by the latest year amongst all tracks in the
+            album.
         """
         return self.upload_year

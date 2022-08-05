@@ -261,6 +261,7 @@ Youtube Variables
    :members:
    :inherited-members:
    :undoc-members:
+   :exclude-members: source_variables
 
 .. _soundcloud-variables:
 
@@ -270,6 +271,7 @@ Soundcloud Variables
    :members:
    :inherited-members:
    :undoc-members:
+   :exclude-members: source_variables
 
 -------------------------------------------------------------------------------
 
