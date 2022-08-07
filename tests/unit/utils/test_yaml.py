@@ -8,7 +8,7 @@ from ytdl_sub.utils.yaml import load_yaml
 
 
 @pytest.fixture
-def bad_yaml():
+def bad_yaml() -> str:
     return """
     this: 
       is:
@@ -20,7 +20,7 @@ def bad_yaml():
 
 
 @pytest.fixture
-def bad_yaml_file_path(bad_yaml):
+def bad_yaml_file_path(bad_yaml) -> str:
     with tempfile.NamedTemporaryFile(suffix=".yaml") as tmp_file:
         tmp_file.write(bad_yaml.encode("utf-8"))
         tmp_file.flush()
