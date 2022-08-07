@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 from conftest import assert_debug_log
+from e2e.conftest import mock_run_from_cli
 from e2e.expected_download import ExpectedDownloadFile
 from e2e.expected_download import ExpectedDownloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
@@ -87,5 +88,47 @@ class TestPlaylistAsKodiMusicVideo:
                 logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
             ):
-                playlist_subscription.download()
+                transaction_log = playlist_subscription.download()
                 expected_playlist_download.assert_files_exist(relative_directory=output_directory)
+                assert transaction_log.is_empty
+
+    @pytest.mark.parametrize("dry_run", [True, False])
+    def test_playlist_download_from_cli_sub(
+        self,
+        preset_dict_to_subscription_yaml_generator,
+        music_video_config_path,
+        playlist_preset_dict,
+        expected_playlist_download,
+        output_directory,
+        dry_run,
+    ):
+        with preset_dict_to_subscription_yaml_generator(
+            subscription_name="music_video_playlist_test", preset_dict=playlist_preset_dict
+        ) as subscription_path:
+            args = "--dry-run " if dry_run else ""
+            args += f"--config {music_video_config_path} "
+            args += f"sub {subscription_path}"
+            subscription_transaction_log = mock_run_from_cli(args=args)
+
+            assert len(subscription_transaction_log) == 1
+            transaction_log = subscription_transaction_log[0][1]
+
+            assert_transaction_log_matches(
+                output_directory=output_directory,
+                transaction_log=transaction_log,
+                transaction_log_summary_file_name="youtube/test_playlist.txt",
+            )
+
+            if not dry_run:
+                expected_playlist_download.assert_files_exist(relative_directory=output_directory)
+
+                # Ensure another invocation will hit ExistingVideoReached
+                with assert_debug_log(
+                    logger=ytdl_sub.downloaders.downloader.download_logger,
+                    expected_message="ExistingVideoReached, stopping additional downloads",
+                ):
+                    transaction_log = mock_run_from_cli(args=args)[0][1]
+                    expected_playlist_download.assert_files_exist(
+                        relative_directory=output_directory
+                    )
+                    assert transaction_log.is_empty

@@ -93,6 +93,15 @@ class FileHandlerTransactionLog:
         self.files_created: Dict[str, FileMetadata] = {}
         self.files_removed: Set[str] = set()
 
+    @property
+    def is_empty(self) -> bool:
+        """
+        Returns
+        -------
+        True if no transaction logs are recorded. False otherwise
+        """
+        return len(self.files_created) == 0 and len(self.files_removed) == 0
+
     def log_created_file(
         self, file_name: str, file_metadata: Optional[FileMetadata] = None
     ) -> "FileHandlerTransactionLog":
