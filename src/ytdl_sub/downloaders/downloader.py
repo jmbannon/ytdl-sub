@@ -58,7 +58,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     supports_download_archive: bool = True
 
     _extract_entry_num_retries: int = 5
-    _extract_entry_retry_wait_sec: int = 1
+    _extract_entry_retry_wait_sec: int = 3
 
     @classmethod
     def ytdl_option_overrides(cls) -> Dict:
@@ -211,6 +211,29 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         raise FileNotDownloadedException(
             f"yt-dlp failed to download an entry with these arguments: {error_dict}"
         )
+
+    def _filter_entry_dicts(
+        self, entry_dicts: List[Dict], extractor: Optional[str] = None
+    ) -> List[Dict]:
+        """
+        Parameters
+        ----------
+        entry_dicts
+            entry dicts to filter
+        extractor
+            Optional. Extractor that the entry dicts must have. If None, defaults to the
+            entry type's extractor
+
+        Returns
+        -------
+        filtered entry dicts
+        """
+        if extractor is None:
+            extractor = self.downloader_entry_type.entry_extractor
+
+        return [
+            entry_dict for entry_dict in entry_dicts if entry_dict.get("extractor") == extractor
+        ]
 
     def _get_entry_dicts_from_info_json_files(self) -> List[Dict]:
         """

@@ -78,23 +78,26 @@ class YoutubePlaylistDownloader(
             log_prefix_on_info_json_dl="Downloading metadata for",
             url=self.download_options.playlist_url,
         )
+        playlist_videos = self._filter_entry_dicts(entry_dicts=entry_dicts)
 
-        for idx, entry_dict in enumerate(entry_dicts, start=1):
-            if entry_dict.get("extractor") == self.downloader_entry_type.entry_extractor:
-                video = YoutubePlaylistVideo(
-                    entry_dict=entry_dict, working_directory=self.working_directory
+        # Iterate in reverse to process older videos first. In case an error occurs and a
+        # the playlist must be redownloaded, it will fetch most recent metadata first, and break
+        # on the older video that's been processed and is in the download archive.
+        for idx, entry_dict in enumerate(reversed(playlist_videos), start=1):
+            video = YoutubePlaylistVideo(
+                entry_dict=entry_dict, working_directory=self.working_directory
+            )
+            download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
+
+            # Only do the individual download if it is not dry-run and downloading individually
+            if not self.is_dry_run:
+                _ = self.extract_info_with_retry(
+                    is_downloaded_fn=video.is_downloaded,
+                    ytdl_options_overrides={
+                        "playlist_items": str(entry_dict.get("playlist_index")),
+                        "writeinfojson": False,
+                    },
+                    url=self.download_options.playlist_url,
                 )
-                download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
 
-                # Only do the individual download if it is not dry-run and downloading individually
-                if not self.is_dry_run:
-                    _ = self.extract_info_with_retry(
-                        is_downloaded_fn=video.is_downloaded,
-                        ytdl_options_overrides={
-                            "playlist_items": str(entry_dict.get("playlist_index")),
-                            "writeinfojson": False,
-                        },
-                        url=self.download_options.playlist_url,
-                    )
-
-                yield video
+            yield video

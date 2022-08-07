@@ -84,16 +84,15 @@ class SoundcloudAlbumsAndSinglesDownloader(
         albums: Dict[str, SoundcloudAlbum] = {}
 
         # First, get the albums themselves
-        for entry_dict in entry_dicts:
-            if entry_dict.get("extractor") == "soundcloud:set":
-                albums[entry_dict["id"]] = SoundcloudAlbum(
-                    entry_dict=entry_dict, working_directory=self.working_directory
-                )
+        for entry_dict in self._filter_entry_dicts(entry_dicts, extractor="soundcloud:set"):
+            albums[entry_dict["id"]] = SoundcloudAlbum(
+                entry_dict=entry_dict, working_directory=self.working_directory
+            )
 
         # Then, get all tracks that belong to the album
-        for entry_dict in entry_dicts:
+        for entry_dict in self._filter_entry_dicts(entry_dicts):
             album_id = entry_dict.get("playlist_id")
-            if entry_dict.get("extractor") == "soundcloud" and album_id in albums:
+            if album_id in albums:
                 albums[album_id].tracks.append(
                     SoundcloudTrack(entry_dict=entry_dict, working_directory=self.working_directory)
                 )
@@ -106,10 +105,8 @@ class SoundcloudAlbumsAndSinglesDownloader(
         tracks: List[SoundcloudTrack] = []
 
         # Get all tracks that are not part of an album
-        for entry_dict in entry_dicts:
-            if entry_dict.get("extractor") == "soundcloud" and not any(
-                entry_dict in album for album in albums
-            ):
+        for entry_dict in self._filter_entry_dicts(entry_dicts):
+            if not any(entry_dict in album for album in albums):
                 tracks.append(
                     SoundcloudTrack(entry_dict=entry_dict, working_directory=self.working_directory)
                 )
