@@ -112,11 +112,14 @@ def main():
         )
 
     for subscription, transaction_log in transaction_logs:
-        logger.info(
-            "Downloads for %s:\n%s\n",
-            subscription.name,
-            transaction_log.to_output_message(subscription.output_directory),
-        )
+        if transaction_log.is_empty:
+            logger.info("No files changed for %s", subscription.name)
+        else:
+            logger.info(
+                "Downloads for %s:\n%s\n",
+                subscription.name,
+                transaction_log.to_output_message(subscription.output_directory),
+            )
 
     # Ran successfully, so we can delete the debug file
     Logger.cleanup(delete_debug_file=True)

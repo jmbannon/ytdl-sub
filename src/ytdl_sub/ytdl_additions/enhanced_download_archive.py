@@ -537,14 +537,15 @@ class EnhancedDownloadArchive:
 
     def save_download_mappings(self) -> "EnhancedDownloadArchive":
         """
-        Saves the updated download mappings to the output directory
+        Saves the updated download mappings to the output directory if any files were changed.
 
         Returns
         -------
         self
         """
-        self._download_mapping.to_file(output_json_file=self._mapping_working_file_path)
-        self.save_file_to_output_directory(file_name=self._mapping_file_name)
+        if not self.get_file_handler_transaction_log().is_empty:
+            self._download_mapping.to_file(output_json_file=self._mapping_working_file_path)
+            self.save_file_to_output_directory(file_name=self._mapping_file_name)
         return self
 
     def save_file_to_output_directory(
