@@ -87,5 +87,6 @@ class TestPlaylistAsKodiMusicVideo:
                 logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
             ):
-                playlist_subscription.download()
+                transaction_log = playlist_subscription.download()
                 expected_playlist_download.assert_files_exist(relative_directory=output_directory)
+                assert transaction_log.is_empty
