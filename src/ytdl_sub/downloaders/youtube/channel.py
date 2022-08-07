@@ -150,9 +150,9 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             url=self.download_options.channel_url,
         )
         self.channel = self._get_channel(entry_dicts=entry_dicts)
-        channel_videos = self._filter_entry_dicts(entry_dicts=entry_dicts)
+        channel_videos = self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
 
-        # Iterate in reverse to process older videos first. In case an error occurs and a
+        # Iterate in descending order to process older videos first. In case an error occurs and a
         # the channel must be redownloaded, it will fetch most recent metadata first, and break
         # on the older video that's been processed and is in the download archive.
         for idx, entry_dict in enumerate(reversed(channel_videos), start=1):

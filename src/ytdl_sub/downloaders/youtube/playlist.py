@@ -78,11 +78,11 @@ class YoutubePlaylistDownloader(
             log_prefix_on_info_json_dl="Downloading metadata for",
             url=self.download_options.playlist_url,
         )
-        playlist_videos = self._filter_entry_dicts(entry_dicts=entry_dicts)
 
-        # Iterate in reverse to process older videos first. In case an error occurs and a
+        # Iterate in reverse order to process older videos first. In case an error occurs and a
         # the playlist must be redownloaded, it will fetch most recent metadata first, and break
         # on the older video that's been processed and is in the download archive.
+        playlist_videos = self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
         for idx, entry_dict in enumerate(reversed(playlist_videos), start=1):
             video = YoutubePlaylistVideo(
                 entry_dict=entry_dict, working_directory=self.working_directory

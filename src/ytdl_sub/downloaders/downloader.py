@@ -213,7 +213,10 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         )
 
     def _filter_entry_dicts(
-        self, entry_dicts: List[Dict], extractor: Optional[str] = None
+        self,
+        entry_dicts: List[Dict],
+        extractor: Optional[str] = None,
+        sort_by: Optional[str] = None,
     ) -> List[Dict]:
         """
         Parameters
@@ -223,6 +226,8 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         extractor
             Optional. Extractor that the entry dicts must have. If None, defaults to the
             entry type's extractor
+        sort_by
+            Optional. Sort the entry dicts on this key
 
         Returns
         -------
@@ -231,9 +236,12 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         if extractor is None:
             extractor = self.downloader_entry_type.entry_extractor
 
-        return [
+        output = [
             entry_dict for entry_dict in entry_dicts if entry_dict.get("extractor") == extractor
         ]
+        if sort_by:
+            output = sorted(output, key=lambda entry_dict: entry_dict[sort_by])
+        return output
 
     def _get_entry_dicts_from_info_json_files(self) -> List[Dict]:
         """
