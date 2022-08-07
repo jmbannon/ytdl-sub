@@ -1,26 +1,13 @@
 from pathlib import Path
 
 import pytest
+from conftest import preset_dict_to_dl_args
+from e2e.conftest import mock_run_from_cli
 from e2e.expected_download import ExpectedDownloadFile
 from e2e.expected_download import ExpectedDownloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.subscriptions.subscription import Subscription
-
-
-@pytest.fixture
-def playlist_preset_dict(output_directory):
-    return {
-        "preset": "yt_music_video_playlist",
-        "youtube": {"playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
-        # override the output directory with our fixture-generated dir
-        "output_options": {"output_directory": output_directory},
-        # download the worst format so it is fast
-        "ytdl_options": {
-            "format": "worst[ext=mp4]",
-        },
-        "overrides": {"artist": "JMC"},
-    }
 
 
 @pytest.fixture
@@ -36,6 +23,11 @@ def single_video_preset_dict(output_directory):
         },
         "overrides": {"artist": "JMC"},
     }
+
+
+@pytest.fixture
+def single_video_preset_dict_dl_args(single_video_preset_dict):
+    return preset_dict_to_dl_args(single_video_preset_dict)
 
 
 @pytest.fixture
@@ -83,6 +75,31 @@ class TestYoutubeVideo:
         )
 
         transaction_log = single_video_subscription.download()
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_video.txt",
+        )
+        if not dry_run:
+            expected_single_video_download.assert_files_exist(relative_directory=output_directory)
+
+    @pytest.mark.parametrize("dry_run", [True, False])
+    def test_single_video_download_from_cli_dl(
+        self,
+        music_video_config_path,
+        single_video_preset_dict_dl_args,
+        expected_single_video_download,
+        output_directory,
+        dry_run,
+    ):
+        args = "--dry-run " if dry_run else ""
+        args += f"--config {music_video_config_path} "
+        args += f"dl {single_video_preset_dict_dl_args}"
+        subscription_transaction_log = mock_run_from_cli(args=args)
+
+        assert len(subscription_transaction_log) == 1
+        transaction_log = subscription_transaction_log[0][1]
+
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,

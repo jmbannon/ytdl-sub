@@ -89,14 +89,14 @@ def _download_subscription_from_cli(
     return subscription, subscription.download(dry_run=args.dry_run)
 
 
-def main():
+def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     """
     Entrypoint for ytdl-sub, without the error handling
     """
     # If no args are provided, print help and exit
     if len(sys.argv) < 2:
         parser.print_help()
-        return
+        return []
 
     args, extra_args = parser.parse_known_args()
 
@@ -123,3 +123,4 @@ def main():
 
     # Ran successfully, so we can delete the debug file
     Logger.cleanup(delete_debug_file=True)
+    return transaction_logs
