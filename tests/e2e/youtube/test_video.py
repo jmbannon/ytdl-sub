@@ -74,7 +74,7 @@ class TestYoutubeVideo:
             preset_dict=single_video_preset_dict,
         )
 
-        transaction_log = single_video_subscription.download()
+        transaction_log = single_video_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,

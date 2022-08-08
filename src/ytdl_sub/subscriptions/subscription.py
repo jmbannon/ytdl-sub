@@ -178,6 +178,7 @@ class Subscription:
             entry=entry,
         )
 
+        # TODO: see if entry even has a thumbnail
         if self.output_options.thumbnail_name:
             output_thumbnail_name = self.overrides.apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry
@@ -190,6 +191,18 @@ class Subscription:
             self._enhanced_download_archive.save_file_to_output_directory(
                 file_name=entry.get_download_thumbnail_name(),
                 output_file_name=output_thumbnail_name,
+                entry=entry,
+            )
+
+        # TODO: see if entry even has subtitles
+        if self.output_options.subtitles_name:
+            output_subtitles_name = self.overrides.apply_formatter(
+                formatter=self.output_options.subtitles_name, entry=entry
+            )
+
+            self._enhanced_download_archive.save_file_to_output_directory(
+                file_name=entry.get_download_subtitles_name(),
+                output_file_name=output_subtitles_name,
                 entry=entry,
             )
 
@@ -266,10 +279,21 @@ class Subscription:
         # TODO: Move this logic to separate function
         # TODO: set id here as well
         ytdl_options = copy.deepcopy(self.ytdl_options.dict)
-        ytdl_options["writethumbnail"] = True
+
+        if self.output_options.thumbnail_name:
+            ytdl_options["writethumbnail"] = True
+        if self.output_options.subtitles_name:
+            ytdl_options["writesubtitles"] = True
+            ytdl_options["subtitleslangs"] = ["en"]
+            ytdl_options["postprocessers"] = [
+                {"key": "FFmpegSubtitlesConvertorPP", "format": "srt"}
+            ]
+
         if dry_run:
             ytdl_options["skip_download"] = True
             ytdl_options["writethumbnail"] = False
+            ytdl_options["writesubtitles"] = False
+
         if self.downloader_class.supports_download_archive and self.maintain_download_archive:
             ytdl_options["download_archive"] = str(
                 Path(self.working_directory) / self._enhanced_download_archive.archive_file_name

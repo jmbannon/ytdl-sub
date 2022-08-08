@@ -58,6 +58,18 @@ class Entry(EntryVariables, BaseEntry):
 
         return None
 
+    def get_download_subtitles_name(self) -> str:
+        """
+        Returns
+        -------
+        The download subtitle's file name
+        """
+        return f"{self.uid}.{self.subtitles_ext}"
+
+    def get_download_subtitles_path(self) -> str:
+        """Returns the entry's thumbnail's file path to where it was downloaded"""
+        return str(Path(self.working_directory()) / self.get_download_subtitles_name())
+
     @final
     def is_downloaded(self) -> bool:
         """

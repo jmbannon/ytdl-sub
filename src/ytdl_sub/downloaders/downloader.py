@@ -319,6 +319,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         if only_info_json:
             extract_info_ytdl_options["skip_download"] = True
             extract_info_ytdl_options["writethumbnail"] = False
+            extract_info_ytdl_options["writesubtitles"] = False
 
         ytdl_options_overrides = dict(ytdl_options_overrides, **extract_info_ytdl_options)
 

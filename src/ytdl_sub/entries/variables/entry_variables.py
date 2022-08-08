@@ -113,6 +113,17 @@ class EntryVariables(SourceVariables):
         return "jpg"
 
     @property
+    def subtitles_ext(self: BaseEntry) -> str:
+        """
+        Returns
+        -------
+        str
+            The download entry's thumbnail extension. Will always return 'str'. Until there is a
+            need to support other subtitle types, we always use srt.
+        """
+        return "srt"
+
+    @property
     def upload_date(self: BaseEntry) -> str:
         """
         Returns
