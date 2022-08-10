@@ -118,6 +118,7 @@ def assert_expected_downloads(
     output_directory: str | Path,
     dry_run: bool,
     expected_download_summary_file_name: str,
+    ignore_md5_hashes_for: Optional[List[str]] = None,
     regenerate_expected_download_summary: bool = False,
 ):
     if dry_run:
@@ -134,5 +135,5 @@ def assert_expected_downloads(
         )
 
     ExpectedDownloads.from_file(summary_full_path).assert_files_exist(
-        relative_directory=output_directory
+        relative_directory=output_directory, ignore_md5_hashes_for=ignore_md5_hashes_for
     )

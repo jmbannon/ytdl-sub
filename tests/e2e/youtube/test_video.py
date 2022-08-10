@@ -59,7 +59,6 @@ class TestYoutubeVideo:
         self,
         music_video_config_path,
         single_video_preset_dict_dl_args,
-        expected_single_video_download,
         output_directory,
         dry_run,
     ):
