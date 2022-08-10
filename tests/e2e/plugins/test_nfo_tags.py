@@ -44,5 +44,4 @@ class TestNfoTagsPlugins:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_kodi_safe_xml.txt",
-            regenerate_transaction_log=True,
         )

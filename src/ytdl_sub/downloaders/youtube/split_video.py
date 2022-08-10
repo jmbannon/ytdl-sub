@@ -161,7 +161,8 @@ class YoutubeSplitVideoDownloader(
         entry = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
         # convert the entry thumbnail early so we do not have to guess the thumbnail extension
         # when copying it
-        convert_download_thumbnail(entry=entry)
+        if not self.is_dry_run:
+            convert_download_thumbnail(entry=entry)
 
         for idx, title in enumerate(chapters.titles):
             new_uid = _split_video_uid(source_uid=entry.uid, idx=idx)
@@ -181,12 +182,12 @@ class YoutubeSplitVideoDownloader(
                     )
                 )
 
-            # Copy the original vid thumbnail to the working directory with the new uid. This so
-            # downstream logic thinks this split video has its own thumbnail
-            FileHandler.copy(
-                src_file_path=entry.get_download_thumbnail_path(),
-                dst_file_path=Path(self.working_directory) / f"{new_uid}.{entry.thumbnail_ext}",
-            )
+                # Copy the original vid thumbnail to the working directory with the new uid. This so
+                # downstream logic thinks this split video has its own thumbnail
+                FileHandler.copy(
+                    src_file_path=entry.get_download_thumbnail_path(),
+                    dst_file_path=Path(self.working_directory) / f"{new_uid}.{entry.thumbnail_ext}",
+                )
 
             # Format the split video as a YoutubePlaylistVideo
             split_videos_and_metadata.append(
