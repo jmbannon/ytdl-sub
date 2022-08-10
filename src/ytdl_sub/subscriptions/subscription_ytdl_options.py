@@ -1,7 +1,9 @@
 from pathlib import Path
 from typing import Dict
+from typing import Type
 
 from ytdl_sub.config.preset import Preset
+from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -20,6 +22,10 @@ class SubscriptionYTDLOptions:
         self._dry_run = dry_run
 
     @property
+    def _downloader(self) -> Type[Downloader]:
+        return self._preset.downloader
+
+    @property
     def _global_options(self) -> Dict:
         """
         Returns
@@ -32,7 +38,7 @@ class SubscriptionYTDLOptions:
         }
 
         if (
-            self._preset.downloader.supports_download_archive
+            self._downloader.supports_download_archive
             and self._preset.output_options.maintain_download_archive
         ):
             ytdl_options["download_archive"] = str(
@@ -61,6 +67,9 @@ class SubscriptionYTDLOptions:
 
     @property
     def _subtitle_options(self) -> Dict:
+        if not self._downloader.supports_subtitles:
+            return {}
+
         ytdl_options: Dict = {}
         subtitle_options = self._preset.subtitle_options
 

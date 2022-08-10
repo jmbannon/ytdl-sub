@@ -56,6 +56,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     downloader_entry_type: Type[Entry] = Entry
 
     supports_download_archive: bool = True
+    supports_subtitles: bool = True
 
     _extract_entry_num_retries: int = 5
     _extract_entry_retry_wait_sec: int = 3

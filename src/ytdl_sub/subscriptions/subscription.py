@@ -204,8 +204,7 @@ class Subscription:
                 entry=entry,
             )
 
-        # # TODO: see if entry even has subtitles
-        # if self.output_options.subtitles_name and (
+        # if self.downloader_class.supports_subtitles and self.subtitle_options.subtitles_name and (
         #     entry.kwargs_contains("subtitles") or entry.kwargs_contains("automatic_captions")
         # ):
         #     output_subtitles_name = self.overrides.apply_formatter(
