@@ -233,6 +233,26 @@ class SubtitlesTypeValidator(StringSelectValidator):
 
 
 class SubtitleOptions(StrictDictValidator):
+    """
+    Defines how to download and store subtitles.
+
+    Usage:
+
+    .. code-block:: yaml
+
+       presets:
+         my_example_preset:
+           subtitle_options:
+             # required
+             output_directory: "/path/to/videos_or_music"
+             file_name: "{title_sanitized}.{ext}"
+             # optional
+             thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
+             maintain_download_archive: True
+             keep_files_before: now
+             keep_files_after: 19000101
+    """
+
     _optional_keys = {
         "subtitles_name",
         "subtitles_type",

@@ -54,6 +54,9 @@ def ext():
 def thumbnail_ext():
     return "jpg"
 
+@pytest.fixture
+def subtitles_ext():
+    return "srt"
 
 @pytest.fixture
 def download_thumbnail_name(uid, thumbnail_ext):
@@ -74,6 +77,7 @@ def mock_entry_to_dict(
     upload_date,
     upload_year,
     thumbnail_ext,
+    subtitles_ext,
     upload_month,
     upload_day,
 ):
@@ -92,6 +96,7 @@ def mock_entry_to_dict(
         "upload_day": upload_day,
         "upload_day_padded": _pad(upload_day),
         "thumbnail_ext": thumbnail_ext,
+        "subtitles_ext": subtitles_ext,
     }
 
 

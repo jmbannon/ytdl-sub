@@ -250,7 +250,7 @@ class Preset(StrictDictValidator):
             validator=OutputOptions,
         )
 
-        self.subtitle_options = self._validate_key(
+        self.subtitle_options = self._validate_key_if_present(
             key="subtitle_options", validator=SubtitleOptions, default={}
         )
 

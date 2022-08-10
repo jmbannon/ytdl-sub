@@ -204,19 +204,19 @@ class Subscription:
                 entry=entry,
             )
 
-        # TODO: see if entry even has subtitles
-        if self.output_options.subtitles_name and (
-            entry.kwargs_contains("subtitles") or entry.kwargs_contains("automatic_captions")
-        ):
-            output_subtitles_name = self.overrides.apply_formatter(
-                formatter=self.output_options.subtitles_name, entry=entry
-            )
-
-            self._enhanced_download_archive.save_file_to_output_directory(
-                file_name=entry.get_download_subtitles_name(),
-                output_file_name=output_subtitles_name,
-                entry=entry,
-            )
+        # # TODO: see if entry even has subtitles
+        # if self.output_options.subtitles_name and (
+        #     entry.kwargs_contains("subtitles") or entry.kwargs_contains("automatic_captions")
+        # ):
+        #     output_subtitles_name = self.overrides.apply_formatter(
+        #         formatter=self.output_options.subtitles_name, entry=entry
+        #     )
+        #
+        #     self._enhanced_download_archive.save_file_to_output_directory(
+        #         file_name=entry.get_download_subtitles_name(),
+        #         output_file_name=output_subtitles_name,
+        #         entry=entry,
+        #     )
 
     @contextlib.contextmanager
     def _prepare_working_directory(self):
