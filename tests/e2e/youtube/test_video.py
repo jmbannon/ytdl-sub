@@ -51,7 +51,7 @@ class TestYoutubeVideo:
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
-            expected_download_summary_file_name="youtube/test_video.json"
+            expected_download_summary_file_name="youtube/test_video.json",
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])
@@ -79,7 +79,7 @@ class TestYoutubeVideo:
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
-            expected_download_summary_file_name="youtube/test_video.json"
+            expected_download_summary_file_name="youtube/test_video.json",
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])
@@ -107,5 +107,5 @@ class TestYoutubeVideo:
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
-            expected_download_summary_file_name="youtube/test_video_with_chapter_timestamps.json"
+            expected_download_summary_file_name="youtube/test_video_with_chapter_timestamps.json",
         )
