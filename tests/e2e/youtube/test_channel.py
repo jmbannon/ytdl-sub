@@ -108,9 +108,9 @@ def expected_full_channel_download():
             ExpectedDownloadFile(path=Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.mp4"), md5="82f6ee7253e1dbb83ae7215af08ffacc"),
             ExpectedDownloadFile(path=Path("Season 2018/s2018.e1029 - Jesse's Minecraft Server _ Teaser Trailer.nfo"), md5="cc7886aae3af6b7b0facd82f95390242"),
 
-            ExpectedDownloadFile(path=Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id-thumb.jpg"), md5="49cc64b25314155c1b8ab0361ac0c34f"),
-            ExpectedDownloadFile(path=Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.mp4"), md5="e733b4cc385b953b08c8eb0f47e03c1e"),
-            ExpectedDownloadFile(path=Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server _ IP mc.jesse.id.nfo"), md5="2b3ccb3f1ef81ee49fe1afb88f275a09"),
+            ExpectedDownloadFile(path=Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id-thumb.jpg"), md5="49cc64b25314155c1b8ab0361ac0c34f"),
+            ExpectedDownloadFile(path=Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.mp4"), md5="e733b4cc385b953b08c8eb0f47e03c1e"),
+            ExpectedDownloadFile(path=Path("Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.nfo"), md5="2b3ccb3f1ef81ee49fe1afb88f275a09"),
         ]
     )
     # fmt: on

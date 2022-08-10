@@ -1,10 +1,7 @@
-from pathlib import Path
-
 import pytest
 from conftest import preset_dict_to_dl_args
 from e2e.conftest import mock_run_from_cli
-from e2e.expected_download import ExpectedDownloadFile
-from e2e.expected_download import ExpectedDownloads
+from e2e.expected_download import assert_expected_downloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -30,41 +27,12 @@ def single_video_preset_dict_dl_args(single_video_preset_dict):
     return preset_dict_to_dl_args(single_video_preset_dict)
 
 
-@pytest.fixture
-def expected_single_video_download():
-    # turn off black formatter here for readability
-    # fmt: off
-    return ExpectedDownloads(
-        expected_downloads=[
-            ExpectedDownloadFile(path=Path("JMC - Oblivion Mod 'Falcor' p.1-thumb.jpg"), md5="fb95b510681676e81c321171fc23143e"),
-            ExpectedDownloadFile(path=Path("JMC - Oblivion Mod 'Falcor' p.1.mp4"), md5="931a705864c57d21d6fedebed4af6bbc"),
-            ExpectedDownloadFile(path=Path("JMC - Oblivion Mod 'Falcor' p.1.nfo"), md5="89f509a8a3d9003e22a9091abeeae5dc"),
-        ]
-    )
-    # fmt: on
-
-
-@pytest.fixture
-def expected_single_video_with_chapter_timestamps_download():
-    # turn off black formatter here for readability
-    # fmt: off
-    return ExpectedDownloads(
-        expected_downloads=[
-            ExpectedDownloadFile(path=Path("JMC - Oblivion Mod 'Falcor' p.1-thumb.jpg"), md5="fb95b510681676e81c321171fc23143e"),
-            ExpectedDownloadFile(path=Path("JMC - Oblivion Mod 'Falcor' p.1.mp4"), md5="76b8a7dd428e67e5072d003983bb7e33"),
-            ExpectedDownloadFile(path=Path("JMC - Oblivion Mod 'Falcor' p.1.nfo"), md5="89f509a8a3d9003e22a9091abeeae5dc"),
-        ]
-    )
-    # fmt: on
-
-
 class TestYoutubeVideo:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download(
         self,
         music_video_config,
         single_video_preset_dict,
-        expected_single_video_download,
         output_directory,
         dry_run,
     ):
@@ -74,14 +42,17 @@ class TestYoutubeVideo:
             preset_dict=single_video_preset_dict,
         )
 
-        transaction_log = single_video_subscription.download()
+        transaction_log = single_video_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="youtube/test_video.txt",
         )
-        if not dry_run:
-            expected_single_video_download.assert_files_exist(relative_directory=output_directory)
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=dry_run,
+            expected_download_summary_file_name="youtube/test_video.json"
+        )
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download_from_cli_dl(
@@ -105,8 +76,11 @@ class TestYoutubeVideo:
             transaction_log=transaction_log,
             transaction_log_summary_file_name="youtube/test_video.txt",
         )
-        if not dry_run:
-            expected_single_video_download.assert_files_exist(relative_directory=output_directory)
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=dry_run,
+            expected_download_summary_file_name="youtube/test_video.json"
+        )
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_with_timestamp_chapters_download(
@@ -114,7 +88,6 @@ class TestYoutubeVideo:
         timestamps_file_path,
         music_video_config,
         single_video_preset_dict,
-        expected_single_video_with_chapter_timestamps_download,
         output_directory,
         dry_run,
     ):
@@ -125,13 +98,14 @@ class TestYoutubeVideo:
             preset_dict=single_video_preset_dict,
         )
 
-        transaction_log = single_video_subscription.download()
+        transaction_log = single_video_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="youtube/test_video_with_chapter_timestamps.txt",
         )
-        if not dry_run:
-            expected_single_video_with_chapter_timestamps_download.assert_files_exist(
-                relative_directory=output_directory
-            )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=dry_run,
+            expected_download_summary_file_name="youtube/test_video_with_chapter_timestamps.json"
+        )
