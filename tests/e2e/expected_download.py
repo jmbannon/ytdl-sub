@@ -71,7 +71,7 @@ class ExpectedDownloads:
                 full_path
             ), f"Expected {str(expected_download.path)} to be a file but it is not"
 
-            if expected_download.path in ignore_md5_hashes_for:
+            if str(expected_download.path) in ignore_md5_hashes_for:
                 continue
 
             md5_hash = _get_file_md5_hash(full_file_path=full_path)
