@@ -127,6 +127,11 @@ class ListValidator(Validator, ABC, Generic[ValidatorT]):
         return self._list
 
 
+class StringListValidator(ListValidator[StringValidator]):
+    _expected_value_type_name = "string list"
+    _inner_list_type = StringValidator
+
+
 class DictValidator(Validator):
     """
     Validates dictionary-based fields. Errors to them as 'object's since this could be validating

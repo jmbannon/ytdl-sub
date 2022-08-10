@@ -14,6 +14,7 @@ from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.preset_options import SubtitleOptions
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
@@ -32,6 +33,7 @@ from ytdl_sub.validators.validators import Validator
 PRESET_KEYS = {
     "preset",
     "output_options",
+    "subtitle_options",
     "ytdl_options",
     "overrides",
     *DownloadStrategyMapping.sources(),
@@ -246,6 +248,10 @@ class Preset(StrictDictValidator):
         self.output_options = self._validate_key(
             key="output_options",
             validator=OutputOptions,
+        )
+
+        self.subtitle_options = self._validate_key(
+            key="subtitle_options", validator=SubtitleOptions, default={}
         )
 
         self.ytdl_options = self._validate_key(

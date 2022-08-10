@@ -83,6 +83,35 @@ class TestYoutubeVideo:
         if not dry_run:
             expected_single_video_download.assert_files_exist(relative_directory=output_directory)
 
+    # @pytest.mark.parametrize("dry_run", [True, False])
+    # def test_single_video_download_with_subtitles(
+    #     self,
+    #     music_video_config,
+    #     single_video_preset_dict,
+    #     expected_single_video_download,
+    #     output_directory,
+    #     dry_run,
+    # ):
+    #     single_video_preset_dict["youtube"][
+    #         "video_url"
+    #     ] = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    #     single_video_preset_dict["subtitles"] = {}
+    #     single_video_preset_dict["subtitles"]["subtitles_name"] = "{music_video_name}.srt"
+    #     single_video_subscription = Subscription.from_dict(
+    #         config=music_video_config,
+    #         preset_name="music_video_single_video_test",
+    #         preset_dict=single_video_preset_dict,
+    #     )
+    #
+    #     transaction_log = single_video_subscription.download(dry_run=dry_run)
+    #     assert_transaction_log_matches(
+    #         output_directory=output_directory,
+    #         transaction_log=transaction_log,
+    #         transaction_log_summary_file_name="youtube/test_video.txt",
+    #     )
+    #     if not dry_run:
+    #         expected_single_video_download.assert_files_exist(relative_directory=output_directory)
+
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download_from_cli_dl(
         self,

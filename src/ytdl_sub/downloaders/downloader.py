@@ -61,11 +61,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     _extract_entry_retry_wait_sec: int = 3
 
     @classmethod
-    def ytdl_option_overrides(cls) -> Dict:
-        """Global overrides that even overwrite user input"""
-        return {}
-
-    @classmethod
     def ytdl_option_defaults(cls) -> Dict:
         """
         .. code-block:: yaml
@@ -78,7 +73,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     @classmethod
     def _configure_ytdl_options(
         cls,
-        working_directory: str,
         ytdl_options: Optional[Dict],
     ) -> Dict:
         """Configure the ytdl options for the downloader"""
@@ -87,12 +81,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
         # Overwrite defaults with input
         ytdl_options = dict(cls.ytdl_option_defaults(), **ytdl_options)
-
-        # Overwrite defaults + input with global options
-        ytdl_options = dict(ytdl_options, **cls.ytdl_option_overrides())
-
-        # Overwrite the output location with the specified working directory
-        ytdl_options["outtmpl"] = str(Path(working_directory) / "%(id)s.%(ext)s")
 
         return ytdl_options
 
@@ -116,7 +104,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         self.download_options = download_options
         self.ytdl_options = self._configure_ytdl_options(
             ytdl_options=ytdl_options,
-            working_directory=self.working_directory,
         )
 
     @contextmanager
