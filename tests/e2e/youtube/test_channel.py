@@ -84,7 +84,6 @@ class TestChannelAsKodiTvShow:
         self,
         channel_subscription_generator,
         channel_preset_dict,
-        expected_full_channel_download,
         output_directory,
         dry_run,
     ):
@@ -106,7 +105,6 @@ class TestChannelAsKodiTvShow:
         self,
         channel_subscription_generator,
         recent_channel_preset_dict,
-        expected_recent_channel_download,
         output_directory,
         dry_run,
     ):
