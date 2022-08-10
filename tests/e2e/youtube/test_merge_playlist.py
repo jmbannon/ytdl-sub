@@ -1,8 +1,5 @@
-from pathlib import Path
-
 import pytest
-from e2e.expected_download import ExpectedDownloadFile
-from e2e.expected_download import ExpectedDownloads
+from e2e.expected_download import assert_expected_downloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.config.config_file import ConfigFile
@@ -63,17 +60,17 @@ def playlist_subscription(config, subscription_name, subscription_dict):
     )
 
 
-@pytest.fixture
-def expected_playlist_download():
-    # fmt: off
-    return ExpectedDownloads(
-        expected_downloads=[
-            ExpectedDownloadFile(path=Path("JMC - Jesse's Minecraft Server-thumb.jpg"), md5="a3f1910f9c51f6442f845a528e190829"),
-            ExpectedDownloadFile(path=Path("JMC - Jesse's Minecraft Server.mkv")),  # not bitexact TODO: check size
-            ExpectedDownloadFile(path=Path("JMC - Jesse's Minecraft Server.nfo"), md5="10df5dcdb65ab18ecf21b3503c77e48b"),
-        ]
-    )
-    # fmt: on
+# @pytest.fixture
+# def expected_playlist_download():
+#     # fmt: off
+#     return ExpectedDownloads(
+#         expected_downloads=[
+#             ExpectedDownloadFile(path=Path("JMC - Jesse's Minecraft Server-thumb.jpg"), md5="a3f1910f9c51f6442f845a528e190829"),
+#             ExpectedDownloadFile(path=Path("JMC - Jesse's Minecraft Server.mkv")),  # not bitexact TODO: check size
+#             ExpectedDownloadFile(path=Path("JMC - Jesse's Minecraft Server.nfo"), md5="10df5dcdb65ab18ecf21b3503c77e48b"),
+#         ]
+#     )
+#     # fmt: on
 
 
 class TestYoutubeMergePlaylist:
@@ -83,15 +80,16 @@ class TestYoutubeMergePlaylist:
     """
 
     @pytest.mark.parametrize("dry_run", [True, False])
-    def test_merge_playlist_download(
-        self, playlist_subscription, expected_playlist_download, output_directory, dry_run
-    ):
+    def test_merge_playlist_download(self, playlist_subscription, output_directory, dry_run):
         transaction_log = playlist_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="youtube/test_merge_playlist.txt",
         )
-
-        if not dry_run:
-            expected_playlist_download.assert_files_exist(relative_directory=output_directory)
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=dry_run,
+            ignore_md5_hashes_for=["JMC - Jesse's Minecraft Server.mkv"],  # TODO, better test here
+            expected_download_summary_file_name="youtube/test_merge_playlist.json",
+        )

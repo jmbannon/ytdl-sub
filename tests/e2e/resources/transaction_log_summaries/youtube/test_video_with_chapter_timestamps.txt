@@ -1,7 +1,7 @@
 Files created in '{output_directory}'
 ----------------------------------------
-JMC - Oblivion Mod 'Falcor' p.1-thumb.jpg
-JMC - Oblivion Mod 'Falcor' p.1.mp4
+JMC - Oblivion Mod ＂Falcor＂ p.1-thumb.jpg
+JMC - Oblivion Mod ＂Falcor＂ p.1.mp4
   Chapters embedded into the video:
     0:00: Intro
     0:10: Part 1
@@ -9,7 +9,7 @@ JMC - Oblivion Mod 'Falcor' p.1.mp4
     0:30: Part 3
     0:40: Part 4
     1:01: Part 5
-JMC - Oblivion Mod 'Falcor' p.1.nfo
+JMC - Oblivion Mod ＂Falcor＂ p.1.nfo
   NFO tags:
     musicvideo:
       album: Music Videos
