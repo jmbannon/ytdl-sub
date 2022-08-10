@@ -287,19 +287,19 @@ class Subscription:
             directory.
         """
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
-        ytdl_options = SubscriptionYTDLOptions(
+        ytdl_options_builder = SubscriptionYTDLOptions(
             preset=self.__preset_options,
             enhanced_download_archive=self._enhanced_download_archive,
             working_directory=self.working_directory,
             dry_run=dry_run,
-        ).to_dict()
+        ).builder()
 
         plugins = self._initialize_plugins()
         with self._subscription_download_context_managers():
             downloader = self.downloader_class(
                 download_options=self.downloader_options,
                 enhanced_download_archive=self._enhanced_download_archive,
-                ytdl_options=ytdl_options,
+                ytdl_options_builder=ytdl_options_builder,
             )
 
             for entry in downloader.download():

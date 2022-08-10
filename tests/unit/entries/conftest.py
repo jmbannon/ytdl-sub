@@ -54,9 +54,11 @@ def ext():
 def thumbnail_ext():
     return "jpg"
 
+
 @pytest.fixture
 def subtitles_ext():
     return "srt"
+
 
 @pytest.fixture
 def download_thumbnail_name(uid, thumbnail_ext):

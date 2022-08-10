@@ -9,6 +9,7 @@ from ytdl_sub.downloaders.downloader import DownloaderOptionsT
 from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
+from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.youtube import YoutubeChannel
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.thumbnail import convert_url_thumbnail
@@ -115,12 +116,12 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         self,
         download_options: DownloaderOptionsT,
         enhanced_download_archive: EnhancedDownloadArchive,
-        ytdl_options: Optional[Dict] = None,
+        ytdl_options_builder: YTDLOptionsBuilder,
     ):
         super().__init__(
             download_options=download_options,
             enhanced_download_archive=enhanced_download_archive,
-            ytdl_options=ytdl_options,
+            ytdl_options_builder=ytdl_options_builder,
         )
         self.channel: Optional[YoutubeChannel] = None
 

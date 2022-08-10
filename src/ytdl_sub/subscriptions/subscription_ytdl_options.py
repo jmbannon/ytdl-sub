@@ -1,9 +1,8 @@
 from pathlib import Path
 from typing import Dict
 
-import mergedeep
-
 from ytdl_sub.config.preset import Preset
+from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
@@ -22,10 +21,25 @@ class SubscriptionYTDLOptions:
 
     @property
     def _global_options(self) -> Dict:
-        return {
+        """
+        Returns
+        -------
+        ytdl-options to apply to every run no matter what
+        """
+        ytdl_options = {
             # Download all files in the format of {id}.{ext}
             "outtmpl": str(Path(self._working_directory) / "%(id)s.%(ext)s")
         }
+
+        if (
+            self._preset.downloader.supports_download_archive
+            and self._preset.output_options.maintain_download_archive
+        ):
+            ytdl_options["download_archive"] = str(
+                Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
+            )
+
+        return ytdl_options
 
     @property
     def _dry_run_options(self) -> Dict:
@@ -42,13 +56,6 @@ class SubscriptionYTDLOptions:
 
         if output_options.thumbnail_name:
             ytdl_options["writethumbnail"] = True
-        if (
-            self._preset.downloader.supports_download_archive
-            and output_options.maintain_download_archive
-        ):
-            ytdl_options["download_archive"] = str(
-                Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
-            )
 
         return ytdl_options
 
@@ -83,22 +90,19 @@ class SubscriptionYTDLOptions:
     def _user_ytdl_options(self) -> Dict:
         return self._preset.ytdl_options.dict
 
-    def to_dict(self) -> Dict:
-        ytdl_options = self._global_options
+    def builder(self) -> YTDLOptionsBuilder:
+        """
+        Returns
+        -------
+        YTDLOptionsBuilder
+            Builder with values set based on the subscription
+        """
+        ytdl_options_builder = YTDLOptionsBuilder().add(self._global_options)
         if self._dry_run:
-            mergedeep.merge(
-                ytdl_options,
-                self._dry_run_options,
-                self._user_ytdl_options,
-                strategy=mergedeep.Strategy.TYPESAFE_ADDITIVE,
-            )
+            ytdl_options_builder.add(self._dry_run_options, self._user_ytdl_options)
         else:
-            mergedeep.merge(
-                ytdl_options,
-                self._output_options,
-                self._subtitle_options,
-                self._user_ytdl_options,
-                strategy=mergedeep.Strategy.TYPESAFE_ADDITIVE,
+            ytdl_options_builder.add(
+                self._output_options, self._subtitle_options, self._user_ytdl_options
             )
 
-        return ytdl_options
+        return ytdl_options_builder

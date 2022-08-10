@@ -1,6 +1,5 @@
 import abc
 import contextlib
-import copy
 import json
 import os
 import time
@@ -22,6 +21,7 @@ from yt_dlp.utils import ExistingVideoReached
 from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
@@ -70,25 +70,11 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         """
         return {"ignoreerrors": True}
 
-    @classmethod
-    def _configure_ytdl_options(
-        cls,
-        ytdl_options: Optional[Dict],
-    ) -> Dict:
-        """Configure the ytdl options for the downloader"""
-        if ytdl_options is None:
-            ytdl_options = {}
-
-        # Overwrite defaults with input
-        ytdl_options = dict(cls.ytdl_option_defaults(), **ytdl_options)
-
-        return ytdl_options
-
     def __init__(
         self,
         download_options: DownloaderOptionsT,
         enhanced_download_archive: EnhancedDownloadArchive,
-        ytdl_options: Optional[Dict] = None,
+        ytdl_options_builder: YTDLOptionsBuilder,
     ):
         """
         Parameters
@@ -97,13 +83,14 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
             Options validator for this downloader
         enhanced_download_archive
             Download archive
-        ytdl_options
-            YTDL options validator
+        ytdl_options_builder
+            YTDL options builder
         """
         DownloadArchiver.__init__(self=self, enhanced_download_archive=enhanced_download_archive)
         self.download_options = download_options
-        self.ytdl_options = self._configure_ytdl_options(
-            ytdl_options=ytdl_options,
+
+        self._ytdl_options_builder = ytdl_options_builder.clone().add(
+            self.ytdl_option_defaults(), before=True
         )
 
     @contextmanager
@@ -111,9 +98,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         """
         Context manager to interact with yt_dlp.
         """
-        ytdl_options = self.ytdl_options
-        if ytdl_options_overrides is not None:
-            ytdl_options = dict(ytdl_options, **ytdl_options_overrides)
+        ytdl_options = self._ytdl_options_builder.clone().add(ytdl_options_overrides).to_dict()
 
         download_logger.debug("ytdl_options: %s", str(ytdl_options))
         with Logger.handle_external_logs(name="yt-dlp"):
@@ -127,7 +112,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         -------
         True if dry-run is enabled. False otherwise.
         """
-        return self.ytdl_options.get("skip_download", False)
+        return self._ytdl_options_builder.to_dict().get("skip_download", False)
 
     def extract_info(self, ytdl_options_overrides: Optional[Dict] = None, **kwargs) -> Dict:
         """
@@ -173,7 +158,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         """
         num_tries = 0
         entry_files_exist = False
-        ytdl_options_overrides = copy.deepcopy(ytdl_options_overrides)
 
         while not entry_files_exist and num_tries < self._extract_entry_num_retries:
             entry_dict = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
@@ -185,7 +169,11 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
             # Remove the download archive so it can retry without thinking its already downloaded,
             # even though it is not
-            ytdl_options_overrides["download_archive"] = None
+            ytdl_options_overrides = (
+                YTDLOptionsBuilder()
+                .add(ytdl_options_overrides, {"download_archive": None})
+                .to_dict()
+            )
 
             if num_tries < self._extract_entry_retry_wait_sec:
                 download_logger.debug(
@@ -299,20 +287,25 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         **kwargs
             arguments passed directory to YoutubeDL extract_info
         """
+        ytdl_options_builder = self._ytdl_options_builder.clone()
         if ytdl_options_overrides is None:
             ytdl_options_overrides = {}
 
-        extract_info_ytdl_options = {"writeinfojson": True}
+        ytdl_options_builder.add({"writeinfojson": True}, ytdl_options_overrides)
         if only_info_json:
-            extract_info_ytdl_options["skip_download"] = True
-            extract_info_ytdl_options["writethumbnail"] = False
-            extract_info_ytdl_options["writesubtitles"] = False
-
-        ytdl_options_overrides = dict(ytdl_options_overrides, **extract_info_ytdl_options)
+            ytdl_options_builder.add(
+                {
+                    "skip_download": True,
+                    "writethumbnail": False,
+                    "writesubtitles": False,
+                }
+            )
 
         try:
             with self._listen_and_log_downloaded_info_json(log_prefix=log_prefix_on_info_json_dl):
-                _ = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
+                _ = self.extract_info(
+                    ytdl_options_overrides=ytdl_options_builder.to_dict(), **kwargs
+                )
         except RejectedVideoReached:
             download_logger.debug("RejectedVideoReached, stopping additional downloads")
         except ExistingVideoReached:

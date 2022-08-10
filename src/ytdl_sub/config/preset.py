@@ -79,6 +79,8 @@ class DownloadStrategyValidator(StrictDictValidator):
             raise self._validation_exception(error_message=value_exc)
 
 
+# Preset is the meat of ytdl-sub, the linter is wrong here
+# pylint: disable=too-many-instance-attributes
 class Preset(StrictDictValidator):
     # Have all present keys optional since parent presets could not have all the
     # required keys. They will get validated in the init after the mergedeep of dicts
