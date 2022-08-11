@@ -118,8 +118,7 @@ class EntryVariables(SourceVariables):
         Returns
         -------
         str
-            The download entry's thumbnail extension. Will always return 'str'. Until there is a
-            need to support other subtitle types, we always use srt.
+            The download entry's subtitles extension.
         """
         return "srt"
 

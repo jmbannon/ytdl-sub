@@ -1,4 +1,3 @@
-from typing import List
 from typing import Optional
 
 from yt_dlp.utils import DateRange
@@ -10,10 +9,8 @@ from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import StringListValidator
 
 
 class YTDLOptions(LiteralDictValidator):
@@ -225,93 +222,3 @@ class OutputOptions(StrictDictValidator):
                 end=self.keep_files_before.datetime_str if self.keep_files_before else None,
             )
         return None
-
-
-class SubtitlesTypeValidator(StringSelectValidator):
-    _expected_value_type_name = "subtitles type"
-    _select_values = {"srt", "vtt", "ass", "lrc"}
-
-
-class SubtitleOptions(StrictDictValidator):
-    """
-    Defines how to download and store subtitles.
-
-    Usage:
-
-    .. code-block:: yaml
-
-       presets:
-         my_example_preset:
-           subtitle_options:
-             # required
-             output_directory: "/path/to/videos_or_music"
-             file_name: "{title_sanitized}.{ext}"
-             # optional
-             thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
-             maintain_download_archive: True
-             keep_files_before: now
-             keep_files_after: 19000101
-    """
-
-    _optional_keys = {
-        "subtitles_name",
-        "subtitles_type",
-        "embed_subtitles",
-        "languages",
-        "allow_auto_generated_subtitles",
-    }
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-        self._subtitles_name = self._validate_key_if_present(
-            key="subtitles_name", validator=StringFormatterValidator
-        )
-        self._subtitles_type = self._validate_key_if_present(
-            key="subtitles_type", validator=SubtitlesTypeValidator, default="srt"
-        )
-        self._embed_subtitles = self._validate_key_if_present(
-            key="embed_subtitles", validator=BoolValidator
-        )
-        self._languages = self._validate_key_if_present(
-            key="languages", validator=StringListValidator, default=["en"]
-        ).list
-        self._allow_auto_generated_subtitles = self._validate_key_if_present(
-            key="allow_auto_generated_subtitles", validator=BoolValidator, default=False
-        ).value
-
-    @property
-    def subtitles_name(self) -> Optional[StringFormatterValidator]:
-        """
-        Optional. The file name for the media's subtitles if they are present. This can include
-        directories such as ``"Season {upload_year}/{title}.{subtitle_ext}"``, and will be placed
-        in the output directory.
-        """
-        return self._subtitles_name
-
-    @property
-    def subtitles_type(self) -> Optional[str]:
-        """
-        Optional. The subtitles file format. Defaults to ``srt``
-        """
-        return self._subtitles_type
-
-    @property
-    def embed_subtitles(self) -> Optional[bool]:
-        """
-        Optional. Whether to embed the subtitles into the video file.
-        """
-        return self._subtitles_type
-
-    @property
-    def languages(self) -> Optional[List[str]]:
-        """
-        Optional. Language(s) to download for subtitles. Defaults to ``en``
-        """
-        return [lang.value for lang in self._languages]
-
-    @property
-    def allow_auto_generated_subtitles(self) -> Optional[bool]:
-        """
-        Optional. Whether to allow auto generated subtitles. Defaults to False.
-        """
-        return self._allow_auto_generated_subtitles

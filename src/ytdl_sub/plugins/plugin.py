@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Dict
 from typing import Generic
 from typing import List
 from typing import Optional
@@ -72,6 +73,13 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         self.overrides = overrides
         # TODO pass yaml snake case name in the class somewhere, and use it for the logger
         self._logger = Logger.get(self.__class__.__name__)
+
+    def ytdl_options(self) -> Optional[Dict]:
+        """
+        Returns
+        -------
+        ytdl options to enable/disable when downloading entries for this specific plugin
+        """
 
     # pylint: disable=no-self-use
     def modify_entry(self, entry: Entry) -> Optional[Entry]:

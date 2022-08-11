@@ -1,25 +1,41 @@
 from pathlib import Path
 from typing import Dict
+from typing import List
+from typing import Optional
 from typing import Type
+from typing import TypeVar
 
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
+from ytdl_sub.plugins.plugin import Plugin
+from ytdl_sub.plugins.subtitles import SubtitleOptions
+from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+
+PluginT = TypeVar("PluginT", bound=Plugin)
 
 
 class SubscriptionYTDLOptions:
     def __init__(
         self,
         preset: Preset,
+        plugins: List[Plugin],
         enhanced_download_archive: EnhancedDownloadArchive,
         working_directory: str,
         dry_run: bool,
     ):
         self._preset = preset
+        self._plugins = plugins
         self._enhanced_download_archive = enhanced_download_archive
         self._working_directory = working_directory
         self._dry_run = dry_run
+
+    def _get_plugin(self, plugin_type: Type[PluginT]) -> Optional[PluginT]:
+        for plugin in self._plugins:
+            if isinstance(plugin, plugin_type):
+                return plugin
+        return None
 
     @property
     def _downloader(self) -> Type[Downloader]:
@@ -67,11 +83,15 @@ class SubscriptionYTDLOptions:
 
     @property
     def _subtitle_options(self) -> Dict:
+        if not (subtitle_plugin := self._get_plugin(SubtitlesPlugin)):
+            return {}
+
         if not self._downloader.supports_subtitles:
+            # TODO: warn here
             return {}
 
         ytdl_options: Dict = {}
-        subtitle_options = self._preset.subtitle_options
+        subtitle_options: SubtitleOptions = subtitle_plugin.plugin_options
 
         write_subtitle_file: bool = subtitle_options.subtitles_name is not None
         if write_subtitle_file:
