@@ -18,7 +18,6 @@ from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.subtitles import SubtitleOptions
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -110,15 +109,6 @@ class Subscription:
         return self.__preset_options.output_options
 
     @property
-    def subtitle_options(self) -> SubtitleOptions:
-        """
-        Returns
-        -------
-        The subtitle options defined for this subscription
-        """
-        return self.__preset_options.subtitle_options
-
-    @property
     def overrides(self) -> Overrides:
         """
         Returns
@@ -200,18 +190,6 @@ class Subscription:
             self._enhanced_download_archive.save_file_to_output_directory(
                 file_name=entry.get_download_thumbnail_name(),
                 output_file_name=output_thumbnail_name,
-                entry=entry,
-            )
-
-        if self.downloader_class.supports_subtitles and self.subtitle_options.subtitles_name:
-
-            output_subtitles_name = self.overrides.apply_formatter(
-                formatter=self.output_options.subtitles_name, entry=entry
-            )
-
-            self._enhanced_download_archive.save_file_to_output_directory(
-                file_name=entry.get_download_subtitles_name(),
-                output_file_name=output_subtitles_name,
                 entry=entry,
             )
 
