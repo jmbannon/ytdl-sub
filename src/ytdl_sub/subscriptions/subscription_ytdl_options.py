@@ -67,8 +67,8 @@ class SubscriptionYTDLOptions:
     def _dry_run_options(self) -> Dict:
         return {
             "skip_download": True,
-            "simulate": True,
             "writethumbnail": False,
+            # TODO: find a way to not write subtitles; using `simulate: True` breaks tests
         }
 
     @property
