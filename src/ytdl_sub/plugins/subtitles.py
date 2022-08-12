@@ -43,7 +43,7 @@ class SubtitleOptions(PluginOptions):
        presets:
          my_example_preset:
            subtitle_options:
-             subtitles_name: "{title_sanitized}.{lang}.{subtitle_ext}"
+             subtitles_name: "{title_sanitized}.{lang}.{subtitles_ext}"
              subtitles_type: "srt"
              embed_subtitles: False
              languages: "en"  # supports list of multiple languages
@@ -80,7 +80,7 @@ class SubtitleOptions(PluginOptions):
     def subtitles_name(self) -> Optional[StringFormatterValidator]:
         """
         Optional. The file name for the media's subtitles if they are present. This can include
-        directories such as ``"Season {upload_year}/{title_sanitized}.{lang}.{subtitle_ext}"``, and
+        directories such as ``"Season {upload_year}/{title_sanitized}.{lang}.{subtitles_ext}"``, and
         will be placed in the output directory. ``lang`` is dynamic since you can download multiple
         subtitles. It will set the respective language to the correct subtitle file.
         """
@@ -169,7 +169,7 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         languages = sorted(requested_subtitles.keys())
         entry.add_variables(
             variables_to_add={
-                "subtitle_ext": self.plugin_options.subtitles_type,
+                "subtitles_ext": self.plugin_options.subtitles_type,
                 "lang": ",".join(languages),
             }
         )
