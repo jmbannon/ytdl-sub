@@ -32,7 +32,9 @@ class SubtitlesTypeValidator(StringSelectValidator):
 
 class SubtitleOptions(PluginOptions):
     """
-    Defines how to download and store subtitles.
+    Defines how to download and store subtitles. Using this plugin creates two new variables:
+    ``lang`` and ``subtitles_ext``. ``lang`` is dynamic since you can download multiple subtitles.
+    It will set the respective language to the correct subtitle file.
 
     Usage:
 
@@ -41,14 +43,11 @@ class SubtitleOptions(PluginOptions):
        presets:
          my_example_preset:
            subtitle_options:
-             # required
-             output_directory: "/path/to/videos_or_music"
-             file_name: "{title_sanitized}.{ext}"
-             # optional
-             thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
-             maintain_download_archive: True
-             keep_files_before: now
-             keep_files_after: 19000101
+             subtitles_name: "{title_sanitized}.{lang}.{subtitle_ext}"
+             subtitles_type: "srt"
+             embed_subtitles: False
+             languages: "en"  # supports list of multiple languages
+             allow_auto_generated_subtitles: False
     """
 
     _optional_keys = {
@@ -81,15 +80,16 @@ class SubtitleOptions(PluginOptions):
     def subtitles_name(self) -> Optional[StringFormatterValidator]:
         """
         Optional. The file name for the media's subtitles if they are present. This can include
-        directories such as ``"Season {upload_year}/{title}.{subtitle_ext}"``, and will be placed
-        in the output directory.
+        directories such as ``"Season {upload_year}/{title_sanitized}.{lang}.{subtitle_ext}"``, and
+        will be placed in the output directory. ``lang`` is dynamic since you can download multiple
+        subtitles. It will set the respective language to the correct subtitle file.
         """
         return self._subtitles_name
 
     @property
     def subtitles_type(self) -> Optional[str]:
         """
-        Optional. The subtitles file format. Defaults to ``srt``
+        Optional. One of the subtitle file types "srt", "vtt", "ass", "lrc". Defaults to "srt"
         """
         return self._subtitles_type
 
@@ -97,13 +97,15 @@ class SubtitleOptions(PluginOptions):
     def embed_subtitles(self) -> Optional[bool]:
         """
         Optional. Whether to embed the subtitles into the video file. Defaults to False.
+        NOTE: webm files can only embed "vtt" subtitle types.
         """
         return self._embed_subtitles
 
     @property
     def languages(self) -> Optional[List[str]]:
         """
-        Optional. Language(s) to download for subtitles. Defaults to ``en``
+        Optional. Language code(s) to download for subtitles. Supports a single or list of multiple
+        language codes. Defaults to "en".
         """
         return [lang.value for lang in self._languages]
 
