@@ -1,17 +1,16 @@
 import contextlib
-import copy
 import os
 import shutil
 from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Tuple
 from typing import Type
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.config_file import ConfigOptions
 from ytdl_sub.config.preset import Preset
+from ytdl_sub.config.preset import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
@@ -19,7 +18,7 @@ from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
@@ -83,7 +82,7 @@ class Subscription:
         return self.__preset_options.downloader_options
 
     @property
-    def plugins(self) -> List[Tuple[Type[Plugin], PluginOptions]]:
+    def plugins(self) -> PresetPlugins:
         """
         Returns
         -------
@@ -178,6 +177,7 @@ class Subscription:
             entry=entry,
         )
 
+        # TODO: see if entry even has a thumbnail
         if self.output_options.thumbnail_name:
             output_thumbnail_name = self.overrides.apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry
@@ -240,7 +240,7 @@ class Subscription:
         List of plugins defined in the subscription, initialized and ready to use.
         """
         plugins: List[Plugin] = []
-        for plugin_type, plugin_options in self.plugins:
+        for plugin_type, plugin_options in self.plugins.zipped():
             plugin = plugin_type(
                 plugin_options=plugin_options,
                 overrides=self.overrides,
@@ -262,25 +262,21 @@ class Subscription:
             directory.
         """
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
-
-        # TODO: Move this logic to separate function
-        # TODO: set id here as well
-        ytdl_options = copy.deepcopy(self.ytdl_options.dict)
-        ytdl_options["writethumbnail"] = True
-        if dry_run:
-            ytdl_options["skip_download"] = True
-            ytdl_options["writethumbnail"] = False
-        if self.downloader_class.supports_download_archive and self.maintain_download_archive:
-            ytdl_options["download_archive"] = str(
-                Path(self.working_directory) / self._enhanced_download_archive.archive_file_name
-            )
-
         plugins = self._initialize_plugins()
+
+        ytdl_options_builder = SubscriptionYTDLOptions(
+            preset=self.__preset_options,
+            plugins=plugins,
+            enhanced_download_archive=self._enhanced_download_archive,
+            working_directory=self.working_directory,
+            dry_run=dry_run,
+        ).builder()
+
         with self._subscription_download_context_managers():
             downloader = self.downloader_class(
                 download_options=self.downloader_options,
                 enhanced_download_archive=self._enhanced_download_archive,
-                ytdl_options=ytdl_options,
+                ytdl_options_builder=ytdl_options_builder,
             )
 
             for entry in downloader.download():

@@ -1,6 +1,7 @@
 import copy
 from typing import Any
 from typing import Dict
+from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -37,6 +38,28 @@ PRESET_KEYS = {
     *DownloadStrategyMapping.sources(),
     *PluginMapping.plugins(),
 }
+
+
+class PresetPlugins:
+    def __init__(self):
+        self.plugin_types: List[Type[Plugin]] = []
+        self.plugin_options: List[PluginOptions] = []
+
+    def add(self, plugin_type: Type[Plugin], plugin_options: PluginOptions) -> "PresetPlugins":
+        """
+        Add a pair of plugin type and options to the list
+        """
+        self.plugin_types.append(plugin_type)
+        self.plugin_options.append(plugin_options)
+        return self
+
+    def zipped(self) -> Iterable[Tuple[Type[Plugin], PluginOptions]]:
+        """
+        Returns
+        -------
+        Plugin and PluginOptions zipped
+        """
+        return zip(self.plugin_types, self.plugin_options)
 
 
 class DownloadStrategyValidator(StrictDictValidator):
@@ -136,8 +159,8 @@ class Preset(StrictDictValidator):
 
         return downloader, download_options
 
-    def __validate_and_get_plugins(self) -> List[Tuple[Type[Plugin], PluginOptions]]:
-        plugins: List[Tuple[Type[Plugin], PluginOptions]] = []
+    def __validate_and_get_plugins(self) -> PresetPlugins:
+        plugins = PresetPlugins()
 
         for key in self._keys:
             if key not in PluginMapping.plugins():
@@ -149,7 +172,7 @@ class Preset(StrictDictValidator):
                 source_variables=self._source_variables, override_variables=self.overrides.keys
             )
 
-            plugins.append((plugin, plugin_options))
+            plugins.add(plugin_type=plugin, plugin_options=plugin_options)
 
         return plugins
 
@@ -167,7 +190,7 @@ class Preset(StrictDictValidator):
             variable_dict = dict(source_variables, **variable_dict)
 
         # For all plugins, add in any extra added source variables
-        for _, plugin_options in self.plugins:
+        for plugin_options in self.plugins.plugin_options:
             added_plugin_variables = {
                 source_var: "dummy_string" for source_var in plugin_options.added_source_variables()
             }
@@ -253,7 +276,7 @@ class Preset(StrictDictValidator):
         )
 
         self.overrides = self._validate_key(key="overrides", validator=Overrides, default={})
-        self.plugins = self.__validate_and_get_plugins()
+        self.plugins: PresetPlugins = self.__validate_and_get_plugins()
 
         # After all options are initialized, perform a recursive post-validate that requires
         # values from multiple validators

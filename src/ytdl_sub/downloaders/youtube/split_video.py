@@ -107,6 +107,9 @@ class YoutubeSplitVideoDownloader(
     downloader_options_type = YoutubeSplitVideoDownloaderOptions
     downloader_entry_type = YoutubePlaylistVideo
 
+    supports_download_archive = False
+    supports_subtitles = False
+
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
         """

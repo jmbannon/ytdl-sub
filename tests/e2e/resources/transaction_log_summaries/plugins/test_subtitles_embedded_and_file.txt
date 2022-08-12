@@ -1,0 +1,14 @@
+Files created in '{output_directory}'
+----------------------------------------
+JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind-thumb.jpg
+JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.de.srt
+JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.en.srt
+JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.mp4
+  Embedded subtitles with lang(s) en, de
+JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.nfo
+  NFO tags:
+    musicvideo:
+      album: Music Videos
+      artist: JMC
+      title: YouTube Rewind 2019: For the Record | #YouTubeRewind
+      year: 2019

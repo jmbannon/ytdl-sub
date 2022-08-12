@@ -51,6 +51,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
     SoundcloudDownloader[SoundcloudAlbumsAndSinglesDownloadOptions]
 ):
     downloader_options_type = SoundcloudAlbumsAndSinglesDownloadOptions
+    supports_subtitles = False
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:

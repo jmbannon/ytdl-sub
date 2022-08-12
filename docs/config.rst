@@ -203,6 +203,14 @@ regex
 
 -------------------------------------------------------------------------------
 
+subtitles
+'''''''''
+.. autoclass:: ytdl_sub.plugins.subtitles.SubtitleOptions()
+  :members: subtitles_name, subtitles_type, embed_subtitles, languages, allow_auto_generated_subtitles
+  :member-order: bysource
+
+-------------------------------------------------------------------------------
+
 .. _subscription_yaml:
 
 subscription.yaml
