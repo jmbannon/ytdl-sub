@@ -67,8 +67,8 @@ class SubscriptionYTDLOptions:
     def _dry_run_options(self) -> Dict:
         return {
             "skip_download": True,
+            "simulate": True,
             "writethumbnail": False,
-            "writesubtitles": False,
         }
 
     @property
@@ -90,30 +90,45 @@ class SubscriptionYTDLOptions:
             # TODO: warn here
             return {}
 
-        ytdl_options: Dict = {}
+        builder = YTDLOptionsBuilder()
         subtitle_options: SubtitleOptions = subtitle_plugin.plugin_options
 
         write_subtitle_file: bool = subtitle_options.subtitles_name is not None
         if write_subtitle_file:
-            ytdl_options["writesubtitles"] = True
-            ytdl_options["postprocessors"] = [
-                {"key": "FFmpegSubtitlesConvertor", "format": subtitle_options.subtitles_type}
-            ]
+            builder.add(
+                {
+                    "writesubtitles": True,
+                    "postprocessors": [
+                        {
+                            "key": "FFmpegSubtitlesConvertor",
+                            "format": subtitle_options.subtitles_type,
+                        }
+                    ],
+                }
+            )
 
         if subtitle_options.embed_subtitles:
-            ytdl_options["postprocessors"] = [
-                # already_have_subtitle=True means keep the subtitle files. False means delete
-                {"key": "FFmpegEmbedSubtitle", "already_have_subtitle": write_subtitle_file}
-            ]
+            builder.add(
+                {
+                    "postprocessors": [
+                        # already_have_subtitle=True means we downloaded the subtitle files.
+                        {"key": "FFmpegEmbedSubtitle", "already_have_subtitle": write_subtitle_file}
+                    ]
+                }
+            )
 
         # If neither subtitles_name or embed_subtitles is set, do not set any other flags
-        if not ytdl_options:
+        if not builder.to_dict():
             return {}
 
-        ytdl_options["writeautomaticsub"] = subtitle_options.allow_auto_generated_subtitles
-        ytdl_options["subtitleslangs"] = subtitle_options.languages
+        builder.add(
+            {
+                "writeautomaticsub": subtitle_options.allow_auto_generated_subtitles,
+                "subtitleslangs": subtitle_options.languages,
+            }
+        )
 
-        return ytdl_options
+        return builder.to_dict()
 
     @property
     def _user_ytdl_options(self) -> Dict:
@@ -128,7 +143,9 @@ class SubscriptionYTDLOptions:
         """
         ytdl_options_builder = YTDLOptionsBuilder().add(self._global_options)
         if self._dry_run:
-            ytdl_options_builder.add(self._dry_run_options, self._user_ytdl_options)
+            ytdl_options_builder.add(
+                self._subtitle_options, self._user_ytdl_options, self._dry_run_options
+            )
         else:
             ytdl_options_builder.add(
                 self._output_options, self._subtitle_options, self._user_ytdl_options

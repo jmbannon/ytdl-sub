@@ -1,3 +1,4 @@
+from typing import Dict
 from typing import Optional
 
 from yt_dlp.utils import DateRange
@@ -74,15 +75,31 @@ class Overrides(DictFormatterValidator):
             )
 
     def apply_formatter(
-        self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
+        self,
+        formatter: StringFormatterValidator,
+        entry: Optional[Entry] = None,
+        function_overrides: Dict[str, str] = None,
     ) -> str:
         """
-        Returns the format_string after .format has been called on it using entry (if provided) and
-        override values
+        Parameters
+        ----------
+        formatter
+            Formatter to apply
+        entry
+            Optional. Entry to add source variables to the formatter
+        function_overrides
+            Optional. Explicit values to override the overrides themselves and source variables
+
+        Returns
+        -------
+        The format_string after .format has been called
         """
         variable_dict = self.dict_with_format_strings
         if entry:
             variable_dict = dict(entry.to_dict(), **variable_dict)
+        if function_overrides:
+            variable_dict = dict(variable_dict, **function_overrides)
+
         return formatter.apply_formatter(variable_dict)
 
 

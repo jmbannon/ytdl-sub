@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -6,7 +7,7 @@ from typing import Set
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
+from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
@@ -15,12 +16,20 @@ from ytdl_sub.validators.validators import StringListValidator
 SUBTITLE_EXTENSIONS: Set[str] = {"srt", "vtt", "ass", "lrc"}
 
 
+def _is_entry_subtitle_file(path: Path, entry: Entry) -> bool:
+    if path.is_file() and path.name.startswith(entry.uid):
+        for ext in SUBTITLE_EXTENSIONS:
+            if path.name.endswith(f".{ext}"):
+                return True
+    return False
+
+
 class SubtitlesTypeValidator(StringSelectValidator):
     _expected_value_type_name = "subtitles type"
     _select_values = SUBTITLE_EXTENSIONS
 
 
-class SubtitleOptions(StrictDictValidator):
+class SubtitleOptions(PluginOptions):
     """
     Defines how to download and store subtitles.
 
@@ -56,10 +65,10 @@ class SubtitleOptions(StrictDictValidator):
         )
         self._subtitles_type = self._validate_key_if_present(
             key="subtitles_type", validator=SubtitlesTypeValidator, default="srt"
-        )
+        ).value
         self._embed_subtitles = self._validate_key_if_present(
             key="embed_subtitles", validator=BoolValidator
-        )
+        ).value
         self._languages = self._validate_key_if_present(
             key="languages", validator=StringListValidator, default=["en"]
         ).list
@@ -86,9 +95,9 @@ class SubtitleOptions(StrictDictValidator):
     @property
     def embed_subtitles(self) -> Optional[bool]:
         """
-        Optional. Whether to embed the subtitles into the video file.
+        Optional. Whether to embed the subtitles into the video file. Defaults to False.
         """
-        return self._subtitles_type
+        return self._embed_subtitles
 
     @property
     def languages(self) -> Optional[List[str]]:
@@ -103,6 +112,14 @@ class SubtitleOptions(StrictDictValidator):
         Optional. Whether to allow auto generated subtitles. Defaults to False.
         """
         return self._allow_auto_generated_subtitles
+
+    def added_source_variables(self) -> List[str]:
+        """
+        Returns
+        -------
+        List of new source variables created by using the subtitles plugin
+        """
+        return ["lang", "subtitle_ext"]
 
 
 class SubtitlesPlugin(Plugin[SubtitleOptions]):
@@ -144,6 +161,18 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
             }
         ).to_dict()
 
+    def modify_entry(self, entry: Entry) -> Optional[Entry]:
+        requested_subtitles = entry.kwargs("requested_subtitles")
+        languages = sorted(requested_subtitles.keys())
+        entry.add_variables(
+            variables_to_add={
+                "subtitle_ext": self.plugin_options.subtitles_type,
+                "lang": ",".join(languages),
+            }
+        )
+
+        return entry
+
     def post_process_entry(self, entry: Entry) -> None:
         """
         Creates an entry's NFO file using values defined in the metadata options
@@ -151,20 +180,22 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         Parameters
         ----------
         entry:
-            Entry to create an NFO file for
+            Entry to create subtitles for
         """
+        if not self.plugin_options.subtitles_name:
+            return
 
-        # def get_ytdlp_download_subtitle_paths(self) -> List[str]:
-        #     possible_subtitle_exts = SUBTITLE_EXTENSIONS
-        #     subtitle_paths: List[str] = []
-        #
-        #     for ext in possible_subtitle_exts:
-        #         for path in Path(self.working_directory()).rglob("*"):
-        #             if (
-        #                     path.is_file()
-        #                     and path.name.startswith(self.uid)
-        #                     and path.name.endswith(f".{ext}")
-        #             ):
-        #                 subtitle_paths.append(str(path))
-        #
-        #     return subtitle_paths
+        requested_subtitles = entry.kwargs("requested_subtitles")
+        for lang in requested_subtitles.keys():
+            subtitle_file_name = f"{entry.uid}.{lang}.{self.plugin_options.subtitles_type}"
+            output_subtitle_file_name = self.overrides.apply_formatter(
+                formatter=self.plugin_options.subtitles_name,
+                entry=entry,
+                function_overrides={"lang": lang},
+            )
+
+            self.save_file(
+                file_name=subtitle_file_name,
+                output_file_name=output_subtitle_file_name,
+                entry=entry,
+            )
