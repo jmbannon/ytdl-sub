@@ -95,11 +95,7 @@ class SubscriptionYTDLOptions:
 
         if subtitle_options.embed_subtitles:
             builder.add(
-                {
-                    "postprocessors": [
-                        {"key": "FFmpegEmbedSubtitle", "already_have_subtitle": True}
-                    ]
-                }
+                {"postprocessors": [{"key": "FFmpegEmbedSubtitle", "already_have_subtitle": True}]}
             )
 
         if subtitle_options.subtitles_name:

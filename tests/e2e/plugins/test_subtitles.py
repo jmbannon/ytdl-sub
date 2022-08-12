@@ -24,11 +24,12 @@ def single_video_subs_embed_preset_dict(output_directory):
         "overrides": {"artist": "JMC"},
     }
 
+
 @pytest.fixture
 def test_single_video_subs_embed_and_file_preset_dict(single_video_subs_embed_preset_dict):
-    single_video_subs_embed_preset_dict['subtitles']['subtitles_name'] = (
-        "{music_video_name}.{lang}.{subtitles_ext}"
-    )
+    single_video_subs_embed_preset_dict["subtitles"][
+        "subtitles_name"
+    ] = "{music_video_name}.{lang}.{subtitles_ext}"
     return single_video_subs_embed_preset_dict
 
 
@@ -61,11 +62,11 @@ class TestSubtitles:
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_subtitles_embedded_and_file(
-            self,
-            music_video_config,
-            test_single_video_subs_embed_and_file_preset_dict,
-            output_directory,
-            dry_run,
+        self,
+        music_video_config,
+        test_single_video_subs_embed_and_file_preset_dict,
+        output_directory,
+        dry_run,
     ):
         subscription = Subscription.from_dict(
             config=music_video_config,
