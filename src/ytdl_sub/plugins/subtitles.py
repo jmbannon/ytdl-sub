@@ -122,7 +122,7 @@ class SubtitleOptions(PluginOptions):
         -------
         List of new source variables created by using the subtitles plugin
         """
-        return ["lang", "subtitle_ext"]
+        return ["lang", "subtitles_ext"]
 
 
 class SubtitlesPlugin(Plugin[SubtitleOptions]):
