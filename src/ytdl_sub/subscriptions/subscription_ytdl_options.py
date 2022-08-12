@@ -90,30 +90,27 @@ class SubscriptionYTDLOptions:
             # TODO: warn here
             return {}
 
-        builder = YTDLOptionsBuilder()
+        builder = YTDLOptionsBuilder().add({"writesubtitles": True})
         subtitle_options: SubtitleOptions = subtitle_plugin.plugin_options
 
-        write_subtitle_file: bool = subtitle_options.subtitles_name is not None
-        if write_subtitle_file:
+        if subtitle_options.embed_subtitles:
             builder.add(
                 {
-                    "writesubtitles": True,
+                    "postprocessors": [
+                        {"key": "FFmpegEmbedSubtitle", "already_have_subtitle": True}
+                    ]
+                }
+            )
+
+        if subtitle_options.subtitles_name:
+            builder.add(
+                {
                     "postprocessors": [
                         {
                             "key": "FFmpegSubtitlesConvertor",
                             "format": subtitle_options.subtitles_type,
                         }
                     ],
-                }
-            )
-
-        if subtitle_options.embed_subtitles:
-            builder.add(
-                {
-                    "postprocessors": [
-                        # already_have_subtitle=True means we downloaded the subtitle files.
-                        {"key": "FFmpegEmbedSubtitle", "already_have_subtitle": write_subtitle_file}
-                    ]
                 }
             )
 

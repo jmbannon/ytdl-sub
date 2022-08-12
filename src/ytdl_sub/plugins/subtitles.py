@@ -8,6 +8,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
@@ -173,7 +174,7 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
 
         return entry
 
-    def post_process_entry(self, entry: Entry) -> None:
+    def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
         """
         Creates an entry's NFO file using values defined in the metadata options
 
@@ -182,20 +183,25 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         entry:
             Entry to create subtitles for
         """
-        if not self.plugin_options.subtitles_name:
-            return
-
         requested_subtitles = entry.kwargs("requested_subtitles")
-        for lang in requested_subtitles.keys():
-            subtitle_file_name = f"{entry.uid}.{lang}.{self.plugin_options.subtitles_type}"
-            output_subtitle_file_name = self.overrides.apply_formatter(
-                formatter=self.plugin_options.subtitles_name,
-                entry=entry,
-                function_overrides={"lang": lang},
-            )
+        file_metadata: Optional[FileMetadata] = None
+        langs = list(requested_subtitles.keys())
 
-            self.save_file(
-                file_name=subtitle_file_name,
-                output_file_name=output_subtitle_file_name,
-                entry=entry,
-            )
+        if self.plugin_options.embed_subtitles:
+            file_metadata = FileMetadata(f"Embedded subtitles with lang(s) {', '.join(langs)}")
+        if self.plugin_options.subtitles_name:
+            for lang in langs:
+                subtitle_file_name = f"{entry.uid}.{lang}.{self.plugin_options.subtitles_type}"
+                output_subtitle_file_name = self.overrides.apply_formatter(
+                    formatter=self.plugin_options.subtitles_name,
+                    entry=entry,
+                    function_overrides={"lang": lang},
+                )
+
+                self.save_file(
+                    file_name=subtitle_file_name,
+                    output_file_name=output_subtitle_file_name,
+                    entry=entry,
+                )
+
+        return file_metadata
