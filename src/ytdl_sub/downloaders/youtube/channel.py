@@ -160,16 +160,19 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             video = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
             download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
 
-            # Only do the individual download if it is not dry-run
-            if not self.is_dry_run:
-                _ = self.extract_info_with_retry(
-                    is_downloaded_fn=video.is_downloaded,
-                    ytdl_options_overrides={
-                        "playlist_items": str(video.kwargs("playlist_index")),
-                        "writeinfojson": False,
-                    },
-                    url=self.download_options.channel_url,
-                )
+            # Re-download the contents even if it's a dry-run as a single video. At this time,
+            # channels do not download subtitles or subtitle metadata
+            as_single_video_dict = self.extract_info_with_retry(
+                is_downloaded_fn=None if self.is_dry_run else video.is_downloaded,
+                ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
+                url=video.kwargs("webpage_url"),
+            )
+
+            # Workaround for the ytdlp issue
+            # pylint: disable=protected-access
+            video._kwargs["requested_subtitles"] = as_single_video_dict.get("requested_subtitles")
+            # pylint: enable=protected-access
+
             yield video
 
     def _download_thumbnail(

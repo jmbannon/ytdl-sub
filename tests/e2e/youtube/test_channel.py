@@ -29,6 +29,10 @@ def channel_preset_dict(output_directory):
             "max_views": 100000,  # do not download the popular PJ concert
             "break_on_reject": False,  # do not break from max views
         },
+        "subtitles": {
+            "subtitles_name": "{episode_name}.{lang}.{subtitles_ext}",
+            "allow_auto_generated_subtitles": True,
+        },
         "overrides": {"tv_show_name": "Project / Zombie"},
     }
 
