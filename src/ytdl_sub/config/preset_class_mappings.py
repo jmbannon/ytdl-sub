@@ -15,6 +15,7 @@ from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlu
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.regex import RegexPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
+from ytdl_sub.plugins.video_tags import VideoTagsPlugin
 
 
 class DownloadStrategyMapping:
@@ -107,6 +108,7 @@ class PluginMapping:
 
     _MAPPING: Dict[str, Type[Plugin]] = {
         "music_tags": MusicTagsPlugin,
+        "video_tags": VideoTagsPlugin,
         "nfo_tags": NfoTagsPlugin,
         "output_directory_nfo_tags": OutputDirectoryNfoTagsPlugin,
         "regex": RegexPlugin,

@@ -1,6 +1,7 @@
 import shutil
 import subprocess
 import tempfile
+from typing import Dict
 from typing import List
 from typing import Optional
 
@@ -88,11 +89,12 @@ def _create_metadata_chapters(chapters: Chapters, file_duration_sec: int) -> Lis
     return lines
 
 
-def add_ffmpeg_metadata(
+def set_ffmpeg_metadata_chapters(
     file_path: str, chapters: Optional[Chapters], file_duration_sec: int
 ) -> None:
     """
-    Adds ffmetadata to a file. TODO: support more than just chapters
+    Sets ffmetadata chapters to a file. Note that this will (I think) wipe all prior
+    metadata.
 
     Parameters
     ----------
@@ -130,3 +132,24 @@ def add_ffmpeg_metadata(
         )
 
         shutil.move(src=output_file_path, dst=file_path)
+
+
+def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -> None:
+    """
+    Parameters
+    ----------
+    file_path
+        File to add metadata key/values to
+    key_values
+        The key/values to add
+    """
+    file_path_ext = file_path.split(".")[-1]
+    output_file_path = f"{file_path}.out.{file_path_ext}"
+
+    ffmpeg_args = ["-i", file_path]
+    for key, value in key_values.items():
+        ffmpeg_args.extend(["-metadata", f"{key}={value}"])
+    ffmpeg_args.extend(["-codec", "copy", output_file_path])
+
+    FFMPEG.run(ffmpeg_args)
+    shutil.move(src=output_file_path, dst=file_path)
