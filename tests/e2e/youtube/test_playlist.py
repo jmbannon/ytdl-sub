@@ -19,6 +19,10 @@ def playlist_preset_dict(output_directory):
         "ytdl_options": {
             "format": "worst[ext=mp4]",
         },
+        "subtitles": {
+            "subtitles_name": "{music_video_name}.{lang}.{subtitles_ext}",
+            "allow_auto_generated_subtitles": True,
+        },
         "overrides": {"artist": "JMC"},
     }
 
@@ -94,11 +98,13 @@ class TestPlaylistAsKodiMusicVideo:
                 output_directory=output_directory,
                 transaction_log=transaction_log,
                 transaction_log_summary_file_name="youtube/test_playlist.txt",
+                regenerate_transaction_log=True,
             )
             assert_expected_downloads(
                 output_directory=output_directory,
                 dry_run=dry_run,
                 expected_download_summary_file_name="youtube/test_playlist.json",
+                regenerate_expected_download_summary=True,
             )
 
             if not dry_run:

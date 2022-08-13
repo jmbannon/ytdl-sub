@@ -9,12 +9,16 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import StringListValidator
 
 SUBTITLE_EXTENSIONS: Set[str] = {"srt", "vtt", "ass", "lrc"}
+
+
+logger = Logger.get(name="subtitles")
 
 
 def _is_entry_subtitle_file(path: Path, entry: Entry) -> bool:
@@ -67,7 +71,9 @@ class SubtitleOptions(PluginOptions):
             key="subtitles_type", validator=SubtitlesTypeValidator, default="srt"
         ).value
         self._embed_subtitles = self._validate_key_if_present(
-            key="embed_subtitles", validator=BoolValidator
+            key="embed_subtitles",
+            validator=BoolValidator,
+            default=False,
         ).value
         self._languages = self._validate_key_if_present(
             key="languages", validator=StringListValidator, default=["en"]
@@ -166,6 +172,9 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         requested_subtitles = entry.kwargs("requested_subtitles")
+        if not requested_subtitles:
+            return entry
+
         languages = sorted(requested_subtitles.keys())
         entry.add_variables(
             variables_to_add={
@@ -186,6 +195,10 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
             Entry to create subtitles for
         """
         requested_subtitles = entry.kwargs("requested_subtitles")
+        if not requested_subtitles:
+            logger.info("subtitles not found for %s", entry.title)
+            return None
+
         file_metadata: Optional[FileMetadata] = None
         langs = list(requested_subtitles.keys())
 

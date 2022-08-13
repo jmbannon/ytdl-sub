@@ -132,7 +132,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
     def extract_info_with_retry(
         self,
-        is_downloaded_fn: Callable[[], bool],
+        is_downloaded_fn: Optional[Callable[[], bool]],
         ytdl_options_overrides: Optional[Dict] = None,
         **kwargs,
     ) -> Dict:
@@ -146,7 +146,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         Parameters
         ----------
         is_downloaded_fn
-            Function to check if the entry is downloaded
+            Optional. Function to check if the entry is downloaded
         ytdl_options_overrides
             Optional. Dict containing ytdl args to override other predefined ytdl args
         **kwargs
@@ -162,7 +162,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
         while not entry_files_exist and num_tries < self._extract_entry_num_retries:
             entry_dict = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
-            if is_downloaded_fn():
+            if is_downloaded_fn is None or is_downloaded_fn():
                 return entry_dict
 
             time.sleep(self._extract_entry_retry_wait_sec)
@@ -298,7 +298,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
                 {
                     "skip_download": True,
                     "writethumbnail": False,
-                    "writesubtitles": False,
                 }
             )
 
