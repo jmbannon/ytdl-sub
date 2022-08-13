@@ -1,3 +1,4 @@
+import mergedeep
 import pytest
 from e2e.expected_download import assert_expected_downloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
@@ -84,4 +85,40 @@ class TestSubtitles:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_subtitles_embedded_and_file.json",
+        )
+
+    @pytest.mark.parametrize("dry_run", [True, False])
+    def test_subtitles_chapters_tags_embedded(
+        self,
+        music_video_config,
+        timestamps_file_path,
+        single_video_subs_embed_preset_dict,
+        output_directory,
+        dry_run,
+    ):
+        # Test chapters and video tags in addition to subtitles
+        mergedeep.merge(
+            single_video_subs_embed_preset_dict,
+            {
+                "youtube": {"chapter_timestamps": timestamps_file_path},
+                "video_tags": {"tags": {"title": "{title}"}},
+            },
+        )
+
+        subscription = Subscription.from_dict(
+            config=music_video_config,
+            preset_name="subtitles_embedded_test",
+            preset_dict=single_video_subs_embed_preset_dict,
+        )
+
+        transaction_log = subscription.download(dry_run=dry_run)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="plugins/test_subtitles_tags_chapters.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=dry_run,
+            expected_download_summary_file_name="plugins/test_subtitles_tags_chapters.json",
         )

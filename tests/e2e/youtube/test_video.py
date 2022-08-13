@@ -53,13 +53,11 @@ class TestYoutubeVideo:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="youtube/test_video.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_video.json",
-            regenerate_expected_download_summary=True,
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])
@@ -113,11 +111,9 @@ class TestYoutubeVideo:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="youtube/test_video_with_chapter_timestamps.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_video_with_chapter_timestamps.json",
-            regenerate_expected_download_summary=True,
         )
