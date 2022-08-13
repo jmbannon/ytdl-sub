@@ -18,6 +18,12 @@ def single_video_preset_dict(output_directory):
         "ytdl_options": {
             "format": "worst[ext=mp4]",
         },
+        # also test video tags
+        "video_tags": {
+            "tags": {
+                "title": "{title}",
+            }
+        },
         "overrides": {"artist": "JMC"},
     }
 
@@ -90,7 +96,10 @@ class TestYoutubeVideo:
         output_directory,
         dry_run,
     ):
+        # Test chapters and video tags, throw in a video tag with special chars while we are at it
         single_video_preset_dict["youtube"]["chapter_timestamps"] = timestamps_file_path
+        single_video_preset_dict["video_tags"]["tags"]["description"] = "🎸 / ' \" \n newline?"
+
         single_video_subscription = Subscription.from_dict(
             config=music_video_config,
             preset_name="music_video_single_video_test",

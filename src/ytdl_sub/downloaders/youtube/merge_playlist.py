@@ -8,7 +8,7 @@ from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloaderOptio
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
-from ytdl_sub.utils.ffmpeg import add_ffmpeg_metadata
+from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.validators import BoolValidator
 
@@ -115,7 +115,7 @@ class YoutubeMergePlaylistDownloader(
         chapters = Chapters(timestamps=timestamps, titles=titles)
 
         if not self.is_dry_run and add_chapters:
-            add_ffmpeg_metadata(
+            set_ffmpeg_metadata_chapters(
                 file_path=merged_video.get_download_file_path(),
                 chapters=chapters,
                 file_duration_sec=merged_video.kwargs("duration"),

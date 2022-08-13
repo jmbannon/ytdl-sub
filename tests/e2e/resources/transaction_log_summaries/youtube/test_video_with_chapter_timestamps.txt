@@ -9,6 +9,11 @@ JMC - Oblivion Mod ＂Falcor＂ p.1.mp4
     0:30: Part 3
     0:40: Part 4
     1:01: Part 5
+  Video Tags:
+    description:
+      🎸 / ' "
+      newline?
+    title: Oblivion Mod "Falcor" p.1
 JMC - Oblivion Mod ＂Falcor＂ p.1.nfo
   NFO tags:
     musicvideo:

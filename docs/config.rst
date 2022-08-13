@@ -211,6 +211,13 @@ subtitles
 
 -------------------------------------------------------------------------------
 
+video_tags
+''''''''''
+.. autoclass:: ytdl_sub.plugins.video_tags.VideoTagsOptions()
+  :members:
+
+-------------------------------------------------------------------------------
+
 .. _subscription_yaml:
 
 subscription.yaml
