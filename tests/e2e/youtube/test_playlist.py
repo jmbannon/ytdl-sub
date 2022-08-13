@@ -19,6 +19,10 @@ def playlist_preset_dict(output_directory):
         "ytdl_options": {
             "format": "worst[ext=mp4]",
         },
+        "subtitles": {
+            "subtitles_name": "{music_video_name}.{lang}.{subtitles_ext}",
+            "allow_auto_generated_subtitles": True,
+        },
         "overrides": {"artist": "JMC"},
     }
 
