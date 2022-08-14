@@ -92,6 +92,7 @@ class YoutubePlaylistDownloader(
             # Re-download the contents even if it's a dry-run as a single video. At this time,
             # playlists do not download subtitles or subtitle metadata
             as_single_video_dict = self.extract_info_with_retry(
+                is_downloaded_fn=None if self.is_dry_run else video.is_downloaded,
                 ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
                 url=video.kwargs("webpage_url"),
             )

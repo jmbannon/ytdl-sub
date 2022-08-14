@@ -18,16 +18,14 @@ def single_song_preset_dict(output_directory):
         },
     }
 
+
 @pytest.fixture
 def multiple_songs_preset_dict(output_directory):
     return {
         "preset": "yt_song_playlist",
         "youtube": {"playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
         "output_options": {"output_directory": output_directory},
-        "audio_extract": {
-            "codec": "vorbis",
-            "quality": 140
-        },
+        "audio_extract": {"codec": "vorbis", "quality": 140},
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",

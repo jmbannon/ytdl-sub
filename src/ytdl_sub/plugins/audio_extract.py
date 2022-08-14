@@ -7,23 +7,9 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
-from ytdl_sub.validators.string_select_validator import StringSelectValidator
+from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_TYPES_EXTENSION_MAPPING
+from ytdl_sub.validators.audo_codec_validator import CodecTypeValidator
 from ytdl_sub.validators.validators import FloatValidator
-
-CODEC_TYPES_EXTENSION_MAPPING: Dict[str, str] = {
-    "aac": "aac",
-    "flac": "flac",
-    "mp3": "mp3",
-    "m4a": "m4a",
-    "opus": "opus",
-    "vorbis": "ogg",
-    "wav": "wav",
-}
-
-
-class CodecTypeValidator(StringSelectValidator):
-    _expected_value_type_name = "codec"
-    _select_values = set(CODEC_TYPES_EXTENSION_MAPPING.keys())
 
 
 class AudioExtractOptions(PluginOptions):
@@ -102,8 +88,13 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
         Returns
         -------
         Entry with updated 'ext' source variable
+
+        Raises
+        ------
+        FileNotDownloadedException
+            If the audio file is not found
         """
-        new_ext = CODEC_TYPES_EXTENSION_MAPPING[self.plugin_options.codec]
+        new_ext = AUDIO_CODEC_TYPES_EXTENSION_MAPPING[self.plugin_options.codec]
         extracted_audio_file = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
         if not self.is_dry_run:
             if not os.path.isfile(extracted_audio_file):
