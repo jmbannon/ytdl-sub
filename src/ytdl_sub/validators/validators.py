@@ -11,6 +11,7 @@ from typing import final
 
 from ytdl_sub.utils.exceptions import ValidationException
 
+ValueT = TypeVar("ValueT", bound=object)
 ValidationExceptionT = TypeVar("ValidationExceptionT", bound=ValidationException)
 ValidatorT = TypeVar("ValidatorT", bound="Validator")
 
@@ -59,40 +60,34 @@ class Validator(ABC):
         return exception_class(f"{prefix}{error_message}")
 
 
-class BoolValidator(Validator):
+class ValueValidator(Validator, ABC, Generic[ValueT]):
     """
-    Validates boolean fields.
+    Native type validator that returns the value as-is
     """
 
+    @property
+    def value(self) -> ValueT:
+        """
+        Returns
+        -------
+        The value, unmodified
+        """
+        return self._value
+
+
+class BoolValidator(ValueValidator[bool]):
     _expected_value_type: Type = bool
     _expected_value_type_name = "boolean"
 
-    @property
-    def value(self) -> bool:
-        """
-        Returns
-        -------
-        Boolean value
-        """
-        return self._value
 
-
-class StringValidator(Validator):
-    """
-    Validates string fields.
-    """
-
+class StringValidator(ValueValidator[str]):
     _expected_value_type = str
     _expected_value_type_name = "string"
 
-    @property
-    def value(self) -> str:
-        """
-        Returns
-        -------
-        String value
-        """
-        return self._value
+
+class FloatValidator(ValueValidator[float]):
+    _expected_value_type = (int, float)
+    _expected_value_type_name = "float"
 
 
 class ListValidator(Validator, ABC, Generic[ValidatorT]):

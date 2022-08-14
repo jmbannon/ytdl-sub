@@ -132,7 +132,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
     def extract_info_with_retry(
         self,
-        is_downloaded_fn: Optional[Callable[[], bool]],
+        is_downloaded_fn: Optional[Callable[[], bool]] = None,
         ytdl_options_overrides: Optional[Dict] = None,
         **kwargs,
     ) -> Dict:

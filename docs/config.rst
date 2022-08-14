@@ -169,6 +169,14 @@ Plugins
 """""""
 Plugins are used to perform any type of post-processing to the already downloaded files.
 
+audio_extract
+'''''''''''''
+.. autoclass:: ytdl_sub.plugins.audio_extract.AudioExtractOptions()
+  :members:
+  :member-order: bysource
+
+-------------------------------------------------------------------------------
+
 music_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()

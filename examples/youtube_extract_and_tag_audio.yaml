@@ -1,0 +1,38 @@
+# Extracts audio from YouTube videos, converts it to mp3, and adds audio tags to it.
+configuration:
+  working_directory: '.ytdl-sub-downloads'
+
+presets:
+  yt_song:
+    youtube:
+      download_strategy: "video"
+
+    output_options:
+      output_directory: "{music_directory}"
+      file_name: "{title_sanitized}.{ext}"
+
+    audio_extract:
+      codec: "mp3"
+      quality: 128
+
+    music_tags:
+      tags:
+        artist: "{artist}"
+        albumartist: "{artist}"
+        title: "{title}"
+        album: "Singles"
+        track: "1"
+        year: "{upload_year}"
+        genre: "Unset"
+
+    overrides:
+      music_directory: "/path/to/music"
+
+  yt_song_playlist:
+    preset: yt_song
+    youtube:
+      download_strategy: "playlist"
+
+    music_tags:
+      tags:
+        track: "{playlist_index}"

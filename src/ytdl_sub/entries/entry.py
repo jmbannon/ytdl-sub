@@ -6,6 +6,7 @@ from typing import final
 
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.variables.entry_variables import EntryVariables
+from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 
 
 class Entry(EntryVariables, BaseEntry):
@@ -65,13 +66,17 @@ class Entry(EntryVariables, BaseEntry):
         -------
         True if the file and thumbnail exist locally. False otherwise.
         """
-        thumbnail_exists = (
-            os.path.isfile(self.get_download_thumbnail_path())
-            or self.get_ytdlp_download_thumbnail_path() is not None
-        )
         file_exists = os.path.isfile(self.get_download_file_path())
 
-        return file_exists and thumbnail_exists
+        # HACK: yt-dlp does not record extracted audio extensions anywhere. If the file is not
+        # found, try it using audio extensions
+        if not file_exists:
+            for audio_ext in AUDIO_CODEC_EXTS:
+                if os.path.isfile(self.get_download_file_path().removesuffix(self.ext) + audio_ext):
+                    file_exists = True
+                    break
+
+        return file_exists
 
     @final
     def to_dict(self) -> Dict[str, str]:

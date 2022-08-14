@@ -38,6 +38,16 @@ def soundcloud_discography_config():
     return ConfigFile.from_file_path(config_path="examples/soundcloud_discography_config.yaml")
 
 
+@pytest.fixture()
+def youtube_audio_config_path():
+    return "examples/youtube_extract_and_tag_audio.yaml"
+
+
+@pytest.fixture()
+def youtube_audio_config(youtube_audio_config_path):
+    return ConfigFile.from_file_path(config_path=youtube_audio_config_path)
+
+
 @pytest.fixture
 def timestamps_file_path():
     timestamps = [
