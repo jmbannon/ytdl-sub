@@ -71,6 +71,11 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
     plugin_options_type = AudioExtractOptions
 
     def ytdl_options(self) -> Optional[Dict]:
+        """
+        Returns
+        -------
+        YTDL options for extracting audio
+        """
         ytdl_options_builder = YTDLOptionsBuilder()
 
         postprocessor_dict = {
@@ -88,11 +93,25 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
         ).to_dict()
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
+        """
+        Parameters
+        ----------
+        entry
+            Entry with extracted audio
+
+        Returns
+        -------
+        Entry with updated 'ext' source variable
+        """
         new_ext = CODEC_TYPES_EXTENSION_MAPPING[self.plugin_options.codec]
         extracted_audio_file = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
         if not self.is_dry_run:
             if not os.path.isfile(extracted_audio_file):
                 raise FileNotDownloadedException("Failed to find the extracted audio file")
 
+        # TODO: create entry function to update kwargs
+        # pylint: disable=protected-access
         entry._kwargs["ext"] = new_ext
+        # pylint: enable=protected-access
+
         return entry

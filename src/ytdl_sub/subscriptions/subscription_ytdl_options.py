@@ -8,6 +8,7 @@ from typing import TypeVar
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
+from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.subtitles import SubtitleOptions
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
@@ -82,6 +83,13 @@ class SubscriptionYTDLOptions:
         return ytdl_options
 
     @property
+    def _audio_extract_options(self) -> Dict:
+        if not (audio_extract_plugin := self._get_plugin(AudioExtractPlugin)):
+            return {}
+
+        return audio_extract_plugin.ytdl_options()
+
+    @property
     def _subtitle_options(self) -> Dict:
         if not (subtitle_plugin := self._get_plugin(SubtitlesPlugin)):
             return {}
@@ -90,6 +98,7 @@ class SubscriptionYTDLOptions:
             # TODO: warn here
             return {}
 
+        # TODO: Use subtitle ytdl_options
         builder = YTDLOptionsBuilder().add({"writesubtitles": True})
         subtitle_options: SubtitleOptions = subtitle_plugin.plugin_options
 
@@ -141,7 +150,10 @@ class SubscriptionYTDLOptions:
             )
         else:
             ytdl_options_builder.add(
-                self._output_options, self._subtitle_options, self._user_ytdl_options
+                self._output_options,
+                self._subtitle_options,
+                self._audio_extract_options,
+                self._user_ytdl_options,
             )
 
         return ytdl_options_builder
