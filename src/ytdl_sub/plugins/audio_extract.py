@@ -14,7 +14,7 @@ from ytdl_sub.validators.validators import FloatValidator
 
 class AudioExtractOptions(PluginOptions):
     """
-    Extracts audio from a video file
+    Extracts audio from a video file.
 
     Usage:
 
@@ -46,7 +46,7 @@ class AudioExtractOptions(PluginOptions):
     def quality(self) -> Optional[float]:
         """
         Optional. Specify ffmpeg audio quality. Insert a value between ``0`` (better) and ``9``
-        (worse) for VBR or a specific bitrate like ``128`` for 128k.
+        (worse) for variable bitrate, or a specific bitrate like ``128`` for 128k.
         """
         if self._quality is not None:
             return self._quality.value

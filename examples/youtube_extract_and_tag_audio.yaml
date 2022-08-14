@@ -1,4 +1,4 @@
-# TODO: add comments explaining stuff
+# Extracts audio from YouTube videos, converts it to mp3, and adds audio tags to it.
 configuration:
   working_directory: '.ytdl-sub-downloads'
 
