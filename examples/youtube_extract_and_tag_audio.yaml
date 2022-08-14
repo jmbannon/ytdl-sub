@@ -1,3 +1,4 @@
+# TODO: add comments explaining stuff
 configuration:
   working_directory: '.ytdl-sub-downloads'
 
@@ -26,3 +27,12 @@ presets:
 
     overrides:
       music_directory: "/path/to/music"
+
+  yt_song_playlist:
+    preset: yt_song
+    youtube:
+      download_strategy: "playlist"
+
+    music_tags:
+      tags:
+        track: "{playlist_index}"
