@@ -9,6 +9,7 @@ from ytdl_sub.downloaders.youtube.merge_playlist import YoutubeMergePlaylistDown
 from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloader
 from ytdl_sub.downloaders.youtube.split_video import YoutubeSplitVideoDownloader
 from ytdl_sub.downloaders.youtube.video import YoutubeVideoDownloader
+from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
@@ -107,6 +108,7 @@ class PluginMapping:
     """
 
     _MAPPING: Dict[str, Type[Plugin]] = {
+        "audio_extract": AudioExtractPlugin,
         "music_tags": MusicTagsPlugin,
         "video_tags": VideoTagsPlugin,
         "nfo_tags": NfoTagsPlugin,
