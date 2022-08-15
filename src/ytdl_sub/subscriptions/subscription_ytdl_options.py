@@ -9,8 +9,8 @@ from ytdl_sub.config.preset import Preset
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
+from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.subtitles import SubtitleOptions
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -98,39 +98,14 @@ class SubscriptionYTDLOptions:
             # TODO: warn here
             return {}
 
-        # TODO: Use subtitle ytdl_options
-        builder = YTDLOptionsBuilder().add({"writesubtitles": True})
-        subtitle_options: SubtitleOptions = subtitle_plugin.plugin_options
+        return subtitle_plugin.ytdl_options()
 
-        if subtitle_options.embed_subtitles:
-            builder.add(
-                {"postprocessors": [{"key": "FFmpegEmbedSubtitle", "already_have_subtitle": True}]}
-            )
-
-        if subtitle_options.subtitles_name:
-            builder.add(
-                {
-                    "postprocessors": [
-                        {
-                            "key": "FFmpegSubtitlesConvertor",
-                            "format": subtitle_options.subtitles_type,
-                        }
-                    ],
-                }
-            )
-
-        # If neither subtitles_name or embed_subtitles is set, do not set any other flags
-        if not builder.to_dict():
+    @property
+    def _chapter_options(self) -> Dict:
+        if not (chapters_plugin := self._get_plugin(ChaptersPlugin)):
             return {}
 
-        builder.add(
-            {
-                "writeautomaticsub": subtitle_options.allow_auto_generated_subtitles,
-                "subtitleslangs": subtitle_options.languages,
-            }
-        )
-
-        return builder.to_dict()
+        return chapters_plugin.ytdl_options()
 
     @property
     def _user_ytdl_options(self) -> Dict:
@@ -146,12 +121,16 @@ class SubscriptionYTDLOptions:
         ytdl_options_builder = YTDLOptionsBuilder().add(self._global_options)
         if self._dry_run:
             ytdl_options_builder.add(
-                self._subtitle_options, self._user_ytdl_options, self._dry_run_options
+                self._subtitle_options,
+                self._chapter_options,
+                self._user_ytdl_options,
+                self._dry_run_options,
             )
         else:
             ytdl_options_builder.add(
                 self._output_options,
                 self._subtitle_options,
+                self._chapter_options,
                 self._audio_extract_options,
                 self._user_ytdl_options,
             )

@@ -135,40 +135,37 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
     plugin_options_type = SubtitleOptions
 
     def ytdl_options(self) -> Optional[Dict]:
-        ytdl_options_builder = YTDLOptionsBuilder()
-
-        write_subtitle_file: bool = self.plugin_options.subtitles_name is not None
-        if write_subtitle_file:
-            ytdl_options_builder.add(
-                {
-                    "writesubtitles": True,
-                    "postprocessors": {
-                        "key": "FFmpegSubtitlesConvertor",
-                        "format": self.plugin_options.subtitles_type,
-                    },
-                }
-            )
+        builder = YTDLOptionsBuilder().add({"writesubtitles": True})
 
         if self.plugin_options.embed_subtitles:
-            ytdl_options_builder.add(
+            builder.add(
+                {"postprocessors": [{"key": "FFmpegEmbedSubtitle", "already_have_subtitle": True}]}
+            )
+
+        if self.plugin_options.subtitles_name:
+            builder.add(
                 {
                     "postprocessors": [
-                        # already_have_subtitle=True means keep the subtitle files
-                        {"key": "FFmpegEmbedSubtitle", "already_have_subtitle": write_subtitle_file}
-                    ]
+                        {
+                            "key": "FFmpegSubtitlesConvertor",
+                            "format": self.plugin_options.subtitles_type,
+                        }
+                    ],
                 }
             )
 
         # If neither subtitles_name or embed_subtitles is set, do not set any other flags
-        if not ytdl_options_builder.to_dict():
+        if not builder.to_dict():
             return {}
 
-        return ytdl_options_builder.add(
+        builder.add(
             {
                 "writeautomaticsub": self.plugin_options.allow_auto_generated_subtitles,
                 "subtitleslangs": self.plugin_options.languages,
             }
-        ).to_dict()
+        )
+
+        return builder.to_dict()
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         requested_subtitles = entry.kwargs("requested_subtitles")

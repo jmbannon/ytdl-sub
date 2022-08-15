@@ -1,4 +1,3 @@
-from typing import Dict
 from typing import Optional
 
 from ytdl_sub.entries.entry import Entry
