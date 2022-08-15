@@ -103,7 +103,7 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
             return [video]
 
         # Otherwise, add the chapters and return the video + chapter metadata
-        chapters = Chapters.from_file(chapters_file_path=self.download_options.chapter_timestamps)
+        chapters = Chapters.from_timestamps_file(chapters_file_path=self.download_options.chapter_timestamps)
         if not self.is_dry_run:
             set_ffmpeg_metadata_chapters(
                 file_path=video.get_download_file_path(),

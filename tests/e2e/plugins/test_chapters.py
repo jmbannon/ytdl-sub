@@ -17,6 +17,10 @@ def single_video_sponsorblock_and_embedded_subs_preset_dict(output_directory):
             "languages": ["en", "de"],
             "allow_auto_generated_subtitles": True,
         },
+        "audio_extract": {
+            "codec": "mp3",
+            "quality": 128,
+        },
         "chapters": {
             "sponsorblock_categories": [
                 "outro",

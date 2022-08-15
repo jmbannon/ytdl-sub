@@ -1,14 +1,9 @@
 Files created in '{output_directory}'
 ----------------------------------------
 JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case-thumb.jpg
-JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4
+JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp3
   Embedded Chapters
     Removed Chapter(s): Intro, Outro
-    Removed SponsorBlock Category Count(s):
-      Sponsor: 2
-      Endcards/Credits: 1
-      Intermission/Intro Animation: 1
-      Unpaid/Self Promotion: 1
   Embedded subtitles with lang(s) en, de
 JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.nfo
   NFO tags:
