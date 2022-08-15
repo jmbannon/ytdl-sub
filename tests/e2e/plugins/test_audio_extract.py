@@ -15,6 +15,7 @@ def single_song_preset_dict(output_directory):
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
+            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
     }
 
@@ -29,6 +30,7 @@ def multiple_songs_preset_dict(output_directory):
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
+            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
     }
 
