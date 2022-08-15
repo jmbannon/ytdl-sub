@@ -105,6 +105,10 @@ class SubscriptionYTDLOptions:
         if not (chapters_plugin := self._get_plugin(ChaptersPlugin)):
             return {}
 
+        if not self._downloader.supports_chapters:
+            # TODO: warn here
+            return {}
+
         return chapters_plugin.ytdl_options()
 
     @property

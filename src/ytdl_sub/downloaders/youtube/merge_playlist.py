@@ -65,6 +65,7 @@ class YoutubeMergePlaylistDownloader(
     downloader_entry_type = YoutubeVideo
     supports_download_archive = False
     supports_subtitles = False
+    supports_chapters = False
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
