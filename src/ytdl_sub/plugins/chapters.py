@@ -65,6 +65,7 @@ class ChaptersOptions(PluginOptions):
        presets:
          my_example_preset:
            chapters:
+             embed_chapters: True
              sponsorblock_categories:
                - "outro"
                - "selfpromo"
@@ -78,17 +79,10 @@ class ChaptersOptions(PluginOptions):
                - "Intro"
                - "Outro"
              force_key_frames: False
-
-    To simply embed chapters from the entry file and nothing more, specify the following:
-
-    .. code-block:: yaml
-
-       presets:
-         my_example_preset:
-           chapters:
     """
 
     _optional_keys = {
+        "embed_chapters",
         "sponsorblock_categories",
         "remove_sponsorblock_categories",
         "remove_chapters_regex",
@@ -97,6 +91,9 @@ class ChaptersOptions(PluginOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
+        self._embed_chapters = self._validate_key_if_present(
+            key="embed_chapters", validator=BoolValidator, default=True
+        ).value
         self._sponsorblock_categories = self._validate_key_if_present(
             key="sponsorblock_categories", validator=SponsorBlockCategoryListValidator
         )
@@ -114,6 +111,13 @@ class ChaptersOptions(PluginOptions):
             raise self._validation_exception(
                 "Must specify sponsorblock_categories if you are going to remove any of them"
             )
+
+    @property
+    def embed_chapters(self) -> Optional[bool]:
+        """
+        Optional. Embed chapters into the file. Defaults to True.
+        """
+        return self._embed_chapters
 
     @property
     def sponsorblock_categories(self) -> Optional[List[str]]:
@@ -196,8 +200,14 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                 }
             )
 
-        # Always add chapters
-        builder.add({"postprocessors": [{"key": "FFmpegMetadata", "add_chapters": True}]})
+        if self.plugin_options.embed_chapters:
+            builder.add(
+                {
+                    "postprocessors": [
+                        {"key": "FFmpegMetadata", "add_chapters": True, "add_metadata": False}
+                    ]
+                }
+            )
 
         if self._is_removing_chapters:
             remove_chapters_post_processor = {
@@ -213,14 +223,16 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                     "remove_chapters_patterns"
                 ] = self.plugin_options.remove_chapters_regex
 
-            builder.add(
-                {
-                    "postprocessors": [
-                        remove_chapters_post_processor,
-                        {"key": "FFmpegMetadata", "add_chapters": True},  # re-add chapters
-                    ]
-                }
-            )
+            if self.plugin_options.embed_chapters:
+                builder.add(
+                    {
+                        # re-add chapters
+                        "postprocessors": [
+                            remove_chapters_post_processor,
+                            {"key": "FFmpegMetadata", "add_chapters": True, "add_metadata": False},
+                        ]
+                    }
+                )
 
         return builder.to_dict()
 

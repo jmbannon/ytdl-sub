@@ -61,11 +61,9 @@ class TestChapters:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_chapters_sb_and_embedded_subs.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_chapters_sb_and_embedded_subs.json",
-            regenerate_expected_download_summary=True,
         )
