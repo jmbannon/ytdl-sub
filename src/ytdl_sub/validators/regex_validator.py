@@ -28,6 +28,15 @@ class RegexValidator(StringValidator):
         """
         return self._compiled_regex.groups
 
+    @property
+    def compiled_regex(self) -> re.Pattern:
+        """
+        Returns
+        -------
+        The regex compiled
+        """
+        return self._compiled_regex
+
     def match(self, input_str: str) -> Optional[List[str]]:
         """
         Parameters

@@ -7,10 +7,12 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def single_song_preset_dict(output_directory):
+def single_song_preset_dict(output_directory, timestamps_file_path):
     return {
         "preset": "yt_song",
-        "youtube": {"video_url": "https://www.youtube.com/watch?v=2lAe1cqCOXo"},
+        "youtube": {
+            "video_url": "https://www.youtube.com/watch?v=gr0XWmEbiMQ",
+        },
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
         "ytdl_options": {
