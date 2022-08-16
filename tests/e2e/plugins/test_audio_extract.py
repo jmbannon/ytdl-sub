@@ -15,6 +15,7 @@ def single_song_preset_dict(output_directory):
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
+            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
     }
 
@@ -29,6 +30,7 @@ def multiple_songs_preset_dict(output_directory):
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
+            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
     }
 
@@ -53,13 +55,11 @@ class TestAudioExtract:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_audio_extract_single.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_audio_extract_single.json",
-            regenerate_expected_download_summary=True,
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])
@@ -81,11 +81,9 @@ class TestAudioExtract:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_audio_extract_playlist.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_audio_extract_playlist.json",
-            regenerate_expected_download_summary=True,
         )

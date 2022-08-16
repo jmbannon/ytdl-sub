@@ -10,6 +10,7 @@ from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloader
 from ytdl_sub.downloaders.youtube.split_video import YoutubeSplitVideoDownloader
 from ytdl_sub.downloaders.youtube.video import YoutubeVideoDownloader
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
+from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
@@ -115,6 +116,7 @@ class PluginMapping:
         "output_directory_nfo_tags": OutputDirectoryNfoTagsPlugin,
         "regex": RegexPlugin,
         "subtitles": SubtitlesPlugin,
+        "chapters": ChaptersPlugin,
     }
 
     @classmethod
