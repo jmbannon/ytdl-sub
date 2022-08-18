@@ -1,15 +1,30 @@
 import copy
 from pathlib import Path
-from typing import Optional, List
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
-from ytdl_sub.utils.chapters import Chapters, Timestamp
+from ytdl_sub.utils.chapters import Chapters
+from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
+
+#
+# modify_entry BEFORE SPLIT
+# - audio_extract
+# - subtitles?
+#
+# TODO: make regex's modify_entry into a new function
+# and call modify_entry before split
+#
+# maybe modify_downloaded_entry ??
+
 
 def _split_video_ffmpeg_cmd(
     input_file: str, output_file: str, timestamps: List[Timestamp], idx: int
@@ -29,14 +44,14 @@ def _split_video_uid(source_uid: str, idx: int) -> str:
 
 
 class WhenNoChaptersValidator(StringSelectValidator):
-    _expected_value_type = "when no chapters option"
+    _expected_value_type_name = "when no chapters option"
     _select_values = {"pass", "drop", "error"}
 
 
 class SplitByChaptersOptions(PluginOptions):
     """
-    Splits a file by chapters into multiple files. Each file becomes its own entry with ``title``
-    set to its chapter name, and is processed separately by other plugins.
+    Splits a file by chapters into multiple files. Each file becomes its own entry with the
+    new source variables ``chapter_title``, ``chapter_index``, ``chapter_count``.
 
     Usage:
 
@@ -56,6 +71,9 @@ class SplitByChaptersOptions(PluginOptions):
             key="when_no_chapters", validator=WhenNoChaptersValidator
         ).value
 
+    def added_source_variables(self) -> List[str]:
+        return ["chapter_title", "chapter_index", "chapter_count"]
+
     @property
     def when_no_chapters(self) -> str:
         """
@@ -67,46 +85,53 @@ class SplitByChaptersOptions(PluginOptions):
 
 class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
     plugin_options_type = SplitByChaptersOptions
+    is_split_plugin = True
 
     def _create_split_entry(
         self, source_entry: Entry, title: str, idx: int, chapters: Chapters
-    ) -> Entry:
+    ) -> Tuple[Entry, FileMetadata]:
         """
         Runs ffmpeg to create the split video
         """
-        entry_dict = copy.deepcopy(source_entry)
-        entry_dict["title"] = title
-        entry_dict["playlist_index"] = idx + 1
-        entry_dict["playlist_count"] = len(chapters.timestamps)
-        entry_dict["id"] = _split_video_uid(source_uid=entry_dict["id"], idx=idx)
+        entry = copy.deepcopy(source_entry)
 
-        # Remove track and artist since its now split
-        if "track" in entry_dict:
-            del entry_dict["track"]
-        if "artist" in entry_dict:
-            del entry_dict["artist"]
+        entry.add_variables(
+            {
+                "chapter_title": title,
+                "chapter_index": idx + 1,
+                "chapter_count": len(chapters.timestamps),
+            }
+        )
+        entry._kwargs["id"] = _split_video_uid(source_uid=entry.uid, idx=idx)
 
         timestamp_begin = chapters.timestamps[idx].readable_str
-        timestamp_end = Timestamp(source_entry_dict["duration"]).readable_str
+        timestamp_end = Timestamp(entry.kwargs("duration")).readable_str
         if idx + 1 < len(chapters.timestamps):
             timestamp_end = chapters.timestamps[idx + 1].readable_str
 
-        metadata = FileMetadata(metadata=f"{timestamp_begin} - {timestamp_end}")
-        return (
-            YoutubePlaylistVideo(entry_dict=entry_dict, working_directory=self.working_directory),
-            metadata,
+        metadata = FileMetadata.from_dict(
+            value_dict={
+                "Split Chapter Source": entry.title,
+                "Segment": f"{timestamp_begin} - {timestamp_end}",
+            },
+            sort_dict=False,
         )
 
-    def modify_entry(self, entry: Entry) -> Optional[Entry]:
+        return entry, metadata
+
+    def split(self, entry: Entry) -> Optional[List[Tuple[Entry, FileMetadata]]]:
         """
         Tags the entry's audio file using values defined in the metadata options
         """
-        split_entries: List[Entry] = []
-        chapters = Chapters.from_embedded_chapters(file_path=entry.get_download_file_path())
+        split_videos_and_metadata: List[Tuple[Entry, FileMetadata]] = []
 
-        # convert the entry thumbnail early so we do not have to guess the thumbnail extension
-        # when copying it
-        if not self.is_dry_run:
+        if self.is_dry_run:
+            chapters = None
+        else:
+            chapters = Chapters.from_embedded_chapters(file_path=entry.get_download_file_path())
+
+            # convert the entry thumbnail early so we do not have to guess the thumbnail extension
+            # when copying it
             convert_download_thumbnail(entry=entry)
 
         for idx, title in enumerate(chapters.titles):
@@ -136,8 +161,8 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
 
             # Format the split video as a YoutubePlaylistVideo
             split_videos_and_metadata.append(
-                self._create_split_video_entry(
-                    source_entry_dict=entry_dict, title=title, idx=idx, chapters=chapters
+                self._create_split_entry(
+                    source_entry=entry, title=title, idx=idx, chapters=chapters
                 )
             )
 

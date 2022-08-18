@@ -8,7 +8,6 @@ from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
@@ -214,17 +213,27 @@ class Chapters:
 
     @classmethod
     def from_embedded_chapters(cls, file_path: str) -> "Chapters":
-        with BytesIO() as bytes_io:
-            subprocess.run([
-                "-loglevel", "quiet", "-print_format", "json", "-show_chapters", "--", file_path
-            ], check=True, stdout=bytes_io)
+        proc = subprocess.run(
+            [
+                "ffprobe",
+                "-loglevel",
+                "quiet",
+                "-print_format",
+                "json",
+                "-show_chapters",
+                "--",
+                file_path,
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+            encoding="utf-8",
+        )
 
-            embedded_chapters = json.load(bytes_io)
-
+        embedded_chapters = json.loads(proc.stdout)
         timestamps: List[Timestamp] = []
         titles: List[str] = []
-        for chapter in embedded_chapters['chapters']:
-            timestamps.append(Timestamp.from_seconds(int(chapter['start_time'])))
-            titles.append(chapter['tags']['title'])
+        for chapter in embedded_chapters["chapters"]:
+            timestamps.append(Timestamp.from_seconds(int(chapter["start_time"])))
+            titles.append(chapter["tags"]["title"])
 
         return Chapters(timestamps=timestamps, titles=titles)

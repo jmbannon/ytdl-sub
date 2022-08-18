@@ -19,10 +19,21 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+
+
+def _get_split_plugin(plugins: List[Plugin]) -> Optional[Plugin]:
+    split_plugins = [plugin for plugin in plugins if plugin.is_split_plugin]
+
+    if len(split_plugins) == 1:
+        return split_plugins[0]
+    if len(split_plugins) > 1:
+        raise ValidationException("Can not use more than one split plugins at a time")
+    return None
 
 
 class Subscription:
@@ -251,6 +262,38 @@ class Subscription:
 
         return plugins
 
+    def _process_entry(
+        self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
+    ) -> None:
+        # First, modify the entry with all plugins
+        for plugin in plugins:
+            # Return if it is None, it is indicated to not process any further
+            if (entry := plugin.modify_entry(entry)) is None:
+                return
+
+        # Post-process the entry with all plugins
+        for plugin in plugins:
+            optional_plugin_entry_metadata = plugin.post_process_entry(entry)
+            if optional_plugin_entry_metadata:
+                entry_metadata.extend(optional_plugin_entry_metadata)
+
+        # Then, move it to the output directory
+        self._move_entry_files_to_output_directory(
+            dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+        )
+
+        # Re-save the download archive after each entry is moved to the output directory
+        if self.maintain_download_archive:
+            self._enhanced_download_archive.save_download_mappings()
+
+    def _process_split_entry(
+        self, split_plugin: Plugin, plugins: List[Plugin], dry_run: bool, entry: Entry
+    ) -> None:
+        for entry, entry_metadata in split_plugin.split(entry=entry):
+            self._process_entry(
+                plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+            )
+
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
         Performs the subscription download
@@ -284,29 +327,14 @@ class Subscription:
                 if isinstance(entry, tuple):
                     entry, entry_metadata = entry
 
-                # First, modify the entry with all plugins
-                for plugin in plugins:
-                    # Break out of this plugin loop if entry is None, it is indicated to not DL it
-                    if (entry := plugin.modify_entry(entry)) is None:
-                        break
-
-                # If entry is None from the broken out loop, continue over the other entries
-                if entry is None:
-                    continue
-
-                # Then, post-process the entry with all plugins
-                for plugin in plugins:
-                    optional_plugin_entry_metadata = plugin.post_process_entry(entry)
-                    if optional_plugin_entry_metadata:
-                        entry_metadata.extend(optional_plugin_entry_metadata)
-
-                self._move_entry_files_to_output_directory(
-                    dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
-                )
-
-                # Re-save the download archive after each entry is moved to the output directory
-                if self.maintain_download_archive:
-                    self._enhanced_download_archive.save_download_mappings()
+                if split_plugin := _get_split_plugin(plugins):
+                    self._process_split_entry(
+                        split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
+                    )
+                else:
+                    self._process_entry(
+                        plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+                    )
 
             downloader.post_download(overrides=self.overrides)
             for plugin in plugins:

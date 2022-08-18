@@ -3,6 +3,7 @@ from typing import Dict
 from typing import Generic
 from typing import List
 from typing import Optional
+from typing import Tuple
 from typing import Type
 from typing import TypeVar
 from typing import final
@@ -61,6 +62,9 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
 
     plugin_options_type: Type[PluginOptionsT] = NotImplemented
 
+    # If the plugin creates multile entries from a single entry
+    is_split_plugin: bool = False
+
     @final
     def __init__(
         self,
@@ -80,6 +84,22 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         -------
         ytdl options to enable/disable when downloading entries for this specific plugin
         """
+
+    def split(self, entry: Entry) -> List[Tuple[Entry, FileMetadata]]:
+        """
+        Very specialized function that takes an entry and creates multiple entries from it.
+        Should mark ``is_split_plugin`` on the plugin class.
+
+        Parameters
+        ----------
+        entry
+            Entry to create multiple entries from
+
+        Returns
+        -------
+        List of entries and metadata created from the source entry
+        """
+        raise NotImplemented()
 
     # pylint: disable=no-self-use
     def modify_entry(self, entry: Entry) -> Optional[Entry]:

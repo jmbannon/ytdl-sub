@@ -145,7 +145,9 @@ class YoutubeSplitVideoDownloader(
         """Download a single Youtube video, then split it into multiple videos"""
         split_videos_and_metadata: List[Tuple[YoutubePlaylistVideo, FileMetadata]] = []
 
-        chapters = Chapters.from_timestamps_file(chapters_file_path=self.download_options.split_timestamps)
+        chapters = Chapters.from_timestamps_file(
+            chapters_file_path=self.download_options.split_timestamps
+        )
         entry_dict = self.extract_info(url=self.download_options.video_url)
 
         entry = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)

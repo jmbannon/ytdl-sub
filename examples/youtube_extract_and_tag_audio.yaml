@@ -28,11 +28,25 @@ presets:
     overrides:
       music_directory: "/path/to/music"
 
-  yt_song_playlist:
-    preset: yt_song
-    youtube:
-      download_strategy: "playlist"
+#  TODO: make a playlist of individual songs into an album. Need playlist_title
+#  yt_album_as_playlist:
+#    preset: yt_song
+#    youtube:
+#      download_strategy: "playlist"
+#
+#    music_tags:
+#      tags:
+#        album: "{playlist_title}"
+#        track: "{playlist_index}"
+
+  yt_album_as_chapters:
+    preset: "yt_song"
+
+    split_by_chapters:
+      when_no_chapters: "pass"
 
     music_tags:
       tags:
-        track: "{playlist_index}"
+        title: "{chapter_title}"
+        album: "{title}"
+        track: "{chapter_index}"
