@@ -279,6 +279,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         if removed_sponsorblock:
             metadata_dict["Removed SponsorBlock Category Count(s)"] = removed_sponsorblock
 
+        # TODO: check if file actually has embedded chapters
         return FileMetadata.from_dict(
             value_dict=metadata_dict, title="Embedded Chapters", sort_dict=False
         )

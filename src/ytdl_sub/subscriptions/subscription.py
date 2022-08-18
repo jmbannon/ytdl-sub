@@ -262,17 +262,11 @@ class Subscription:
 
         return plugins
 
-    def _process_entry(
+    def _post_process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
-    ) -> None:
-        # First, modify the entry with all plugins
-        for plugin in plugins:
-            # Return if it is None, it is indicated to not process any further
-            if (entry := plugin.modify_entry(entry)) is None:
-                return
-
+    ):
         # Post-process the entry with all plugins
-        for plugin in plugins:
+        for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.post_process):
             optional_plugin_entry_metadata = plugin.post_process_entry(entry)
             if optional_plugin_entry_metadata:
                 entry_metadata.extend(optional_plugin_entry_metadata)
@@ -286,13 +280,55 @@ class Subscription:
         if self.maintain_download_archive:
             self._enhanced_download_archive.save_download_mappings()
 
+    def _process_entry(
+        self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
+    ) -> None:
+        # First, modify the entry with all plugins
+        for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.modify_entry):
+            # Return if it is None, it is indicated to not process any further
+            if (entry := plugin.modify_entry(entry)) is None:
+                return
+
+        self._post_process_entry(
+            plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+        )
+
     def _process_split_entry(
         self, split_plugin: Plugin, plugins: List[Plugin], dry_run: bool, entry: Entry
     ) -> None:
-        for entry, entry_metadata in split_plugin.split(entry=entry):
-            self._process_entry(
-                plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
-            )
+        plugins_pre_split = sorted(
+            [plugin for plugin in plugins if not plugin.priority.modify_entry_after_split],
+            key=lambda _plugin: _plugin.priority.modify_entry,
+        )
+
+        plugins_post_split = sorted(
+            [plugin for plugin in plugins if plugin.priority.modify_entry_after_split],
+            key=lambda _plugin: _plugin.priority.modify_entry,
+        )
+
+        # First, modify the entry with pre_split plugins
+        for plugin in plugins_pre_split:
+            # Return if it is None, it is indicated to not process any further
+            if (entry := plugin.modify_entry(entry)) is None:
+                return
+
+        # Then, perform the split
+        for split_entry, split_entry_metadata in split_plugin.split(entry=entry):
+
+            for plugin in plugins_post_split:
+                # Return if it is None, it is indicated to not process any further.
+                # Break out of the plugin loop
+                if (split_entry := plugin.modify_entry(split_entry)) is None:
+                    break
+
+            # If split_entry is None from modify_entry, do not post process
+            if split_entry:
+                self._process_entry(
+                    plugins=plugins,
+                    dry_run=dry_run,
+                    entry=split_entry,
+                    entry_metadata=split_entry_metadata,
+                )
 
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """

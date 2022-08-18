@@ -1,0 +1,255 @@
+Files created in '{output_directory}'
+----------------------------------------
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/01 - 一 Journey to the West.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 0:00 - 3:08
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 一 Journey to the West
+    track: 1
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/02 - 二 Land of the Samurai.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 3:08 - 8:23
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 二 Land of the Samurai
+    track: 2
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/03 - 三 Tsunami Sky.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 8:23 - 12:10
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 三 Tsunami Sky
+    track: 3
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/04 - 四 Sleeping on the Susuki Grasslands.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 12:10 - 16:22
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 四 Sleeping on the Susuki Grasslands
+    track: 4
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/05 - 五 Gomenasai I.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 16:22 - 20:39
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 五 Gomenasai I
+    track: 5
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/06 - 六 Sakura III.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 20:39 - 25:17
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 六 Sakura III
+    track: 6
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/07 - 七 Grand Dojo.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 25:17 - 28:30
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 七 Grand Dojo
+    track: 7
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/08 - 八 Kumite.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 28:30 - 32:38
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 八 Kumite
+    track: 8
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/09 - 九 Memoirs of a Geisha.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 32:38 - 36:26
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 九 Memoirs of a Geisha
+    track: 9
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/10 - 十 Gomenasai II.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 36:26 - 40:53
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十 Gomenasai II
+    track: 10
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/11 - 十一 A conversation with the blacksmith.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 40:53 - 45:13
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十一 A conversation with the blacksmith
+    track: 11
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/12 - 十二 The Forest of a Thousand Blades.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 45:13 - 49:04
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十二 The Forest of a Thousand Blades
+    track: 12
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/13 - 十三 Oath.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 49:04 - 52:32
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十三 Oath
+    track: 13
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/14 - 十四 Mysterious Ronin.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 52:32 - 56:39
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十四 Mysterious Ronin
+    track: 14
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/15 - 十五 Gomenasai III.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 56:39 - 58:57
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十五 Gomenasai III
+    track: 15
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/16 - 十六 Amaya village.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 58:57 - 1:02:24
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十六 Amaya village
+    track: 16
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/17 - 十七 Kenjutsu water style.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 1:02:24 - 1:05:06
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十七 Kenjutsu water style
+    track: 17
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/18 - 十八 Tea House.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 1:05:06 - 1:08:40
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十八 Tea House
+    track: 18
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/19 - 十九 Icarus.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 1:08:40 - 1:11:26
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 十九 Icarus
+    track: 19
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/20 - 二十 6am Snowfall.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 1:11:26 - 1:15:33
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 二十 6am Snowfall
+    track: 20
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/21 - 二十一 Silence.mp3
+    Split Chapter Source: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    Segment: 1:15:33 - 1:19:04
+  Embedded Chapters
+  Music Tags:
+    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
+    albumartist: Elijah Nang TV
+    artist: Elijah Nang TV
+    genre: Unset
+    title: 二十一 Silence
+    track: 21
+    year: 2019
+Elijah Nang - Gaijin 外人 LP - [ Full LP ]/folder.jpg

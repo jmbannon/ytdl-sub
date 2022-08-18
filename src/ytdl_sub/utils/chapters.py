@@ -7,6 +7,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileMetadata
 
@@ -142,6 +143,14 @@ class Chapters:
             if timestamps[idx].timestamp_sec >= timestamps[idx + 1].timestamp_sec:
                 raise ValueError("Timestamps must be in ascending order")
 
+    def contains_any_chapters(self) -> bool:
+        """
+        Returns
+        -------
+        True if there are chapters. False otherwise.
+        """
+        return len(self.timestamps) > 0
+
     def contains_zero_timestamp(self) -> bool:
         """
         Returns
@@ -233,7 +242,11 @@ class Chapters:
         timestamps: List[Timestamp] = []
         titles: List[str] = []
         for chapter in embedded_chapters["chapters"]:
-            timestamps.append(Timestamp.from_seconds(int(chapter["start_time"])))
+            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
             titles.append(chapter["tags"]["title"])
 
         return Chapters(timestamps=timestamps, titles=titles)
+
+    @classmethod
+    def from_entry_chapters(cls, entry: Entry) -> "Chapters":
+        return None

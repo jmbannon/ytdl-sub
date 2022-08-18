@@ -41,12 +41,22 @@ presets:
 
   yt_album_as_chapters:
     preset: "yt_song"
+    output_options:
+      file_name: "{custom_album_name_sanitized}/{chapter_index_padded} - {custom_track_name_sanitized}.{ext}"
+      thumbnail_name: "{custom_album_name_sanitized}/folder.{thumbnail_ext}"
+
+    chapters:
+      embed_chapters: True
 
     split_by_chapters:
       when_no_chapters: "pass"
 
     music_tags:
       tags:
-        title: "{chapter_title}"
-        album: "{title}"
+        title: "{custom_track_name}"
+        album: "{custom_album_name}"
         track: "{chapter_index}"
+
+    overrides:
+      custom_track_name: "{chapter_title}"
+      custom_album_name: "{title}"  # Have the video name be the album

@@ -17,6 +17,23 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
+class PluginPriority:
+    """
+    Defines priority for plugins, 0 is highest priority
+    """
+
+    # If modify_entry priority is >= to this value, run after split
+    MODIFY_ENTRY_AFTER_SPLIT = 10
+
+    def __init__(self, modify_entry: int = 0, post_process: int = 0):
+        self.modify_entry = modify_entry
+        self.post_process = post_process
+
+    @property
+    def modify_entry_after_split(self) -> bool:
+        return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
+
+
 class PluginOptions(StrictDictValidator):
     """
     Class that defines the parameters to a plugin
@@ -61,6 +78,7 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
     """
 
     plugin_options_type: Type[PluginOptionsT] = NotImplemented
+    priority: PluginPriority = PluginPriority()
 
     # If the plugin creates multile entries from a single entry
     is_split_plugin: bool = False

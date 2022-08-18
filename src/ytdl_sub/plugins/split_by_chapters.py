@@ -1,4 +1,5 @@
 import copy
+import os.path
 from pathlib import Path
 from typing import List
 from typing import Optional
@@ -51,7 +52,8 @@ class WhenNoChaptersValidator(StringSelectValidator):
 class SplitByChaptersOptions(PluginOptions):
     """
     Splits a file by chapters into multiple files. Each file becomes its own entry with the
-    new source variables ``chapter_title``, ``chapter_index``, ``chapter_count``.
+    new source variables ``chapter_title``, ``chapter_index``, ``chapter_index_padded``,
+    ``chapter_count``.
 
     Usage:
 
@@ -72,7 +74,7 @@ class SplitByChaptersOptions(PluginOptions):
         ).value
 
     def added_source_variables(self) -> List[str]:
-        return ["chapter_title", "chapter_index", "chapter_count"]
+        return ["chapter_title", "chapter_index", "chapter_index_padded", "chapter_count"]
 
     @property
     def when_no_chapters(self) -> str:
@@ -88,7 +90,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
     is_split_plugin = True
 
     def _create_split_entry(
-        self, source_entry: Entry, title: str, idx: int, chapters: Chapters
+        self, dry_run: bool, source_entry: Entry, title: str, idx: int, chapters: Chapters
     ) -> Tuple[Entry, FileMetadata]:
         """
         Runs ffmpeg to create the split video
@@ -99,6 +101,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
             {
                 "chapter_title": title,
                 "chapter_index": idx + 1,
+                "chapter_index_padded": f"{(idx + 1):02d}",
                 "chapter_count": len(chapters.timestamps),
             }
         )
@@ -109,11 +112,18 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         if idx + 1 < len(chapters.timestamps):
             timestamp_end = chapters.timestamps[idx + 1].readable_str
 
+        metadata_value_dict = {}
+        if dry_run:
+            metadata_value_dict[
+                "Warning"
+            ] = "Dry-run assumes embedded chapters with no modifications"
+
+        metadata_value_dict["Source Title"] = (entry.title,)
+        metadata_value_dict["Segment"] = f"{timestamp_begin} - {timestamp_end}"
+
         metadata = FileMetadata.from_dict(
-            value_dict={
-                "Split Chapter Source": entry.title,
-                "Segment": f"{timestamp_begin} - {timestamp_end}",
-            },
+            value_dict=metadata_value_dict,
+            title="From Chapter Split:",
             sort_dict=False,
         )
 
@@ -126,13 +136,25 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         split_videos_and_metadata: List[Tuple[Entry, FileMetadata]] = []
 
         if self.is_dry_run:
-            chapters = None
+            chapters = Chapters.from_entry_chapters(entry=entry)
         else:
             chapters = Chapters.from_embedded_chapters(file_path=entry.get_download_file_path())
 
+            # If no chapters, do not split anything
+            if not chapters.contains_any_chapters():
+                entry.add_variables(
+                    {
+                        "chapter_title": entry.title,
+                        "chapter_index": 1,
+                        "chapter_index_padded": "01",
+                        "chapter_count": 1,
+                    }
+                )
+                return [(entry, FileMetadata())]
+
             # convert the entry thumbnail early so we do not have to guess the thumbnail extension
-            # when copying it
-            convert_download_thumbnail(entry=entry)
+            # when copying it. Do not error if it's not found, in case thumbnail_name is not set
+            convert_download_thumbnail(entry=entry, error_if_not_found=False)
 
         for idx, title in enumerate(chapters.titles):
             new_uid = _split_video_uid(source_uid=entry.uid, idx=idx)
@@ -154,10 +176,12 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
 
                 # Copy the original vid thumbnail to the working directory with the new uid. This so
                 # downstream logic thinks this split video has its own thumbnail
-                FileHandler.copy(
-                    src_file_path=entry.get_download_thumbnail_path(),
-                    dst_file_path=Path(self.working_directory) / f"{new_uid}.{entry.thumbnail_ext}",
-                )
+                if os.path.isfile(entry.get_download_thumbnail_path()):
+                    FileHandler.copy(
+                        src_file_path=entry.get_download_thumbnail_path(),
+                        dst_file_path=Path(self.working_directory)
+                        / f"{new_uid}.{entry.thumbnail_ext}",
+                    )
 
             # Format the split video as a YoutubePlaylistVideo
             split_videos_and_metadata.append(
