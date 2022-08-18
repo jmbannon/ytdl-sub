@@ -249,4 +249,15 @@ class Chapters:
 
     @classmethod
     def from_entry_chapters(cls, entry: Entry) -> "Chapters":
-        return None
+        timestamps: List[Timestamp] = []
+        titles: List[str] = []
+
+        chapters = {}
+        if entry.kwargs_contains("chapters"):
+            chapters = entry.kwargs("chapters")
+
+        for chapter in chapters:
+            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
+            titles.append(chapter["title"])
+
+        return Chapters(timestamps=timestamps, titles=titles)

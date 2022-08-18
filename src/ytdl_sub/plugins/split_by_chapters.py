@@ -107,6 +107,11 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         )
         entry._kwargs["id"] = _split_video_uid(source_uid=entry.uid, idx=idx)
 
+        if "chapters" in entry._kwargs:
+            del entry._kwargs["chapters"]
+        if "sponsorblock_chapters" in entry._kwargs:
+            del entry._kwargs["sponsorblock_chapters"]
+
         timestamp_begin = chapters.timestamps[idx].readable_str
         timestamp_end = Timestamp(entry.kwargs("duration")).readable_str
         if idx + 1 < len(chapters.timestamps):
@@ -118,7 +123,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
                 "Warning"
             ] = "Dry-run assumes embedded chapters with no modifications"
 
-        metadata_value_dict["Source Title"] = (entry.title,)
+        metadata_value_dict["Source Title"] = entry.title
         metadata_value_dict["Segment"] = f"{timestamp_begin} - {timestamp_end}"
 
         metadata = FileMetadata.from_dict(
@@ -186,7 +191,11 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
             # Format the split video as a YoutubePlaylistVideo
             split_videos_and_metadata.append(
                 self._create_split_entry(
-                    source_entry=entry, title=title, idx=idx, chapters=chapters
+                    dry_run=self.is_dry_run,
+                    source_entry=entry,
+                    title=title,
+                    idx=idx,
+                    chapters=chapters,
                 )
             )
 

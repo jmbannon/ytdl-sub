@@ -2,6 +2,7 @@ Files created in '{output_directory}'
 ----------------------------------------
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/01 - 一 Journey to the West.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 0:00 - 3:08
   Music Tags:
@@ -14,6 +15,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/01 - 一 Journey to the West.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/02 - 二 Land of the Samurai.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 3:08 - 8:23
   Music Tags:
@@ -26,6 +28,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/02 - 二 Land of the Samurai.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/03 - 三 Tsunami Sky.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 8:23 - 12:10
   Music Tags:
@@ -38,6 +41,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/03 - 三 Tsunami Sky.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/04 - 四 Sleeping on the Susuki Grasslands.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 12:10 - 16:22
   Music Tags:
@@ -50,6 +54,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/04 - 四 Sleeping on the Susuki Gra
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/05 - 五 Gomenasai I.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 16:22 - 20:39
   Music Tags:
@@ -62,6 +67,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/05 - 五 Gomenasai I.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/06 - 六 Sakura III.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 20:39 - 25:17
   Music Tags:
@@ -74,6 +80,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/06 - 六 Sakura III.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/07 - 七 Grand Dojo.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 25:17 - 28:30
   Music Tags:
@@ -86,6 +93,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/07 - 七 Grand Dojo.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/08 - 八 Kumite.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 28:30 - 32:38
   Music Tags:
@@ -98,6 +106,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/08 - 八 Kumite.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/09 - 九 Memoirs of a Geisha.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 32:38 - 36:26
   Music Tags:
@@ -110,6 +119,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/09 - 九 Memoirs of a Geisha.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/10 - 十 Gomenasai II.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 36:26 - 40:53
   Music Tags:
@@ -122,6 +132,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/10 - 十 Gomenasai II.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/11 - 十一 A conversation with the blacksmith.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 40:53 - 45:13
   Music Tags:
@@ -134,6 +145,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/11 - 十一 A conversation with the
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/12 - 十二 The Forest of a Thousand Blades.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 45:13 - 49:04
   Music Tags:
@@ -146,6 +158,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/12 - 十二 The Forest of a Thousan
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/13 - 十三 Oath.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 49:04 - 52:32
   Music Tags:
@@ -158,6 +171,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/13 - 十三 Oath.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/14 - 十四 Mysterious Ronin.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 52:32 - 56:39
   Music Tags:
@@ -170,6 +184,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/14 - 十四 Mysterious Ronin.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/15 - 十五 Gomenasai III.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 56:39 - 58:57
   Music Tags:
@@ -182,6 +197,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/15 - 十五 Gomenasai III.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/16 - 十六 Amaya village.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 58:57 - 1:02:24
   Music Tags:
@@ -194,6 +210,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/16 - 十六 Amaya village.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/17 - 十七 Kenjutsu water style.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 1:02:24 - 1:05:06
   Music Tags:
@@ -206,6 +223,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/17 - 十七 Kenjutsu water style.mp
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/18 - 十八 Tea House.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 1:05:06 - 1:08:40
   Music Tags:
@@ -218,6 +236,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/18 - 十八 Tea House.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/19 - 十九 Icarus.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 1:08:40 - 1:11:26
   Music Tags:
@@ -230,6 +249,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/19 - 十九 Icarus.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/20 - 二十 6am Snowfall.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 1:11:26 - 1:15:33
   Music Tags:
@@ -242,6 +262,7 @@ Elijah Nang - Gaijin 外人 LP - [ Full LP ]/20 - 二十 6am Snowfall.mp3
     year: 2019
 Elijah Nang - Gaijin 外人 LP - [ Full LP ]/21 - 二十一 Silence.mp3
   From Chapter Split:
+    Warning: Dry-run assumes embedded chapters with no modifications
     Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
     Segment: 1:15:33 - 1:19:04
   Music Tags:

@@ -40,6 +40,10 @@ def _sponsorblock_chapters(entry: Entry) -> List[Dict]:
     return []
 
 
+def _contains_any_chapters(entry: Entry) -> bool:
+    return len(_chapters(entry)) > 0 or len(_sponsorblock_chapters(entry)) > 0
+
+
 class SponsorBlockCategoriesValidator(StringSelectValidator):
     _expected_value_type_name = "sponsorblock category"
     _select_values = {"all"} | SPONSORBLOCK_CATEGORIES
@@ -273,6 +277,10 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         metadata_dict = {}
         removed_chapters = self._get_removed_chapters(entry)
         removed_sponsorblock = self._get_removed_sponsorblock_category_counts(entry)
+
+        # If no chapters are on the entry, do not report any embedded chapters
+        if not _contains_any_chapters(entry):
+            return None
 
         if removed_chapters:
             metadata_dict["Removed Chapter(s)"] = ", ".join(removed_chapters)

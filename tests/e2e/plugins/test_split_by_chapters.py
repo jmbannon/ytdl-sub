@@ -22,7 +22,7 @@ def yt_album_as_chapters_preset_dict(output_directory):
 
 class TestSplitByChapters:
     # TODO: fix dry run
-    @pytest.mark.parametrize("dry_run", [False])
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_video_with_chapters(
         self,
         youtube_audio_config,
