@@ -28,6 +28,18 @@ SPONSORBLOCK_CATEGORIES: Set[str] = SPONSORBLOCK_HIGHLIGHT_CATEGORIES | {
 }
 
 
+def _chapters(entry: Entry) -> List[Dict]:
+    if entry.kwargs_contains("chapters"):
+        return entry.kwargs("chapters")
+    return []
+
+
+def _sponsorblock_chapters(entry: Entry) -> List[Dict]:
+    if entry.kwargs_contains("sponsorblock_chapters"):
+        return entry.kwargs("sponsorblock_chapters")
+    return []
+
+
 class SponsorBlockCategoriesValidator(StringSelectValidator):
     _expected_value_type_name = "sponsorblock category"
     _select_values = {"all"} | SPONSORBLOCK_CATEGORIES
@@ -40,8 +52,8 @@ class SponsorBlockCategoryListValidator(ListValidator[SponsorBlockCategoriesVali
 
 class ChaptersOptions(PluginOptions):
     """
-    Add chapters to video files if they are present. Additional options to add SponsorBlock
-    chapters and remove specific ones. Can also remove chapters using regex patterns.
+    Embeds chapters to video files if they are present. Additional options to add SponsorBlock
+    chapters and remove specific ones. Can also remove chapters using regex.
 
     Note that at this time, chapter removal with regex will not work with chapters added via
     timestamp file.
@@ -53,6 +65,7 @@ class ChaptersOptions(PluginOptions):
        presets:
          my_example_preset:
            chapters:
+             embed_chapters: True
              sponsorblock_categories:
                - "outro"
                - "selfpromo"
@@ -69,6 +82,7 @@ class ChaptersOptions(PluginOptions):
     """
 
     _optional_keys = {
+        "embed_chapters",
         "sponsorblock_categories",
         "remove_sponsorblock_categories",
         "remove_chapters_regex",
@@ -77,6 +91,9 @@ class ChaptersOptions(PluginOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
+        self._embed_chapters = self._validate_key_if_present(
+            key="embed_chapters", validator=BoolValidator, default=True
+        ).value
         self._sponsorblock_categories = self._validate_key_if_present(
             key="sponsorblock_categories", validator=SponsorBlockCategoryListValidator
         )
@@ -96,7 +113,19 @@ class ChaptersOptions(PluginOptions):
             )
 
     @property
+    def embed_chapters(self) -> Optional[bool]:
+        """
+        Optional. Embed chapters into the file. Defaults to True.
+        """
+        return self._embed_chapters
+
+    @property
     def sponsorblock_categories(self) -> Optional[List[str]]:
+        """
+        Optional. List of SponsorBlock categories to embed as chapters. Supports "sponsor",
+        "intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
+        "poi_highlight", or "all" to include all categories.
+        """
         if self._sponsorblock_categories:
             category_list = [validator.value for validator in self._sponsorblock_categories.list]
             if "all" in category_list:
@@ -106,6 +135,11 @@ class ChaptersOptions(PluginOptions):
 
     @property
     def remove_sponsorblock_categories(self) -> Optional[List[str]]:
+        """
+        Optional. List of SponsorBlock categories to remove from the output file. Can only remove
+        categories that are specified in ``sponsorblock_categories`` or "all", which removes
+        everything specified in ``sponsorblock_categories``.
+        """
         if self._remove_sponsorblock_categories:
             category_list = [
                 validator.value for validator in self._remove_sponsorblock_categories.list
@@ -117,12 +151,21 @@ class ChaptersOptions(PluginOptions):
 
     @property
     def remove_chapters_regex(self) -> Optional[List[re.Pattern]]:
+        """
+        Optional. List of regex patterns to match chapter titles against and remove them from the
+        entry.
+        """
         if self._remove_chapters_regex:
             return [validator.compiled_regex for validator in self._remove_chapters_regex.list]
         return None
 
     @property
     def force_key_frames(self) -> bool:
+        """
+        Optional. Force keyframes at cuts when removing sections. This is slow due to needing a
+        re-encode, but the resulting video may have fewer artifacts around the cuts. Defaults to
+        False.
+        """
         return self._force_key_frames
 
 
@@ -137,6 +180,11 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         )
 
     def ytdl_options(self) -> Optional[Dict]:
+        """
+        Returns
+        -------
+        YTDL options to embed chapters, add/remove SponsorBlock segments, remove chapters via regex
+        """
         builder = YTDLOptionsBuilder()
         if self.plugin_options.sponsorblock_categories:
             builder.add(
@@ -152,8 +200,14 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                 }
             )
 
-        # Always add chapters
-        builder.add({"postprocessors": [{"key": "FFmpegMetadata", "add_chapters": True}]})
+        if self.plugin_options.embed_chapters:
+            builder.add(
+                {
+                    "postprocessors": [
+                        {"key": "FFmpegMetadata", "add_chapters": True, "add_metadata": False}
+                    ]
+                }
+            )
 
         if self._is_removing_chapters:
             remove_chapters_post_processor = {
@@ -169,31 +223,23 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                     "remove_chapters_patterns"
                 ] = self.plugin_options.remove_chapters_regex
 
-            builder.add(
-                {
-                    "postprocessors": [
-                        remove_chapters_post_processor,
-                        {"key": "FFmpegMetadata", "add_chapters": True},  # re-add chapters
-                    ]
-                }
-            )
+            if self.plugin_options.embed_chapters:
+                builder.add(
+                    {
+                        # re-add chapters
+                        "postprocessors": [
+                            remove_chapters_post_processor,
+                            {"key": "FFmpegMetadata", "add_chapters": True, "add_metadata": False},
+                        ]
+                    }
+                )
 
         return builder.to_dict()
-
-    def _chapters(self, entry: Entry) -> List[Dict]:
-        if entry.kwargs_contains("chapters"):
-            return entry.kwargs("chapters")
-        return []
-
-    def _sponsorblock_chapters(self, entry: Entry) -> List[Dict]:
-        if entry.kwargs_contains("sponsorblock_chapters"):
-            return entry.kwargs("sponsorblock_chapters")
-        return []
 
     def _get_removed_chapters(self, entry: Entry) -> List[str]:
         removed_chapters: List[str] = []
         for pattern in self.plugin_options.remove_chapters_regex or []:
-            for chapter in self._chapters(entry):
+            for chapter in _chapters(entry):
                 if pattern.search(chapter["title"]):
                     removed_chapters.append(chapter["title"])
         return removed_chapters
@@ -201,7 +247,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
     def _get_removed_sponsorblock_category_counts(self, entry: Entry) -> Dict:
         removed_category_counts = collections.Counter()
         for category in self.plugin_options.remove_sponsorblock_categories or []:
-            for chapter in self._sponsorblock_chapters(entry):
+            for chapter in _sponsorblock_chapters(entry):
                 if chapter["category"] == category:
                     removed_category_counts.update({chapter["title"]: 1})
 
@@ -214,6 +260,16 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         )
 
     def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
+        """
+        Parameters
+        ----------
+        entry:
+            Entry with possibly removed chapters
+
+        Returns
+        -------
+        FileMetadata outlining which chapters/SponsorBlock segments got removed
+        """
         metadata_dict = {}
         removed_chapters = self._get_removed_chapters(entry)
         removed_sponsorblock = self._get_removed_sponsorblock_category_counts(entry)

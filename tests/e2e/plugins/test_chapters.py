@@ -17,10 +17,6 @@ def single_video_sponsorblock_and_embedded_subs_preset_dict(output_directory):
             "languages": ["en", "de"],
             "allow_auto_generated_subtitles": True,
         },
-        "audio_extract": {
-            "codec": "mp3",
-            "quality": 128,
-        },
         "chapters": {
             "sponsorblock_categories": [
                 "outro",
@@ -40,6 +36,7 @@ def single_video_sponsorblock_and_embedded_subs_preset_dict(output_directory):
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
+            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
         "overrides": {"artist": "JMC"},
     }
@@ -65,11 +62,12 @@ class TestChapters:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_chapters_sb_and_embedded_subs.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_chapters_sb_and_embedded_subs.json",
-            regenerate_expected_download_summary=True,
+            ignore_md5_hashes_for=[
+                "JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
+            ],
         )
