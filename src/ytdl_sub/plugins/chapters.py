@@ -30,13 +30,13 @@ SPONSORBLOCK_CATEGORIES: Set[str] = SPONSORBLOCK_HIGHLIGHT_CATEGORIES | {
 
 def _chapters(entry: Entry) -> List[Dict]:
     if entry.kwargs_contains("chapters"):
-        return entry.kwargs("chapters")
+        return entry.kwargs("chapters") or []
     return []
 
 
 def _sponsorblock_chapters(entry: Entry) -> List[Dict]:
     if entry.kwargs_contains("sponsorblock_chapters"):
-        return entry.kwargs("sponsorblock_chapters")
+        return entry.kwargs("sponsorblock_chapters") or []
     return []
 
 

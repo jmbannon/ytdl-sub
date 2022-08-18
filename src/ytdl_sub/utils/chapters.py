@@ -254,7 +254,7 @@ class Chapters:
 
         chapters = {}
         if entry.kwargs_contains("chapters"):
-            chapters = entry.kwargs("chapters")
+            chapters = entry.kwargs("chapters") or []
 
         for chapter in chapters:
             timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))

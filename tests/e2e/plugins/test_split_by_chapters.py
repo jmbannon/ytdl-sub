@@ -1,9 +1,12 @@
+import re
+
 import mergedeep
 import pytest
 from e2e.expected_download import assert_expected_downloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import ValidationException
 
 
 @pytest.fixture
@@ -79,13 +82,11 @@ class TestSplitByChapters:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name=f"plugins/split_by_chapters_video{'-dry-run' if dry_run else ''}.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/split_by_chapters_video.json",
-            regenerate_expected_download_summary=True,
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])
@@ -107,11 +108,55 @@ class TestSplitByChapters:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name=f"plugins/split_by_chapters_with_regex_video{'-dry-run' if dry_run else ''}.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/split_by_chapters_with_regex_video.json",
-            regenerate_expected_download_summary=True,
+        )
+
+    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("when_no_chapters", ["pass", "drop", "error"])
+    def test_video_with_no_chapters_and_regex(
+        self,
+        youtube_audio_config,
+        yt_album_as_chapters_with_regex_preset_dict,
+        output_directory,
+        dry_run,
+        when_no_chapters,
+    ):
+        mergedeep.merge(
+            yt_album_as_chapters_with_regex_preset_dict,
+            {
+                "youtube": {"video_url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+                "split_by_chapters": {"when_no_chapters": when_no_chapters},
+            },
+        )
+
+        subscription = Subscription.from_dict(
+            config=youtube_audio_config,
+            preset_name="split_by_chapters_with_regex_video",
+            preset_dict=yt_album_as_chapters_with_regex_preset_dict,
+        )
+
+        if when_no_chapters == "error":
+            with pytest.raises(
+                ValidationException,
+                match=re.escape(
+                    "Tried to split 'Oblivion Mod \"Falcor\" p.1' by chapters but it has no chapters"
+                ),
+            ):
+                _ = subscription.download(dry_run=dry_run)
+            return
+
+        transaction_log = subscription.download(dry_run=dry_run)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"plugins/split_by_chapters_with_regex_no_chapters_video_{when_no_chapters}.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=dry_run,
+            expected_download_summary_file_name=f"plugins/split_by_chapters_with_regex_no_chapters_video_{when_no_chapters}.txt",
         )

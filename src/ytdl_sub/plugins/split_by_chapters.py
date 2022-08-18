@@ -10,6 +10,7 @@ from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -145,8 +146,9 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         else:
             chapters = Chapters.from_embedded_chapters(file_path=entry.get_download_file_path())
 
-            # If no chapters, do not split anything
-            if not chapters.contains_any_chapters():
+        # If no chapters, do not split anything
+        if not chapters.contains_any_chapters():
+            if self.plugin_options.when_no_chapters == "pass":
                 entry.add_variables(
                     {
                         "chapter_title": entry.title,
@@ -156,9 +158,16 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
                     }
                 )
                 return [(entry, FileMetadata())]
+            if self.plugin_options.when_no_chapters == "drop":
+                return []
 
-            # convert the entry thumbnail early so we do not have to guess the thumbnail extension
-            # when copying it. Do not error if it's not found, in case thumbnail_name is not set
+            raise ValidationException(
+                f"Tried to split '{entry.title}' by chapters but it has no chapters"
+            )
+
+        # convert the entry thumbnail early so we do not have to guess the thumbnail extension
+        # when copying it. Do not error if it's not found, in case thumbnail_name is not set
+        if not self.is_dry_run:
             convert_download_thumbnail(entry=entry, error_if_not_found=False)
 
         for idx, title in enumerate(chapters.titles):
