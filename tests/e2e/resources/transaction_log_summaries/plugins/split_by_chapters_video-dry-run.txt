@@ -1,276 +1,146 @@
 Files created in '{output_directory}'
 ----------------------------------------
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/01 - 一 Journey to the West.mp3
+Alfa Mist - Nocturne [Full Album]/01 - 01. Intro (Feat. Racheal Ofori & Barney Artist).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 0:00 - 3:08
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 0:00 - 2:06
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 一 Journey to the West
+    title: 01. Intro (Feat. Racheal Ofori & Barney Artist)
     track: 1
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/02 - 二 Land of the Samurai.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/02 - 02. Answers (Feat. Rick David & Kaya Thomas - Dyke).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 3:08 - 8:23
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 2:06 - 5:40
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 二 Land of the Samurai
+    title: 02. Answers (Feat. Rick David & Kaya Thomas - Dyke)
     track: 2
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/03 - 三 Tsunami Sky.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/03 - 03. Blaze (Feat. Kaya Thomas - Dyke).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 8:23 - 12:10
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 5:40 - 8:11
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 三 Tsunami Sky
+    title: 03. Blaze (Feat. Kaya Thomas - Dyke)
     track: 3
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/04 - 四 Sleeping on the Susuki Grasslands.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/04 - 04. What If (Interlude).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 12:10 - 16:22
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 8:11 - 9:35
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 四 Sleeping on the Susuki Grasslands
+    title: 04. What If (Interlude)
     track: 4
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/05 - 五 Gomenasai I.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/05 - 05. No Peace (Feat. Tom Misch).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 16:22 - 20:39
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 9:35 - 13:19
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 五 Gomenasai I
+    title: 05. No Peace (Feat. Tom Misch)
     track: 5
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/06 - 六 Sakura III.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/06 - 06. Closer (Feat. Lester Duval).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 20:39 - 25:17
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 13:19 - 17:57
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 六 Sakura III
+    title: 06. Closer (Feat. Lester Duval)
     track: 6
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/07 - 七 Grand Dojo.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/07 - 07. Delusions: Rumination (Interlude) (Feat. Racheal Ofori).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 25:17 - 28:30
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 17:57 - 20:05
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 七 Grand Dojo
+    title: 07. Delusions: Rumination (Interlude) (Feat. Racheal Ofori)
     track: 7
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/08 - 八 Kumite.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/08 - 08. Dreams (Feat. Carmody).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 28:30 - 32:38
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 20:05 - 23:58
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 八 Kumite
+    title: 08. Dreams (Feat. Carmody)
     track: 8
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/09 - 九 Memoirs of a Geisha.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/09 - 09. Dreaming (Interlude) (Feat. Racheal Ofori).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 32:38 - 36:26
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 23:58 - 24:45
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 九 Memoirs of a Geisha
+    title: 09. Dreaming (Interlude) (Feat. Racheal Ofori)
     track: 9
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/10 - 十 Gomenasai II.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/10 - 10. Hopeful (Feat. Jordan Rakei).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 36:26 - 40:53
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 24:45 - 28:53
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 十 Gomenasai II
+    title: 10. Hopeful (Feat. Jordan Rakei)
     track: 10
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/11 - 十一 A conversation with the blacksmith.mp3
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/11 - 11. Sunrise (Pillows) (Feat. Emmavie).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 40:53 - 45:13
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 28:53 - 31:43
   Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
+    album: Alfa Mist - Nocturne [Full Album]
+    albumartist: Proved Records
+    artist: Proved Records
     genre: Unset
-    title: 十一 A conversation with the blacksmith
+    title: 11. Sunrise (Pillows) (Feat. Emmavie)
     track: 11
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/12 - 十二 The Forest of a Thousand Blades.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 45:13 - 49:04
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 十二 The Forest of a Thousand Blades
-    track: 12
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/13 - 十三 Oath.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 49:04 - 52:32
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 十三 Oath
-    track: 13
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/14 - 十四 Mysterious Ronin.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 52:32 - 56:39
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 十四 Mysterious Ronin
-    track: 14
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/15 - 十五 Gomenasai III.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 56:39 - 58:57
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 十五 Gomenasai III
-    track: 15
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/16 - 十六 Amaya village.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 58:57 - 1:02:24
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 十六 Amaya village
-    track: 16
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/17 - 十七 Kenjutsu water style.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 1:02:24 - 1:05:06
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 十七 Kenjutsu water style
-    track: 17
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/18 - 十八 Tea House.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 1:05:06 - 1:08:40
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 十八 Tea House
-    track: 18
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/19 - 十九 Icarus.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 1:08:40 - 1:11:26
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 十九 Icarus
-    track: 19
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/20 - 二十 6am Snowfall.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 1:11:26 - 1:15:33
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 二十 6am Snowfall
-    track: 20
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/21 - 二十一 Silence.mp3
-  From Chapter Split:
-    Warning: Dry-run assumes embedded chapters with no modifications
-    Source Title: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    Segment: 1:15:33 - 1:19:04
-  Music Tags:
-    album: Elijah Nang - Gaijin 外人 LP - [ Full LP ]
-    albumartist: Elijah Nang TV
-    artist: Elijah Nang TV
-    genre: Unset
-    title: 二十一 Silence
-    track: 21
-    year: 2019
-Elijah Nang - Gaijin 外人 LP - [ Full LP ]/folder.jpg
+    year: 2017
+Alfa Mist - Nocturne [Full Album]/folder.jpg

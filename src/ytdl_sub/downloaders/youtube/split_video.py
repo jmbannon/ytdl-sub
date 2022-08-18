@@ -9,6 +9,7 @@ from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.video import YoutubeVideoDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.entries.youtube import YoutubeVideo
+from ytdl_sub.plugins.split_by_chapters import _split_video_ffmpeg_cmd
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.ffmpeg import FFMPEG
