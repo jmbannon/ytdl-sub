@@ -192,16 +192,16 @@ music_tags
 
 -------------------------------------------------------------------------------
 
-nfo
-'''
+nfo_tags
+''''''''
 .. autoclass:: ytdl_sub.plugins.nfo_tags.NfoTagsOptions()
   :members:
   :member-order: bysource
 
 -------------------------------------------------------------------------------
 
-nfo_output_directory
-''''''''''''''''''''
+output_directory_nfo_tags
+'''''''''''''''''''''''''
 .. autoclass:: ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions()
   :members:
   :member-order: bysource

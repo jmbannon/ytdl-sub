@@ -25,7 +25,7 @@ class NfoTagsOptions(PluginOptions):
 
        presets:
          my_example_preset:
-           nfo:
+           nfo_tags:
              # required
              nfo_name: "{title_sanitized}.nfo"
              nfo_root: "episodedetails"
