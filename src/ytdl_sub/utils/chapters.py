@@ -2,7 +2,6 @@ import json
 import os
 import re
 import subprocess
-from io import BytesIO
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -222,6 +221,16 @@ class Chapters:
 
     @classmethod
     def from_embedded_chapters(cls, file_path: str) -> "Chapters":
+        """
+        Parameters
+        ----------
+        file_path
+            File to read ffmpeg chapter metadata from
+
+        Returns
+        -------
+        Chapters object
+        """
         proc = subprocess.run(
             [
                 "ffprobe",
@@ -249,6 +258,16 @@ class Chapters:
 
     @classmethod
     def from_entry_chapters(cls, entry: Entry) -> "Chapters":
+        """
+        Parameters
+        ----------
+        entry
+            Entry with yt-dlp chapter metadata
+
+        Returns
+        -------
+        Chapters object
+        """
         timestamps: List[Timestamp] = []
         titles: List[str] = []
 

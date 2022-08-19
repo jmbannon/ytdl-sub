@@ -5,6 +5,8 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from yt_dlp.utils import sanitize_filename
+
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
@@ -16,16 +18,6 @@ from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
-
-#
-# modify_entry BEFORE SPLIT
-# - audio_extract
-# - subtitles?
-#
-# TODO: make regex's modify_entry into a new function
-# and call modify_entry before split
-#
-# maybe modify_downloaded_entry ??
 
 
 def _split_video_ffmpeg_cmd(
@@ -53,8 +45,14 @@ class WhenNoChaptersValidator(StringSelectValidator):
 class SplitByChaptersOptions(PluginOptions):
     """
     Splits a file by chapters into multiple files. Each file becomes its own entry with the
-    new source variables ``chapter_title``, ``chapter_index``, ``chapter_index_padded``,
-    ``chapter_count``.
+    new source variables ``chapter_title``, ``chapter_title_sanitized``, ``chapter_index``,
+    ``chapter_index_padded``, ``chapter_count``.
+
+    If a file has no chapters, and ``when_no_chapters`` is set to "pass", then ``chapter_title`` is
+    set to the entry's title and ``chapter_index``, ``chapter_count`` are both set to 1.
+
+    Note that when using this plugin and performing dry-run, it assumes embedded chapters are being
+    used with no modifications.
 
     Usage:
 
@@ -63,7 +61,7 @@ class SplitByChaptersOptions(PluginOptions):
        presets:
          my_example_preset:
            split_by_chapters:
-             when_no_chapters: "pass"  # "drop"/"error"
+             when_no_chapters: "pass"
     """
 
     _required_keys = {"when_no_chapters"}
@@ -75,7 +73,13 @@ class SplitByChaptersOptions(PluginOptions):
         ).value
 
     def added_source_variables(self) -> List[str]:
-        return ["chapter_title", "chapter_index", "chapter_index_padded", "chapter_count"]
+        return [
+            "chapter_title",
+            "chapter_title_sanitized",
+            "chapter_index",
+            "chapter_index_padded",
+            "chapter_count",
+        ]
 
     @property
     def when_no_chapters(self) -> str:
@@ -91,7 +95,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
     is_split_plugin = True
 
     def _create_split_entry(
-        self, dry_run: bool, source_entry: Entry, title: str, idx: int, chapters: Chapters
+        self, source_entry: Entry, title: str, idx: int, chapters: Chapters
     ) -> Tuple[Entry, FileMetadata]:
         """
         Runs ffmpeg to create the split video
@@ -101,17 +105,20 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         entry.add_variables(
             {
                 "chapter_title": title,
+                "chapter_title_sanitized": sanitize_filename(title),
                 "chapter_index": idx + 1,
                 "chapter_index_padded": f"{(idx + 1):02d}",
                 "chapter_count": len(chapters.timestamps),
             }
         )
-        entry._kwargs["id"] = _split_video_uid(source_uid=entry.uid, idx=idx)
 
+        # pylint: disable=protected-access
+        entry._kwargs["id"] = _split_video_uid(source_uid=entry.uid, idx=idx)
         if "chapters" in entry._kwargs:
             del entry._kwargs["chapters"]
         if "sponsorblock_chapters" in entry._kwargs:
             del entry._kwargs["sponsorblock_chapters"]
+        # pylint: enable=protected-access
 
         timestamp_begin = chapters.timestamps[idx].readable_str
         timestamp_end = Timestamp(entry.kwargs("duration")).readable_str
@@ -119,7 +126,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
             timestamp_end = chapters.timestamps[idx + 1].readable_str
 
         metadata_value_dict = {}
-        if dry_run:
+        if self.is_dry_run:
             metadata_value_dict[
                 "Warning"
             ] = "Dry-run assumes embedded chapters with no modifications"
@@ -200,7 +207,6 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
             # Format the split video as a YoutubePlaylistVideo
             split_videos_and_metadata.append(
                 self._create_split_entry(
-                    dry_run=self.is_dry_run,
                     source_entry=entry,
                     title=title,
                     idx=idx,

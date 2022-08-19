@@ -219,6 +219,14 @@ regex
 
 -------------------------------------------------------------------------------
 
+split_by_chapters
+'''''''''''''''''
+.. autoclass:: ytdl_sub.plugins.split_by_chapters.SplitByChaptersOptions()
+  :members: when_no_chapters
+  :member-order: bysource
+
+-------------------------------------------------------------------------------
+
 subtitles
 '''''''''
 .. autoclass:: ytdl_sub.plugins.subtitles.SubtitleOptions()

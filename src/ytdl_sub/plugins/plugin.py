@@ -31,6 +31,11 @@ class PluginPriority:
 
     @property
     def modify_entry_after_split(self) -> bool:
+        """
+        Returns
+        -------
+        True if the plugin should modify an entry after a potential split. False otherwise.
+        """
         return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
 
 
@@ -96,6 +101,7 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         # TODO pass yaml snake case name in the class somewhere, and use it for the logger
         self._logger = Logger.get(self.__class__.__name__)
 
+    # pylint: disable=no-self-use,unused-argument
     def ytdl_options(self) -> Optional[Dict]:
         """
         Returns
@@ -117,9 +123,8 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         -------
         List of entries and metadata created from the source entry
         """
-        raise NotImplemented()
+        return []
 
-    # pylint: disable=no-self-use
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
         For each entry downloaded, modify the entry in some way before sending it to
@@ -136,8 +141,6 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         """
         return entry
 
-    # pylint: enable=no-self-use
-
     def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
         """
         For each entry downloaded, apply post processing to it.
@@ -151,6 +154,9 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         -------
         Optional file metadata for the entry media file.
         """
+        return None
+
+    # pylint: enable=no-self-use,unused-argument
 
     def post_process_subscription(self):
         """
