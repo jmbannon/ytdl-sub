@@ -32,16 +32,13 @@ presets:
       custom_artist_name: "{artist}"
       custom_track_number: "1"
 
-#  TODO: make a playlist of individual songs into an album. Need playlist_title
-#  yt_album_as_playlist:
-#    preset: yt_song
-#    youtube:
-#      download_strategy: "playlist"
-#
-#    music_tags:
-#      tags:
-#        album: "{playlist_title}"
-#        track: "{playlist_index}"
+  #  TODO: make a playlist of individual songs into an album. Need playlist_title
+  yt_song_playlist:
+    preset: yt_song
+    youtube:
+      download_strategy: "playlist"
+    overrides:
+      custom_track_number: "{playlist_index}"
 
   yt_album_as_chapters:
     preset: "yt_song"
