@@ -1,9 +1,12 @@
+import json
 import os
 import re
+import subprocess
 from typing import List
 from typing import Optional
 from typing import Tuple
 
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileMetadata
 
@@ -139,6 +142,14 @@ class Chapters:
             if timestamps[idx].timestamp_sec >= timestamps[idx + 1].timestamp_sec:
                 raise ValueError("Timestamps must be in ascending order")
 
+    def contains_any_chapters(self) -> bool:
+        """
+        Returns
+        -------
+        True if there are chapters. False otherwise.
+        """
+        return len(self.timestamps) > 0
+
     def contains_zero_timestamp(self) -> bool:
         """
         Returns
@@ -165,7 +176,7 @@ class Chapters:
         )
 
     @classmethod
-    def from_file(cls, chapters_file_path: str) -> "Chapters":
+    def from_timestamps_file(cls, chapters_file_path: str) -> "Chapters":
         """
         Parameters
         ----------
@@ -207,3 +218,65 @@ class Chapters:
             titles.append(title)
 
         return cls(timestamps=timestamps, titles=titles)
+
+    @classmethod
+    def from_embedded_chapters(cls, file_path: str) -> "Chapters":
+        """
+        Parameters
+        ----------
+        file_path
+            File to read ffmpeg chapter metadata from
+
+        Returns
+        -------
+        Chapters object
+        """
+        proc = subprocess.run(
+            [
+                "ffprobe",
+                "-loglevel",
+                "quiet",
+                "-print_format",
+                "json",
+                "-show_chapters",
+                "--",
+                file_path,
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+            encoding="utf-8",
+        )
+
+        embedded_chapters = json.loads(proc.stdout)
+        timestamps: List[Timestamp] = []
+        titles: List[str] = []
+        for chapter in embedded_chapters["chapters"]:
+            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
+            titles.append(chapter["tags"]["title"])
+
+        return Chapters(timestamps=timestamps, titles=titles)
+
+    @classmethod
+    def from_entry_chapters(cls, entry: Entry) -> "Chapters":
+        """
+        Parameters
+        ----------
+        entry
+            Entry with yt-dlp chapter metadata
+
+        Returns
+        -------
+        Chapters object
+        """
+        timestamps: List[Timestamp] = []
+        titles: List[str] = []
+
+        chapters = {}
+        if entry.kwargs_contains("chapters"):
+            chapters = entry.kwargs("chapters") or []
+
+        for chapter in chapters:
+            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
+            titles.append(chapter["title"])
+
+        return Chapters(timestamps=timestamps, titles=titles)

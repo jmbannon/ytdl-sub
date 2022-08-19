@@ -7,6 +7,7 @@ from yt_dlp.utils import sanitize_filename
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.regex_validator import RegexListValidator
@@ -224,6 +225,9 @@ class RegexOptions(PluginOptions):
 
 class RegexPlugin(Plugin[RegexOptions]):
     plugin_options_type = RegexOptions
+    priority = PluginPriority(
+        modify_entry=PluginPriority.MODIFY_ENTRY_AFTER_SPLIT + 0,
+    )
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """

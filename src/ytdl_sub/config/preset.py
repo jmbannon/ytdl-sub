@@ -160,7 +160,8 @@ class Preset(StrictDictValidator):
         return downloader, download_options
 
     def __validate_and_get_plugins(self) -> PresetPlugins:
-        plugins = PresetPlugins()
+        preset_plugins = PresetPlugins()
+        source_variables = copy.deepcopy(self._source_variables)
 
         for key in self._keys:
             if key not in PluginMapping.plugins():
@@ -168,13 +169,22 @@ class Preset(StrictDictValidator):
 
             plugin = PluginMapping.get(plugin=key)
             plugin_options = self._validate_key(key=key, validator=plugin.plugin_options_type)
+
+            preset_plugins.add(plugin_type=plugin, plugin_options=plugin_options)
+
+        for plugin, plugin_options in sorted(
+            preset_plugins.zipped(),
+            key=lambda _plugin_and_options: _plugin_and_options[0].priority.modify_entry,
+        ):
+            # Validate current plugin using source + added plugin variables
             plugin_options.validate_with_variables(
-                source_variables=self._source_variables, override_variables=self.overrides.keys
+                source_variables=source_variables, override_variables=self.overrides.keys
             )
 
-            plugins.add(plugin_type=plugin, plugin_options=plugin_options)
+            # Extend existing source variables with ones created from this plugin
+            source_variables.extend(plugin_options.added_source_variables())
 
-        return plugins
+        return preset_plugins
 
     def __validate_override_string_formatter_validator(
         self,

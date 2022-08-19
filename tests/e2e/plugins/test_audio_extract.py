@@ -1,4 +1,3 @@
-import mergedeep
 import pytest
 from e2e.expected_download import assert_expected_downloads
 from e2e.expected_transaction_log import assert_transaction_log_matches

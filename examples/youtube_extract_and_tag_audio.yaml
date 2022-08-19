@@ -9,7 +9,7 @@ presets:
 
     output_options:
       output_directory: "{music_directory}"
-      file_name: "{title_sanitized}.{ext}"
+      file_name: "{custom_track_name_sanitized}.{ext}"
 
     audio_extract:
       codec: "mp3"
@@ -17,22 +17,42 @@ presets:
 
     music_tags:
       tags:
-        artist: "{artist}"
-        albumartist: "{artist}"
-        title: "{title}"
-        album: "Singles"
-        track: "1"
+        artist: "{custom_artist_name}"
+        albumartist: "{custom_artist_name}"
+        title: "{custom_track_name}"
+        album: "{custom_album_name}"
+        track: "{custom_track_number}"
         year: "{upload_year}"
         genre: "Unset"
 
     overrides:
       music_directory: "/path/to/music"
+      custom_track_name: "{title}"
+      custom_album_name: "Singles"
+      custom_artist_name: "{artist}"
+      custom_track_number: "1"
 
+  #  TODO: make a playlist of individual songs into an album. Need playlist_title
   yt_song_playlist:
     preset: yt_song
     youtube:
       download_strategy: "playlist"
+    overrides:
+      custom_track_number: "{playlist_index}"
 
-    music_tags:
-      tags:
-        track: "{playlist_index}"
+  yt_album_as_chapters:
+    preset: "yt_song"
+    output_options:
+      file_name: "{custom_album_name_sanitized}/{chapter_index_padded} - {custom_track_name_sanitized}.{ext}"
+      thumbnail_name: "{custom_album_name_sanitized}/folder.{thumbnail_ext}"
+
+    chapters:
+      embed_chapters: True
+
+    split_by_chapters:
+      when_no_chapters: "pass"
+
+    overrides:
+      custom_track_name: "{chapter_title}"
+      custom_album_name: "{title}"  # Have the video name be the album
+      custom_track_number: "{chapter_index}"

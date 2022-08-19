@@ -30,14 +30,18 @@ SPONSORBLOCK_CATEGORIES: Set[str] = SPONSORBLOCK_HIGHLIGHT_CATEGORIES | {
 
 def _chapters(entry: Entry) -> List[Dict]:
     if entry.kwargs_contains("chapters"):
-        return entry.kwargs("chapters")
+        return entry.kwargs("chapters") or []
     return []
 
 
 def _sponsorblock_chapters(entry: Entry) -> List[Dict]:
     if entry.kwargs_contains("sponsorblock_chapters"):
-        return entry.kwargs("sponsorblock_chapters")
+        return entry.kwargs("sponsorblock_chapters") or []
     return []
+
+
+def _contains_any_chapters(entry: Entry) -> bool:
+    return len(_chapters(entry)) > 0 or len(_sponsorblock_chapters(entry)) > 0
 
 
 class SponsorBlockCategoriesValidator(StringSelectValidator):
@@ -274,11 +278,16 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         removed_chapters = self._get_removed_chapters(entry)
         removed_sponsorblock = self._get_removed_sponsorblock_category_counts(entry)
 
+        # If no chapters are on the entry, do not report any embedded chapters
+        if not _contains_any_chapters(entry):
+            return None
+
         if removed_chapters:
             metadata_dict["Removed Chapter(s)"] = ", ".join(removed_chapters)
         if removed_sponsorblock:
             metadata_dict["Removed SponsorBlock Category Count(s)"] = removed_sponsorblock
 
+        # TODO: check if file actually has embedded chapters
         return FileMetadata.from_dict(
             value_dict=metadata_dict, title="Embedded Chapters", sort_dict=False
         )

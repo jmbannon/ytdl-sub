@@ -9,6 +9,7 @@ from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.video import YoutubeVideoDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.entries.youtube import YoutubeVideo
+from ytdl_sub.plugins.split_by_chapters import _split_video_ffmpeg_cmd
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.ffmpeg import FFMPEG
@@ -29,19 +30,6 @@ _SPLIT_TIMESTAMP_REGEX = re.compile(r"^((?:\d\d:)?(?:\d:)?(?:\d)?\d:\d\d) (.+)$"
 
 def _split_video_uid(source_uid: str, idx: int) -> str:
     return f"{source_uid}___{idx}"
-
-
-def _split_video_ffmpeg_cmd(
-    input_file: str, output_file: str, timestamps: List[Timestamp], idx: int
-) -> List[str]:
-    timestamp_begin = timestamps[idx].standardized_str
-    timestamp_end = timestamps[idx + 1].standardized_str if idx + 1 < len(timestamps) else ""
-
-    cmd = ["-i", input_file, "-ss", timestamp_begin]
-    if timestamp_end:
-        cmd += ["-to", timestamp_end]
-    cmd += ["-vcodec", "copy", "-acodec", "copy", output_file]
-    return cmd
 
 
 class YoutubeSplitVideoDownloaderOptions(YoutubeVideoDownloaderOptions):
@@ -158,7 +146,9 @@ class YoutubeSplitVideoDownloader(
         """Download a single Youtube video, then split it into multiple videos"""
         split_videos_and_metadata: List[Tuple[YoutubePlaylistVideo, FileMetadata]] = []
 
-        chapters = Chapters.from_file(chapters_file_path=self.download_options.split_timestamps)
+        chapters = Chapters.from_timestamps_file(
+            chapters_file_path=self.download_options.split_timestamps
+        )
         entry_dict = self.extract_info(url=self.download_options.video_url)
 
         entry = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
