@@ -72,6 +72,10 @@ def mock_entry_to_dict(
         "upload_day_padded": "12",
         "upload_day_reversed": 20,
         "upload_day_reversed_padded": "20",
+        "upload_day_of_year": 12,
+        "upload_day_of_year_padded": "012",
+        "upload_day_of_year_reversed": 354,
+        "upload_day_of_year_reversed_padded": "354",
         "thumbnail_ext": thumbnail_ext,
     }
 
