@@ -10,6 +10,12 @@ from ytdl_sub.entries.base_entry import BaseEntry
 # pylint: disable=no-member
 
 
+def _pad(num):
+    if num < 10:
+        return f"0{num}"
+    return str(num)
+
+
 class SourceVariables:
     """
     Source variables are ``{variables}`` that contain metadata from downloaded media.
@@ -143,6 +149,37 @@ class EntryVariables(SourceVariables):
         return int(str(self.upload_year)[-2:])
 
     @property
+    def upload_year_truncated_reversed(self) -> int:
+        """
+        Returns
+        -------
+        int
+            The upload year truncated, but reversed using ``100 - {upload_year_truncated}``, i.e.
+            2022 returns ``100 - 22`` = ``78``
+        """
+        return 100 - self.upload_year_truncated
+
+    @property
+    def upload_month_reversed(self) -> int:
+        """
+        Returns
+        -------
+        int
+            The upload month, but reversed using ``13 - {upload_month}``, i.e. March returns ``10``
+        """
+        return 13 - self.upload_month
+
+    @property
+    def upload_month_reversed_padded(self) -> str:
+        """
+        Returns
+        -------
+        str
+            The reversed upload month, but padded. i.e. November returns "02"
+        """
+        return _pad(self.upload_month_reversed)
+
+    @property
     def upload_month_padded(self) -> str:
         """
         Returns
@@ -181,6 +218,35 @@ class EntryVariables(SourceVariables):
             The upload day as an integer (no padding).
         """
         return int(self.upload_day_padded.lstrip("0"))
+
+    @property
+    def upload_day_reversed(self) -> int:
+        """
+        Returns
+        -------
+        int
+            The upload day, but reversed using ``{total_days_in_month} + 1 - {upload_day}``,
+            i.e. August 8th would have upload_day_reversed of ``31 + 1 - 8`` = ``24``
+        """
+        total_days_in_month: int = 30
+        if self.upload_month in [1, 3, 5, 7, 8, 10, 12]:
+            total_days_in_month = 31
+        elif self.upload_month == 2:
+            total_days_in_month = 28
+            if self.upload_year % 4 == 0:  # leap year
+                total_days_in_month = 29
+
+        return total_days_in_month + 1 - self.upload_day
+
+    @property
+    def upload_day_reversed_padded(self) -> str:
+        """
+        Returns
+        -------
+        str
+            The reversed upload day, but padded. i.e. August 30th returns "02".
+        """
+        return _pad(self.upload_day_reversed)
 
     @property
     def upload_date_standardized(self) -> str:
