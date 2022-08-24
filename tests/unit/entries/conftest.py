@@ -4,12 +4,6 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 
 
-def _pad(num):
-    if num < 10:
-        return f"0{num}"
-    return str(num)
-
-
 @pytest.fixture
 def uid():
     return "abc123"
@@ -26,23 +20,8 @@ def title():
 
 
 @pytest.fixture
-def upload_year():
-    return 2021
-
-
-@pytest.fixture
-def upload_month():
-    return 1
-
-
-@pytest.fixture
-def upload_day():
-    return 12
-
-
-@pytest.fixture
-def upload_date(upload_year, upload_month, upload_day):
-    return f"{upload_year}{_pad(upload_month)}{_pad(upload_day)}"
+def upload_date():
+    return "20210112"
 
 
 @pytest.fixture
@@ -72,10 +51,7 @@ def mock_entry_to_dict(
     ext,
     extractor,
     upload_date,
-    upload_year,
     thumbnail_ext,
-    upload_month,
-    upload_day,
 ):
     return {
         "uid": uid,
@@ -84,13 +60,18 @@ def mock_entry_to_dict(
         "ext": ext,
         "extractor": extractor,
         "upload_date": upload_date,
-        "upload_date_standardized": f"{upload_year}-{_pad(upload_month)}-{_pad(upload_day)}",
-        "upload_year": upload_year,
+        "upload_date_standardized": "2021-01-12",
+        "upload_year": 2021,
         "upload_year_truncated": 21,
-        "upload_month": upload_month,
-        "upload_month_padded": _pad(upload_month),
-        "upload_day": upload_day,
-        "upload_day_padded": _pad(upload_day),
+        "upload_year_truncated_reversed": 79,
+        "upload_month": 1,
+        "upload_month_padded": "01",
+        "upload_month_reversed": 12,
+        "upload_month_reversed_padded": "12",
+        "upload_day": 12,
+        "upload_day_padded": "12",
+        "upload_day_reversed": 20,
+        "upload_day_reversed_padded": "20",
         "thumbnail_ext": thumbnail_ext,
     }
 
@@ -110,33 +91,6 @@ def mock_entry_kwargs(uid, title, ext, upload_date, extractor, download_thumbnai
 @pytest.fixture
 def mock_entry(mock_entry_kwargs):
     return Entry(entry_dict=mock_entry_kwargs, working_directory=".")
-
-
-@pytest.fixture
-def validate_entry_properties(
-    uid,
-    title,
-    upload_date,
-    upload_year,
-    ext,
-    extractor,
-    thumbnail_ext,
-    download_file_name,
-    download_thumbnail_name,
-):
-    def _validate_entry_properties(entry: Entry):
-        assert entry.uid == uid
-        assert entry.title == title
-        assert entry.title_sanitized == title
-        assert entry.upload_date == upload_date
-        assert entry.upload_year == upload_year
-        assert entry.ext == ext
-        assert entry.thumbnail_ext == thumbnail_ext
-        assert entry.extractor == extractor
-
-        return True
-
-    return _validate_entry_properties
 
 
 @pytest.fixture

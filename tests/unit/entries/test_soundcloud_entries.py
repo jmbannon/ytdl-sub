@@ -4,49 +4,21 @@ from ytdl_sub.entries.soundcloud import SoundcloudTrack
 
 
 @pytest.fixture
-def track_number():
-    return 1
-
-
-@pytest.fixture
-def track_number_padded():
-    return "01"
-
-
-@pytest.fixture
-def track_count():
-    return 1
-
-
-@pytest.fixture
 def url():
     return "soundcloud.com/artist/track-asdfasdf"
 
 
 @pytest.fixture
-def is_premiere():
-    return False
-
-
-@pytest.fixture
-def mock_soundcloud_track_to_dict(
-    mock_entry_to_dict,
-    title,
-    upload_year,
-    track_number,
-    track_number_padded,
-    is_premiere,
-    track_count,
-):
+def mock_soundcloud_track_to_dict(mock_entry_to_dict):
     return dict(
         mock_entry_to_dict,
         **{
-            "track_number": track_number,
-            "track_number_padded": track_number_padded,
-            "album": title,
-            "album_sanitized": title,
-            "album_year": upload_year,
-            "track_count": track_count,
+            "track_number": 1,
+            "track_number_padded": "01",
+            "album": mock_entry_to_dict["title"],
+            "album_sanitized": mock_entry_to_dict["title_sanitized"],
+            "album_year": mock_entry_to_dict["upload_year"],
+            "track_count": 1,
         }
     )
 
@@ -61,39 +33,7 @@ def mock_soundcloud_track(mock_soundcloud_track_kwargs):
     return SoundcloudTrack(entry_dict=mock_soundcloud_track_kwargs, working_directory=".")
 
 
-@pytest.fixture
-def validate_soundcloud_track_properties(
-    validate_entry_properties,
-    title,
-    upload_year,
-    track_number,
-    track_number_padded,
-    is_premiere,
-    track_count,
-):
-    def _validate_soundcloud_track_properties(soundcloud_track: SoundcloudTrack):
-        assert validate_entry_properties(soundcloud_track)
-        assert soundcloud_track.track_number == track_number
-        assert soundcloud_track.track_number_padded == track_number_padded
-        assert soundcloud_track.album == title
-        assert soundcloud_track.album_sanitized == title
-        assert soundcloud_track.album_year == upload_year
-        assert soundcloud_track.track_count == track_count
-        assert soundcloud_track.is_premiere() == is_premiere
-
-        return True
-
-    return _validate_soundcloud_track_properties
-
-
 class TestSoundcloudTrack(object):
-    def test_properties(
-        self,
-        mock_soundcloud_track,
-        validate_soundcloud_track_properties,
-    ):
-        assert validate_soundcloud_track_properties(mock_soundcloud_track)
-
     def test_to_dict(self, mock_soundcloud_track, mock_soundcloud_track_to_dict):
         assert mock_soundcloud_track.to_dict() == mock_soundcloud_track_to_dict
 
