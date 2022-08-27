@@ -38,7 +38,7 @@ def to_max_3_byte_utf8_dict(string_dict: Dict[str, str]) -> Dict[str, str]:
     }
 
 
-def to_xml(nfo_dict: Dict[str, str], nfo_root: str) -> str:
+def to_xml(nfo_dict: Dict[str, str], nfo_root: str) -> bytes:
     """
     Transforms a dict to XML
 
