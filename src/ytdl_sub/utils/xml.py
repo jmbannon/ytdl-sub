@@ -1,6 +1,5 @@
+import xml.etree.ElementTree as et
 from typing import Dict
-
-import dicttoxml
 
 
 def _to_max_3_byte_utf8_char(char: str) -> str:
@@ -53,9 +52,10 @@ def to_xml(nfo_dict: Dict[str, str], nfo_root: str) -> bytes:
     -------
     XML bytes
     """
-    return dicttoxml.dicttoxml(
-        obj=nfo_dict,
-        root=True,
-        custom_root=nfo_root,
-        attr_type=False,
-    )
+    xml_root = et.Element(nfo_root)
+    for key, value in nfo_dict.items():
+        sub_element = et.SubElement(xml_root, key)
+        sub_element.text = value
+
+    et.indent(tree=xml_root, space="  ", level=0)
+    return et.tostring(element=xml_root, encoding="utf-8", xml_declaration=True)

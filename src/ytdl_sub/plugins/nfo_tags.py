@@ -1,6 +1,10 @@
 import os
+from abc import ABC
 from pathlib import Path
+from typing import Generic
 from typing import Optional
+from typing import Type
+from typing import TypeVar
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
@@ -14,7 +18,69 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.validators import BoolValidator
 
 
-class NfoTagsOptions(PluginOptions):
+class SharedNfoTagsOptions(PluginOptions, ABC):
+    """
+    Shared code between NFO tags and Ouptut Directory NFO Tags
+    """
+
+    _formatter_validator: Type[StringFormatterValidator]
+    _dict_formatter_validator: Type[DictFormatterValidator]
+
+    _required_keys = {"nfo_name", "nfo_root", "tags"}
+    _optional_keys = {"kodi_safe"}
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        self._nfo_name = self._validate_key(key="nfo_name", validator=self._formatter_validator)
+        self._nfo_root = self._validate_key(key="nfo_root", validator=self._formatter_validator)
+        self._tags = self._validate_key(key="tags", validator=self._dict_formatter_validator)
+        self._kodi_safe = self._validate_key_if_present(
+            key="kodi_safe", validator=BoolValidator, default=False
+        ).value
+
+
+TSharedNfoTagsOptions = TypeVar("TSharedNfoTagsOptions", bound=SharedNfoTagsOptions)
+
+
+class SharedNfoTagsPlugin(Plugin[TSharedNfoTagsOptions], Generic[TSharedNfoTagsOptions], ABC):
+    """
+    Shared code between NFO tags and Ouptut Directory NFO Tags
+    """
+
+    def _create_nfo(self, entry: Optional[Entry] = None) -> None:
+        nfo = {}
+
+        for tag, tag_formatter in sorted(self.plugin_options.tags.dict.items()):
+            nfo[tag] = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
+
+        # Write the nfo tags to XML with the nfo_root
+        nfo_root = self.overrides.apply_formatter(
+            formatter=self.plugin_options.nfo_root, entry=entry
+        )
+
+        if self.plugin_options.kodi_safe:
+            nfo = to_max_3_byte_utf8_dict(nfo)
+            nfo_root = to_max_3_byte_utf8_string(nfo_root)
+
+        xml = to_xml(nfo_dict=nfo, nfo_root=nfo_root)
+
+        nfo_file_name = self.overrides.apply_formatter(
+            formatter=self.plugin_options.nfo_name, entry=entry
+        )
+
+        # Save the nfo's XML to file
+        nfo_file_path = Path(self.working_directory) / nfo_file_name
+        os.makedirs(os.path.dirname(nfo_file_path), exist_ok=True)
+        with open(nfo_file_path, "wb") as nfo_file:
+            nfo_file.write(xml)
+
+        # Save the nfo file and log its metadata
+        nfo_metadata = FileMetadata.from_dict(value_dict={nfo_root: nfo}, title="NFO tags:")
+        self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
+
+
+class NfoTagsOptions(SharedNfoTagsOptions):
     """
     Adds an NFO file for every download file. An NFO file is simply an XML file
     with a ``.nfo`` extension. You can add any values into the NFO.
@@ -37,18 +103,8 @@ class NfoTagsOptions(PluginOptions):
              kodi_safe: False
     """
 
-    _required_keys = {"nfo_name", "nfo_root", "tags"}
-    _optional_keys = {"kodi_safe"}
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-
-        self._nfo_name = self._validate_key(key="nfo_name", validator=StringFormatterValidator)
-        self._nfo_root = self._validate_key(key="nfo_root", validator=StringFormatterValidator)
-        self._tags = self._validate_key(key="tags", validator=DictFormatterValidator)
-        self._kodi_safe = self._validate_key_if_present(
-            key="kodi_safe", validator=BoolValidator, default=False
-        ).value
+    _formatter_validator = StringFormatterValidator
+    _dict_formatter_validator = DictFormatterValidator
 
     @property
     def nfo_name(self) -> StringFormatterValidator:
@@ -96,7 +152,7 @@ class NfoTagsOptions(PluginOptions):
         return self._kodi_safe
 
 
-class NfoTagsPlugin(Plugin[NfoTagsOptions]):
+class NfoTagsPlugin(SharedNfoTagsPlugin[NfoTagsOptions]):
     plugin_options_type = NfoTagsOptions
 
     def post_process_entry(self, entry: Entry) -> None:
@@ -108,32 +164,4 @@ class NfoTagsPlugin(Plugin[NfoTagsOptions]):
         entry:
             Entry to create an NFO file for
         """
-        nfo = {}
-
-        for tag, tag_formatter in sorted(self.plugin_options.tags.dict.items()):
-            nfo[tag] = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
-
-        # Write the nfo tags to XML with the nfo_root
-        nfo_root = self.overrides.apply_formatter(
-            formatter=self.plugin_options.nfo_root, entry=entry
-        )
-
-        if self.plugin_options.kodi_safe:
-            nfo = to_max_3_byte_utf8_dict(nfo)
-            nfo_root = to_max_3_byte_utf8_string(nfo_root)
-
-        xml = to_xml(nfo_dict=nfo, nfo_root=nfo_root)
-
-        nfo_file_name = self.overrides.apply_formatter(
-            formatter=self.plugin_options.nfo_name, entry=entry
-        )
-
-        # Save the nfo's XML to file
-        nfo_file_path = Path(self.working_directory) / nfo_file_name
-        os.makedirs(os.path.dirname(nfo_file_path), exist_ok=True)
-        with open(nfo_file_path, "wb") as nfo_file:
-            nfo_file.write(xml)
-
-        # Save the nfo file and log its metadata
-        nfo_metadata = FileMetadata.from_dict(value_dict={nfo_root: nfo}, title="NFO tags:")
-        self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
+        self._create_nfo(entry=entry)
