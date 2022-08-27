@@ -195,7 +195,7 @@ music_tags
 nfo_tags
 ''''''''
 .. autoclass:: ytdl_sub.plugins.nfo_tags.NfoTagsOptions()
-  :members:
+  :members: nfo_name, nfo_root, tags, kodi_safe
   :member-order: bysource
 
 -------------------------------------------------------------------------------
@@ -203,7 +203,7 @@ nfo_tags
 output_directory_nfo_tags
 '''''''''''''''''''''''''
 .. autoclass:: ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions()
-  :members:
+  :members: nfo_name, nfo_root, tags, kodi_safe
   :member-order: bysource
 
 -------------------------------------------------------------------------------
