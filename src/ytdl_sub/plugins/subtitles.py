@@ -46,7 +46,7 @@ class SubtitleOptions(PluginOptions):
 
        presets:
          my_example_preset:
-           subtitle_options:
+           subtitles:
              subtitles_name: "{title_sanitized}.{lang}.{subtitles_ext}"
              subtitles_type: "srt"
              embed_subtitles: False
