@@ -1,6 +1,6 @@
 from typing import Dict
 
-import dicttoxml
+import xml.etree.ElementTree as et
 
 
 def _to_max_3_byte_utf8_char(char: str) -> str:
@@ -38,7 +38,7 @@ def to_max_3_byte_utf8_dict(string_dict: Dict[str, str]) -> Dict[str, str]:
     }
 
 
-def to_xml(nfo_dict: Dict[str, str], nfo_root: str) -> bytes:
+def to_xml(nfo_dict: Dict[str, str], nfo_root: str) -> str:
     """
     Transforms a dict to XML
 
@@ -53,9 +53,9 @@ def to_xml(nfo_dict: Dict[str, str], nfo_root: str) -> bytes:
     -------
     XML bytes
     """
-    return dicttoxml.dicttoxml(
-        obj=nfo_dict,
-        root=True,
-        custom_root=nfo_root,
-        attr_type=False,
-    )
+    xml_root = et.Element(nfo_root)
+    for key, value in nfo_dict.items():
+        et.SubElement(xml_root, value)
+
+    return et.tostring(element=xml_root, encoding='utf-8', xml_declaration=True)
+
