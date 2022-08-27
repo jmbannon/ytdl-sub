@@ -106,4 +106,7 @@ class TestChapters:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_chapters_from_ts_with_subs.json",
+            ignore_md5_hashes_for=[
+                "JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
+            ],
         )
