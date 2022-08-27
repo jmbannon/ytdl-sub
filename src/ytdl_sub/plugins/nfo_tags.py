@@ -2,6 +2,7 @@ import os
 from abc import ABC
 from pathlib import Path
 from typing import Generic
+from typing import List
 from typing import Optional
 from typing import Type
 from typing import TypeVar
@@ -13,18 +14,95 @@ from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_string
 from ytdl_sub.utils.xml import to_xml
+from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
+from ytdl_sub.validators.validators import DictValidator
+
+TStringFormatterValidator = TypeVar("TStringFormatterValidator", bound=StringFormatterValidator)
+TDictFormatterValidator = TypeVar("TDictFormatterValidator", bound=DictFormatterValidator)
 
 
-class SharedNfoTagsOptions(PluginOptions, ABC):
+class NfoTagsWithAttributesValidator(
+    StrictDictValidator, Generic[TStringFormatterValidator, TDictFormatterValidator], ABC
+):
+
+    _required_keys = {"attributes", "tag"}
+
+    formatter_validator: Type[TStringFormatterValidator]
+    dict_formatter_validator: Type[TDictFormatterValidator]
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        self._attributes = self._validate_key(
+            key="attributes", validator=self.dict_formatter_validator
+        )
+        self._tag = self._validate_key(key="tag", validator=self.formatter_validator)
+
+    @property
+    def attributes(self) -> TDictFormatterValidator:
+        """
+        Returns
+        -------
+        The attributes for this NFO tag
+        """
+        return self._attributes
+
+    @property
+    def tag(self) -> TStringFormatterValidator:
+        """
+        Returns
+        -------
+        The value for this NFO tag
+        """
+        return self._tag
+
+
+_TagsWithAttributesValidator = NfoTagsWithAttributesValidator[
+    TStringFormatterValidator, TDictFormatterValidator
+]
+
+
+class NfoTagsValidator(
+    DictValidator, Generic[TStringFormatterValidator, TDictFormatterValidator], ABC
+):
+
+    _tags_with_attributes_validator: Type[_TagsWithAttributesValidator]
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        self.tags: List[TStringFormatterValidator] = []
+        self.tags_with_attributes: List[_TagsWithAttributesValidator] = []
+
+        for key in self._keys:
+            if isinstance(value, str):
+                validated = self._validate_key(
+                    key=key, validator=self._tags_with_attributes_validator.formatter_validator
+                )
+                self.tags.append(validated)
+            elif isinstance(value, dict):
+                validated = self._validate_key(
+                    key=key, validator=self._tags_with_attributes_validator
+                )
+                self.tags_with_attributes.append(validated)
+            else:
+                raise self._validation_exception("must either be a string or attributes object")
+
+
+_TagsValidator = NfoTagsValidator[TStringFormatterValidator, TDictFormatterValidator]
+
+
+class SharedNfoTagsOptions(
+    PluginOptions, Generic[TStringFormatterValidator, TDictFormatterValidator], ABC
+):
     """
     Shared code between NFO tags and Ouptut Directory NFO Tags
     """
 
-    _formatter_validator: Type[StringFormatterValidator]
-    _dict_formatter_validator: Type[DictFormatterValidator]
+    _formatter_validator: Type[TStringFormatterValidator]
+    _tags_validator: Type[_TagsValidator]
 
     _required_keys = {"nfo_name", "nfo_root", "tags"}
     _optional_keys = {"kodi_safe"}
@@ -34,7 +112,7 @@ class SharedNfoTagsOptions(PluginOptions, ABC):
 
         self._nfo_name = self._validate_key(key="nfo_name", validator=self._formatter_validator)
         self._nfo_root = self._validate_key(key="nfo_root", validator=self._formatter_validator)
-        self._tags = self._validate_key(key="tags", validator=self._dict_formatter_validator)
+        self._tags = self._validate_key(key="tags", validator=self._tags_validator)
         self._kodi_safe = self._validate_key_if_present(
             key="kodi_safe", validator=BoolValidator, default=False
         ).value
@@ -80,7 +158,7 @@ class SharedNfoTagsPlugin(Plugin[TSharedNfoTagsOptions], Generic[TSharedNfoTagsO
         self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
 
 
-class NfoTagsOptions(SharedNfoTagsOptions):
+class NfoTagsOptions(SharedNfoTagsOptions[StringFormatterValidator, DictFormatterValidator]):
     """
     Adds an NFO file for every download file. An NFO file is simply an XML file
     with a ``.nfo`` extension. You can add any values into the NFO.
@@ -127,7 +205,7 @@ class NfoTagsOptions(SharedNfoTagsOptions):
         return self._nfo_root
 
     @property
-    def tags(self) -> DictFormatterValidator:
+    def tags(self) -> NfoTagsValidator[StringFormatterValidator, DictFormatterValidator]:
         """
         Tags within the nfo_root tag. In the usage above, it would look like
 

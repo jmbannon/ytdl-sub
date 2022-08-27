@@ -1,12 +1,15 @@
 from typing import Optional
 
+from ytdl_sub.plugins.nfo_tags import NfoTagsValidator
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsOptions
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsPlugin
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 
 
-class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
+class OutputDirectoryNfoTagsOptions(
+    SharedNfoTagsOptions[OverridesStringFormatterValidator, OverridesDictFormatterValidator]
+):
     """
     Adds a single NFO file in the output directory. An NFO file is simply an XML file  with a
     ``.nfo`` extension. You can add any values into the NFO.
@@ -51,7 +54,9 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
         return self._nfo_root
 
     @property
-    def tags(self) -> OverridesDictFormatterValidator:
+    def tags(
+        self,
+    ) -> NfoTagsValidator[OverridesStringFormatterValidator, OverridesDictFormatterValidator]:
         """
         Tags within the nfo_root tag. In the usage above, it would look like
 
