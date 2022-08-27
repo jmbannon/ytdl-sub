@@ -125,7 +125,7 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         """
         return []
 
-    def modify_entry(self, entry: Entry) -> Optional[Entry]:
+    def modify_entry(self, entry: Entry) -> Optional[Entry | Tuple[Entry, FileMetadata]]:
         """
         For each entry downloaded, modify the entry in some way before sending it to
         post-processing.

@@ -9,11 +9,14 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.chapters import Chapters
+from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.regex_validator import RegexListValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import ListValidator
+from ytdl_sub.validators.validators import StringValidator
 
 SPONSORBLOCK_HIGHLIGHT_CATEGORIES: Set[str] = {"poi_highlight"}
 SPONSORBLOCK_CATEGORIES: Set[str] = SPONSORBLOCK_HIGHLIGHT_CATEGORIES | {
@@ -87,6 +90,7 @@ class ChaptersOptions(PluginOptions):
 
     _optional_keys = {
         "embed_chapters",
+        "embed_chapter_timestamps",
         "sponsorblock_categories",
         "remove_sponsorblock_categories",
         "remove_chapters_regex",
@@ -110,10 +114,18 @@ class ChaptersOptions(PluginOptions):
         self._force_key_frames = self._validate_key_if_present(
             key="force_key_frames", validator=BoolValidator, default=False
         ).value
+        self._embed_chapter_timestamps = self._validate_key_if_present(
+            "embed_chapter_timestamps", StringValidator
+        )
 
         if self._remove_sponsorblock_categories and not self._sponsorblock_categories:
             raise self._validation_exception(
                 "Must specify sponsorblock_categories if you are going to remove any of them"
+            )
+
+        if self._embed_chapters and self._embed_chapter_timestamps:
+            raise self._validation_exception(
+                "Cannot embed chapters from the source and from a timestamp file"
             )
 
     @property
@@ -171,6 +183,27 @@ class ChaptersOptions(PluginOptions):
         False.
         """
         return self._force_key_frames
+
+    @property
+    def embed_chapter_timestamps(self) -> Optional[str]:
+        """
+        Optional. The path to the file containing the timestamps to embed into the file as
+        chapters. Should be formatted as:
+
+        .. code-block:: markdown
+
+           0:00 Intro
+           0:24 Blackwater Park
+           10:23 Bleak
+           16:39 Jokes
+           1:02:23 Ending
+
+        This should only be used with single entity download strategies. Otherwise, an entire
+        playlist or channel would all the same embedded chapters.
+        """
+        if self._embed_chapter_timestamps:
+            return self._embed_chapter_timestamps.value
+        return None
 
 
 class ChaptersPlugin(Plugin[ChaptersOptions]):
@@ -263,6 +296,29 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
             )
         )
 
+    def modify_entry(self, entry: Entry) -> Entry:
+        """
+        Parameters
+        ----------
+        entry
+            Entry to add custom chapters using timestamps if present
+
+        Returns
+        -------
+        entry
+        """
+        if self.plugin_options.embed_chapter_timestamps and not self.is_dry_run:
+            chapters = Chapters.from_timestamps_file(
+                chapters_file_path=self.plugin_options.embed_chapter_timestamps
+            )
+            set_ffmpeg_metadata_chapters(
+                file_path=entry.get_download_file_path(),
+                chapters=chapters,
+                file_duration_sec=entry.kwargs("duration"),
+            )
+
+        return entry
+
     def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
         """
         Parameters
@@ -274,20 +330,29 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         -------
         FileMetadata outlining which chapters/SponsorBlock segments got removed
         """
-        metadata_dict = {}
-        removed_chapters = self._get_removed_chapters(entry)
-        removed_sponsorblock = self._get_removed_sponsorblock_category_counts(entry)
+        if self.plugin_options.embed_chapter_timestamps:
+            chapters = Chapters.from_timestamps_file(
+                chapters_file_path=self.plugin_options.embed_chapter_timestamps
+            )
+            return chapters.to_file_metadata(title="Chapters embedded from timestamp file:")
 
-        # If no chapters are on the entry, do not report any embedded chapters
-        if not _contains_any_chapters(entry):
-            return None
+        if self.plugin_options.embed_chapters:
+            metadata_dict = {}
+            removed_chapters = self._get_removed_chapters(entry)
+            removed_sponsorblock = self._get_removed_sponsorblock_category_counts(entry)
 
-        if removed_chapters:
-            metadata_dict["Removed Chapter(s)"] = ", ".join(removed_chapters)
-        if removed_sponsorblock:
-            metadata_dict["Removed SponsorBlock Category Count(s)"] = removed_sponsorblock
+            # If no chapters are on the entry, do not report any embedded chapters
+            if not _contains_any_chapters(entry):
+                return None
 
-        # TODO: check if file actually has embedded chapters
-        return FileMetadata.from_dict(
-            value_dict=metadata_dict, title="Embedded Chapters", sort_dict=False
-        )
+            if removed_chapters:
+                metadata_dict["Removed Chapter(s)"] = ", ".join(removed_chapters)
+            if removed_sponsorblock:
+                metadata_dict["Removed SponsorBlock Category Count(s)"] = removed_sponsorblock
+
+            # TODO: check if file actually has embedded chapters
+            return FileMetadata.from_dict(
+                value_dict=metadata_dict, title="Embedded Chapters", sort_dict=False
+            )
+
+        return None
