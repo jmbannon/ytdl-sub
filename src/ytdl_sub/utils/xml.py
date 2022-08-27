@@ -57,4 +57,5 @@ def to_xml(nfo_dict: Dict[str, str], nfo_root: str) -> bytes:
         sub_element = et.SubElement(xml_root, key)
         sub_element.text = value
 
+    et.indent(tree=xml_root, space="  ", level=0)
     return et.tostring(element=xml_root, encoding="utf-8", xml_declaration=True)
