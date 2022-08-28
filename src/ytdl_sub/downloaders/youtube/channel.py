@@ -12,14 +12,15 @@ from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.youtube import YoutubeChannel
 from ytdl_sub.entries.youtube import YoutubeVideo
+from ytdl_sub.utils.datetime import to_date_range_hack
 from ytdl_sub.utils.thumbnail import convert_url_thumbnail
-from ytdl_sub.validators.date_range_validator import DateRangeValidator
+from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
-class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidator):
+class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
     """
     Downloads all videos from a youtube channel.
 
@@ -49,8 +50,7 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
     }
 
     def __init__(self, name, value):
-        YoutubeDownloaderOptions.__init__(self, name, value)
-        DateRangeValidator.__init__(self, name, value)
+        super().__init__(name, value)
         self._channel_url = self._validate_key(
             "channel_url", YoutubeChannelUrlValidator
         ).channel_url
@@ -60,6 +60,8 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
         self._channel_banner_path = self._validate_key_if_present(
             "channel_banner_path", OverridesStringFormatterValidator
         )
+        self._before = self._validate_key_if_present("before", StringDatetimeValidator)
+        self._after = self._validate_key_if_present("after", StringDatetimeValidator)
 
     @property
     def channel_url(self) -> str:
@@ -83,6 +85,22 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions, DateRangeValidat
         Optional. Path to store the channel's banner image to.
         """
         return self._channel_banner_path
+
+    @property
+    def before(self) -> Optional[StringDatetimeValidator]:
+        """
+        DEPRECATED: use the `date_range` plugin instead. Will be removed in version 0.5.0
+        Optional. Only download videos before this datetime.
+        """
+        return self._before
+
+    @property
+    def after(self) -> Optional[StringDatetimeValidator]:
+        """
+        DEPRECATED: use the `date_range` plugin instead. Will be removed in version 0.5.0
+        Optional. Only download videos after this datetime.
+        """
+        return self._after
 
 
 class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions, YoutubeVideo]):
@@ -138,7 +156,9 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         ytdl_options_overrides = {}
 
         # If a date range is specified when download a YT channel, add it into the ytdl options
-        source_date_range = self.download_options.get_date_range()
+        source_date_range = to_date_range_hack(
+            before=self.download_options.before, after=self.download_options.after
+        )
         if source_date_range:
             ytdl_options_overrides["daterange"] = source_date_range
 

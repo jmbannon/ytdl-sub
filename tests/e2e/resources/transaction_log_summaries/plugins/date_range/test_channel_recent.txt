@@ -1,6 +1,6 @@
 Files created in '{output_directory}'
 ----------------------------------------
-.ytdl-sub-pz-download-archive.json
+.ytdl-sub-recent-download-archive.json
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo

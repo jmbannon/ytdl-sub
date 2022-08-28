@@ -151,7 +151,6 @@ class StringFormatterValidator(Validator):
             value=formatter.format_string.format(**OrderedDict(variable_dict)),
         )
 
-    @final
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
         """
         Calls `format` on the format string using the variable_dict as input kwargs

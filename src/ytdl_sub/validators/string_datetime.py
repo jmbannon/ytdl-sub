@@ -1,9 +1,11 @@
+from typing import Dict
+
 from yt_dlp.utils import datetime_from_str
 
-from ytdl_sub.validators.validators import Validator
+from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 
 
-class StringDatetimeValidator(Validator):
+class StringDatetimeValidator(OverridesStringFormatterValidator):
     """
     String that contains a yt-dlp datetime. From their docs:
 
@@ -12,21 +14,15 @@ class StringDatetimeValidator(Validator):
        A string in the format YYYYMMDD or
        (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
 
-    Valid examples are ``now-2weeks`` or ``20200101``.
+    Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in this.
     """
 
-    _expected_value_type = str
     _expected_value_type_name = "datetime string"
 
-    def __init__(self, name, value):
-        super().__init__(name, value)
-
+    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
+        output = super().apply_formatter(variable_dict)
         try:
             _ = datetime_from_str(self._value)
         except Exception as exc:
-            raise self._validation_exception(str(exc))
-
-    @property
-    def datetime_str(self) -> str:
-        """Returns the datetime as a string"""
-        return self._value
+            raise self._validation_exception(f"Invalid datetime string: {str(exc)}")
+        return output
