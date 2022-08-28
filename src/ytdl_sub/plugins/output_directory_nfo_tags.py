@@ -9,11 +9,13 @@ from ytdl_sub.validators.string_formatter_validators import OverridesStringForma
 
 
 class OutputDirectoryNfoTagsOptions(
-    SharedNfoTagsOptions[OverridesStringFormatterValidator, OverridesDictFormatterValidator]
+    SharedNfoTagsOptions[
+        OverridesStringFormatterValidator, OverridesDictFormatterValidator, NfoOverrideTagsValidator
+    ]
 ):
     """
-    Adds a single NFO file in the output directory. An NFO file is simply an XML file  with a
-    ``.nfo`` extension. You can add any values into the NFO.
+    Adds a single NFO file in the output directory. An NFO file is simply an XML file with a
+    ``.nfo`` extension. You can add any strings or override variables into this NFO.
 
     Usage:
 
@@ -68,6 +70,22 @@ class OutputDirectoryNfoTagsOptions(
            <tvshow>
              <title>Sweet youtube TV show</title>
            </tvshow>
+
+        Also supports xml attributes:
+
+        .. code-block:: yaml
+
+           tags:
+             title:
+               attributes:
+                 year: "2022"
+               tag: "Sweet youtube TV show"
+
+        Which translates to
+
+        .. code-block:: xml
+
+           <title year="2022">Sweet youtube TV show</season>
         """
         return self._tags
 
@@ -82,7 +100,11 @@ class OutputDirectoryNfoTagsOptions(
 
 
 class OutputDirectoryNfoTagsPlugin(
-    SharedNfoTagsPlugin[OverridesStringFormatterValidator, OverridesDictFormatterValidator]
+    SharedNfoTagsPlugin[
+        OverridesStringFormatterValidator,
+        OverridesDictFormatterValidator,
+        OutputDirectoryNfoTagsOptions,
+    ]
 ):
     plugin_options_type = OutputDirectoryNfoTagsOptions
 

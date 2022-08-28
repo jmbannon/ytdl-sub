@@ -5,6 +5,7 @@ from typing import Dict
 from typing import Generic
 from typing import Optional
 from typing import Type
+from typing import TypeVar
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
@@ -22,18 +23,20 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
 
+TSharedNfoTagsValidator = TypeVar("TSharedNfoTagsValidator", bound=SharedNfoTagsValidator)
+
 
 class SharedNfoTagsOptions(
-    PluginOptions, Generic[TStringFormatterValidator, TDictFormatterValidator], ABC
+    PluginOptions,
+    Generic[TStringFormatterValidator, TDictFormatterValidator, TSharedNfoTagsValidator],
+    ABC,
 ):
     """
     Shared code between NFO tags and Ouptut Directory NFO Tags
     """
 
     _formatter_validator: Type[TStringFormatterValidator]
-    _tags_validator: Type[
-        SharedNfoTagsValidator[TStringFormatterValidator, TDictFormatterValidator]
-    ]
+    _tags_validator: Type[TSharedNfoTagsValidator]
 
     _required_keys = {"nfo_name", "nfo_root", "tags"}
     _optional_keys = {"kodi_safe"}
@@ -69,7 +72,7 @@ class SharedNfoTagsOptions(
         return self._nfo_root
 
     @property
-    def tags(self) -> SharedNfoTagsValidator[TStringFormatterValidator, TDictFormatterValidator]:
+    def tags(self) -> TSharedNfoTagsValidator:
         """
         Tags within the nfo_root tag. In the usage above, it would look like
 
@@ -81,6 +84,22 @@ class SharedNfoTagsOptions(
              <season>2022</season>
              <episode>502</episode>
            </episodedetails>
+
+        Also supports xml attributes:
+
+        .. code-block:: yaml
+
+           tags:
+             season:
+               attributes:
+                 name: "Best Year"
+               tag: "{upload_year}"
+
+        Which translates to
+
+        .. code-block:: xml
+
+           <season name="Best Year">2022</season>
         """
         return self._tags
 
@@ -95,8 +114,12 @@ class SharedNfoTagsOptions(
 
 
 class SharedNfoTagsPlugin(
-    Plugin[SharedNfoTagsOptions[TStringFormatterValidator, TDictFormatterValidator]],
-    Generic[TStringFormatterValidator, TDictFormatterValidator],
+    Plugin[
+        SharedNfoTagsOptions[
+            TStringFormatterValidator, TDictFormatterValidator, TSharedNfoTagsValidator
+        ]
+    ],
+    Generic[TStringFormatterValidator, TDictFormatterValidator, TSharedNfoTagsValidator],
     ABC,
 ):
     """
@@ -162,7 +185,9 @@ class SharedNfoTagsPlugin(
         self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
 
 
-class NfoTagsOptions(SharedNfoTagsOptions[StringFormatterValidator, DictFormatterValidator]):
+class NfoTagsOptions(
+    SharedNfoTagsOptions[StringFormatterValidator, DictFormatterValidator, NfoTagsValidator]
+):
     """
     Adds an NFO file for every download file. An NFO file is simply an XML file
     with a ``.nfo`` extension. You can add any values into the NFO.
@@ -190,7 +215,9 @@ class NfoTagsOptions(SharedNfoTagsOptions[StringFormatterValidator, DictFormatte
     _tags_validator = NfoTagsValidator
 
 
-class NfoTagsPlugin(SharedNfoTagsPlugin[StringFormatterValidator, DictFormatterValidator]):
+class NfoTagsPlugin(
+    SharedNfoTagsPlugin[StringFormatterValidator, DictFormatterValidator, NfoTagsValidator]
+):
     plugin_options_type = NfoTagsOptions
 
     def post_process_entry(self, entry: Entry) -> None:
