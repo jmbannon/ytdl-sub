@@ -5,7 +5,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def kodi_safe_subscription_dict(output_directory):
+def subscription_dict(output_directory):
     return {
         "preset": "yt_music_video",
         "youtube": {"video_url": "https://www.youtube.com/shorts/ucYmEqmlhFw"},
@@ -17,25 +17,40 @@ def kodi_safe_subscription_dict(output_directory):
         },
         "nfo_tags": {
             "tags": {
-                "kodi_safe_title 🎸": "{title}",
+                "kodi_safe_title 🎸": "kodi_safe_value 🎸",
+                "kodi_safe_title_with_attrs": {
+                    "attributes": {"🎸?": "value\nnewlines 🎸"},
+                    "tag": "the \n tag 🎸🎸",
+                },
             },
-            "kodi_safe": True,
         },
         "output_directory_nfo_tags": {
             "nfo_name": "test.nfo",
             "nfo_root": "kodi_safe_root 🎸",
-            "tags": {"kodi_safe_title 🎸": "kodi_safe_value 🎸"},
-            "kodi_safe": True,
+            "tags": {
+                "kodi_safe_title 🎸": "kodi_safe_value 🎸",
+                "kodi_safe_title_with_attrs": {
+                    "attributes": {"🎸?": "value\nnewlines 🎸"},
+                    "tag": "the \n tag 🎸🎸",
+                },
+            },
         },
     }
 
 
 class TestNfoTagsPlugins:
-    def test_kodi_safe(self, kodi_safe_subscription_dict, music_video_config, output_directory):
+    @pytest.mark.parametrize("kodi_safe", [True, False])
+    def test_nfo_tags(self, subscription_dict, music_video_config, output_directory, kodi_safe):
+        transaction_log_file_name = "test_nfo.txt"
+        if kodi_safe:
+            transaction_log_file_name = "test_nfo_kodi_safe.txt"
+            subscription_dict["nfo_tags"]["kodi_safe"] = True
+            subscription_dict["output_directory_nfo_tags"]["kodi_safe"] = True
+
         subscription = Subscription.from_dict(
             config=music_video_config,
             preset_name="kodi_safe_xml",
-            preset_dict=kodi_safe_subscription_dict,
+            preset_dict=subscription_dict,
         )
 
         # Only dry run is needed to see if NFO values are kodi safe
@@ -43,5 +58,5 @@ class TestNfoTagsPlugins:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="plugins/test_kodi_safe_xml.txt",
+            transaction_log_summary_file_name=f"plugins/nfo_tags/{transaction_log_file_name}",
         )

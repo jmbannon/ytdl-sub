@@ -103,7 +103,7 @@ class SharedNfoTagsPlugin(
     Shared code between NFO tags and Ouptut Directory NFO Tags
     """
 
-    def _create_nfo(self, entry: Optional[Entry] = None) -> None:
+    def _get_xml_element_dict(self, entry: Optional[Entry]) -> Dict[str, XmlElement]:
         nfo_tags: Dict[str, XmlElement] = {}
 
         for key, string_tag in self.plugin_options.tags.string_tags.items():
@@ -121,18 +121,24 @@ class SharedNfoTagsPlugin(
                 },
             )
 
+        return nfo_tags
+
+    def _create_nfo(self, entry: Optional[Entry] = None) -> None:
         # Write the nfo tags to XML with the nfo_root
         nfo_root = self.overrides.apply_formatter(
             formatter=self.plugin_options.nfo_root, entry=entry
         )
+        nfo_tags = self._get_xml_element_dict(entry=entry)
 
         if self.plugin_options.kodi_safe:
             nfo_root = to_max_3_byte_utf8_string(nfo_root)
-            for key, xml_elem in nfo_tags.items():
-                nfo_tags[key] = XmlElement(
+            nfo_tags = {
+                to_max_3_byte_utf8_string(key): XmlElement(
                     text=to_max_3_byte_utf8_string(xml_elem.text),
                     attributes=to_max_3_byte_utf8_dict(xml_elem.attributes),
                 )
+                for key, xml_elem in nfo_tags.items()
+            }
 
         xml = to_xml(nfo_dict=nfo_tags, nfo_root=nfo_root)
 
