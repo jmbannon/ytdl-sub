@@ -38,13 +38,6 @@ class OutputDirectoryNfoTagsOptions(
     _tags_validator = NfoOverrideTagsValidator
 
     @property
-    def nfo_name(self) -> OverridesStringFormatterValidator:
-        """
-        The NFO file name.
-        """
-        return self._nfo_name
-
-    @property
     def nfo_root(self) -> OverridesStringFormatterValidator:
         """
         The root tag of the NFO's XML. In the usage above, it would look like
@@ -88,15 +81,6 @@ class OutputDirectoryNfoTagsOptions(
            <title year="2022">Sweet youtube TV show</season>
         """
         return self._tags
-
-    @property
-    def kodi_safe(self) -> Optional[bool]:
-        """
-        Optional. Kodi does not support > 3-byte unicode characters, which include emojis and some
-        foreign language characters. Setting this to True will replace those characters with '□'.
-        Defaults to False.
-        """
-        return self._kodi_safe
 
 
 class OutputDirectoryNfoTagsPlugin(

@@ -61,45 +61,14 @@ class SharedNfoTagsOptions(
     @property
     def nfo_root(self) -> StringFormatterValidator:
         """
-        The root tag of the NFO's XML. In the usage above, it would look like
-
-        .. code-block:: xml
-
-           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-           <episodedetails>
-           </episodedetails>
+        OVERRIDE DOC IN CHILD CLASSES
         """
         return self._nfo_root
 
     @property
     def tags(self) -> TSharedNfoTagsValidator:
         """
-        Tags within the nfo_root tag. In the usage above, it would look like
-
-        .. code-block:: xml
-
-           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-           <episodedetails>
-             <title>Awesome Youtube Video</title>
-             <season>2022</season>
-             <episode>502</episode>
-           </episodedetails>
-
-        Also supports xml attributes:
-
-        .. code-block:: yaml
-
-           tags:
-             season:
-               attributes:
-                 name: "Best Year"
-               tag: "{upload_year}"
-
-        Which translates to
-
-        .. code-block:: xml
-
-           <season name="Best Year">2022</season>
+        OVERRIDE DOC IN CHILD CLASSES
         """
         return self._tags
 
@@ -213,6 +182,51 @@ class NfoTagsOptions(
     _formatter_validator = StringFormatterValidator
     _dict_formatter_validator = DictFormatterValidator
     _tags_validator = NfoTagsValidator
+
+    @property
+    def nfo_root(self) -> StringFormatterValidator:
+        """
+        The root tag of the NFO's XML. In the usage above, it would look like
+
+        .. code-block:: xml
+
+           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+           <episodedetails>
+           </episodedetails>
+        """
+        return self._nfo_root
+
+    @property
+    def tags(self) -> NfoTagsValidator:
+        """
+        Tags within the nfo_root tag. In the usage above, it would look like
+
+        .. code-block:: xml
+
+           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+           <episodedetails>
+             <title>Awesome Youtube Video</title>
+             <season>2022</season>
+             <episode>502</episode>
+           </episodedetails>
+
+        Also supports xml attributes:
+
+        .. code-block:: yaml
+
+           tags:
+             season:
+               attributes:
+                 name: "Best Year"
+               tag: "{upload_year}"
+
+        Which translates to
+
+        .. code-block:: xml
+
+           <season name="Best Year">2022</season>
+        """
+        return self._tags
 
 
 class NfoTagsPlugin(
