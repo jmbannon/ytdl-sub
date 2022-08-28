@@ -1,5 +1,3 @@
-from typing import Optional
-
 from ytdl_sub.plugins.nfo_tags import NfoTagsValidator
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsOptions
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsPlugin
