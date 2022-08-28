@@ -1,0 +1,32 @@
+Files created in '{output_directory}'
+----------------------------------------
+Rick Beato - Can you hear the difference？ 🎸🔥 #shorts-thumb.jpg
+Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.3gp
+Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.nfo
+  NFO tags:
+    musicvideo:
+      album: Music Videos
+      artist: Rick Beato
+      kodi_safe_title 🎸: kodi_safe_value 🎸
+      kodi_safe_title_with_attrs:
+        attributes:
+          🎸?:
+            value
+            newlines 🎸
+        tag:
+          the
+          tag 🎸🎸
+      title: Can you hear the difference? 🎸🔥 #shorts
+      year: 2022
+test.nfo
+  NFO tags:
+    kodi_safe_root 🎸:
+      kodi_safe_title 🎸: kodi_safe_value 🎸
+      kodi_safe_title_with_attrs:
+        attributes:
+          🎸?:
+            value
+            newlines 🎸
+        tag:
+          the
+          tag 🎸🎸
