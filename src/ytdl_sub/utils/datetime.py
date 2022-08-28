@@ -27,7 +27,7 @@ def to_date_range_hack(
         end = before.apply_formatter(variable_dict={})
 
     if start or end:
-        logger = Logger.get(name='youtube-channel')
+        logger = Logger.get(name="youtube-channel")
         logger.warning(
             "DEPRECATED: youtube.before/after will are deprecated and will be removed in v0.0.5. "
             "Use the 'date_range' plugin instead: "
