@@ -19,6 +19,7 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
+from ytdl_sub.utils.datetime import to_date_range
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -230,7 +231,11 @@ class Subscription:
         # If output options maintains stale file deletion, perform the delete here prior to saving
         # the download archive
         if self.maintain_download_archive:
-            date_range_to_keep = self.output_options.get_upload_date_range_to_keep()
+            date_range_to_keep = to_date_range(
+                before=self.output_options.keep_files_before,
+                after=self.output_options.keep_files_after,
+                overrides=self.overrides,
+            )
             if date_range_to_keep:
                 self._enhanced_download_archive.remove_stale_files(date_range=date_range_to_keep)
 

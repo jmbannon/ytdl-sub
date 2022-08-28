@@ -1,7 +1,6 @@
 from typing import Dict
 from typing import Optional
 
-from yt_dlp.utils import DateRange
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.entry import Entry
@@ -226,16 +225,3 @@ class OutputOptions(StrictDictValidator):
         files after ``19000101``, which implies all files.
         """
         return self._keep_files_after
-
-    def get_upload_date_range_to_keep(self) -> Optional[DateRange]:
-        """
-        Returns
-        -------
-        Date range if the 'before' or 'after' is defined. None otherwise.
-        """
-        if self.keep_files_before or self.keep_files_after:
-            return DateRange(
-                start=self.keep_files_after.datetime_str if self.keep_files_after else None,
-                end=self.keep_files_before.datetime_str if self.keep_files_before else None,
-            )
-        return None
