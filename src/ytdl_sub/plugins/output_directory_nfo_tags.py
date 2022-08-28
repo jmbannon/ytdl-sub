@@ -3,6 +3,7 @@ from typing import Optional
 from ytdl_sub.plugins.nfo_tags import NfoTagsValidator
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsOptions
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsPlugin
+from ytdl_sub.validators.nfo_validators import NfoOverrideTagsValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 
@@ -32,6 +33,7 @@ class OutputDirectoryNfoTagsOptions(
 
     _formatter_validator = OverridesStringFormatterValidator
     _dict_formatter_validator = OverridesDictFormatterValidator
+    _tags_validator = NfoOverrideTagsValidator
 
     @property
     def nfo_name(self) -> OverridesStringFormatterValidator:
@@ -56,7 +58,7 @@ class OutputDirectoryNfoTagsOptions(
     @property
     def tags(
         self,
-    ) -> NfoTagsValidator[OverridesStringFormatterValidator, OverridesDictFormatterValidator]:
+    ) -> NfoTagsValidator:
         """
         Tags within the nfo_root tag. In the usage above, it would look like
 
@@ -79,7 +81,9 @@ class OutputDirectoryNfoTagsOptions(
         return self._kodi_safe
 
 
-class OutputDirectoryNfoTagsPlugin(SharedNfoTagsPlugin[OutputDirectoryNfoTagsOptions]):
+class OutputDirectoryNfoTagsPlugin(
+    SharedNfoTagsPlugin[OverridesStringFormatterValidator, OverridesDictFormatterValidator]
+):
     plugin_options_type = OutputDirectoryNfoTagsOptions
 
     def post_process_subscription(self):
