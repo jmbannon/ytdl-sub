@@ -1,6 +1,6 @@
 Files created in '{output_directory}'
 ----------------------------------------
-.ytdl-sub-pz-download-archive.json
+.ytdl-sub-recent-download-archive.json
 fanart.jpg
 poster.jpg
 tvshow.nfo

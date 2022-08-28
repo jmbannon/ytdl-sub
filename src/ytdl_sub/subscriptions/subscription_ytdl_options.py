@@ -10,6 +10,7 @@ from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
+from ytdl_sub.plugins.date_range import DateRangePlugin
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -112,6 +113,13 @@ class SubscriptionYTDLOptions:
         return chapters_plugin.ytdl_options()
 
     @property
+    def _date_range_options(self) -> Dict:
+        if not (date_range_plugin := self._get_plugin(DateRangePlugin)):
+            return {}
+
+        return date_range_plugin.ytdl_options()
+
+    @property
     def _user_ytdl_options(self) -> Dict:
         return self._preset.ytdl_options.dict
 
@@ -125,18 +133,20 @@ class SubscriptionYTDLOptions:
         ytdl_options_builder = YTDLOptionsBuilder().add(self._global_options)
         if self._dry_run:
             ytdl_options_builder.add(
+                self._date_range_options,
                 self._subtitle_options,
                 self._chapter_options,
-                self._user_ytdl_options,
-                self._dry_run_options,
+                self._user_ytdl_options,  # user ytdl options...
+                self._dry_run_options,  # then dry-run
             )
         else:
             ytdl_options_builder.add(
                 self._output_options,
+                self._date_range_options,
                 self._subtitle_options,
                 self._chapter_options,
                 self._audio_extract_options,
-                self._user_ytdl_options,
+                self._user_ytdl_options,  # user ytdl options last
             )
 
         return ytdl_options_builder
