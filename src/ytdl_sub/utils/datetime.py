@@ -3,6 +3,7 @@ from typing import Optional
 from yt_dlp import DateRange
 
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 
 
@@ -26,6 +27,13 @@ def to_date_range_hack(
         end = before.apply_formatter(variable_dict={})
 
     if start or end:
+        logger = Logger.get(name="youtube-channel")
+        logger.warning(
+            "DEPRECATED: youtube.before/after will are deprecated and will be removed in v0.0.5. "
+            "Use the 'date_range' plugin instead: "
+            "https://ytdl-sub.readthedocs.io/en/latest/config.html#date-range"
+        )
+
         return DateRange(start=start, end=end)
 
     return None
