@@ -14,7 +14,7 @@ class StringDatetimeValidator(OverridesStringFormatterValidator):
        A string in the format YYYYMMDD or
        (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
 
-    Valid examples are ``now-2weeks`` or ``20200101``.
+    Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in this.
     """
 
     _expected_value_type_name = "datetime string"

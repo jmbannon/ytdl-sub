@@ -10,7 +10,7 @@ from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 
 class DateRangeOptions(PluginOptions):
     """
-    Only download media within the specified date range
+    Only download files uploaded within the specified date range.
 
     Usage:
 

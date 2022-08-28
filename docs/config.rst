@@ -185,6 +185,14 @@ chapters
 
 -------------------------------------------------------------------------------
 
+date_range
+''''''''''
+.. autoclass:: ytdl_sub.plugins.date_range.DateRangeOptions()
+  :members:
+  :member-order: bysource
+
+-------------------------------------------------------------------------------
+
 music_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()
