@@ -77,6 +77,7 @@ def mock_entry_to_dict(
         "upload_day_of_year_reversed": 354,
         "upload_day_of_year_reversed_padded": "354",
         "thumbnail_ext": thumbnail_ext,
+        "info_json_ext": "info.json",
     }
 
 

@@ -205,6 +205,21 @@ class Subscription:
                 entry=entry,
             )
 
+        if self.output_options.info_json_name:
+            output_info_json_name = self.overrides.apply_formatter(
+                formatter=self.output_options.info_json_name, entry=entry
+            )
+
+            # if not dry-run, write the info json
+            if not dry_run:
+                entry.write_info_json()
+
+            self._enhanced_download_archive.save_file_to_output_directory(
+                file_name=entry.get_download_thumbnail_name(),
+                output_file_name=output_info_json_name,
+                entry=entry,
+            )
+
     @contextlib.contextmanager
     def _prepare_working_directory(self):
         """

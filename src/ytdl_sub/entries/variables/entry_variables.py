@@ -304,3 +304,13 @@ class EntryVariables(SourceVariables):
             The uploaded date formatted as YYYY-MM-DD
         """
         return f"{self.upload_year}-{self.upload_month_padded}-{self.upload_day_padded}"
+
+    @property
+    def info_json_ext(self) -> str:
+        """
+        Returns
+        -------
+        str
+            The "info.json" extension
+        """
+        return "info.json"
