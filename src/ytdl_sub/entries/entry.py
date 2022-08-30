@@ -1,3 +1,5 @@
+import copy
+import json
 import os
 from pathlib import Path
 from typing import Dict
@@ -58,6 +60,33 @@ class Entry(EntryVariables, BaseEntry):
                 return possible_thumbnail_path
 
         return None
+
+    def get_download_info_json_name(self) -> str:
+        """
+        Returns
+        -------
+        The download info json's file name
+        """
+        return f"{self.uid}.{self.info_json_ext}"
+
+    def get_download_info_json_path(self) -> str:
+        """
+        Returns
+        -------
+        Entry's downloaded info json file path
+        """
+        return str(Path(self.working_directory()) / self.get_download_info_json_name())
+
+    def write_info_json(self) -> None:
+        """
+        Write the entry's _kwargs back into the info.json file as well as its source variables
+        """
+        kwargs_dict = copy.deepcopy(self._kwargs)
+        kwargs_dict["ytdl_sub_entry_variables"] = self.to_dict()
+        kwargs_json = json.dumps(kwargs_dict, ensure_ascii=False, sort_keys=True, indent=2)
+
+        with open(self.get_download_info_json_path(), "w", encoding="utf-8") as file:
+            file.write(kwargs_json)
 
     @final
     def is_downloaded(self) -> bool:

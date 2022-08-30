@@ -118,6 +118,7 @@ class OutputOptions(StrictDictValidator):
              file_name: "{title_sanitized}.{ext}"
              # optional
              thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
+             info_json_name: "{title_sanitized}.{info_json_ext}"
              maintain_download_archive: True
              keep_files_before: now
              keep_files_after: 19000101
@@ -126,6 +127,7 @@ class OutputOptions(StrictDictValidator):
     _required_keys = {"output_directory", "file_name"}
     _optional_keys = {
         "thumbnail_name",
+        "info_json_name",
         "subtitles_name",
         "maintain_download_archive",
         "keep_files_before",
@@ -147,6 +149,9 @@ class OutputOptions(StrictDictValidator):
         )
         self._thumbnail_name = self._validate_key_if_present(
             key="thumbnail_name", validator=StringFormatterValidator
+        )
+        self._info_json_name = self._validate_key_if_present(
+            key="info_json_name", validator=StringFormatterValidator
         )
 
         self._maintain_download_archive = self._validate_key_if_present(
@@ -190,6 +195,15 @@ class OutputOptions(StrictDictValidator):
         directory.
         """
         return self._thumbnail_name
+
+    @property
+    def info_json_name(self) -> Optional[StringFormatterValidator]:
+        """
+        Optional. The file name for the media's info json file. This can include directories such
+        as ``"Season {upload_year}/{title}.{info_json_ext}"``, and will be placed in the output
+        directory.
+        """
+        return self._info_json_name
 
     @property
     def maintain_download_archive(self) -> bool:

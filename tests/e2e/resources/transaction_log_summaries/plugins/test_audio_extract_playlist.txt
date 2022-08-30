@@ -1,5 +1,6 @@
 Files created in '{output_directory}'
 ----------------------------------------
+Jesse's Minecraft Server [Trailer - Feb.1].info.json
 Jesse's Minecraft Server [Trailer - Feb.1].ogg
   Music Tags:
     album: Singles
@@ -9,6 +10,7 @@ Jesse's Minecraft Server [Trailer - Feb.1].ogg
     title: Jesse's Minecraft Server [Trailer - Feb.1]
     track: 3
     year: 2011
+Jesse's Minecraft Server [Trailer - Feb.27].info.json
 Jesse's Minecraft Server [Trailer - Feb.27].ogg
   Music Tags:
     album: Singles
@@ -18,6 +20,7 @@ Jesse's Minecraft Server [Trailer - Feb.27].ogg
     title: Jesse's Minecraft Server [Trailer - Feb.27]
     track: 2
     year: 2011
+Jesse's Minecraft Server [Trailer - Mar.21].info.json
 Jesse's Minecraft Server [Trailer - Mar.21].ogg
   Music Tags:
     album: Singles

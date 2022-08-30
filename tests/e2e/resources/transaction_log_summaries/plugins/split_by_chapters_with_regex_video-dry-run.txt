@@ -1,5 +1,14 @@
 Files created in '{output_directory}'
 ----------------------------------------
+Answers (Feat. Rick David & Kaya Thomas - Dyke).info.json
+Blaze (Feat. Kaya Thomas - Dyke).info.json
+Closer (Feat. Lester Duval).info.json
+Delusions: Rumination (Interlude) (Feat. Racheal Ofori).info.json
+Dreaming (Interlude) (Feat. Racheal Ofori).info.json
+Dreams (Feat. Carmody).info.json
+Hopeful (Feat. Jordan Rakei).info.json
+Intro (Feat. Racheal Ofori & Barney Artist).info.json
+No Peace (Feat. Tom Misch).info.json
 Nocturne/01 - Intro (Feat. Racheal Ofori & Barney Artist).mp3
   From Chapter Split:
     Warning: Dry-run assumes embedded chapters with no modifications
@@ -144,3 +153,5 @@ Nocturne/11 - Sunrise (Pillows) (Feat. Emmavie).mp3
     track: 11
     year: 2017
 Nocturne/folder.jpg
+Sunrise (Pillows) (Feat. Emmavie).info.json
+What If (Interlude).info.json

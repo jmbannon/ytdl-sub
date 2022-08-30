@@ -44,8 +44,9 @@ presets:
     # them on a successive invocation.
     output_options:
       output_directory: "{music_directory}"
-      file_name: "{artist_sanitized}/{album_directory_name}/{track_number_padded} - {title_sanitized}.{ext}"
-      thumbnail_name: "{artist_sanitized}/{album_directory_name}/folder.jpg"
+      file_name: "{album_path}/{track_file_name}.{ext}"
+      thumbnail_name: "{album_path}/folder.{thumbnail_ext}"
+      info_json_name: "{album_path}/{track_file_name}.{info_json_ext}"
       maintain_download_archive: True
 
     # For each song downloaded, populate the audio file with music tags.
@@ -67,4 +68,6 @@ presets:
     # which gets reused above for the audio file name and album art path.
     overrides:
       album_directory_name: "[{album_year}] {album_sanitized}"
+      track_file_name: "{track_number_padded} - {title_sanitized}"
+      album_path: "{artist_sanitized}/{album_directory_name}"
       music_directory: "/path/to/music"

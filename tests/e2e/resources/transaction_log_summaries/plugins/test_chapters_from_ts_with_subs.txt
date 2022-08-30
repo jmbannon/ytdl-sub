@@ -1,6 +1,7 @@
 Files created in '{output_directory}'
 ----------------------------------------
 JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case-thumb.jpg
+JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.info.json
 JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4
   Chapters embedded from timestamp file:
     0:00: Intro
