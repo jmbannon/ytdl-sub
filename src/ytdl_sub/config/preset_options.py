@@ -118,6 +118,7 @@ class OutputOptions(StrictDictValidator):
              file_name: "{title_sanitized}.{ext}"
              # optional
              thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
+             info_json_name: "{title_sanitized}.{info_json_ext}"
              maintain_download_archive: True
              keep_files_before: now
              keep_files_after: 19000101
