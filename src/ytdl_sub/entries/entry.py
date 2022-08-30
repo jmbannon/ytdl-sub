@@ -82,8 +82,8 @@ class Entry(EntryVariables, BaseEntry):
         Write the entry's _kwargs back into the info.json file as well as its source variables
         """
         kwargs_dict = copy.deepcopy(self._kwargs)
-        kwargs_dict["ytdl-sub-entry-variables"] = self.to_dict()
-        kwargs_json = json.dumps(self._kwargs, ensure_ascii=False, sort_keys=True, indent=2)
+        kwargs_dict["ytdl_sub_entry_variables"] = self.to_dict()
+        kwargs_json = json.dumps(kwargs_dict, ensure_ascii=False, sort_keys=True, indent=2)
 
         with open(self.get_download_info_json_path(), "w", encoding="utf-8") as file:
             file.write(kwargs_json)

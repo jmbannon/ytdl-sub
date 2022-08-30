@@ -215,7 +215,7 @@ class Subscription:
                 entry.write_info_json()
 
             self._enhanced_download_archive.save_file_to_output_directory(
-                file_name=entry.get_download_thumbnail_name(),
+                file_name=entry.get_download_info_json_name(),
                 output_file_name=output_info_json_name,
                 entry=entry,
             )

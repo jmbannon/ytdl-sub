@@ -2,6 +2,7 @@ Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-regex_capture_playlist_test-download-archive.json
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].info.json
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].mp4
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].nfo
   NFO tags:
@@ -20,6 +21,7 @@ Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].nfo
       upload_date_both_caps: First and Second containing in regex default
       year: 2011
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
+Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27].info.json
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27].mp4
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27].nfo
   NFO tags:

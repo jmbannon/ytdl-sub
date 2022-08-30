@@ -1,5 +1,6 @@
 Files created in '{output_directory}'
 ----------------------------------------
+Oblivion Mod "Falcor" p.1.info.json
 Oblivion Mod "Falcor" p.1/01 - Oblivion Mod "Falcor" p.1.mp3
   Music Tags:
     album: Oblivion Mod "Falcor" p.1

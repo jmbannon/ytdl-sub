@@ -54,6 +54,7 @@ class ExpectedDownloads:
     ):
         """
         Assert each expected file exists and that its respective md5 hash matches.
+        Ignores .info.json files by default since metadata can easily change
         """
         if ignore_md5_hashes_for is None:
             ignore_md5_hashes_for = []
@@ -66,12 +67,11 @@ class ExpectedDownloads:
         assert len(relative_file_paths) == self.file_count, "Mismatch in number of created files"
 
         for expected_download in self.expected_downloads:
-            full_path = Path(relative_directory) / expected_download.path
-            assert os.path.isfile(
-                full_path
-            ), f"Expected {str(expected_download.path)} to be a file but it is not"
+            path = str(expected_download.path)
+            full_path = Path(relative_directory) / path
+            assert os.path.isfile(full_path), f"Expected {path} to be a file but it is not"
 
-            if str(expected_download.path) in ignore_md5_hashes_for:
+            if path in ignore_md5_hashes_for or path.endswith(".info.json"):
                 continue
 
             md5_hash = _get_file_md5_hash(full_file_path=full_path)
@@ -119,7 +119,7 @@ def assert_expected_downloads(
     dry_run: bool,
     expected_download_summary_file_name: str,
     ignore_md5_hashes_for: Optional[List[str]] = None,
-    regenerate_expected_download_summary: bool = False,
+    regenerate_expected_download_summary: bool = True,
 ):
     if dry_run:
         output_directory_contents = list(Path(output_directory).rglob("*"))

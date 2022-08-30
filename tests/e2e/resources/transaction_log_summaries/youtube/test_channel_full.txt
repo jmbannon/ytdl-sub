@@ -2,6 +2,7 @@ Files created in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-pz-download-archive.json
 Season 2010/s2010.e0813 - Oblivion Mod ＂Falcor＂ p.1-thumb.jpg
+Season 2010/s2010.e0813 - Oblivion Mod ＂Falcor＂ p.1.info.json
 Season 2010/s2010.e0813 - Oblivion Mod ＂Falcor＂ p.1.mp4
 Season 2010/s2010.e0813 - Oblivion Mod ＂Falcor＂ p.1.nfo
   NFO tags:
@@ -19,6 +20,7 @@ Season 2010/s2010.e0813 - Oblivion Mod ＂Falcor＂ p.1.nfo
       title: Oblivion Mod "Falcor" p.1
       year: 2010
 Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2-thumb.jpg
+Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2.info.json
 Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2.mp4
 Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2.nfo
   NFO tags:
@@ -36,6 +38,7 @@ Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2.nfo
       title: Oblivion Mod "Falcor" p.2
       year: 2010
 Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
 Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
 Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
   NFO tags:
@@ -54,6 +57,7 @@ Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
       title: Jesse's Minecraft Server [Trailer - Feb.1]
       year: 2011
 Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
+Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].info.json
 Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].mp4
 Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].nfo
   NFO tags:
@@ -91,6 +95,7 @@ Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].nfo
       title: Jesse's Minecraft Server [Trailer - Feb.27]
       year: 2011
 Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
+Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].info.json
 Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].mp4
 Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].nfo
   NFO tags:
@@ -128,6 +133,7 @@ Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].nfo
       title: Jesse's Minecraft Server [Trailer - Mar.21]
       year: 2011
 Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net)-thumb.jpg
+Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).info.json
 Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).mp4
 Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).nfo
   NFO tags:
@@ -155,6 +161,7 @@ Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projec
       title: Project Zombie |Official Trailer| (IP: mc.projectzombie.beastnode.net)
       year: 2011
 Season 2011/s2011.e0630 - Project Zombie ｜Fin｜-thumb.jpg
+Season 2011/s2011.e0630 - Project Zombie ｜Fin｜.info.json
 Season 2011/s2011.e0630 - Project Zombie ｜Fin｜.mp4
 Season 2011/s2011.e0630 - Project Zombie ｜Fin｜.nfo
   NFO tags:
@@ -168,6 +175,7 @@ Season 2011/s2011.e0630 - Project Zombie ｜Fin｜.nfo
       title: Project Zombie |Fin|
       year: 2011
 Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC]-thumb.jpg
+Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC].info.json
 Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC].mp4
 Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC].nfo
   NFO tags:
@@ -188,6 +196,7 @@ Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC].nfo
       title: Skyrim 'Ultra HD w/Mods' [PC]
       year: 2011
 Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜-thumb.jpg
+Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜.info.json
 Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜.mp4
 Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜.nfo
   NFO tags:
@@ -208,6 +217,7 @@ Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜.nfo
       title: Project Zombie |Map Trailer|
       year: 2012
 Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜-thumb.jpg
+Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜.info.json
 Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜.mp4
 Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜.nfo
   NFO tags:
@@ -223,6 +233,7 @@ Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜.nfo
       title: Project Zombie Rewind |Trailer|
       year: 2013
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg
+Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.info.json
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo
   NFO tags:
@@ -244,6 +255,7 @@ Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo
       year: 2018
 Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id-thumb.jpg
 Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.en.srt
+Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.info.json
 Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.mp4
 Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.nfo
   NFO tags:
