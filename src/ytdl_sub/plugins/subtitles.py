@@ -168,8 +168,7 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         return builder.to_dict()
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
-        requested_subtitles = entry.kwargs("requested_subtitles")
-        if not requested_subtitles:
+        if not (requested_subtitles := entry.kwargs_get("requested_subtitles", None)):
             return entry
 
         languages = sorted(requested_subtitles.keys())

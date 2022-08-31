@@ -34,6 +34,8 @@ def _split_video_uid(source_uid: str, idx: int) -> str:
 
 class YoutubeSplitVideoDownloaderOptions(YoutubeVideoDownloaderOptions):
     r"""
+    DEPRECATED: Will be removed in v0.5.0. Use the ``split_by_chapters`` plugin instead.
+
     Downloads a single youtube video, then splits in to separate videos using a file containing
     timestamps. Each separate video will be formatted as if it was downloaded from a playlist.
     This download strategy is intended for CLI usage performing a one-time download of a video,

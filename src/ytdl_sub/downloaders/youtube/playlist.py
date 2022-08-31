@@ -22,6 +22,8 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
             # required
             download_strategy: "playlist"
             playlist_url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+
+    Adds the override variable ``source_description``, which contains the playlist's description.
     """
 
     _required_keys = {"playlist_url"}
@@ -77,6 +79,11 @@ class YoutubePlaylistDownloader(
             only_info_json=True,
             log_prefix_on_info_json_dl="Downloading metadata for",
             url=self.download_options.playlist_url,
+        )
+
+        playlist = self._filter_entry_dicts(entry_dicts, extractor="youtube:tab")[0]
+        self.add_override_variables(
+            override_variables_to_add={"source_description": playlist.get("description", "")}
         )
 
         # Iterate in reverse order to process older videos first. In case an error occurs and a

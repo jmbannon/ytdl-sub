@@ -1,6 +1,7 @@
 from abc import ABC
 from typing import Any
 from typing import Dict
+from typing import Optional
 
 
 class BaseEntry(ABC):
@@ -33,6 +34,11 @@ class BaseEntry(ABC):
         if not self.kwargs_contains(key):
             raise KeyError(f"Expected '{key}' in {self.__class__.__name__} but does not exist.")
         return self._kwargs[key]
+
+    def kwargs_get(self, key: str, default: Optional[Any] = None) -> Any:
+        if not self.kwargs_contains(key):
+            return default
+        return self.kwargs(key)
 
     def working_directory(self) -> str:
         """

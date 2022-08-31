@@ -39,6 +39,8 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
             channel_banner_path: "fanart.jpg"
             before: "now"
             after: "today-2weeks"
+
+    Adds the override variable ``source_description``, which contains the channel's description.
     """
 
     _required_keys = {"channel_url"}
@@ -171,6 +173,12 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             url=self.download_options.channel_url,
         )
         self.channel = self._get_channel(entry_dicts=entry_dicts)
+        self.add_override_variables(
+            override_variables_to_add={
+                "source_description": self.channel.kwargs_get("description", "")
+            }
+        )
+
         channel_videos = self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
 
         # Iterate in descending order to process older videos first. In case an error occurs and a

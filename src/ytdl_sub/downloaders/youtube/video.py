@@ -28,6 +28,8 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
     .. code-block:: bash
 
        ytdl-sub dl --preset "example_preset" --youtube.video_url "youtube.com/watch?v=VMAPTo7RVDo"
+
+    Adds the override variable ``source_description``, which contains the video's description.
     """
 
     _required_keys = {"video_url"}
@@ -67,4 +69,6 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
         """Download a single Youtube video"""
         entry_dict = self.extract_info(url=self.download_options.video_url)
         video = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+        self.add_override_variables({"source_description": video.description})
+
         return [video]
