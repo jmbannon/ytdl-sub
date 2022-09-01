@@ -36,6 +36,9 @@ class BaseEntry(ABC):
         return self._kwargs[key]
 
     def kwargs_get(self, key: str, default: Optional[Any] = None) -> Any:
+        """
+        Dict get on kwargs
+        """
         if not self.kwargs_contains(key):
             return default
         return self.kwargs(key)

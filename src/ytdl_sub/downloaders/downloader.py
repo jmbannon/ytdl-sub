@@ -88,6 +88,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         download_options: DownloaderOptionsT,
         enhanced_download_archive: EnhancedDownloadArchive,
         ytdl_options_builder: YTDLOptionsBuilder,
+        overrides: Overrides,
     ):
         """
         Parameters
@@ -98,14 +99,16 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
             Download archive
         ytdl_options_builder
             YTDL options builder
+        overrides
+            Override variables
         """
         DownloadArchiver.__init__(self=self, enhanced_download_archive=enhanced_download_archive)
         self.download_options = download_options
+        self.overrides = overrides
 
         self._ytdl_options_builder = ytdl_options_builder.clone().add(
             self.ytdl_option_defaults(), before=True
         )
-        self._added_override_variables: Dict[str, str] = {}
 
     @contextmanager
     def ytdl_downloader(self, ytdl_options_overrides: Optional[Dict] = None) -> ytdl.YoutubeDL:
@@ -127,28 +130,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         True if dry-run is enabled. False otherwise.
         """
         return self._ytdl_options_builder.to_dict().get("skip_download", False)
-
-    def add_override_variables(self, override_variables_to_add: Dict[str, str]) -> None:
-        """
-        Override variables added from the downloader. Should be added before yielding
-        entries
-
-        Parameters
-        ----------
-        override_variables_to_add
-            The override variables to add
-        """
-        self._added_override_variables = dict(
-            self._added_override_variables, **override_variables_to_add
-        )
-
-    def get_added_override_variables(self) -> Dict[str, str]:
-        """
-        Returns
-        -------
-        Added override variables
-        """
-        return self._added_override_variables
 
     def extract_info(self, ytdl_options_overrides: Optional[Dict] = None, **kwargs) -> Dict:
         """
@@ -354,14 +335,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     ) -> Iterable[DownloaderEntryT] | Iterable[Tuple[DownloaderEntryT, FileMetadata]]:
         """The function to perform the download of all media entries"""
 
-    def post_download(self, overrides: Overrides):
+    def post_download(self):
         """
         After all media entries have been downloaded, post processed, and moved to the output
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
-
-        Parameters
-        ----------
-        overrides:
-            Subscription overrides
         """

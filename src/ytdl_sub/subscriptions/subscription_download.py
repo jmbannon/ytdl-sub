@@ -234,7 +234,6 @@ class SubscriptionDownload(BaseSubscription, ABC):
         """
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
         plugins = self._initialize_plugins()
-        added_override_variables = False
 
         ytdl_options_builder = SubscriptionYTDLOptions(
             preset=self._preset_options,
@@ -249,16 +248,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 download_options=self.downloader_options,
                 enhanced_download_archive=self._enhanced_download_archive,
                 ytdl_options_builder=ytdl_options_builder,
+                overrides=self.overrides,
             )
 
             for entry in downloader.download():
-                # TODO: make this a step before download
-                if not added_override_variables:
-                    self.overrides.add_override_variables(
-                        variables_to_add=downloader.get_added_override_variables()
-                    )
-                    added_override_variables = True
-
                 entry_metadata = FileMetadata()
                 if isinstance(entry, tuple):
                     entry, entry_metadata = entry
@@ -272,7 +265,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                         plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
                     )
 
-            downloader.post_download(overrides=self.overrides)
+            downloader.post_download()
             for plugin in plugins:
                 plugin.post_process_subscription()
 

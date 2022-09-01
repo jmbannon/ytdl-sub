@@ -82,8 +82,8 @@ class YoutubePlaylistDownloader(
         )
 
         playlist = self._filter_entry_dicts(entry_dicts, extractor="youtube:tab")[0]
-        self.add_override_variables(
-            override_variables_to_add={"source_description": playlist.get("description", "")}
+        self.overrides.add_override_variables(
+            variables_to_add={"source_description": playlist.get("description", "")}
         )
 
         # Iterate in reverse order to process older videos first. In case an error occurs and a
