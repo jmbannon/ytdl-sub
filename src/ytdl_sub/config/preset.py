@@ -6,6 +6,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Type
+from typing import TypeVar
 from typing import Union
 
 from mergedeep import mergedeep
@@ -27,6 +28,7 @@ from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatt
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
+from ytdl_sub.validators.validators import StringListValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
 
@@ -41,6 +43,8 @@ PRESET_KEYS = {
 
 
 class PresetPlugins:
+    _TPluginOptions = TypeVar("_TPluginOptions", bound=PluginOptions)
+
     def __init__(self):
         self.plugin_types: List[Type[Plugin]] = []
         self.plugin_options: List[PluginOptions] = []
@@ -60,6 +64,22 @@ class PresetPlugins:
         Plugin and PluginOptions zipped
         """
         return zip(self.plugin_types, self.plugin_options)
+
+    def get(self, plugin_type: Type[_TPluginOptions]) -> Optional[_TPluginOptions]:
+        """
+        Parameters
+        ----------
+        plugin_type
+            Fetch the plugin options for this type
+
+        Returns
+        -------
+        Options of this plugin if they exit. Otherwise, return None.
+        """
+        plugin_option_types = [type(plugin_options) for plugin_options in self.plugin_options]
+        if plugin_type in plugin_option_types:
+            return self.plugin_options[plugin_option_types.index(plugin_type)]
+        return None
 
 
 class DownloadStrategyValidator(StrictDictValidator):
@@ -248,35 +268,39 @@ class Preset(StrictDictValidator):
                     self.__validate_override_string_formatter_validator(validator_value)
 
     def __merge_parent_preset_dicts_if_present(self, config: ConfigFile):
-        parent_presets = set()
         parent_preset_validator = self._validate_key_if_present(
-            key="preset", validator=StringValidator
+            key="preset", validator=StringListValidator
         )
-        parent_preset = parent_preset_validator.value if parent_preset_validator else None
 
-        while parent_preset:
-            # Make sure the parent preset actually exists
-            if parent_preset not in config.presets.keys:
-                raise self._validation_exception(
-                    f"preset '{parent_preset}' does not exist in the provided config. "
-                    f"Available presets: {', '.join(config.presets.keys)}"
+        if parent_preset_validator is None:
+            return
+
+        for parent_preset in [preset.value for preset in parent_preset_validator.list]:
+            parent_presets = set()
+
+            while parent_preset:
+                # Make sure the parent preset actually exists
+                if parent_preset not in config.presets.keys:
+                    raise self._validation_exception(
+                        f"preset '{parent_preset}' does not exist in the provided config. "
+                        f"Available presets: {', '.join(config.presets.keys)}"
+                    )
+
+                # Make sure we do not hit an infinite loop
+                if parent_preset in parent_presets:
+                    raise self._validation_exception(
+                        f"preset loop detected with the preset '{parent_preset}'"
+                    )
+
+                parent_preset_dict = copy.deepcopy(config.presets.dict[parent_preset])
+
+                parent_presets.add(parent_preset)
+                parent_preset = parent_preset_dict.get("preset")
+
+                # Override the parent preset with the contents of this preset
+                self._value = mergedeep.merge(
+                    parent_preset_dict, self._value, strategy=mergedeep.Strategy.REPLACE
                 )
-
-            # Make sure we do not hit an infinite loop
-            if parent_preset in parent_presets:
-                raise self._validation_exception(
-                    f"preset loop detected with the preset '{parent_preset}'"
-                )
-
-            parent_preset_dict = copy.deepcopy(config.presets.dict[parent_preset])
-
-            parent_presets.add(parent_preset)
-            parent_preset = parent_preset_dict.get("preset")
-
-            # Override the parent preset with the contents of this preset
-            self._value = mergedeep.merge(
-                parent_preset_dict, self._value, strategy=mergedeep.Strategy.REPLACE
-            )
 
     def __init__(self, config: ConfigFile, name: str, value: Any):
         super().__init__(name=name, value=value)
