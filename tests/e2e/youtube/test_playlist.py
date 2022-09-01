@@ -22,7 +22,11 @@ def playlist_preset_dict(output_directory):
         "output_directory_nfo_tags": {
             "nfo_name": "tvshow.nfo",
             "nfo_root": "test",
-            "tags": {"source_desc": "{source_description}"},
+            "tags": {
+                "source_title": "{source_title}",
+                "source_uploader": "{source_uploader}",
+                "source_description": "{source_description}",
+            },
         },
         "subtitles": {
             "subtitles_name": "{music_video_name}.{lang}.{subtitles_ext}",

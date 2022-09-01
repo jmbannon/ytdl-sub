@@ -112,7 +112,7 @@ class Preset(StrictDictValidator):
 
     @property
     def _added_override_variables(self) -> List[str]:
-        return self.downloader_options.added_override_variables()
+        return self.downloader.added_override_variables()
 
     def __validate_and_get_downloader(self, downloader_source: str) -> Type[Downloader]:
         return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(

@@ -53,6 +53,8 @@ _______
   :inherited-members:
   :exclude-members: get_date_range
 
+.. autofunction:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloader.added_override_variables()
+
 .. autofunction:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
@@ -65,6 +67,8 @@ ________
   :members:
   :member-order: bysource
   :inherited-members:
+
+.. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.added_override_variables()
 
 .. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.ytdl_option_defaults()
 

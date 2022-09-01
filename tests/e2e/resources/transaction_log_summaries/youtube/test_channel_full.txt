@@ -284,4 +284,5 @@ tvshow.nfo
   NFO tags:
     tvshow:
       plot: Plugin and map updates for the server Project Zombie.
+      source_uploader: Project Zombie
       title: Project / Zombie

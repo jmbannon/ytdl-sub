@@ -37,10 +37,6 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
             # optional
             channel_avatar_path: "poster.jpg"
             channel_banner_path: "fanart.jpg"
-            before: "now"
-            after: "today-2weeks"
-
-    Adds the override variable ``source_description``, which contains the channel's description.
     """
 
     _required_keys = {"channel_url"}
@@ -130,6 +126,20 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             },
         )
 
+    @classmethod
+    def added_override_variables(cls) -> List[str]:
+        """
+        Adds the following :ref:`override <overrides>` variables:
+
+        .. code-block:: yaml
+
+           overrides:
+              source_uploader:  # The channel's name
+              source_title:  # The channel's name
+              source_description:  # The channel's description
+        """
+        return ["source_uploader", "source_title", "source_description"]
+
     # pylint: enable=line-too-long
 
     def __init__(
@@ -186,7 +196,11 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         entries_to_download = self._get_channel_videos(entry_dicts=entry_dicts)
 
         self.overrides.add_override_variables(
-            variables_to_add={"source_description": self.channel.kwargs_get("description", "")}
+            variables_to_add={
+                "source_uploader": self.channel.kwargs("uploader"),
+                "source_title": self.channel.kwargs("title"),
+                "source_description": self.channel.kwargs_get("description", ""),
+            }
         )
 
         # Iterate in descending order to process older videos first. In case an error occurs and a

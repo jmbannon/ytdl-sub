@@ -40,17 +40,6 @@ class DownloaderValidator(StrictDictValidator, ABC):
     Placeholder class to define downloader options
     """
 
-    # pylint: disable=no-self-use
-    def added_override_variables(self) -> List[str]:
-        """
-        Returns
-        -------
-        List of override variables that this downloader adds
-        """
-        return []
-
-    # pylint: enable=no-self-use
-
 
 DownloaderOptionsT = TypeVar("DownloaderOptionsT", bound=DownloaderValidator)
 DownloaderEntryT = TypeVar("DownloaderEntryT", bound=Entry)
@@ -82,6 +71,15 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
              ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
         """
         return {"ignoreerrors": True}
+
+    @classmethod
+    def added_override_variables(cls) -> List[str]:
+        """
+        Returns
+        -------
+        List of override variables that this downloader adds
+        """
+        return []
 
     def __init__(
         self,

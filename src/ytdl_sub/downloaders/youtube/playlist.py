@@ -1,5 +1,6 @@
 from typing import Dict
 from typing import Generator
+from typing import List
 
 from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
@@ -22,8 +23,6 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
             # required
             download_strategy: "playlist"
             playlist_url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
-
-    Adds the override variable ``source_description``, which contains the playlist's description.
     """
 
     _required_keys = {"playlist_url"}
@@ -66,6 +65,20 @@ class YoutubePlaylistDownloader(
             **{"break_on_existing": True},
         )
 
+    @classmethod
+    def added_override_variables(cls) -> List[str]:
+        """
+        Adds the following :ref:`override <overrides>` variables:
+
+        .. code-block:: yaml
+
+           overrides:
+              source_uploader:  # The playlist's owner's channel name
+              source_title:  # The playlist's title
+              source_description:  # The playlist's description
+        """
+        return ["source_uploader", "source_title", "source_description"]
+
     # pylint: enable=line-too-long
 
     def download(self) -> Generator[YoutubePlaylistVideo, None, None]:
@@ -82,14 +95,19 @@ class YoutubePlaylistDownloader(
         )
 
         playlist = self._filter_entry_dicts(entry_dicts, extractor="youtube:tab")[0]
+        playlist_videos = self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
+
         self.overrides.add_override_variables(
-            variables_to_add={"source_description": playlist.get("description", "")}
+            variables_to_add={
+                "source_title": playlist["title"],
+                "source_uploader": playlist["uploader"],
+                "source_description": playlist.get("description", ""),
+            }
         )
 
         # Iterate in reverse order to process older videos first. In case an error occurs and a
         # the playlist must be redownloaded, it will fetch most recent metadata first, and break
         # on the older video that's been processed and is in the download archive.
-        playlist_videos = self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
         for idx, entry_dict in enumerate(reversed(playlist_videos), start=1):
             video = YoutubePlaylistVideo(
                 entry_dict=entry_dict, working_directory=self.working_directory
