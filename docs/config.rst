@@ -157,6 +157,8 @@ Presets support inheritance by defining a parent preset:
 .. code-block:: yaml
 
    presets:
+     custom_preset:
+       ...
      parent_preset:
        ...
      child_preset:
@@ -165,6 +167,19 @@ Presets support inheritance by defining a parent preset:
 In the example above, ``child_preset`` inherits all fields defined in ``parent_preset``.
 It is advantageous to use parent presets where possible to reduce duplicate yaml
 definitions.
+
+Presets also support inheritance from multiple presets:
+
+.. code-block:: yaml
+
+     child_preset:
+       preset:
+         - "custom_preset"
+         - "parent_preset"
+
+In this example, ``child_preset`` will inherit all fields from ``custom_preset``
+and ``parent_preset`` in that order. The bottom-most preset has the highest
+priority.
 
 -------------------------------------------------------------------------------
 
