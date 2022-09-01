@@ -6,6 +6,7 @@ poster.jpg
 tvshow.nfo
   NFO tags:
     tvshow:
+      plot: Plugin and map updates for the server Project Zombie.
       title: Project / Zombie
 
 Files removed from '{output_directory}'
