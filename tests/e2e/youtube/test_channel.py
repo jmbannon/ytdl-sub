@@ -22,6 +22,11 @@ def channel_preset_dict(output_directory):
             "subtitles_name": "{episode_name}.{lang}.{subtitles_ext}",
             "allow_auto_generated_subtitles": True,
         },
+        "output_directory_nfo_tags": {
+            "tags": {
+                "source_uploader": "{source_uploader}",
+            }
+        },
         "overrides": {"tv_show_name": "Project / Zombie"},
     }
 

@@ -248,6 +248,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 download_options=self.downloader_options,
                 enhanced_download_archive=self._enhanced_download_archive,
                 ytdl_options_builder=ytdl_options_builder,
+                overrides=self.overrides,
             )
 
             for entry in downloader.download():
@@ -264,7 +265,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                         plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
                     )
 
-            downloader.post_download(overrides=self.overrides)
+            downloader.post_download()
             for plugin in plugins:
                 plugin.post_process_subscription()
 

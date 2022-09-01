@@ -37,8 +37,6 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
             # optional
             channel_avatar_path: "poster.jpg"
             channel_banner_path: "fanart.jpg"
-            before: "now"
-            after: "today-2weeks"
     """
 
     _required_keys = {"channel_url"}
@@ -128,6 +126,20 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             },
         )
 
+    @classmethod
+    def added_override_variables(cls) -> List[str]:
+        """
+        Adds the following :ref:`override <overrides>` variables:
+
+        .. code-block:: yaml
+
+           overrides:
+              source_uploader:  # The channel's name
+              source_title:  # The channel's name
+              source_description:  # The channel's description
+        """
+        return ["source_uploader", "source_title", "source_description"]
+
     # pylint: enable=line-too-long
 
     def __init__(
@@ -135,12 +147,15 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         download_options: DownloaderOptionsT,
         enhanced_download_archive: EnhancedDownloadArchive,
         ytdl_options_builder: YTDLOptionsBuilder,
+        overrides: Overrides,
     ):
         super().__init__(
             download_options=download_options,
             enhanced_download_archive=enhanced_download_archive,
             ytdl_options_builder=ytdl_options_builder,
+            overrides=overrides,
         )
+
         self.channel: Optional[YoutubeChannel] = None
 
     def _get_channel(self, entry_dicts: List[Dict]) -> YoutubeChannel:
@@ -148,6 +163,12 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             entry_dict=self._filter_entry_dicts(entry_dicts, extractor="youtube:tab")[0],
             working_directory=self.working_directory,
         )
+
+    def _get_channel_videos(self, entry_dicts: List[Dict]) -> List[YoutubeVideo]:
+        return [
+            YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+            for entry_dict in self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
+        ]
 
     def download(self) -> Generator[YoutubeVideo, None, None]:
         """
@@ -170,15 +191,23 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             log_prefix_on_info_json_dl="Downloading metadata for",
             url=self.download_options.channel_url,
         )
+
         self.channel = self._get_channel(entry_dicts=entry_dicts)
-        channel_videos = self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
+        entries_to_download = self._get_channel_videos(entry_dicts=entry_dicts)
+
+        self.overrides.add_override_variables(
+            variables_to_add={
+                "source_uploader": self.channel.kwargs("uploader"),
+                "source_title": self.channel.kwargs("title"),
+                "source_description": self.channel.kwargs_get("description", ""),
+            }
+        )
 
         # Iterate in descending order to process older videos first. In case an error occurs and a
         # the channel must be redownloaded, it will fetch most recent metadata first, and break
         # on the older video that's been processed and is in the download archive.
-        for idx, entry_dict in enumerate(reversed(channel_videos), start=1):
-            video = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
-            download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
+        for idx, video in enumerate(reversed(entries_to_download), start=1):
+            download_logger.info("Downloading %d/%d %s", idx, len(entries_to_download), video.title)
 
             # Re-download the contents even if it's a dry-run as a single video. At this time,
             # channels do not download subtitles or subtitle metadata
@@ -218,17 +247,12 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             thumbnail_url=thumbnail_url, output_thumbnail_path=output_thumbnail_path
         )
 
-    def post_download(self, overrides: Overrides):
+    def post_download(self):
         """
         Downloads and moves channel avatar and banner images to the output directory.
-
-        Parameters
-        ----------
-        overrides
-            Overrides that can contain variables in the avatar or banner file path
         """
         if self.download_options.channel_avatar_path:
-            avatar_thumbnail_name = overrides.apply_formatter(
+            avatar_thumbnail_name = self.overrides.apply_formatter(
                 self.download_options.channel_avatar_path
             )
             self._download_thumbnail(
@@ -238,7 +262,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             self.save_file(file_name=avatar_thumbnail_name)
 
         if self.download_options.channel_banner_path:
-            banner_thumbnail_name = overrides.apply_formatter(
+            banner_thumbnail_name = self.overrides.apply_formatter(
                 self.download_options.channel_banner_path
             )
             self._download_thumbnail(

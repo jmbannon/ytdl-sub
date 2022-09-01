@@ -67,4 +67,5 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
         """Download a single Youtube video"""
         entry_dict = self.extract_info(url=self.download_options.video_url)
         video = YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+
         return [video]

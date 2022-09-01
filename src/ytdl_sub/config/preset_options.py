@@ -60,18 +60,42 @@ class Overrides(DictFormatterValidator):
     """
 
     # pylint: enable=line-too-long
+
+    def _add_override_variable(self, key_name: str, format_string: str, sanitize: bool = False):
+        if sanitize:
+            key_name = f"{key_name}_sanitized"
+            format_string = sanitize_filename(format_string)
+
+        self._value[key_name] = StringFormatterValidator(
+            name="__should_never_fail__",
+            value=format_string,
+        )
+
     def __init__(self, name, value):
         super().__init__(name, value)
-        for key in self._keys:
-            key_name_sanitized = f"{key}_sanitized"
-            # First, sanitize the format string
-            self._value[key_name_sanitized] = sanitize_filename(self._value[key].format_string)
 
-            # Then, convert it into a StringFormatterValidator
-            self._value[key_name_sanitized] = StringFormatterValidator(
-                name="__should_never_fail__",
-                value=self._value[key_name_sanitized],
+        # Add sanitized overrides
+        for key in self._keys:
+            self._add_override_variable(
+                key_name=key,
+                format_string=self._value[key].format_string,
+                sanitize=True,
             )
+
+    def add_override_variables(self, variables_to_add: Dict[str, str]) -> None:
+        """
+        Parameters
+        ----------
+        variables_to_add
+            Override variables to add
+        """
+        for key_name, override_var_value in variables_to_add.items():
+            for sanitize in [False, True]:
+                self._add_override_variable(
+                    key_name=key_name,
+                    format_string=override_var_value,
+                    sanitize=sanitize,
+                )
 
     def apply_formatter(
         self,
