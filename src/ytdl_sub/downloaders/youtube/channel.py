@@ -134,7 +134,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         .. code-block:: yaml
 
            overrides:
-              source_uploader:  # The channel's name
+              source_uploader:  # The channel's name. NOTE: sometimes it's empty, use with caution
               source_title:  # The channel's name
               source_description:  # The channel's description
         """
@@ -197,7 +197,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
 
         self.overrides.add_override_variables(
             variables_to_add={
-                "source_uploader": self.channel.kwargs("uploader"),
+                "source_uploader": self.channel.kwargs_get("uploader", "__failed_to_scrape__"),
                 "source_title": self.channel.kwargs("title"),
                 "source_description": self.channel.kwargs_get("description", ""),
             }
