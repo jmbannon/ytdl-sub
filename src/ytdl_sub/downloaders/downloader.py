@@ -1,5 +1,6 @@
 import abc
 import contextlib
+import copy
 import json
 import os
 import time
@@ -60,7 +61,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     supports_chapters: bool = True
 
     _extract_entry_num_retries: int = 5
-    _extract_entry_retry_wait_sec: int = 3
+    _extract_entry_retry_wait_sec: int = 5
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
@@ -173,9 +174,12 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         """
         num_tries = 0
         entry_files_exist = False
+        copied_ytdl_options_overrides = copy.deepcopy(ytdl_options_overrides)
 
         while not entry_files_exist and num_tries < self._extract_entry_num_retries:
-            entry_dict = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
+            entry_dict = self.extract_info(
+                ytdl_options_overrides=copied_ytdl_options_overrides, **kwargs
+            )
             if is_downloaded_fn is None or is_downloaded_fn():
                 return entry_dict
 
@@ -184,11 +188,8 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
             # Remove the download archive so it can retry without thinking its already downloaded,
             # even though it is not
-            ytdl_options_overrides = (
-                YTDLOptionsBuilder()
-                .add(ytdl_options_overrides, {"download_archive": None})
-                .to_dict()
-            )
+            if "download_archive" in copied_ytdl_options_overrides:
+                del copied_ytdl_options_overrides["download_archive"]
 
             if num_tries < self._extract_entry_retry_wait_sec:
                 download_logger.debug(
