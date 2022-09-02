@@ -135,6 +135,24 @@ class TestPreset:
             "key-3": "this-preset",
         }
 
+    def test_preset_datetime_with_override(self, config_file, youtube_video, output_options):
+        preset = Preset(
+            config=config_file,
+            name="test",
+            value={
+                "youtube": youtube_video,
+                "output_options": dict(
+                    output_options,
+                    **{"maintain_download_archive": True, "keep_files_after": "today-{ttl}"}
+                ),
+                "overrides": {"ttl": "2months"},
+            },
+        )
+        assert (
+            preset.overrides.apply_formatter(formatter=preset.output_options.keep_files_after)
+            == "today-2months"
+        )
+
     @pytest.mark.parametrize(
         "parent_preset", ["preset_self_loop", "preset_loop_0", "preset_loop_1"]
     )

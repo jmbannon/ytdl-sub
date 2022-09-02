@@ -22,7 +22,7 @@ class StringDatetimeValidator(OverridesStringFormatterValidator):
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
         output = super().apply_formatter(variable_dict)
         try:
-            _ = datetime_from_str(self._value)
+            _ = datetime_from_str(output)
         except Exception as exc:
             raise self._validation_exception(f"Invalid datetime string: {str(exc)}")
         return output
