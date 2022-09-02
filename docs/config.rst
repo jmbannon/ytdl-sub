@@ -1,8 +1,6 @@
 Config
 ======
-ytdl-sub is configured using a ``config.yaml`` file. You can view our
-:doc:`examples <examples>` and read detailed documentation for every configurable
-field below.
+ytdl-sub is configured using a ``config.yaml`` file.
 
 .. _config_yaml:
 
