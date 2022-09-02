@@ -73,7 +73,7 @@ class YoutubePlaylistDownloader(
         .. code-block:: yaml
 
            overrides:
-              source_uploader:  # The playlist's owner's channel name
+              source_uploader:  # The playlist's owner's channel name. NOTE: sometimes it's empty, use with caution
               source_title:  # The playlist's title
               source_description:  # The playlist's description
         """
@@ -100,7 +100,7 @@ class YoutubePlaylistDownloader(
         self.overrides.add_override_variables(
             variables_to_add={
                 "source_title": playlist["title"],
-                "source_uploader": playlist["uploader"],
+                "source_uploader": playlist.get("uploader", "__failed_to_scrape__"),
                 "source_description": playlist.get("description", ""),
             }
         )
