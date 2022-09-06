@@ -255,18 +255,22 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             avatar_thumbnail_name = self.overrides.apply_formatter(
                 self.download_options.channel_avatar_path
             )
-            self._download_thumbnail(
+            if self._download_thumbnail(
                 thumbnail_url=self.channel.avatar_thumbnail_url(),
                 output_thumbnail_path=str(Path(self.working_directory) / avatar_thumbnail_name),
-            )
-            self.save_file(file_name=avatar_thumbnail_name)
+            ):
+                self.save_file(file_name=avatar_thumbnail_name)
+            else:
+                download_logger.warning("Failed to download channel's avatar image")
 
         if self.download_options.channel_banner_path:
             banner_thumbnail_name = self.overrides.apply_formatter(
                 self.download_options.channel_banner_path
             )
-            self._download_thumbnail(
+            if self._download_thumbnail(
                 thumbnail_url=self.channel.banner_thumbnail_url(),
                 output_thumbnail_path=str(Path(self.working_directory) / banner_thumbnail_name),
-            )
-            self.save_file(file_name=banner_thumbnail_name)
+            ):
+                self.save_file(file_name=banner_thumbnail_name)
+            else:
+                download_logger.warning("Failed to download channel's banner image")
