@@ -1,6 +1,8 @@
 from abc import ABC
+from collections import defaultdict
 from typing import Dict
 from typing import Generic
+from typing import List
 from typing import Type
 from typing import TypeVar
 
@@ -80,23 +82,34 @@ class SharedNfoTagsValidator(
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._string_tags: Dict[str, StringFormatterValidator] = {}
-        self._attribute_tags: Dict[str, TNfoTagsWithAttributesValidator] = {}
+        self._string_tags: Dict[str, List[StringFormatterValidator]] = defaultdict(list)
+        self._attribute_tags: Dict[str, List[TNfoTagsWithAttributesValidator]] = defaultdict(list)
 
         for key, tag_value in self._dict.items():
-            if isinstance(tag_value, str):
-                self._string_tags[key] = self._validate_key(
-                    key=key, validator=self._tags_with_attributes_validator.formatter_validator
-                )
-            elif isinstance(tag_value, dict):
-                self._attribute_tags[key] = self._validate_key(
-                    key=key, validator=self._tags_with_attributes_validator
-                )
-            else:
-                raise self._validation_exception("must either be a string or attributes object")
+            # Turn each value into a list if it's not
+            if not isinstance(tag_value, list):
+                tag_value = [tag_value]
+
+            # iterate each list, validate accordingly if it is a string tag or attribute tag
+            for tag_value_i in tag_value:
+                if isinstance(tag_value_i, str):
+                    self._string_tags[key].append(
+                        self._validate_key(
+                            key=key,
+                            validator=self._tags_with_attributes_validator.formatter_validator,
+                        )
+                    )
+                elif isinstance(tag_value_i, dict):
+                    self._attribute_tags[key].append(
+                        self._validate_key(key=key, validator=self._tags_with_attributes_validator)
+                    )
+                else:
+                    raise self._validation_exception(
+                        "must either be a single or list of string/attribute object"
+                    )
 
     @property
-    def string_tags(self) -> Dict[str, StringFormatterValidator]:
+    def string_tags(self) -> Dict[str, List[StringFormatterValidator]]:
         """
         Returns
         -------
@@ -105,7 +118,7 @@ class SharedNfoTagsValidator(
         return self._string_tags
 
     @property
-    def attribute_tags(self) -> Dict[str, TNfoTagsWithAttributesValidator]:
+    def attribute_tags(self) -> Dict[str, List[TNfoTagsWithAttributesValidator]]:
         """
         Returns
         -------
