@@ -70,12 +70,13 @@ class TestChannelAsKodiTvShow:
             config=channel_as_tv_show_config, preset_name="pz", preset_dict=channel_preset_dict
         )
 
-        with assert_debug_log(
+        with assert_debug_log(  # Ensure retry debug message is thrown
             logger=retry_logger,
-            expected_message="Exception thrown when attempting to run convert_url_thumbnail, attempt 5 of 5",
-        ), patch("ytdl_sub.utils.retry.sleep"), patch(
+            expected_message="Exception thrown when attempting to run %s, attempt %d of %d",
+        ), patch(  # Make sleeps instant
+            "ytdl_sub.utils.retry.sleep"
+        ), patch(  # Mock error when calling urlopen
             "ytdl_sub.utils.thumbnail.urlopen"
         ) as mock_urlopen:
             mock_urlopen.side_effect = [Exception("error")]
-
             full_channel_subscription.download(dry_run=True)
