@@ -1,8 +1,10 @@
 import tempfile
+from typing import Optional
 from urllib.request import urlopen
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import FFMPEG
+from ytdl_sub.utils.retry import retry
 
 
 def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) -> None:
@@ -32,7 +34,8 @@ def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) ->
         FFMPEG.run(["-bitexact", "-i", download_thumbnail_path, download_thumbnail_path_as_jpg])
 
 
-def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str):
+@retry(times=5, exceptions=(Exception,))
+def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Optional[bool]:
     """
     Downloads and converts a thumbnail from a url into a jpg
 
@@ -42,9 +45,15 @@ def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str):
         URL of the thumbnail
     output_thumbnail_path
         Thumbnail file destination after its converted to jpg
+
+    Returns
+    -------
+    True to indicate it converted the thumbnail from url. None if the retry failed.
     """
     with urlopen(thumbnail_url) as file:
         with tempfile.NamedTemporaryFile() as thumbnail:
             thumbnail.write(file.read())
 
             FFMPEG.run(["-bitexact", "-i", thumbnail.name, output_thumbnail_path, "-bitexact"])
+
+    return True

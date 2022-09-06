@@ -1,8 +1,12 @@
+from unittest.mock import patch
+
 import pytest
+from conftest import assert_debug_log
 from e2e.expected_download import assert_expected_downloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.retry import logger as retry_logger
 
 
 @pytest.fixture
@@ -59,3 +63,20 @@ class TestChannelAsKodiTvShow:
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_channel_full.json",
         )
+
+    def test_channel_post_download(self, channel_as_tv_show_config, channel_preset_dict):
+        channel_preset_dict["ytdl_options"]["max_views"] = 1  # no downloads occur
+        full_channel_subscription = Subscription.from_dict(
+            config=channel_as_tv_show_config, preset_name="pz", preset_dict=channel_preset_dict
+        )
+
+        with assert_debug_log(  # Ensure retry debug message is thrown
+            logger=retry_logger,
+            expected_message="Exception thrown when attempting to run %s, attempt %d of %d",
+        ), patch(  # Make sleeps instant
+            "ytdl_sub.utils.retry.sleep"
+        ), patch(  # Mock error when calling urlopen
+            "ytdl_sub.utils.thumbnail.urlopen"
+        ) as mock_urlopen:
+            mock_urlopen.side_effect = [Exception("error")]
+            full_channel_subscription.download(dry_run=True)

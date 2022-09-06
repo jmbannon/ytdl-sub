@@ -228,7 +228,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         self,
         thumbnail_url: str,
         output_thumbnail_path: str,
-    ):
+    ) -> Optional[bool]:
         """
         Downloads a thumbnail and stores it in the output directory
 
@@ -238,12 +238,16 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             Url of the thumbnail
         output_thumbnail_path:
             Path to store the thumbnail after downloading
+
+        Returns
+        -------
+        True if the thumbnail converted. None if it is missing or failed.
         """
         if not thumbnail_url:
             download_logger.warning("Could not find a thumbnail for %s", self.channel.uid)
-            return
+            return None
 
-        convert_url_thumbnail(
+        return convert_url_thumbnail(
             thumbnail_url=thumbnail_url, output_thumbnail_path=output_thumbnail_path
         )
 
@@ -255,18 +259,22 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             avatar_thumbnail_name = self.overrides.apply_formatter(
                 self.download_options.channel_avatar_path
             )
-            self._download_thumbnail(
+            if self._download_thumbnail(
                 thumbnail_url=self.channel.avatar_thumbnail_url(),
                 output_thumbnail_path=str(Path(self.working_directory) / avatar_thumbnail_name),
-            )
-            self.save_file(file_name=avatar_thumbnail_name)
+            ):
+                self.save_file(file_name=avatar_thumbnail_name)
+            else:
+                download_logger.warning("Failed to download channel's avatar image")
 
         if self.download_options.channel_banner_path:
             banner_thumbnail_name = self.overrides.apply_formatter(
                 self.download_options.channel_banner_path
             )
-            self._download_thumbnail(
+            if self._download_thumbnail(
                 thumbnail_url=self.channel.banner_thumbnail_url(),
                 output_thumbnail_path=str(Path(self.working_directory) / banner_thumbnail_name),
-            )
-            self.save_file(file_name=banner_thumbnail_name)
+            ):
+                self.save_file(file_name=banner_thumbnail_name)
+            else:
+                download_logger.warning("Failed to download channel's banner image")
