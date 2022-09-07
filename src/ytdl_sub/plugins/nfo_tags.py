@@ -230,7 +230,7 @@ class NfoTagsOptions(
              <episode>502</episode>
            </episodedetails>
 
-        Also supports xml attributes:
+        Also supports xml attributes and duplicate keys:
 
         .. code-block:: yaml
 
@@ -239,12 +239,17 @@ class NfoTagsOptions(
                attributes:
                  name: "Best Year"
                tag: "{upload_year}"
+             genre:
+               - "Comedy"
+               - "Drama"
 
         Which translates to
 
         .. code-block:: xml
 
            <season name="Best Year">2022</season>
+           <genre>Comedy</genre>
+           <genre>Drama</genre>
         """
         return self._tags
 
