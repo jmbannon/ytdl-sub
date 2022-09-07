@@ -136,7 +136,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
 
         metadata = FileMetadata.from_dict(
             value_dict=metadata_value_dict,
-            title="From Chapter Split:",
+            title="From Chapter Split",
             sort_dict=False,
         )
 

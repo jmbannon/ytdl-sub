@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 from pathlib import Path
@@ -56,32 +57,60 @@ class FileMetadata:
         sort_dict
             Whether to sort dicts in the value_dict. Defaults to true.
         """
-        lines: List[str] = []
-        if title is not None:
-            lines.append(title)
+        if title:
+            value_dict = {title: value_dict}
 
-        def _recursive_add_dict_lines(rdict: Dict, indent: int):
-            rdict_items = rdict.items()
-            if sort_dict:
-                rdict_items = sorted(rdict_items)
+        if sort_dict:
+            value_dict = json.loads(json.dumps(value_dict, sort_keys=True, ensure_ascii=False))
 
-            for key, value in rdict_items:
-                _indent = " " * indent
-                if isinstance(value, Dict):
-                    lines.append(f"{_indent}{key}:")
-                    _recursive_add_dict_lines(rdict=value, indent=indent + 2)
-                else:
-                    value = str(value)
-                    # If there are newlines in the value, print them indented
-                    if "\n" in value:
-                        lines.append(f"{_indent}{key}:")
-                        for value_line in value.split("\n"):
-                            lines.append(f"  {_indent}{value_line.strip()}")
+        def _indent_lines(value: str, indent: int) -> str:
+            if "\n" not in value:
+                return value
+
+            output_str = ""
+            _indent = " " * indent
+            for line in value.split("\n"):
+                output_str += f"{_indent}{line}\n"
+            return f"{output_str.rstrip()}\n"
+
+        def _single_value(value: Any) -> Optional[str]:
+            if isinstance(value, list) and len(value) == 1:
+                return _single_value(value=value[0])
+            if isinstance(value, (dict, list)):
+                return None
+            if isinstance(value, str) and "\n" in value:
+                return None
+            return value
+
+        def _recursive_lines(value: Any, indent: int = 0) -> str:
+            _indent = " " * indent
+
+            output_str = ""
+            if isinstance(value, dict):
+                for key, sub_value in value.items():
+                    single_sub_value = _single_value(sub_value)
+                    if single_sub_value is not None:
+                        output_str += f"{_indent}{key}: {single_sub_value}\n"
                     else:
-                        lines.append(f"{_indent}{key}: {value}")
+                        output_str += f"{_indent}{key}:\n"
+                        output_str += _indent_lines(_recursive_lines(sub_value), indent=indent + 2)
 
-        _recursive_add_dict_lines(rdict=value_dict, indent=2)
-        return cls(metadata=lines)
+            elif isinstance(value, list):
+                for sub_value in value:
+                    single_sub_value = _single_value(sub_value)
+                    if single_sub_value is not None:
+                        output_str += f"{_indent}- {single_sub_value}\n"
+                    else:
+                        output_str += f"{_indent}- \n"
+                        output_str += _indent_lines(_recursive_lines(sub_value), indent=indent + 2)
+            elif isinstance(value, str):  # multi-line string
+                output_str += _indent_lines(value, indent=indent)
+            else:
+                assert False, "should never reach here"
+            return output_str
+
+        out = _recursive_lines(value_dict).rstrip().split("\n")
+        return cls(metadata=out)
 
 
 class FileHandlerTransactionLog:

@@ -62,7 +62,7 @@ class OutputDirectoryNfoTagsOptions(
              <title>Sweet youtube TV show</title>
            </tvshow>
 
-        Also supports xml attributes:
+        Also supports xml attributes and duplicate keys:
 
         .. code-block:: yaml
 
@@ -71,12 +71,17 @@ class OutputDirectoryNfoTagsOptions(
                attributes:
                  year: "2022"
                tag: "Sweet youtube TV show"
+             genre:
+               - "Comedy"
+               - "Drama"
 
         Which translates to
 
         .. code-block:: xml
 
            <title year="2022">Sweet youtube TV show</season>
+           <genre>Comedy</genre>
+           <genre>Drama</genre>
         """
         return self._tags
 

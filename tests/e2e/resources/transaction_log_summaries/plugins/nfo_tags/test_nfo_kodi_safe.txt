@@ -8,6 +8,26 @@ Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.nfo
     musicvideo:
       album: Music Videos
       artist: Rick Beato
+      kodi_safe_multi_title □:
+        - value 1 □
+        - value 2 □
+      kodi_safe_multi_title_with_attrs:
+        -
+          attributes:
+            □?:
+              value
+              newlines □
+          tag:
+            the
+             tag 1 □□
+        -
+          attributes:
+            □?:
+              value
+              newlines □
+          tag:
+            the
+             tag 2 □□
       kodi_safe_title □: kodi_safe_value □
       kodi_safe_title_with_attrs:
         attributes:
@@ -16,12 +36,32 @@ Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.nfo
             newlines □
         tag:
           the
-          tag □□
+           tag □□
       title: Can you hear the difference? □□ #shorts
       year: 2022
 test.nfo
   NFO tags:
     kodi_safe_root □:
+      kodi_safe_multi_title □:
+        - value 1 □
+        - value 2 □
+      kodi_safe_multi_title_with_attrs:
+        -
+          attributes:
+            □?:
+              value
+              newlines □
+          tag:
+            the
+             tag 1 □□
+        -
+          attributes:
+            □?:
+              value
+              newlines □
+          tag:
+            the
+             tag 2 □□
       kodi_safe_title □: kodi_safe_value □
       kodi_safe_title_with_attrs:
         attributes:
@@ -30,4 +70,4 @@ test.nfo
             newlines □
         tag:
           the
-          tag □□
+           tag □□

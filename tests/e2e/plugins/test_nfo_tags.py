@@ -23,6 +23,17 @@ def subscription_dict(output_directory):
                     "attributes": {"🎸?": "value\nnewlines 🎸"},
                     "tag": "the \n tag 🎸🎸",
                 },
+                "kodi_safe_multi_title 🎸": ["value 1 🎸", "value 2 🎸"],
+                "kodi_safe_multi_title_with_attrs": [
+                    {
+                        "attributes": {"🎸?": "value\nnewlines 🎸"},
+                        "tag": "the \n tag 1 🎸🎸",
+                    },
+                    {
+                        "attributes": {"🎸?": "value\nnewlines 🎸"},
+                        "tag": "the \n tag 2 🎸🎸",
+                    },
+                ],
             },
         },
         "output_directory_nfo_tags": {
@@ -34,6 +45,17 @@ def subscription_dict(output_directory):
                     "attributes": {"🎸?": "value\nnewlines 🎸"},
                     "tag": "the \n tag 🎸🎸",
                 },
+                "kodi_safe_multi_title 🎸": ["value 1 🎸", "value 2 🎸"],
+                "kodi_safe_multi_title_with_attrs": [
+                    {
+                        "attributes": {"🎸?": "value\nnewlines 🎸"},
+                        "tag": "the \n tag 1 🎸🎸",
+                    },
+                    {
+                        "attributes": {"🎸?": "value\nnewlines 🎸"},
+                        "tag": "the \n tag 2 🎸🎸",
+                    },
+                ],
             },
         },
     }
@@ -68,6 +90,20 @@ class TestNfoTagsPlugins:
         subscription_dict["output_directory_nfo_tags"]["tags"]["kodi_safe_title_with_attrs"][
             "attributes"
         ]["tag"] = "{title}"
+        with pytest.raises(ValidationException):
+            Subscription.from_dict(
+                config=music_video_config,
+                preset_name="kodi_safe_xml",
+                preset_dict=subscription_dict,
+            )
+
+    def test_source_variable_in_output_directory_nfo_tags_list_errors(
+        self, subscription_dict, music_video_config
+    ):
+        subscription_dict["output_directory_nfo_tags"]["tags"]["kodi_safe_title_with_attrs"] = [
+            "okay value",
+            "not okay {title}",
+        ]
         with pytest.raises(ValidationException):
             Subscription.from_dict(
                 config=music_video_config,

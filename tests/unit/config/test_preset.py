@@ -107,7 +107,8 @@ class TestPreset:
 
         nfo_options: NfoTagsOptions = preset.plugins.get(NfoTagsOptions)
         tags_string_dict = {
-            key: formatter.format_string for key, formatter in nfo_options.tags.string_tags.items()
+            key: formatter[0].format_string
+            for key, formatter in nfo_options.tags.string_tags.items()
         }
 
         assert tags_string_dict == {"key-1": "preset_0", "key-2": "this-preset"}
@@ -126,7 +127,8 @@ class TestPreset:
 
         nfo_options: NfoTagsOptions = preset.plugins.get(NfoTagsOptions)
         tags_string_dict = {
-            key: formatter.format_string for key, formatter in nfo_options.tags.string_tags.items()
+            key: formatter[0].format_string
+            for key, formatter in nfo_options.tags.string_tags.items()
         }
 
         assert tags_string_dict == {
