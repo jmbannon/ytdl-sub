@@ -11,19 +11,7 @@ Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.nfo
       kodi_safe_multi_title □:
       - value 1 □
       - value 2 □
-      - value 1 □
-      - value 2 □
       kodi_safe_multi_title_with_attrs:
-      - attributes:
-          □?: 'value
-
-            newlines □'
-        tag: "the \n tag 1 □□"
-      - attributes:
-          □?: 'value
-
-            newlines □'
-        tag: "the \n tag 2 □□"
       - attributes:
           □?: 'value
 
@@ -49,19 +37,7 @@ test.nfo
       kodi_safe_multi_title □:
       - value 1 □
       - value 2 □
-      - value 1 □
-      - value 2 □
       kodi_safe_multi_title_with_attrs:
-      - attributes:
-          □?: 'value
-
-            newlines □'
-        tag: "the \n tag 1 □□"
-      - attributes:
-          □?: 'value
-
-            newlines □'
-        tag: "the \n tag 2 □□"
       - attributes:
           □?: 'value
 

@@ -112,25 +112,23 @@ class SharedNfoTagsValidator(
             if not isinstance(tag_value, list):
                 tag_value = [tag_value]
 
-            # iterate each list, validate accordingly if it is a string tag or attribute tag
-            for tag_value_i in tag_value:
-                if isinstance(tag_value_i, str):
-                    self._string_tags[key].extend(
-                        self._validate_key(
-                            key=key,
-                            validator=self._tags_validator,
-                        ).list
-                    )
-                elif isinstance(tag_value_i, dict):
-                    self._attribute_tags[key].extend(
-                        self._validate_key(
-                            key=key, validator=self._tags_with_attributes_validator
-                        ).list
-                    )
-                else:
-                    raise self._validation_exception(
-                        "must either be a single or list of string/attribute object"
-                    )
+            if isinstance(tag_value[0], str):
+                self._string_tags[key].extend(
+                    self._validate_key(
+                        key=key,
+                        validator=self._tags_validator,
+                    ).list
+                )
+            elif isinstance(tag_value[0], dict):
+                self._attribute_tags[key].extend(
+                    self._validate_key(
+                        key=key, validator=self._tags_with_attributes_validator
+                    ).list
+                )
+            else:
+                raise self._validation_exception(
+                    "must either be a single or list of string/attribute object"
+                )
 
     @property
     def string_tags(self) -> Dict[str, List[TStringFormatterValidator]]:
