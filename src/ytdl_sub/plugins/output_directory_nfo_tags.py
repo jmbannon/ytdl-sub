@@ -71,9 +71,9 @@ class OutputDirectoryNfoTagsOptions(
                attributes:
                  year: "2022"
                tag: "Sweet youtube TV show"
-               genre:
-                 - "Comedy"
-                 - "Drama"
+             genre:
+               - "Comedy"
+               - "Drama"
 
         Which translates to
 
