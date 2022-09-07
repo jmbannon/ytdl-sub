@@ -9,8 +9,6 @@ from typing import Optional
 from typing import Set
 from typing import Union
 
-import yaml
-
 
 class FileMetadata:
     """
@@ -66,21 +64,21 @@ class FileMetadata:
             value_dict = json.loads(json.dumps(value_dict, sort_keys=True, ensure_ascii=False))
 
         def _indent_lines(value: str, indent: int) -> str:
-            if '\n' not in value:
+            if "\n" not in value:
                 return value
 
-            output_str = ''
+            output_str = ""
             _indent = " " * indent
-            for line in value.split('\n'):
+            for line in value.split("\n"):
                 output_str += f"{_indent}{line}\n"
-            return output_str
+            return f"{output_str.rstrip()}\n"
 
         def _single_value(value: Any) -> Optional[str]:
             if isinstance(value, list) and len(value) == 1:
                 return _single_value(value=value[0])
             if isinstance(value, (dict, list)):
                 return None
-            if isinstance(value, str) and '\n' in value:
+            if isinstance(value, str) and "\n" in value:
                 return None
             return value
 
@@ -108,7 +106,7 @@ class FileMetadata:
             elif isinstance(value, str):  # multi-line string
                 output_str += _indent_lines(value, indent=indent + 2)
             else:
-                assert False, 'should never reach here'
+                assert False, "should never reach here"
             return output_str
 
         out = _recursive_lines(value_dict).rstrip().split("\n")
