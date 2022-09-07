@@ -15,28 +15,28 @@ Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.nfo
         -
           attributes:
             🎸?:
-                value
-                newlines 🎸
+              value
+              newlines 🎸
           tag:
-              the
-               tag 1 🎸🎸
+            the
+             tag 1 🎸🎸
         -
           attributes:
             🎸?:
-                value
-                newlines 🎸
+              value
+              newlines 🎸
           tag:
-              the
-               tag 2 🎸🎸
+            the
+             tag 2 🎸🎸
       kodi_safe_title 🎸: kodi_safe_value 🎸
       kodi_safe_title_with_attrs:
         attributes:
           🎸?:
-              value
-              newlines 🎸
+            value
+            newlines 🎸
         tag:
-            the
-             tag 🎸🎸
+          the
+           tag 🎸🎸
       title: Can you hear the difference? 🎸🔥 #shorts
       year: 2022
 test.nfo
@@ -49,25 +49,25 @@ test.nfo
         -
           attributes:
             🎸?:
-                value
-                newlines 🎸
+              value
+              newlines 🎸
           tag:
-              the
-               tag 1 🎸🎸
+            the
+             tag 1 🎸🎸
         -
           attributes:
             🎸?:
-                value
-                newlines 🎸
+              value
+              newlines 🎸
           tag:
-              the
-               tag 2 🎸🎸
+            the
+             tag 2 🎸🎸
       kodi_safe_title 🎸: kodi_safe_value 🎸
       kodi_safe_title_with_attrs:
         attributes:
           🎸?:
-              value
-              newlines 🎸
+            value
+            newlines 🎸
         tag:
-            the
-             tag 🎸🎸
+          the
+           tag 🎸🎸

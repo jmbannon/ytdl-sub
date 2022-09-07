@@ -104,7 +104,7 @@ class FileMetadata:
                         output_str += f"{_indent}- \n"
                         output_str += _indent_lines(_recursive_lines(sub_value), indent=indent + 2)
             elif isinstance(value, str):  # multi-line string
-                output_str += _indent_lines(value, indent=indent + 2)
+                output_str += _indent_lines(value, indent=indent)
             else:
                 assert False, "should never reach here"
             return output_str
