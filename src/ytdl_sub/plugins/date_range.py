@@ -52,7 +52,7 @@ class DateRangePlugin(Plugin[DateRangeOptions]):
         """
         Returns
         -------
-        YTDL options for extracting audio
+        YTDL options for setting a date range
         """
         ytdl_options_builder = YTDLOptionsBuilder()
 
@@ -62,6 +62,6 @@ class DateRangePlugin(Plugin[DateRangeOptions]):
             overrides=self.overrides,
         )
         if source_date_range:
-            ytdl_options_builder.add({"daterange": source_date_range})
+            ytdl_options_builder.add({"daterange": source_date_range, "break_on_reject": True})
 
         return ytdl_options_builder.to_dict()
