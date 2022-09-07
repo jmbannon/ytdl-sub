@@ -19,7 +19,6 @@ Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo
           Credits:
           ALISON - Space Echo
           https://www.youtube.com/watch?v=lPldcjlv3_Y
-
       season: 2018
       title: Jesse's Minecraft Server | Teaser Trailer
       year: 2018
@@ -45,7 +44,6 @@ Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.nfo
           Credits:
           ALISON - Space Echo
           https://www.youtube.com/watch?v=lPldcjlv3_Y
-
       season: 2018
       title: Jesse's Minecraft Server | IP mc.jesse.id
       year: 2018
