@@ -10,7 +10,7 @@ JMC - Jesse's Minecraft Server [Trailer - Feb.1].nfo
       album: Music Videos
       artist: JMC
       title: Jesse's Minecraft Server [Trailer - Feb.1]
-      year: 2011
+      year: '2011'
 JMC - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
 JMC - Jesse's Minecraft Server [Trailer - Feb.27].info.json
 JMC - Jesse's Minecraft Server [Trailer - Feb.27].mp4
@@ -20,7 +20,7 @@ JMC - Jesse's Minecraft Server [Trailer - Feb.27].nfo
       album: Music Videos
       artist: JMC
       title: Jesse's Minecraft Server [Trailer - Feb.27]
-      year: 2011
+      year: '2011'
 JMC - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
 JMC - Jesse's Minecraft Server [Trailer - Mar.21].info.json
 JMC - Jesse's Minecraft Server [Trailer - Mar.21].mp4
@@ -30,7 +30,7 @@ JMC - Jesse's Minecraft Server [Trailer - Mar.21].nfo
       album: Music Videos
       artist: JMC
       title: Jesse's Minecraft Server [Trailer - Mar.21]
-      year: 2011
+      year: '2011'
 tvshow.nfo
   NFO tags:
     test:

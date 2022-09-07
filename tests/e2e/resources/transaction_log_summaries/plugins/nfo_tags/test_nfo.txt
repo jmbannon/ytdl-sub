@@ -5,79 +5,53 @@ Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.3gp
 Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.info.json
 Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.nfo
   NFO tags:
-        album: Music Videos
-        artist: Rick Beato
-          - value 1 🎸
-          - value 2 🎸
-          - value 1 🎸
-          - value 2 🎸
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-              tag 1 🎸🎸
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-              tag 2 🎸🎸
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-              tag 1 🎸🎸
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-              tag 2 🎸🎸
-        kodi_safe_title 🎸: kodi_safe_value 🎸
-            🎸?:
-              value
-              newlines 🎸
-          tag:
-            the
-            tag 🎸🎸
-        title: Can you hear the difference? 🎸🔥 #shorts
-        year: 2022
+    musicvideo:
+      album: Music Videos
+      artist: Rick Beato
+      kodi_safe_multi_title 🎸:
+      - value 1 🎸
+      - value 2 🎸
+      kodi_safe_multi_title_with_attrs:
+      - attributes:
+          🎸?: 'value
+
+            newlines 🎸'
+        tag: "the \n tag 1 \U0001F3B8\U0001F3B8"
+      - attributes:
+          🎸?: 'value
+
+            newlines 🎸'
+        tag: "the \n tag 2 \U0001F3B8\U0001F3B8"
+      kodi_safe_title 🎸: kodi_safe_value 🎸
+      kodi_safe_title_with_attrs:
+        attributes:
+          🎸?: 'value
+
+            newlines 🎸'
+        tag: "the \n tag \U0001F3B8\U0001F3B8"
+      title: 'Can you hear the difference? 🎸🔥 #shorts'
+      year: '2022'
 test.nfo
   NFO tags:
-          - value 1 🎸
-          - value 2 🎸
-          - value 1 🎸
-          - value 2 🎸
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-              tag 1 🎸🎸
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-              tag 2 🎸🎸
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-              tag 1 🎸🎸
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-              tag 2 🎸🎸
-        kodi_safe_title 🎸: kodi_safe_value 🎸
-            🎸?:
-              value
-              newlines 🎸
-          tag:
-            the
-            tag 🎸🎸
+    kodi_safe_root 🎸:
+      kodi_safe_multi_title 🎸:
+      - value 1 🎸
+      - value 2 🎸
+      kodi_safe_multi_title_with_attrs:
+      - attributes:
+          🎸?: 'value
+
+            newlines 🎸'
+        tag: "the \n tag 1 \U0001F3B8\U0001F3B8"
+      - attributes:
+          🎸?: 'value
+
+            newlines 🎸'
+        tag: "the \n tag 2 \U0001F3B8\U0001F3B8"
+      kodi_safe_title 🎸: kodi_safe_value 🎸
+      kodi_safe_title_with_attrs:
+        attributes:
+          🎸?: 'value
+
+            newlines 🎸'
+        tag: "the \n tag \U0001F3B8\U0001F3B8"

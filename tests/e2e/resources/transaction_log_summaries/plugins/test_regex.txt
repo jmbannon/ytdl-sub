@@ -19,7 +19,7 @@ Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].nfo
       title_cap_1_sanitized: Trailer
       title_cap_2: Feb.1
       upload_date_both_caps: First and Second containing in regex default
-      year: 2011
+      year: '2011'
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27].info.json
 Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27].mp4
@@ -38,4 +38,4 @@ Project Zombie - Jesse's Minecraft Server [Trailer - Feb.27].nfo
       title_cap_1_sanitized: Trailer
       title_cap_2: Feb.27
       upload_date_both_caps: 2011 and 02
-      year: 2011
+      year: '2011'

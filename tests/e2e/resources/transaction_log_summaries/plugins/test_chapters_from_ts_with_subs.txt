@@ -9,16 +9,14 @@ JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4
     0:20: Part 2
     0:30: Part 3
     0:40: Part 4
-    1:01: Part 5
+    '1:01': Part 5
   Embedded subtitles with lang(s) en, de
   Video Tags:
-    description:
-      🎸 / ' "
-      newline?
+    description: "\U0001F3B8 / ' \" \n newline?"
 JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.nfo
   NFO tags:
     musicvideo:
       album: Music Videos
       artist: JMC
       title: This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case
-      year: 2021
+      year: '2021'

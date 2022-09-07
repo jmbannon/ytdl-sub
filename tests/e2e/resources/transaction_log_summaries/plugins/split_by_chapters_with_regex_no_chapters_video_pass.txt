@@ -8,6 +8,6 @@ Oblivion Mod "Falcor" p.1/01 - Oblivion Mod "Falcor" p.1.mp3
     artist: Project Zombie
     genre: Unset
     title: Oblivion Mod "Falcor" p.1
-    track: 1
-    year: 2010
+    track: '1'
+    year: '2010'
 Oblivion Mod "Falcor" p.1/folder.jpg

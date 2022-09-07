@@ -28,6 +28,7 @@ from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatt
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
+from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringListValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
@@ -244,28 +245,30 @@ class Preset(StrictDictValidator):
 
     def __recursive_preset_validate(
         self,
-        validator_dict: Optional[Dict[str, Validator]] = None,
+        validator: Optional[Validator] = None,
     ) -> None:
         """
         Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
         and resolve.
         """
-        if validator_dict is None:
-            validator_dict = self._validator_dict
+        if validator is None:
+            validator = self
 
-        for validator in validator_dict.values():
-            if isinstance(validator, DictValidator):
-                # pylint: disable=protected-access
-                # Usage of protected variables in other validators is fine. The reason to keep them
-                # protected is for readability when using them in subscriptions.
-                self.__recursive_preset_validate(validator._validator_dict)
-                # pylint: enable=protected-access
-
-            if isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
-                self.__validate_override_string_formatter_validator(validator)
-            if isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
-                for validator_value in validator.dict.values():
-                    self.__validate_override_string_formatter_validator(validator_value)
+        if isinstance(validator, DictValidator):
+            # pylint: disable=protected-access
+            # Usage of protected variables in other validators is fine. The reason to keep
+            # them protected is for readability when using them in subscriptions.
+            for validator_value in validator._validator_dict.values():
+                self.__recursive_preset_validate(validator_value)
+            # pylint: enable=protected-access
+        elif isinstance(validator, ListValidator):
+            for list_value in validator.list:
+                self.__recursive_preset_validate(list_value)
+        elif isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
+            self.__validate_override_string_formatter_validator(validator)
+        elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
+            for validator_value in validator.dict.values():
+                self.__validate_override_string_formatter_validator(validator_value)
 
     def __merge_parent_preset_dicts_if_present(self, config: ConfigFile):
         parent_preset_validator = self._validate_key_if_present(
