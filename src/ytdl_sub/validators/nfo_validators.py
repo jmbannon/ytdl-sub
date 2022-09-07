@@ -7,11 +7,13 @@ from typing import Type
 from typing import TypeVar
 
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator, \
+    ListFormatterValidator, ListOverridesFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
+from ytdl_sub.validators.validators import ListValidator
 
 TStringFormatterValidator = TypeVar("TStringFormatterValidator", bound=StringFormatterValidator)
 TDictFormatterValidator = TypeVar("TDictFormatterValidator", bound=DictFormatterValidator)
@@ -55,8 +57,16 @@ class _NfoTagsWithAttributesValidator(
 class NfoTagsWithAttributesValidator(
     _NfoTagsWithAttributesValidator[StringFormatterValidator, DictFormatterValidator]
 ):
+    """TagsWithAttributes for the entry NFO validator"""
+
     formatter_validator = StringFormatterValidator
     dict_formatter_validator = DictFormatterValidator
+
+
+class NfoTagsWithAttributesListValidator(ListValidator[NfoTagsWithAttributesValidator]):
+    """TagsWithAttributes list for the entry NFO validator"""
+
+    _inner_list_type = NfoTagsWithAttributesValidator
 
 
 class NfoOverrideTagsWithAttributesValidator(
@@ -64,25 +74,37 @@ class NfoOverrideTagsWithAttributesValidator(
         OverridesStringFormatterValidator, OverridesDictFormatterValidator
     ]
 ):
+    """TagsWithAttributes for the output directory NFO validator"""
+
     formatter_validator = OverridesStringFormatterValidator
     dict_formatter_validator = OverridesDictFormatterValidator
 
 
-TNfoTagsWithAttributesValidator = _NfoTagsWithAttributesValidator[
-    TStringFormatterValidator, TDictFormatterValidator
-]
+class NfoOverrideTagsWithAttributesListValidator(
+    ListValidator[NfoOverrideTagsWithAttributesValidator]
+):
+    """TagsWithAttributes list for the output directory NFO validator"""
+    _inner_list_type = NfoOverrideTagsWithAttributesValidator
+
+
+# Generic TagsWithAttribute to use for SharedNfoTagsValidator
+TNfoTagsWithAttributesValidator = _NfoTagsWithAttributesValidator[TStringFormatterValidator, TDictFormatterValidator]
+
+# List validators
+TNfoTagsWithAttributesListValidator = ListValidator[TNfoTagsWithAttributesValidator]
+TNfoTagsListValidator = ListValidator[TStringFormatterValidator]
 
 
 class SharedNfoTagsValidator(
-    DictValidator, Generic[TStringFormatterValidator, TDictFormatterValidator], ABC
+    DictValidator, ABC
 ):
-
-    _tags_with_attributes_validator: Type[TNfoTagsWithAttributesValidator]
+    _tags_validator: Type[TNfoTagsListValidator]
+    _tags_with_attributes_validator: Type[TNfoTagsWithAttributesListValidator]
 
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._string_tags: Dict[str, List[StringFormatterValidator]] = defaultdict(list)
+        self._string_tags: Dict[str, List[TStringFormatterValidator]] = defaultdict(list)
         self._attribute_tags: Dict[str, List[TNfoTagsWithAttributesValidator]] = defaultdict(list)
 
         for key, tag_value in self._dict.items():
@@ -93,15 +115,17 @@ class SharedNfoTagsValidator(
             # iterate each list, validate accordingly if it is a string tag or attribute tag
             for tag_value_i in tag_value:
                 if isinstance(tag_value_i, str):
-                    self._string_tags[key].append(
+                    self._string_tags[key].extend(
                         self._validate_key(
                             key=key,
-                            validator=self._tags_with_attributes_validator.formatter_validator,
-                        )
+                            validator=self._tags_validator,
+                        ).list
                     )
                 elif isinstance(tag_value_i, dict):
-                    self._attribute_tags[key].append(
-                        self._validate_key(key=key, validator=self._tags_with_attributes_validator)
+                    self._attribute_tags[key].extend(
+                        self._validate_key(
+                            key=key, validator=self._tags_with_attributes_validator
+                        ).list
                     )
                 else:
                     raise self._validation_exception(
@@ -109,7 +133,7 @@ class SharedNfoTagsValidator(
                     )
 
     @property
-    def string_tags(self) -> Dict[str, List[StringFormatterValidator]]:
+    def string_tags(self) -> Dict[str, List[TStringFormatterValidator]]:
         """
         Returns
         -------
@@ -127,11 +151,11 @@ class SharedNfoTagsValidator(
         return self._attribute_tags
 
 
-class NfoTagsValidator(SharedNfoTagsValidator[StringFormatterValidator, DictFormatterValidator]):
-    _tags_with_attributes_validator = NfoTagsWithAttributesValidator
+class NfoTagsValidator(SharedNfoTagsValidator):
+    _tags_validator = ListFormatterValidator
+    _tags_with_attributes_validator = NfoTagsWithAttributesListValidator
 
 
-class NfoOverrideTagsValidator(
-    SharedNfoTagsValidator[OverridesStringFormatterValidator, OverridesDictFormatterValidator]
-):
-    _tags_with_attributes_validator = NfoOverrideTagsWithAttributesValidator
+class NfoOverrideTagsValidator(SharedNfoTagsValidator):
+    _tags_validator = ListOverridesFormatterValidator
+    _tags_with_attributes_validator = NfoOverrideTagsWithAttributesListValidator

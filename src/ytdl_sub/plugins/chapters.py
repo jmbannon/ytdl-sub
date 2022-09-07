@@ -334,7 +334,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
             chapters = Chapters.from_timestamps_file(
                 chapters_file_path=self.plugin_options.embed_chapter_timestamps
             )
-            return chapters.to_file_metadata(title="Chapters embedded from timestamp file:")
+            return chapters.to_file_metadata(title="Chapters embedded from timestamp file")
 
         if self.plugin_options.embed_chapters:
             metadata_dict = {}

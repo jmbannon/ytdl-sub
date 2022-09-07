@@ -1,5 +1,6 @@
 import os
 from abc import ABC
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict
 from typing import Generic
@@ -97,19 +98,19 @@ class SharedNfoTagsPlugin(
     """
 
     def _get_xml_element_dict(self, entry: Optional[Entry]) -> Dict[str, List[XmlElement]]:
-        nfo_tags: Dict[str, List[XmlElement]] = {}
+        nfo_tags: Dict[str, List[XmlElement]] = defaultdict(list)
 
         for key, string_tags in self.plugin_options.tags.string_tags.items():
-            nfo_tags[key] = [
+            nfo_tags[key].extend(
                 XmlElement(
                     text=self.overrides.apply_formatter(formatter=string_tag, entry=entry),
                     attributes={},
                 )
                 for string_tag in string_tags
-            ]
+            )
 
         for key, attribute_tags in self.plugin_options.tags.attribute_tags.items():
-            nfo_tags[key] = [
+            nfo_tags[key].extend(
                 XmlElement(
                     text=self.overrides.apply_formatter(formatter=attribute_tag.tag, entry=entry),
                     attributes={
@@ -120,7 +121,7 @@ class SharedNfoTagsPlugin(
                     },
                 )
                 for attribute_tag in attribute_tags
-            ]
+            )
 
         return nfo_tags
 
@@ -168,7 +169,7 @@ class SharedNfoTagsPlugin(
                     for key, xml_elems in nfo_tags.items()
                 }
             },
-            title="NFO tags:",
+            title="NFO tags",
         )
         self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
 

@@ -84,4 +84,4 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
             audio_file.save()
 
         # report the tags written
-        return FileMetadata.from_dict(value_dict=tags_to_write, title="Music Tags:")
+        return FileMetadata.from_dict(value_dict=tags_to_write, title="Music Tags")

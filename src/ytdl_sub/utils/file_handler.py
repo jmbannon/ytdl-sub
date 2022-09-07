@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 from pathlib import Path
@@ -7,6 +8,7 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Union
+import yaml
 
 
 class FileMetadata:
@@ -56,32 +58,13 @@ class FileMetadata:
         sort_dict
             Whether to sort dicts in the value_dict. Defaults to true.
         """
-        lines: List[str] = []
-        if title is not None:
-            lines.append(title)
+        if title:
+            value_dict = {title: value_dict}
+        if sort_dict:
+            value_dict = json.loads(json.dumps(value_dict, sort_keys=True))
 
-        def _recursive_add_dict_lines(rdict: Dict, indent: int):
-            rdict_items = rdict.items()
-            if sort_dict:
-                rdict_items = sorted(rdict_items)
-
-            for key, value in rdict_items:
-                _indent = " " * indent
-                if isinstance(value, Dict):
-                    lines.append(f"{_indent}{key}:")
-                    _recursive_add_dict_lines(rdict=value, indent=indent + 2)
-                else:
-                    value = str(value)
-                    # If there are newlines in the value, print them indented
-                    if "\n" in value:
-                        lines.append(f"{_indent}{key}:")
-                        for value_line in value.split("\n"):
-                            lines.append(f"  {_indent}{value_line.strip()}")
-                    else:
-                        lines.append(f"{_indent}{key}: {value}")
-
-        _recursive_add_dict_lines(rdict=value_dict, indent=2)
-        return cls(metadata=lines)
+        out = yaml.safe_dump(value_dict, allow_unicode=True, indent=2, default_style='', width=100)
+        return cls(metadata=out.rstrip().split('\n'))
 
 
 class FileHandlerTransactionLog:

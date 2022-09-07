@@ -59,4 +59,4 @@ class VideoTagsPlugin(Plugin[VideoTagsOptions]):
             )
 
         # report the tags written
-        return FileMetadata.from_dict(value_dict=tags_to_write, title="Video Tags:")
+        return FileMetadata.from_dict(value_dict=tags_to_write, title="Video Tags")

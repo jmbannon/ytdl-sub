@@ -122,7 +122,7 @@ class YoutubeMergePlaylistDownloader(
                 file_duration_sec=merged_video.kwargs("duration"),
             )
 
-        return chapters.to_file_metadata(title="Timestamps of playlist videos in the merged file:")
+        return chapters.to_file_metadata(title="Timestamps of playlist videos in the merged file")
 
     def _to_merged_video(self, entry_dict: Dict) -> YoutubeVideo:
         """

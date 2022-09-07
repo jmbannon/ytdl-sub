@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as et
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, List
 from typing import Dict
 from typing import Union
 
@@ -59,7 +59,7 @@ def to_max_3_byte_utf8_dict(string_dict: Dict[str, str]) -> Dict[str, str]:
     }
 
 
-def to_xml(nfo_dict: Dict[str, XmlElement], nfo_root: str) -> bytes:
+def to_xml(nfo_dict: Dict[str, List[XmlElement]], nfo_root: str) -> bytes:
     """
     Transforms a dict to XML
 
@@ -75,10 +75,11 @@ def to_xml(nfo_dict: Dict[str, XmlElement], nfo_root: str) -> bytes:
     XML bytes
     """
     xml_root = et.Element(nfo_root)
-    for key, xml_elem in sorted(nfo_dict.items()):
-        sorted_attr = dict(sorted(xml_elem.attributes.items()))
-        sub_element = et.SubElement(xml_root, key, sorted_attr)
-        sub_element.text = xml_elem.text
+    for key, xml_elems in sorted(nfo_dict.items()):
+        for xml_elem in xml_elems:
+            sorted_attr = dict(sorted(xml_elem.attributes.items()))
+            sub_element = et.SubElement(xml_root, key, sorted_attr)
+            sub_element.text = xml_elem.text
 
     et.indent(tree=xml_root, space="  ", level=0)
     return et.tostring(element=xml_root, encoding="utf-8", xml_declaration=True)

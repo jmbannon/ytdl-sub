@@ -33,7 +33,7 @@ def subscription_dict(output_directory):
                         "attributes": {"🎸?": "value\nnewlines 🎸"},
                         "tag": "the \n tag 2 🎸🎸",
                     },
-                ]
+                ],
             },
         },
         "output_directory_nfo_tags": {
@@ -55,7 +55,7 @@ def subscription_dict(output_directory):
                         "attributes": {"🎸?": "value\nnewlines 🎸"},
                         "tag": "the \n tag 2 🎸🎸",
                     },
-                ]
+                ],
             },
         },
     }
@@ -82,7 +82,7 @@ class TestNfoTagsPlugins:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name=f"plugins/nfo_tags/{transaction_log_file_name}",
-            regenerate_transaction_log=True
+            regenerate_transaction_log=True,
         )
 
     def test_source_variable_in_output_directory_nfo_tags_errors(
