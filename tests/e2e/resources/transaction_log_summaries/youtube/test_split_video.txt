@@ -20,7 +20,7 @@ Project Zombie - Intro.nfo
       album: Music Videos
       artist: Project Zombie
       title: Intro
-      year: '2010'
+      year: 2010
 Project Zombie - Part 1-thumb.jpg
 Project Zombie - Part 1.info.json
 Project Zombie - Part 1.nfo
@@ -29,7 +29,7 @@ Project Zombie - Part 1.nfo
       album: Music Videos
       artist: Project Zombie
       title: Part 1
-      year: '2010'
+      year: 2010
 Project Zombie - Part 2-thumb.jpg
 Project Zombie - Part 2.info.json
 Project Zombie - Part 2.nfo
@@ -38,7 +38,7 @@ Project Zombie - Part 2.nfo
       album: Music Videos
       artist: Project Zombie
       title: Part 2
-      year: '2010'
+      year: 2010
 Project Zombie - Part 3-thumb.jpg
 Project Zombie - Part 3.info.json
 Project Zombie - Part 3.nfo
@@ -47,7 +47,7 @@ Project Zombie - Part 3.nfo
       album: Music Videos
       artist: Project Zombie
       title: Part 3
-      year: '2010'
+      year: 2010
 Project Zombie - Part 4-thumb.jpg
 Project Zombie - Part 4.info.json
 Project Zombie - Part 4.nfo
@@ -56,7 +56,7 @@ Project Zombie - Part 4.nfo
       album: Music Videos
       artist: Project Zombie
       title: Part 4
-      year: '2010'
+      year: 2010
 Project Zombie - Part 5-thumb.jpg
 Project Zombie - Part 5.info.json
 Project Zombie - Part 5.nfo
@@ -65,4 +65,4 @@ Project Zombie - Part 5.nfo
       album: Music Videos
       artist: Project Zombie
       title: Part 5
-      year: '2010'
+      year: 2010

@@ -11,147 +11,147 @@ Intro (Feat. Racheal Ofori & Barney Artist).info.json
 No Peace (Feat. Tom Misch).info.json
 Nocturne/01 - Intro (Feat. Racheal Ofori & Barney Artist).mp3
   From Chapter Split:
-    Segment: 0:00 - 2:06
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 0:00 - 2:06
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: Intro (Feat. Racheal Ofori & Barney Artist)
-    track: '1'
-    year: '2017'
+    track: 1
+    year: 2017
 Nocturne/02 - Answers (Feat. Rick David & Kaya Thomas - Dyke).mp3
   From Chapter Split:
-    Segment: 2:06 - 5:40
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 2:06 - 5:40
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: Answers (Feat. Rick David & Kaya Thomas - Dyke)
-    track: '2'
-    year: '2017'
+    track: 2
+    year: 2017
 Nocturne/03 - Blaze (Feat. Kaya Thomas - Dyke).mp3
   From Chapter Split:
-    Segment: 5:40 - 8:11
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 5:40 - 8:11
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: Blaze (Feat. Kaya Thomas - Dyke)
-    track: '3'
-    year: '2017'
+    track: 3
+    year: 2017
 Nocturne/04 - What If (Interlude).mp3
   From Chapter Split:
-    Segment: 8:11 - 9:35
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 8:11 - 9:35
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: What If (Interlude)
-    track: '4'
-    year: '2017'
+    track: 4
+    year: 2017
 Nocturne/05 - No Peace (Feat. Tom Misch).mp3
   From Chapter Split:
-    Segment: 9:35 - 13:19
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 9:35 - 13:19
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: No Peace (Feat. Tom Misch)
-    track: '5'
-    year: '2017'
+    track: 5
+    year: 2017
 Nocturne/06 - Closer (Feat. Lester Duval).mp3
   From Chapter Split:
-    Segment: 13:19 - 17:57
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 13:19 - 17:57
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: Closer (Feat. Lester Duval)
-    track: '6'
-    year: '2017'
+    track: 6
+    year: 2017
 Nocturne/07 - Delusions: Rumination (Interlude) (Feat. Racheal Ofori).mp3
   From Chapter Split:
-    Segment: 17:57 - 20:05
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 17:57 - 20:05
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
-    title: 'Delusions: Rumination (Interlude) (Feat. Racheal Ofori)'
-    track: '7'
-    year: '2017'
+    title: Delusions: Rumination (Interlude) (Feat. Racheal Ofori)
+    track: 7
+    year: 2017
 Nocturne/08 - Dreams (Feat. Carmody).mp3
   From Chapter Split:
-    Segment: 20:05 - 23:58
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 20:05 - 23:58
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: Dreams (Feat. Carmody)
-    track: '8'
-    year: '2017'
+    track: 8
+    year: 2017
 Nocturne/09 - Dreaming (Interlude) (Feat. Racheal Ofori).mp3
   From Chapter Split:
-    Segment: 23:58 - 24:45
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 23:58 - 24:45
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: Dreaming (Interlude) (Feat. Racheal Ofori)
-    track: '9'
-    year: '2017'
+    track: 9
+    year: 2017
 Nocturne/10 - Hopeful (Feat. Jordan Rakei).mp3
   From Chapter Split:
-    Segment: 24:45 - 28:53
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 24:45 - 28:53
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: Hopeful (Feat. Jordan Rakei)
-    track: '10'
-    year: '2017'
+    track: 10
+    year: 2017
 Nocturne/11 - Sunrise (Pillows) (Feat. Emmavie).mp3
   From Chapter Split:
-    Segment: 28:53 - 31:43
-    Source Title: Alfa Mist - Nocturne [Full Album]
     Warning: Dry-run assumes embedded chapters with no modifications
+    Source Title: Alfa Mist - Nocturne [Full Album]
+    Segment: 28:53 - 31:43
   Music Tags:
     album: Nocturne
     albumartist: Alfa Mist
     artist: Alfa Mist
     genre: Unset
     title: Sunrise (Pillows) (Feat. Emmavie)
-    track: '11'
-    year: '2017'
+    track: 11
+    year: 2017
 Nocturne/folder.jpg
 Sunrise (Pillows) (Feat. Emmavie).info.json
 What If (Interlude).info.json

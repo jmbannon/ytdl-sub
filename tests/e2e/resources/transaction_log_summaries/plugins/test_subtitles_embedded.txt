@@ -9,5 +9,5 @@ JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.nfo
     musicvideo:
       album: Music Videos
       artist: JMC
-      title: 'YouTube Rewind 2019: For the Record | #YouTubeRewind'
-      year: '2019'
+      title: YouTube Rewind 2019: For the Record | #YouTubeRewind
+      year: 2019

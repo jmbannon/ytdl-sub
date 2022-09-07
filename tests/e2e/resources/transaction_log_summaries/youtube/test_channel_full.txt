@@ -7,326 +7,263 @@ Season 2010/s2010.e0813 - Oblivion Mod ＂Falcor＂ p.1.mp4
 Season 2010/s2010.e0813 - Oblivion Mod ＂Falcor＂ p.1.nfo
   NFO tags:
     episodedetails:
-      aired: '2010-08-13'
-      episode: '813'
-      plot: "PLEASE WATCH IN HD!\r\n\r\nThis is the castle in the mod \"Falcor\" which we are currently\
-        \ working on.\r\nYou can find some more information about the mod @ http://www.oblivionfalcormod.webs.com/\r\
-        \n\r\nThis is the first time I've really used the editor, and the beginning of our first mod.  Hope\
-        \ you enjoy."
-      season: '2010'
+      aired: 2010-08-13
+      episode: 813
+      plot:
+          PLEASE WATCH IN HD!
+
+          This is the castle in the mod "Falcor" which we are currently working on.
+          You can find some more information about the mod @ http://www.oblivionfalcormod.webs.com/
+
+          This is the first time I've really used the editor, and the beginning of our first mod.  Hope you enjoy.
+
+      season: 2010
       title: Oblivion Mod "Falcor" p.1
-      year: '2010'
+      year: 2010
 Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2-thumb.jpg
 Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2.info.json
 Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2.mp4
 Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2.nfo
   NFO tags:
     episodedetails:
-      aired: '2010-12-02'
-      episode: '1202'
-      plot: 'PLEASE WATCH IN HD.
+      aired: 2010-12-02
+      episode: 1202
+      plot:
+          PLEASE WATCH IN HD.
 
+          Download Link:
+          http://www.tesnexus.com/downloads/file.php?id=36306
 
-        Download Link:
+          Please keep in mind that the mod is not complete, so you'll see some blank areas during the video.  I haven't made LOD (Level of Distance) yet either, so areas far away will not appear.
 
-        http://www.tesnexus.com/downloads/file.php?id=36306
-
-
-        Please keep in mind that the mod is not complete, so you''ll see some blank areas during the video.  I
-        haven''t made LOD (Level of Distance) yet either, so areas far away will not appear.'
-      season: '2010'
+      season: 2010
       title: Oblivion Mod "Falcor" p.2
-      year: '2010'
+      year: 2010
 Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
 Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
 Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
 Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
   NFO tags:
     episodedetails:
-      aired: '2011-02-01'
-      episode: '201'
-      plot: 'To join the server, you must apply at:
+      aired: 2011-02-01
+      episode: 201
+      plot:
+          To join the server, you must apply at:
+          http://www.jesseminecraft.webs.com/
 
-        http://www.jesseminecraft.webs.com/
+          This is just a brief video of the server as of Feb. 1, 2011.
 
+          Texture Pack I Use:
+          http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
 
-        This is just a brief video of the server as of Feb. 1, 2011.
-
-
-        Texture Pack I Use:
-
-        http://www.minecraftforum.net/viewtopic.php?f=25&t=29164'
-      season: '2011'
+      season: 2011
       title: Jesse's Minecraft Server [Trailer - Feb.1]
-      year: '2011'
+      year: 2011
 Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
 Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].info.json
 Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].mp4
 Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].nfo
   NFO tags:
     episodedetails:
-      aired: '2011-02-27'
-      episode: '227'
-      plot: 'Website Link:
+      aired: 2011-02-27
+      episode: 227
+      plot:
+          Website Link:
+          http://jesseminecraft.webs.com/
 
-        http://jesseminecraft.webs.com/
+          All you have to do is read the rules, and fill out a quick, little application to join the Server so we know you read them. We do this to keep the griefers/newbs out, it only takes three minutes, it's not that big of a deal.
 
+          Jesse's Minecraft Server is a City Roleplay/Survival Server, there is a currency, public transportation, strict rules for immersive gameplay, and has a decent size population. Over 750 people have logged onto the server. It is very important you read the rules, we don't tolerate idiots.
 
-        All you have to do is read the rules, and fill out a quick, little application to join the Server
-        so we know you read them. We do this to keep the griefers/newbs out, it only takes three minutes,
-        it''s not that big of a deal.
+          There are over 200 empty properties that are ready for anyone to own! Join now!
 
+          This is the server state as of Feb. 27, 2011.
+          ----------------------------------------------------------------------------------
 
-        Jesse''s Minecraft Server is a City Roleplay/Survival Server, there is a currency, public transportation,
-        strict rules for immersive gameplay, and has a decent size population. Over 750 people have logged
-        onto the server. It is very important you read the rules, we don''t tolerate idiots.
+          Texture Pack:
+          http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
 
+          Recording Software:
+          http://www.fraps.com/download.php
 
-        There are over 200 empty properties that are ready for anyone to own! Join now!
+          Video Editing Software:
+          http://explore.live.com/windows-live-movie-maker?os=other
 
+          Song:
+          Given to Fly - Pearl Jam
+          (Off of the 'Yield' album)
 
-        This is the server state as of Feb. 27, 2011.
+          I claim no ownership of this song, all the credit goes to Pearl Jam and their producers.
 
-        ----------------------------------------------------------------------------------
-
-
-        Texture Pack:
-
-        http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
-
-
-        Recording Software:
-
-        http://www.fraps.com/download.php
-
-
-        Video Editing Software:
-
-        http://explore.live.com/windows-live-movie-maker?os=other
-
-
-        Song:
-
-        Given to Fly - Pearl Jam
-
-        (Off of the ''Yield'' album)
-
-
-        I claim no ownership of this song, all the credit goes to Pearl Jam and their producers.'
-      season: '2011'
+      season: 2011
       title: Jesse's Minecraft Server [Trailer - Feb.27]
-      year: '2011'
+      year: 2011
 Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
 Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].info.json
 Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].mp4
 Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].nfo
   NFO tags:
     episodedetails:
-      aired: '2011-03-21'
-      episode: '321'
-      plot: 'Website Link:
+      aired: 2011-03-21
+      episode: 321
+      plot:
+          Website Link:
+          http://jesseminecraft.webs.com/
 
-        http://jesseminecraft.webs.com/
+          To get on the whitelist, please look at the website linked above (^^^). Due to the overwhelming amount of people trying to join, I've made it so it costs $2 to become a member through paypal. All of it is explained on the website.
 
+          Jesse's Minecraft Server is a City Roleplay/Survival Server, there is a currency, public transportation, strict rules for immersive gameplay, and has a decent size population. Over 1000 people have logged onto the server. It is very important you read the rules, we don't tolerate idiots.
 
-        To get on the whitelist, please look at the website linked above (^^^). Due to the overwhelming
-        amount of people trying to join, I''ve made it so it costs $2 to become a member through paypal.
-        All of it is explained on the website.
+          There are over 300 empty properties that are ready for anyone to own! Join now!
 
+          This is the server state as of Mar. 21, 2011.
+          --------------------------------------------------------------------------------­--
 
-        Jesse''s Minecraft Server is a City Roleplay/Survival Server, there is a currency, public transportation,
-        strict rules for immersive gameplay, and has a decent size population. Over 1000 people have logged
-        onto the server. It is very important you read the rules, we don''t tolerate idiots.
+          Texture Pack:
+          http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
 
+          Recording Software:
+          http://www.fraps.com/download.php
 
-        There are over 300 empty properties that are ready for anyone to own! Join now!
+          Video Editing Software:
+          http://explore.live.com/windows-live-movie-maker?os=other
 
+          Song:
+          Indifference - Pearl Jam
+          (Off of the 'Vs.' album)
 
-        This is the server state as of Mar. 21, 2011.
+          I claim no ownership of this song, all the credit goes to Pearl Jam and their producers.
 
-        --------------------------------------------------------------------------------­--
-
-
-        Texture Pack:
-
-        http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
-
-
-        Recording Software:
-
-        http://www.fraps.com/download.php
-
-
-        Video Editing Software:
-
-        http://explore.live.com/windows-live-movie-maker?os=other
-
-
-        Song:
-
-        Indifference - Pearl Jam
-
-        (Off of the ''Vs.'' album)
-
-
-        I claim no ownership of this song, all the credit goes to Pearl Jam and their producers.'
-      season: '2011'
+      season: 2011
       title: Jesse's Minecraft Server [Trailer - Mar.21]
-      year: '2011'
+      year: 2011
 Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net)-thumb.jpg
 Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).info.json
 Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).mp4
 Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).nfo
   NFO tags:
     episodedetails:
-      aired: '2011-05-29'
-      episode: '529'
-      plot: 'Currently in alpha testing.
+      aired: 2011-05-29
+      episode: 529
+      plot:
+          Currently in alpha testing.
+          http://www.projectzombie.net/
 
-        http://www.projectzombie.net/
+          Credits:
+          -Master_Queef (Jesse)
+          -Cheeseducksg
+          -Vsalaka
+          -Edwingsd
+          -All Members on my Roleplay Server
+          -All Mercenaries in Project Zombie
 
+          Song:
+          Johnny Cash - God's Gonna Cut You Down
 
-        Credits:
+          Texture Pack:
+          http://www.minecraftforum.net/topic/26727-johnsmith-texture-pack-v73-32x32-16x-with-customizer/
 
-        -Master_Queef (Jesse)
-
-        -Cheeseducksg
-
-        -Vsalaka
-
-        -Edwingsd
-
-        -All Members on my Roleplay Server
-
-        -All Mercenaries in Project Zombie
-
-
-        Song:
-
-        Johnny Cash - God''s Gonna Cut You Down
-
-
-        Texture Pack:
-
-        http://www.minecraftforum.net/topic/26727-johnsmith-texture-pack-v73-32x32-16x-with-customizer/'
-      season: '2011'
-      title: 'Project Zombie |Official Trailer| (IP: mc.projectzombie.beastnode.net)'
-      year: '2011'
+      season: 2011
+      title: Project Zombie |Official Trailer| (IP: mc.projectzombie.beastnode.net)
+      year: 2011
 Season 2011/s2011.e0630 - Project Zombie ｜Fin｜-thumb.jpg
 Season 2011/s2011.e0630 - Project Zombie ｜Fin｜.info.json
 Season 2011/s2011.e0630 - Project Zombie ｜Fin｜.mp4
 Season 2011/s2011.e0630 - Project Zombie ｜Fin｜.nfo
   NFO tags:
     episodedetails:
-      aired: '2011-06-30'
-      episode: '630'
-      plot: 'Twas a good run while it lasted. If you''re still interested in playing PZ, you can join my
-        Roleplay Server, yes, Project Zombie is completely imported onto that one:
+      aired: 2011-06-30
+      episode: 630
+      plot:
+          Twas a good run while it lasted. If you're still interested in playing PZ, you can join my Roleplay Server, yes, Project Zombie is completely imported onto that one:
+          http://www.jesseminecraft.webs.com/
 
-        http://www.jesseminecraft.webs.com/'
-      season: '2011'
+      season: 2011
       title: Project Zombie |Fin|
-      year: '2011'
+      year: 2011
 Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC]-thumb.jpg
 Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC].info.json
 Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC].mp4
 Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC].nfo
   NFO tags:
     episodedetails:
-      aired: '2011-11-21'
-      episode: '1121'
-      plot: 'Mods I have used:
+      aired: 2011-11-21
+      episode: 1121
+      plot:
+          Mods I have used:
+          http://skyrimnexus.com/downloads/file.php?id=329
+          http://skyrimnexus.com/downloads/file.php?id=607
+          http://skyrimnexus.com/downloads/file.php?id=711
+          http://skyrimnexus.com/downloads/file.php?id=302
+          http://skyrimnexus.com/downloads/file.php?id=141
+          http://skyrimnexus.com/downloads/file.php?id=131
+          http://skyrimnexus.com/downloads/file.php?id=85
+          http://skyrimnexus.com/downloads/file.php?id=191
 
-        http://skyrimnexus.com/downloads/file.php?id=329
-
-        http://skyrimnexus.com/downloads/file.php?id=607
-
-        http://skyrimnexus.com/downloads/file.php?id=711
-
-        http://skyrimnexus.com/downloads/file.php?id=302
-
-        http://skyrimnexus.com/downloads/file.php?id=141
-
-        http://skyrimnexus.com/downloads/file.php?id=131
-
-        http://skyrimnexus.com/downloads/file.php?id=85
-
-        http://skyrimnexus.com/downloads/file.php?id=191'
-      season: '2011'
+      season: 2011
       title: Skyrim 'Ultra HD w/Mods' [PC]
-      year: '2011'
+      year: 2011
 Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜-thumb.jpg
 Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜.info.json
 Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜.mp4
 Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜.nfo
   NFO tags:
     episodedetails:
-      aired: '2012-01-23'
-      episode: '123'
-      plot: 'Faction Server IP: 72.9.157.88:25652
+      aired: 2012-01-23
+      episode: 123
+      plot:
+          Faction Server IP: 72.9.157.88:25652
+          Project Zombie IP: mc.projectzombie.beastnode.net
+          Project Zombie Map: http://tinyurl.com/projectzombie1
+          Website: http://jesseminecraft.webs.com/
+          Map Download: http://www.planetminecraft.com/project/project-zombie-511865/
 
-        Project Zombie IP: mc.projectzombie.beastnode.net
+          A few little mistakes, but awh well, the dynamic shadows look boss.
 
-        Project Zombie Map: http://tinyurl.com/projectzombie1
+          And the song is Comfortably Numb by Pink Floyd. If you didn't know that after the first 10 seconds of listening to it then you may need some help.
 
-        Website: http://jesseminecraft.webs.com/
-
-        Map Download: http://www.planetminecraft.com/project/project-zombie-511865/
-
-
-        A few little mistakes, but awh well, the dynamic shadows look boss.
-
-
-        And the song is Comfortably Numb by Pink Floyd. If you didn''t know that after the first 10 seconds
-        of listening to it then you may need some help.'
-      season: '2012'
+      season: 2012
       title: Project Zombie |Map Trailer|
-      year: '2012'
+      year: 2012
 Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜-thumb.jpg
 Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜.info.json
 Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜.mp4
 Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜.nfo
   NFO tags:
     episodedetails:
-      aired: '2013-07-19'
-      episode: '719'
-      plot: 'IP: 172.245.24.118
+      aired: 2013-07-19
+      episode: 719
+      plot:
+          IP: 172.245.24.118
+          http://www.projectzombie.net/
 
-        http://www.projectzombie.net/
+          With almost a year of downtime, Project Zombie rises from its ashes. Rewind back to May 2011 and immerse yourself in the original Project Zombie with expansions. Open July 20th, 2013.
 
-
-        With almost a year of downtime, Project Zombie rises from its ashes. Rewind back to May 2011 and
-        immerse yourself in the original Project Zombie with expansions. Open July 20th, 2013.'
-      season: '2013'
+      season: 2013
       title: Project Zombie Rewind |Trailer|
-      year: '2013'
+      year: 2013
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.info.json
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo
   NFO tags:
     episodedetails:
-      aired: '2018-10-29'
-      episode: '1029'
-      plot: 'See the full trailer here: https://youtu.be/LN2e6idGluI
+      aired: 2018-10-29
+      episode: 1029
+      plot:
+          See the full trailer here: https://youtu.be/LN2e6idGluI
+          Discord: https://discord.gg/BQN7SSe
+          Website: https://www.projectzombie.net/
 
-        Discord: https://discord.gg/BQN7SSe
+          It has been about six years since the glory days of the original RP server. Hope to see many familiar faces in the revival of our great server.
 
-        Website: https://www.projectzombie.net/
+          Credits:
+          ALISON - Space Echo
+          https://www.youtube.com/watch?v=lPldcjlv3_Y
 
-
-        It has been about six years since the glory days of the original RP server. Hope to see many familiar
-        faces in the revival of our great server.
-
-
-        Credits:
-
-        ALISON - Space Echo
-
-        https://www.youtube.com/watch?v=lPldcjlv3_Y'
-      season: '2018'
+      season: 2018
       title: Jesse's Minecraft Server | Teaser Trailer
-      year: '2018'
+      year: 2018
 Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id-thumb.jpg
 Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.en.srt
 Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.info.json
@@ -334,15 +271,25 @@ Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.mp4
 Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.nfo
   NFO tags:
     episodedetails:
-      aired: '2018-11-02'
-      episode: '1102'
-      plot: "IP: mc.jesse.id\nLive Map: http://mc.jesse.id:8123\nDiscord: https://discord.gg/BQN7SSe\nWebsite:\
-        \ https://www.projectzombie.net/\n\nIt has been about six years since the glory days of the original\
-        \ RP server. Hope to see many familiar faces in the revival of our great server. \n\nThe MC version\
-        \ is 1.13.x AND/OR 1.12.x\n\nCredits:\nALISON - Space Echo\nhttps://www.youtube.com/watch?v=lPldcjlv3_Y"
-      season: '2018'
+      aired: 2018-11-02
+      episode: 1102
+      plot:
+          IP: mc.jesse.id
+          Live Map: http://mc.jesse.id:8123
+          Discord: https://discord.gg/BQN7SSe
+          Website: https://www.projectzombie.net/
+
+          It has been about six years since the glory days of the original RP server. Hope to see many familiar faces in the revival of our great server.
+
+          The MC version is 1.13.x AND/OR 1.12.x
+
+          Credits:
+          ALISON - Space Echo
+          https://www.youtube.com/watch?v=lPldcjlv3_Y
+
+      season: 2018
       title: Jesse's Minecraft Server | IP mc.jesse.id
-      year: '2018'
+      year: 2018
 fanart.jpg
 poster.jpg
 tvshow.nfo

@@ -61,11 +61,58 @@ class FileMetadata:
         """
         if title:
             value_dict = {title: value_dict}
-        if sort_dict:
-            value_dict = json.loads(json.dumps(value_dict, sort_keys=True))
 
-        out = yaml.safe_dump(value_dict, allow_unicode=True, indent=2, default_style="", width=100)
-        return cls(metadata=out.rstrip().split("\n"))
+        if sort_dict:
+            value_dict = json.loads(json.dumps(value_dict, sort_keys=True, ensure_ascii=False))
+
+        def _indent_lines(value: str, indent: int) -> str:
+            if '\n' not in value:
+                return value
+
+            output_str = ''
+            _indent = " " * indent
+            for line in value.split('\n'):
+                output_str += f"{_indent}{line}\n"
+            return output_str
+
+        def _single_value(value: Any) -> Optional[str]:
+            if isinstance(value, list) and len(value) == 1:
+                return _single_value(value=value[0])
+            if isinstance(value, (dict, list)):
+                return None
+            if isinstance(value, str) and '\n' in value:
+                return None
+            return value
+
+        def _recursive_lines(value: Any, indent: int = 0) -> str:
+            _indent = " " * indent
+
+            output_str = ""
+            if isinstance(value, dict):
+                for key, sub_value in value.items():
+                    single_sub_value = _single_value(sub_value)
+                    if single_sub_value is not None:
+                        output_str += f"{_indent}{key}: {single_sub_value}\n"
+                    else:
+                        output_str += f"{_indent}{key}:\n"
+                        output_str += _indent_lines(_recursive_lines(sub_value), indent=indent + 2)
+
+            elif isinstance(value, list):
+                for sub_value in value:
+                    single_sub_value = _single_value(sub_value)
+                    if single_sub_value is not None:
+                        output_str += f"{_indent}- {single_sub_value}\n"
+                    else:
+                        output_str += f"{_indent}- \n"
+                        output_str += _indent_lines(_recursive_lines(sub_value), indent=indent + 2)
+            elif isinstance(value, str):  # multi-line string
+                output_str += _indent_lines(value, indent=indent + 2)
+            else:
+                assert False, 'should never reach here'
+            return output_str
+
+        out = _recursive_lines(value_dict).rstrip().split("\n")
+        return cls(metadata=out)
 
 
 class FileHandlerTransactionLog:

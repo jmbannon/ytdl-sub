@@ -8,8 +8,8 @@ Jesse's Minecraft Server [Trailer - Feb.1].ogg
     artist: Project Zombie
     genre: Unset
     title: Jesse's Minecraft Server [Trailer - Feb.1]
-    track: '3'
-    year: '2011'
+    track: 3
+    year: 2011
 Jesse's Minecraft Server [Trailer - Feb.27].info.json
 Jesse's Minecraft Server [Trailer - Feb.27].ogg
   Music Tags:
@@ -18,8 +18,8 @@ Jesse's Minecraft Server [Trailer - Feb.27].ogg
     artist: Project Zombie
     genre: Unset
     title: Jesse's Minecraft Server [Trailer - Feb.27]
-    track: '2'
-    year: '2011'
+    track: 2
+    year: 2011
 Jesse's Minecraft Server [Trailer - Mar.21].info.json
 Jesse's Minecraft Server [Trailer - Mar.21].ogg
   Music Tags:
@@ -28,5 +28,5 @@ Jesse's Minecraft Server [Trailer - Mar.21].ogg
     artist: Project Zombie
     genre: Unset
     title: Jesse's Minecraft Server [Trailer - Mar.21]
-    track: '1'
-    year: '2011'
+    track: 1
+    year: 2011

@@ -7,6 +7,6 @@ YouTube Rewind 2019: For the Record | #YouTubeRewind.mp3
     albumartist: YouTube
     artist: YouTube
     genre: Unset
-    title: 'YouTube Rewind 2019: For the Record | #YouTubeRewind'
-    track: '1'
-    year: '2019'
+    title: YouTube Rewind 2019: For the Record | #YouTubeRewind
+    track: 1
+    year: 2019
