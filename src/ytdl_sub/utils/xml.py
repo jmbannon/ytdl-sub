@@ -1,7 +1,8 @@
 import xml.etree.ElementTree as et
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any
 from typing import Dict
+from typing import List
 from typing import Union
 
 

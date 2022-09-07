@@ -8,6 +8,7 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Union
+
 import yaml
 
 
@@ -63,8 +64,8 @@ class FileMetadata:
         if sort_dict:
             value_dict = json.loads(json.dumps(value_dict, sort_keys=True))
 
-        out = yaml.safe_dump(value_dict, allow_unicode=True, indent=2, default_style='', width=100)
-        return cls(metadata=out.rstrip().split('\n'))
+        out = yaml.safe_dump(value_dict, allow_unicode=True, indent=2, default_style="", width=100)
+        return cls(metadata=out.rstrip().split("\n"))
 
 
 class FileHandlerTransactionLog:

@@ -7,8 +7,9 @@ from typing import Type
 from typing import TypeVar
 
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator, \
-    ListFormatterValidator, ListOverridesFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import ListOverridesFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -84,20 +85,21 @@ class NfoOverrideTagsWithAttributesListValidator(
     ListValidator[NfoOverrideTagsWithAttributesValidator]
 ):
     """TagsWithAttributes list for the output directory NFO validator"""
+
     _inner_list_type = NfoOverrideTagsWithAttributesValidator
 
 
 # Generic TagsWithAttribute to use for SharedNfoTagsValidator
-TNfoTagsWithAttributesValidator = _NfoTagsWithAttributesValidator[TStringFormatterValidator, TDictFormatterValidator]
+TNfoTagsWithAttributesValidator = _NfoTagsWithAttributesValidator[
+    TStringFormatterValidator, TDictFormatterValidator
+]
 
 # List validators
 TNfoTagsWithAttributesListValidator = ListValidator[TNfoTagsWithAttributesValidator]
 TNfoTagsListValidator = ListValidator[TStringFormatterValidator]
 
 
-class SharedNfoTagsValidator(
-    DictValidator, ABC
-):
+class SharedNfoTagsValidator(DictValidator, ABC):
     _tags_validator: Type[TNfoTagsListValidator]
     _tags_with_attributes_validator: Type[TNfoTagsWithAttributesListValidator]
 
@@ -121,9 +123,7 @@ class SharedNfoTagsValidator(
                 )
             elif isinstance(tag_value[0], dict):
                 self._attribute_tags[key].extend(
-                    self._validate_key(
-                        key=key, validator=self._tags_with_attributes_validator
-                    ).list
+                    self._validate_key(key=key, validator=self._tags_with_attributes_validator).list
                 )
             else:
                 raise self._validation_exception(
