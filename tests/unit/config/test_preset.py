@@ -133,7 +133,7 @@ class TestPreset:
 
         assert tags_string_dict == {
             "key-1": "preset_0",
-            "key-2": "preset_1",
+            "key-2": "preset_2",
             "key-3": "this-preset",
         }
 
