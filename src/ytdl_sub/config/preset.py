@@ -278,8 +278,9 @@ class Preset(StrictDictValidator):
         if parent_preset_validator is None:
             return
 
+        presets_to_merge: List[Dict] = []
         for parent_preset in [preset.value for preset in parent_preset_validator.list]:
-            parent_presets = set()
+            sub_parent_presets: Dict[str, Dict] = {}
 
             while parent_preset:
                 # Make sure the parent preset actually exists
@@ -290,20 +291,25 @@ class Preset(StrictDictValidator):
                     )
 
                 # Make sure we do not hit an infinite loop
-                if parent_preset in parent_presets:
+                if parent_preset in sub_parent_presets:
                     raise self._validation_exception(
                         f"preset loop detected with the preset '{parent_preset}'"
                     )
 
                 parent_preset_dict = copy.deepcopy(config.presets.dict[parent_preset])
 
-                parent_presets.add(parent_preset)
+                sub_parent_presets[parent_preset] = parent_preset_dict
                 parent_preset = parent_preset_dict.get("preset")
 
-                # Override the parent preset with the contents of this preset
-                self._value = mergedeep.merge(
-                    parent_preset_dict, self._value, strategy=mergedeep.Strategy.REPLACE
-                )
+            # Extend reversed, so top-most parents are first
+            if sub_parent_presets:
+                presets_to_merge.extend(reversed(sub_parent_presets.values()))
+
+        # Append this preset (the subscription) last
+        presets_to_merge.append(copy.deepcopy(self._value))
+
+        # Merge all of the presets
+        self._value = mergedeep.merge({}, *presets_to_merge, strategy=mergedeep.Strategy.REPLACE)
 
     def __init__(self, config: ConfigFile, name: str, value: Any):
         super().__init__(name=name, value=value)
