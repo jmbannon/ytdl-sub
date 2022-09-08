@@ -102,19 +102,21 @@ class TestDateRange:
             preset_dict=recent_preset_dict,
         )
 
-        # Run twice, ensure nothing changes between runsyoutube
-        for _ in range(2):
-            transaction_log = recent_channel_no_vids_in_range_subscription.download(dry_run=dry_run)
-            assert_transaction_log_matches(
-                output_directory=output_directory,
-                transaction_log=transaction_log,
-                transaction_log_summary_file_name="plugins/date_range/no_downloads.txt",
-            )
-            assert_expected_downloads(
-                output_directory=output_directory,
-                dry_run=dry_run,
-                expected_download_summary_file_name="plugins/date_range/no_downloads.json",
-            )
+        # run once to initialize all output directory files
+        _ = recent_channel_no_vids_in_range_subscription.download(dry_run=False)
+
+        # Run again, ensure no downloads
+        transaction_log = recent_channel_no_vids_in_range_subscription.download(dry_run=dry_run)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="plugins/date_range/no_downloads.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="plugins/date_range/no_downloads.json",
+        )
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_rolling_recent_channel_download(
