@@ -134,6 +134,3 @@ j_b/[2022] Acoustic Treats/11 - Untold History.mp3
     track: 11
     year: 2022
 j_b/[2022] Acoustic Treats/folder.jpg
-Files modified in '{output_directory}'
-----------------------------------------
-.ytdl-sub-jb-download-archive.json

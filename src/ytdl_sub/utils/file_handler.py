@@ -348,15 +348,18 @@ class FileHandler:
         source_file_path = Path(self.working_directory) / file_name
         output_file_path = Path(self.output_directory) / output_file_name
 
-        # output file exists, see if we modify it
-        if os.path.isfile(output_file_path):
+        # output file exists, and it's not marked as created already, see if we modify it
+        if (
+            os.path.isfile(output_file_path)
+            and output_file_name not in self.file_handler_transaction_log.files_created
+        ):
             if not files_equal(source_file_path, output_file_path):
-                self._file_handler_transaction_log.log_modified_file(
+                self.file_handler_transaction_log.log_modified_file(
                     file_name=output_file_name, file_metadata=file_metadata
                 )
         # output file does not already exist, creates a new file
         else:
-            self._file_handler_transaction_log.log_created_file(
+            self.file_handler_transaction_log.log_created_file(
                 file_name=output_file_name, file_metadata=file_metadata
             )
 
