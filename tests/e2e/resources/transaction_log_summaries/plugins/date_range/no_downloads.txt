@@ -1,10 +1,1 @@
-Files created in '{output_directory}'
-----------------------------------------
-.ytdl-sub-recent-download-archive.json
-fanart.jpg
-poster.jpg
-tvshow.nfo
-  NFO tags:
-    tvshow:
-      plot: Plugin and map updates for the server Project Zombie.
-      title: Project / Zombie
+No new, modified, or removed files in '{output_directory}'

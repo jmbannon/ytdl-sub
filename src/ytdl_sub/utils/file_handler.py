@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import shutil
@@ -8,6 +9,41 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Union
+
+
+def get_file_md5_hash(full_file_path: Path | str) -> str:
+    """
+    Parameters
+    ----------
+    full_file_path
+        Path to the file
+
+    Returns
+    -------
+    md5 hash of its contents
+    """
+    with open(full_file_path, "rb") as file:
+        return hashlib.md5(file.read()).hexdigest()
+
+
+def files_equal(full_file_path_a: Path | str, full_file_path_b: Path | str) -> bool:
+    """
+    Parameters
+    ----------
+    full_file_path_a
+    full_file_path_b
+
+    Returns
+    -------
+    True if the files are equal in contents. False otherwise.
+    """
+    if not (os.path.isfile(full_file_path_a) and os.path.isfile(full_file_path_b)):
+        return False
+    if os.path.getsize(full_file_path_a) != os.path.getsize(full_file_path_b):
+        return False
+    if get_file_md5_hash(full_file_path_a) != get_file_md5_hash(full_file_path_b):
+        return False
+    return True
 
 
 class FileMetadata:
@@ -120,6 +156,7 @@ class FileHandlerTransactionLog:
 
     def __init__(self):
         self.files_created: Dict[str, FileMetadata] = {}
+        self.files_modified: Dict[str, FileMetadata] = {}
         self.files_removed: Set[str] = set()
 
     @property
@@ -129,7 +166,11 @@ class FileHandlerTransactionLog:
         -------
         True if no transaction logs are recorded. False otherwise
         """
-        return len(self.files_created) == 0 and len(self.files_removed) == 0
+        return (
+            len(self.files_created) == 0
+            and len(self.files_removed) == 0
+            and len(self.files_modified) == 0
+        )
 
     def log_created_file(
         self, file_name: str, file_metadata: Optional[FileMetadata] = None
@@ -148,6 +189,25 @@ class FileHandlerTransactionLog:
             file_metadata = FileMetadata()
 
         self.files_created[file_name] = file_metadata
+        return self
+
+    def log_modified_file(
+        self, file_name: str, file_metadata: Optional[FileMetadata] = None
+    ) -> "FileHandlerTransactionLog":
+        """
+        Adds a modified file to the transaction log
+
+        Parameters
+        ----------
+        file_name
+            Name of the file in the output directory
+        file_metadata
+            Optional. If the file has metadata, add it to the transaction log
+        """
+        if not file_metadata:
+            file_metadata = FileMetadata()
+
+        self.files_modified[file_name] = file_metadata
         return self
 
     def log_removed_file(self, file_name: str) -> "FileHandlerTransactionLog":
@@ -179,11 +239,20 @@ class FileHandlerTransactionLog:
             rstrip_line = line.rstrip()
             return f"  {rstrip_line}" if rstrip_line else ""
 
+        line_dash = "-" * 40
+
         if self.files_created:
             created_line = f"Files created in '{output_directory}'"
-            created_line_dash = "-" * 40
-            lines.extend([created_line, created_line_dash])
+            lines.extend([created_line, line_dash])
             for file_path, file_metadata in sorted(self.files_created.items()):
+                lines.append(file_path)
+                if file_metadata:
+                    lines.extend([_indent_metadata_line(line) for line in file_metadata.metadata])
+
+        if self.files_modified:
+            modified_line = f"Files modified in '{output_directory}'"
+            lines.extend([modified_line, line_dash])
+            for file_path, file_metadata in sorted(self.files_modified.items()):
                 lines.append(file_path)
                 if file_metadata:
                     lines.extend([_indent_metadata_line(line) for line in file_metadata.metadata])
@@ -194,10 +263,12 @@ class FileHandlerTransactionLog:
                 lines.append("")
 
             removed_line = f"Files removed from '{output_directory}'"
-            removed_line_dash = "-" * 40
-            lines.extend([removed_line, removed_line_dash])
+            lines.extend([removed_line, line_dash])
             for file_path in sorted(self.files_removed):
                 lines.append(file_path)
+
+        if self.is_empty:
+            lines.append(f"No new, modified, or removed files in '{output_directory}'")
 
         return "\n".join(lines)
 
@@ -274,17 +345,27 @@ class FileHandler:
         file_metadata
             Optional. Metadata to record to the transaction log for this file
         """
-        self._file_handler_transaction_log.log_created_file(
-            file_name=output_file_name, file_metadata=file_metadata
-        )
+        source_file_path = Path(self.working_directory) / file_name
+        output_file_path = Path(self.output_directory) / output_file_name
+
+        # output file exists, and it's not marked as created already, see if we modify it
+        if (
+            os.path.isfile(output_file_path)
+            and output_file_name not in self.file_handler_transaction_log.files_created
+        ):
+            if not files_equal(source_file_path, output_file_path):
+                self.file_handler_transaction_log.log_modified_file(
+                    file_name=output_file_name, file_metadata=file_metadata
+                )
+        # output file does not already exist, creates a new file
+        else:
+            self.file_handler_transaction_log.log_created_file(
+                file_name=output_file_name, file_metadata=file_metadata
+            )
 
         if not self.dry_run:
-            output_file_path = Path(self.output_directory) / output_file_name
             os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-            self.move(
-                src_file_path=Path(self.working_directory) / file_name,
-                dst_file_path=output_file_path,
-            )
+            self.move(src_file_path=source_file_path, dst_file_path=output_file_path)
 
     def delete_file_from_output_directory(self, file_name: str):
         """
