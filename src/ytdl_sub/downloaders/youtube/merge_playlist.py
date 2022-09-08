@@ -141,6 +141,8 @@ class YoutubeMergePlaylistDownloader(
             if "requested_downloads" in entry_dict
             else "mkv"
         )
+        entry_dict["webpage_url"] = self.download_options.playlist_url
+
         return YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
 
     def download(self) -> List[Tuple[YoutubeVideo, FileMetadata]]:

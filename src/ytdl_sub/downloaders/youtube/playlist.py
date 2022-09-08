@@ -119,7 +119,7 @@ class YoutubePlaylistDownloader(
             as_single_video_dict = self.extract_info_with_retry(
                 is_downloaded_fn=None if self.is_dry_run else video.is_downloaded,
                 ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
-                url=video.kwargs("webpage_url"),
+                url=video.webpage_url,
             )
 
             # Workaround for the ytdlp issue

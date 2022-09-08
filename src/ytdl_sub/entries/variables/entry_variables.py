@@ -100,6 +100,16 @@ class EntryVariables(SourceVariables):
         return sanitize_filename(self.title)
 
     @property
+    def webpage_url(self: BaseEntry) -> str:
+        """
+        Returns
+        -------
+        str
+            The url to the webpage.
+        """
+        return self.kwargs("webpage_url")
+
+    @property
     def ext(self: BaseEntry) -> str:
         """
         Returns
