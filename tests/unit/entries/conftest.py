@@ -35,6 +35,11 @@ def thumbnail_ext():
 
 
 @pytest.fixture
+def webpage_url() -> str:
+    return "https://yourname.here"
+
+
+@pytest.fixture
 def download_thumbnail_name(uid, thumbnail_ext):
     return f"{uid}.{thumbnail_ext}"
 
@@ -52,6 +57,7 @@ def mock_entry_to_dict(
     extractor,
     upload_date,
     thumbnail_ext,
+    webpage_url,
 ):
     return {
         "uid": uid,
@@ -78,11 +84,14 @@ def mock_entry_to_dict(
         "upload_day_of_year_reversed_padded": "354",
         "thumbnail_ext": thumbnail_ext,
         "info_json_ext": "info.json",
+        "webpage_url": webpage_url,
     }
 
 
 @pytest.fixture
-def mock_entry_kwargs(uid, title, ext, upload_date, extractor, download_thumbnail_name):
+def mock_entry_kwargs(
+    uid, title, ext, upload_date, extractor, download_thumbnail_name, webpage_url
+):
     return {
         "id": uid,
         "extractor": extractor,
@@ -90,6 +99,7 @@ def mock_entry_kwargs(uid, title, ext, upload_date, extractor, download_thumbnai
         "ext": ext,
         "upload_date": upload_date,
         "thumbnail": download_thumbnail_name,
+        "webpage_url": webpage_url,
     }
 
 

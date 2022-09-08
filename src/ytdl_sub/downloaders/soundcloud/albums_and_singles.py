@@ -147,7 +147,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
                 if not self.is_dry_run:
                     _ = self.extract_info_with_retry(
                         is_downloaded_fn=track.is_downloaded,
-                        url=album.kwargs("webpage_url"),
+                        url=album.webpage_url,
                         ytdl_options_overrides={
                             "playlist_items": str(track.kwargs("playlist_index")),
                             "writeinfojson": False,
@@ -177,7 +177,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
             if not self.is_dry_run:
                 _ = self.extract_info_with_retry(
                     is_downloaded_fn=track.is_downloaded,
-                    url=track.kwargs("webpage_url"),
+                    url=track.webpage_url,
                     ytdl_options_overrides={"writeinfojson": False},
                 )
 
