@@ -5,6 +5,8 @@ from typing import Dict
 from typing import List
 from typing import final
 
+from yt_dlp.utils import sanitize_filename
+
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
@@ -151,23 +153,22 @@ class StringFormatterValidator(Validator):
             value=formatter.format_string.format(**OrderedDict(variable_dict)),
         )
 
-    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
-        """
-        Calls `format` on the format string using the variable_dict as input kwargs
-
-        Parameters
-        ----------
-        variable_dict
-            kwargs to pass to the format string
-
-        Returns
-        -------
-        Format string formatted
-        """
-        # Keep formatting the format string until no format_variables are present
+    def _apply_formatter(self, variable_dict: Dict[str, str], resolve_sanitized: bool = False):
         formatter = self
         recursion_depth = 0
         max_depth = self._max_format_recursion
+
+        if resolve_sanitized:
+            for format_variable in formatter.format_variables:
+                # Must resolve the sanitized variable completely
+                if format_variable.endswith("_sanitized"):
+                    # pylint: disable=protected-access
+                    variable_dict[format_variable] = sanitize_filename(
+                        StringFormatterValidator(
+                            name=self._name, value=f"{{{format_variable}}}"
+                        )._apply_formatter(variable_dict, resolve_sanitized=False)
+                    )
+                    # pylint: enable=protected-access
 
         while formatter.format_variables and recursion_depth < max_depth:
             formatter = self.__apply_formatter(formatter=formatter, variable_dict=variable_dict)
@@ -182,6 +183,21 @@ class StringFormatterValidator(Validator):
             )
 
         return formatter.format_string
+
+    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
+        """
+        Calls `format` on the format string using the variable_dict as input kwargs
+
+        Parameters
+        ----------
+        variable_dict
+            kwargs to pass to the format string
+
+        Returns
+        -------
+        Format string formatted
+        """
+        return self._apply_formatter(variable_dict=variable_dict, resolve_sanitized=True)
 
 
 # pylint: disable=line-too-long
