@@ -1,10 +1,11 @@
-import hashlib
 import json
 import os.path
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 from typing import Optional
+
+from ytdl_sub.utils.file_handler import get_file_md5_hash
 
 _EXPECTED_DOWNLOADS_SUMMARY_PATH = Path("tests/e2e/resources/expected_downloads_summaries")
 
@@ -17,11 +18,6 @@ def _get_files_in_directory(relative_directory: Path | str) -> List[Path]:
             relative_file_paths.append(relative_path)
 
     return relative_file_paths
-
-
-def _get_file_md5_hash(full_file_path: Path | str) -> str:
-    with open(full_file_path, "rb") as file:
-        return hashlib.md5(file.read()).hexdigest()
 
 
 @dataclass
@@ -74,7 +70,7 @@ class ExpectedDownloads:
             if path in ignore_md5_hashes_for or path.endswith(".info.json"):
                 continue
 
-            md5_hash = _get_file_md5_hash(full_file_path=full_path)
+            md5_hash = get_file_md5_hash(full_file_path=full_path)
             assert md5_hash in expected_download.md5, (
                 f"MD5  hash for {str(expected_download.path)} does not match: "
                 f"{md5_hash} != {expected_download.md5}"
@@ -98,7 +94,7 @@ class ExpectedDownloads:
     def from_directory(cls, directory_path: str | Path) -> "ExpectedDownloads":
         relative_file_paths = _get_files_in_directory(relative_directory=directory_path)
         expected_downloads_dict = {
-            str(file_path): _get_file_md5_hash(full_file_path=Path(directory_path) / file_path)
+            str(file_path): get_file_md5_hash(full_file_path=Path(directory_path) / file_path)
             for file_path in relative_file_paths
         }
         return cls.from_dict(expected_downloads_dict)
