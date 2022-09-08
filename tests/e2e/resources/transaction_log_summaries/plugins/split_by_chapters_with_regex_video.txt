@@ -3,7 +3,7 @@ Files created in '{output_directory}'
 Answers (Feat. Rick David & Kaya Thomas - Dyke).info.json
 Blaze (Feat. Kaya Thomas - Dyke).info.json
 Closer (Feat. Lester Duval).info.json
-Delusions: Rumination (Interlude) (Feat. Racheal Ofori).info.json
+Delusions： Rumination (Interlude) (Feat. Racheal Ofori).info.json
 Dreaming (Interlude) (Feat. Racheal Ofori).info.json
 Dreams (Feat. Carmody).info.json
 Hopeful (Feat. Jordan Rakei).info.json
@@ -81,7 +81,7 @@ Nocturne/06 - Closer (Feat. Lester Duval).mp3
     title: Closer (Feat. Lester Duval)
     track: 6
     year: 2017
-Nocturne/07 - Delusions: Rumination (Interlude) (Feat. Racheal Ofori).mp3
+Nocturne/07 - Delusions： Rumination (Interlude) (Feat. Racheal Ofori).mp3
   From Chapter Split:
     Source Title: Alfa Mist - Nocturne [Full Album]
     Segment: 17:57 - 20:05

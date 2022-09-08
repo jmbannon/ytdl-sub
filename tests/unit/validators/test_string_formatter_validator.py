@@ -1,4 +1,5 @@
 import pytest
+from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
@@ -143,6 +144,18 @@ class TestStringFormatterValidator(object):
 
         format_string = string_formatter_class(name="test", value="level d and {level_c}")
         expected_string = "level d and level c and level b and level a"
+
+        assert format_string.apply_formatter(variable_dict=variable_dict) == expected_string
+
+    def test_entry_formatter_override_sanitized_recursive(self, string_formatter_class):
+        variable_dict = {
+            "level_a": "level a",
+            "level_b": "level b ? {level_a}",
+            "level_c_sanitized": "level c and {level_b}",
+        }
+
+        format_string = string_formatter_class(name="test", value="level d and {level_c_sanitized}")
+        expected_string = "level d and " + sanitize_filename("level c and level b ? level a")
 
         assert format_string.apply_formatter(variable_dict=variable_dict) == expected_string
 

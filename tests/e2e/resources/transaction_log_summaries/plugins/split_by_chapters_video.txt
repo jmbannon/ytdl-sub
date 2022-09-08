@@ -6,7 +6,7 @@ Files created in '{output_directory}'
 04. What If (Interlude).info.json
 05. No Peace (Feat. Tom Misch).info.json
 06. Closer (Feat. Lester Duval).info.json
-07. Delusions: Rumination (Interlude) (Feat. Racheal Ofori).info.json
+07. Delusions： Rumination (Interlude) (Feat. Racheal Ofori).info.json
 08. Dreams (Feat. Carmody).info.json
 09. Dreaming (Interlude) (Feat. Racheal Ofori).info.json
 10. Hopeful (Feat. Jordan Rakei).info.json
@@ -83,7 +83,7 @@ Alfa Mist - Nocturne [Full Album]/06 - 06. Closer (Feat. Lester Duval).mp3
     title: 06. Closer (Feat. Lester Duval)
     track: 6
     year: 2017
-Alfa Mist - Nocturne [Full Album]/07 - 07. Delusions: Rumination (Interlude) (Feat. Racheal Ofori).mp3
+Alfa Mist - Nocturne [Full Album]/07 - 07. Delusions： Rumination (Interlude) (Feat. Racheal Ofori).mp3
   From Chapter Split:
     Source Title: Alfa Mist - Nocturne [Full Album]
     Segment: 17:57 - 20:05

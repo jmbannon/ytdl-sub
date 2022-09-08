@@ -1,5 +1,5 @@
 {
-  "Oblivion Mod \"Falcor\" p.1.info.json": "358e43cb1c00e7f4c960690994092e9e",
-  "Oblivion Mod \"Falcor\" p.1/01 - Oblivion Mod \"Falcor\" p.1.mp3": "703ffb93964ac025ee66221b98ee4d49",
-  "Oblivion Mod \"Falcor\" p.1/folder.jpg": "fb95b510681676e81c321171fc23143e"
+  "Oblivion Mod ＂Falcor＂ p.1.info.json": "1f0ddcab2854a515d27fba208ad23714",
+  "Oblivion Mod ＂Falcor＂ p.1/01 - Oblivion Mod ＂Falcor＂ p.1.mp3": "703ffb93964ac025ee66221b98ee4d49",
+  "Oblivion Mod ＂Falcor＂ p.1/folder.jpg": "fb95b510681676e81c321171fc23143e"
 }
