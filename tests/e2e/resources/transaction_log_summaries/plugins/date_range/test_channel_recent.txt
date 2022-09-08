@@ -54,3 +54,6 @@ tvshow.nfo
     tvshow:
       plot: Plugin and map updates for the server Project Zombie.
       title: Project / Zombie
+Files modified in '{output_directory}'
+----------------------------------------
+.ytdl-sub-recent-download-archive.json

@@ -1,14 +1,6 @@
-Files created in '{output_directory}'
+Files modified in '{output_directory}'
 ----------------------------------------
 .ytdl-sub-recent-download-archive.json
-fanart.jpg
-poster.jpg
-tvshow.nfo
-  NFO tags:
-    tvshow:
-      plot: Plugin and map updates for the server Project Zombie.
-      title: Project / Zombie
-
 Files removed from '{output_directory}'
 ----------------------------------------
 Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg

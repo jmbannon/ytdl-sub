@@ -286,3 +286,6 @@ tvshow.nfo
       plot: Plugin and map updates for the server Project Zombie.
       source_uploader: Project Zombie
       title: Project / Zombie
+Files modified in '{output_directory}'
+----------------------------------------
+.ytdl-sub-pz-download-archive.json

@@ -267,6 +267,9 @@ class FileHandlerTransactionLog:
             for file_path in sorted(self.files_removed):
                 lines.append(file_path)
 
+        if self.is_empty:
+            lines.append(f"No new, modified, or removed files in '{output_directory}'")
+
         return "\n".join(lines)
 
 

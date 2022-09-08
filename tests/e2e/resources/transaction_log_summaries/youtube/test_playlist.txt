@@ -37,3 +37,6 @@ tvshow.nfo
       source_description: Trailers, Updates, etc
       source_title: Jesse's Minecraft Server
       source_uploader: Project Zombie
+Files modified in '{output_directory}'
+----------------------------------------
+.ytdl-sub-music_video_playlist_test-download-archive.json
