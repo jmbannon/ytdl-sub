@@ -1,5 +1,11 @@
 import argparse
+import errno
+import fcntl
+import os
 import sys
+import tempfile
+from contextlib import contextmanager
+from pathlib import Path
 from typing import List
 from typing import Tuple
 
@@ -8,6 +14,7 @@ from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 
@@ -89,6 +96,41 @@ def _download_subscription_from_cli(
     return subscription, subscription.download(dry_run=args.dry_run)
 
 
+@contextmanager
+def _working_directory_lock(config: ConfigFile):
+    """
+    Create and try to lock the file /tmp/working_directory_name
+
+    Raises
+    ------
+    ValidationException
+        Lock is acquired from another process running ytdl-sub in the same working directory
+    OSError
+        Other lock error occurred
+    """
+    working_directory_path = Path(os.getcwd()) / config.config_options.working_directory
+    lock_file_path = Path(tempfile.gettempdir()) / str(working_directory_path).replace("/", "_")
+
+    lock_file = open(lock_file_path, "w", encoding="utf-8")
+
+    try:
+        fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError as exc:
+        if exc.errno in (errno.EACCES, errno.EAGAIN):
+            raise ValidationException(
+                "Cannot run two instances of ytdl-sub "
+                "with the same working directory at the same time"
+            ) from exc
+        lock_file.close()
+        raise exc
+
+    try:
+        yield
+    finally:
+        fcntl.flock(lock_file, fcntl.LOCK_UN)
+        lock_file.close()
+
+
 def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     """
     Entrypoint for ytdl-sub, without the error handling
@@ -102,14 +144,16 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
 
     config: ConfigFile = ConfigFile.from_file_path(args.config).initialize()
     transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
-    if args.subparser == "sub":
-        transaction_logs = _download_subscriptions_from_yaml_files(config=config, args=args)
 
-    # One-off download
-    if args.subparser == "dl":
-        transaction_logs.append(
-            _download_subscription_from_cli(config=config, args=args, extra_args=extra_args)
-        )
+    with _working_directory_lock(config=config):
+        if args.subparser == "sub":
+            transaction_logs = _download_subscriptions_from_yaml_files(config=config, args=args)
+
+        # One-off download
+        if args.subparser == "dl":
+            transaction_logs.append(
+                _download_subscription_from_cli(config=config, args=args, extra_args=extra_args)
+            )
 
     for subscription, transaction_log in transaction_logs:
         if transaction_log.is_empty:
