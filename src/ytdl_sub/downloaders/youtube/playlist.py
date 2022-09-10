@@ -5,6 +5,7 @@ from typing import List
 from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
+from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
 
@@ -94,24 +95,24 @@ class YoutubePlaylistDownloader(
             url=self.download_options.playlist_url,
         )
 
-        playlist = self._filter_entry_dicts(entry_dicts, extractor="youtube:tab")[0]
-        playlist_videos = self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
-
+        playlist: EntryParent = EntryParent.from_entry_dicts_with_children(
+            entry_dicts=entry_dicts,
+            working_directory=self.working_directory,
+            child_class=YoutubePlaylistVideo,
+            extractor="youtube:tab",
+        )
         self.overrides.add_override_variables(
             variables_to_add={
-                "source_title": playlist["title"],
-                "source_uploader": playlist.get("uploader", "__failed_to_scrape__"),
-                "source_description": playlist.get("description", ""),
+                "source_title": playlist.title,
+                "source_uploader": playlist.kwargs_get("uploader", "__failed_to_scrape__"),
+                "source_description": playlist.kwargs_get("description", ""),
             }
         )
 
         # Iterate in reverse order to process older videos first. In case an error occurs and a
         # the playlist must be redownloaded, it will fetch most recent metadata first, and break
         # on the older video that's been processed and is in the download archive.
-        for idx, entry_dict in enumerate(reversed(playlist_videos), start=1):
-            video = YoutubePlaylistVideo(
-                entry_dict=entry_dict, working_directory=self.working_directory
-            )
+        for idx, video in enumerate(reversed(playlist.child_entries), start=1):
             download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
 
             # Re-download the contents even if it's a dry-run as a single video. At this time,

@@ -5,8 +5,85 @@ from typing import List
 from typing import Optional
 from typing import final
 
+from yt_dlp.utils import sanitize_filename
 
-class BaseEntry(ABC):
+# pylint: disable=no-member
+
+
+class BaseEntryVariables:
+    """
+    Source variables are ``{variables}`` that contain metadata from downloaded media.
+    These variables can be used with fields that expect
+    :class:`~ytdl_sub.validators.string_formatter_validators.StringFormatterValidator`,
+    but not
+    :class:`~ytdl_sub.validators.string_formatter_validators.OverridesStringFormatterValidator`.
+    """
+
+    @property
+    def uid(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The entry's unique ID
+        """
+        return self.kwargs("id")
+
+    @property
+    def extractor(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The ytdl extractor name
+        """
+        return self.kwargs("extractor")
+
+    @property
+    def title(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The title of the entry
+        """
+        return self.kwargs("title")
+
+    @property
+    def title_sanitized(self) -> str:
+        """
+        Returns
+        -------
+        str
+            The sanitized title of the entry, which is safe to use for Unix and Windows file names.
+        """
+        return sanitize_filename(self.title)
+
+    @property
+    def webpage_url(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The url to the webpage.
+        """
+        return self.kwargs("webpage_url")
+
+    @property
+    def info_json_ext(self) -> str:
+        """
+        Returns
+        -------
+        str
+            The "info.json" extension
+        """
+        return "info.json"
+
+
+# pylint: enable=no-member
+
+
+class BaseEntry(BaseEntryVariables, ABC):
     """
     Abstract entry object to represent anything download from ytdl (playlist metadata, media, etc).
     """
@@ -28,7 +105,7 @@ class BaseEntry(ABC):
         self._working_directory = working_directory
         self._kwargs = entry_dict
 
-        self._additional_variables: Dict[str, str] = {}
+        self._additional_variables: Dict[str, str | int] = {}
 
     def kwargs_contains(self, key: str) -> bool:
         """Returns whether internal kwargs contains the specified key"""
@@ -110,3 +187,19 @@ class BaseEntry(ABC):
             source_var: getattr(self, source_var) for source_var in self.source_variables()
         }
         return dict(source_variable_dict, **self._added_variables())
+
+    # TODO: super typing
+    @classmethod
+    def from_entry_dicts(
+        cls, entry_dicts: List[Dict], working_directory: str, extractor: Optional[str]
+    ):
+        """
+        Load the entry from a list of dicts. There should only be one entry with the extractor
+        type
+        """
+        extractor = extractor or cls.extractor
+        output = [
+            entry_dict for entry_dict in entry_dicts if entry_dict.get("extractor") == extractor
+        ]
+        assert len(output) == 1, f"Expected a single entry with extractor of type '{extractor}'"
+        return cls(entry_dict=output[0], working_directory=working_directory)
