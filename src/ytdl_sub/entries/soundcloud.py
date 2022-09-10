@@ -3,6 +3,7 @@ from typing import List
 from typing import Optional
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.entry import ParentEntry
 from ytdl_sub.entries.variables.soundcloud_variables import SoundcloudVariables
 
 
@@ -84,7 +85,7 @@ class SoundcloudAlbumTrack(SoundcloudTrack):
         )
 
 
-class SoundcloudAlbum(Entry):
+class SoundcloudAlbum(ParentEntry):
     """
     Entry object to represent a Soundcloud album.
     """

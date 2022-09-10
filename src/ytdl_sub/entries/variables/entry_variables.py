@@ -1,7 +1,3 @@
-from typing import Dict
-from typing import List
-from typing import final
-
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.base_entry import BaseEntry
@@ -18,7 +14,7 @@ def _pad(num: int, width: int = 2):
 _days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
-class SourceVariables:
+class BaseEntryVariables:
     """
     Source variables are ``{variables}`` that contain metadata from downloaded media.
     These variables can be used with fields that expect
@@ -47,38 +43,6 @@ class SourceVariables:
         """
         return self.kwargs("extractor")
 
-    def _added_variables(self: BaseEntry) -> Dict[str, str]:
-        """
-        Returns
-        -------
-        Dict of variables added to this entry
-        """
-        return self._additional_variables
-
-    @classmethod
-    def source_variables(cls) -> List[str]:
-        """
-        Returns
-        -------
-        List of all source variables
-        """
-        property_names = [prop for prop in dir(cls) if isinstance(getattr(cls, prop), property)]
-        return property_names
-
-    @final
-    def _to_dict(self) -> Dict[str, str]:
-        """
-        Returns
-        -------
-        Dictionary containing all variables
-        """
-        source_variable_dict = {
-            source_var: getattr(self, source_var) for source_var in self.source_variables()
-        }
-        return dict(source_variable_dict, **self._added_variables())
-
-
-class EntryVariables(SourceVariables):
     @property
     def title(self: BaseEntry) -> str:
         """
@@ -109,6 +73,18 @@ class EntryVariables(SourceVariables):
         """
         return self.kwargs("webpage_url")
 
+    @property
+    def info_json_ext(self) -> str:
+        """
+        Returns
+        -------
+        str
+            The "info.json" extension
+        """
+        return "info.json"
+
+
+class EntryVariables(BaseEntryVariables):
     @property
     def ext(self: BaseEntry) -> str:
         """
@@ -314,13 +290,3 @@ class EntryVariables(SourceVariables):
             The uploaded date formatted as YYYY-MM-DD
         """
         return f"{self.upload_year}-{self.upload_month_padded}-{self.upload_day_padded}"
-
-    @property
-    def info_json_ext(self) -> str:
-        """
-        Returns
-        -------
-        str
-            The "info.json" extension
-        """
-        return "info.json"

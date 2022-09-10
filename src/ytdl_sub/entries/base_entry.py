@@ -1,13 +1,18 @@
 from abc import ABC
 from typing import Any
 from typing import Dict
+from typing import List
 from typing import Optional
+from typing import final
 
 
 class BaseEntry(ABC):
     """
     Abstract entry object to represent anything download from ytdl (playlist metadata, media, etc).
     """
+
+    # The ytdl extractor type that the entry represents
+    entry_extractor: str
 
     def __init__(self, entry_dict: Dict, working_directory: str):
         """
@@ -75,3 +80,33 @@ class BaseEntry(ABC):
 
         self._additional_variables = dict(self._additional_variables, **variables_to_add)
         return self
+
+    def _added_variables(self) -> Dict[str, str]:
+        """
+        Returns
+        -------
+        Dict of variables added to this entry
+        """
+        return self._additional_variables
+
+    @classmethod
+    def source_variables(cls) -> List[str]:
+        """
+        Returns
+        -------
+        List of all source variables
+        """
+        property_names = [prop for prop in dir(cls) if isinstance(getattr(cls, prop), property)]
+        return property_names
+
+    @final
+    def to_dict(self) -> Dict[str, str]:
+        """
+        Returns
+        -------
+        Dictionary containing all variables
+        """
+        source_variable_dict = {
+            source_var: getattr(self, source_var) for source_var in self.source_variables()
+        }
+        return dict(source_variable_dict, **self._added_variables())
