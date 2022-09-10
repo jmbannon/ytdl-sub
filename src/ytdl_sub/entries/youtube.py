@@ -1,8 +1,8 @@
 import os.path
 from pathlib import Path
-from typing import Optional
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.entry import ParentEntry
 from ytdl_sub.entries.variables.youtube_variables import YoutubeVideoVariables
 
 
@@ -46,26 +46,8 @@ class YoutubePlaylistVideo(YoutubeVideo):
         return self.kwargs("playlist_count")
 
 
-class YoutubeChannel(Entry):
+class YoutubeChannel(ParentEntry):
     entry_extractor = "youtube:tab"
-
-    def _get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
-        """
-        Downloads a specific thumbnail from a YTDL entry's thumbnail list
-
-        Parameters
-        ----------
-        thumbnail_id:
-            Id of the thumbnail defined in the channel's thumbnail
-
-        Returns
-        -------
-        Desired thumbnail url if it exists. None if it does not.
-        """
-        for thumbnail in self.kwargs("thumbnails"):
-            if thumbnail["id"] == thumbnail_id:
-                return thumbnail["url"]
-        return None
 
     def avatar_thumbnail_url(self) -> str:
         """

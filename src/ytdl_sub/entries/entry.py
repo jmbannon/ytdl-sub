@@ -2,11 +2,11 @@ import copy
 import json
 import os
 from pathlib import Path
-from typing import Dict
 from typing import Optional
 from typing import final
 
 from ytdl_sub.entries.base_entry import BaseEntry
+from ytdl_sub.entries.variables.entry_variables import BaseEntryVariables
 from ytdl_sub.entries.variables.entry_variables import EntryVariables
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 
@@ -15,9 +15,6 @@ class Entry(EntryVariables, BaseEntry):
     """
     Entry object to represent a single media object returned from yt-dlp.
     """
-
-    # The ytdl extractor type that the entry represents
-    entry_extractor: str
 
     def get_download_file_name(self) -> str:
         """
@@ -107,11 +104,26 @@ class Entry(EntryVariables, BaseEntry):
 
         return file_exists
 
-    @final
-    def to_dict(self) -> Dict[str, str]:
+
+class ParentEntry(BaseEntryVariables, BaseEntry):
+    """
+    Entry to represent parent entry objects like a Channel or Playlist
+    """
+
+    def _get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
         """
+        Downloads a specific thumbnail from a YTDL entry's thumbnail list
+
+        Parameters
+        ----------
+        thumbnail_id:
+            Id of the thumbnail defined in the parent's thumbnail
+
         Returns
         -------
-        The variables in dictionary format
+        Desired thumbnail url if it exists. None if it does not.
         """
-        return self._to_dict()
+        for thumbnail in self.kwargs_get("thumbnails", []):
+            if thumbnail["id"] == thumbnail_id:
+                return thumbnail["url"]
+        return None
