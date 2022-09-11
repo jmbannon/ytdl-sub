@@ -18,6 +18,12 @@ class EntryParent(BaseEntry):
     def _get_children_entry_variables_to_add(
         self, child_entries: List[TChildEntry]
     ) -> Dict[str, str | int]:
+        """
+        Adds source variables to the child entry derived from the parent entry.
+        """
+        if not child_entries:
+            return {}
+
         return {"playlist_max_upload_year": max(entry.upload_year for entry in child_entries)}
 
     # pylint: enable=no-self-use
