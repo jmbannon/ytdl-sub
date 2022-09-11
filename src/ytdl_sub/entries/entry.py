@@ -6,7 +6,6 @@ from typing import Optional
 from typing import final
 
 from ytdl_sub.entries.base_entry import BaseEntry
-from ytdl_sub.entries.variables.entry_variables import BaseEntryVariables
 from ytdl_sub.entries.variables.entry_variables import EntryVariables
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 
@@ -103,27 +102,3 @@ class Entry(EntryVariables, BaseEntry):
                     break
 
         return file_exists
-
-
-class ParentEntry(BaseEntryVariables, BaseEntry):
-    """
-    Entry to represent parent entry objects like a Channel or Playlist
-    """
-
-    def _get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
-        """
-        Downloads a specific thumbnail from a YTDL entry's thumbnail list
-
-        Parameters
-        ----------
-        thumbnail_id:
-            Id of the thumbnail defined in the parent's thumbnail
-
-        Returns
-        -------
-        Desired thumbnail url if it exists. None if it does not.
-        """
-        for thumbnail in self.kwargs_get("thumbnails", []):
-            if thumbnail["id"] == thumbnail_id:
-                return thumbnail["url"]
-        return None

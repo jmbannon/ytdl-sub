@@ -10,7 +10,7 @@ from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
-from ytdl_sub.entries.youtube import YoutubeChannel
+from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.datetime import to_date_range_hack
 from ytdl_sub.utils.thumbnail import convert_url_thumbnail
@@ -156,19 +156,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             overrides=overrides,
         )
 
-        self.channel: Optional[YoutubeChannel] = None
-
-    def _get_channel(self, entry_dicts: List[Dict]) -> YoutubeChannel:
-        return YoutubeChannel(
-            entry_dict=self._filter_entry_dicts(entry_dicts, extractor="youtube:tab")[0],
-            working_directory=self.working_directory,
-        )
-
-    def _get_channel_videos(self, entry_dicts: List[Dict]) -> List[YoutubeVideo]:
-        return [
-            YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
-            for entry_dict in self._filter_entry_dicts(entry_dicts, sort_by="playlist_index")
-        ]
+        self.channel: Optional[EntryParent] = None
 
     def download(self) -> Generator[YoutubeVideo, None, None]:
         """
@@ -192,8 +180,12 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             url=self.download_options.channel_url,
         )
 
-        self.channel = self._get_channel(entry_dicts=entry_dicts)
-        entries_to_download = self._get_channel_videos(entry_dicts=entry_dicts)
+        self.channel = EntryParent.from_entry_dicts_with_children(
+            entry_dicts=entry_dicts,
+            working_directory=self.working_directory,
+            child_class=YoutubeVideo,
+            extractor="youtube:tab",
+        )
 
         self.overrides.add_override_variables(
             variables_to_add={
@@ -206,8 +198,8 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         # Iterate in descending order to process older videos first. In case an error occurs and a
         # the channel must be redownloaded, it will fetch most recent metadata first, and break
         # on the older video that's been processed and is in the download archive.
-        for idx, video in enumerate(reversed(entries_to_download), start=1):
-            download_logger.info("Downloading %d/%d %s", idx, len(entries_to_download), video.title)
+        for idx, video in enumerate(reversed(self.channel.child_entries), start=1):
+            download_logger.info("Downloading %d/%d %s", idx, self.channel.child_count, video.title)
 
             # Re-download the contents even if it's a dry-run as a single video. At this time,
             # channels do not download subtitles or subtitle metadata
@@ -260,7 +252,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
                 self.download_options.channel_avatar_path
             )
             if self._download_thumbnail(
-                thumbnail_url=self.channel.avatar_thumbnail_url(),
+                thumbnail_url=self.channel.get_thumbnail_url("avatar_uncropped"),
                 output_thumbnail_path=str(Path(self.working_directory) / avatar_thumbnail_name),
             ):
                 self.save_file(file_name=avatar_thumbnail_name)
@@ -272,7 +264,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
                 self.download_options.channel_banner_path
             )
             if self._download_thumbnail(
-                thumbnail_url=self.channel.banner_thumbnail_url(),
+                thumbnail_url=self.channel.get_thumbnail_url("banner_uncropped"),
                 output_thumbnail_path=str(Path(self.working_directory) / banner_thumbnail_name),
             ):
                 self.save_file(file_name=banner_thumbnail_name)

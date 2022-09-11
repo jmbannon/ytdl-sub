@@ -2,7 +2,6 @@ import os.path
 from pathlib import Path
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.entry import ParentEntry
 from ytdl_sub.entries.variables.youtube_variables import YoutubeVideoVariables
 
 
@@ -44,23 +43,3 @@ class YoutubePlaylistVideo(YoutubeVideo):
         The size of the playlist
         """
         return self.kwargs("playlist_count")
-
-
-class YoutubeChannel(ParentEntry):
-    entry_extractor = "youtube:tab"
-
-    def avatar_thumbnail_url(self) -> str:
-        """
-        Returns
-        -------
-        The channel's uncropped avatar image url
-        """
-        return self._get_thumbnail_url(thumbnail_id="avatar_uncropped")
-
-    def banner_thumbnail_url(self) -> str:
-        """
-        Returns
-        -------
-        The channel's uncropped banner image url
-        """
-        return self._get_thumbnail_url(thumbnail_id="banner_uncropped")

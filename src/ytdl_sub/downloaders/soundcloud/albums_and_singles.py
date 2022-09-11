@@ -5,7 +5,7 @@ from typing import List
 from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloader
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloaderOptions
-from ytdl_sub.entries.soundcloud import SoundcloudAlbum
+from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.soundcloud import SoundcloudAlbumTrack
 from ytdl_sub.entries.soundcloud import SoundcloudTrack
 from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
@@ -72,37 +72,8 @@ class SoundcloudAlbumsAndSinglesDownloader(
             },
         )
 
-    def _get_albums_from_entry_dicts(self, entry_dicts: List[Dict]) -> List[SoundcloudAlbum]:
-        """
-        Parameters
-        ----------
-        entry_dicts
-            Entry dicts from extracting info jsons
-
-        Returns
-        -------
-        Dict containing album_id: album class
-        """
-        albums: Dict[str, SoundcloudAlbum] = {}
-
-        # First, get the albums themselves
-        for entry_dict in self._filter_entry_dicts(entry_dicts, extractor="soundcloud:set"):
-            albums[entry_dict["id"]] = SoundcloudAlbum(
-                entry_dict=entry_dict, working_directory=self.working_directory
-            )
-
-        # Then, get all tracks that belong to the album
-        for entry_dict in self._filter_entry_dicts(entry_dicts):
-            album_id = entry_dict.get("playlist_id")
-            if album_id in albums:
-                albums[album_id].tracks.append(
-                    SoundcloudTrack(entry_dict=entry_dict, working_directory=self.working_directory)
-                )
-
-        return list(albums.values())
-
     def _get_singles(
-        self, entry_dicts: List[Dict], albums: List[SoundcloudAlbum]
+        self, entry_dicts: List[Dict], albums: List[EntryParent]
     ) -> List[SoundcloudTrack]:
         tracks: List[SoundcloudTrack] = []
 
@@ -115,26 +86,35 @@ class SoundcloudAlbumsAndSinglesDownloader(
 
         return tracks
 
-    def _get_albums(self) -> List[SoundcloudAlbum]:
+    def _get_albums(self) -> List[EntryParent]:
         # Dry-run to get the info json files
         artist_albums_url = self.artist_albums_url(artist_url=self.download_options.url)
-        album_entry_dicts = self.extract_info_via_info_json(
+        entry_dicts = self.extract_info_via_info_json(
             only_info_json=True,
             log_prefix_on_info_json_dl="Downloading metadata for",
             url=artist_albums_url,
         )
 
-        albums = self._get_albums_from_entry_dicts(entry_dicts=album_entry_dicts)
+        albums: List[EntryParent] = []
+        for entry_dict in self._filter_entry_dicts(entry_dicts, extractor="soundcloud:set"):
+            albums.append(
+                EntryParent(
+                    entry_dict=entry_dict, working_directory=self.working_directory
+                ).read_children_from_entry_dicts(
+                    entry_dicts=entry_dicts, child_class=SoundcloudAlbumTrack
+                )
+            )
+
         return albums
 
     def _get_album_tracks(
-        self, albums: List[SoundcloudAlbum]
+        self, albums: List[EntryParent]
     ) -> Generator[SoundcloudAlbumTrack, None, None]:
         for album in albums:
-            if len(album.album_tracks()) > 0:
+            if album.child_count > 0:
                 download_logger.info("Downloading album %s", album.title)
 
-            for track in album.album_tracks():
+            for track in album.child_entries:
                 if self.download_options.skip_premiere_tracks and track.is_premiere():
                     continue
 
@@ -157,7 +137,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
                 yield track
 
     def _get_single_tracks(
-        self, albums: List[SoundcloudAlbum]
+        self, albums: List[EntryParent]
     ) -> Generator[SoundcloudTrack, None, None]:
         artist_tracks_url = self.artist_tracks_url(artist_url=self.download_options.url)
         tracks_entry_dicts = self.extract_info_via_info_json(

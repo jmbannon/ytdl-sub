@@ -1,6 +1,5 @@
-from yt_dlp.utils import sanitize_filename
-
 from ytdl_sub.entries.base_entry import BaseEntry
+from ytdl_sub.entries.base_entry import BaseEntryVariables
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member
@@ -12,76 +11,6 @@ def _pad(num: int, width: int = 2):
 
 
 _days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-
-class BaseEntryVariables:
-    """
-    Source variables are ``{variables}`` that contain metadata from downloaded media.
-    These variables can be used with fields that expect
-    :class:`~ytdl_sub.validators.string_formatter_validators.StringFormatterValidator`,
-    but not
-    :class:`~ytdl_sub.validators.string_formatter_validators.OverridesStringFormatterValidator`.
-    """
-
-    @property
-    def uid(self: BaseEntry) -> str:
-        """
-        Returns
-        -------
-        str
-            The entry's unique ID
-        """
-        return self.kwargs("id")
-
-    @property
-    def extractor(self: BaseEntry) -> str:
-        """
-        Returns
-        -------
-        str
-            The ytdl extractor name
-        """
-        return self.kwargs("extractor")
-
-    @property
-    def title(self: BaseEntry) -> str:
-        """
-        Returns
-        -------
-        str
-            The title of the entry
-        """
-        return self.kwargs("title")
-
-    @property
-    def title_sanitized(self) -> str:
-        """
-        Returns
-        -------
-        str
-            The sanitized title of the entry, which is safe to use for Unix and Windows file names.
-        """
-        return sanitize_filename(self.title)
-
-    @property
-    def webpage_url(self: BaseEntry) -> str:
-        """
-        Returns
-        -------
-        str
-            The url to the webpage.
-        """
-        return self.kwargs("webpage_url")
-
-    @property
-    def info_json_ext(self) -> str:
-        """
-        Returns
-        -------
-        str
-            The "info.json" extension
-        """
-        return "info.json"
 
 
 class EntryVariables(BaseEntryVariables):
