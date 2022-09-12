@@ -1,15 +1,17 @@
 from typing import Dict
 from typing import Generator
 
+from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.downloaders.generic.collection import CollectionDownloader
 from ytdl_sub.downloaders.generic.collection import CollectionDownloadOptions
-from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloader
-from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloaderOptions
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.soundcloud import SoundcloudTrack
 from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
+from ytdl_sub.validators.validators import BoolValidator
 
 
-class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
+class SoundcloudAlbumsAndSinglesDownloadOptions(DownloaderValidator):
     """
     Downloads a soundcloud user's entire discography. Groups together album tracks and considers
     any track not in an album as a single. Also includes any collaboration tracks.
@@ -30,12 +32,16 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
     """
 
     _required_keys = {"url"}
+    _optional_keys = {"skip_premiere_tracks"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
         self._url = self._validate_key(
             key="url", validator=SoundcloudUsernameUrlValidator
         ).username_url
+        self._skip_premiere_tracks = self._validate_key(
+            "skip_premiere_tracks", BoolValidator, default=True
+        )
 
         self.collection_validator = CollectionDownloadOptions(
             name=self._name,
@@ -68,6 +74,13 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
         )
 
     @property
+    def skip_premiere_tracks(self) -> bool:
+        """
+        Optional. True to skip tracks that require purchasing. False otherwise. Defaults to True.
+        """
+        return self._skip_premiere_tracks.value
+
+    @property
     def url(self) -> str:
         """
         Required. The Soundcloud user's url, i.e. ``soundcloud.com/the_username``
@@ -76,9 +89,11 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
 
 
 class SoundcloudAlbumsAndSinglesDownloader(
-    SoundcloudDownloader[SoundcloudAlbumsAndSinglesDownloadOptions]
+    Downloader[SoundcloudAlbumsAndSinglesDownloadOptions, SoundcloudTrack]
 ):
     downloader_options_type = SoundcloudAlbumsAndSinglesDownloadOptions
+    downloader_entry_type = SoundcloudTrack
+
     supports_subtitles = False
     supports_chapters = False
 
@@ -100,6 +115,16 @@ class SoundcloudAlbumsAndSinglesDownloader(
             },
         )
 
+    def _should_skip(self, entry: Entry) -> bool:
+        if not self.download_options.skip_premiere_tracks:
+            return False
+
+        for url in [entry.kwargs_get("url", ""), entry.webpage_url]:
+            if "/preview/" in url:
+                return True
+
+        return False
+
     def download(self) -> Generator[SoundcloudTrack, None, None]:
         """
         Soundcloud subscription to download albums and tracks as singles.
@@ -112,4 +137,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
         )
 
         for entry in downloader.download():
+            if self._should_skip(entry):
+                continue
+
             yield entry
