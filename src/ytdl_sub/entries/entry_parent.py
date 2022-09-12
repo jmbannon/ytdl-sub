@@ -28,9 +28,31 @@ class EntryParent(BaseEntry):
         if not child_entries:
             return {}
 
-        return {"playlist_max_upload_year": max(entry.upload_year for entry in child_entries)}
+        return {
+            "playlist_max_upload_year": max(
+                entry.upload_year for entry in child_entries if isinstance(entry, Entry)
+            )
+        }
 
     # pylint: enable=no-self-use
+
+    def read_nested_children_from_entry_dicts(self, entry_dicts: List[Dict]):
+        child_entries: List["EntryParent"] = []
+
+        for entry_dict in entry_dicts:
+            if entry_dict.get("playlist_id") == self.uid:
+                child_entries.append(
+                    self.__class__(
+                        entry_dict=entry_dict,
+                        working_directory=self.working_directory(),
+                        entry_parent=self,
+                    )
+                )
+
+        self._child_entries = sorted(
+            child_entries, key=lambda entry: entry.kwargs("playlist_index")
+        )
+        return self._child_entries
 
     def read_children_from_entry_dicts(
         self, entry_dicts: List[Dict], child_class: Type[TChildEntry] = Entry
@@ -136,11 +158,4 @@ class EntryParent(BaseEntry):
         return entry_parent
 
     def to_entry(self) -> Entry:
-        entry = Entry(entry_dict=self._kwargs, working_directory=self.working_directory())
-        if self._entry_parent:
-            entry.add_variables(
-                self._entry_parent._get_children_entry_variables_to_add(
-                    child_entries=self._entry_parent.child_entries
-                )
-            )
-        return entry
+        return Entry(entry_dict=self._kwargs, working_directory=self.working_directory())

@@ -1,12 +1,10 @@
 from typing import Dict
 from typing import Generator
-from typing import List
 
-from ytdl_sub.downloaders.downloader import download_logger
+from ytdl_sub.downloaders.generic.collection import CollectionDownloader
+from ytdl_sub.downloaders.generic.collection import CollectionDownloadOptions
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloader
 from ytdl_sub.downloaders.soundcloud.abc import SoundcloudDownloaderOptions
-from ytdl_sub.entries.entry_parent import EntryParent
-from ytdl_sub.entries.soundcloud import SoundcloudAlbumTrack
 from ytdl_sub.entries.soundcloud import SoundcloudTrack
 from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
 
@@ -38,6 +36,36 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(SoundcloudDownloaderOptions):
         self._url = self._validate_key(
             key="url", validator=SoundcloudUsernameUrlValidator
         ).username_url
+
+        self.collection_validator = CollectionDownloadOptions(
+            name=self._name,
+            value={
+                "urls": [
+                    {
+                        "url": f"{self._url}/tracks",
+                        "variables": {
+                            "track_number": "1",
+                            "track_number_padded": "01",
+                            "track_count": "1",
+                            "album": "{title}",
+                            "album_sanitized": "{title_sanitized}",
+                            "album_year": "{upload_year}",
+                        },
+                    },
+                    {
+                        "url": f"{self._url}/albums",
+                        "variables": {
+                            "track_number": "{playlist_index}",
+                            "track_number_padded": "{playlist_index_padded}",
+                            "track_count": "{playlist_count}",
+                            "album": "{playlist}",
+                            "album_sanitized": "{playlist_sanitized}",
+                            "album_year": "{playlist_max_upload_year}",
+                        },
+                    },
+                ]
+            },
+        )
 
     @property
     def url(self) -> str:
@@ -72,104 +100,16 @@ class SoundcloudAlbumsAndSinglesDownloader(
             },
         )
 
-    def _get_singles(
-        self, entry_dicts: List[Dict], albums: List[EntryParent]
-    ) -> List[SoundcloudTrack]:
-        tracks: List[SoundcloudTrack] = []
-
-        # Get all tracks that are not part of an album
-        for entry_dict in self._filter_entry_dicts(entry_dicts):
-            if not any(entry_dict in album for album in albums):
-                tracks.append(
-                    SoundcloudTrack(entry_dict=entry_dict, working_directory=self.working_directory)
-                )
-
-        return tracks
-
-    def _get_albums(self) -> List[EntryParent]:
-        # Dry-run to get the info json files
-        artist_albums_url = self.artist_albums_url(artist_url=self.download_options.url)
-        entry_dicts = self.extract_info_via_info_json(
-            only_info_json=True,
-            log_prefix_on_info_json_dl="Downloading metadata for",
-            url=artist_albums_url,
-        )
-
-        albums: List[EntryParent] = []
-        for entry_dict in self._filter_entry_dicts(entry_dicts, extractor="soundcloud:set"):
-            albums.append(
-                EntryParent(
-                    entry_dict=entry_dict, working_directory=self.working_directory
-                ).read_children_from_entry_dicts(
-                    entry_dicts=entry_dicts, child_class=SoundcloudAlbumTrack
-                )
-            )
-
-        return albums
-
-    def _get_album_tracks(
-        self, albums: List[EntryParent]
-    ) -> Generator[SoundcloudAlbumTrack, None, None]:
-        for album in albums:
-            if album.child_count > 0:
-                download_logger.info("Downloading album %s", album.title)
-
-            for track in album.child_entries:
-                if self.download_options.skip_premiere_tracks and track.is_premiere():
-                    continue
-
-                download_logger.info(
-                    "Downloading album track %d/%d %s",
-                    track.track_number,
-                    track.track_count,
-                    track.title,
-                )
-                if not self.is_dry_run:
-                    _ = self.extract_info_with_retry(
-                        is_downloaded_fn=track.is_downloaded,
-                        url=album.webpage_url,
-                        ytdl_options_overrides={
-                            "playlist_items": str(track.kwargs("playlist_index")),
-                            "writeinfojson": False,
-                        },
-                    )
-
-                yield track
-
-    def _get_single_tracks(
-        self, albums: List[EntryParent]
-    ) -> Generator[SoundcloudTrack, None, None]:
-        artist_tracks_url = self.artist_tracks_url(artist_url=self.download_options.url)
-        tracks_entry_dicts = self.extract_info_via_info_json(
-            only_info_json=True,
-            log_prefix_on_info_json_dl="Downloading metadata for",
-            url=artist_tracks_url,
-        )
-
-        # Then, get all singles
-        tracks = self._get_singles(entry_dicts=tracks_entry_dicts, albums=albums)
-        for track in tracks:
-            # Filter any premiere tracks if specified
-            if self.download_options.skip_premiere_tracks and track.is_premiere():
-                continue
-
-            download_logger.info("Downloading single track %s", track.title)
-            if not self.is_dry_run:
-                _ = self.extract_info_with_retry(
-                    is_downloaded_fn=track.is_downloaded,
-                    url=track.webpage_url,
-                    ytdl_options_overrides={"writeinfojson": False},
-                )
-
-            yield track
-
     def download(self) -> Generator[SoundcloudTrack, None, None]:
         """
         Soundcloud subscription to download albums and tracks as singles.
         """
-        albums = self._get_albums()
-        for album_track in self._get_album_tracks(albums=albums):
-            yield album_track
+        downloader = CollectionDownloader(
+            download_options=self.download_options.collection_validator,
+            enhanced_download_archive=self._enhanced_download_archive,
+            ytdl_options_builder=self._ytdl_options_builder,
+            overrides=self.overrides,
+        )
 
-        for single_track in self._get_single_tracks(albums=albums):
-            yield single_track
+        for entry in downloader.download():
+            yield entry

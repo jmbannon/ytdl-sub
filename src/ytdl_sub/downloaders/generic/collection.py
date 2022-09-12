@@ -1,3 +1,5 @@
+import contextlib
+import os.path
 from typing import Dict
 from typing import Generator
 from typing import List
@@ -8,6 +10,7 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.validators import ListValidator
@@ -27,16 +30,23 @@ class CollectionUrlValidator(StrictDictValidator):
 
         # TODO: url validate using yt-dlp IE
         self._url = self._validate_key(key="url", validator=StringValidator)
-        self._variables = self._validate_key_if_present(
-            key="variables", validator=DictFormatterValidator
-        ).dict_with_format_strings
+        variables = self._validate_key_if_present(key="variables", validator=DictFormatterValidator)
+        self._variables = variables.dict_with_format_strings if variables else {}
 
     @property
     def url(self) -> str:
+        """
+        Returns
+        -------
+        URL to download from
+        """
         return self._url.value
 
     @property
     def variables(self) -> Dict[str, str]:
+        """
+        Variables to add to each entry
+        """
         return self._variables
 
 
@@ -114,10 +124,10 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
         self, collection_url: CollectionUrlValidator, parent: EntryParent, entry_dicts: List[Dict]
     ) -> List[Entry]:
         leaf_children: List[Entry] = []
-        parent.read_children_from_entry_dicts(entry_dicts=entry_dicts, child_class=EntryParent)
+        parent.read_nested_children_from_entry_dicts(entry_dicts=entry_dicts)
 
         for idx in range(parent.child_count):
-            child = parent.child_entries[idx]
+            child: EntryParent = parent.child_entries[idx]
 
             leaf_children.extend(
                 self._recursive_child_read(
@@ -127,19 +137,22 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
 
             # If the child has no nested children, turn it into an Entry
             if not child.child_count:
-                entry = child.to_entry()
-                entry.add_variables(collection_url.variables)
-                parent.child_entries[idx] = entry
+                parent.child_entries[idx] = child.to_entry()
+                leaf_children.append(parent.child_entries[idx])
 
-                leaf_children.append(entry)
+        for leaf_child in leaf_children:
+            leaf_child.add_variables(
+                parent._get_children_entry_variables_to_add(parent.child_entries)
+            )
+            leaf_child.add_variables(collection_url.variables)
 
         return leaf_children
 
     def _get_leaf_entries(self, collection_url: CollectionUrlValidator) -> List[Entry]:
         # Dry-run to get the info json files
+        # TODO: Mock the download
         entry_dicts = self.extract_info_via_info_json(
             only_info_json=True,
-            log_prefix_on_info_json_dl="Downloading metadata for",
             url=collection_url.url,
         )
 
@@ -160,8 +173,38 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
 
         return leaf_children
 
-    def _download_leaf_entry(self, entry: Entry):
+    @contextlib.contextmanager
+    def _separate_download_archives(self):
+        """
+        Separate download archive writing between collection urls. This is so break_on_existing
+        does not break when downloading from subset urls.
+        """
+        archive_path = self._enhanced_download_archive._archive_working_file_path
+        backup_archive_path = f"{archive_path}.backup"
+
+        archive_file_exists = False
+
+        # If archive path exists, maintain download archive is enable
+        if os.path.isfile(archive_path):
+            archive_file_exists = True
+
+            # If a backup exists, it's the one prior to any downloading, use that.
+            if os.path.isfile(backup_archive_path):
+                FileHandler.copy(src_file_path=backup_archive_path, dst_file_path=archive_path)
+            # If not, create the backup
+            else:
+                FileHandler.copy(src_file_path=archive_path, dst_file_path=backup_archive_path)
+
+        yield
+
+        # If an archive path did not exist at first, but now exists, delete it
+        if not archive_file_exists:
+            FileHandler.delete(file_path=archive_path)
+
+    def _download_leaf_entry(self, entry: Entry) -> Entry:
         download_logger.info("Downloading entry %s", entry.title)
+
+        # TODO: Mock the download archive if dry-run
         if not self.is_dry_run:
             download_entry_dict = self.extract_info_with_retry(
                 is_downloaded_fn=entry.is_downloaded,
@@ -174,22 +217,32 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
             entry._kwargs["requested_subtitles"] = download_entry_dict.get("requested_subtitles")
             # pylint: enable=protected-access
 
-        yield entry
+        return entry
+
+    def _download_collection_url(
+        self, collection_url: CollectionUrlValidator, downloaded_entries: Set[str]
+    ) -> Generator[Entry, None, None]:
+        with self._separate_download_archives():
+            leaf_children = [
+                leaf
+                for leaf in self._get_leaf_entries(collection_url)
+                if _entry_key(leaf) not in downloaded_entries
+            ]
+
+            # Reverse leaf_children downloads so we download older entries first
+            for leaf in reversed(leaf_children):
+                yield self._download_leaf_entry(entry=leaf)
+                downloaded_entries.add(_entry_key(leaf))
 
     def download(self) -> Generator[Entry, None, None]:
         """
         Soundcloud subscription to download albums and tracks as singles.
         """
-        downloaded_leaf_children: Set[str] = set()
+        downloaded_entries: Set[str] = set()
 
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.download_options.collection_urls.list):
-            leaf_children = self._get_leaf_entries(collection_url)
-
-            for child in leaf_children:
-                child_key = _entry_key(child)
-                if child_key in downloaded_leaf_children:
-                    continue
-
-                yield self._download_leaf_entry(entry=child)
-                downloaded_leaf_children.add(child_key)
+            for entry in self._download_collection_url(
+                collection_url=collection_url, downloaded_entries=downloaded_entries
+            ):
+                yield entry
