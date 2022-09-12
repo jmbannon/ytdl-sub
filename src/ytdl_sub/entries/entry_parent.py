@@ -5,14 +5,18 @@ from typing import Type
 from typing import TypeVar
 
 from ytdl_sub.entries.base_entry import BaseEntry
+from ytdl_sub.entries.entry import Entry
 
 TChildEntry = TypeVar("TChildEntry", bound=BaseEntry)
 
 
 class EntryParent(BaseEntry):
-    def __init__(self, entry_dict: Dict, working_directory: str):
+    def __init__(
+        self, entry_dict: Dict, working_directory: str, entry_parent: Optional["EntryParent"] = None
+    ):
         super().__init__(entry_dict=entry_dict, working_directory=working_directory)
         self._child_entries: List[TChildEntry] = []
+        self._entry_parent = entry_parent
 
     # pylint: disable=no-self-use
     def _get_children_entry_variables_to_add(
@@ -29,7 +33,7 @@ class EntryParent(BaseEntry):
     # pylint: enable=no-self-use
 
     def read_children_from_entry_dicts(
-        self, entry_dicts: List[Dict], child_class: Type[TChildEntry]
+        self, entry_dicts: List[Dict], child_class: Type[TChildEntry] = Entry
     ) -> "EntryParent":
         """
         Parameters
@@ -37,7 +41,7 @@ class EntryParent(BaseEntry):
         entry_dicts
             Entry dicts to look for children from
         child_class
-            The class to convert the entry dict to
+            The class to convert the entry dict to child_class. Defaults to Entry
 
         Returns
         -------
@@ -130,3 +134,13 @@ class EntryParent(BaseEntry):
             entry_dicts=entry_dicts, child_class=child_class
         )
         return entry_parent
+
+    def to_entry(self) -> Entry:
+        entry = Entry(entry_dict=self._kwargs, working_directory=self.working_directory())
+        if self._entry_parent:
+            entry.add_variables(
+                self._entry_parent._get_children_entry_variables_to_add(
+                    child_entries=self._entry_parent.child_entries
+                )
+            )
+        return entry
