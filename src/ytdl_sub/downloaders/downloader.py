@@ -21,6 +21,7 @@ import yt_dlp as ytdl
 from yt_dlp.utils import ExistingVideoReached
 from yt_dlp.utils import RejectedVideoReached
 
+from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.base_entry import BaseEntry
@@ -36,7 +37,7 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadAr
 download_logger = Logger.get(name="downloader")
 
 
-class DownloaderValidator(StrictDictValidator, ABC):
+class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
     """
     Placeholder class to define downloader options
     """

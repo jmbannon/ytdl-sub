@@ -1,4 +1,6 @@
+from abc import ABC
 from typing import Dict
+from typing import List
 from typing import Optional
 
 from yt_dlp.utils import sanitize_filename
@@ -11,6 +13,43 @@ from ytdl_sub.validators.string_formatter_validators import OverridesStringForma
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
+
+
+# pylint: disable=no-self-use
+# pylint: disable=unused-argument
+class AddsVariablesMixin(ABC):
+    """
+    Mixin for parts of the Preset that adds source variables
+    """
+
+    def added_source_variables(self) -> List[str]:
+        """
+        If the plugin adds source variables, list them here.
+
+        Returns
+        -------
+        List of added source variables this plugin creates
+        """
+        return []
+
+    def validate_with_variables(
+        self, source_variables: List[str], override_variables: List[str]
+    ) -> None:
+        """
+        Optional validation after init with the session's source and override variables.
+
+        Parameters
+        ----------
+        source_variables
+            Available source variables when running the plugin
+        override_variables
+            Available override variables when running the plugin
+        """
+        return None
+
+
+# pylint: enable=no-self-use
+# pylint: enable=unused-argument
 
 
 class YTDLOptions(LiteralDictValidator):

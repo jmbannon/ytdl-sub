@@ -35,6 +35,9 @@ class EntryParent(BaseEntry):
     # pylint: enable=no-self-use
 
     def read_nested_children_from_entry_dicts(self, entry_dicts: List[Dict]):
+        """
+        Populates a tree of EntryParents that belong to this instance
+        """
         child_entries: List["EntryParent"] = []
 
         for entry_dict in entry_dicts:
@@ -155,4 +158,9 @@ class EntryParent(BaseEntry):
         return entry_parent
 
     def to_entry(self) -> Entry:
-        return Entry(entry_dict=self._kwargs, working_directory=self.working_directory())
+        """
+        Returns
+        -------
+        EntryParent converted to Entry
+        """
+        return Entry(entry_dict=self._kwargs, working_directory=self._working_directory)

@@ -115,6 +115,28 @@ class CollectionDownloadOptions(DownloaderValidator):
         """
         return self._urls
 
+    def added_source_variables(self) -> List[str]:
+        """
+        Returns
+        -------
+        List of variables added. The first collection url always contains all the variables.
+        """
+        return list(self._urls.list[0].variables.keys())
+
+    def validate_with_variables(
+        self, source_variables: List[str], override_variables: List[str]
+    ) -> None:
+        """
+        Ensures new variables added are not existing variables
+        """
+        # TODO: Make sure they resolve
+        for added_source_var in self.added_source_variables():
+            if added_source_var in source_variables:
+                raise self._validation_exception(
+                    f"'{added_source_var}' cannot be used as a variable name because it "
+                    f"is an existing source variable"
+                )
+
 
 class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
     downloader_options_type = CollectionDownloadOptions
@@ -141,9 +163,7 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
                 leaf_children.append(parent.child_entries[idx])
 
         for leaf_child in leaf_children:
-            leaf_child.add_variables(
-                parent.get_children_entry_variables_to_add(parent.child_entries)
-            )
+            leaf_child.add_variables(parent.get_children_entry_variables_to_add())
             leaf_child.add_variables(collection_url.variables)
 
         return leaf_children
