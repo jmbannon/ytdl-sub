@@ -19,18 +19,16 @@ class EntryParent(BaseEntry):
         self._entry_parent = entry_parent
 
     # pylint: disable=no-self-use
-    def _get_children_entry_variables_to_add(
-        self, child_entries: List[TChildEntry]
-    ) -> Dict[str, str | int]:
+    def get_children_entry_variables_to_add(self) -> Dict[str, str | int]:
         """
         Adds source variables to the child entry derived from the parent entry.
         """
-        if not child_entries:
+        if not self.child_entries:
             return {}
 
         return {
             "playlist_max_upload_year": max(
-                entry.upload_year for entry in child_entries if isinstance(entry, Entry)
+                entry.upload_year for entry in self.child_entries if isinstance(entry, Entry)
             )
         }
 
@@ -77,13 +75,12 @@ class EntryParent(BaseEntry):
                     child_class(entry_dict=entry_dict, working_directory=self.working_directory())
                 )
 
-        child_variables_to_add = self._get_children_entry_variables_to_add(child_entries)
-        for child_entry in child_entries:
-            child_entry.add_variables(variables_to_add=child_variables_to_add)
-
         self._child_entries = sorted(
             child_entries, key=lambda entry: entry.kwargs("playlist_index")
         )
+        for child_entry in self._child_entries:
+            child_entry.add_variables(variables_to_add=self.get_children_entry_variables_to_add())
+
         return self
 
     @property

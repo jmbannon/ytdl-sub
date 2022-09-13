@@ -142,7 +142,7 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
 
         for leaf_child in leaf_children:
             leaf_child.add_variables(
-                parent._get_children_entry_variables_to_add(parent.child_entries)
+                parent.get_children_entry_variables_to_add(parent.child_entries)
             )
             leaf_child.add_variables(collection_url.variables)
 
@@ -179,13 +179,11 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
         Separate download archive writing between collection urls. This is so break_on_existing
         does not break when downloading from subset urls.
         """
-        archive_path = self._enhanced_download_archive._archive_working_file_path
+        archive_path = self._ytdl_options_builder.to_dict().get("download_archive", "")
         backup_archive_path = f"{archive_path}.backup"
 
-        archive_file_exists = False
-
         # If archive path exists, maintain download archive is enable
-        if os.path.isfile(archive_path):
+        if archive_file_exists := archive_path and os.path.isfile(archive_path):
             archive_file_exists = True
 
             # If a backup exists, it's the one prior to any downloading, use that.
@@ -198,8 +196,11 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
         yield
 
         # If an archive path did not exist at first, but now exists, delete it
-        if not archive_file_exists:
+        if not archive_file_exists and os.path.isfile(archive_path):
             FileHandler.delete(file_path=archive_path)
+        # If the archive file did exist, restore the backup
+        elif archive_file_exists:
+            FileHandler.copy(src_file_path=backup_archive_path, dst_file_path=archive_path)
 
     def _download_leaf_entry(self, entry: Entry) -> Entry:
         download_logger.info("Downloading entry %s", entry.title)
