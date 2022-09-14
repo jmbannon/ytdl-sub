@@ -95,12 +95,13 @@ class YoutubePlaylistDownloader(
             url=self.download_options.playlist_url,
         )
 
-        playlist: EntryParent = EntryParent.from_entry_dicts_with_children(
+        parents: List[EntryParent] = EntryParent.from_entry_dicts(
             entry_dicts=entry_dicts,
             working_directory=self.working_directory,
-            child_class=YoutubePlaylistVideo,
-            extractor="youtube:tab",
         )
+        assert len(parents) == 1, "Playlist should be the only parent"
+        playlist = parents[0]
+
         self.overrides.add_override_variables(
             variables_to_add={
                 "source_title": playlist.title,
@@ -113,6 +114,7 @@ class YoutubePlaylistDownloader(
         # the playlist must be redownloaded, it will fetch most recent metadata first, and break
         # on the older video that's been processed and is in the download archive.
         for idx, video in enumerate(reversed(playlist.child_entries), start=1):
+            video = video.to_type(YoutubePlaylistVideo)
             download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
 
             # Re-download the contents even if it's a dry-run as a single video. At this time,

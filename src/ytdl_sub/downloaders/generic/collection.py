@@ -5,9 +5,13 @@ from typing import Generator
 from typing import List
 from typing import Set
 
+from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.downloaders.downloader import DownloaderOptionsT
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.downloaders.downloader import download_logger
+from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
+from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.utils.file_handler import FileHandler
@@ -16,10 +20,25 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
-def _entry_key(entry: Entry) -> str:
+def _entry_key(entry: BaseEntry) -> str:
     return entry.extractor + entry.uid
+
+
+def _get_parent_entry_variables(parent: EntryParent) -> Dict[str, str | int]:
+    """
+    Adds source variables to the child entry derived from the parent entry.
+    """
+    if not parent.child_entries:
+        return {}
+
+    return {
+        "playlist_max_upload_year": max(
+            child_entry.to_type(Entry).upload_year for child_entry in parent.child_entries
+        )
+    }
 
 
 class CollectionUrlValidator(StrictDictValidator):
@@ -153,56 +172,22 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
     downloader_options_type = CollectionDownloadOptions
     downloader_entry_type = Entry
 
-    def _recursive_child_read(
-        self, collection_url: CollectionUrlValidator, parent: EntryParent, entry_dicts: List[Dict]
-    ) -> List[Entry]:
-        leaf_children: List[Entry] = []
-        parent.read_nested_children_from_entry_dicts(entry_dicts=entry_dicts)
-
-        for idx in range(parent.child_count):
-            child: EntryParent = parent.child_entries[idx]
-
-            leaf_children.extend(
-                self._recursive_child_read(
-                    collection_url=collection_url, parent=child, entry_dicts=entry_dicts
-                )
-            )
-
-            # If the child has no nested children, turn it into an Entry
-            if not child.child_count:
-                parent.child_entries[idx] = child.to_entry()
-                leaf_children.append(parent.child_entries[idx])
-
-        for leaf_child in leaf_children:
-            leaf_child.add_variables(parent.get_children_entry_variables_to_add())
-            leaf_child.add_variables(collection_url.variables)
-
-        return leaf_children
-
-    def _get_leaf_entries(self, collection_url: CollectionUrlValidator) -> List[Entry]:
-        # Dry-run to get the info json files
-        # TODO: Mock the download
-        entry_dicts = self.extract_info_via_info_json(
-            only_info_json=True,
-            url=collection_url.url,
+    def __init__(
+        self,
+        download_options: DownloaderOptionsT,
+        enhanced_download_archive: EnhancedDownloadArchive,
+        ytdl_options_builder: YTDLOptionsBuilder,
+        overrides: Overrides,
+    ):
+        super().__init__(
+            download_options=download_options,
+            enhanced_download_archive=enhanced_download_archive,
+            ytdl_options_builder=ytdl_options_builder,
+            overrides=overrides,
         )
 
-        # initialize top-level parents, determined by whether a playlist_id exists in the entry dict
-        parents: List[EntryParent] = [
-            EntryParent(entry_dict=entry_dict, working_directory=self.working_directory)
-            for entry_dict in entry_dicts
-            if "playlist_id" not in entry_dict
-        ]
-
-        leaf_children: List[Entry] = []
-        for parent in parents:
-            leaf_children.extend(
-                self._recursive_child_read(
-                    collection_url=collection_url, parent=parent, entry_dicts=entry_dicts
-                )
-            )
-
-        return leaf_children
+        self.parents: List[EntryParent] = []
+        self.downloaded_entries: Set[str] = set()
 
     @contextlib.contextmanager
     def _separate_download_archives(self):
@@ -233,48 +218,58 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
         elif archive_file_exists:
             FileHandler.copy(src_file_path=backup_archive_path, dst_file_path=archive_path)
 
-    def _download_leaf_entry(self, entry: Entry) -> Entry:
+    def _download_entry(self, entry: Entry) -> Entry:
         download_logger.info("Downloading entry %s", entry.title)
+        download_entry_dict = self.extract_info_with_retry(
+            is_downloaded_fn=entry.is_downloaded,
+            url=entry.webpage_url,
+            ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
+        )
 
-        # TODO: Mock the download archive if dry-run
-        if not self.is_dry_run:
-            download_entry_dict = self.extract_info_with_retry(
-                is_downloaded_fn=entry.is_downloaded,
-                url=entry.webpage_url,
-                ytdl_options_overrides={"writeinfojson": False},
-            )
-
-            # Workaround for the ytdlp issue
-            # pylint: disable=protected-access
-            entry._kwargs["requested_subtitles"] = download_entry_dict.get("requested_subtitles")
-            # pylint: enable=protected-access
+        # Workaround for the ytdlp issue
+        # pylint: disable=protected-access
+        entry._kwargs["requested_subtitles"] = download_entry_dict.get("requested_subtitles")
+        # pylint: enable=protected-access
 
         return entry
 
+    def _download_parent_entry(self, parent: EntryParent) -> Generator[Entry, None, None]:
+        """Download in reverse order, that way we download older entries ones first"""
+        for entry_child in reversed(parent.entry_children()):
+            if _entry_key(entry_child) in self.downloaded_entries:
+                continue
+
+            yield self._download_entry(entry_child.to_type(Entry))
+            self.downloaded_entries.add(_entry_key(entry_child))
+
+        for parent_child in reversed(parent.parent_children()):
+            for entry_child in self._download_parent_entry(parent=parent_child):
+                yield entry_child
+
     def _download_collection_url(
-        self, collection_url: CollectionUrlValidator, downloaded_entries: Set[str]
+        self, collection_url: CollectionUrlValidator
     ) -> Generator[Entry, None, None]:
         with self._separate_download_archives():
-            leaf_children = [
-                leaf
-                for leaf in self._get_leaf_entries(collection_url)
-                if _entry_key(leaf) not in downloaded_entries
-            ]
+            entry_dicts = self.extract_info_via_info_json(
+                only_info_json=True,
+                url=collection_url.url,
+            )
 
-            # Reverse leaf_children downloads so we download older entries first
-            for leaf in reversed(leaf_children):
-                yield self._download_leaf_entry(entry=leaf)
-                downloaded_entries.add(_entry_key(leaf))
+            parents = EntryParent.from_entry_dicts(
+                entry_dicts=entry_dicts, working_directory=self.working_directory
+            )
+            for parent in parents:
+                for entry_child in self._download_parent_entry(parent=parent):
+                    entry_child.add_variables(
+                        dict(_get_parent_entry_variables(parent), **collection_url.variables)
+                    )
+                    yield entry_child
 
     def download(self) -> Generator[Entry, None, None]:
         """
         Soundcloud subscription to download albums and tracks as singles.
         """
-        downloaded_entries: Set[str] = set()
-
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.download_options.collection_urls.list):
-            for entry in self._download_collection_url(
-                collection_url=collection_url, downloaded_entries=downloaded_entries
-            ):
+            for entry in self._download_collection_url(collection_url=collection_url):
                 yield entry

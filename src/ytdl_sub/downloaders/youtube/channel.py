@@ -180,12 +180,12 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             url=self.download_options.channel_url,
         )
 
-        self.channel = EntryParent.from_entry_dicts_with_children(
+        parents: List[EntryParent] = EntryParent.from_entry_dicts(
             entry_dicts=entry_dicts,
             working_directory=self.working_directory,
-            child_class=YoutubeVideo,
-            extractor="youtube:tab",
         )
+        assert len(parents) == 1, "Channel should be the only parent"
+        self.channel = parents[0]
 
         self.overrides.add_override_variables(
             variables_to_add={
@@ -199,6 +199,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         # the channel must be redownloaded, it will fetch most recent metadata first, and break
         # on the older video that's been processed and is in the download archive.
         for idx, video in enumerate(reversed(self.channel.child_entries), start=1):
+            video = video.to_type(YoutubeVideo)
             download_logger.info("Downloading %d/%d %s", idx, self.channel.child_count, video.title)
 
             # Re-download the contents even if it's a dry-run as a single video. At this time,

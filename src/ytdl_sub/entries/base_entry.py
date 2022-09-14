@@ -187,19 +187,3 @@ class BaseEntry(BaseEntryVariables, ABC):
             source_var: getattr(self, source_var) for source_var in self.source_variables()
         }
         return dict(source_variable_dict, **self._added_variables())
-
-    # TODO: super typing
-    @classmethod
-    def from_entry_dicts(
-        cls, entry_dicts: List[Dict], working_directory: str, extractor: Optional[str]
-    ):
-        """
-        Load the entry from a list of dicts. There should only be one entry with the extractor
-        type
-        """
-        extractor = extractor or cls.extractor
-        output = [
-            entry_dict for entry_dict in entry_dicts if entry_dict.get("extractor") == extractor
-        ]
-        assert len(output) == 1, f"Expected a single entry with extractor of type '{extractor}'"
-        return cls(entry_dict=output[0], working_directory=working_directory)
