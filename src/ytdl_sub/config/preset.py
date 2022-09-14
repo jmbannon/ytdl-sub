@@ -186,7 +186,6 @@ class Preset(StrictDictValidator):
 
     def __validate_and_get_plugins(self) -> PresetPlugins:
         preset_plugins = PresetPlugins()
-        source_variables = copy.deepcopy(self._source_variables)
 
         for key in self._keys:
             if key not in PluginMapping.plugins():
@@ -197,19 +196,29 @@ class Preset(StrictDictValidator):
 
             preset_plugins.add(plugin_type=plugin, plugin_options=plugin_options)
 
-        for plugin, plugin_options in sorted(
-            preset_plugins.zipped(),
-            key=lambda _plugin_and_options: _plugin_and_options[0].priority.modify_entry,
+        return preset_plugins
+
+    def __validate_added_variables(self):
+        source_variables = copy.deepcopy(self._source_variables)
+
+        # Validate added download option variables here since plugins could subsequently use them
+        self.downloader_options.validate_with_variables(
+            source_variables=source_variables,
+            override_variables=self.overrides.dict_with_format_strings,
+        )
+        source_variables.extend(self.downloader_options.added_source_variables())
+
+        for _, plugin_options in sorted(
+            self.plugins.zipped(), key=lambda pl: pl[0].priority.modify_entry
         ):
             # Validate current plugin using source + added plugin variables
             plugin_options.validate_with_variables(
-                source_variables=source_variables, override_variables=self.overrides.keys
+                source_variables=source_variables,
+                override_variables=self.overrides.dict_with_format_strings,
             )
 
             # Extend existing source variables with ones created from this plugin
             source_variables.extend(plugin_options.added_source_variables())
-
-        return preset_plugins
 
     def __validate_override_string_formatter_validator(
         self,
@@ -224,7 +233,11 @@ class Preset(StrictDictValidator):
         # If the formatter supports source variables, set the formatter variables to include
         # both source and override variables
         if not isinstance(formatter_validator, OverridesStringFormatterValidator):
-            source_variables = {source_var: "dummy_string" for source_var in self._source_variables}
+            source_variables = {
+                source_var: "dummy_string"
+                for source_var in self._source_variables
+                + self.downloader_options.added_source_variables()
+            }
             variable_dict = dict(source_variables, **variable_dict)
 
             # For all plugins, add in any extra added source variables
@@ -330,6 +343,7 @@ class Preset(StrictDictValidator):
 
         self.overrides = self._validate_key(key="overrides", validator=Overrides, default={})
         self.plugins: PresetPlugins = self.__validate_and_get_plugins()
+        self.__validate_added_variables()
 
         # After all options are initialized, perform a recursive post-validate that requires
         # values from multiple validators

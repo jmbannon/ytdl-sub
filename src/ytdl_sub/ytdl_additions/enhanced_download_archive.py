@@ -123,19 +123,6 @@ class DownloadArchive:
                 file.write(f"{line}\n")
         return self
 
-    def contains(self, entry_id: str) -> bool:
-        """
-        Parameters
-        ----------
-        entry_id
-            Id of the entry
-
-        Returns
-        -------
-        True if the entry id is within this download archive. False otherwise.
-        """
-        return any(entry_id in line for line in self._download_archive_lines)
-
     def remove_entry(self, entry_id: str) -> "DownloadArchive":
         """
         Parameters
@@ -598,7 +585,7 @@ class DownloadArchiver:
     """
 
     def __init__(self, enhanced_download_archive: EnhancedDownloadArchive):
-        self.__enhanced_download_archive = enhanced_download_archive
+        self._enhanced_download_archive = enhanced_download_archive
 
     @property
     def working_directory(self) -> str:
@@ -607,7 +594,7 @@ class DownloadArchiver:
         -------
         Path to the working directory
         """
-        return self.__enhanced_download_archive.working_directory
+        return self._enhanced_download_archive.working_directory
 
     @property
     def is_dry_run(self) -> bool:
@@ -616,7 +603,7 @@ class DownloadArchiver:
         -------
         True if this session is a dry-run. False otherwise.
         """
-        return self.__enhanced_download_archive.is_dry_run
+        return self._enhanced_download_archive.is_dry_run
 
     def save_file(
         self,
@@ -640,7 +627,7 @@ class DownloadArchiver:
         entry
             Optional. Entry that the file belongs to
         """
-        self.__enhanced_download_archive.save_file_to_output_directory(
+        self._enhanced_download_archive.save_file_to_output_directory(
             file_name=file_name,
             file_metadata=file_metadata,
             output_file_name=output_file_name,

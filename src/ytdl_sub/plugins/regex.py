@@ -165,7 +165,7 @@ class RegexOptions(PluginOptions):
         return self._skip_if_match_fails
 
     def validate_with_variables(
-        self, source_variables: List[str], override_variables: List[str]
+        self, source_variables: List[str], override_variables: Dict[str, str]
     ) -> None:
         """
         Ensures each source variable capture group is valid
