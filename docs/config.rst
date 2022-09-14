@@ -83,17 +83,6 @@ _____
 
 -------------------------------------------------------------------------------
 
-split_video
-___________
-.. autoclass:: ytdl_sub.downloaders.youtube.split_video.YoutubeSplitVideoDownloaderOptions()
-  :members:
-  :member-order: bysource
-  :inherited-members:
-
-.. autofunction:: ytdl_sub.downloaders.youtube.split_video.YoutubeSplitVideoDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
 merge_playlist
 ______________
 .. autoclass:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloaderOptions()
@@ -315,7 +304,7 @@ the ``{playlist_name}`` variable since the preset did not.
 Source Variables
 ----------------
 
-.. autoclass:: ytdl_sub.entries.variables.entry_variables.SourceVariables
+.. autoclass:: ytdl_sub.entries.variables.entry_variables.EntryVariables
 
 .. _youtube-variables:
 
