@@ -115,7 +115,12 @@ class BaseEntry(BaseEntryVariables, ABC):
         """Returns an internal kwarg value supplied from ytdl"""
         if not self.kwargs_contains(key):
             raise KeyError(f"Expected '{key}' in {self.__class__.__name__} but does not exist.")
-        return self._kwargs[key]
+        output = self._kwargs[key]
+
+        # Replace curly braces with unicode version to avoid variable shenanigans
+        if isinstance(output, str):
+            return output.replace("{", "｛").replace("}", "｝")
+        return output
 
     def kwargs_get(self, key: str, default: Optional[Any] = None) -> Any:
         """
