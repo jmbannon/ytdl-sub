@@ -9,5 +9,3 @@ class SoundcloudTrack(SoundcloudVariables, Entry):
     Entry object to represent a Soundcloud track yt-dlp that is a single, which implies
     it does not belong to an album.
     """
-
-    entry_extractor = "soundcloud"

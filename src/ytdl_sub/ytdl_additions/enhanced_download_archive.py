@@ -123,19 +123,6 @@ class DownloadArchive:
                 file.write(f"{line}\n")
         return self
 
-    def contains(self, entry_id: str) -> bool:
-        """
-        Parameters
-        ----------
-        entry_id
-            Id of the entry
-
-        Returns
-        -------
-        True if the entry id is within this download archive. False otherwise.
-        """
-        return any(entry_id in line for line in self._download_archive_lines)
-
     def remove_entry(self, entry_id: str) -> "DownloadArchive":
         """
         Parameters

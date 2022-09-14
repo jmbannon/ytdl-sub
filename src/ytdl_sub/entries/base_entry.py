@@ -88,9 +88,6 @@ class BaseEntry(BaseEntryVariables, ABC):
     Abstract entry object to represent anything download from ytdl (playlist metadata, media, etc).
     """
 
-    # The ytdl extractor type that the entry represents
-    entry_extractor: str
-
     def __init__(self, entry_dict: Dict, working_directory: str):
         """
         Initialize the entry using ytdl metadata
