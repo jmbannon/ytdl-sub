@@ -1,3 +1,5 @@
+from yt_dlp.utils import sanitize_filename
+
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import BaseEntryVariables
 
@@ -14,6 +16,72 @@ _days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 class EntryVariables(BaseEntryVariables):
+    @property
+    def playlist(self: BaseEntry) -> str:
+        """
+        Returns
+        -------
+        str
+            Name of its parent playlist/channel if it exists, otherwise returns its title.
+        """
+        return self.kwargs_get("playlist", self.title)
+
+    @property
+    def playlist_sanitized(self) -> str:
+        """
+        Returns
+        -------
+        str
+            The playlist name, sanitized
+        """
+        return sanitize_filename(self.playlist)
+
+    @property
+    def playlist_index(self: BaseEntry) -> int:
+        """
+        Returns
+        -------
+        int
+            Playlist index if it exists, otherwise returns ``1``.
+
+            Note that for channels/playlists, an index of 1 implies it's the most recent
+            uploaded entry. It is recommended to not use this unless you know the channel/playlist
+            will never add new content, i.e. a music album.
+        """
+        return self.kwargs_get("playlist_index", 1)
+
+    @property
+    def playlist_index_padded(self) -> str:
+        """
+        Returns
+        -------
+        str
+            playlist_index padded two digits
+        """
+        return _pad(self.playlist_index, width=2)
+
+    @property
+    def playlist_count(self: BaseEntry) -> int:
+        """
+        Returns
+        -------
+        int
+            Playlist count if it exists, otherwise returns ``1``.
+        """
+        return self.kwargs_get("playlist_count", 1)
+
+    @property
+    def playlist_max_upload_year(self) -> int:
+        """
+        Returns
+        -------
+        int
+            Max upload_year for all entries in this entry's playlist if it exists, otherwise returns
+            ``upload_year``
+        """
+        # override in EntryParent
+        return self.upload_year
+
     @property
     def ext(self: BaseEntry) -> str:
         """

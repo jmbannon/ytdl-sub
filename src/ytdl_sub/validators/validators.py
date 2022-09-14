@@ -244,24 +244,3 @@ class LiteralDictValidator(DictValidator):
     def keys(self) -> List[str]:
         """Returns a sorted list of the dict's keys"""
         return super()._keys
-
-
-class UniformDictValidator(DictValidator, Generic[ValidatorT], ABC):
-    """DictValidator where all values have the same validator"""
-
-    uniform_validator_class: Type[ValidatorT]
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-
-        for key in self._keys:
-            _ = self._validate_key_if_present(key=key, validator=self.uniform_validator_class)
-
-    @property
-    def validator_dict(self) -> Dict[str, ValidatorT]:
-        """
-        Returns
-        -------
-        Dict of name: validator
-        """
-        return self._validator_dict

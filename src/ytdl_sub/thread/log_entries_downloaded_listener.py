@@ -13,7 +13,7 @@ logger = Logger.get(name="downloader")
 
 
 class LogEntriesDownloadedListener(threading.Thread):
-    def __init__(self, working_directory: str, info_json_extractor: str, log_prefix: str):
+    def __init__(self, working_directory: str, log_prefix: str):
         """
         To be ran in a thread while download via ytdl-sub. Listens for new .info.json files in the
         working directory, checks the extractor value, and if it matches the input arg, log the
@@ -23,20 +23,18 @@ class LogEntriesDownloadedListener(threading.Thread):
         ----------
         working_directory
             subscription download working directory
-        info_json_extractor
-            print the titles of the info.json file with this extractor
         log_prefix
             The message to print prefixed to the title, i.e. '{log_prefix} {title}'
         """
         threading.Thread.__init__(self)
         self.working_directory = working_directory
-        self.info_json_extractor = info_json_extractor
         self.log_prefix = log_prefix
         self.complete = False
 
         self._files_read: Set[str] = set()
 
-    def _get_title_from_info_json(self, path: Path) -> Optional[str]:
+    @classmethod
+    def _get_title_from_info_json(cls, path: Path) -> Optional[str]:
         try:
             with open(path, "r", encoding="utf-8") as file:
                 file_json = json.load(file)
@@ -44,10 +42,7 @@ class LogEntriesDownloadedListener(threading.Thread):
             # swallow the error since this is only printing logs
             return None
 
-        if file_json.get("extractor") == self.info_json_extractor:
-            return file_json.get("title")
-
-        return None
+        return file_json.get("title")
 
     @classmethod
     def _is_info_json(cls, path: Path) -> bool:

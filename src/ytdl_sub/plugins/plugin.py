@@ -8,6 +8,7 @@ from typing import Type
 from typing import TypeVar
 from typing import final
 
+from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -39,39 +40,10 @@ class PluginPriority:
         return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
 
 
-class PluginOptions(StrictDictValidator):
+class PluginOptions(StrictDictValidator, AddsVariablesMixin, ABC):
     """
     Class that defines the parameters to a plugin
     """
-
-    # pylint: disable=no-self-use
-    def added_source_variables(self) -> List[str]:
-        """
-        If the plugin adds source variables, list them here.
-
-        Returns
-        -------
-        List of added source variables this plugin creates
-        """
-        return []
-
-    # pylint: disable=unused-argument
-    def validate_with_variables(
-        self, source_variables: List[str], override_variables: List[str]
-    ) -> None:
-        """
-        Optional validation after init with the session's source and override variables.
-
-        Parameters
-        ----------
-        source_variables
-            Available source variables when running the plugin
-        override_variables
-            Available override variables when running the plugin
-        """
-        return None
-
-    # pylint: enable=no-self-use,unused-argument
 
 
 PluginOptionsT = TypeVar("PluginOptionsT", bound=PluginOptions)

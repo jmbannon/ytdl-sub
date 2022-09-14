@@ -10,8 +10,6 @@ class YoutubeVideo(YoutubeVideoVariables, Entry):
     Entry object to represent a Youtube video. Reserved for shared Youtube entry logic.
     """
 
-    entry_extractor = "youtube"
-
     @property
     def ext(self) -> str:
         """

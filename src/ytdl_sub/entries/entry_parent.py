@@ -6,70 +6,49 @@ from typing import TypeVar
 
 from ytdl_sub.entries.base_entry import BaseEntry
 
-TChildEntry = TypeVar("TChildEntry", bound=BaseEntry)
+TBaseEntry = TypeVar("TBaseEntry", bound=BaseEntry)
 
 
 class EntryParent(BaseEntry):
     def __init__(self, entry_dict: Dict, working_directory: str):
         super().__init__(entry_dict=entry_dict, working_directory=working_directory)
-        self._child_entries: List[TChildEntry] = []
+        self.child_entries: List["EntryParent"] = []
 
-    # pylint: disable=no-self-use
-    def _get_children_entry_variables_to_add(
-        self, child_entries: List[TChildEntry]
-    ) -> Dict[str, str | int]:
+    def is_entry(self) -> bool:
         """
-        Adds source variables to the child entry derived from the parent entry.
-        """
-        if not child_entries:
-            return {}
-
-        return {"playlist_max_upload_year": max(entry.upload_year for entry in child_entries)}
-
-    # pylint: enable=no-self-use
-
-    def read_children_from_entry_dicts(
-        self, entry_dicts: List[Dict], child_class: Type[TChildEntry]
-    ) -> "EntryParent":
-        """
-        Parameters
-        ----------
-        entry_dicts
-            Entry dicts to look for children from
-        child_class
-            The class to convert the entry dict to
-
         Returns
         -------
-        List of children
+        True if the entry contains a media file. False otherwise.
         """
-        child_entries: List[TChildEntry] = []
+        return self.kwargs_contains("ext")
+
+    def parent_children(self) -> List["EntryParent"]:
+        """This parent's children that are also parents"""
+        return [child for child in self.child_entries if child.child_count() > 0]
+
+    def entry_children(self) -> List["EntryParent"]:
+        """This parent's children that are entries"""
+        return [child for child in self.child_entries if child.is_entry()]
+
+    def read_children_from_entry_dicts(self, entry_dicts: List[Dict]) -> "EntryParent":
+        """
+        Populates a tree of EntryParents that belong to this instance
+        """
+        child_entries: List["EntryParent"] = []
 
         for entry_dict in entry_dicts:
             if entry_dict.get("playlist_id") == self.uid:
                 child_entries.append(
-                    child_class(entry_dict=entry_dict, working_directory=self.working_directory())
+                    self.__class__(
+                        entry_dict=entry_dict,
+                        working_directory=self.working_directory(),
+                    )
                 )
+                child_entries[-1].read_children_from_entry_dicts(entry_dicts)
 
-        child_variables_to_add = self._get_children_entry_variables_to_add(child_entries)
-        for child_entry in child_entries:
-            child_entry.add_variables(variables_to_add=child_variables_to_add)
-
-        self._child_entries = sorted(
-            child_entries, key=lambda entry: entry.kwargs("playlist_index")
-        )
+        self.child_entries = sorted(child_entries, key=lambda entry: entry.kwargs("playlist_index"))
         return self
 
-    @property
-    def child_entries(self) -> List[TChildEntry]:
-        """
-        Returns
-        -------
-        List of child entities
-        """
-        return self._child_entries
-
-    @property
     def child_count(self) -> int:
         """
         Returns
@@ -96,37 +75,25 @@ class EntryParent(BaseEntry):
                 return thumbnail["url"]
         return None
 
-    def __contains__(self, item):
+    @classmethod
+    def from_entry_dicts(
+        cls, entry_dicts: List[Dict], working_directory: str
+    ) -> List["EntryParent"]:
+        """
+        Reads all entry dicts and builds a tree of EntryParents
+        """
+        return [
+            EntryParent(
+                entry_dict=entry_dict, working_directory=working_directory
+            ).read_children_from_entry_dicts(entry_dicts)
+            for entry_dict in entry_dicts
+            if "playlist_id" not in entry_dict
+        ]
+
+    def to_type(self, entry_type: Type[TBaseEntry]) -> TBaseEntry:
         """
         Returns
         -------
-        True if the the item (entry_dict) has the same id as one of the tracks. False otherwise.
+        Converted EntryParent to Entry-like class
         """
-        uid: Optional[str] = None
-        if isinstance(item, BaseEntry):
-            uid = item.uid
-        elif isinstance(item, dict):
-            uid = item.get("id")
-
-        if uid is not None:
-            return any(uid == child_entry.uid for child_entry in self._child_entries)
-        return False
-
-    @classmethod
-    def from_entry_dicts_with_children(
-        cls,
-        entry_dicts: List[Dict],
-        working_directory: str,
-        child_class: Type[TChildEntry],
-        extractor: Optional[str],
-    ) -> "EntryParent":
-        """
-        Load the parent entry and its children
-        """
-        entry_parent: EntryParent = cls.from_entry_dicts(
-            entry_dicts=entry_dicts, working_directory=working_directory, extractor=extractor
-        )
-        entry_parent.read_children_from_entry_dicts(
-            entry_dicts=entry_dicts, child_class=child_class
-        )
-        return entry_parent
+        return entry_type(entry_dict=self._kwargs, working_directory=self._working_directory)

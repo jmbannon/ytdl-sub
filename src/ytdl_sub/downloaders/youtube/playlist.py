@@ -2,10 +2,10 @@ from typing import Dict
 from typing import Generator
 from typing import List
 
-from ytdl_sub.downloaders.downloader import download_logger
+from ytdl_sub.downloaders.generic.collection import CollectionDownloader
+from ytdl_sub.downloaders.generic.collection import CollectionDownloadOptions
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
-from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
 
@@ -33,6 +33,11 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
         self._playlist_url = self._validate_key(
             "playlist_url", YoutubePlaylistUrlValidator
         ).playlist_url
+
+        self.collection_validator = CollectionDownloadOptions(
+            name=self._name,
+            value={"urls": [{"url": self._playlist_url}]},
+        )
 
     @property
     def playlist_url(self) -> str:
@@ -85,22 +90,20 @@ class YoutubePlaylistDownloader(
     def download(self) -> Generator[YoutubePlaylistVideo, None, None]:
         """
         Downloads all videos in a Youtube playlist.
-
-        Dry-run the entire playlist download first. This will get the videos that will be
-        downloaded. Afterwards, download each video one-by-one
         """
-        entry_dicts = self.extract_info_via_info_json(
-            only_info_json=True,
-            log_prefix_on_info_json_dl="Downloading metadata for",
-            url=self.download_options.playlist_url,
+        downloader = CollectionDownloader(
+            download_options=self.download_options.collection_validator,
+            enhanced_download_archive=self._enhanced_download_archive,
+            ytdl_options_builder=self._ytdl_options_builder,
+            overrides=self.overrides,
         )
+        collection_url = self.download_options.collection_validator.collection_urls.list[0]
 
-        playlist: EntryParent = EntryParent.from_entry_dicts_with_children(
-            entry_dicts=entry_dicts,
-            working_directory=self.working_directory,
-            child_class=YoutubePlaylistVideo,
-            extractor="youtube:tab",
-        )
+        parents = downloader.download_url_metadata(collection_url=collection_url)
+        assert len(parents) == 1, "Playlist should be the only entry parent"
+        playlist = parents[0]
+
+        # TODO: Handle this better
         self.overrides.add_override_variables(
             variables_to_add={
                 "source_title": playlist.title,
@@ -109,23 +112,9 @@ class YoutubePlaylistDownloader(
             }
         )
 
-        # Iterate in reverse order to process older videos first. In case an error occurs and a
-        # the playlist must be redownloaded, it will fetch most recent metadata first, and break
-        # on the older video that's been processed and is in the download archive.
-        for idx, video in enumerate(reversed(playlist.child_entries), start=1):
-            download_logger.info("Downloading %d/%d %s", idx, len(entry_dicts), video.title)
-
-            # Re-download the contents even if it's a dry-run as a single video. At this time,
-            # playlists do not download subtitles or subtitle metadata
-            as_single_video_dict = self.extract_info_with_retry(
-                is_downloaded_fn=None if self.is_dry_run else video.is_downloaded,
-                ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
-                url=video.webpage_url,
-            )
-
-            # Workaround for the ytdlp issue
+        for entry in downloader.download_url(collection_url=collection_url, parents=parents):
             # pylint: disable=protected-access
-            video._kwargs["requested_subtitles"] = as_single_video_dict.get("requested_subtitles")
+            yield YoutubePlaylistVideo(
+                entry_dict=entry._kwargs, working_directory=self.working_directory
+            )
             # pylint: enable=protected-access
-
-            yield video

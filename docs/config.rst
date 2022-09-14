@@ -114,7 +114,7 @@ for available source variables to use.
 albums_and_singles
 __________________
 .. autoclass:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloadOptions()
-  :members:
+  :members: url, skip_premiere_tracks
   :member-order: bysource
   :inherited-members:
 

@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -19,14 +18,6 @@ SUBTITLE_EXTENSIONS: Set[str] = {"srt", "vtt", "ass", "lrc"}
 
 
 logger = Logger.get(name="subtitles")
-
-
-def _is_entry_subtitle_file(path: Path, entry: Entry) -> bool:
-    if path.is_file() and path.name.startswith(entry.uid):
-        for ext in SUBTITLE_EXTENSIONS:
-            if path.name.endswith(f".{ext}"):
-                return True
-    return False
 
 
 class SubtitlesTypeValidator(StringSelectValidator):

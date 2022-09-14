@@ -21,6 +21,7 @@ import yt_dlp as ytdl
 from yt_dlp.utils import ExistingVideoReached
 from yt_dlp.utils import RejectedVideoReached
 
+from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.base_entry import BaseEntry
@@ -36,7 +37,7 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadAr
 download_logger = Logger.get(name="downloader")
 
 
-class DownloaderValidator(StrictDictValidator, ABC):
+class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
     """
     Placeholder class to define downloader options
     """
@@ -203,37 +204,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
             f"yt-dlp failed to download an entry with these arguments: {error_dict}"
         )
 
-    def _filter_entry_dicts(
-        self,
-        entry_dicts: List[Dict],
-        extractor: Optional[str] = None,
-        sort_by: Optional[str] = None,
-    ) -> List[Dict]:
-        """
-        Parameters
-        ----------
-        entry_dicts
-            entry dicts to filter
-        extractor
-            Optional. Extractor that the entry dicts must have. If None, defaults to the
-            entry type's extractor
-        sort_by
-            Optional. Sort the entry dicts on this key
-
-        Returns
-        -------
-        filtered entry dicts
-        """
-        if extractor is None:
-            extractor = self.downloader_entry_type.entry_extractor
-
-        output = [
-            entry_dict for entry_dict in entry_dicts if entry_dict.get("extractor") == extractor
-        ]
-        if sort_by:
-            output = sorted(output, key=lambda entry_dict: entry_dict[sort_by])
-        return output
-
     def _get_entry_dicts_from_info_json_files(self) -> List[Dict]:
         """
         Returns
@@ -265,7 +235,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
         info_json_listener = LogEntriesDownloadedListener(
             working_directory=self.working_directory,
-            info_json_extractor=self.downloader_entry_type.entry_extractor,
             log_prefix=log_prefix,
         )
 

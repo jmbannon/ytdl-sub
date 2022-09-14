@@ -7,7 +7,6 @@ from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
-from ytdl_sub.validators.validators import StringValidator
 
 
 class MusicTagsOptions(PluginOptions):
@@ -34,16 +33,11 @@ class MusicTagsOptions(PluginOptions):
     """
 
     _required_keys = {"tags"}
-    _optional_keys = {"multi_value_separator"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
 
         self._tags = self._validate_key(key="tags", validator=DictFormatterValidator)
-
-        self.multi_value_separator = self._validate_key_if_present(
-            key="multi_value_separator", validator=StringValidator
-        )
 
     @property
     def tags(self) -> DictFormatterValidator:
