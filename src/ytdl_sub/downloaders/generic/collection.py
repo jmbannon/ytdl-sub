@@ -246,18 +246,28 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
             for entry_child in self._download_parent_entry(parent=parent_child):
                 yield entry_child
 
-    def _download_collection_url(
-        self, collection_url: CollectionUrlValidator
-    ) -> Generator[Entry, None, None]:
+    def download_url_metadata(self, collection_url: CollectionUrlValidator) -> List[EntryParent]:
+        """
+        Downloads only info.json files and forms EntryParent trees
+        """
         with self._separate_download_archives():
             entry_dicts = self.extract_info_via_info_json(
                 only_info_json=True,
                 url=collection_url.url,
+                log_prefix_on_info_json_dl="Downloading metadata for",
             )
 
-            parents = EntryParent.from_entry_dicts(
-                entry_dicts=entry_dicts, working_directory=self.working_directory
-            )
+        return EntryParent.from_entry_dicts(
+            entry_dicts=entry_dicts, working_directory=self.working_directory
+        )
+
+    def download_url(
+        self, collection_url: CollectionUrlValidator, parents: List[EntryParent]
+    ) -> Generator[Entry, None, None]:
+        """
+        Downloads the leaf entries from EntryParent trees
+        """
+        with self._separate_download_archives():
             for parent in parents:
                 for entry_child in self._download_parent_entry(parent=parent):
                     entry_child.add_variables(
@@ -271,5 +281,6 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
         """
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.download_options.collection_urls.list):
-            for entry in self._download_collection_url(collection_url=collection_url):
+            parents = self.download_url_metadata(collection_url=collection_url)
+            for entry in self.download_url(collection_url=collection_url, parents=parents):
                 yield entry
