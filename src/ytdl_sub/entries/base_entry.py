@@ -121,7 +121,7 @@ class BaseEntry(BaseEntryVariables, ABC):
         """
         Dict get on kwargs
         """
-        if not self.kwargs_contains(key):
+        if not self.kwargs_contains(key) or self.kwargs(key) is None:
             return default
         return self.kwargs(key)
 
