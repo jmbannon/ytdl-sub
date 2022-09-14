@@ -85,31 +85,3 @@ presets:
     overrides:
       youtube_tv_shows_directory: "/path/to/youtube_tv_shows"
       episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {title_sanitized}"
-
-  ###############################################################################
-  # RECENT ARCHIVE
-  # This preset shows how you can download just the last 14 days-worth of videos
-  # on each download invocation.
-  yt_channel_as_tv__recent:
-    # `preset` can be set to any other preset in the config, and will inherit all its defined fields.
-    # This helps reduce copy-paste in the config.yaml
-    preset: "yt_channel_as_tv"
-
-    # We will add the `after` field onto `yt_channel_as_tv`'s YouTube channel download strategy.
-    # This is saying 'only download videos uploaded in the last 2 weeks'
-    youtube:
-      after: "today-2weeks"
-
-  ###############################################################################
-  # ROLLING ARCHIVE
-  # This example shows how to only keep the last 14-days worth of videos, and
-  # delete the rest.
-  yt_channel_as_tv__only_recent:
-    # Reuse `yt_channel_as_tv__recent` to only download the last 2 weeks' of videos
-    preset: "yt_channel_as_tv__recent"
-
-    # This is saying "only keep files if they were uploaded in the last 2 weeks".
-    # All other files that this subscription had previously downloaded will be
-    # deleted.
-    output_options:
-      keep_files_after: "today-2weeks"

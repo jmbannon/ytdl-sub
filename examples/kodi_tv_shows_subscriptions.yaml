@@ -3,7 +3,7 @@
 # in each example.
 
 ###############################################################################
-# LEVEL 1 - FULL ARCHIVE
+# FULL ARCHIVE
 #
 # Subscription names are defined by you. We will call this one
 # john_smith_archive because it will download every single video in
@@ -23,29 +23,5 @@ john_smith_archive:
   # preset. We intended to reserve that variable to be defined for each
   # individual subscription. Each override defined here will create a
   # '_sanitized' version that is safe for file systems.
-  overrides:
-    tv_show_name: "John /\ Smith"
-
-###############################################################################
-# LEVEL 2 - RECENT ARCHIVE
-#
-# Use the "yt_channel_as_tv__recent" preset to only download the last two
-# weeks' worth of YouTube videos.
-john_smith_recent_archive:
-  preset: "yt_channel_as_tv__recent"
-  youtube:
-    channel_url: "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
-  overrides:
-    tv_show_name: "John /\ Smith"
-
-###############################################################################
-# LEVEL 3 - ROLLING ARCHIVE
-#
-# Use the "yt_channel_as_tv__recent_only" preset to only download the last two
-# weeks' worth of YouTube videos, and delete any existing older videos.
-john_smith_rolling_archive:
-  preset: "yt_channel_as_tv__only_recent"
-  youtube:
-    channel_url: "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
   overrides:
     tv_show_name: "John /\ Smith"
