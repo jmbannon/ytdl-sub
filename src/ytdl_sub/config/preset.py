@@ -233,7 +233,11 @@ class Preset(StrictDictValidator):
         # If the formatter supports source variables, set the formatter variables to include
         # both source and override variables
         if not isinstance(formatter_validator, OverridesStringFormatterValidator):
-            source_variables = {source_var: "dummy_string" for source_var in self._source_variables}
+            source_variables = {
+                source_var: "dummy_string"
+                for source_var in self._source_variables
+                + self.downloader_options.added_source_variables()
+            }
             variable_dict = dict(source_variables, **variable_dict)
 
             # For all plugins, add in any extra added source variables

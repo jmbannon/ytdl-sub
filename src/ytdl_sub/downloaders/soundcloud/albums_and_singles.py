@@ -1,12 +1,12 @@
 from typing import Dict
 from typing import Generator
+from typing import List
 
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.downloaders.generic.collection import CollectionDownloader
 from ytdl_sub.downloaders.generic.collection import CollectionDownloadOptions
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.soundcloud import SoundcloudTrack
 from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
 from ytdl_sub.validators.validators import BoolValidator
 
@@ -87,12 +87,24 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(DownloaderValidator):
         """
         return self._url
 
+    def added_source_variables(self) -> List[str]:
+        """Validate using collection_validator"""
+        return self.collection_validator.added_source_variables()
+
+    def validate_with_variables(
+        self, source_variables: List[str], override_variables: Dict[str, str]
+    ) -> None:
+        """Validate using collection_validator"""
+        return self.collection_validator.validate_with_variables(
+            source_variables, override_variables
+        )
+
 
 class SoundcloudAlbumsAndSinglesDownloader(
-    Downloader[SoundcloudAlbumsAndSinglesDownloadOptions, SoundcloudTrack]
+    Downloader[SoundcloudAlbumsAndSinglesDownloadOptions, Entry]
 ):
     downloader_options_type = SoundcloudAlbumsAndSinglesDownloadOptions
-    downloader_entry_type = SoundcloudTrack
+    downloader_entry_type = Entry
 
     supports_subtitles = False
     supports_chapters = False
@@ -125,7 +137,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
 
         return False
 
-    def download(self) -> Generator[SoundcloudTrack, None, None]:
+    def download(self) -> Generator[Entry, None, None]:
         """
         Soundcloud subscription to download albums and tracks as singles.
         """
