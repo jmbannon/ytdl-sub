@@ -39,10 +39,7 @@ class YoutubeVideoVariables(EntryVariables):
             pulled via yt-dlp. Use with caution.
         """
         # Try to get the track, fall back on title
-        if self.kwargs_contains("track"):
-            return self.kwargs("track")
-
-        return super().title
+        return self.kwargs_get("track", super().title)
 
     @property
     def track_title_sanitized(self) -> str:
@@ -64,10 +61,7 @@ class YoutubeVideoVariables(EntryVariables):
             NOTE: Even if a video has music metadata, this variable does not always get pulled via
             yt-dlp. Use with caution.
         """
-        if self.kwargs_contains("artist"):
-            return self.kwargs("artist")
-
-        return self.kwargs("channel")
+        return self.kwargs_get("artist", self.kwargs("channel"))
 
     @property
     def artist_sanitized(self) -> str:
