@@ -221,7 +221,7 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
     def _download_entry(self, entry: Entry) -> Entry:
         download_logger.info("Downloading entry %s", entry.title)
         download_entry_dict = self.extract_info_with_retry(
-            is_downloaded_fn=entry.is_downloaded,
+            is_downloaded_fn=None if self.is_dry_run else entry.is_downloaded,
             url=entry.webpage_url,
             ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
         )
