@@ -16,7 +16,7 @@ def extractor():
 
 @pytest.fixture
 def title():
-    return "entry title"
+    return "entry {title}"
 
 
 @pytest.fixture
@@ -61,8 +61,8 @@ def mock_entry_to_dict(
 ):
     return {
         "uid": uid,
-        "title": title,
-        "title_sanitized": title,
+        "title": "entry ｛title｝",
+        "title_sanitized": "entry ｛title｝",
         "ext": ext,
         "extractor": extractor,
         "upload_date": upload_date,
