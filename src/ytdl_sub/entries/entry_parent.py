@@ -10,9 +10,7 @@ TBaseEntry = TypeVar("TBaseEntry", bound=BaseEntry)
 
 
 class EntryParent(BaseEntry):
-    def __init__(
-        self, entry_dict: Dict, working_directory: str
-    ):
+    def __init__(self, entry_dict: Dict, working_directory: str):
         super().__init__(entry_dict=entry_dict, working_directory=working_directory)
         self.child_entries: List["EntryParent"] = []
 

@@ -85,6 +85,12 @@ def mock_entry_to_dict(
         "thumbnail_ext": thumbnail_ext,
         "info_json_ext": "info.json",
         "webpage_url": webpage_url,
+        "playlist": "entry ｛title｝",
+        "playlist_sanitized": "entry ｛title｝",
+        "playlist_index": 1,
+        "playlist_index_padded": "01",
+        "playlist_count": 1,
+        "playlist_max_upload_year": 2021,
     }
 
 
