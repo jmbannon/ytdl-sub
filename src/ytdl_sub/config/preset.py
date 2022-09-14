@@ -203,16 +203,18 @@ class Preset(StrictDictValidator):
 
         # Validate added download option variables here since plugins could subsequently use them
         self.downloader_options.validate_with_variables(
-            source_variables=source_variables, override_variables=self.overrides.keys
+            source_variables=source_variables,
+            override_variables=self.overrides.dict_with_format_strings,
         )
         source_variables.extend(self.downloader_options.added_source_variables())
 
-        for plugin_options in sorted(
-            self.plugins.plugin_options, key=lambda pl_options: pl_options.priority.modify_entry
+        for _, plugin_options in sorted(
+            self.plugins.zipped(), key=lambda pl: pl[0].priority.modify_entry
         ):
             # Validate current plugin using source + added plugin variables
             plugin_options.validate_with_variables(
-                source_variables=source_variables, override_variables=self.overrides.keys
+                source_variables=source_variables,
+                override_variables=self.overrides.dict_with_format_strings,
             )
 
             # Extend existing source variables with ones created from this plugin

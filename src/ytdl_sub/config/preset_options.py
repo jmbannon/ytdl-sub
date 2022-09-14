@@ -33,7 +33,7 @@ class AddsVariablesMixin(ABC):
         return []
 
     def validate_with_variables(
-        self, source_variables: List[str], override_variables: List[str]
+        self, source_variables: List[str], override_variables: Dict[str, str]
     ) -> None:
         """
         Optional validation after init with the session's source and override variables.

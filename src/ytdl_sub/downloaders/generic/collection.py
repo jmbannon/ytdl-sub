@@ -13,6 +13,7 @@ from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringValidator
 
@@ -124,18 +125,28 @@ class CollectionDownloadOptions(DownloaderValidator):
         return list(self._urls.list[0].variables.keys())
 
     def validate_with_variables(
-        self, source_variables: List[str], override_variables: List[str]
+        self, source_variables: List[str], override_variables: Dict[str, str]
     ) -> None:
         """
         Ensures new variables added are not existing variables
         """
-        # TODO: Make sure they resolve
-        for added_source_var in self.added_source_variables():
-            if added_source_var in source_variables:
+        for source_var_name in self.added_source_variables():
+            if source_var_name in source_variables:
                 raise self._validation_exception(
-                    f"'{added_source_var}' cannot be used as a variable name because it "
+                    f"'{source_var_name}' cannot be used as a variable name because it "
                     f"is an existing source variable"
                 )
+
+        base_variables = dict(
+            override_variables, **{source_var: "dummy_string" for source_var in source_variables}
+        )
+
+        # Apply formatting to each new source variable, ensure it resolves
+        for collection_url in self.collection_urls.list:
+            for source_var_name, source_var_formatter_str in collection_url.variables.items():
+                _ = StringFormatterValidator(
+                    name=f"{self._name}.{source_var_name}", value=source_var_formatter_str
+                ).apply_formatter(base_variables)
 
 
 class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
