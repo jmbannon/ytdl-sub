@@ -598,7 +598,7 @@ class DownloadArchiver:
     """
 
     def __init__(self, enhanced_download_archive: EnhancedDownloadArchive):
-        self._enhanced_download_archive = enhanced_download_archive
+        self.__enhanced_download_archive = enhanced_download_archive
 
     @property
     def working_directory(self) -> str:
@@ -607,7 +607,7 @@ class DownloadArchiver:
         -------
         Path to the working directory
         """
-        return self._enhanced_download_archive.working_directory
+        return self.__enhanced_download_archive.working_directory
 
     @property
     def is_dry_run(self) -> bool:
@@ -616,7 +616,7 @@ class DownloadArchiver:
         -------
         True if this session is a dry-run. False otherwise.
         """
-        return self._enhanced_download_archive.is_dry_run
+        return self.__enhanced_download_archive.is_dry_run
 
     def save_file(
         self,
@@ -640,7 +640,7 @@ class DownloadArchiver:
         entry
             Optional. Entry that the file belongs to
         """
-        self._enhanced_download_archive.save_file_to_output_directory(
+        self.__enhanced_download_archive.save_file_to_output_directory(
             file_name=file_name,
             file_metadata=file_metadata,
             output_file_name=output_file_name,
