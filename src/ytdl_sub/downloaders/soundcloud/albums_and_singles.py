@@ -1,11 +1,9 @@
 from typing import Dict
 from typing import Generator
-from typing import List
 
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
-from ytdl_sub.downloaders.generic.collection import CollectionDownloader
-from ytdl_sub.downloaders.generic.collection import CollectionDownloadOptions
+from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
 from ytdl_sub.validators.validators import BoolValidator
@@ -43,7 +41,10 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(DownloaderValidator):
             "skip_premiere_tracks", BoolValidator, default=True
         )
 
-        self.collection_validator = CollectionDownloadOptions(
+    @property
+    def collection_validator(self) -> CollectionValidator:
+        """Downloads the album tracks first, then the tracks"""
+        return CollectionValidator(
             name=self._name,
             value={
                 "urls": [
@@ -87,18 +88,6 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(DownloaderValidator):
         """
         return self._url
 
-    def added_source_variables(self) -> List[str]:
-        """Validate using collection_validator"""
-        return self.collection_validator.added_source_variables()
-
-    def validate_with_variables(
-        self, source_variables: List[str], override_variables: Dict[str, str]
-    ) -> None:
-        """Validate using collection_validator"""
-        return self.collection_validator.validate_with_variables(
-            source_variables, override_variables
-        )
-
 
 class SoundcloudAlbumsAndSinglesDownloader(
     Downloader[SoundcloudAlbumsAndSinglesDownloadOptions, Entry]
@@ -141,14 +130,7 @@ class SoundcloudAlbumsAndSinglesDownloader(
         """
         Soundcloud subscription to download albums and tracks as singles.
         """
-        downloader = CollectionDownloader(
-            download_options=self.download_options.collection_validator,
-            enhanced_download_archive=self._enhanced_download_archive,
-            ytdl_options_builder=self._ytdl_options_builder,
-            overrides=self.overrides,
-        )
-
-        for entry in downloader.download():
+        for entry in super().download():
             if self._should_skip(entry):
                 continue
 

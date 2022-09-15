@@ -9,10 +9,12 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable
 from typing import Dict
+from typing import Generator
 from typing import Generic
 from typing import Iterable
 from typing import List
 from typing import Optional
+from typing import Set
 from typing import Tuple
 from typing import Type
 from typing import TypeVar
@@ -23,11 +25,15 @@ from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.downloaders.generic.collection_validator import CollectionUrlValidator
+from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -37,15 +43,60 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadAr
 download_logger = Logger.get(name="downloader")
 
 
+def _entry_key(entry: BaseEntry) -> str:
+    return entry.extractor + entry.uid
+
+
+def _get_parent_entry_variables(parent: EntryParent) -> Dict[str, str | int]:
+    """
+    Adds source variables to the child entry derived from the parent entry.
+    """
+    if not parent.child_entries:
+        return {}
+
+    return {
+        "playlist_max_upload_year": max(
+            child_entry.to_type(Entry).upload_year for child_entry in parent.child_entries
+        )
+    }
+
+
 class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
     """
     Placeholder class to define downloader options
     """
 
+    @property
+    @abc.abstractmethod
+    def collection_validator(self) -> CollectionValidator:
+        """
+        Returns
+        -------
+        CollectionValidator
+            To determine how the entries are downloaded
+        """
+
+    def added_source_variables(self) -> List[str]:
+        """
+        Returns
+        -------
+        Added source variables on the collection
+        """
+        return self.collection_validator.added_source_variables()
+
+    def validate_with_variables(
+        self, source_variables: List[str], override_variables: Dict[str, str]
+    ) -> None:
+        """
+        Validates any source variables added by the collection
+        """
+        self.collection_validator.validate_with_variables(
+            source_variables=source_variables, override_variables=override_variables
+        )
+
 
 DownloaderOptionsT = TypeVar("DownloaderOptionsT", bound=DownloaderValidator)
 DownloaderEntryT = TypeVar("DownloaderEntryT", bound=Entry)
-DownloaderParentEntryT = TypeVar("DownloaderParentEntryT", bound=BaseEntry)
 
 
 class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
@@ -109,6 +160,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         self._ytdl_options_builder = ytdl_options_builder.clone().add(
             self.ytdl_option_defaults(), before=True
         )
+
+        self.parents: List[EntryParent] = []
+        self.downloaded_entries: Set[str] = set()
 
     @contextmanager
     def ytdl_downloader(self, ytdl_options_overrides: Optional[Dict] = None) -> ytdl.YoutubeDL:
@@ -297,11 +351,114 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
         return self._get_entry_dicts_from_info_json_files()
 
-    @abc.abstractmethod
+    ###############################################################################################
+    # DOWNLOAD FUNCTIONS
+
+    @property
+    def collection(self) -> CollectionValidator:
+        """Return the download options collection"""
+        return self.download_options.collection_validator
+
+    @contextlib.contextmanager
+    def _separate_download_archives(self):
+        """
+        Separate download archive writing between collection urls. This is so break_on_existing
+        does not break when downloading from subset urls.
+        """
+        archive_path = self._ytdl_options_builder.to_dict().get("download_archive", "")
+        backup_archive_path = f"{archive_path}.backup"
+
+        # If archive path exists, maintain download archive is enable
+        if archive_file_exists := archive_path and os.path.isfile(archive_path):
+            archive_file_exists = True
+
+            # If a backup exists, it's the one prior to any downloading, use that.
+            if os.path.isfile(backup_archive_path):
+                FileHandler.copy(src_file_path=backup_archive_path, dst_file_path=archive_path)
+            # If not, create the backup
+            else:
+                FileHandler.copy(src_file_path=archive_path, dst_file_path=backup_archive_path)
+
+        yield
+
+        # If an archive path did not exist at first, but now exists, delete it
+        if not archive_file_exists and os.path.isfile(archive_path):
+            FileHandler.delete(file_path=archive_path)
+        # If the archive file did exist, restore the backup
+        elif archive_file_exists:
+            FileHandler.copy(src_file_path=backup_archive_path, dst_file_path=archive_path)
+
+    def _download_entry(self, entry: Entry) -> Entry:
+        download_logger.info("Downloading entry %s", entry.title)
+        download_entry_dict = self.extract_info_with_retry(
+            is_downloaded_fn=None if self.is_dry_run else entry.is_downloaded,
+            url=entry.webpage_url,
+            ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
+        )
+
+        # Workaround for the ytdlp issue
+        # pylint: disable=protected-access
+        entry._kwargs["requested_subtitles"] = download_entry_dict.get("requested_subtitles")
+        # pylint: enable=protected-access
+
+        return entry
+
+    def _download_parent_entry(self, parent: EntryParent) -> Generator[Entry, None, None]:
+        """Download in reverse order, that way we download older entries ones first"""
+        if parent.is_entry():
+            yield self._download_entry(parent.to_type(Entry))
+            return
+
+        for entry_child in reversed(parent.entry_children()):
+            if _entry_key(entry_child) in self.downloaded_entries:
+                continue
+
+            yield self._download_entry(entry_child.to_type(Entry))
+            self.downloaded_entries.add(_entry_key(entry_child))
+
+        for parent_child in reversed(parent.parent_children()):
+            for entry_child in self._download_parent_entry(parent=parent_child):
+                yield entry_child
+
+    def _download_url_metadata(self, collection_url: CollectionUrlValidator) -> List[EntryParent]:
+        """
+        Downloads only info.json files and forms EntryParent trees
+        """
+        with self._separate_download_archives():
+            entry_dicts = self.extract_info_via_info_json(
+                only_info_json=True,
+                url=collection_url.url,
+                log_prefix_on_info_json_dl="Downloading metadata for",
+            )
+
+        self.parents = EntryParent.from_entry_dicts(
+            entry_dicts=entry_dicts, working_directory=self.working_directory
+        )
+        return self.parents
+
+    def _download_url(
+        self, collection_url: CollectionUrlValidator, parents: List[EntryParent]
+    ) -> Generator[Entry, None, None]:
+        """
+        Downloads the leaf entries from EntryParent trees
+        """
+        with self._separate_download_archives():
+            for parent in parents:
+                for entry_child in self._download_parent_entry(parent=parent):
+                    entry_child.add_variables(
+                        dict(_get_parent_entry_variables(parent), **collection_url.variables)
+                    )
+                    yield entry_child
+
     def download(
         self,
     ) -> Iterable[DownloaderEntryT] | Iterable[Tuple[DownloaderEntryT, FileMetadata]]:
         """The function to perform the download of all media entries"""
+        # download the bottom-most urls first since they are top-priority
+        for collection_url in reversed(self.collection.collection_urls.list):
+            parents = self._download_url_metadata(collection_url=collection_url)
+            for entry in self._download_url(collection_url=collection_url, parents=parents):
+                yield entry
 
     def post_download(self):
         """
