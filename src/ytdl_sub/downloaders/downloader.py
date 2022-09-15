@@ -66,8 +66,8 @@ class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
     Placeholder class to define downloader options
     """
 
-    @abc.abstractmethod
     @property
+    @abc.abstractmethod
     def collection_validator(self) -> CollectionValidator:
         """
         Returns
@@ -354,6 +354,11 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     ###############################################################################################
     # DOWNLOAD FUNCTIONS
 
+    @property
+    def collection(self) -> CollectionValidator:
+        """Return the download options collection"""
+        return self.download_options.collection_validator
+
     @contextlib.contextmanager
     def _separate_download_archives(self):
         """
@@ -401,7 +406,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     def _download_parent_entry(self, parent: EntryParent) -> Generator[Entry, None, None]:
         """Download in reverse order, that way we download older entries ones first"""
         if parent.is_entry():
-            yield parent.to_type(Entry)
+            yield self._download_entry(parent.to_type(Entry))
             return
 
         for entry_child in reversed(parent.entry_children()):
@@ -450,7 +455,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     ) -> Iterable[DownloaderEntryT] | Iterable[Tuple[DownloaderEntryT, FileMetadata]]:
         """The function to perform the download of all media entries"""
         # download the bottom-most urls first since they are top-priority
-        for collection_url in reversed(self.download_options.collection_urls.list):
+        for collection_url in reversed(self.collection.collection_urls.list):
             parents = self._download_url_metadata(collection_url=collection_url)
             for entry in self._download_url(collection_url=collection_url, parents=parents):
                 yield entry

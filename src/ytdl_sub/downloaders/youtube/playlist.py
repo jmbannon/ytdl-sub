@@ -100,7 +100,7 @@ class YoutubePlaylistDownloader(
         """
         Downloads all videos in a Youtube playlist.
         """
-        collection_url = self.download_options.collection_validator.collection_urls.list[0]
+        collection_url = self.collection.collection_urls.list[0]
         super()._download_url_metadata(collection_url)
 
         # TODO: Handle this better
