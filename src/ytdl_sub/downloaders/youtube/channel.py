@@ -59,7 +59,7 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
 
         self.collection_validator = CollectionDownloadOptions(
             name=self._name,
-            value={"urls": [{"url": self._channel_url}]},
+            value={"urls": [{"url": self.channel_url}]},
         )
 
     @property

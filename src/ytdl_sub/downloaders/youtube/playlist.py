@@ -1,13 +1,19 @@
 from typing import Dict
 from typing import Generator
 from typing import List
+from typing import Optional
 
+from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.downloaders.downloader import DownloaderOptionsT
 from ytdl_sub.downloaders.generic.collection import CollectionDownloader
 from ytdl_sub.downloaders.generic.collection import CollectionDownloadOptions
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
+from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
+from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.youtube import YoutubePlaylistVideo
 from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
 class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
@@ -36,7 +42,7 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
 
         self.collection_validator = CollectionDownloadOptions(
             name=self._name,
-            value={"urls": [{"url": self._playlist_url}]},
+            value={"urls": [{"url": self.playlist_url}]},
         )
 
     @property
@@ -87,6 +93,22 @@ class YoutubePlaylistDownloader(
 
     # pylint: enable=line-too-long
 
+    def __init__(
+        self,
+        download_options: DownloaderOptionsT,
+        enhanced_download_archive: EnhancedDownloadArchive,
+        ytdl_options_builder: YTDLOptionsBuilder,
+        overrides: Overrides,
+    ):
+        super().__init__(
+            download_options=download_options,
+            enhanced_download_archive=enhanced_download_archive,
+            ytdl_options_builder=ytdl_options_builder,
+            overrides=overrides,
+        )
+
+        self.playlist: Optional[EntryParent] = None
+
     def download(self) -> Generator[YoutubePlaylistVideo, None, None]:
         """
         Downloads all videos in a Youtube playlist.
@@ -101,14 +123,14 @@ class YoutubePlaylistDownloader(
 
         parents = downloader.download_url_metadata(collection_url=collection_url)
         assert len(parents) == 1, "Playlist should be the only entry parent"
-        playlist = parents[0]
+        self.playlist = parents[0]
 
         # TODO: Handle this better
         self.overrides.add_override_variables(
             variables_to_add={
-                "source_title": playlist.title,
-                "source_uploader": playlist.kwargs_get("uploader", "__failed_to_scrape__"),
-                "source_description": playlist.kwargs_get("description", ""),
+                "source_title": self.playlist.title,
+                "source_uploader": self.playlist.kwargs_get("uploader", "__failed_to_scrape__"),
+                "source_description": self.playlist.kwargs_get("description", ""),
             }
         )
 

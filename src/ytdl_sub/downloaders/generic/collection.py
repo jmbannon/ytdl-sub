@@ -235,6 +235,10 @@ class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
 
     def _download_parent_entry(self, parent: EntryParent) -> Generator[Entry, None, None]:
         """Download in reverse order, that way we download older entries ones first"""
+        if parent.is_entry():
+            yield parent.to_type(Entry)
+            return
+
         for entry_child in reversed(parent.entry_children()):
             if _entry_key(entry_child) in self.downloaded_entries:
                 continue
