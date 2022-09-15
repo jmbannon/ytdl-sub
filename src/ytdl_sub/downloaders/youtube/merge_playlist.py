@@ -5,7 +5,6 @@ from typing import Tuple
 
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloaderOptions
-from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
@@ -146,19 +145,10 @@ class YoutubeMergePlaylistDownloader(
 
         return YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
 
-    @property
-    def playlist(self) -> EntryParent:
-        """Get the playlist parent entry"""
-        assert len(self.parents) == 1, "Playlist should be the only entry parent"
-        return self.parents[0]
-
     def download(self) -> List[Tuple[YoutubeVideo, FileMetadata]]:
         """Download a single Youtube video, then split it into multiple videos"""
-        _ = list(super().download())
-
-        # pylint: disable=protected-access
-        merged_video = self._to_merged_video(entry_dict=self.playlist._kwargs)
-        # pylint: enable=protected-access
+        entry_dict = self.extract_info(url=self.collection.collection_urls.list[0].url)
+        merged_video = self._to_merged_video(entry_dict=entry_dict)
 
         merged_video_metadata = self._get_chapters(
             merged_video=merged_video, add_chapters=self.download_options.add_chapters
