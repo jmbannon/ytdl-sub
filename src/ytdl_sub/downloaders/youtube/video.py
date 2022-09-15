@@ -1,8 +1,7 @@
 from typing import Dict
 from typing import List
 
-from ytdl_sub.downloaders.generic.collection import CollectionDownloader
-from ytdl_sub.downloaders.generic.collection import CollectionDownloadOptions
+from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.entries.youtube import YoutubeVideo
@@ -38,7 +37,10 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
         super().__init__(name, value)
         self._video_url = self._validate_key("video_url", YoutubeVideoUrlValidator).video_url
 
-        self.collection_validator = CollectionDownloadOptions(
+    @property
+    def collection_validator(self) -> CollectionValidator:
+        """Downloads the video url"""
+        return CollectionValidator(
             name=self._name,
             value={"urls": [{"url": self.video_url}]},
         )
@@ -71,15 +73,8 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
         )
 
     def download(self) -> List[YoutubeVideo]:
-        """Download a single Youtube video"""
-        downloader = CollectionDownloader(
-            download_options=self.download_options.collection_validator,
-            enhanced_download_archive=self._enhanced_download_archive,
-            ytdl_options_builder=self._ytdl_options_builder,
-            overrides=self.overrides,
-        )
-
-        for entry in downloader.download():
+        """Downloads the single video"""
+        for entry in super().download():
             # pylint: disable=protected-access
             yield YoutubeVideo(entry_dict=entry._kwargs, working_directory=self.working_directory)
             # pylint: enable=protected-access
