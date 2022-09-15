@@ -7,7 +7,6 @@ from ytdl_sub.downloaders.soundcloud.albums_and_singles import SoundcloudAlbumsA
 from ytdl_sub.downloaders.youtube.channel import YoutubeChannelDownloader
 from ytdl_sub.downloaders.youtube.merge_playlist import YoutubeMergePlaylistDownloader
 from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloader
-from ytdl_sub.downloaders.youtube.split_video import YoutubeSplitVideoDownloader
 from ytdl_sub.downloaders.youtube.video import YoutubeVideoDownloader
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
@@ -32,7 +31,6 @@ class DownloadStrategyMapping:
             "video": YoutubeVideoDownloader,
             "playlist": YoutubePlaylistDownloader,
             "channel": YoutubeChannelDownloader,
-            "split_video": YoutubeSplitVideoDownloader,
             "merge_playlist": YoutubeMergePlaylistDownloader,
         },
         "soundcloud": {
