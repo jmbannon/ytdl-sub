@@ -46,9 +46,8 @@ for available source variables to use.
 channel
 _______
 .. autoclass:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloaderOptions()
-  :members:
+  :members: channel_url, channel_avatar_path, channel_banner_path
   :member-order: bysource
-  :inherited-members:
   :exclude-members: get_date_range
 
 .. autofunction:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloader.added_override_variables()
@@ -62,9 +61,8 @@ _______
 playlist
 ________
 .. autoclass:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloaderOptions()
-  :members:
+  :members: playlist_url
   :member-order: bysource
-  :inherited-members:
 
 .. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.added_override_variables()
 
@@ -75,9 +73,8 @@ ________
 video
 _____
 .. autoclass:: ytdl_sub.downloaders.youtube.video.YoutubeVideoDownloaderOptions()
-  :members:
+  :members: video_url
   :member-order: bysource
-  :inherited-members:
 
 .. autofunction:: ytdl_sub.downloaders.youtube.video.YoutubeVideoDownloader.ytdl_option_defaults()
 
@@ -86,9 +83,8 @@ _____
 merge_playlist
 ______________
 .. autoclass:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloaderOptions()
-  :members:
+  :members: playlist_url, add_chapters
   :member-order: bysource
-  :inherited-members:
 
 .. autofunction:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloader.ytdl_option_defaults()
 
@@ -105,7 +101,6 @@ __________________
 .. autoclass:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloadOptions()
   :members: url, skip_premiere_tracks
   :member-order: bysource
-  :inherited-members:
 
 .. autofunction:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloader.ytdl_option_defaults()
 
