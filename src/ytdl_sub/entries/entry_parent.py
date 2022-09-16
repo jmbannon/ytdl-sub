@@ -1,12 +1,10 @@
+import os
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Type
-from typing import TypeVar
 
 from ytdl_sub.entries.base_entry import BaseEntry
-
-TBaseEntry = TypeVar("TBaseEntry", bound=BaseEntry)
+from ytdl_sub.entries.entry import Entry
 
 
 class EntryParent(BaseEntry):
@@ -14,21 +12,13 @@ class EntryParent(BaseEntry):
         super().__init__(entry_dict=entry_dict, working_directory=working_directory)
         self.child_entries: List["EntryParent"] = []
 
-    def is_entry(self) -> bool:
-        """
-        Returns
-        -------
-        True if the entry contains a media file. False otherwise.
-        """
-        return self.kwargs_contains("ext")
-
     def parent_children(self) -> List["EntryParent"]:
         """This parent's children that are also parents"""
-        return [child for child in self.child_entries if child.child_count() > 0]
+        return [child for child in self.child_entries if self.is_entry_parent(child)]
 
-    def entry_children(self) -> List["EntryParent"]:
+    def entry_children(self) -> List[Entry]:
         """This parent's children that are entries"""
-        return [child for child in self.child_entries if child.is_entry()]
+        return [child.to_type(Entry) for child in self.child_entries if self.is_entry(child)]
 
     def read_children_from_entry_dicts(self, entry_dicts: List[Dict]) -> "EntryParent":
         """
@@ -42,20 +32,11 @@ class EntryParent(BaseEntry):
                     self.__class__(
                         entry_dict=entry_dict,
                         working_directory=self.working_directory(),
-                    )
+                    ).read_children_from_entry_dicts(entry_dicts)
                 )
-                child_entries[-1].read_children_from_entry_dicts(entry_dicts)
 
         self.child_entries = sorted(child_entries, key=lambda entry: entry.kwargs("playlist_index"))
         return self
-
-    def child_count(self) -> int:
-        """
-        Returns
-        -------
-        Number of child entries
-        """
-        return len(self.child_entries)
 
     def get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
         """
@@ -75,6 +56,20 @@ class EntryParent(BaseEntry):
                 return thumbnail["url"]
         return None
 
+    def __contains__(self, item: Dict | BaseEntry) -> bool:
+        playlist_id: Optional[str] = None
+        if isinstance(item, dict):
+            playlist_id = item.get("playlist_id")
+        elif isinstance(item, BaseEntry):
+            playlist_id = item.kwargs_get("playlist_id")
+
+        if not playlist_id:
+            return False
+
+        return self.uid == playlist_id or any(
+            child.__contains__(item) for child in self.child_entries
+        )
+
     @classmethod
     def from_entry_dicts(
         cls, entry_dicts: List[Dict], working_directory: str
@@ -82,18 +77,42 @@ class EntryParent(BaseEntry):
         """
         Reads all entry dicts and builds a tree of EntryParents
         """
-        return [
+        parents = [
             EntryParent(
                 entry_dict=entry_dict, working_directory=working_directory
             ).read_children_from_entry_dicts(entry_dicts)
             for entry_dict in entry_dicts
-            if "playlist_id" not in entry_dict
+            if cls.is_entry_parent(entry_dict)
         ]
 
-    def to_type(self, entry_type: Type[TBaseEntry]) -> TBaseEntry:
+        if not parents:
+            return []
+
+        # find disconnected root parent if one exists
+        first_parent = min(
+            parents, key=lambda x: os.stat(x.get_download_info_json_path()).st_ctime_ns
+        )
+        if len(first_parent.child_entries) == 0:
+            parents.remove(first_parent)
+            first_parent.child_entries = parents
+
+            return [first_parent]
+
+        return parents
+
+    @classmethod
+    def from_entry_dicts_with_no_parents(
+        cls, parents: List["EntryParent"], entry_dicts: List[Dict], working_directory: str
+    ) -> List[Entry]:
         """
-        Returns
-        -------
-        Converted EntryParent to Entry-like class
+        Reads all entries that do not have any parents
         """
-        return entry_type(entry_dict=self._kwargs, working_directory=self._working_directory)
+
+        def _in_any_parents(entry_dict: Dict):
+            return any(entry_dict in parent for parent in parents)
+
+        return [
+            Entry(entry_dict=entry_dict, working_directory=working_directory)
+            for entry_dict in entry_dicts
+            if cls.is_entry(entry_dict) and not _in_any_parents(entry_dict)
+        ]

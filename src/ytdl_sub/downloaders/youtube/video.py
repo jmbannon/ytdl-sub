@@ -75,6 +75,4 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
     def download(self) -> List[YoutubeVideo]:
         """Downloads the single video"""
         for entry in super().download():
-            # pylint: disable=protected-access
-            yield YoutubeVideo(entry_dict=entry._kwargs, working_directory=self.working_directory)
-            # pylint: enable=protected-access
+            yield entry.to_type(YoutubeVideo)

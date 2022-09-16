@@ -57,22 +57,6 @@ class Entry(EntryVariables, BaseEntry):
 
         return None
 
-    def get_download_info_json_name(self) -> str:
-        """
-        Returns
-        -------
-        The download info json's file name
-        """
-        return f"{self.uid}.{self.info_json_ext}"
-
-    def get_download_info_json_path(self) -> str:
-        """
-        Returns
-        -------
-        Entry's downloaded info json file path
-        """
-        return str(Path(self.working_directory()) / self.get_download_info_json_name())
-
     def write_info_json(self) -> None:
         """
         Write the entry's _kwargs back into the info.json file as well as its source variables

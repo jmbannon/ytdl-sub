@@ -1,8 +1,11 @@
 from abc import ABC
+from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Type
+from typing import TypeVar
 from typing import final
 
 from yt_dlp.utils import sanitize_filename
@@ -45,9 +48,9 @@ class BaseEntryVariables:
         Returns
         -------
         str
-            The title of the entry
+            The title of the entry. If a title does not exist, returns its unique ID.
         """
-        return self.kwargs("title")
+        return self.kwargs_get("title", self.uid)
 
     @property
     def title_sanitized(self) -> str:
@@ -81,6 +84,9 @@ class BaseEntryVariables:
 
 
 # pylint: enable=no-member
+
+
+TBaseEntry = TypeVar("TBaseEntry", bound="BaseEntry")
 
 
 class BaseEntry(BaseEntryVariables, ABC):
@@ -160,6 +166,22 @@ class BaseEntry(BaseEntryVariables, ABC):
         self._additional_variables = dict(self._additional_variables, **variables_to_add)
         return self
 
+    def get_download_info_json_name(self) -> str:
+        """
+        Returns
+        -------
+        The download info json's file name
+        """
+        return f"{self.uid}.{self.info_json_ext}"
+
+    def get_download_info_json_path(self) -> str:
+        """
+        Returns
+        -------
+        Entry's downloaded info json file path
+        """
+        return str(Path(self.working_directory()) / self.get_download_info_json_name())
+
     def _added_variables(self) -> Dict[str, str]:
         """
         Returns
@@ -189,3 +211,42 @@ class BaseEntry(BaseEntryVariables, ABC):
             source_var: getattr(self, source_var) for source_var in self.source_variables()
         }
         return dict(source_variable_dict, **self._added_variables())
+
+    @final
+    def to_type(self, entry_type: Type[TBaseEntry]) -> TBaseEntry:
+        """
+        Returns
+        -------
+        Converted EntryParent to Entry-like class
+        """
+        return entry_type(entry_dict=self._kwargs, working_directory=self._working_directory)
+
+    @classmethod
+    def is_entry_parent(cls, entry_dict: Dict | TBaseEntry):
+        """
+        Returns
+        -------
+        True if it is a parent. False otherwise
+        """
+        entry_type: Optional[str] = None
+        if isinstance(entry_dict, cls):
+            entry_type = entry_dict.kwargs_get("_type")
+        if isinstance(entry_dict, dict):
+            entry_type = entry_dict.get("_type")
+
+        return entry_type == "playlist"
+
+    @classmethod
+    def is_entry(cls, entry_dict: Dict | TBaseEntry):
+        """
+        Returns
+        -------
+        True if it is an entry. False otherwise
+        """
+        entry_ext: Optional[str] = None
+        if isinstance(entry_dict, cls):
+            entry_ext = entry_dict.kwargs_get("ext")
+        if isinstance(entry_dict, dict):
+            entry_ext = entry_dict.get("ext")
+
+        return entry_ext is not None

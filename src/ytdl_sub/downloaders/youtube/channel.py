@@ -136,7 +136,8 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         Downloads all videos from a channel
         """
         collection_url = self.collection.collection_urls.list[0]
-        super()._download_url_metadata(collection_url=collection_url)
+        _, orphans = super()._download_url_metadata(collection_url=collection_url)
+        assert not orphans
 
         # TODO: Handle this better
         self.overrides.add_override_variables(
@@ -148,9 +149,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         )
 
         for entry in super()._download_url(collection_url=collection_url, parents=self.parents):
-            # pylint: disable=protected-access
-            yield YoutubeVideo(entry_dict=entry._kwargs, working_directory=self.working_directory)
-            # pylint: enable=protected-access
+            yield entry.to_type(YoutubeVideo)
 
     def _download_thumbnail(
         self,

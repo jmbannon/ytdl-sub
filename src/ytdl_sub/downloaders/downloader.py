@@ -404,23 +404,22 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         return entry
 
     def _download_parent_entry(self, parent: EntryParent) -> Generator[Entry, None, None]:
-        """Download in reverse order, that way we download older entries ones first"""
-        if parent.is_entry():
-            yield self._download_entry(parent.to_type(Entry))
-            return
-
+        # Download the parent's entries first, in reverse order
         for entry_child in reversed(parent.entry_children()):
             if _entry_key(entry_child) in self.downloaded_entries:
                 continue
 
-            yield self._download_entry(entry_child.to_type(Entry))
+            yield self._download_entry(entry_child)
             self.downloaded_entries.add(_entry_key(entry_child))
 
+        # Recursion the parent's parent entries
         for parent_child in reversed(parent.parent_children()):
             for entry_child in self._download_parent_entry(parent=parent_child):
                 yield entry_child
 
-    def _download_url_metadata(self, collection_url: CollectionUrlValidator) -> List[EntryParent]:
+    def _download_url_metadata(
+        self, collection_url: CollectionUrlValidator
+    ) -> Tuple[List[EntryParent], List[Entry]]:
         """
         Downloads only info.json files and forms EntryParent trees
         """
@@ -434,14 +433,24 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         self.parents = EntryParent.from_entry_dicts(
             entry_dicts=entry_dicts, working_directory=self.working_directory
         )
-        return self.parents
+
+        orphans = EntryParent.from_entry_dicts_with_no_parents(
+            parents=self.parents, entry_dicts=entry_dicts, working_directory=self.working_directory
+        )
+        return self.parents, orphans
 
     def _download_url(
-        self, collection_url: CollectionUrlValidator, parents: List[EntryParent]
+        self,
+        collection_url: CollectionUrlValidator,
+        parents: List[EntryParent],
+        orphans: List[Entry] = None,
     ) -> Generator[Entry, None, None]:
         """
         Downloads the leaf entries from EntryParent trees
         """
+        if orphans is None:
+            orphans = []
+
         with self._separate_download_archives():
             for parent in parents:
                 for entry_child in self._download_parent_entry(parent=parent):
@@ -450,14 +459,19 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
                     )
                     yield entry_child
 
+            for orphan in orphans:
+                yield self._download_entry(orphan)
+
     def download(
         self,
     ) -> Iterable[DownloaderEntryT] | Iterable[Tuple[DownloaderEntryT, FileMetadata]]:
         """The function to perform the download of all media entries"""
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.collection.collection_urls.list):
-            parents = self._download_url_metadata(collection_url=collection_url)
-            for entry in self._download_url(collection_url=collection_url, parents=parents):
+            parents, orphan_entries = self._download_url_metadata(collection_url=collection_url)
+            for entry in self._download_url(
+                collection_url=collection_url, parents=parents, orphans=orphan_entries
+            ):
                 yield entry
 
     def post_download(self):

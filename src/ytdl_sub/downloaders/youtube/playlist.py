@@ -101,7 +101,8 @@ class YoutubePlaylistDownloader(
         Downloads all videos in a Youtube playlist.
         """
         collection_url = self.collection.collection_urls.list[0]
-        super()._download_url_metadata(collection_url)
+        _, orphans = super()._download_url_metadata(collection_url)
+        assert not orphans
 
         # TODO: Handle this better
         self.overrides.add_override_variables(
@@ -113,8 +114,4 @@ class YoutubePlaylistDownloader(
         )
 
         for entry in super()._download_url(collection_url=collection_url, parents=self.parents):
-            # pylint: disable=protected-access
-            yield YoutubePlaylistVideo(
-                entry_dict=entry._kwargs, working_directory=self.working_directory
-            )
-            # pylint: enable=protected-access
+            yield entry.to_type(YoutubePlaylistVideo)
