@@ -113,5 +113,5 @@ class YoutubePlaylistDownloader(
             }
         )
 
-        for entry in super()._download_url(collection_url=collection_url, parents=self.parents):
+        for entry in super()._download(parents=self.parents):
             yield entry.to_type(YoutubePlaylistVideo)

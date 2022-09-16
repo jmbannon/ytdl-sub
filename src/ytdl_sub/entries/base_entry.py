@@ -82,6 +82,20 @@ class BaseEntryVariables:
         """
         return "info.json"
 
+    def base_variable_dict(self) -> Dict[str, str]:
+        """
+        Returns
+        -------
+        BaseEntry variables that can be nested for playlist, source, etc
+        """
+        return {
+            "uid": self.uid,
+            "extractor": self.extractor,
+            "title": self.title,
+            "title_sanitized": self.title_sanitized,
+            "webpage_url": self.webpage_url,
+        }
+
 
 # pylint: enable=no-member
 
@@ -140,6 +154,23 @@ class BaseEntry(BaseEntryVariables, ABC):
         The working directory
         """
         return self._working_directory
+
+    def add_kwargs(self, variables_to_add: Dict[str, Any]) -> "BaseEntry":
+        """
+        Adds variables to kwargs. Use with caution since yt-dlp data can be overwritten.
+        Plugins should use ``add_variables``.
+
+        Parameters
+        ----------
+        variables_to_add
+            Variables to add to kwargs
+
+        Returns
+        -------
+        self
+        """
+        self._kwargs = dict(self._kwargs, **variables_to_add)
+        return self
 
     def add_variables(self, variables_to_add: Dict[str, str]) -> "BaseEntry":
         """

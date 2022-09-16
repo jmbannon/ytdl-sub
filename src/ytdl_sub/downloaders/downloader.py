@@ -47,20 +47,6 @@ def _entry_key(entry: BaseEntry) -> str:
     return entry.extractor + entry.uid
 
 
-def _get_parent_entry_variables(parent: EntryParent) -> Dict[str, str | int]:
-    """
-    Adds source variables to the child entry derived from the parent entry.
-    """
-    if not parent.child_entries:
-        return {}
-
-    return {
-        "playlist_max_upload_year": max(
-            child_entry.to_type(Entry).upload_year for child_entry in parent.child_entries
-        )
-    }
-
-
 class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
     """
     Placeholder class to define downloader options
@@ -439,24 +425,22 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         )
         return self.parents, orphans
 
-    def _download_url(
+    def _download(
         self,
-        collection_url: CollectionUrlValidator,
-        parents: List[EntryParent],
-        orphans: List[Entry] = None,
+        parents: Optional[List[EntryParent]] = None,
+        orphans: Optional[List[Entry]] = None,
     ) -> Generator[Entry, None, None]:
         """
         Downloads the leaf entries from EntryParent trees
         """
+        if parents is None:
+            parents = []
         if orphans is None:
             orphans = []
 
         with self._separate_download_archives():
             for parent in parents:
                 for entry_child in self._download_parent_entry(parent=parent):
-                    entry_child.add_variables(
-                        dict(_get_parent_entry_variables(parent), **collection_url.variables)
-                    )
                     yield entry_child
 
             for orphan in orphans:
@@ -469,9 +453,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.collection.collection_urls.list):
             parents, orphan_entries = self._download_url_metadata(collection_url=collection_url)
-            for entry in self._download_url(
-                collection_url=collection_url, parents=parents, orphans=orphan_entries
-            ):
+            for entry in self._download(parents=parents, orphans=orphan_entries):
                 yield entry
 
     def post_download(self):
