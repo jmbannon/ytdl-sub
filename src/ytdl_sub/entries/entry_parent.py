@@ -1,6 +1,5 @@
 import functools
 import math
-import os
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -59,7 +58,7 @@ class EntryParent(BaseEntry):
             out = dict(
                 out,
                 **{
-                    "playlist_index": idx,
+                    "playlist_index": idx + 1,
                     "playlist_count": len(children),
                 },
             )
@@ -170,8 +169,38 @@ class EntryParent(BaseEntry):
         )
 
     @classmethod
+    def _get_disconnected_root_parent(
+        cls, url: str, parents: List["EntryParent"]
+    ) -> Optional["EntryParent"]:
+        """
+        Sometimes the root-level parent is disconnected via playlist_ids Find it if it exists.
+        """
+
+        def _url_matches(webpage_url: str):
+            return webpage_url in url or url in webpage_url
+
+        top_level_parents = [
+            parent
+            for parent in parents
+            if not parent.child_entries and _url_matches(parent.webpage_url)
+        ]
+        if len(top_level_parents) == 0:
+            return None
+
+        match len(top_level_parents):
+            case 0:
+                return None
+            case 1:
+                return top_level_parents[0]
+            case _:
+                raise ValueError(
+                    "Detected multiple top-level parents. "
+                    "Please file an issue on GitHub with the URLs used to produce this error"
+                )
+
+    @classmethod
     def from_entry_dicts(
-        cls, entry_dicts: List[Dict], working_directory: str
+        cls, url: str, entry_dicts: List[Dict], working_directory: str
     ) -> List["EntryParent"]:
         """
         Reads all entry dicts and builds a tree of EntryParents
@@ -187,15 +216,11 @@ class EntryParent(BaseEntry):
         if not parents:
             return []
 
-        # find disconnected root parent if one exists
-        first_parent = min(
-            parents, key=lambda x: os.stat(x.get_download_info_json_path()).st_ctime_ns
-        )
-        if len(first_parent.child_entries) == 0:
-            parents.remove(first_parent)
-            first_parent.child_entries = parents
-
-            parents = [first_parent]
+        # If a disconnected root parent exists, connect it here
+        if (root_parent := cls._get_disconnected_root_parent(url, parents)) is not None:
+            parents.remove(root_parent)
+            root_parent.child_entries = parents
+            parents = [root_parent]
 
         for parent in parents:
             parent._set_child_variables()

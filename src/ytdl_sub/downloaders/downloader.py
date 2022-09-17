@@ -403,6 +403,18 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
             for entry_child in self._download_parent_entry(parent=parent_child):
                 yield entry_child
 
+    def _set_collection_variables(
+        self, collection_url: CollectionUrlValidator, entry: Entry | EntryParent
+    ):
+        if isinstance(entry, EntryParent):
+            for child in entry.parent_children():
+                self._set_collection_variables(collection_url, child)
+            for child in entry.entry_children():
+                child.add_variables(variables_to_add=collection_url.variables)
+
+        elif isinstance(entry, Entry):
+            entry.add_variables(variables_to_add=collection_url.variables)
+
     def _download_url_metadata(
         self, collection_url: CollectionUrlValidator
     ) -> Tuple[List[EntryParent], List[Entry]]:
@@ -417,12 +429,19 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
             )
 
         self.parents = EntryParent.from_entry_dicts(
-            entry_dicts=entry_dicts, working_directory=self.working_directory
+            url=collection_url.url,
+            entry_dicts=entry_dicts,
+            working_directory=self.working_directory,
         )
-
         orphans = EntryParent.from_entry_dicts_with_no_parents(
             parents=self.parents, entry_dicts=entry_dicts, working_directory=self.working_directory
         )
+
+        for parent_entry in self.parents:
+            self._set_collection_variables(collection_url, parent_entry)
+        for entry in orphans:
+            self._set_collection_variables(collection_url, entry)
+
         return self.parents, orphans
 
     def _download(
