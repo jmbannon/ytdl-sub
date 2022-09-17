@@ -17,6 +17,9 @@ from ytdl_sub.entries.variables.kwargs import PLAYLIST_MAX_UPLOAD_YEAR
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_MAX_UPLOAD_YEAR_TRUNCATED
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_TITLE
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_UID
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_ID
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_WEBPAGE_URL
 from ytdl_sub.entries.variables.kwargs import SOURCE_COUNT
 from ytdl_sub.entries.variables.kwargs import SOURCE_DESCRIPTION
@@ -24,6 +27,9 @@ from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
 from ytdl_sub.entries.variables.kwargs import SOURCE_INDEX
 from ytdl_sub.entries.variables.kwargs import SOURCE_TITLE
 from ytdl_sub.entries.variables.kwargs import SOURCE_UID
+from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER
+from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_ID
+from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import SOURCE_WEBPAGE_URL
 
 
@@ -77,6 +83,9 @@ class EntryParent(BaseEntry):
             _(SOURCE_WEBPAGE_URL, PLAYLIST_WEBPAGE_URL): self.webpage_url,
             _(SOURCE_UID, PLAYLIST_UID): self.uid,
             _(SOURCE_DESCRIPTION, PLAYLIST_DESCRIPTION): self.description,
+            _(SOURCE_UPLOADER, PLAYLIST_UPLOADER): self.uploader,
+            _(SOURCE_UPLOADER_ID, PLAYLIST_UPLOADER_ID): self.uploader_id,
+            _(SOURCE_UPLOADER_URL, PLAYLIST_UPLOADER_URL): self.uploader_url,
         }
 
     def _get_entry_children_variable_list(self, variable_name: str) -> List[str | int]:

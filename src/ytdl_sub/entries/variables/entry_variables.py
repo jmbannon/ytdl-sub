@@ -25,9 +25,6 @@ from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER
 from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import SOURCE_WEBPAGE_URL
-from ytdl_sub.entries.variables.kwargs import UPLOADER
-from ytdl_sub.entries.variables.kwargs import UPLOADER_ID
-from ytdl_sub.entries.variables.kwargs import UPLOADER_URL
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member
@@ -234,36 +231,6 @@ class EntryVariables(BaseEntryVariables):
             exists, otherwise returns ``upload_year_truncated``.
         """
         return self.kwargs_get(PLAYLIST_MAX_UPLOAD_YEAR_TRUNCATED, self.upload_year_truncated)
-
-    @property
-    def uploader_id(self: Self) -> str:
-        """
-        Returns
-        -------
-        str
-            The uploader id if it exists, otherwise return the unique ID.
-        """
-        return self.kwargs_get(UPLOADER_ID, self.uid)
-
-    @property
-    def uploader(self: Self) -> str:
-        """
-        Returns
-        -------
-        str
-            The uploader if it exists, otherwise return the uploader ID.
-        """
-        return self.kwargs_get(UPLOADER, self.uploader_id)
-
-    @property
-    def uploader_url(self: Self) -> str:
-        """
-        Returns
-        -------
-        str
-            The uploader url if it exists, otherwise returns the webpage_url.
-        """
-        return self.kwargs_get(UPLOADER_URL, self.webpage_url)
 
     @property
     def playlist_uploader_id(self: Self) -> str:
