@@ -36,4 +36,5 @@ PLAYLIST_UID = _("playlist_uid")
 
 EXT = _("ext")
 TITLE = _("title")
+DESCRIPTION = _("description")
 WEBPAGE_URL = _("webpage_url")

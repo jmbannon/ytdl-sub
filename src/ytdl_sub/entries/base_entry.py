@@ -10,6 +10,7 @@ from typing import final
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import TITLE
 from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
 
@@ -93,7 +94,7 @@ class BaseEntryVariables:
         str
             The description if it exists. Otherwise, returns an emtpy string.
         """
-        return self.kwargs_get("description", "")
+        return self.kwargs_get(DESCRIPTION, "")
 
 
 # pylint: enable=no-member

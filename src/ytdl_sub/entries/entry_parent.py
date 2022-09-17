@@ -68,20 +68,15 @@ class EntryParent(BaseEntry):
         }
 
     def _parent_variables(self, parent_type: str) -> Dict:
-        if parent_type == ParentType.SOURCE:
-            return {
-                SOURCE_ENTRY: self._kwargs,
-                SOURCE_TITLE: self.title,
-                SOURCE_WEBPAGE_URL: self.webpage_url,
-                SOURCE_UID: self.uid,
-                SOURCE_DESCRIPTION: self.description,
-            }
+        def _(source_key: str, playlist_key: str) -> str:
+            return playlist_key if parent_type == ParentType.SOURCE else source_key
+
         return {
-            PLAYLIST_ENTRY: self._kwargs,
-            PLAYLIST_TITLE: self.title,
-            PLAYLIST_WEBPAGE_URL: self.webpage_url,
-            PLAYLIST_UID: self.uid,
-            PLAYLIST_DESCRIPTION: self.description,
+            _(SOURCE_ENTRY, PLAYLIST_ENTRY): self._kwargs,
+            _(SOURCE_TITLE, PLAYLIST_TITLE): self.title,
+            _(SOURCE_WEBPAGE_URL, PLAYLIST_WEBPAGE_URL): self.webpage_url,
+            _(SOURCE_UID, PLAYLIST_UID): self.uid,
+            _(SOURCE_DESCRIPTION, PLAYLIST_DESCRIPTION): self.description,
         }
 
     def _get_entry_children_variable_list(self, variable_name: str) -> List[str | int]:
