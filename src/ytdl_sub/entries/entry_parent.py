@@ -38,31 +38,18 @@ class EntryParent(BaseEntry):
             [child.to_type(Entry) for child in self.child_entries if self.is_entry(child)]
         )
 
-    def _playlist_variables(
-        self, idx: int, children: List[TBaseEntry], write_playlist: bool
-    ) -> Dict:
-        child = children[idx]
+    def _playlist_variables(self, idx: int, children: List[TBaseEntry], parent_type: str) -> Dict:
+        _count = self.kwargs_get("playlist_count", len(children))
+        _index = (children[idx].kwargs_get("playlist_index", idx + 1),)
 
-        # number of children on the current entry
-        if (playlist_count := self.kwargs_get("playlist_count")) is not None:
-            assert playlist_count == len(children)
-
-        if (playlist_index := child.kwargs_get("playlist_index")) is not None:
-            assert playlist_index == idx + 1
-
-        out = {
+        if parent_type == ParentType.SOURCE:
+            return {"source_index": _index, "source_count": _count}
+        return {
             "source_index": self.kwargs_get("source_index", 1),
             "source_count": self.kwargs_get("source_count", 1),
+            "playlist_index": _index,
+            "playlist_count": _count,
         }
-        if write_playlist:
-            out = dict(
-                out,
-                **{
-                    "playlist_index": idx + 1,
-                    "playlist_count": len(children),
-                },
-            )
-        return out
 
     def _parent_variables(self, parent_type: str) -> Dict:
         return dict(
@@ -89,6 +76,9 @@ class EntryParent(BaseEntry):
     def _set_child_variables(self, parents: Optional[List["EntryParent"]] = None) -> "EntryParent":
         if parents is None:
             parents = [self]
+            self.add_kwargs(
+                self._playlist_variables(idx=0, children=parents, parent_type=ParentType.SOURCE)
+            )
 
         kwargs_to_add: Dict = {}
         if len(parents) >= 1:
@@ -105,7 +95,7 @@ class EntryParent(BaseEntry):
         for idx, entry_child in enumerate(self.entry_children()):
             entry_child.add_kwargs(
                 self._playlist_variables(
-                    idx=idx, children=self.entry_children(), write_playlist=True
+                    idx=idx, children=self.entry_children(), parent_type=ParentType.PLAYLIST
                 )
             )
             entry_child.add_kwargs(kwargs_to_add)
@@ -113,7 +103,7 @@ class EntryParent(BaseEntry):
         for idx, parent_child in enumerate(self.parent_children()):
             parent_child.add_kwargs(
                 self._playlist_variables(
-                    idx=idx, children=self.parent_children(), write_playlist=False
+                    idx=idx, children=self.parent_children(), parent_type=ParentType.SOURCE
                 )
             )
             parent_child._set_child_variables(parents=parents + [parent_child])
