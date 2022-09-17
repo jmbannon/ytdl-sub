@@ -1,3 +1,4 @@
+import functools
 import math
 import os
 from typing import Dict
@@ -18,7 +19,7 @@ class ParentType:
 
 def _sort_entries(entries: List[TBaseEntry]) -> List[TBaseEntry]:
     """Try sorting by playlist_id first, then fall back to uid"""
-    return sorted(entries, key=lambda ent: (ent.kwargs_get("playlist_id", math.inf), ent.uid))
+    return sorted(entries, key=lambda ent: (ent.kwargs_get("playlist_index", math.inf), ent.uid))
 
 
 class EntryParent(BaseEntry):
@@ -26,21 +27,63 @@ class EntryParent(BaseEntry):
         super().__init__(entry_dict=entry_dict, working_directory=working_directory)
         self.child_entries: List["EntryParent"] = []
 
+    @functools.cache
     def parent_children(self) -> List["EntryParent"]:
         """This parent's children that are also parents"""
         return _sort_entries([child for child in self.child_entries if self.is_entry_parent(child)])
 
+    @functools.cache
     def entry_children(self) -> List[Entry]:
         """This parent's children that are entries"""
         return _sort_entries(
             [child.to_type(Entry) for child in self.child_entries if self.is_entry(child)]
         )
 
+    def _playlist_variables(
+        self, idx: int, children: List[TBaseEntry], write_playlist: bool
+    ) -> Dict:
+        child = children[idx]
+
+        # number of children on the current entry
+        if (playlist_count := self.kwargs_get("playlist_count")) is not None:
+            assert playlist_count == len(children)
+
+        if (playlist_index := child.kwargs_get("playlist_index")) is not None:
+            assert playlist_index == idx + 1
+
+        out = {
+            "source_index": self.kwargs_get("source_index", 1),
+            "source_count": self.kwargs_get("source_count", 1),
+        }
+        if write_playlist:
+            out = dict(
+                out,
+                **{
+                    "playlist_index": idx,
+                    "playlist_count": len(children),
+                },
+            )
+        return out
+
     def _parent_variables(self, parent_type: str) -> Dict:
         return dict(
             {f"{parent_type}_entry": self._kwargs},
             **{f"{parent_type}_{key}": value for key, value in self.base_variable_dict().items()},
         )
+
+    def _get_entry_children_variable_list(self, variable_name: str) -> List[str | int]:
+        return [getattr(entry_child, variable_name) for entry_child in self.entry_children()]
+
+    def _entry_aggregate_variables(self) -> Dict:
+        if not self.entry_children():
+            return {}
+
+        return {
+            "playlist_max_upload_year": max(self._get_entry_children_variable_list("upload_year")),
+            "playlist_max_upload_year_truncated": max(
+                self._get_entry_children_variable_list("upload_year_truncated")
+            ),
+        }
 
     # pylint: disable=protected-access
 
@@ -59,10 +102,21 @@ class EntryParent(BaseEntry):
                 "If you encounter this error, please file a ticket with the URLs used."
             )
 
-        for entry_child in self.entry_children():
+        mergedeep.merge(kwargs_to_add, self._entry_aggregate_variables())
+        for idx, entry_child in enumerate(self.entry_children()):
+            entry_child.add_kwargs(
+                self._playlist_variables(
+                    idx=idx, children=self.entry_children(), write_playlist=True
+                )
+            )
             entry_child.add_kwargs(kwargs_to_add)
 
-        for parent_child in self.parent_children():
+        for idx, parent_child in enumerate(self.parent_children()):
+            parent_child.add_kwargs(
+                self._playlist_variables(
+                    idx=idx, children=self.parent_children(), write_playlist=False
+                )
+            )
             parent_child._set_child_variables(parents=parents + [parent_child])
 
         return self
