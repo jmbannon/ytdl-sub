@@ -66,6 +66,9 @@ def mock_entry_to_dict(
         "ext": ext,
         "description": "",
         "extractor": extractor,
+        "uploader": "abc123",
+        "uploader_id": "abc123",
+        "uploader_url": "https://yourname.here",
         "upload_date": upload_date,
         "upload_date_standardized": "2021-01-12",
         "upload_year": 2021,
@@ -95,6 +98,10 @@ def mock_entry_to_dict(
         "playlist_title_sanitized": "entry ｛title｝",
         "playlist_description": "",
         "playlist_webpage_url": "https://yourname.here",
+        "playlist_uid": "abc123",
+        "playlist_uploader": "abc123",
+        "playlist_uploader_id": "abc123",
+        "playlist_uploader_url": "https://yourname.here",
         "source_count": 1,
         "source_description": "",
         "source_index": 1,
@@ -102,6 +109,10 @@ def mock_entry_to_dict(
         "source_title": "entry ｛title｝",
         "source_title_sanitized": "entry ｛title｝",
         "source_webpage_url": "https://yourname.here",
+        "source_uid": "abc123",
+        "source_uploader": "abc123",
+        "source_uploader_id": "abc123",
+        "source_uploader_url": "https://yourname.here",
     }
 
 

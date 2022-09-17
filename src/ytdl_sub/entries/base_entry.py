@@ -12,6 +12,9 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import TITLE
+from ytdl_sub.entries.variables.kwargs import UPLOADER
+from ytdl_sub.entries.variables.kwargs import UPLOADER_ID
+from ytdl_sub.entries.variables.kwargs import UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
 
 # pylint: disable=no-member
@@ -95,6 +98,36 @@ class BaseEntryVariables:
             The description if it exists. Otherwise, returns an emtpy string.
         """
         return self.kwargs_get(DESCRIPTION, "")
+
+    @property
+    def uploader_id(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The uploader id if it exists, otherwise return the unique ID.
+        """
+        return self.kwargs_get(UPLOADER_ID, self.uid)
+
+    @property
+    def uploader(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The uploader if it exists, otherwise return the uploader ID.
+        """
+        return self.kwargs_get(UPLOADER, self.uploader_id)
+
+    @property
+    def uploader_url(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The uploader url if it exists, otherwise returns the webpage_url.
+        """
+        return self.kwargs_get(UPLOADER_URL, self.webpage_url)
 
 
 # pylint: enable=no-member

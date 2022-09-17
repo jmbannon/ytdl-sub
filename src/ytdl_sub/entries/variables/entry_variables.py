@@ -11,11 +11,19 @@ from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_MAX_UPLOAD_YEAR
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_MAX_UPLOAD_YEAR_TRUNCATED
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_TITLE
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_UID
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_ID
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_WEBPAGE_URL
 from ytdl_sub.entries.variables.kwargs import SOURCE_COUNT
 from ytdl_sub.entries.variables.kwargs import SOURCE_DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import SOURCE_INDEX
 from ytdl_sub.entries.variables.kwargs import SOURCE_TITLE
+from ytdl_sub.entries.variables.kwargs import SOURCE_UID
+from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER
+from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_ID
+from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import SOURCE_WEBPAGE_URL
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
@@ -53,6 +61,16 @@ class EntryVariables(BaseEntryVariables):
             The source title, sanitized
         """
         return sanitize_filename(self.source_title)
+
+    @property
+    def source_uid(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The source unique id if it exists, otherwise returns the playlist unique ID.
+        """
+        return self.kwargs_get(SOURCE_UID, self.playlist_uid)
 
     @property
     def source_index(self: Self) -> int:
@@ -106,6 +124,16 @@ class EntryVariables(BaseEntryVariables):
             The source description if it exists, otherwise returns the playlist description.
         """
         return self.kwargs_get(SOURCE_DESCRIPTION, self.playlist_description)
+
+    @property
+    def playlist_uid(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The playlist unique ID if it exists, otherwise return the entry unique ID.
+        """
+        return self.kwargs_get(PLAYLIST_UID, self.uid)
 
     @property
     def playlist_title(self: Self) -> str:
@@ -203,6 +231,66 @@ class EntryVariables(BaseEntryVariables):
             exists, otherwise returns ``upload_year_truncated``.
         """
         return self.kwargs_get(PLAYLIST_MAX_UPLOAD_YEAR_TRUNCATED, self.upload_year_truncated)
+
+    @property
+    def playlist_uploader_id(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The playlist uploader id if it exists, otherwise returns the playlist unique ID.
+        """
+        return self.kwargs_get(PLAYLIST_UPLOADER_ID, self.playlist_uid)
+
+    @property
+    def playlist_uploader(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The playlist uploader if it exists, otherwise return the playlist uploader ID.
+        """
+        return self.kwargs_get(PLAYLIST_UPLOADER, self.playlist_uploader_id)
+
+    @property
+    def playlist_uploader_url(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The playlist uploader url if it exists, otherwise returns the playlist webpage_url.
+        """
+        return self.kwargs_get(PLAYLIST_UPLOADER_URL, self.playlist_webpage_url)
+
+    @property
+    def source_uploader_id(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The source uploader id if it exists, otherwise returns the source unique ID.
+        """
+        return self.kwargs_get(SOURCE_UPLOADER_ID, self.source_uid)
+
+    @property
+    def source_uploader(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The source uploader if it exists, otherwise return the source uploader ID.
+        """
+        return self.kwargs_get(SOURCE_UPLOADER, self.source_uploader_id)
+
+    @property
+    def source_uploader_url(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The source uploader url if it exists, otherwise returns the source webpage_url.
+        """
+        return self.kwargs_get(SOURCE_UPLOADER_URL, self.source_webpage_url)
 
     @property
     def ext(self: Self) -> str:
