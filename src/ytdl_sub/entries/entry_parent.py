@@ -69,7 +69,7 @@ class EntryParent(BaseEntry):
 
     def _parent_variables(self, parent_type: str) -> Dict:
         def _(source_key: str, playlist_key: str) -> str:
-            return playlist_key if parent_type == ParentType.SOURCE else source_key
+            return playlist_key if parent_type == ParentType.PLAYLIST else source_key
 
         return {
             _(SOURCE_ENTRY, PLAYLIST_ENTRY): self._kwargs,
