@@ -1,13 +1,19 @@
+from typing import Optional
+
+from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.nfo_tags import NfoTagsValidator
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsOptions
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsPlugin
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
 class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
     """
     Adds a single NFO file in the output directory. An NFO file is simply an XML file with a
-    ``.nfo`` extension. You can add any strings or override variables into this NFO.
+    ``.nfo`` extension. It uses the last entry's source variables which can change per download
+    invocation. Be cautious of which variables you use.
 
     Usage:
 
@@ -77,8 +83,24 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
 class OutputDirectoryNfoTagsPlugin(SharedNfoTagsPlugin):
     plugin_options_type = OutputDirectoryNfoTagsOptions
 
+    def __init__(
+        self,
+        plugin_options: OutputDirectoryNfoTagsOptions,
+        overrides: Overrides,
+        enhanced_download_archive: EnhancedDownloadArchive,
+    ):
+        super().__init__(plugin_options, overrides, enhanced_download_archive)
+        self._last_entry: Optional[Entry] = None
+
+    def post_process_entry(self, entry: Entry) -> None:
+        """
+        Tracks the last entry processed
+        """
+        self._last_entry = entry
+
     def post_process_subscription(self):
         """
-        Creates an NFO file in the root of the output directory
+        Creates an NFO file in the root of the output directory using the last entry
         """
-        self._create_nfo()
+        if self._last_entry:
+            self._create_nfo(entry=self._last_entry, save_to_entry=False)

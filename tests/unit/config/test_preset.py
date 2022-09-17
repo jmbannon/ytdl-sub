@@ -230,7 +230,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Override variable 'dne_var' does not exist",
+            match="Format variable 'dne_var' does not exist",
         ):
             _ = Preset(
                 config=config_file,

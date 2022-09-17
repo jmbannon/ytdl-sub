@@ -74,7 +74,7 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
     Shared code between NFO tags and Ouptut Directory NFO Tags
     """
 
-    def _get_xml_element_dict(self, entry: Optional[Entry]) -> Dict[str, List[XmlElement]]:
+    def _get_xml_element_dict(self, entry: Entry) -> Dict[str, List[XmlElement]]:
         nfo_tags: Dict[str, List[XmlElement]] = defaultdict(list)
 
         for key, string_tags in self.plugin_options.tags.string_tags.items():
@@ -102,7 +102,7 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
 
         return nfo_tags
 
-    def _create_nfo(self, entry: Optional[Entry] = None) -> None:
+    def _create_nfo(self, entry: Entry, save_to_entry: bool = True) -> None:
         # Write the nfo tags to XML with the nfo_root
         nfo_root = self.overrides.apply_formatter(
             formatter=self.plugin_options.nfo_root, entry=entry
@@ -148,7 +148,11 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
             },
             title="NFO tags",
         )
-        self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
+
+        if save_to_entry:
+            self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
+        else:
+            self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata)
 
 
 class NfoTagsOptions(SharedNfoTagsOptions):
