@@ -40,7 +40,7 @@ class EntryParent(BaseEntry):
 
     def _playlist_variables(self, idx: int, children: List[TBaseEntry], parent_type: str) -> Dict:
         _count = self.kwargs_get("playlist_count", len(children))
-        _index = (children[idx].kwargs_get("playlist_index", idx + 1),)
+        _index = children[idx].kwargs_get("playlist_index", idx + 1)
 
         if parent_type == ParentType.SOURCE:
             return {"source_index": _index, "source_count": _count}
