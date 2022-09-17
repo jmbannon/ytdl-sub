@@ -23,6 +23,12 @@ class CollectionDownloadOptions(CollectionValidator, DownloaderValidator):
               variables:
                 season: "1"
                 album: "{title}"
+              playlist_thumbnails:
+                - name:
+                  uid: "square" / "largest" / "last entry" / actual name
+              source_thumbnail:
+                - path:
+                  type: "
             - url: "soundcloud.com/albums"
               variables:
                 season: "1"

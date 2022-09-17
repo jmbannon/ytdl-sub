@@ -1,15 +1,12 @@
-from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 from typing import Generator
 from typing import Optional
 
-from ytdl_sub.downloaders.downloader import download_logger
 from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.youtube import YoutubeVideo
-from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
 
@@ -54,9 +51,27 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
     @property
     def collection_validator(self) -> CollectionValidator:
         """Download from the channel url"""
+        playlist_thumbnails: List[Dict] = []
+        if self._channel_avatar_path:
+            playlist_thumbnails.append({
+                "name": self._channel_avatar_path.format_string,
+                "uid": "avatar_uncropped",
+            })
+        if self._channel_banner_path:
+            playlist_thumbnails.append({
+                "name": self._channel_banner_path.format_string,
+                "uid": "banner_uncropped",
+            })
+
         return CollectionValidator(
             name=self._name,
-            value={"urls": [{"url": self.channel_url}]},
+            value={
+                "urls": [
+                    {
+                        "url": self.channel_url,
+                        "playlist_thumbnails": playlist_thumbnails
+                    }
+                ]},
         )
 
     @property
@@ -122,58 +137,3 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         """
         for entry in super().download():
             yield entry.to_type(YoutubeVideo)
-
-    def _download_thumbnail(
-        self,
-        thumbnail_url: str,
-        output_thumbnail_path: str,
-    ) -> Optional[bool]:
-        """
-        Downloads a thumbnail and stores it in the output directory
-
-        Parameters
-        ----------
-        thumbnail_url:
-            Url of the thumbnail
-        output_thumbnail_path:
-            Path to store the thumbnail after downloading
-
-        Returns
-        -------
-        True if the thumbnail converted. None if it is missing or failed.
-        """
-        if not thumbnail_url:
-            download_logger.warning("Could not find a thumbnail for %s", self.channel.uid)
-            return None
-
-        return convert_url_thumbnail(
-            thumbnail_url=thumbnail_url, output_thumbnail_path=output_thumbnail_path
-        )
-
-    def post_download(self):
-        """
-        Downloads and moves channel avatar and banner images to the output directory.
-        """
-        if self.download_options.channel_avatar_path:
-            avatar_thumbnail_name = self.overrides.apply_formatter(
-                self.download_options.channel_avatar_path
-            )
-            if self._download_thumbnail(
-                thumbnail_url=self.channel.get_thumbnail_url("avatar_uncropped"),
-                output_thumbnail_path=str(Path(self.working_directory) / avatar_thumbnail_name),
-            ):
-                self.save_file(file_name=avatar_thumbnail_name)
-            else:
-                download_logger.warning("Failed to download channel's avatar image")
-
-        if self.download_options.channel_banner_path:
-            banner_thumbnail_name = self.overrides.apply_formatter(
-                self.download_options.channel_banner_path
-            )
-            if self._download_thumbnail(
-                thumbnail_url=self.channel.get_thumbnail_url("banner_uncropped"),
-                output_thumbnail_path=str(Path(self.working_directory) / banner_thumbnail_name),
-            ):
-                self.save_file(file_name=banner_thumbnail_name)
-            else:
-                download_logger.warning("Failed to download channel's banner image")
