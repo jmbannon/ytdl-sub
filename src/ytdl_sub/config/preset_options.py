@@ -121,21 +121,6 @@ class Overrides(DictFormatterValidator):
                 sanitize=True,
             )
 
-    def add_override_variables(self, variables_to_add: Dict[str, str]) -> None:
-        """
-        Parameters
-        ----------
-        variables_to_add
-            Override variables to add
-        """
-        for key_name, override_var_value in variables_to_add.items():
-            for sanitize in [False, True]:
-                self._add_override_variable(
-                    key_name=key_name,
-                    format_string=override_var_value,
-                    sanitize=sanitize,
-                )
-
     def apply_formatter(
         self,
         formatter: StringFormatterValidator,

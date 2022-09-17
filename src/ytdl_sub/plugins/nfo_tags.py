@@ -3,11 +3,8 @@ from abc import ABC
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict
-from typing import Generic
 from typing import List
 from typing import Optional
-from typing import Type
-from typing import TypeVar
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
@@ -18,27 +15,15 @@ from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_string
 from ytdl_sub.utils.xml import to_xml
 from ytdl_sub.validators.nfo_validators import NfoTagsValidator
-from ytdl_sub.validators.nfo_validators import SharedNfoTagsValidator
-from ytdl_sub.validators.nfo_validators import TDictFormatterValidator
-from ytdl_sub.validators.nfo_validators import TStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
 
-TSharedNfoTagsValidator = TypeVar("TSharedNfoTagsValidator", bound=SharedNfoTagsValidator)
 
-
-class SharedNfoTagsOptions(
-    PluginOptions,
-    Generic[TStringFormatterValidator, TDictFormatterValidator, TSharedNfoTagsValidator],
-    ABC,
-):
+class SharedNfoTagsOptions(PluginOptions):
     """
     Shared code between NFO tags and Ouptut Directory NFO Tags
     """
-
-    _formatter_validator: Type[TStringFormatterValidator]
-    _tags_validator: Type[TSharedNfoTagsValidator]
 
     _required_keys = {"nfo_name", "nfo_root", "tags"}
     _optional_keys = {"kodi_safe"}
@@ -46,9 +31,9 @@ class SharedNfoTagsOptions(
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._nfo_name = self._validate_key(key="nfo_name", validator=self._formatter_validator)
-        self._nfo_root = self._validate_key(key="nfo_root", validator=self._formatter_validator)
-        self._tags = self._validate_key(key="tags", validator=self._tags_validator)
+        self._nfo_name = self._validate_key(key="nfo_name", validator=StringFormatterValidator)
+        self._nfo_root = self._validate_key(key="nfo_root", validator=StringFormatterValidator)
+        self._tags = self._validate_key(key="tags", validator=NfoTagsValidator)
         self._kodi_safe = self._validate_key_if_present(
             key="kodi_safe", validator=BoolValidator, default=False
         ).value
@@ -68,7 +53,7 @@ class SharedNfoTagsOptions(
         return self._nfo_root
 
     @property
-    def tags(self) -> TSharedNfoTagsValidator:
+    def tags(self) -> NfoTagsValidator:
         """
         OVERRIDE DOC IN CHILD CLASSES
         """
@@ -84,15 +69,7 @@ class SharedNfoTagsOptions(
         return self._kodi_safe
 
 
-class SharedNfoTagsPlugin(
-    Plugin[
-        SharedNfoTagsOptions[
-            TStringFormatterValidator, TDictFormatterValidator, TSharedNfoTagsValidator
-        ]
-    ],
-    Generic[TStringFormatterValidator, TDictFormatterValidator, TSharedNfoTagsValidator],
-    ABC,
-):
+class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
     """
     Shared code between NFO tags and Ouptut Directory NFO Tags
     """
@@ -174,9 +151,7 @@ class SharedNfoTagsPlugin(
         self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
 
 
-class NfoTagsOptions(
-    SharedNfoTagsOptions[StringFormatterValidator, DictFormatterValidator, NfoTagsValidator]
-):
+class NfoTagsOptions(SharedNfoTagsOptions):
     """
     Adds an NFO file for every download file. An NFO file is simply an XML file
     with a ``.nfo`` extension. You can add any values into the NFO.
@@ -254,9 +229,7 @@ class NfoTagsOptions(
         return self._tags
 
 
-class NfoTagsPlugin(
-    SharedNfoTagsPlugin[StringFormatterValidator, DictFormatterValidator, NfoTagsValidator]
-):
+class NfoTagsPlugin(SharedNfoTagsPlugin):
     plugin_options_type = NfoTagsOptions
 
     def post_process_entry(self, entry: Entry) -> None:

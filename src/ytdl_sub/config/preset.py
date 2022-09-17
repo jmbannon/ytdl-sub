@@ -131,10 +131,6 @@ class Preset(StrictDictValidator):
     def _source_variables(self) -> List[str]:
         return self.downloader.downloader_entry_type.source_variables()
 
-    @property
-    def _added_override_variables(self) -> List[str]:
-        return self.downloader.added_override_variables()
-
     def __validate_and_get_downloader(self, downloader_source: str) -> Type[Downloader]:
         return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(
             downloader_source=downloader_source
@@ -225,10 +221,7 @@ class Preset(StrictDictValidator):
         formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
     ):
         # Set the formatter variables to be the overrides
-        variable_dict = dict(
-            self.overrides.dict_with_format_strings,
-            **{added_override: "dummy_string" for added_override in self._added_override_variables},
-        )
+        variable_dict = copy.deepcopy(self.overrides.dict_with_format_strings)
 
         # If the formatter supports source variables, set the formatter variables to include
         # both source and override variables

@@ -111,15 +111,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         """
         return {"ignoreerrors": True}
 
-    @classmethod
-    def added_override_variables(cls) -> List[str]:
-        """
-        Returns
-        -------
-        List of override variables that this downloader adds
-        """
-        return []
-
     def __init__(
         self,
         download_options: DownloaderOptionsT,
