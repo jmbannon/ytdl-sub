@@ -529,6 +529,10 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
             thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
             thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
 
+            # alread downloaded
+            if thumbnail_name in thumbnails_downloaded:
+                continue
+
             if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is None:
                 download_logger.warning("TODO: Failed to download channel's avatar image")
                 continue
@@ -574,10 +578,3 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
                         entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
                     ),
                 )
-
-    def post_download(self):
-        """
-        After all media entries have been downloaded, post processed, and moved to the output
-        directory, run this function. This lets the downloader add any extra files directly to the
-        output directory, for things like YT channel image, banner.
-        """

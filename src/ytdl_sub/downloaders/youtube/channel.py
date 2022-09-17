@@ -1,11 +1,11 @@
-from typing import Dict, List
+from typing import Dict
 from typing import Generator
+from typing import List
 from typing import Optional
 
 from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
-from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
@@ -53,25 +53,23 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
         """Download from the channel url"""
         playlist_thumbnails: List[Dict] = []
         if self._channel_avatar_path:
-            playlist_thumbnails.append({
-                "name": self._channel_avatar_path.format_string,
-                "uid": "avatar_uncropped",
-            })
+            playlist_thumbnails.append(
+                {
+                    "name": self._channel_avatar_path.format_string,
+                    "uid": "avatar_uncropped",
+                }
+            )
         if self._channel_banner_path:
-            playlist_thumbnails.append({
-                "name": self._channel_banner_path.format_string,
-                "uid": "banner_uncropped",
-            })
+            playlist_thumbnails.append(
+                {
+                    "name": self._channel_banner_path.format_string,
+                    "uid": "banner_uncropped",
+                }
+            )
 
         return CollectionValidator(
             name=self._name,
-            value={
-                "urls": [
-                    {
-                        "url": self.channel_url,
-                        "playlist_thumbnails": playlist_thumbnails
-                    }
-                ]},
+            value={"urls": [{"url": self.channel_url, "playlist_thumbnails": playlist_thumbnails}]},
         )
 
     @property
@@ -124,12 +122,6 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         )
 
     # pylint: enable=line-too-long
-
-    @property
-    def channel(self) -> EntryParent:
-        """Gets the channel entry parent"""
-        assert len(self.parents) == 1, "Channel should be the only entry parent"
-        return self.parents[0]
 
     def download(self) -> Generator[YoutubeVideo, None, None]:
         """

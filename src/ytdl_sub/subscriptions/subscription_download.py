@@ -265,7 +265,6 @@ class SubscriptionDownload(BaseSubscription, ABC):
                         plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
                     )
 
-            downloader.post_download()
             for plugin in plugins:
                 plugin.post_process_subscription()
 
