@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import Dict
 from typing import Generator
-from typing import List
 from typing import Optional
 
 from ytdl_sub.downloaders.downloader import download_logger
@@ -109,20 +108,6 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
             },
         )
 
-    @classmethod
-    def added_override_variables(cls) -> List[str]:
-        """
-        Adds the following :ref:`override <overrides>` variables:
-
-        .. code-block:: yaml
-
-           overrides:
-              source_uploader:  # The channel's name. NOTE: sometimes it's empty, use with caution
-              source_title:  # The channel's name
-              source_description:  # The channel's description
-        """
-        return ["source_uploader", "source_title", "source_description"]
-
     # pylint: enable=line-too-long
 
     @property
@@ -135,20 +120,7 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         """
         Downloads all videos from a channel
         """
-        collection_url = self.collection.collection_urls.list[0]
-        _, orphans = super()._download_url_metadata(collection_url=collection_url)
-        assert not orphans
-
-        # TODO: Handle this better
-        self.overrides.add_override_variables(
-            variables_to_add={
-                "source_uploader": self.channel.kwargs_get("uploader", "__failed_to_scrape__"),
-                "source_title": self.channel.kwargs("title"),
-                "source_description": self.channel.kwargs_get("description", ""),
-            }
-        )
-
-        for entry in super()._download(parents=self.parents):
+        for entry in super().download():
             yield entry.to_type(YoutubeVideo)
 
     def _download_thumbnail(

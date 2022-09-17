@@ -1,6 +1,5 @@
 from typing import Dict
 from typing import Generator
-from typing import List
 
 from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
@@ -74,20 +73,6 @@ class YoutubePlaylistDownloader(
             **{"break_on_existing": True},
         )
 
-    @classmethod
-    def added_override_variables(cls) -> List[str]:
-        """
-        Adds the following :ref:`override <overrides>` variables:
-
-        .. code-block:: yaml
-
-           overrides:
-              source_uploader:  # The playlist's owner's channel name. NOTE: sometimes it's empty, use with caution
-              source_title:  # The playlist's title
-              source_description:  # The playlist's description
-        """
-        return ["source_uploader", "source_title", "source_description"]
-
     # pylint: enable=line-too-long
 
     @property
@@ -100,18 +85,5 @@ class YoutubePlaylistDownloader(
         """
         Downloads all videos in a Youtube playlist.
         """
-        collection_url = self.collection.collection_urls.list[0]
-        _, orphans = super()._download_url_metadata(collection_url)
-        assert not orphans
-
-        # TODO: Handle this better
-        self.overrides.add_override_variables(
-            variables_to_add={
-                "source_title": self.playlist.title,
-                "source_uploader": self.playlist.kwargs_get("uploader", "__failed_to_scrape__"),
-                "source_description": self.playlist.kwargs_get("description", ""),
-            }
-        )
-
-        for entry in super()._download(parents=self.parents):
+        for entry in super().download():
             yield entry.to_type(YoutubePlaylistVideo)

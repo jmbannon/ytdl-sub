@@ -83,30 +83,3 @@ class TestNfoTagsPlugins:
             transaction_log=transaction_log,
             transaction_log_summary_file_name=f"plugins/nfo_tags/{transaction_log_file_name}",
         )
-
-    def test_source_variable_in_output_directory_nfo_tags_errors(
-        self, subscription_dict, music_video_config
-    ):
-        subscription_dict["output_directory_nfo_tags"]["tags"]["kodi_safe_title_with_attrs"][
-            "attributes"
-        ]["tag"] = "{title}"
-        with pytest.raises(ValidationException):
-            Subscription.from_dict(
-                config=music_video_config,
-                preset_name="kodi_safe_xml",
-                preset_dict=subscription_dict,
-            )
-
-    def test_source_variable_in_output_directory_nfo_tags_list_errors(
-        self, subscription_dict, music_video_config
-    ):
-        subscription_dict["output_directory_nfo_tags"]["tags"]["kodi_safe_title_with_attrs"] = [
-            "okay value",
-            "not okay {title}",
-        ]
-        with pytest.raises(ValidationException):
-            Subscription.from_dict(
-                config=music_video_config,
-                preset_name="kodi_safe_xml",
-                preset_dict=subscription_dict,
-            )

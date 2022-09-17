@@ -6,7 +6,6 @@ from typing import Optional
 from typing import Tuple
 from typing import Type
 from typing import TypeVar
-from typing import final
 
 from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.config.preset_options import Overrides
@@ -60,7 +59,6 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
     # If the plugin creates multile entries from a single entry
     is_split_plugin: bool = False
 
-    @final
     def __init__(
         self,
         plugin_options: PluginOptionsT,

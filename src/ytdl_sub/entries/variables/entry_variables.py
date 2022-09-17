@@ -238,9 +238,9 @@ class EntryVariables(BaseEntryVariables):
         Returns
         -------
         str
-            The playlist uploader id if it exists, otherwise returns the playlist unique ID.
+            The playlist uploader id if it exists, otherwise returns the entry uploader ID.
         """
-        return self.kwargs_get(PLAYLIST_UPLOADER_ID, self.playlist_uid)
+        return self.kwargs_get(PLAYLIST_UPLOADER_ID, self.uploader_id)
 
     @property
     def playlist_uploader(self: Self) -> str:
@@ -248,9 +248,9 @@ class EntryVariables(BaseEntryVariables):
         Returns
         -------
         str
-            The playlist uploader if it exists, otherwise return the playlist uploader ID.
+            The playlist uploader if it exists, otherwise return the entry uploader.
         """
-        return self.kwargs_get(PLAYLIST_UPLOADER, self.playlist_uploader_id)
+        return self.kwargs_get(PLAYLIST_UPLOADER, self.uploader)
 
     @property
     def playlist_uploader_url(self: Self) -> str:
@@ -268,9 +268,9 @@ class EntryVariables(BaseEntryVariables):
         Returns
         -------
         str
-            The source uploader id if it exists, otherwise returns the source unique ID.
+            The source uploader id if it exists, otherwise returns the playlist_uploader_id
         """
-        return self.kwargs_get(SOURCE_UPLOADER_ID, self.source_uid)
+        return self.kwargs_get(SOURCE_UPLOADER_ID, self.playlist_uploader_id)
 
     @property
     def source_uploader(self: Self) -> str:
@@ -278,9 +278,9 @@ class EntryVariables(BaseEntryVariables):
         Returns
         -------
         str
-            The source uploader if it exists, otherwise return the source uploader ID.
+            The source uploader if it exists, otherwise return the playlist_uploader
         """
-        return self.kwargs_get(SOURCE_UPLOADER, self.source_uploader_id)
+        return self.kwargs_get(SOURCE_UPLOADER, self.playlist_uploader)
 
     @property
     def source_uploader_url(self: Self) -> str:
