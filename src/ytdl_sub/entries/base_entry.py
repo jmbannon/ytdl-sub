@@ -10,6 +10,10 @@ from typing import final
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import TITLE
+from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
+
 # pylint: disable=no-member
 
 
@@ -50,7 +54,7 @@ class BaseEntryVariables:
         str
             The title of the entry. If a title does not exist, returns its unique ID.
         """
-        return self.kwargs_get("title", self.uid)
+        return self.kwargs_get(TITLE, self.uid)
 
     @property
     def title_sanitized(self) -> str:
@@ -70,7 +74,7 @@ class BaseEntryVariables:
         str
             The url to the webpage.
         """
-        return self.kwargs("webpage_url")
+        return self.kwargs(WEBPAGE_URL)
 
     @property
     def info_json_ext(self) -> str:
@@ -81,6 +85,16 @@ class BaseEntryVariables:
             The "info.json" extension
         """
         return "info.json"
+
+    @property
+    def description(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The description if it exists. Otherwise, returns an emtpy string.
+        """
+        return self.kwargs_get(DESCRIPTION, "")
 
 
 # pylint: enable=no-member

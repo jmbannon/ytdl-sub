@@ -9,6 +9,22 @@ import mergedeep
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import TBaseEntry
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_MAX_UPLOAD_YEAR
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_MAX_UPLOAD_YEAR_TRUNCATED
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_TITLE
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_UID
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_WEBPAGE_URL
+from ytdl_sub.entries.variables.kwargs import SOURCE_COUNT
+from ytdl_sub.entries.variables.kwargs import SOURCE_DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
+from ytdl_sub.entries.variables.kwargs import SOURCE_INDEX
+from ytdl_sub.entries.variables.kwargs import SOURCE_TITLE
+from ytdl_sub.entries.variables.kwargs import SOURCE_UID
+from ytdl_sub.entries.variables.kwargs import SOURCE_WEBPAGE_URL
 
 
 class ParentType:
@@ -18,7 +34,7 @@ class ParentType:
 
 def _sort_entries(entries: List[TBaseEntry]) -> List[TBaseEntry]:
     """Try sorting by playlist_id first, then fall back to uid"""
-    return sorted(entries, key=lambda ent: (ent.kwargs_get("playlist_index", math.inf), ent.uid))
+    return sorted(entries, key=lambda ent: (ent.kwargs_get(PLAYLIST_INDEX, math.inf), ent.uid))
 
 
 class EntryParent(BaseEntry):
@@ -39,23 +55,29 @@ class EntryParent(BaseEntry):
         )
 
     def _playlist_variables(self, idx: int, children: List[TBaseEntry], parent_type: str) -> Dict:
-        _count = self.kwargs_get("playlist_count", len(children))
-        _index = children[idx].kwargs_get("playlist_index", idx + 1)
+        _count = self.kwargs_get(PLAYLIST_COUNT, len(children))
+        _index = children[idx].kwargs_get(PLAYLIST_INDEX, idx + 1)
 
         if parent_type == ParentType.SOURCE:
-            return {"source_index": _index, "source_count": _count}
+            return {SOURCE_INDEX: _index, SOURCE_COUNT: _count}
         return {
-            "source_index": self.kwargs_get("source_index", 1),
-            "source_count": self.kwargs_get("source_count", 1),
-            "playlist_index": _index,
-            "playlist_count": _count,
+            SOURCE_INDEX: self.kwargs_get(SOURCE_INDEX, 1),
+            SOURCE_COUNT: self.kwargs_get(SOURCE_INDEX, 1),
+            PLAYLIST_INDEX: _index,
+            PLAYLIST_COUNT: _count,
         }
 
     def _parent_variables(self, parent_type: str) -> Dict:
-        return dict(
-            {f"{parent_type}_entry": self._kwargs},
-            **{f"{parent_type}_{key}": value for key, value in self.base_variable_dict().items()},
-        )
+        def _(source_key: str, playlist_key: str) -> str:
+            return playlist_key if parent_type == ParentType.PLAYLIST else source_key
+
+        return {
+            _(SOURCE_ENTRY, PLAYLIST_ENTRY): self._kwargs,
+            _(SOURCE_TITLE, PLAYLIST_TITLE): self.title,
+            _(SOURCE_WEBPAGE_URL, PLAYLIST_WEBPAGE_URL): self.webpage_url,
+            _(SOURCE_UID, PLAYLIST_UID): self.uid,
+            _(SOURCE_DESCRIPTION, PLAYLIST_DESCRIPTION): self.description,
+        }
 
     def _get_entry_children_variable_list(self, variable_name: str) -> List[str | int]:
         return [getattr(entry_child, variable_name) for entry_child in self.entry_children()]
@@ -65,8 +87,8 @@ class EntryParent(BaseEntry):
             return {}
 
         return {
-            "playlist_max_upload_year": max(self._get_entry_children_variable_list("upload_year")),
-            "playlist_max_upload_year_truncated": max(
+            PLAYLIST_MAX_UPLOAD_YEAR: max(self._get_entry_children_variable_list("upload_year")),
+            PLAYLIST_MAX_UPLOAD_YEAR_TRUNCATED: max(
                 self._get_entry_children_variable_list("upload_year_truncated")
             ),
         }
@@ -114,7 +136,7 @@ class EntryParent(BaseEntry):
         """
         Populates a tree of EntryParents that belong to this instance
         """
-        child_entries = [
+        self.child_entries = [
             EntryParent(
                 entry_dict=entry_dict,
                 working_directory=self.working_directory(),
@@ -122,8 +144,6 @@ class EntryParent(BaseEntry):
             for entry_dict in entry_dicts
             if entry_dict in self
         ]
-
-        self.child_entries = sorted(child_entries, key=lambda entry: entry.kwargs("playlist_index"))
         return self
 
     def get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:

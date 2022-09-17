@@ -94,13 +94,3 @@ class YoutubeVideoVariables(EntryVariables):
             1.
         """
         return 1
-
-    @property
-    def description(self: BaseEntry) -> str:
-        """
-        Returns
-        -------
-        str
-            The video description.
-        """
-        return self.kwargs("description")
