@@ -82,20 +82,6 @@ class BaseEntryVariables:
         """
         return "info.json"
 
-    def base_variable_dict(self) -> Dict[str, str]:
-        """
-        Returns
-        -------
-        BaseEntry variables that can be nested for playlist, source, etc
-        """
-        return {
-            "uid": self.uid,
-            "extractor": self.extractor,
-            "title": self.title,
-            "title_sanitized": self.title_sanitized,
-            "webpage_url": self.webpage_url,
-        }
-
 
 # pylint: enable=no-member
 
@@ -123,6 +109,20 @@ class BaseEntry(BaseEntryVariables, ABC):
         self._kwargs = entry_dict
 
         self._additional_variables: Dict[str, str | int] = {}
+
+    def base_variable_dict(self) -> Dict[str, str]:
+        """
+        Returns
+        -------
+        BaseEntry variables that can be nested for playlist, source, etc
+        """
+        return {
+            "uid": self.uid,
+            "extractor": self.extractor,
+            "title": self.title,
+            "title_sanitized": self.title_sanitized,
+            "webpage_url": self.webpage_url,
+        }
 
     def kwargs_contains(self, key: str) -> bool:
         """Returns whether internal kwargs contains the specified key"""
