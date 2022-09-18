@@ -61,11 +61,14 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
         .. code-block:: yaml
 
            tags:
-             title:
-               attributes:
-                 year: "2022"
-               tag: "Sweet youtube TV show"
+             named_season:
+               - tag: "{source_title}"
+                 attributes:
+                   number: "{collection_index}"
+                 behavior: "merge"
              genre:
+               - tag: "Comedy"
+                 behavior: "overwrite"
                - "Comedy"
                - "Drama"
 

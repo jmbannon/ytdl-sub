@@ -1,17 +1,47 @@
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringValidator
 
 
+class CollectionThumbnailValidator(StrictDictValidator):
+    _required_keys = {"name", "uid"}
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        self._name = self._validate_key(key="name", validator=StringFormatterValidator)
+        self._uid = self._validate_key(key="uid", validator=OverridesStringFormatterValidator)
+
+    @property
+    def name(self) -> StringFormatterValidator:
+        """
+        File name for the thumbnail
+        """
+        return self._name
+
+    @property
+    def uid(self) -> OverridesStringFormatterValidator:
+        """
+        yt-dlp's unique ID of the thumbnail
+        """
+        return self._uid
+
+
+class CollectionThumbnailListValidator(ListValidator[CollectionThumbnailValidator]):
+    _inner_list_type = CollectionThumbnailValidator
+
+
 class CollectionUrlValidator(StrictDictValidator):
     _required_keys = {"url"}
-    _optional_keys = {"variables"}
+    _optional_keys = {"variables", "source_thumbnails", "playlist_thumbnails"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
@@ -20,6 +50,13 @@ class CollectionUrlValidator(StrictDictValidator):
         self._url = self._validate_key(key="url", validator=StringValidator)
         variables = self._validate_key_if_present(key="variables", validator=DictFormatterValidator)
         self._variables = variables.dict_with_format_strings if variables else {}
+
+        self._source_thumbnails = self._validate_key_if_present(
+            key="source_thumbnails", validator=CollectionThumbnailListValidator, default=[]
+        )
+        self._playlist_thumbnails = self._validate_key_if_present(
+            key="playlist_thumbnails", validator=CollectionThumbnailListValidator, default=[]
+        )
 
     @property
     def url(self) -> str:
@@ -36,6 +73,20 @@ class CollectionUrlValidator(StrictDictValidator):
         Variables to add to each entry
         """
         return self._variables
+
+    @property
+    def source_thumbnails(self) -> Optional[CollectionThumbnailListValidator]:
+        """
+        TODO:docstring
+        """
+        return self._source_thumbnails
+
+    @property
+    def playlist_thumbnails(self) -> Optional[CollectionThumbnailListValidator]:
+        """
+        TODO:docstring
+        """
+        return self._playlist_thumbnails
 
 
 class CollectionUrlListValidator(ListValidator[CollectionUrlValidator]):

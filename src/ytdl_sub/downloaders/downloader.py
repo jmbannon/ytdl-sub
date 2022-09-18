@@ -25,17 +25,21 @@ from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.downloaders.generic.collection_validator import CollectionThumbnailListValidator
 from ytdl_sub.downloaders.generic.collection_validator import CollectionUrlValidator
 from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
+from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -139,7 +143,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         )
 
         self.parents: List[EntryParent] = []
-        self.downloaded_entries: Set[str] = set()
+        self.downloaded_entries: Dict[str, Entry] = {}
 
     @contextmanager
     def ytdl_downloader(self, ytdl_options_overrides: Optional[Dict] = None) -> ytdl.YoutubeDL:
@@ -331,6 +335,12 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
     ###############################################################################################
     # DOWNLOAD FUNCTIONS
 
+    def _is_downloaded(self, entry: Entry) -> bool:
+        return _entry_key(entry) in self.downloaded_entries
+
+    def _mark_downloaded(self, entry: Entry) -> None:
+        self.downloaded_entries[_entry_key(entry)] = entry
+
     @property
     def collection(self) -> CollectionValidator:
         """Return the download options collection"""
@@ -380,14 +390,19 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
         return entry
 
-    def _download_parent_entry(self, parent: EntryParent) -> Generator[Entry, None, None]:
-        # Download the parent's entries first, in reverse order
-        for entry_child in reversed(parent.entry_children()):
-            if _entry_key(entry_child) in self.downloaded_entries:
+    def _download_entries(self, entries: List[Entry]) -> Generator[Entry, None, None]:
+        # Download entries in reverse order since they are scraped in the opposite direction.
+        # Helps deal with break_on_existing
+        for entry in reversed(entries):
+            if self._is_downloaded(entry):
                 continue
 
-            yield self._download_entry(entry_child)
-            self.downloaded_entries.add(_entry_key(entry_child))
+            yield self._download_entry(entry)
+            self._mark_downloaded(entry)
+
+    def _download_parent_entry(self, parent: EntryParent) -> Generator[Entry, None, None]:
+        for entry_child in self._download_entries(parent.entry_children()):
+            yield entry_child
 
         # Recursion the parent's parent entries
         for parent_child in reversed(parent.parent_children()):
@@ -453,7 +468,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
                 for entry_child in self._download_parent_entry(parent=parent):
                     yield entry_child
 
-            for orphan in orphans:
+            for orphan in self._download_entries(orphans):
                 yield self._download_entry(orphan)
 
     def download(
@@ -463,12 +478,103 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.collection.collection_urls.list):
             parents, orphan_entries = self._download_url_metadata(collection_url=collection_url)
+            collection_url_entries: List[Entry] = []
+
             for entry in self._download(parents=parents, orphans=orphan_entries):
                 yield entry
+                collection_url_entries.append(entry)
 
-    def post_download(self):
+            self._download_url_thumbnails(
+                collection_url=collection_url, entries=collection_url_entries
+            )
+
+    @classmethod
+    def _download_thumbnail(
+        cls,
+        thumbnail_url: str,
+        output_thumbnail_path: str,
+    ) -> Optional[bool]:
+        """
+        Downloads a thumbnail and stores it in the output directory
+
+        Parameters
+        ----------
+        thumbnail_url:
+            Url of the thumbnail
+        output_thumbnail_path:
+            Path to store the thumbnail after downloading
+
+        Returns
+        -------
+        True if the thumbnail converted. None if it is missing or failed.
+        """
+        if not thumbnail_url:
+            return None
+
+        return convert_url_thumbnail(
+            thumbnail_url=thumbnail_url, output_thumbnail_path=output_thumbnail_path
+        )
+
+    def _download_parent_thumbnails(
+        self,
+        thumbnails_downloaded: Set[str],
+        thumbnail_list_info: CollectionThumbnailListValidator,
+        entry: Entry,
+        parent: EntryParent,
+    ) -> Set[str]:
+        """
+        Downloads and moves channel avatar and banner images to the output directory.
+        """
+        for thumbnail_info in thumbnail_list_info.list:
+            thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
+            thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
+
+            # alread downloaded
+            if thumbnail_name in thumbnails_downloaded:
+                continue
+
+            if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is None:
+                download_logger.warning("TODO: Failed to download channel's avatar image")
+                continue
+
+            if self._download_thumbnail(
+                thumbnail_url=thumbnail_url,
+                output_thumbnail_path=str(Path(self.working_directory) / thumbnail_name),
+            ):
+                self.save_file(file_name=thumbnail_name)
+                thumbnails_downloaded.add(thumbnail_name)
+            else:
+                download_logger.warning("TODO: Failed to download channel's avatar image")
+
+        return thumbnails_downloaded
+
+    def _download_url_thumbnails(
+        self, collection_url: CollectionUrlValidator, entries: List[Entry]
+    ):
         """
         After all media entries have been downloaded, post processed, and moved to the output
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
         """
+        thumbnails_downloaded: Set[str] = set()
+
+        for entry in entries:
+            if entry.kwargs_contains(PLAYLIST_ENTRY):
+                thumbnails_downloaded = self._download_parent_thumbnails(
+                    thumbnails_downloaded=thumbnails_downloaded,
+                    thumbnail_list_info=collection_url.playlist_thumbnails,
+                    entry=entry,
+                    parent=EntryParent(
+                        entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
+                    ),
+                )
+
+            if entry.kwargs_contains(SOURCE_ENTRY):
+                thumbnails_downloaded = self._download_parent_thumbnails(
+                    thumbnails_downloaded=thumbnails_downloaded,
+                    thumbnail_list_info=collection_url.source_thumbnails,
+                    entry=entry,
+                    parent=EntryParent(
+                        entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
+                    ),
+                )
