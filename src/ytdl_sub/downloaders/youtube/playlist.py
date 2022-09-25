@@ -50,9 +50,7 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
         return self._playlist_url
 
 
-class YoutubePlaylistDownloader(
-    YoutubeDownloader[YoutubePlaylistDownloaderOptions, YoutubeVideo]
-):
+class YoutubePlaylistDownloader(YoutubeDownloader[YoutubePlaylistDownloaderOptions, YoutubeVideo]):
     downloader_options_type = YoutubePlaylistDownloaderOptions
     downloader_entry_type = YoutubeVideo
 

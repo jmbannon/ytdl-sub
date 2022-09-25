@@ -91,6 +91,7 @@ def mock_entry_to_dict(
         "webpage_url": webpage_url,
         "playlist_index": 1,
         "playlist_index_padded": "01",
+        "playlist_index_padded6": "000001",
         "playlist_count": 1,
         "playlist_max_upload_year": 2021,
         "playlist_max_upload_year_truncated": 21,

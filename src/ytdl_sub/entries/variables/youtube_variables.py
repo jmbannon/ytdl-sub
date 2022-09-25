@@ -72,4 +72,3 @@ class YoutubeVideoVariables(EntryVariables):
             The sanitized artist name.
         """
         return sanitize_filename(self.artist)
-
