@@ -8,13 +8,14 @@ on:
     branches:
       - master
 jobs:
-  build:
+  test-build:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ["3.10"]
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -25,13 +26,76 @@ jobs:
         sudo apt-get install -y ffmpeg
         python -m pip install --upgrade pip
         pip install -e .[lint,test]
+
+  test-lint:
+    runs-on: ubuntu-22.04
+    needs: [
+      local-build
+    ]
+
+    steps:
     - name: Run linters
       run: |
         ./tools/linter check
-    - name: Run tests with coverage
+
+  test-unit:
+    runs-on: ubuntu-22.04
+    needs: [
+      test-lint
+    ]
+
+    steps:
+    - name: Run unit tests with coverage
       run: |
-        ./tools/test xml
+        coverage run -m pytest tests/unit && coverage xml -o coverage-unit.xml
+
+  test-soundcloud:
+    runs-on: ubuntu-22.04
+    needs: [
+      test-lint
+    ]
+
+    steps:
+    - name: Run e2e soundcloud tests with coverage
+      run: |
+        coverage run -m pytest tests/e2e/soundcloud && coverage xml -o coverage-soundcloud.xml
+
+  test-youtube:
+    runs-on: ubuntu-22.04
+    needs: [
+      test-lint
+    ]
+
+    steps:
+    - name: Run e2e youtube tests with coverage
+      run: |
+        coverage run -m pytest tests/e2e/youtube && coverage xml -o coverage-youtube.xml
+
+  test-plugins:
+    runs-on: ubuntu-22.04
+    needs: [
+      test-lint
+    ]
+
+    steps:
+    - name: Run e2e plugin tests with coverage
+      run: |
+        coverage run -m pytest tests/e2e/plugins && coverage xml -o coverage-plugins.xml
+
+  codecov-upload:
+    runs-on: ubuntu-22.04
+    needs: [
+      test-unit,
+      test-soundcloud,
+      test-youtube,
+      test-plugins
+    ]
+
+    permissions:
+      contents: read
+
+    steps:
     - name: Upload code coverage to codecov.io
       uses: codecov/codecov-action@v3
       with:
-        files: ./coverage.xml
+        files: ./coverage-unit.xml,./coverage-soundcloud.xml,./coverage-youtube.xml,./coverage-plugins.xml
