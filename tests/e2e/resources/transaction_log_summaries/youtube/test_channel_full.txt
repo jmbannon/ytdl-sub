@@ -9,6 +9,8 @@ Season 2010/s2010.e0813 - Oblivion Mod ＂Falcor＂ p.1.nfo
     episodedetails:
       aired: 2010-08-13
       episode: 813
+      playlist_count: 13
+      playlist_index: 13
       plot:
         PLEASE WATCH IN HD!
 
@@ -27,6 +29,8 @@ Season 2010/s2010.e1202 - Oblivion Mod ＂Falcor＂ p.2.nfo
     episodedetails:
       aired: 2010-12-02
       episode: 1202
+      playlist_count: 13
+      playlist_index: 12
       plot:
         PLEASE WATCH IN HD.
 
@@ -45,6 +49,8 @@ Season 2011/s2011.e0201 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
     episodedetails:
       aired: 2011-02-01
       episode: 201
+      playlist_count: 13
+      playlist_index: 11
       plot:
         To join the server, you must apply at:
         http://www.jesseminecraft.webs.com/
@@ -64,6 +70,8 @@ Season 2011/s2011.e0227 - Jesse's Minecraft Server [Trailer - Feb.27].nfo
     episodedetails:
       aired: 2011-02-27
       episode: 227
+      playlist_count: 13
+      playlist_index: 10
       plot:
         Website Link:
         http://jesseminecraft.webs.com/
@@ -102,6 +110,8 @@ Season 2011/s2011.e0321 - Jesse's Minecraft Server [Trailer - Mar.21].nfo
     episodedetails:
       aired: 2011-03-21
       episode: 321
+      playlist_count: 13
+      playlist_index: 9
       plot:
         Website Link:
         http://jesseminecraft.webs.com/
@@ -140,6 +150,8 @@ Season 2011/s2011.e0529 - Project Zombie ｜Official Trailer｜ (IP： mc.projec
     episodedetails:
       aired: 2011-05-29
       episode: 529
+      playlist_count: 13
+      playlist_index: 8
       plot:
         Currently in alpha testing.
         http://www.projectzombie.net/
@@ -168,6 +180,8 @@ Season 2011/s2011.e0630 - Project Zombie ｜Fin｜.nfo
     episodedetails:
       aired: 2011-06-30
       episode: 630
+      playlist_count: 13
+      playlist_index: 7
       plot:
         Twas a good run while it lasted. If you're still interested in playing PZ, you can join my Roleplay Server, yes, Project Zombie is completely imported onto that one:
         http://www.jesseminecraft.webs.com/
@@ -182,6 +196,8 @@ Season 2011/s2011.e1121 - Skyrim 'Ultra HD w⧸Mods' [PC].nfo
     episodedetails:
       aired: 2011-11-21
       episode: 1121
+      playlist_count: 13
+      playlist_index: 6
       plot:
         Mods I have used:
         http://skyrimnexus.com/downloads/file.php?id=329
@@ -203,6 +219,8 @@ Season 2012/s2012.e0123 - Project Zombie ｜Map Trailer｜.nfo
     episodedetails:
       aired: 2012-01-23
       episode: 123
+      playlist_count: 13
+      playlist_index: 4
       plot:
         Faction Server IP: 72.9.157.88:25652
         Project Zombie IP: mc.projectzombie.beastnode.net
@@ -224,6 +242,8 @@ Season 2013/s2013.e0719 - Project Zombie Rewind ｜Trailer｜.nfo
     episodedetails:
       aired: 2013-07-19
       episode: 719
+      playlist_count: 13
+      playlist_index: 3
       plot:
         IP: 172.245.24.118
         http://www.projectzombie.net/
@@ -240,6 +260,8 @@ Season 2018/s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo
     episodedetails:
       aired: 2018-10-29
       episode: 1029
+      playlist_count: 13
+      playlist_index: 2
       plot:
         See the full trailer here: https://youtu.be/LN2e6idGluI
         Discord: https://discord.gg/BQN7SSe
@@ -262,6 +284,8 @@ Season 2018/s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.nfo
     episodedetails:
       aired: 2018-11-02
       episode: 1102
+      playlist_count: 13
+      playlist_index: 1
       plot:
         IP: mc.jesse.id
         Live Map: http://mc.jesse.id:8123

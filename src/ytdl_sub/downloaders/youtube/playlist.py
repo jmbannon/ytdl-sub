@@ -5,7 +5,7 @@ from ytdl_sub.downloaders.generic.collection_validator import CollectionValidato
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
 from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
 from ytdl_sub.entries.entry_parent import EntryParent
-from ytdl_sub.entries.youtube import YoutubePlaylistVideo
+from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.validators.url_validator import YoutubePlaylistUrlValidator
 
 
@@ -51,10 +51,10 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
 
 
 class YoutubePlaylistDownloader(
-    YoutubeDownloader[YoutubePlaylistDownloaderOptions, YoutubePlaylistVideo]
+    YoutubeDownloader[YoutubePlaylistDownloaderOptions, YoutubeVideo]
 ):
     downloader_options_type = YoutubePlaylistDownloaderOptions
-    downloader_entry_type = YoutubePlaylistVideo
+    downloader_entry_type = YoutubeVideo
 
     # pylint: disable=line-too-long
     @classmethod
@@ -81,9 +81,9 @@ class YoutubePlaylistDownloader(
         assert len(self.parents) == 1, "Playlist should be the only entry parent"
         return self.parents[0]
 
-    def download(self) -> Generator[YoutubePlaylistVideo, None, None]:
+    def download(self) -> Generator[YoutubeVideo, None, None]:
         """
         Downloads all videos in a Youtube playlist.
         """
         for entry in super().download():
-            yield entry.to_type(YoutubePlaylistVideo)
+            yield entry.to_type(YoutubeVideo)
