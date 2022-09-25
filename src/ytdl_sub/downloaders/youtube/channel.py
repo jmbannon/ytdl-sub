@@ -111,13 +111,11 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
            ytdl_options:
              ignoreerrors: True  # ignore errors like hidden videos, age restriction, etc
              break_on_existing: True  # stop downloads (newest to oldest) if a video is already downloaded
-             break_on_reject: True  # stops downloads if the video's upload date is out of the specified 'before'/'after' range
         """
         return dict(
             super().ytdl_option_defaults(),
             **{
                 "break_on_existing": True,
-                "break_on_reject": True,
             },
         )
 
