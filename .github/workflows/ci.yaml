@@ -30,7 +30,7 @@ jobs:
   test-lint:
     runs-on: ubuntu-22.04
     needs: [
-      local-build
+      test-build
     ]
 
     steps:
