@@ -32,6 +32,8 @@ jobs:
     needs: [
       test-build
     ]
+    permissions:
+      contents: read
 
     steps:
     - name: Run linters
@@ -43,6 +45,8 @@ jobs:
     needs: [
       test-lint
     ]
+    permissions:
+      contents: read
 
     steps:
     - name: Run unit tests with coverage
@@ -54,6 +58,8 @@ jobs:
     needs: [
       test-lint
     ]
+    permissions:
+      contents: read
 
     steps:
     - name: Run e2e soundcloud tests with coverage
@@ -65,6 +71,8 @@ jobs:
     needs: [
       test-lint
     ]
+    permissions:
+      contents: read
 
     steps:
     - name: Run e2e youtube tests with coverage
@@ -76,6 +84,8 @@ jobs:
     needs: [
       test-lint
     ]
+    permissions:
+      contents: read
 
     steps:
     - name: Run e2e plugin tests with coverage
@@ -90,7 +100,6 @@ jobs:
       test-youtube,
       test-plugins
     ]
-
     permissions:
       contents: read
 
