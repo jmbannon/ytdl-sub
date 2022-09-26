@@ -17,20 +17,14 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
     - name: Install dependencies
-      with:
-        path: env
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        python -m venv env
-        source env/bin/activate
-        pwd env
-        which ffmpeg
-        which ffprobe
         python -m pip install --upgrade pip
         pip install -e .[lint,test]
 
