@@ -74,11 +74,12 @@ jobs:
     - name: Restore Python build cache
       uses: actions/cache@v3
       with:
-        path: env
+        path: /opt/env
         key: ${{github.sha}}-env
 
     - name: Run unit tests with coverage
       run: |
+        source /opt/env/bin/activate
         coverage run -m pytest tests/unit && coverage xml -o coverage-unit.xml
 
   test-soundcloud:
@@ -90,8 +91,22 @@ jobs:
       contents: read
 
     steps:
+    - name: Restore Python build cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/env
+        key: ${{github.sha}}-env
+
+    - name: Restore ffmpeg cache
+      uses: actions/cache@v3
+      with:
+        path: /var/cache/apt/archives
+        key: ${{github.sha}}-ffmpeg
+
     - name: Run e2e soundcloud tests with coverage
       run: |
+        sudo apt-get install -y ffmpeg
+        source /opt/env/bin/activate
         coverage run -m pytest tests/e2e/soundcloud && coverage xml -o coverage-soundcloud.xml
 
   test-youtube:
