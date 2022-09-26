@@ -21,9 +21,16 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
+      with:
+        path: env
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
+        python -m venv env
+        source env/bin/activate
+        pwd env
+        which ffmpeg
+        which ffprobe
         python -m pip install --upgrade pip
         pip install -e .[lint,test]
 
