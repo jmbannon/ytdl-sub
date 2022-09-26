@@ -23,15 +23,20 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get install -y ffmpeg
-        python -m venv env
-        source env/bin/activate
+        sudo apt-get install -y --download-only ffmpeg
+        python -m venv /opt/env
+        source /opt/env/bin/activate
         pip install -e .[lint,test]
     - name: Save Python build cache
       uses: actions/cache@v3
       with:
-        path: env
+        path: /opt/env
         key: ${{github.sha}}-env
+    - name: Save ffmpeg download cache
+      uses: actions/cache@v3
+      with:
+        path: /var/cache/apt/archives
+        key: ${{github.sha}}-ffmpeg
 
   test-lint:
     runs-on: ubuntu-22.04
@@ -47,12 +52,12 @@ jobs:
     - name: Restore Python build cache
       uses: actions/cache@v3
       with:
-        path: env
+        path: /opt/env
         key: ${{github.sha}}-env
 
     - name: Run linters
       run: |
-        source env/bin/activate
+        source /opt/env/bin/activate
         ./tools/linter check
 
   test-unit:
