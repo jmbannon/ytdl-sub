@@ -20,13 +20,18 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-        cache: 'pip'
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        python -m pip install --upgrade pip
+        python -m venv env
+        source env/bin/activate
         pip install -e .[lint,test]
+    - name: Save Python build cache
+      uses: actions/cache@v3
+      with:
+        path: env
+        key: ${{github.sha}}-env
 
   test-lint:
     runs-on: ubuntu-22.04
@@ -37,8 +42,14 @@ jobs:
       contents: read
 
     steps:
+    - name: Restore Python build cache
+      uses: actions/cache@v3
+      with:
+        path: env
+        key: ${{github.sha}}-env
     - name: Run linters
       run: |
+        source env/bin/activate
         ./tools/linter check
 
   test-unit:
