@@ -23,7 +23,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        apt-get install -y --download-only ffmpeg
         python -m venv /opt/env
         source /opt/env/bin/activate
         pip install -e .[lint,test]
@@ -32,11 +31,6 @@ jobs:
       with:
         path: /opt/env
         key: ${{github.sha}}-env
-    - name: Save ffmpeg download cache
-      uses: actions/cache@v3
-      with:
-        path: /var/cache/apt/archives
-        key: ${{github.sha}}-ffmpeg
 
   test-lint:
     runs-on: ubuntu-22.04
@@ -99,12 +93,6 @@ jobs:
         path: /opt/env
         key: ${{github.sha}}-env
 
-    - name: Restore ffmpeg cache
-      uses: actions/cache@v3
-      with:
-        path: /var/cache/apt/archives
-        key: ${{github.sha}}-ffmpeg
-
     - name: Run e2e soundcloud tests with coverage
       run: |
         sudo apt-get install -y ffmpeg
@@ -132,12 +120,6 @@ jobs:
         path: /opt/env
         key: ${{github.sha}}-env
 
-    - name: Restore ffmpeg cache
-      uses: actions/cache@v3
-      with:
-        path: /var/cache/apt/archives
-        key: ${{github.sha}}-ffmpeg
-
     - name: Run e2e youtube tests with coverage
       run: |
         sudo apt-get install -y ffmpeg
@@ -164,12 +146,6 @@ jobs:
       with:
         path: /opt/env
         key: ${{github.sha}}-env
-
-    - name: Restore ffmpeg cache
-      uses: actions/cache@v3
-      with:
-        path: /var/cache/apt/archives
-        key: ${{github.sha}}-ffmpeg
 
     - name: Run e2e plugin tests with coverage
       run: |
