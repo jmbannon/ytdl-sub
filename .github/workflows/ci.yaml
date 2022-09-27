@@ -198,4 +198,5 @@ jobs:
     - name: Upload code coverage to codecov.io
       uses: codecov/codecov-action@v3
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         files: /opt/coverage/unit/coverage.xml,/opt/coverage/soundcloud/coverage.xml,/opt/coverage/youtube/coverage.xml,/opt/coverage/plugins/coverage.xml
