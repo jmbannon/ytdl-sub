@@ -23,9 +23,9 @@ def playlist_preset_dict(output_directory):
             "nfo_name": "tvshow.nfo",
             "nfo_root": "test",
             "tags": {
-                "source_title": "{source_title}",
-                "source_uploader": "{source_uploader}",
-                "source_description": "{source_description}",
+                "playlist_title": "{playlist_title}",
+                "playlist_uploader": "{playlist_uploader}",
+                "playlist_description": "{playlist_description}",
             },
         },
         "subtitles": {

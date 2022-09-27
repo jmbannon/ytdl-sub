@@ -20,19 +20,7 @@ def channel():
 
 
 @pytest.fixture
-def track_title():
-    return "not the title!"
-
-
-@pytest.fixture
-def artist():
-    return "not the channel"
-
-
-@pytest.fixture
-def mock_youtube_video_to_dict(
-    mock_entry_to_dict, playlist_index, playlist_size, channel, track_title, artist
-):
+def mock_youtube_video_to_dict(mock_entry_to_dict, playlist_index, playlist_size, channel):
     return dict(
         mock_entry_to_dict,
         **{
@@ -40,26 +28,18 @@ def mock_youtube_video_to_dict(
             "playlist_size": playlist_size,
             "channel": channel,
             "channel_sanitized": channel,
-            "track_title": track_title,
-            "track_title_sanitized": track_title,
-            "artist": artist,
-            "artist_sanitized": artist,
         }
     )
 
 
 @pytest.fixture
-def mock_youtube_video_kwargs(
-    mock_entry_kwargs, playlist_index, playlist_size, channel, track_title, artist
-):
+def mock_youtube_video_kwargs(mock_entry_kwargs, playlist_index, playlist_size, channel):
     return dict(
         mock_entry_kwargs,
         **{
             "playlist_index": playlist_index,
             "playlist_count": playlist_size,
             "channel": channel,
-            "track": track_title,
-            "artist": artist,
         }
     )
 
