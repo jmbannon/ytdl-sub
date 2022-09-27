@@ -30,7 +30,7 @@ presets:
       music_directory: "/path/to/music"
       custom_track_name: "{title}"
       custom_album_name: "Singles"
-      custom_artist_name: "{artist}"
+      custom_artist_name: "{channel}"
       custom_track_number: "1"
 
   #  TODO: make a playlist of individual songs into an album. Need playlist_title
