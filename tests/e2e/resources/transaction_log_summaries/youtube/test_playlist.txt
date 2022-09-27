@@ -40,6 +40,6 @@ JMC - Jesse's Minecraft Server [Trailer - Mar.21].nfo
 tvshow.nfo
   NFO tags:
     test:
-      source_description: Trailers, Updates, etc
-      source_title: Jesse's Minecraft Server
-      source_uploader: Project Zombie
+      playlist_description: Trailers, Updates, etc
+      playlist_title: Jesse's Minecraft Server
+      playlist_uploader: Project Zombie

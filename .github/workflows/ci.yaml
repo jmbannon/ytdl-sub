@@ -8,30 +8,195 @@ on:
     branches:
       - master
 jobs:
-  build:
+  test-build:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ["3.10"]
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y ffmpeg
-        python -m pip install --upgrade pip
+        python -m venv /opt/env
+        source /opt/env/bin/activate
         pip install -e .[lint,test]
+    - name: Save Python build cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/env
+        key: ${{github.sha}}-env
+
+  test-lint:
+    runs-on: ubuntu-22.04
+    needs: test-build
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Restore Python build cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/env
+        key: ${{github.sha}}-env
+
     - name: Run linters
       run: |
+        source /opt/env/bin/activate
         ./tools/linter check
-    - name: Run tests with coverage
+
+  test-unit:
+    runs-on: ubuntu-22.04
+    needs: test-build
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Restore Python build cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/env
+        key: ${{github.sha}}-env
+
+    - name: Run unit tests with coverage
       run: |
-        ./tools/test xml
+        source /opt/env/bin/activate
+        coverage run -m pytest tests/unit && coverage xml -o /opt/coverage/unit/coverage.xml
+
+    - name: Save coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/unit
+        key: ${{github.sha}}-coverage-unit
+
+  test-soundcloud:
+    runs-on: ubuntu-22.04
+    needs: test-build
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Restore Python build cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/env
+        key: ${{github.sha}}-env
+
+    - name: Run e2e soundcloud tests with coverage
+      run: |
+        sudo apt-get install -y ffmpeg
+        source /opt/env/bin/activate
+        coverage run -m pytest tests/e2e/soundcloud && coverage xml -o /opt/coverage/soundcloud/coverage.xml
+
+    - name: Save coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/soundcloud
+        key: ${{github.sha}}-coverage-soundcloud
+
+  test-youtube:
+    runs-on: ubuntu-22.04
+    needs: test-build
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Restore Python build cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/env
+        key: ${{github.sha}}-env
+
+    - name: Run e2e youtube tests with coverage
+      run: |
+        sudo apt-get install -y ffmpeg
+        source /opt/env/bin/activate
+        coverage run -m pytest tests/e2e/youtube && coverage xml -o /opt/coverage/youtube/coverage.xml
+
+    - name: Save coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/youtube
+        key: ${{github.sha}}-coverage-youtube
+
+  test-plugins:
+    runs-on: ubuntu-22.04
+    needs: test-build
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Restore Python build cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/env
+        key: ${{github.sha}}-env
+
+    - name: Run e2e plugin tests with coverage
+      run: |
+        sudo apt-get install -y ffmpeg
+        source /opt/env/bin/activate
+        coverage run -m pytest tests/e2e/plugins && coverage xml -o /opt/coverage/plugins/coverage.xml
+
+    - name: Save coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/plugins
+        key: ${{github.sha}}-coverage-plugins
+
+  codecov-upload:
+    runs-on: ubuntu-22.04
+    needs: [
+      test-unit,
+      test-soundcloud,
+      test-youtube,
+      test-plugins
+    ]
+    permissions:
+      contents: read
+
+    steps:
+    - name: Restore unit test coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/unit
+        key: ${{github.sha}}-coverage-unit
+
+    - name: Restore soundcloud test coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/soundcloud
+        key: ${{github.sha}}-coverage-soundcloud
+
+    - name: Restore youtube test coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/youtube
+        key: ${{github.sha}}-coverage-youtube
+
+    - name: Restore plugins test coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/plugins
+        key: ${{github.sha}}-coverage-plugins
+
     - name: Upload code coverage to codecov.io
       uses: codecov/codecov-action@v3
       with:
-        files: ./coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: /opt/coverage/unit/coverage.xml,/opt/coverage/soundcloud/coverage.xml,/opt/coverage/youtube/coverage.xml,/opt/coverage/plugins/coverage.xml

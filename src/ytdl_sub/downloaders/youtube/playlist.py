@@ -38,7 +38,11 @@ class YoutubePlaylistDownloaderOptions(YoutubeDownloaderOptions):
         """Downloads the playlist url"""
         return CollectionValidator(
             name=self._name,
-            value={"urls": [{"url": self.playlist_url}]},
+            value={
+                "urls": [
+                    {"url": self.playlist_url, "variables": {"playlist_size": "{playlist_count}"}}
+                ]
+            },
         )
 
     @property

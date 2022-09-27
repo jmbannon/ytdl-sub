@@ -46,7 +46,7 @@ def yt_album_as_chapters_with_regex_preset_dict(yt_album_as_chapters_preset_dict
                             "captured_album",
                         ],
                         "capture_group_defaults": [
-                            "{artist}",
+                            "{channel}",
                             "{title}",
                         ],
                     },

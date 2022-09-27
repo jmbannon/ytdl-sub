@@ -1,12 +1,8 @@
-from unittest.mock import patch
-
 import pytest
-from conftest import assert_debug_log
 from e2e.expected_download import assert_expected_downloads
 from e2e.expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.retry import logger as retry_logger
 
 
 @pytest.fixture
@@ -34,7 +30,7 @@ def channel_preset_dict(output_directory):
         },
         "output_directory_nfo_tags": {
             "tags": {
-                "source_uploader": "{source_uploader}",
+                "source_uploader": "{playlist_uploader}",
             }
         },
         "overrides": {"tv_show_name": "Project / Zombie"},

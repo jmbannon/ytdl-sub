@@ -69,7 +69,15 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
 
         return CollectionValidator(
             name=self._name,
-            value={"urls": [{"url": self.channel_url, "playlist_thumbnails": playlist_thumbnails}]},
+            value={
+                "urls": [
+                    {
+                        "url": self.channel_url,
+                        "playlist_thumbnails": playlist_thumbnails,
+                        "variables": {"playlist_size": "{playlist_count}"},
+                    }
+                ]
+            },
         )
 
     @property
