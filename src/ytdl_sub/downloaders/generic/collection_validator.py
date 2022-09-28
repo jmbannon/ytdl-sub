@@ -59,13 +59,13 @@ class CollectionUrlValidator(StrictDictValidator):
         )
 
     @property
-    def url(self) -> str:
+    def url(self) -> OverridesStringFormatterValidator:
         """
         URL to download from, listed in priority from lowest (top) to highest (bottom). If a
         download exists in more than one URL, it will resolve to the bottom-most one and inherit
         those variables.
         """
-        return self._url.value
+        return self._url
 
     @property
     def variables(self) -> DictFormatterValidator:

@@ -428,15 +428,17 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         """
         Downloads only info.json files and forms EntryParent trees
         """
+        url = self.overrides.apply_formatter(collection_url.url)
+
         with self._separate_download_archives():
             entry_dicts = self.extract_info_via_info_json(
                 only_info_json=True,
-                url=collection_url.url,
+                url=url,
                 log_prefix_on_info_json_dl="Downloading metadata for",
             )
 
         self.parents = EntryParent.from_entry_dicts(
-            url=collection_url.url,
+            url=url,
             entry_dicts=entry_dicts,
             working_directory=self.working_directory,
         )
