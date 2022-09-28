@@ -102,18 +102,12 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
 
         return nfo_tags
 
-    def _create_nfo(
-        self,
-        entry: Entry,
-        nfo_tags: Optional[Dict[str, List[XmlElement]]] = None,
-        save_to_entry: bool = True,
-    ) -> None:
+    def _create_nfo(self, entry: Entry, save_to_entry: bool = True) -> None:
         # Write the nfo tags to XML with the nfo_root
         nfo_root = self.overrides.apply_formatter(
             formatter=self.plugin_options.nfo_root, entry=entry
         )
-        if nfo_tags is None:
-            nfo_tags = self._get_xml_element_dict(entry=entry)
+        nfo_tags = self._get_xml_element_dict(entry=entry)
 
         if self.plugin_options.kodi_safe:
             nfo_root = to_max_3_byte_utf8_string(nfo_root)
