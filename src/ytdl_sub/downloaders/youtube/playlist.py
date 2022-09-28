@@ -24,6 +24,8 @@ class YoutubePlaylistDownloaderOptions(DownloaderValidator):
             # required
             download_strategy: "playlist"
             playlist_url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+            # optional
+            playlist_thumbnail_name: "poster.jpg"
     """
 
     _required_keys = {"playlist_url"}
@@ -42,10 +44,10 @@ class YoutubePlaylistDownloaderOptions(DownloaderValidator):
     def collection_validator(self) -> CollectionValidator:
         """Downloads the playlist url"""
         playlist_thumbnails: List[Dict] = []
-        if self.playlist_thumbnail_path:
+        if self.playlist_thumbnail_name:
             playlist_thumbnails.append(
                 {
-                    "name": self.playlist_thumbnail_path.format_string,
+                    "name": self.playlist_thumbnail_name.format_string,
                     "uid": ThumbnailTypes.LATEST_ENTRY,
                 }
             )
@@ -72,7 +74,7 @@ class YoutubePlaylistDownloaderOptions(DownloaderValidator):
         return self._playlist_url
 
     @property
-    def playlist_thumbnail_path(self) -> Optional[OverridesStringFormatterValidator]:
+    def playlist_thumbnail_name(self) -> Optional[OverridesStringFormatterValidator]:
         """
         Optional. Path to store the playlist's thumbnail
         """
