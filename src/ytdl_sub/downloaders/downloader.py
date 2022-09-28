@@ -415,10 +415,12 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             for child in entry.parent_children():
                 self._set_collection_variables(collection_url, child)
             for child in entry.entry_children():
-                child.add_variables(variables_to_add=collection_url.variables)
+                child.add_variables(
+                    variables_to_add=collection_url.variables.dict_with_format_strings
+                )
 
         elif isinstance(entry, Entry):
-            entry.add_variables(variables_to_add=collection_url.variables)
+            entry.add_variables(variables_to_add=collection_url.variables.dict_with_format_strings)
 
     def _download_url_metadata(
         self, collection_url: CollectionUrlValidator

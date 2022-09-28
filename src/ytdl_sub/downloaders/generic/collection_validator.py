@@ -48,8 +48,9 @@ class CollectionUrlValidator(StrictDictValidator):
 
         # TODO: url validate using yt-dlp IE
         self._url = self._validate_key(key="url", validator=StringValidator)
-        variables = self._validate_key_if_present(key="variables", validator=DictFormatterValidator)
-        self._variables = variables.dict_with_format_strings if variables else {}
+        self._variables = self._validate_key_if_present(
+            key="variables", validator=DictFormatterValidator, default={}
+        )
 
         self._source_thumbnails = self._validate_key_if_present(
             key="source_thumbnails", validator=CollectionThumbnailListValidator, default=[]
@@ -61,30 +62,55 @@ class CollectionUrlValidator(StrictDictValidator):
     @property
     def url(self) -> str:
         """
-        Returns
-        -------
-        URL to download from
+        URL to download from, listed in priority from lowest (top) to highest (bottom). If a
+        download exists in more than one URL, it will resolve to the bottom-most one and inherit
+        those variables.
         """
         return self._url.value
 
     @property
-    def variables(self) -> Dict[str, str]:
+    def variables(self) -> DictFormatterValidator:
         """
-        Variables to add to each entry
+        Source variables to add to each entry. The top-most collection must define all possible
+        variables. Collections below can redefine all of them or a subset of the top-most variables.
         """
         return self._variables
 
     @property
     def source_thumbnails(self) -> Optional[CollectionThumbnailListValidator]:
         """
-        TODO:docstring
+        Thumbnails to download from the source, if any exist. The hierarchy is defined as
+        source -> playlist -> entry.
+
+        Usage:
+
+        .. code-block:: yaml
+
+           source_thumbnails:
+             - name: "poster.jpg"
+               uid: "avatar_uncropped"
+
+        UID is the yt-dlp thumbnail ID or can specify ``latest_entry`` to use the last entry's
+        thumbnail that was downloaded.
         """
         return self._source_thumbnails
 
     @property
     def playlist_thumbnails(self) -> Optional[CollectionThumbnailListValidator]:
         """
-        TODO:docstring
+        Thumbnails to download from the source, if any exist. The hierarchy is defined as
+        source -> playlist -> entry.
+
+        Usage:
+
+        .. code-block:: yaml
+
+           playlist_thumbnails:
+             - name: "poster.jpg"
+               uid: "avatar_uncropped"
+
+        UID is the yt-dlp thumbnail ID or can specify ``latest_entry`` to use the last entry's
+        thumbnail that was downloaded.
         """
         return self._playlist_thumbnails
 
@@ -96,10 +122,10 @@ class CollectionUrlListValidator(ListValidator[CollectionUrlValidator]):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        added_variables: Dict[str, str] = self.list[0].variables
+        added_variables: Dict[str, str] = self.list[0].variables.dict_with_format_strings
 
         for idx, collection_url_validator in enumerate(self.list[1:]):
-            collection_variables = collection_url_validator.variables
+            collection_variables = collection_url_validator.variables.dict_with_format_strings
 
             # see if this collection contains new added vars (it should not)
             for var in collection_variables.keys():
@@ -112,7 +138,7 @@ class CollectionUrlListValidator(ListValidator[CollectionUrlValidator]):
 
             # see if this collection is missing any added vars (if so, inherit from the top)
             for var in added_variables.keys():
-                if var not in collection_variables:
+                if var not in collection_variables.keys():
                     collection_variables[var] = added_variables[var]
 
 
@@ -141,7 +167,7 @@ class CollectionValidator(StrictDictValidator, AddsVariablesMixin):
         -------
         List of variables added. The first collection url always contains all the variables.
         """
-        return list(self._urls.list[0].variables.keys())
+        return list(self._urls.list[0].variables.keys)
 
     def validate_with_variables(
         self, source_variables: List[str], override_variables: Dict[str, str]
@@ -162,7 +188,10 @@ class CollectionValidator(StrictDictValidator, AddsVariablesMixin):
 
         # Apply formatting to each new source variable, ensure it resolves
         for collection_url in self.collection_urls.list:
-            for source_var_name, source_var_formatter_str in collection_url.variables.items():
+            for (
+                source_var_name,
+                source_var_formatter_str,
+            ) in collection_url.variables.dict_with_format_strings.items():
                 _ = StringFormatterValidator(
                     name=f"{self._name}.{source_var_name}", value=source_var_formatter_str
                 ).apply_formatter(base_variables)

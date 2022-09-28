@@ -3,6 +3,7 @@ from typing import Dict
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
+from ytdl_sub.downloaders.generic.source import SourceDownloadOptions
 from ytdl_sub.validators.url_validator import YoutubeVideoUrlValidator
 
 
@@ -38,10 +39,9 @@ class YoutubeVideoDownloaderOptions(DownloaderValidator):
     @property
     def collection_validator(self) -> CollectionValidator:
         """Downloads the video url"""
-        return CollectionValidator(
-            name=self._name,
-            value={"urls": [{"url": self.video_url, "variables": {"playlist_size": "1"}}]},
-        )
+        return SourceDownloadOptions(
+            name=self._name, value={"url": self.video_url}
+        ).collection_validator
 
     @property
     def video_url(self) -> str:
