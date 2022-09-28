@@ -18,20 +18,24 @@ class CollectionDownloadOptions(CollectionValidator, DownloaderValidator):
             # required
             download_strategy: "collection"
             urls:
-            - url: "soundcloud.com/tracks"
-              variables:
-                season: "1"
-                album: "{title}"
-              playlist_thumbnails:
-                - name:
-                  uid: "square" / "largest" / "last entry" / actual name
-              source_thumbnail:
-                - path:
-                  type: "
-            - url: "soundcloud.com/albums"
-              variables:
-                season: "1"
-                album: "{playlist_title}"
+              - url: "youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
+                variables:
+                  season_index: "1"
+                  season_name: "Uploads"
+                playlist_thumbnails:
+                  - name: "poster.jpg"
+                    uid: "avatar_uncropped"
+                  - name: "fanart.jpg"
+                    uid: "banner_uncropped"
+                  - name: "season{season_index}-poster.jpg"
+                    uid: "latest_entry"
+              - url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+                variables:
+                  season_index: "2"
+                  season_name: "Playlist as Season"
+                playlist_thumbnails:
+                  - name: "season{season_index}-poster.jpg"
+                    uid: "latest_entry"
     """
 
     @property
