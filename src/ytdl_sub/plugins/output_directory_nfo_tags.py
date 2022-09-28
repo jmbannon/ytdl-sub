@@ -50,20 +50,12 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
     @property
     def tags(self) -> NfoTagsValidator:
         """
-        Tags within the nfo_root tag. In the usage above, it would look like
-
-        .. code-block:: xml
-
-           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-           <tvshow>
-             <title>Sweet youtube TV show</title>
-           </tvshow>
-
-        Also supports xml attributes and duplicate keys:
+        Tags within the nfo_root tag. Also supports xml attributes and duplicate keys:
 
         .. code-block:: yaml
 
            tags:
+             title: "Sweet youtube TV show"
              namedseason:
                - tag: "{season_name}"
                  attributes:
@@ -76,7 +68,7 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
 
         .. code-block:: xml
 
-           <title year="2022">Sweet youtube TV show</season>
+           <title>Sweet youtube TV show</title>
            <genre>Comedy</genre>
            <genre>Drama</genre>
            <namedseason number="1">Some Playlist</namedseason>
