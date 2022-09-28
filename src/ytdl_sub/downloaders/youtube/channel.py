@@ -1,17 +1,15 @@
 from typing import Dict
-from typing import Generator
 from typing import List
 from typing import Optional
 
+from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
-from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
-from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
-from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
 
 
-class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
+class YoutubeChannelDownloaderOptions(DownloaderValidator):
     """
     Downloads all videos from a youtube channel.
 
@@ -104,9 +102,8 @@ class YoutubeChannelDownloaderOptions(YoutubeDownloaderOptions):
         return self._channel_banner_path
 
 
-class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions, YoutubeVideo]):
+class YoutubeChannelDownloader(Downloader[YoutubeChannelDownloaderOptions]):
     downloader_options_type = YoutubeChannelDownloaderOptions
-    downloader_entry_type = YoutubeVideo
 
     # pylint: disable=line-too-long
     @classmethod
@@ -128,10 +125,3 @@ class YoutubeChannelDownloader(YoutubeDownloader[YoutubeChannelDownloaderOptions
         )
 
     # pylint: enable=line-too-long
-
-    def download(self) -> Generator[YoutubeVideo, None, None]:
-        """
-        Downloads all videos from a channel
-        """
-        for entry in super().download():
-            yield entry.to_type(YoutubeVideo)

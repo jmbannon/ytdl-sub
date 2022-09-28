@@ -89,9 +89,7 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(DownloaderValidator):
         return self._url
 
 
-class SoundcloudAlbumsAndSinglesDownloader(
-    Downloader[SoundcloudAlbumsAndSinglesDownloadOptions, Entry]
-):
+class SoundcloudAlbumsAndSinglesDownloader(Downloader[SoundcloudAlbumsAndSinglesDownloadOptions]):
     downloader_options_type = SoundcloudAlbumsAndSinglesDownloadOptions
     downloader_entry_type = Entry
 

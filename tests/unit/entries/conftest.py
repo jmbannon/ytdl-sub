@@ -65,6 +65,8 @@ def mock_entry_to_dict(
         "title_sanitized": "entry ｛title｝",
         "ext": ext,
         "description": "",
+        "channel": "abc123",
+        "channel_sanitized": "abc123",
         "extractor": extractor,
         "uploader": "abc123",
         "uploader_id": "abc123",

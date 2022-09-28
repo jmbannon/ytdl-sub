@@ -50,8 +50,6 @@ _______
   :member-order: bysource
   :exclude-members: get_date_range
 
-.. autofunction:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloader.added_override_variables()
-
 .. autofunction:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
@@ -63,8 +61,6 @@ ________
 .. autoclass:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloaderOptions()
   :members: playlist_url
   :member-order: bysource
-
-.. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.added_override_variables()
 
 .. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.ytdl_option_defaults()
 
@@ -300,26 +296,9 @@ Source Variables
 ----------------
 
 .. autoclass:: ytdl_sub.entries.variables.entry_variables.EntryVariables
-
-.. _youtube-variables:
-
-Youtube Variables
-^^^^^^^^^^^^^^^^^
-.. automodule:: ytdl_sub.entries.variables.youtube_variables
    :members:
    :inherited-members:
    :undoc-members:
-   :exclude-members: source_variables
-
-.. _soundcloud-variables:
-
-Soundcloud Variables
-^^^^^^^^^^^^^^^^^^^^
-.. automodule:: ytdl_sub.entries.variables.soundcloud_variables
-   :members:
-   :inherited-members:
-   :undoc-members:
-   :exclude-members: source_variables
 
 -------------------------------------------------------------------------------
 

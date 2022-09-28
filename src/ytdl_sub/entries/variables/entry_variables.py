@@ -4,7 +4,8 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import BaseEntryVariables
-from ytdl_sub.entries.variables.kwargs import EXT, CHANNEL
+from ytdl_sub.entries.variables.kwargs import CHANNEL
+from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX

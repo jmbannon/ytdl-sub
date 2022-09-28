@@ -1,7 +1,6 @@
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
-from ytdl_sub.entries.entry import Entry
 
 
 class CollectionDownloadOptions(CollectionValidator, DownloaderValidator):
@@ -41,6 +40,5 @@ class CollectionDownloadOptions(CollectionValidator, DownloaderValidator):
         return self
 
 
-class CollectionDownloader(Downloader[CollectionDownloadOptions, Entry]):
+class CollectionDownloader(Downloader[CollectionDownloadOptions]):
     downloader_options_type = CollectionDownloadOptions
-    downloader_entry_type = Entry
