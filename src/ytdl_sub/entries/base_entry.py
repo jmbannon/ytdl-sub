@@ -12,6 +12,7 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import TITLE
+from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.entries.variables.kwargs import UPLOADER
 from ytdl_sub.entries.variables.kwargs import UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import UPLOADER_URL
@@ -37,7 +38,7 @@ class BaseEntryVariables:
         str
             The entry's unique ID
         """
-        return self.kwargs("id")
+        return self.kwargs(UID)
 
     @property
     def extractor(self: "BaseEntry") -> str:

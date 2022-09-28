@@ -9,6 +9,7 @@ import mergedeep
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import TBaseEntry
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
@@ -31,6 +32,12 @@ from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER
 from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import SOURCE_WEBPAGE_URL
+from ytdl_sub.entries.variables.kwargs import TITLE
+from ytdl_sub.entries.variables.kwargs import UID
+from ytdl_sub.entries.variables.kwargs import UPLOADER
+from ytdl_sub.entries.variables.kwargs import UPLOADER_ID
+from ytdl_sub.entries.variables.kwargs import UPLOADER_URL
+from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
 
 
 class ParentType:
@@ -77,15 +84,18 @@ class EntryParent(BaseEntry):
         def _(source_key: str, playlist_key: str) -> str:
             return playlist_key if parent_type == ParentType.PLAYLIST else source_key
 
+        def __(key: str) -> Optional[str]:
+            return self.kwargs_get(key=key)
+
         return {
             _(SOURCE_ENTRY, PLAYLIST_ENTRY): self._kwargs,
-            _(SOURCE_TITLE, PLAYLIST_TITLE): self.title,
-            _(SOURCE_WEBPAGE_URL, PLAYLIST_WEBPAGE_URL): self.webpage_url,
-            _(SOURCE_UID, PLAYLIST_UID): self.uid,
-            _(SOURCE_DESCRIPTION, PLAYLIST_DESCRIPTION): self.description,
-            _(SOURCE_UPLOADER, PLAYLIST_UPLOADER): self.uploader,
-            _(SOURCE_UPLOADER_ID, PLAYLIST_UPLOADER_ID): self.uploader_id,
-            _(SOURCE_UPLOADER_URL, PLAYLIST_UPLOADER_URL): self.uploader_url,
+            _(SOURCE_TITLE, PLAYLIST_TITLE): __(TITLE),
+            _(SOURCE_WEBPAGE_URL, PLAYLIST_WEBPAGE_URL): __(WEBPAGE_URL),
+            _(SOURCE_UID, PLAYLIST_UID): __(UID),
+            _(SOURCE_DESCRIPTION, PLAYLIST_DESCRIPTION): __(DESCRIPTION),
+            _(SOURCE_UPLOADER, PLAYLIST_UPLOADER): __(UPLOADER),
+            _(SOURCE_UPLOADER_ID, PLAYLIST_UPLOADER_ID): __(UPLOADER_ID),
+            _(SOURCE_UPLOADER_URL, PLAYLIST_UPLOADER_URL): __(UPLOADER_URL),
         }
 
     def _get_entry_children_variable_list(self, variable_name: str) -> List[str | int]:

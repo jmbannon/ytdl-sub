@@ -40,6 +40,7 @@ PLAYLIST_UPLOADER = _("playlist_uploader")
 PLAYLIST_UPLOADER_ID = _("playlist_uploader_id")
 PLAYLIST_UPLOADER_URL = _("playlist_uploader_url")
 
+UID = _("id")
 EXT = _("ext")
 TITLE = _("title")
 DESCRIPTION = _("description")
