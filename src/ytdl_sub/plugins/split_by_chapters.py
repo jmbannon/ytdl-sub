@@ -8,6 +8,7 @@ from typing import Tuple
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.chapters import Chapters
@@ -113,7 +114,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         )
 
         # pylint: disable=protected-access
-        entry._kwargs["id"] = _split_video_uid(source_uid=entry.uid, idx=idx)
+        entry._kwargs[UID] = _split_video_uid(source_uid=entry.uid, idx=idx)
         if "chapters" in entry._kwargs:
             del entry._kwargs["chapters"]
         if "sponsorblock_chapters" in entry._kwargs:
