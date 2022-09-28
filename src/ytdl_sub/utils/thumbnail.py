@@ -7,6 +7,10 @@ from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.retry import retry
 
 
+class ThumbnailTypes:
+    LATEST_ENTRY = "latest_entry"
+
+
 def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) -> None:
     """
     Converts an entry's downloaded thumbnail into jpg format

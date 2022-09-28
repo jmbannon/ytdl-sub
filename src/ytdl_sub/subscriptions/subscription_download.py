@@ -71,10 +71,12 @@ class SubscriptionDownload(BaseSubscription, ABC):
             if not dry_run:
                 convert_download_thumbnail(entry=entry)
 
+            # Copy the thumbnails since they could be used later for other things
             self._enhanced_download_archive.save_file_to_output_directory(
                 file_name=entry.get_download_thumbnail_name(),
                 output_file_name=output_thumbnail_name,
                 entry=entry,
+                copy_file=True,
             )
 
         if self.output_options.info_json_name:

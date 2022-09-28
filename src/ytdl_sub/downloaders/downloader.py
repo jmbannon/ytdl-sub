@@ -39,6 +39,7 @@ from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.thumbnail import ThumbnailTypes
 from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
@@ -518,6 +519,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         thumbnails_downloaded: Set[str],
         thumbnail_list_info: CollectionThumbnailListValidator,
         entry: Entry,
+        is_last_entry: bool,
         parent: EntryParent,
     ) -> Set[str]:
         """
@@ -527,8 +529,20 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
             thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
 
-            # alread downloaded
+            # already downloaded
             if thumbnail_name in thumbnails_downloaded:
+                continue
+
+            if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
+                # always save in dry-run even if it doesn't exist...
+                if is_last_entry and (
+                    self.is_dry_run or os.path.isfile(entry.get_download_thumbnail_path())
+                ):
+                    self.save_file(
+                        file_name=entry.get_download_thumbnail_name(),
+                        output_file_name=thumbnail_name,
+                    )
+                    thumbnails_downloaded.add(thumbnail_name)
                 continue
 
             if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is None:
@@ -556,12 +570,15 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         """
         thumbnails_downloaded: Set[str] = set()
 
-        for entry in entries:
+        for idx, entry in enumerate(entries):
+            is_last_entry = idx == len(entries) - 1
+
             if entry.kwargs_contains(PLAYLIST_ENTRY):
                 thumbnails_downloaded = self._download_parent_thumbnails(
                     thumbnails_downloaded=thumbnails_downloaded,
                     thumbnail_list_info=collection_url.playlist_thumbnails,
                     entry=entry,
+                    is_last_entry=is_last_entry,
                     parent=EntryParent(
                         entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
                     ),
@@ -572,6 +589,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                     thumbnails_downloaded=thumbnails_downloaded,
                     thumbnail_list_info=collection_url.source_thumbnails,
                     entry=entry,
+                    is_last_entry=is_last_entry,
                     parent=EntryParent(
                         entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
                     ),
