@@ -19,6 +19,7 @@ from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.yaml import load_yaml
@@ -129,7 +130,7 @@ class Preset(StrictDictValidator):
 
     @property
     def _source_variables(self) -> List[str]:
-        return self.downloader.downloader_entry_type.source_variables()
+        return Entry.source_variables()
 
     def __validate_and_get_downloader(self, downloader_source: str) -> Type[Downloader]:
         return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(

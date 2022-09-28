@@ -86,17 +86,15 @@ class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
 
 
 DownloaderOptionsT = TypeVar("DownloaderOptionsT", bound=DownloaderValidator)
-DownloaderEntryT = TypeVar("DownloaderEntryT", bound=Entry)
 
 
-class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT], ABC):
+class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
     """
 
     downloader_options_type: Type[DownloaderValidator] = DownloaderValidator
-    downloader_entry_type: Type[Entry] = Entry
 
     supports_download_archive: bool = True
     supports_subtitles: bool = True
@@ -473,7 +471,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT, DownloaderEntryT]
 
     def download(
         self,
-    ) -> Iterable[DownloaderEntryT] | Iterable[Tuple[DownloaderEntryT, FileMetadata]]:
+    ) -> Iterable[Entry] | Iterable[Tuple[Entry, FileMetadata]]:
         """The function to perform the download of all media entries"""
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.collection.collection_urls.list):

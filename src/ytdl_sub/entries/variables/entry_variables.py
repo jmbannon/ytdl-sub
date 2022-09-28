@@ -4,6 +4,7 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import BaseEntryVariables
+from ytdl_sub.entries.variables.kwargs import CHANNEL
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_DESCRIPTION
@@ -303,6 +304,26 @@ class EntryVariables(BaseEntryVariables):
             The source uploader url if it exists, otherwise returns the source webpage_url.
         """
         return self.kwargs_get(SOURCE_UPLOADER_URL, self.source_webpage_url)
+
+    @property
+    def channel(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The channel name if it exists, otherwise returns the uploader.
+        """
+        return self.kwargs_get(CHANNEL, self.uploader)
+
+    @property
+    def channel_sanitized(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The channel name, sanitized.
+        """
+        return sanitize_filename(self.channel)
 
     @property
     def ext(self: Self) -> str:

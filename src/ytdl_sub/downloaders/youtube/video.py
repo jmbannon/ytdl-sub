@@ -1,14 +1,12 @@
 from typing import Dict
-from typing import List
 
+from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
-from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
-from ytdl_sub.downloaders.youtube.abc import YoutubeDownloaderOptions
-from ytdl_sub.entries.youtube import YoutubeVideo
 from ytdl_sub.validators.url_validator import YoutubeVideoUrlValidator
 
 
-class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
+class YoutubeVideoDownloaderOptions(DownloaderValidator):
     """
     Downloads a single youtube video. This download strategy is intended for CLI usage performing
     a one-time download of a video, not a subscription.
@@ -53,9 +51,8 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
         return self._video_url
 
 
-class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, YoutubeVideo]):
+class YoutubeVideoDownloader(Downloader[YoutubeVideoDownloaderOptions]):
     downloader_options_type = YoutubeVideoDownloaderOptions
-    downloader_entry_type = YoutubeVideo
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
@@ -71,8 +68,3 @@ class YoutubeVideoDownloader(YoutubeDownloader[YoutubeVideoDownloaderOptions, Yo
             super().ytdl_option_defaults(),
             **{"break_on_existing": True},
         )
-
-    def download(self) -> List[YoutubeVideo]:
-        """Downloads the single video"""
-        for entry in super().download():
-            yield entry.to_type(YoutubeVideo)

@@ -3,9 +3,9 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-from ytdl_sub.downloaders.youtube.abc import YoutubeDownloader
+from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloaderOptions
-from ytdl_sub.entries.youtube import YoutubeVideo
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
@@ -58,11 +58,8 @@ class YoutubeMergePlaylistDownloaderOptions(YoutubePlaylistDownloaderOptions):
         return self._add_chapters
 
 
-class YoutubeMergePlaylistDownloader(
-    YoutubeDownloader[YoutubeMergePlaylistDownloaderOptions, YoutubeVideo]
-):
+class YoutubeMergePlaylistDownloader(Downloader[YoutubeMergePlaylistDownloaderOptions]):
     downloader_options_type = YoutubeMergePlaylistDownloaderOptions
-    downloader_entry_type = YoutubeVideo
     supports_download_archive = False
     supports_subtitles = False
     supports_chapters = False
@@ -102,7 +99,7 @@ class YoutubeMergePlaylistDownloader(
             },
         )
 
-    def _get_chapters(self, merged_video: YoutubeVideo, add_chapters: bool) -> FileMetadata:
+    def _get_chapters(self, merged_video: Entry, add_chapters: bool) -> FileMetadata:
         titles: List[str] = []
         timestamps: List[Timestamp] = []
 
@@ -124,7 +121,7 @@ class YoutubeMergePlaylistDownloader(
 
         return chapters.to_file_metadata(title="Timestamps of playlist videos in the merged file")
 
-    def _to_merged_video(self, entry_dict: Dict) -> YoutubeVideo:
+    def _to_merged_video(self, entry_dict: Dict) -> Entry:
         """
         Adds a few entries not included in a playlist entry to make it look like a merged video
         entry_dict
@@ -143,9 +140,9 @@ class YoutubeMergePlaylistDownloader(
         )
         entry_dict["webpage_url"] = self.download_options.playlist_url
 
-        return YoutubeVideo(entry_dict=entry_dict, working_directory=self.working_directory)
+        return Entry(entry_dict=entry_dict, working_directory=self.working_directory)
 
-    def download(self) -> List[Tuple[YoutubeVideo, FileMetadata]]:
+    def download(self) -> List[Tuple[Entry, FileMetadata]]:
         """Download a single Youtube video, then split it into multiple videos"""
         entry_dict = self.extract_info(url=self.collection.collection_urls.list[0].url)
         merged_video = self._to_merged_video(entry_dict=entry_dict)

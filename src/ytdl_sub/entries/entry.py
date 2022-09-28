@@ -15,6 +15,18 @@ class Entry(EntryVariables, BaseEntry):
     Entry object to represent a single media object returned from yt-dlp.
     """
 
+    @property
+    def ext(self) -> str:
+        """
+        With ffmpeg installed, yt-dlp will sometimes merge the file into an mkv file.
+        This is not reflected in the entry. See if the mkv file exists and return "mkv" if so,
+        otherwise, return the original extension.
+        """
+        mkv_file_path = str(Path(self.working_directory()) / f"{self.uid}.mkv")
+        if os.path.isfile(mkv_file_path):
+            return "mkv"
+        return super().ext
+
     def get_download_file_name(self) -> str:
         """
         Returns
