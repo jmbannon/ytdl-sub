@@ -42,7 +42,7 @@ class YoutubeVideoDownloaderOptions(YoutubeDownloaderOptions):
         """Downloads the video url"""
         return CollectionValidator(
             name=self._name,
-            value={"urls": [{"url": self.video_url}]},
+            value={"urls": [{"url": self.video_url, "variables": {"playlist_size": "1"}}]},
         )
 
     @property
