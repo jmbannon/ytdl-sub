@@ -27,25 +27,3 @@ class YoutubeVideoVariables(EntryVariables):
             The channel name, sanitized.
         """
         return sanitize_filename(self.channel)
-
-    @property
-    def playlist_index(self) -> int:
-        """
-        Returns
-        -------
-        int
-            The index of the video in the playlist. For non-playlist download strategies, this will
-            always return 1.
-        """
-        return 1
-
-    @property
-    def playlist_size(self) -> int:
-        """
-        Returns
-        -------
-        int
-            The size of the playlist. For non-playlist download strategies, this will always return
-            1.
-        """
-        return 1

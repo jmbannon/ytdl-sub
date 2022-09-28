@@ -10,7 +10,7 @@ def playlist_index():
 
 
 @pytest.fixture
-def playlist_size():
+def playlist_count():
     return 1
 
 
@@ -20,12 +20,12 @@ def channel():
 
 
 @pytest.fixture
-def mock_youtube_video_to_dict(mock_entry_to_dict, playlist_index, playlist_size, channel):
+def mock_youtube_video_to_dict(mock_entry_to_dict, playlist_index, playlist_count, channel):
     return dict(
         mock_entry_to_dict,
         **{
             "playlist_index": playlist_index,
-            "playlist_size": playlist_size,
+            "playlist_count": playlist_count,
             "channel": channel,
             "channel_sanitized": channel,
         }
@@ -33,12 +33,12 @@ def mock_youtube_video_to_dict(mock_entry_to_dict, playlist_index, playlist_size
 
 
 @pytest.fixture
-def mock_youtube_video_kwargs(mock_entry_kwargs, playlist_index, playlist_size, channel):
+def mock_youtube_video_kwargs(mock_entry_kwargs, playlist_index, playlist_count, channel):
     return dict(
         mock_entry_kwargs,
         **{
             "playlist_index": playlist_index,
-            "playlist_count": playlist_size,
+            "playlist_size": playlist_count,
             "channel": channel,
         }
     )

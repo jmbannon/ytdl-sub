@@ -21,23 +21,3 @@ class YoutubeVideo(YoutubeVideoVariables, Entry):
         if os.path.isfile(mkv_file_path):
             return "mkv"
         return super().ext
-
-
-class YoutubePlaylistVideo(YoutubeVideo):
-    @property
-    def playlist_index(self) -> int:
-        """
-        Returns
-        -------
-        The playlist index
-        """
-        return self.kwargs("playlist_index")
-
-    @property
-    def playlist_size(self) -> int:
-        """
-        Returns
-        -------
-        The size of the playlist
-        """
-        return self.kwargs("playlist_count")

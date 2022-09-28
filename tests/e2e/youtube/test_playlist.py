@@ -28,6 +28,12 @@ def playlist_preset_dict(output_directory):
                 "playlist_description": "{playlist_description}",
             },
         },
+        "nfo_tags": {
+            "tags": {
+                "playlist_index": "{playlist_index}",
+                "playlist_count": "{playlist_count}",
+            }
+        },
         "subtitles": {
             "subtitles_name": "{music_video_name}.{lang}.{subtitles_ext}",
             "allow_auto_generated_subtitles": True,

@@ -22,6 +22,12 @@ def channel_preset_dict(output_directory):
             "subtitles_name": "{episode_name}.{lang}.{subtitles_ext}",
             "allow_auto_generated_subtitles": True,
         },
+        "nfo_tags": {
+            "tags": {
+                "playlist_index": "{playlist_index}",
+                "playlist_count": "{playlist_count}",
+            }
+        },
         "output_directory_nfo_tags": {
             "tags": {
                 "source_uploader": "{playlist_uploader}",

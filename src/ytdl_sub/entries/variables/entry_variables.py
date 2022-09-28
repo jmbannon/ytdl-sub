@@ -163,9 +163,8 @@ class EntryVariables(BaseEntryVariables):
         int
             Playlist index if it exists, otherwise returns ``1``.
 
-            Note that for channels/playlists, an index of 1 implies it's the most recent
-            uploaded entry. It is recommended to not use this unless you know the channel/playlist
-            will never add new content, i.e. a music album.
+            Note that for channels/playlists, any change (i.e. adding or removing a video) will make
+            this value change. Use with caution.
         """
         return self.kwargs_get(PLAYLIST_INDEX, 1)
 
@@ -180,12 +179,25 @@ class EntryVariables(BaseEntryVariables):
         return _pad(self.playlist_index, width=2)
 
     @property
+    def playlist_index_padded6(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            playlist_index padded six digits.
+        """
+        return _pad(self.playlist_index, width=6)
+
+    @property
     def playlist_count(self: Self) -> int:
         """
         Returns
         -------
         int
             Playlist count if it exists, otherwise returns ``1``.
+
+            Note that for channels/playlists, any change (i.e. adding or removing a video) will make
+            this value change. Use with caution.
         """
         return self.kwargs_get(PLAYLIST_COUNT, 1)
 

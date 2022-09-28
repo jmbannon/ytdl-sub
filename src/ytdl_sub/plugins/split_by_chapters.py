@@ -204,7 +204,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
                         / f"{new_uid}.{entry.thumbnail_ext}",
                     )
 
-            # Format the split video as a YoutubePlaylistVideo
+            # Format the split video
             split_videos_and_metadata.append(
                 self._create_split_entry(
                     source_entry=entry,
