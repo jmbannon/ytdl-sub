@@ -102,10 +102,10 @@ class CollectionUrlListValidator(ListValidator[CollectionUrlValidator]):
         added_variables: Dict[str, str] = self.list[0].variables.dict_with_format_strings
 
         for idx, collection_url_validator in enumerate(self.list[1:]):
-            collection_variables = collection_url_validator.variables
+            collection_variables = collection_url_validator.variables.dict_with_format_strings
 
             # see if this collection contains new added vars (it should not)
-            for var in collection_variables.keys:
+            for var in collection_variables.keys():
                 if var not in added_variables:
                     raise self._validation_exception(
                         f"Collection url {idx} contains the variable '{var}' that the first "
@@ -115,7 +115,7 @@ class CollectionUrlListValidator(ListValidator[CollectionUrlValidator]):
 
             # see if this collection is missing any added vars (if so, inherit from the top)
             for var in added_variables.keys():
-                if var not in collection_variables:
+                if var not in collection_variables.keys():
                     collection_variables[var] = added_variables[var]
 
 
