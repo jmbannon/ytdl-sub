@@ -8,7 +8,6 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import ListValidator
-from ytdl_sub.validators.validators import StringValidator
 
 
 class CollectionThumbnailValidator(StrictDictValidator):
@@ -47,7 +46,7 @@ class CollectionUrlValidator(StrictDictValidator):
         super().__init__(name, value)
 
         # TODO: url validate using yt-dlp IE
-        self._url = self._validate_key(key="url", validator=StringValidator)
+        self._url = self._validate_key(key="url", validator=OverridesStringFormatterValidator)
         self._variables = self._validate_key_if_present(
             key="variables", validator=DictFormatterValidator, default={}
         )
