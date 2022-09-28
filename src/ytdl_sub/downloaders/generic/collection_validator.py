@@ -79,15 +79,38 @@ class CollectionUrlValidator(StrictDictValidator):
     @property
     def source_thumbnails(self) -> Optional[CollectionThumbnailListValidator]:
         """
-        Thumbnails to download from the source, if any exist. The hierarchy is
+        Thumbnails to download from the source, if any exist. The hierarchy is defined as
         source -> playlist -> entry.
+
+        Usage:
+
+        .. code-block:: yaml
+
+           source_thumbnails:
+             - name: "poster.jpg"
+               uid: "avatar_uncropped"
+
+        UID is the yt-dlp thumbnail ID or can specify ``latest_entry`` to use the last entry's
+        thumbnail that was downloaded.
         """
         return self._source_thumbnails
 
     @property
     def playlist_thumbnails(self) -> Optional[CollectionThumbnailListValidator]:
         """
-        TODO:docstring
+        Thumbnails to download from the source, if any exist. The hierarchy is defined as
+        source -> playlist -> entry.
+
+        Usage:
+
+        .. code-block:: yaml
+
+           playlist_thumbnails:
+             - name: "poster.jpg"
+               uid: "avatar_uncropped"
+
+        UID is the yt-dlp thumbnail ID or can specify ``latest_entry`` to use the last entry's
+        thumbnail that was downloaded.
         """
         return self._playlist_thumbnails
 
