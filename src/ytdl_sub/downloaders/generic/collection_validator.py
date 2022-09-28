@@ -8,7 +8,6 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import ListValidator
-from ytdl_sub.validators.validators import StringValidator
 
 
 class CollectionThumbnailValidator(StrictDictValidator):
@@ -47,7 +46,7 @@ class CollectionUrlValidator(StrictDictValidator):
         super().__init__(name, value)
 
         # TODO: url validate using yt-dlp IE
-        self._url = self._validate_key(key="url", validator=StringValidator)
+        self._url = self._validate_key(key="url", validator=OverridesStringFormatterValidator)
         self._variables = self._validate_key_if_present(
             key="variables", validator=DictFormatterValidator, default={}
         )
@@ -60,13 +59,13 @@ class CollectionUrlValidator(StrictDictValidator):
         )
 
     @property
-    def url(self) -> str:
+    def url(self) -> OverridesStringFormatterValidator:
         """
         URL to download from, listed in priority from lowest (top) to highest (bottom). If a
         download exists in more than one URL, it will resolve to the bottom-most one and inherit
         those variables.
         """
-        return self._url.value
+        return self._url
 
     @property
     def variables(self) -> DictFormatterValidator:

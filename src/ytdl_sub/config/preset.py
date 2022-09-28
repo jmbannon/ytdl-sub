@@ -315,8 +315,8 @@ class Preset(StrictDictValidator):
         # Append this preset (the subscription) last
         presets_to_merge.append(copy.deepcopy(self._value))
 
-        # Merge all of the presets
-        self._value = mergedeep.merge({}, *presets_to_merge, strategy=mergedeep.Strategy.REPLACE)
+        # Merge all presets
+        self._value = mergedeep.merge({}, *presets_to_merge, strategy=mergedeep.Strategy.ADDITIVE)
 
     def __init__(self, config: ConfigFile, name: str, value: Any):
         super().__init__(name=name, value=value)
