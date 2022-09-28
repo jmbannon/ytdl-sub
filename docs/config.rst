@@ -59,7 +59,7 @@ _______
 playlist
 ________
 .. autoclass:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloaderOptions()
-  :members: playlist_url
+  :members: playlist_url, playlist_thumbnail_name
   :member-order: bysource
 
 .. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.ytdl_option_defaults()
