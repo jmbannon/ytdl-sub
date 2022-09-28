@@ -317,7 +317,7 @@ class Preset(StrictDictValidator):
 
         # Merge all of the presets
         self._value = mergedeep.merge(
-            {}, *presets_to_merge, strategy=mergedeep.Strategy.TYPESAFE_ADDITIVE
+            {}, *presets_to_merge, strategy=mergedeep.Strategy.ADDITIVE
         )
 
     def __init__(self, config: ConfigFile, name: str, value: Any):
