@@ -37,6 +37,7 @@ JMC - Jesse's Minecraft Server [Trailer - Mar.21].nfo
       playlist_index: 1
       title: Jesse's Minecraft Server [Trailer - Mar.21]
       year: 2011
+poster.jpg
 tvshow.nfo
   NFO tags:
     test:

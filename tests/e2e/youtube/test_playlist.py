@@ -12,7 +12,10 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def playlist_preset_dict(output_directory):
     return {
         "preset": "yt_music_video_playlist",
-        "youtube": {"playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
+        "youtube": {
+            "playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
+            "playlist_thumbnail_name": "poster.jpg",
+        },
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast

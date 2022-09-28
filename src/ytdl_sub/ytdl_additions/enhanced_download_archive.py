@@ -541,6 +541,7 @@ class EnhancedDownloadArchive:
         file_metadata: Optional[FileMetadata] = None,
         output_file_name: Optional[str] = None,
         entry: Optional[Entry] = None,
+        copy_file: bool = False,
     ):
         """
         Saves a file from the working directory to the output directory and record it in the
@@ -557,6 +558,8 @@ class EnhancedDownloadArchive:
             directory path). If None, use the same working_directory file_name
         entry
             Optional. Entry that this file belongs to
+        copy_file
+            Optional. If True, copy the file. Move otherwise
         """
         if output_file_name is None:
             output_file_name = file_name
@@ -565,7 +568,10 @@ class EnhancedDownloadArchive:
             self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
 
         self._file_handler.move_file_to_output_directory(
-            file_name=file_name, file_metadata=file_metadata, output_file_name=output_file_name
+            file_name=file_name,
+            file_metadata=file_metadata,
+            output_file_name=output_file_name,
+            copy_file=copy_file,
         )
 
     def get_file_handler_transaction_log(self) -> FileHandlerTransactionLog:
@@ -611,6 +617,7 @@ class DownloadArchiver:
         file_metadata: Optional[FileMetadata] = None,
         output_file_name: Optional[str] = None,
         entry: Optional[Entry] = None,
+        copy_file: bool = False,
     ) -> None:
         """
         Saves a file in the working directory to the output directory.
@@ -626,10 +633,13 @@ class DownloadArchiver:
             directory path). If None, use the same working_directory file_name
         entry
             Optional. Entry that the file belongs to
+        copy_file
+            Optional. If True, copy the file. Move otherwise
         """
         self._enhanced_download_archive.save_file_to_output_directory(
             file_name=file_name,
             file_metadata=file_metadata,
             output_file_name=output_file_name,
             entry=entry,
+            copy_file=copy_file,
         )

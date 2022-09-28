@@ -329,7 +329,11 @@ class FileHandler:
             os.remove(file_path)
 
     def move_file_to_output_directory(
-        self, file_name: str, output_file_name: str, file_metadata: Optional[FileMetadata] = None
+        self,
+        file_name: str,
+        output_file_name: str,
+        file_metadata: Optional[FileMetadata] = None,
+        copy_file: bool = False,
     ):
         """
         Copies a file from the working directory to the output directory.
@@ -344,6 +348,8 @@ class FileHandler:
             Desired output file name in the output_directory
         file_metadata
             Optional. Metadata to record to the transaction log for this file
+        copy_file
+            Optional. If True, copy the file. Move otherwise
         """
         source_file_path = Path(self.working_directory) / file_name
         output_file_path = Path(self.output_directory) / output_file_name
@@ -365,7 +371,10 @@ class FileHandler:
 
         if not self.dry_run:
             os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-            self.move(src_file_path=source_file_path, dst_file_path=output_file_path)
+            if copy_file:
+                self.copy(src_file_path=source_file_path, dst_file_path=output_file_path)
+            else:
+                self.move(src_file_path=source_file_path, dst_file_path=output_file_path)
 
     def delete_file_from_output_directory(self, file_name: str):
         """
