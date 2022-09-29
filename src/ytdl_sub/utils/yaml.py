@@ -1,4 +1,5 @@
 import os.path
+from pathlib import Path
 from typing import Dict
 
 import yaml
@@ -8,7 +9,7 @@ from ytdl_sub.utils.exceptions import FileNotFoundException
 from ytdl_sub.utils.exceptions import InvalidYamlException
 
 
-def load_yaml(file_path: str) -> Dict:
+def load_yaml(file_path: str | Path) -> Dict:
     """
     Parameters
     ----------

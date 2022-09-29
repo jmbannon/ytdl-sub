@@ -1,5 +1,7 @@
 presets:
 
+####################################################################################################
+
   tv-show-url:
     generic:
       download_strategy: "source"
@@ -22,17 +24,100 @@ presets:
 
 ####################################################################################################
 
-  tv-show-collection-youtube-channel-season:
+  tv-show-collection:
     generic:
       download_strategy: "collection"
-      urls:
-        - url: "{youtube_channel_url}"
-          playlist_thumbnails:
-            - name: "{season_number_padded}{season_poster_prefix}.jpg"
-              uid: "latest_entry"
-            - name: "{poster_file_name}"
-              uid: "avatar_uncropped"
-            - name: "{fanart_file_name}"
-              uid: "banner_uncropped"
 
-      overrides:
+    overrides:
+      season_number: "{collection_season_number}"
+      season_number_padded: "{collection_season_number_padded}"
+
+  tv-show-collection-season-1:
+    generic:
+      urls:
+        - url: "{collection_season_1_url}"
+          variables:
+            collection_season_number: "1"
+            collection_season_number_padded: "01"
+          playlist_thumbnails:
+            - name: "{season_poster_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_1_name}"
+            attributes:
+              number: "1"
+
+  tv-show-collection-season-2:
+    generic:
+      urls:
+        - url: "{collection_season_2_url}"
+          variables:
+            collection_season_number: "2"
+            collection_season_number_padded: "02"
+          playlist_thumbnails:
+            - name: "{season_poster_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_2_name}"
+            attributes:
+              number: "2"
+
+  tv-show-collection-season-3:
+    generic:
+      urls:
+        - url: "{collection_season_3_url}"
+          variables:
+            collection_season_number: "3"
+            collection_season_number_padded: "03"
+          playlist_thumbnails:
+            - name: "{season_poster_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_3_name}"
+            attributes:
+              number: "3"
+
+  tv-show-collection-season-4:
+    generic:
+      urls:
+        - url: "{collection_season_4_url}"
+          variables:
+            collection_season_number: "4"
+            collection_season_number_padded: "04"
+          playlist_thumbnails:
+            - name: "{season_poster_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_4_name}"
+            attributes:
+              number: "4"
+
+  tv-show-collection-season-5:
+    generic:
+      urls:
+        - url: "{collection_season_5_url}"
+          variables:
+            collection_season_number: "5"
+            collection_season_number_padded: "05"
+          playlist_thumbnails:
+            - name: "{season_poster_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_5_name}"
+            attributes:
+              number: "5"

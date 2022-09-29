@@ -3,6 +3,9 @@ from typing import Any
 from typing import Dict
 from typing import Optional
 
+import mergedeep
+
+from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
 from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
@@ -77,8 +80,20 @@ class ConfigFile(StrictDictValidator):
         super().__init__(name, value)
         self.config_options = self._validate_key("configuration", ConfigOptions)
 
+        prebuilt_presets = PREBUILT_PRESETS
+
         # Make sure presets is a dictionary. Will be validated in `PresetValidator`
         self.presets = self._validate_key("presets", LiteralDictValidator)
+
+        # Ensure custom presets do not collide with prebuilt presets
+        for preset_name in self.presets.keys:
+            if preset_name in prebuilt_presets:
+                raise self._validation_exception(
+                    f"preset name '{preset_name}' conflicts with a prebuilt preset"
+                )
+
+        # Merge prebuilt presets into the config so custom presets can use them
+        mergedeep.merge(self.presets._value, prebuilt_presets)
 
     def initialize(self):
         """
