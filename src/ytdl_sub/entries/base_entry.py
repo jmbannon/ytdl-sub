@@ -41,6 +41,16 @@ class BaseEntryVariables:
         return self.kwargs(UID)
 
     @property
+    def uid_sanitized(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The sanitized uid of the entry, which is safe to use for Unix and Windows file names.
+        """
+        return sanitize_filename(self.uid)
+
+    @property
     def extractor(self: "BaseEntry") -> str:
         """
         Returns
