@@ -62,6 +62,9 @@ def mock_entry_to_dict(
     return {
         "uid": uid,
         "uid_sanitized": uid,
+        "epoch": 1596878400,
+        "epoch_date": "20200808",
+        "epoch_hour": "09",
         "title": "entry ｛title｝",
         "title_sanitized": "entry ｛title｝",
         "ext": ext,
@@ -126,6 +129,7 @@ def mock_entry_kwargs(
 ):
     return {
         "id": uid,
+        "epoch": 1596878400,
         "extractor": extractor,
         "title": title,
         "ext": ext,

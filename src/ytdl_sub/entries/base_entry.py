@@ -10,13 +10,15 @@ from typing import final
 
 from yt_dlp.utils import sanitize_filename
 
-from ytdl_sub.entries.variables.kwargs import DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION, EPOCH, EXTRACTOR
 from ytdl_sub.entries.variables.kwargs import TITLE
 from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.entries.variables.kwargs import UPLOADER
 from ytdl_sub.entries.variables.kwargs import UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
+
+from datetime import datetime
 
 # pylint: disable=no-member
 
@@ -58,7 +60,37 @@ class BaseEntryVariables:
         str
             The ytdl extractor name
         """
-        return self.kwargs("extractor")
+        return self.kwargs(EXTRACTOR)
+
+    @property
+    def epoch(self: "BaseEntry") -> int:
+        """
+        Returns
+        -------
+        int
+            The unix epoch of when the metadata was scraped by yt-dlp.
+        """
+        return self.kwargs(EPOCH)
+
+    @property
+    def epoch_date(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The epoch's date, in YYYYMMDD format.
+        """
+        return datetime.utcfromtimestamp(self.epoch).strftime('%Y%m%d')
+
+    @property
+    def epoch_hour(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The epoch's hour, padded
+        """
+        return datetime.utcfromtimestamp(self.epoch).strftime('%H')
 
     @property
     def title(self: "BaseEntry") -> str:
