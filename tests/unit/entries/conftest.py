@@ -61,6 +61,7 @@ def mock_entry_to_dict(
 ):
     return {
         "uid": uid,
+        "uid_sanitized": uid,
         "title": "entry ｛title｝",
         "title_sanitized": "entry ｛title｝",
         "ext": ext,
