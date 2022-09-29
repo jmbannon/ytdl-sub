@@ -7,7 +7,7 @@ presets:
       download_strategy: "source"
       url: "{url}"
       playlist_thumbnails:
-        - name: "{poster_file_name}"
+        - name: "{tv_show_poster_file_name}"
           uid: "latest_entry"
 
 ####################################################################################################
@@ -17,9 +17,9 @@ presets:
       download_strategy: "source"
       url: "{url}"
       playlist_thumbnails:
-        - name: "{poster_file_name}"
+        - name: "{tv_show_poster_file_name}"
           uid: "avatar_uncropped"
-        - name: "{fanart_file_name}"
+        - name: "{tv_show_fanart_file_name}"
           uid: "banner_uncropped"
 
 ####################################################################################################
@@ -40,7 +40,7 @@ presets:
             collection_season_number: "1"
             collection_season_number_padded: "01"
           playlist_thumbnails:
-            - name: "{season_poster_name}"
+            - name: "{season_poster_file_name}"
               uid: "latest_entry"
 
     output_directory_nfo_tags:
@@ -58,7 +58,7 @@ presets:
             collection_season_number: "2"
             collection_season_number_padded: "02"
           playlist_thumbnails:
-            - name: "{season_poster_name}"
+            - name: "{season_poster_file_name}"
               uid: "latest_entry"
 
     output_directory_nfo_tags:
@@ -76,7 +76,7 @@ presets:
             collection_season_number: "3"
             collection_season_number_padded: "03"
           playlist_thumbnails:
-            - name: "{season_poster_name}"
+            - name: "{season_poster_file_name}"
               uid: "latest_entry"
 
     output_directory_nfo_tags:
@@ -94,7 +94,7 @@ presets:
             collection_season_number: "4"
             collection_season_number_padded: "04"
           playlist_thumbnails:
-            - name: "{season_poster_name}"
+            - name: "{season_poster_file_name}"
               uid: "latest_entry"
 
     output_directory_nfo_tags:
@@ -112,7 +112,7 @@ presets:
             collection_season_number: "5"
             collection_season_number_padded: "05"
           playlist_thumbnails:
-            - name: "{season_poster_name}"
+            - name: "{season_poster_file_name}"
               uid: "latest_entry"
 
     output_directory_nfo_tags:

@@ -38,6 +38,7 @@ presets:
   episode-by-month-day:
     preset:
       - "season-by-year"
+      - "episode-base"
     overrides:
       episode_number: "{upload_month}{upload_day_padded}"
       episode_number_padded: "{upload_month_padded}{upload_day_padded}"
@@ -45,16 +46,21 @@ presets:
   episode-by-month-day-reversed:
     preset:
       - "season-by-year"
+      - "episode-base"
     overrides:
       episode_number: "{upload_day_of_year_reversed}"
       episode_number_padded: "{upload_day_of_year_reversed_padded}"
 
   episode-by-year-month-day:
+    preset:
+      - "episode-base"
     overrides:
       episode_number: "{upload_year_truncated}{upload_month_padded}{upload_day_padded}"
       episode_number_padded: "{episode_number}"
 
   episode-by-year-month-day-reversed:
+    preset:
+      - "episode-base"
     overrides:
       episode_number: "{upload_year_truncated_reversed}{upload_month_reversed_padded}{upload_day_reversed_padded}"
       episode_number_padded: "{episode_number}"

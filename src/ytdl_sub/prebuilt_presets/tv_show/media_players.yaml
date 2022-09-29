@@ -2,11 +2,15 @@ presets:
 
   plex-tv-show:
     overrides:
-      season_poster_name: "Season{season_number_padded}.jpg"
+      tv_show_poster_file_name: "show.jpg"
+      tv_show_fanart_file_name: "fanart.jpg"
+      season_poster_file_name: "Season{season_number_padded}.jpg"
 
   jellyfin-tv-show:
     overrides:
-      season_poster_name: "season{season_number_padded}-poster.jpg"
+      tv_show_poster_file_name: "poster.jpg"
+      tv_show_fanart_file_name: "fanart.jpg"
+      season_poster_file_name: "season{season_number_padded}-poster.jpg"
 
     nfo_tags:
       nfo_name: "{episode_file_path}.nfo"

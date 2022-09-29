@@ -1,4 +1,5 @@
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 from typing import List
 
 Preset = Dict[str, Any]
@@ -8,13 +9,7 @@ class PrebuiltPresets:
     BASE_PRESET: str
 
     def _preset(self, name: str, presets: List[str]) -> Preset:
-        return {
-            "presets": {
-                name: {
-                    "preset": [self.BASE_PRESET] + presets
-                }
-            }
-        }
+        return {"presets": {name: {"preset": [self.BASE_PRESET] + presets}}}
 
     def _tv_show_url(self, name: str) -> Preset:
         """
