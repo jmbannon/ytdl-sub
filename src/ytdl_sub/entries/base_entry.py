@@ -1,4 +1,5 @@
 from abc import ABC
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -11,6 +12,8 @@ from typing import final
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import EPOCH
+from ytdl_sub.entries.variables.kwargs import EXTRACTOR
 from ytdl_sub.entries.variables.kwargs import TITLE
 from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.entries.variables.kwargs import UPLOADER
@@ -58,7 +61,37 @@ class BaseEntryVariables:
         str
             The ytdl extractor name
         """
-        return self.kwargs("extractor")
+        return self.kwargs(EXTRACTOR)
+
+    @property
+    def epoch(self: "BaseEntry") -> int:
+        """
+        Returns
+        -------
+        int
+            The unix epoch of when the metadata was scraped by yt-dlp.
+        """
+        return self.kwargs(EPOCH)
+
+    @property
+    def epoch_date(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The epoch's date, in YYYYMMDD format.
+        """
+        return datetime.utcfromtimestamp(self.epoch).strftime("%Y%m%d")
+
+    @property
+    def epoch_hour(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The epoch's hour, padded
+        """
+        return datetime.utcfromtimestamp(self.epoch).strftime("%H")
 
     @property
     def title(self: "BaseEntry") -> str:

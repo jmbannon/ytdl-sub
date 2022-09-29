@@ -62,6 +62,9 @@ def mock_entry_to_dict(
     return {
         "uid": uid,
         "uid_sanitized": uid,
+        "epoch": 1596878400,
+        "epoch_date": "20200808",
+        "epoch_hour": "09",
         "title": "entry ｛title｝",
         "title_sanitized": "entry ｛title｝",
         "ext": ext,
@@ -95,6 +98,9 @@ def mock_entry_to_dict(
         "playlist_index": 1,
         "playlist_index_padded": "01",
         "playlist_index_padded6": "000001",
+        "playlist_index_reversed": 1,
+        "playlist_index_reversed_padded": "01",
+        "playlist_index_reversed_padded6": "000001",
         "playlist_count": 1,
         "playlist_max_upload_year": 2021,
         "playlist_max_upload_year_truncated": 21,
@@ -126,6 +132,7 @@ def mock_entry_kwargs(
 ):
     return {
         "id": uid,
+        "epoch": 1596878400,
         "extractor": extractor,
         "title": title,
         "ext": ext,
