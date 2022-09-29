@@ -1,4 +1,5 @@
 from abc import ABC
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -10,15 +11,15 @@ from typing import final
 
 from yt_dlp.utils import sanitize_filename
 
-from ytdl_sub.entries.variables.kwargs import DESCRIPTION, EPOCH, EXTRACTOR
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import EPOCH
+from ytdl_sub.entries.variables.kwargs import EXTRACTOR
 from ytdl_sub.entries.variables.kwargs import TITLE
 from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.entries.variables.kwargs import UPLOADER
 from ytdl_sub.entries.variables.kwargs import UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
-
-from datetime import datetime
 
 # pylint: disable=no-member
 
@@ -80,7 +81,7 @@ class BaseEntryVariables:
         str
             The epoch's date, in YYYYMMDD format.
         """
-        return datetime.utcfromtimestamp(self.epoch).strftime('%Y%m%d')
+        return datetime.utcfromtimestamp(self.epoch).strftime("%Y%m%d")
 
     @property
     def epoch_hour(self: "BaseEntry") -> str:
@@ -90,7 +91,7 @@ class BaseEntryVariables:
         str
             The epoch's hour, padded
         """
-        return datetime.utcfromtimestamp(self.epoch).strftime('%H')
+        return datetime.utcfromtimestamp(self.epoch).strftime("%H")
 
     @property
     def title(self: "BaseEntry") -> str:
