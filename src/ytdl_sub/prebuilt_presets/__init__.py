@@ -5,6 +5,7 @@ from typing import Dict
 
 import mergedeep
 
+from ytdl_sub.prebuilt_presets.tv_show.out import PrebuiltJellyfinTVShowPresets
 from ytdl_sub.prebuilt_presets.tv_show.out import PrebuiltKodiTVShowPresets
 from ytdl_sub.utils.yaml import load_yaml
 
@@ -18,7 +19,11 @@ def _merge_presets() -> Dict[str, Any]:
             mergedeep.merge(merged_configs, load_yaml(file))
 
     # Get all presets from published preset configs
-    mergedeep.merge(merged_configs, *PrebuiltKodiTVShowPresets.get_presets())
+    mergedeep.merge(
+        merged_configs,
+        *PrebuiltKodiTVShowPresets.get_presets(),
+        *PrebuiltJellyfinTVShowPresets.get_presets()
+    )
 
     return merged_configs["presets"]
 

@@ -22,6 +22,7 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
@@ -328,8 +329,8 @@ class Preset(StrictDictValidator):
         )
 
         # Merge all presets
-        self._value = mergedeep.merge(
-            {}, *reversed(presets_to_merge), strategy=mergedeep.Strategy.ADDITIVE
+        self._value = dict(
+            mergedeep.merge({}, *reversed(presets_to_merge), strategy=mergedeep.Strategy.ADDITIVE)
         )
 
     def __init__(self, config: ConfigFile, name: str, value: Any):
@@ -411,3 +412,7 @@ class Preset(StrictDictValidator):
             )
 
         return subscriptions
+
+    @property
+    def yaml(self) -> str:
+        return dump_yaml({"presets": {self._name: self._value}})

@@ -1,4 +1,5 @@
 import os.path
+from io import StringIO
 from pathlib import Path
 from typing import Dict
 
@@ -37,3 +38,9 @@ def load_yaml(file_path: str | Path) -> Dict:
         raise InvalidYamlException(
             f"'{file_path}' has invalid YAML, copy-paste it into a YAML checker to find the issue."
         ) from yaml_exception
+
+
+def dump_yaml(to_dump: Dict) -> str:
+    string_io = StringIO()
+    yaml.safe_dump(to_dump, string_io, indent=2, allow_unicode=True, sort_keys=True)
+    return string_io.getvalue()
