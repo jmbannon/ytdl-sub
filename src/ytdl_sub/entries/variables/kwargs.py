@@ -41,6 +41,8 @@ PLAYLIST_UPLOADER_ID = _("playlist_uploader_id")
 PLAYLIST_UPLOADER_URL = _("playlist_uploader_url")
 
 UID = _("id")
+EXTRACTOR = _("extractor")
+EPOCH = _("epoch")
 CHANNEL = _("channel")
 EXT = _("ext")
 TITLE = _("title")

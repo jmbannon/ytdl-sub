@@ -170,6 +170,16 @@ class EntryVariables(BaseEntryVariables):
         return self.kwargs_get(PLAYLIST_INDEX, 1)
 
     @property
+    def playlist_index_reversed(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            Playlist index reversed via ``playlist_count - playlist_index + 1``
+        """
+        return self.playlist_count - self.playlist_index + 1
+
+    @property
     def playlist_index_padded(self: Self) -> str:
         """
         Returns
@@ -180,6 +190,16 @@ class EntryVariables(BaseEntryVariables):
         return _pad(self.playlist_index, width=2)
 
     @property
+    def playlist_index_reversed_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            playlist_index_reversed padded two digits
+        """
+        return _pad(self.playlist_index_reversed, width=2)
+
+    @property
     def playlist_index_padded6(self: Self) -> str:
         """
         Returns
@@ -188,6 +208,16 @@ class EntryVariables(BaseEntryVariables):
             playlist_index padded six digits.
         """
         return _pad(self.playlist_index, width=6)
+
+    @property
+    def playlist_index_reversed_padded6(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            playlist_index_reversed padded six digits.
+        """
+        return _pad(self.playlist_index_reversed, width=6)
 
     @property
     def playlist_count(self: Self) -> int:
