@@ -1,0 +1,5 @@
+presets:
+
+  kodi-safe:
+    nfo_tags:
+      kodi_safe: True

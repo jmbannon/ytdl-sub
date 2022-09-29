@@ -1,0 +1,14 @@
+presets:
+
+  plex:
+    overrides:
+      season_poster_prefix: ""
+
+  jellyfin:
+    overrides:
+      poster_file_name: "poster"
+      season_poster_prefix: "-poster"
+
+  kodi:
+    presets:
+      - "jellyfin"

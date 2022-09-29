@@ -1,0 +1,71 @@
+presets:
+
+####################################################################################################
+
+  episode-base:
+    output_options:
+      output_directory: "{tv_show_directory}/{tv_show_name_sanitized}"
+      file_name: "{episode_file_path}.{ext}"
+      thumbnail_name: "{episode_file_path}-thumb.jpg"
+      maintain_download_archive: True
+
+    chapters:
+      embed_chapters: True
+
+    overrides:
+#   MUST DEFINE:
+#     tv_show_directory
+#     tv_show_name
+#     season_number
+#     season_number_padded
+#     episode_number
+#     episode_number_padded
+      season_title: "{season_number_padded}"
+      episode_title: "{upload_date_standardized} - {title}"
+      episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {uid_sanitized}"
+      episode_file_path: "Season {season_number_padded}/{episode_file_name}"
+
+####################################################################################################
+
+  episode-nfo:
+    presets:
+      - "episode-base"
+
+    nfo_tags:
+      nfo_name: "{episode_file_path}.nfo"
+      nfo_root: "episodedetails"
+      tags:
+        season: "{season_number}"
+        episode: "{episode_number}"
+        title: "{episode_title}"
+        plot: "{episode_plot}"
+        year: "{episode_year}"
+        aired: "{episode_air_date_standardized}"
+
+    output_directory_nfo_tags:
+      nfo_name: "tvshow.nfo"
+      nfo_root: "tvshow"
+      tags:
+        title: "{tv_show_name}"
+
+    overrides:
+      episode_plot: "{webpage_url}"
+      episode_year: "{upload_year}"
+      episode_air_date_standardized: "{upload_date_standardized}"
+
+####################################################################################################
+
+  season-by-year:
+    overrides:
+      season_number: "{upload_year}"
+      season_number_padded: "{upload_year}"
+
+  episode-by-day:
+    overrides:
+      episode_number: "{upload_month}{upload_day_padded}"
+      episode_number_padded: "{upload_month_padded}{upload_day_padded}"
+
+  episode-by-day-reversed:
+    overrides:
+      episode_number: "{upload_day_of_year_reversed}"
+      episode_number_padded: "{upload_day_of_year_reversed_padded}"

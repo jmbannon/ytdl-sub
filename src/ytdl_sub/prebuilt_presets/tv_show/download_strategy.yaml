@@ -1,0 +1,38 @@
+presets:
+
+  tv-show-url:
+    generic:
+      download_strategy: "source"
+      url: "{url}"
+      playlist_thumbnails:
+        - name: "{poster_file_name}"
+          uid: "latest_entry"
+
+####################################################################################################
+
+  tv-show-youtube-channel:
+    generic:
+      download_strategy: "source"
+      url: "{url}"
+      playlist_thumbnails:
+        - name: "{poster_file_name}"
+          uid: "avatar_uncropped"
+        - name: "{fanart_file_name}"
+          uid: "banner_uncropped"
+
+####################################################################################################
+
+  tv-show-collection-youtube-channel-season:
+    generic:
+      download_strategy: "collection"
+      urls:
+        - url: "{youtube_channel_url}"
+          playlist_thumbnails:
+            - name: "{season_number_padded}{season_poster_prefix}.jpg"
+              uid: "latest_entry"
+            - name: "{poster_file_name}"
+              uid: "avatar_uncropped"
+            - name: "{fanart_file_name}"
+              uid: "banner_uncropped"
+
+      overrides:
