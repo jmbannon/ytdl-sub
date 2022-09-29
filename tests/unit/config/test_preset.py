@@ -32,6 +32,7 @@ def config_file() -> ConfigFile:
                         "tags": {"key-2": "preset_2", "key-3": "preset_2"},
                     }
                 },
+                "parent_preset_3": {"preset": ["parent_preset_1", "parent_preset_2"]},
                 "preset_self_loop": {"preset": "preset_self_loop"},
                 "preset_loop_0": {"preset": "preset_loop_1"},
                 "preset_loop_1": {"preset": "preset_loop_0"},
@@ -113,12 +114,17 @@ class TestPreset:
 
         assert tags_string_dict == {"key-1": "preset_0", "key-2": "this-preset"}
 
-    def test_preset_multiple_parents(self, config_file, output_options, youtube_video):
+    @pytest.mark.parametrize(
+        "preset_value", [["parent_preset_1", "parent_preset_2"], "parent_preset_3"]
+    )
+    def test_preset_multiple_parents(
+        self, config_file, output_options, youtube_video, preset_value
+    ):
         preset = Preset(
             config=config_file,
             name="test",
             value={
-                "preset": ["parent_preset_1", "parent_preset_2"],
+                "preset": preset_value,
                 "youtube": youtube_video,
                 "output_options": output_options,
                 "nfo_tags": {"tags": {"key-3": "this-preset"}},

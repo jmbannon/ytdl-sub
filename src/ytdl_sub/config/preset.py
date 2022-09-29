@@ -277,46 +277,60 @@ class Preset(StrictDictValidator):
             for validator_value in validator.dict.values():
                 self.__validate_override_string_formatter_validator(validator_value)
 
+    def _get_presets_to_merge(
+        self, parent_presets: str | List[str], seen_presets: List[str], config: ConfigFile
+    ) -> List[Dict]:
+        presets_to_merge: List[Dict] = []
+
+        if isinstance(parent_presets, str):
+            parent_presets = [parent_presets]
+
+        for parent_preset in reversed(parent_presets):
+            # Make sure we do not hit an infinite loop
+            if parent_preset in seen_presets:
+                raise self._validation_exception(
+                    f"preset loop detected with the preset '{parent_preset}'"
+                )
+
+            # Make sure the parent preset actually exists
+            if parent_preset not in config.presets.keys:
+                raise self._validation_exception(
+                    f"preset '{parent_preset}' does not exist in the provided config. "
+                    f"Available presets: {', '.join(config.presets.keys)}"
+                )
+
+            parent_preset_dict = copy.deepcopy(config.presets.dict[parent_preset])
+            presets_to_merge.append(parent_preset_dict)
+
+            if "preset" in parent_preset_dict:
+                presets_to_merge.extend(
+                    self._get_presets_to_merge(
+                        parent_presets=parent_preset_dict["preset"],
+                        seen_presets=seen_presets + [parent_preset],
+                        config=config,
+                    )
+                )
+
+        return presets_to_merge
+
     def __merge_parent_preset_dicts_if_present(self, config: ConfigFile):
         parent_preset_validator = self._validate_key_if_present(
             key="preset", validator=StringListValidator
         )
-
         if parent_preset_validator is None:
             return
 
-        presets_to_merge: List[Dict] = []
-        for parent_preset in [preset.value for preset in parent_preset_validator.list]:
-            sub_parent_presets: Dict[str, Dict] = {}
-
-            while parent_preset:
-                # Make sure the parent preset actually exists
-                if parent_preset not in config.presets.keys:
-                    raise self._validation_exception(
-                        f"preset '{parent_preset}' does not exist in the provided config. "
-                        f"Available presets: {', '.join(config.presets.keys)}"
-                    )
-
-                # Make sure we do not hit an infinite loop
-                if parent_preset in sub_parent_presets:
-                    raise self._validation_exception(
-                        f"preset loop detected with the preset '{parent_preset}'"
-                    )
-
-                parent_preset_dict = copy.deepcopy(config.presets.dict[parent_preset])
-
-                sub_parent_presets[parent_preset] = parent_preset_dict
-                parent_preset = parent_preset_dict.get("preset")
-
-            # Extend reversed, so top-most parents are first
-            if sub_parent_presets:
-                presets_to_merge.extend(reversed(sub_parent_presets.values()))
-
-        # Append this preset (the subscription) last
-        presets_to_merge.append(copy.deepcopy(self._value))
+        # Get list of all parent presets in depth-first search order, beginning with this preset
+        presets_to_merge: List[Dict] = [copy.deepcopy(self._value)] + self._get_presets_to_merge(
+            parent_presets=[preset.value for preset in parent_preset_validator.list],
+            seen_presets=[],
+            config=config,
+        )
 
         # Merge all presets
-        self._value = mergedeep.merge({}, *presets_to_merge, strategy=mergedeep.Strategy.ADDITIVE)
+        self._value = mergedeep.merge(
+            {}, *reversed(presets_to_merge), strategy=mergedeep.Strategy.ADDITIVE
+        )
 
     def __init__(self, config: ConfigFile, name: str, value: Any):
         super().__init__(name=name, value=value)
