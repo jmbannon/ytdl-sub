@@ -1,14 +1,15 @@
-Files created in '{output_directory}'
+Files created:
 ----------------------------------------
-JMC - Oblivion Mod ＂Falcor＂ p.1-thumb.jpg
-JMC - Oblivion Mod ＂Falcor＂ p.1.info.json
-JMC - Oblivion Mod ＂Falcor＂ p.1.mp4
-  Video Tags:
-    title: Oblivion Mod "Falcor" p.1
-JMC - Oblivion Mod ＂Falcor＂ p.1.nfo
-  NFO tags:
-    musicvideo:
-      album: Music Videos
-      artist: JMC
+{output_directory}
+  JMC - Oblivion Mod ＂Falcor＂ p.1-thumb.jpg
+  JMC - Oblivion Mod ＂Falcor＂ p.1.info.json
+  JMC - Oblivion Mod ＂Falcor＂ p.1.mp4
+    Video Tags:
       title: Oblivion Mod "Falcor" p.1
-      year: 2010
+  JMC - Oblivion Mod ＂Falcor＂ p.1.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        title: Oblivion Mod "Falcor" p.1
+        year: 2010
