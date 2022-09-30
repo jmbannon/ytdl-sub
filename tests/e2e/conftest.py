@@ -13,12 +13,6 @@ from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 
 
 @pytest.fixture()
-def output_directory():
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield temp_dir
-
-
-@pytest.fixture()
 def music_video_config_path():
     return "examples/kodi_music_videos_config.yaml"
 

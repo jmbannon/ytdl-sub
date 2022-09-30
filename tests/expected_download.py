@@ -7,7 +7,7 @@ from typing import Optional
 
 from ytdl_sub.utils.file_handler import get_file_md5_hash
 
-_EXPECTED_DOWNLOADS_SUMMARY_PATH = Path("tests/e2e/resources/expected_downloads_summaries")
+_EXPECTED_DOWNLOADS_SUMMARY_PATH = Path("tests/resources/expected_downloads_summaries")
 
 
 def _get_files_in_directory(relative_directory: Path | str) -> List[Path]:
