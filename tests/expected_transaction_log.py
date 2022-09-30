@@ -3,7 +3,7 @@ from typing import List
 
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 
-_TRANSACTION_LOG_SUMMARY_PATH = Path("tests/e2e/resources/transaction_log_summaries")
+_TRANSACTION_LOG_SUMMARY_PATH = Path("tests/resources/transaction_log_summaries")
 
 
 def assert_transaction_log_matches(
