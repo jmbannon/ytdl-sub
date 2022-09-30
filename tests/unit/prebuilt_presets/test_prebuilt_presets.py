@@ -27,17 +27,17 @@ class TestPrebuiltTVShowPresets:
     @pytest.mark.parametrize(
         "tv_show_structure_preset",
         [
-            "season-by-year-month--episode-by-day",
-            "season-by-year--episode-by-month-day",
-            "season-by-year--episode-by-month-day-reversed",
+            "season_by_year_month__episode_by_day",
+            "season_by_year__episode_by_month_day",
+            "season_by_year__episode_by_month_day_reversed",
         ],
     )
     @pytest.mark.parametrize(
         "episode_hour_granularity_preset",
         [
             None,
-            "episode-add-hour-granularity",
-            "episode-add-hour-granularity-reversed",
+            "episode_add_hour_granularity",
+            "episode_add_hour_granularity_reversed",
         ],
     )
     def test_non_collection_presets_compile(
@@ -53,7 +53,7 @@ class TestPrebuiltTVShowPresets:
 
         preset = Preset.from_dict(
             config=config,
-            preset_name=f"{media_player_preset}-test",
+            preset_name=f"{media_player_preset}_test",
             preset_dict={
                 "preset": parent_presets,
                 "overrides": {
@@ -75,16 +75,16 @@ class TestPrebuiltTVShowPresets:
     @pytest.mark.parametrize(
         "tv_show_structure_preset",
         [
-            "season-by-collection--episode-by-year-month-day",
-            "season-by-collection--episode-by-year-month-day-reversed",
+            "season_by_collection__episode_by_year_month_day",
+            "season_by_collection__episode_by_year_month_day_reversed",
         ],
     )
     @pytest.mark.parametrize(
         "episode_hour_granularity_preset",
         [
             None,
-            "episode-add-hour-granularity",
-            "episode-add-hour-granularity-reversed",
+            "episode_add_hour_granularity",
+            "episode_add_hour_granularity_reversed",
         ],
     )
     @pytest.mark.parametrize("season_indices", [[1], [1, 2, 3, 4, 5]])
@@ -104,9 +104,9 @@ class TestPrebuiltTVShowPresets:
 
         overrides: Dict[str, str] = {}
         for season_index in season_indices:
-            parent_presets.append(f"tv-show-collection-season-{season_index}")
+            parent_presets.append(f"tv_show_collection_season_{season_index}")
             if season_index == 1 and is_season_1_youtube_channel:
-                parent_presets[-1] += "-youtube-channel"
+                parent_presets[-1] += "_youtube_channel"
 
             overrides = dict(
                 overrides,
@@ -118,7 +118,7 @@ class TestPrebuiltTVShowPresets:
 
         preset = Preset.from_dict(
             config=config,
-            preset_name=f"{media_player_preset}-test",
+            preset_name=f"{media_player_preset}_test",
             preset_dict={
                 "preset": parent_presets,
                 "overrides": dict(

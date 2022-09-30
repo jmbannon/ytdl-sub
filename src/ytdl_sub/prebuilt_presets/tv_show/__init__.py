@@ -17,18 +17,18 @@ class PrebuiltPresets:
         Kodi TV Show with seasons as years, episodes ordered by upload date
         """
         return self._preset(
-            name=name, presets=["tv-show-url", "season-by-year--episode-by-month-day"]
+            name=name, presets=["tv_show_url", "season_by_year__episode_by_month_day"]
         )
 
     def _tv_show_youtube_channel(self, name: str) -> Preset:
         return self._preset(
-            name=name, presets=["tv-show-youtube-channel", "season-by-year--episode-by-month-day"]
+            name=name, presets=["tv_show_youtube_channel", "season_by_year__episode_by_month_day"]
         )
 
     def _tv_show_collection(self, name: str) -> Preset:
         return self._preset(
             name=name,
-            presets=["tv-show-collection", "season-by-collection--episode-by-year-month-day"],
+            presets=["tv_show_collection", "season_by_collection__episode_by_year_month_day"],
         )
 
     @classmethod
@@ -53,7 +53,7 @@ class PrebuiltPresets:
 
 
 class PrebuiltKodiTVShowPresets(PrebuiltPresets):
-    BASE_PRESET = "kodi-tv-show"
+    BASE_PRESET = "kodi_tv_show"
 
     @property
     def kodi_tv_show_url(self) -> Preset:
@@ -78,7 +78,7 @@ class PrebuiltKodiTVShowPresets(PrebuiltPresets):
 
 
 class PrebuiltJellyfinTVShowPresets(PrebuiltPresets):
-    BASE_PRESET = "jellyfin-tv-show"
+    BASE_PRESET = "jellyfin_tv_show"
 
     @property
     def jellyfin_tv_show_url(self) -> Preset:

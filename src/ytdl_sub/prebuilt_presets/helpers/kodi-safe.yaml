@@ -1,6 +1,6 @@
 presets:
 
-  kodi-safe-nfo:
+  kodi_safe_nfo:
     nfo_tags:
       kodi_safe: True
     output_directory_nfo_tags:

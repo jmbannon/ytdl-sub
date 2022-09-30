@@ -3,7 +3,7 @@ presets:
 ####################################################################################################
 
   # TV show from any single source. Uses latest entry's thumbnail as tv show poster
-  tv-show-url:
+  tv_show_url:
     generic:
       download_strategy: "source"
       url: "{url}"
@@ -14,7 +14,7 @@ presets:
 ####################################################################################################
 
   # TV show from a single YouTube channel. Uses avatar and banner as poster and fanart.
-  tv-show-youtube-channel:
+  tv_show_youtube_channel:
     generic:
       download_strategy: "source"
       url: "{url}"
@@ -26,9 +26,9 @@ presets:
 
 ####################################################################################################
 
-  # TV show from a collection. Must specify additional `tv-show-collection-season` presets in
+  # TV show from a collection. Must specify additional `tv_show_collection_season` presets in
   # addition. Each season sets its own `collection_season_number/_padded`
-  tv-show-collection:
+  tv_show_collection:
     generic:
       download_strategy: "collection"
 
@@ -36,7 +36,7 @@ presets:
       season_number: "{collection_season_number}"
       season_number_padded: "{collection_season_number_padded}"
 
-  tv-show-collection-season-1-youtube-channel:
+  tv_show_collection_season_1_youtube_channel:
     generic:
       urls:
         - url: "{collection_season_1_url}"
@@ -58,7 +58,7 @@ presets:
             attributes:
               number: "1"
 
-  tv-show-collection-season-1:
+  tv_show_collection_season_1:
     generic:
       urls:
         - url: "{collection_season_1_url}"
@@ -76,7 +76,7 @@ presets:
             attributes:
               number: "1"
 
-  tv-show-collection-season-2:
+  tv_show_collection_season_2:
     generic:
       urls:
         - url: "{collection_season_2_url}"
@@ -94,7 +94,7 @@ presets:
             attributes:
               number: "2"
 
-  tv-show-collection-season-3:
+  tv_show_collection_season_3:
     generic:
       urls:
         - url: "{collection_season_3_url}"
@@ -112,7 +112,7 @@ presets:
             attributes:
               number: "3"
 
-  tv-show-collection-season-4:
+  tv_show_collection_season_4:
     generic:
       urls:
         - url: "{collection_season_4_url}"
@@ -130,7 +130,7 @@ presets:
             attributes:
               number: "4"
 
-  tv-show-collection-season-5:
+  tv_show_collection_season_5:
     generic:
       urls:
         - url: "{collection_season_5_url}"

@@ -1,12 +1,12 @@
 presets:
 
-  plex-tv-show:
+  plex_tv_show:
     overrides:
       tv_show_poster_file_name: "show.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
       season_poster_file_name: "Season{season_number_padded}.jpg"
 
-  jellyfin-tv-show:
+  jellyfin_tv_show:
     overrides:
       tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
@@ -29,7 +29,7 @@ presets:
       tags:
         title: "{tv_show_name}"
 
-  kodi-tv-show:
+  kodi_tv_show:
     preset:
-      - "jellyfin-tv-show"
-      - "kodi-safe-nfo"
+      - "jellyfin_tv_show"
+      - "kodi_safe_nfo"
