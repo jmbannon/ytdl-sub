@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 import pytest
 
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
@@ -37,6 +38,13 @@ def output_directory() -> str:
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 
+
+@pytest.fixture
+def config(working_directory) -> ConfigFile:
+    return ConfigFile(
+        name="config",
+        value={"configuration": {"working_directory": working_directory}, "presets": {}},
+    )
 
 @pytest.fixture
 def mock_file_factory(working_directory: str, subscription_name: str):

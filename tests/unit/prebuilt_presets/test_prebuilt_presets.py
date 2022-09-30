@@ -10,14 +10,6 @@ from ytdl_sub.prebuilt_presets.tv_show import PrebuiltKodiTVShowPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
-@pytest.fixture
-def config(working_directory) -> ConfigFile:
-    return ConfigFile(
-        name="config",
-        value={"configuration": {"working_directory": working_directory}, "presets": {}},
-    )
-
-
 class TestPrebuiltTVShowPresets:
     @pytest.mark.parametrize(
         "media_player_preset",
@@ -136,5 +128,5 @@ class TestPrebuiltTVShowPresets:
             },
         )
 
-        output_transactoin = subscription.download(dry_run=False)
-        assert output_transactoin
+        output_transaction = subscription.download(dry_run=False)
+        assert output_transaction
