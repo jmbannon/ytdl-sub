@@ -1,0 +1,17 @@
+Files created:
+----------------------------------------
+{output_directory}
+  JMC - Jesse's Minecraft Server-thumb.jpg
+  JMC - Jesse's Minecraft Server.info.json
+  JMC - Jesse's Minecraft Server.mkv
+    Timestamps of playlist videos in the merged file:
+      0:00: Jesse's Minecraft Server [Trailer - Mar.21]
+      5:00: Jesse's Minecraft Server [Trailer - Feb.27]
+      9:00: Jesse's Minecraft Server [Trailer - Feb.1]
+  JMC - Jesse's Minecraft Server.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        title: Jesse's Minecraft Server
+        year: 2011

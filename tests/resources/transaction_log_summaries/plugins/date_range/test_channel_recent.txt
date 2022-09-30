@@ -1,0 +1,58 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-recent-download-archive.json
+  fanart.jpg
+  poster.jpg
+  tvshow.nfo
+    NFO tags:
+      tvshow:
+        plot: Plugin and map updates for the server Project Zombie.
+        title: Project / Zombie
+{output_directory}/Season 2018
+  s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg
+  s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.info.json
+  s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
+  s2018.e1029 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2018-10-29
+        episode: 1029
+        plot:
+          See the full trailer here: https://youtu.be/LN2e6idGluI
+          Discord: https://discord.gg/BQN7SSe
+          Website: https://www.projectzombie.net/
+
+          It has been about six years since the glory days of the original RP server. Hope to see many familiar faces in the revival of our great server.
+
+          Credits:
+          ALISON - Space Echo
+          https://www.youtube.com/watch?v=lPldcjlv3_Y
+        season: 2018
+        title: Jesse's Minecraft Server | Teaser Trailer
+        year: 2018
+  s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id-thumb.jpg
+  s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.en.srt
+  s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.info.json
+  s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.mp4
+  s2018.e1102 - Jesse's Minecraft Server ｜ IP mc.jesse.id.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2018-11-02
+        episode: 1102
+        plot:
+          IP: mc.jesse.id
+          Live Map: http://mc.jesse.id:8123
+          Discord: https://discord.gg/BQN7SSe
+          Website: https://www.projectzombie.net/
+
+          It has been about six years since the glory days of the original RP server. Hope to see many familiar faces in the revival of our great server.
+
+          The MC version is 1.13.x AND/OR 1.12.x
+
+          Credits:
+          ALISON - Space Echo
+          https://www.youtube.com/watch?v=lPldcjlv3_Y
+        season: 2018
+        title: Jesse's Minecraft Server | IP mc.jesse.id
+        year: 2018

@@ -1,0 +1,47 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-music_video_playlist_test-download-archive.json
+  JMC - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+  JMC - Jesse's Minecraft Server [Trailer - Feb.1].info.json
+  JMC - Jesse's Minecraft Server [Trailer - Feb.1].mp4
+  JMC - Jesse's Minecraft Server [Trailer - Feb.1].nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        playlist_count: 3
+        playlist_index: 3
+        title: Jesse's Minecraft Server [Trailer - Feb.1]
+        year: 2011
+  JMC - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
+  JMC - Jesse's Minecraft Server [Trailer - Feb.27].info.json
+  JMC - Jesse's Minecraft Server [Trailer - Feb.27].mp4
+  JMC - Jesse's Minecraft Server [Trailer - Feb.27].nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        playlist_count: 3
+        playlist_index: 2
+        title: Jesse's Minecraft Server [Trailer - Feb.27]
+        year: 2011
+  JMC - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
+  JMC - Jesse's Minecraft Server [Trailer - Mar.21].info.json
+  JMC - Jesse's Minecraft Server [Trailer - Mar.21].mp4
+  JMC - Jesse's Minecraft Server [Trailer - Mar.21].nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        playlist_count: 3
+        playlist_index: 1
+        title: Jesse's Minecraft Server [Trailer - Mar.21]
+        year: 2011
+  poster.jpg
+  tvshow.nfo
+    NFO tags:
+      test:
+        playlist_description: Trailers, Updates, etc
+        playlist_title: Jesse's Minecraft Server
+        playlist_uploader: Project Zombie

@@ -1,8 +1,7 @@
 import pytest
-from e2e.expected_transaction_log import assert_transaction_log_matches
+from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.exceptions import ValidationException
 
 
 @pytest.fixture

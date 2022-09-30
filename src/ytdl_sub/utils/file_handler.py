@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 import shutil
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -221,6 +222,42 @@ class FileHandlerTransactionLog:
         self.files_removed.add(file_name)
         return self
 
+    @classmethod
+    def _indent_metadata_line(cls, line: str, indent: int) -> str:
+        # Do not indent empty lines
+        rstrip_line = line.rstrip()
+        indent_str = " " * indent
+        return f"{indent_str}{rstrip_line}" if rstrip_line else ""
+
+    @classmethod
+    def _to_output_message(
+        cls, file_set_title: str, file_set: Dict[str, Optional[FileMetadata]], output_directory: str
+    ) -> List[str]:
+        if not file_set:
+            return []
+
+        directory_set: Dict[str, Dict[str, Optional[FileMetadata]]] = defaultdict(dict)
+        for file_path, file_metadata in sorted(file_set.items()):
+            file_directory = os.path.dirname(Path(output_directory) / file_path)
+            file_name = os.path.basename(Path(output_directory) / file_path)
+
+            directory_set[file_directory][file_name] = file_metadata
+
+        lines: List[str] = [file_set_title, "-" * 40]
+        for directory, directory_file_set in directory_set.items():
+            lines.append(directory)
+            for file_name, file_metadata in directory_file_set.items():
+                lines.append(cls._indent_metadata_line(file_name, indent=2))
+
+                if not file_metadata:
+                    continue
+
+                lines.extend(
+                    [cls._indent_metadata_line(line, indent=4) for line in file_metadata.metadata]
+                )
+
+        return lines
+
     def to_output_message(self, output_directory: str) -> str:
         """
         Parameters
@@ -234,38 +271,40 @@ class FileHandlerTransactionLog:
         """
         lines: List[str] = []
 
-        def _indent_metadata_line(line: str) -> str:
-            # Do not indent empty lines
-            rstrip_line = line.rstrip()
-            return f"  {rstrip_line}" if rstrip_line else ""
-
-        line_dash = "-" * 40
-
         if self.files_created:
-            created_line = f"Files created in '{output_directory}'"
-            lines.extend([created_line, line_dash])
-            for file_path, file_metadata in sorted(self.files_created.items()):
-                lines.append(file_path)
-                if file_metadata:
-                    lines.extend([_indent_metadata_line(line) for line in file_metadata.metadata])
+            lines.extend(
+                self._to_output_message(
+                    file_set_title="Files created:",
+                    file_set=self.files_created,
+                    output_directory=output_directory,
+                )
+            )
 
         if self.files_modified:
-            modified_line = f"Files modified in '{output_directory}'"
-            lines.extend([modified_line, line_dash])
-            for file_path, file_metadata in sorted(self.files_modified.items()):
-                lines.append(file_path)
-                if file_metadata:
-                    lines.extend([_indent_metadata_line(line) for line in file_metadata.metadata])
-
-        if self.files_removed:
-            # Add a blank line to separate created/removed files
+            # Add a blank line to separate created files
             if self.files_created:
                 lines.append("")
 
-            removed_line = f"Files removed from '{output_directory}'"
-            lines.extend([removed_line, line_dash])
-            for file_path in sorted(self.files_removed):
-                lines.append(file_path)
+            lines.extend(
+                self._to_output_message(
+                    file_set_title="Files modified:",
+                    file_set=self.files_modified,
+                    output_directory=output_directory,
+                )
+            )
+
+        if self.files_removed:
+            # Add a blank line to separate created/removed files
+            if self.files_created or self.files_modified:
+                lines.append("")
+
+            lines.extend(
+                self._to_output_message(
+                    file_set_title="Files removed:",
+                    file_set={file_name: None for file_name in self.files_removed},
+                    output_directory=output_directory,
+                )
+            )
 
         if self.is_empty:
             lines.append(f"No new, modified, or removed files in '{output_directory}'")
