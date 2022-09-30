@@ -41,7 +41,7 @@ class BaseEntryVariables:
         str
             The entry's unique ID
         """
-        return self.kwargs(UID)
+        return str(self.kwargs(UID))
 
     @property
     def uid_sanitized(self: "BaseEntry") -> str:

@@ -7,12 +7,14 @@ from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.prebuilt_presets.tv_show import PrebuiltJellyfinTVShowPresets
 from ytdl_sub.prebuilt_presets.tv_show import PrebuiltKodiTVShowPresets
+from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def config() -> ConfigFile:
+def config(working_directory) -> ConfigFile:
     return ConfigFile(
-        name="config", value={"configuration": {"working_directory": "test"}, "presets": {}}
+        name="config",
+        value={"configuration": {"working_directory": working_directory}, "presets": {}},
     )
 
 
@@ -87,11 +89,14 @@ class TestPrebuiltTVShowPresets:
             "episode_add_hour_granularity_reversed",
         ],
     )
-    @pytest.mark.parametrize("season_indices", [[1], [1, 2, 3, 4, 5]])
+    @pytest.mark.parametrize("season_indices", [[1], [1, 2]])
     @pytest.mark.parametrize("is_season_1_youtube_channel", [True, False])
     def test_collection_presets_compile(
         self,
         config,
+        subscription_name,
+        output_directory,
+        mock_download_collection_entries,
         media_player_preset: str,
         tv_show_structure_preset: str,
         episode_hour_granularity_preset: str,
@@ -116,18 +121,20 @@ class TestPrebuiltTVShowPresets:
                 },
             )
 
-        preset = Preset.from_dict(
+        subscription = Subscription.from_dict(
             config=config,
-            preset_name=f"{media_player_preset}_test",
+            preset_name=subscription_name,
             preset_dict={
                 "preset": parent_presets,
                 "overrides": dict(
                     overrides,
                     **{
-                        "tv_show_name": "test tv show",
-                        "tv_show_directory": "output_path",
+                        "tv_show_name": "Test TV Show",
+                        "tv_show_directory": output_directory,
                     },
                 ),
             },
         )
-        assert preset
+
+        output_transactoin = subscription.download(dry_run=False)
+        assert output_transactoin

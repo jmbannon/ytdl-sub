@@ -56,7 +56,7 @@ class Entry(EntryVariables, BaseEntry):
         The source `thumbnail` value and the actual downloaded thumbnail extension sometimes do
         not match. Return the actual downloaded thumbnail path.
         """
-        thumbnails = self.kwargs("thumbnails") or []
+        thumbnails = self.kwargs_get("thumbnails", [])
         possible_thumbnail_exts = {"jpg", "webp"}  # Always check for jpg and webp thumbs
 
         for thumbnail in thumbnails:

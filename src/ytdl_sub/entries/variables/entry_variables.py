@@ -26,6 +26,7 @@ from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER
 from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import SOURCE_WEBPAGE_URL
+from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member
@@ -384,7 +385,7 @@ class EntryVariables(BaseEntryVariables):
         str
             The entry's uploaded date, in YYYYMMDD format.
         """
-        return self.kwargs("upload_date")
+        return self.kwargs(UPLOAD_DATE)
 
     @property
     def upload_year(self: Self) -> int:
