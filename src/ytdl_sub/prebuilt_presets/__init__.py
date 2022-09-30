@@ -1,12 +1,11 @@
 import pathlib
-from pathlib import Path
 from typing import Any
 from typing import Dict
 
 import mergedeep
 
-from ytdl_sub.prebuilt_presets.tv_show.out import PrebuiltJellyfinTVShowPresets
-from ytdl_sub.prebuilt_presets.tv_show.out import PrebuiltKodiTVShowPresets
+from ytdl_sub.prebuilt_presets.tv_show import PrebuiltJellyfinTVShowPresets
+from ytdl_sub.prebuilt_presets.tv_show import PrebuiltKodiTVShowPresets
 from ytdl_sub.utils.yaml import load_yaml
 
 

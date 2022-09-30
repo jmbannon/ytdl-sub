@@ -2,6 +2,7 @@ presets:
 
 ####################################################################################################
 
+  # TV show from any single source. Uses latest entry's thumbnail as tv show poster
   tv-show-url:
     generic:
       download_strategy: "source"
@@ -12,6 +13,7 @@ presets:
 
 ####################################################################################################
 
+  # TV show from a single YouTube channel. Uses avatar and banner as poster and fanart.
   tv-show-youtube-channel:
     generic:
       download_strategy: "source"
@@ -24,6 +26,8 @@ presets:
 
 ####################################################################################################
 
+  # TV show from a collection. Must specify additional `tv-show-collection-season` presets in
+  # addition. Each season sets its own `collection_season_number/_padded`
   tv-show-collection:
     generic:
       download_strategy: "collection"
