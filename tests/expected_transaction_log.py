@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import List
 
@@ -32,6 +33,7 @@ def assert_transaction_log_matches(
 
     # Write the expected summary file if regenerate is True
     if regenerate_transaction_log:
+        os.makedirs(os.path.dirname(transaction_log_path), exist_ok=True)
         with open(transaction_log_path, "w", encoding="utf-8") as summary_file:
             summary_file.write(
                 transaction_log.to_output_message(output_directory="{output_directory}")

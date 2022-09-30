@@ -126,6 +126,7 @@ def assert_expected_downloads(
 
     summary_full_path = _EXPECTED_DOWNLOADS_SUMMARY_PATH / expected_download_summary_file_name
     if regenerate_expected_download_summary:
+        os.makedirs(os.path.dirname(summary_full_path), exist_ok=True)
         ExpectedDownloads.from_directory(directory_path=output_directory).to_summary_file(
             summary_file_path=summary_full_path
         )

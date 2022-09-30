@@ -12,6 +12,7 @@ from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX
 from ytdl_sub.entries.variables.kwargs import TITLE
@@ -46,6 +47,7 @@ def config(working_directory) -> ConfigFile:
         value={"configuration": {"working_directory": working_directory}, "presets": {}},
     )
 
+
 @pytest.fixture
 def mock_file_factory(working_directory: str, subscription_name: str):
     def _mock_file_factory(file_name: str):
@@ -57,11 +59,14 @@ def mock_file_factory(working_directory: str, subscription_name: str):
 
 @pytest.fixture
 def mock_entry_dict_factory(mock_file_factory) -> Callable:
-    def _mock_entry_dict_factory(uid: int, upload_date: str, playlist_index: int = 1) -> Dict:
+    def _mock_entry_dict_factory(
+        uid: int, upload_date: str, playlist_index: int = 1, playlist_count: int = 1
+    ) -> Dict:
         entry_dict = {
             UID: uid,
             EPOCH: 1596878400,
             PLAYLIST_INDEX: playlist_index,
+            PLAYLIST_COUNT: playlist_count,
             EXTRACTOR: "mock-entry-dict",
             TITLE: f"Mock Entry {uid}",
             EXT: "mp4",
@@ -91,9 +96,9 @@ def mock_entry_dict_factory(mock_file_factory) -> Callable:
 
 @pytest.fixture
 def mock_download_collection_thumbnail(mock_file_factory):
-    def _mock_download_thumbnail(output_path: str):
+    def _mock_download_thumbnail(output_path: str) -> bool:
         mock_file_factory(file_name=output_path.split("/")[-1])
-        pass
+        return True
 
     with patch.object(
         Downloader,
@@ -109,15 +114,20 @@ def mock_download_collection_thumbnail(mock_file_factory):
 def mock_download_collection_entries(
     mock_download_collection_thumbnail, mock_entry_dict_factory: Callable, working_directory: str
 ):
+    def _(**kwargs):
+        return mock_entry_dict_factory(**kwargs)
+
     collection_1_entry_dicts = [
-        mock_entry_dict_factory(uid=1, upload_date="20200808", playlist_index=1),
-        mock_entry_dict_factory(uid=2, upload_date="20200808", playlist_index=2),
-        mock_entry_dict_factory(uid=3, upload_date="20210808", playlist_index=3),
+        _(uid="A", upload_date="20210808", playlist_index=1, playlist_count=3),
+        _(uid="B-1", upload_date="20200808", playlist_index=2, playlist_count=3),
+        _(uid="B-2", upload_date="20200808", playlist_index=3, playlist_count=3),
     ]
     collection_2_entry_dicts = [
-        mock_entry_dict_factory(uid=4, upload_date="20200808", playlist_index=1),
-        mock_entry_dict_factory(uid=5, upload_date="20200808", playlist_index=2),
-        mock_entry_dict_factory(uid=6, upload_date="20210808", playlist_index=3),
+        # A should resolve to collection 1 (which is season 2)
+        _(uid="A", upload_date="20210808", playlist_index=1, playlist_count=4),
+        _(uid="D", upload_date="20210808", playlist_index=2, playlist_count=4),
+        _(uid="E-1", upload_date="20200808", playlist_index=3, playlist_count=4),
+        _(uid="E-2", upload_date="20200808", playlist_index=4, playlist_count=4),
     ]
 
     with patch.object(

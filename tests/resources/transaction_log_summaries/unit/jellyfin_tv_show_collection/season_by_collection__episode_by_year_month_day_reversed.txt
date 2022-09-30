@@ -1,0 +1,87 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+  season01-poster.jpg
+  season02-poster.jpg
+  tvshow.nfo
+    NFO tags:
+      tvshow:
+        namedseason:
+          -
+            attributes:
+              number: 1
+            tag: Season 1
+          -
+            attributes:
+              number: 2
+            tag: Season 2
+        title: Test TV Show
+{output_directory}/Season 01
+  s01.e790524 - D-thumb.jpg
+  s01.e790524 - D.mp4
+  s01.e790524 - D.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2021-08-08
+        episode: 790524
+        plot: https://D.com
+        season: 1
+        title: 2021-08-08 - Mock Entry D
+        year: 2021
+  s01.e800524 - E-1-thumb.jpg
+  s01.e800524 - E-1.mp4
+  s01.e800524 - E-1.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2020-08-08
+        episode: 800524
+        plot: https://E-1.com
+        season: 1
+        title: 2020-08-08 - Mock Entry E-1
+        year: 2020
+  s01.e800524 - E-2-thumb.jpg
+  s01.e800524 - E-2.mp4
+  s01.e800524 - E-2.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2020-08-08
+        episode: 800524
+        plot: https://E-2.com
+        season: 1
+        title: 2020-08-08 - Mock Entry E-2
+        year: 2020
+{output_directory}/Season 02
+  s02.e790524 - A-thumb.jpg
+  s02.e790524 - A.mp4
+  s02.e790524 - A.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2021-08-08
+        episode: 790524
+        plot: https://A.com
+        season: 2
+        title: 2021-08-08 - Mock Entry A
+        year: 2021
+  s02.e800524 - B-1-thumb.jpg
+  s02.e800524 - B-1.mp4
+  s02.e800524 - B-1.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2020-08-08
+        episode: 800524
+        plot: https://B-1.com
+        season: 2
+        title: 2020-08-08 - Mock Entry B-1
+        year: 2020
+  s02.e800524 - B-2-thumb.jpg
+  s02.e800524 - B-2.mp4
+  s02.e800524 - B-2.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2020-08-08
+        episode: 800524
+        plot: https://B-2.com
+        season: 2
+        title: 2020-08-08 - Mock Entry B-2
+        year: 2020
