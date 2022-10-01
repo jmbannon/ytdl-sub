@@ -8,18 +8,16 @@ from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.prebuilt_presets import PrebuiltTvShowCollectionPresets
 from ytdl_sub.prebuilt_presets import PrebuiltTvShowUrlPresets
+from ytdl_sub.prebuilt_presets.tv_show import PrebuiltTvShowCollectionEpisodeOrderingPresets
+from ytdl_sub.prebuilt_presets.tv_show import PrebuiltTvShowCollectionSeasonPresets
+from ytdl_sub.prebuilt_presets.tv_show import PrebuiltTvShowUrlEpisodeOrderingPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 
 
 @pytest.mark.parametrize("media_player_preset", PrebuiltTvShowUrlPresets.get_preset_names())
 @pytest.mark.parametrize(
-    "tv_show_structure_preset",
-    [
-        "season_by_year__episode_by_month_day",
-        "season_by_year__episode_by_month_day_reversed",
-        "season_by_year_month__episode_by_day",
-    ],
+    "tv_show_structure_preset", PrebuiltTvShowUrlEpisodeOrderingPresets.get_preset_names()
 )
 class TestPrebuiltTVShowPresets:
     def test_compilation(
@@ -116,14 +114,12 @@ class TestPrebuiltTVShowPresets:
 
 @pytest.mark.parametrize("media_player_preset", PrebuiltTvShowCollectionPresets.get_preset_names())
 @pytest.mark.parametrize(
-    "tv_show_structure_preset",
-    [
-        "season_by_collection__episode_by_year_month_day",
-        "season_by_collection__episode_by_year_month_day_reversed",
-    ],
+    "tv_show_structure_preset", PrebuiltTvShowCollectionEpisodeOrderingPresets.get_preset_names()
 )
 class TestPrebuiltTvShowCollectionPresets:
-    @pytest.mark.parametrize("season_preset", ["collection_season_1", "collection_season_2"])
+    @pytest.mark.parametrize(
+        "season_preset", PrebuiltTvShowCollectionSeasonPresets.get_preset_names()
+    )
     def test_compilation(
         self,
         config,
@@ -147,7 +143,9 @@ class TestPrebuiltTvShowCollectionPresets:
             },
         )
 
-    @pytest.mark.parametrize("season_preset", ["collection_season_1", "collection_season_2"])
+    @pytest.mark.parametrize(
+        "season_preset", PrebuiltTvShowCollectionSeasonPresets.get_preset_names()
+    )
     def test_compilation_errors_missing_one(
         self,
         config,

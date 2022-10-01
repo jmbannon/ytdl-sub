@@ -34,7 +34,7 @@ from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 # pylint: disable=too-many-public-methods
 
 
-def _pad(num: int, width: int = 2):
+def pad(num: int, width: int = 2):
     return str(num).zfill(width)
 
 
@@ -96,7 +96,7 @@ class EntryVariables(BaseEntryVariables):
         int
             The source index, padded.
         """
-        return _pad(self.source_index, 2)
+        return pad(self.source_index, 2)
 
     @property
     def source_count(self: Self) -> int:
@@ -189,7 +189,7 @@ class EntryVariables(BaseEntryVariables):
         str
             playlist_index padded two digits
         """
-        return _pad(self.playlist_index, width=2)
+        return pad(self.playlist_index, width=2)
 
     @property
     def playlist_index_reversed_padded(self: Self) -> str:
@@ -199,7 +199,7 @@ class EntryVariables(BaseEntryVariables):
         str
             playlist_index_reversed padded two digits
         """
-        return _pad(self.playlist_index_reversed, width=2)
+        return pad(self.playlist_index_reversed, width=2)
 
     @property
     def playlist_index_padded6(self: Self) -> str:
@@ -209,7 +209,7 @@ class EntryVariables(BaseEntryVariables):
         str
             playlist_index padded six digits.
         """
-        return _pad(self.playlist_index, width=6)
+        return pad(self.playlist_index, width=6)
 
     @property
     def playlist_index_reversed_padded6(self: Self) -> str:
@@ -219,7 +219,7 @@ class EntryVariables(BaseEntryVariables):
         str
             playlist_index_reversed padded six digits.
         """
-        return _pad(self.playlist_index_reversed, width=6)
+        return pad(self.playlist_index_reversed, width=6)
 
     @property
     def playlist_count(self: Self) -> int:
@@ -396,7 +396,7 @@ class EntryVariables(BaseEntryVariables):
         int
             The upload_date_index padded two digits
         """
-        return _pad(self.upload_date_index, 2)
+        return pad(self.upload_date_index, 2)
 
     @property
     def upload_date_index_reversed(self: Self) -> int:
@@ -416,7 +416,7 @@ class EntryVariables(BaseEntryVariables):
         int
             The upload_date_index padded two digits
         """
-        return _pad(self.upload_date_index_reversed, 2)
+        return pad(self.upload_date_index_reversed, 2)
 
     @property
     def upload_date(self: Self) -> str:
@@ -477,7 +477,7 @@ class EntryVariables(BaseEntryVariables):
         str
             The reversed upload month, but padded. i.e. November returns "02"
         """
-        return _pad(self.upload_month_reversed)
+        return pad(self.upload_month_reversed)
 
     @property
     def upload_month_padded(self: Self) -> str:
@@ -542,7 +542,7 @@ class EntryVariables(BaseEntryVariables):
         str
             The reversed upload day, but padded. i.e. August 30th returns "02".
         """
-        return _pad(self.upload_day_reversed)
+        return pad(self.upload_day_reversed)
 
     @property
     def upload_day_of_year(self: Self) -> int:
@@ -566,7 +566,7 @@ class EntryVariables(BaseEntryVariables):
         str
             The upload day of year, but padded i.e. February 1st returns "032"
         """
-        return _pad(self.upload_day_of_year, width=3)
+        return pad(self.upload_day_of_year, width=3)
 
     @property
     def upload_day_of_year_reversed(self: Self) -> int:
@@ -591,7 +591,7 @@ class EntryVariables(BaseEntryVariables):
         str
             The reversed upload day of year, but padded i.e. December 31st returns "001"
         """
-        return _pad(self.upload_day_of_year_reversed, width=3)
+        return pad(self.upload_day_of_year_reversed, width=3)
 
     @property
     def upload_date_standardized(self: Self) -> str:
