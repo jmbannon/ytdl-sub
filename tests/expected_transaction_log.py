@@ -1,10 +1,11 @@
 import os
-from pathlib import Path
 from typing import List
+
+from resources import RESOURCE_PATH
 
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 
-_TRANSACTION_LOG_SUMMARY_PATH = Path("tests/resources/transaction_log_summaries")
+_TRANSACTION_LOG_SUMMARY_PATH = RESOURCE_PATH / "transaction_log_summaries"
 
 
 def assert_transaction_log_matches(

@@ -6,6 +6,7 @@ from typing import Dict
 from unittest.mock import patch
 
 import pytest
+from resources import copy_file_fixture
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.downloader import Downloader
@@ -49,16 +50,15 @@ def config(working_directory) -> ConfigFile:
 
 
 @pytest.fixture
-def mock_file_factory(working_directory: str, subscription_name: str):
-    def _mock_file_factory(file_name: str):
-        with open(Path(working_directory) / subscription_name / file_name, "w"):
-            pass
+def mock_downloaded_file_path(working_directory: str, subscription_name: str):
+    def _mock_downloaded_file_path(file_name: str) -> Path:
+        return Path(working_directory) / subscription_name / file_name
 
-    return _mock_file_factory
+    return _mock_downloaded_file_path
 
 
 @pytest.fixture
-def mock_entry_dict_factory(mock_file_factory) -> Callable:
+def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
     def _mock_entry_dict_factory(
         uid: int, upload_date: str, playlist_index: int = 1, playlist_count: int = 1
     ) -> Dict:
@@ -87,18 +87,29 @@ def mock_entry_dict_factory(mock_file_factory) -> Callable:
         }
 
         # Create mock video file
-        mock_file_factory(file_name=f"{uid}.mp4")
-        mock_file_factory(file_name=f"{uid}.jpg")
+        copy_file_fixture(
+            fixture_name="sample_vid.mp4", output_file_path=mock_downloaded_file_path(f"{uid}.mp4")
+        )
+        copy_file_fixture(
+            fixture_name="thumb.jpg", output_file_path=mock_downloaded_file_path(f"{uid}.jpg")
+        )
         return entry_dict
 
     return _mock_entry_dict_factory
 
 
 @pytest.fixture
-def mock_download_collection_thumbnail(mock_file_factory):
+def mock_download_collection_thumbnail(mock_downloaded_file_path):
     def _mock_download_thumbnail(output_path: str) -> bool:
-        mock_file_factory(file_name=output_path.split("/")[-1])
-        return True
+        # mock_file_factory(file_name=output_path.split("/")[-1])
+        output_name = os.path.basename(output_path)
+        if "poster" in output_name:
+            copy_file_fixture(fixture_name="poster.jpg", output_file_path=output_path)
+            return True
+        elif "fanart" in output_name:
+            copy_file_fixture(fixture_name="fanart.jpeg", output_file_path=output_path)
+            return True
+        return False
 
     with patch.object(
         Downloader,
