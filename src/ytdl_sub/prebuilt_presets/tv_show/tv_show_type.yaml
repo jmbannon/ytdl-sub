@@ -28,7 +28,7 @@ presets:
       season_number: "{collection_season_number}"
       season_number_padded: "{collection_season_number_padded}"
 
-  tv_show_collection_season_1:
+  collection_season_1:
     generic:
       urls:
         - url: "{collection_season_1_url}"
@@ -52,7 +52,7 @@ presets:
             attributes:
               number: "1"
 
-  tv_show_collection_season_2:
+  collection_season_2:
     generic:
       urls:
         - url: "{collection_season_2_url}"
@@ -70,7 +70,7 @@ presets:
             attributes:
               number: "2"
 
-  tv_show_collection_season_3:
+  collection_season_3:
     generic:
       urls:
         - url: "{collection_season_3_url}"
@@ -88,7 +88,7 @@ presets:
             attributes:
               number: "3"
 
-  tv_show_collection_season_4:
+  collection_season_4:
     generic:
       urls:
         - url: "{collection_season_4_url}"
@@ -106,7 +106,7 @@ presets:
             attributes:
               number: "4"
 
-  tv_show_collection_season_5:
+  collection_season_5:
     generic:
       urls:
         - url: "{collection_season_5_url}"
