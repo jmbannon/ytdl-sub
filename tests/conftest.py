@@ -26,6 +26,7 @@ def working_directory() -> str:
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 
+
 @contextlib.contextmanager
 def assert_debug_log(logger: logging.Logger, expected_message: str):
     """

@@ -20,11 +20,6 @@ class PrebuiltPresets:
             name=name, presets=["tv_show_url", "season_by_year__episode_by_month_day"]
         )
 
-    def _tv_show_youtube_channel(self, name: str) -> Preset:
-        return self._preset(
-            name=name, presets=["tv_show_youtube_channel", "season_by_year__episode_by_month_day"]
-        )
-
     def _tv_show_collection(self, name: str) -> Preset:
         return self._preset(
             name=name,
@@ -63,13 +58,6 @@ class PrebuiltKodiTVShowPresets(PrebuiltPresets):
         return self._tv_show_url(name="kodi_tv_show_url")
 
     @property
-    def kodi_tv_show_youtube_channel(self) -> Preset:
-        """
-        Kodi TV Show from a YouTube channel with seasons as years, episodes ordered by upload date
-        """
-        return self._tv_show_youtube_channel(name="kodi_tv_show_youtube_channel")
-
-    @property
     def kodi_tv_show_collection(self) -> Preset:
         """
         Kodi TV Show from a collection of multiple URLs. TODO: finish docstring
@@ -88,13 +76,6 @@ class PrebuiltJellyfinTVShowPresets(PrebuiltPresets):
         return self._tv_show_url(name="jellyfin_tv_show_url")
 
     @property
-    def jellyfin_tv_show_youtube_channel(self) -> Preset:
-        """
-        Kodi TV Show from a YouTube channel with seasons as years, episodes ordered by upload date
-        """
-        return self._tv_show_youtube_channel(name="jellyfin_tv_show_youtube_channel")
-
-    @property
     def jellyfin_tv_show_collection(self) -> Preset:
         """
         Kodi TV Show from a collection of multiple URLs. TODO: finish docstring
@@ -111,13 +92,6 @@ class PrebuiltPlexTVShowPresets(PrebuiltPresets):
         Kodi TV Show with seasons as years, episodes ordered by upload date
         """
         return self._tv_show_url(name="plex_tv_show_url")
-
-    @property
-    def plex_tv_show_youtube_channel(self) -> Preset:
-        """
-        Kodi TV Show from a YouTube channel with seasons as years, episodes ordered by upload date
-        """
-        return self._tv_show_youtube_channel(name="plex_tv_show_youtube_channel")
 
     @property
     def plex_tv_show_collection(self) -> Preset:

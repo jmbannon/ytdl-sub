@@ -1,3 +1,4 @@
+import contextlib
 import os
 import tempfile
 from pathlib import Path
@@ -48,7 +49,11 @@ def mock_downloaded_file_path(working_directory: str, subscription_name: str):
 @pytest.fixture
 def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
     def _mock_entry_dict_factory(
-        uid: int, upload_date: str, playlist_index: int = 1, playlist_count: int = 1
+        uid: int,
+        upload_date: str,
+        playlist_index: int = 1,
+        playlist_count: int = 1,
+        is_youtube_channel: bool = False,
     ) -> Dict:
         entry_dict = {
             UID: uid,
@@ -60,19 +65,20 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             EXT: "mp4",
             UPLOAD_DATE: upload_date,
             WEBPAGE_URL: f"https://{uid}.com",
-            PLAYLIST_ENTRY: {
-                "thumbnails": [
-                    {
-                        "id": "avatar_uncropped",
-                        "url": "https://avatar_uncropped.com",
-                    },
-                    {
-                        "id": "banner_uncropped",
-                        "url": "https://banner_uncropped.com",
-                    },
-                ]
-            },
+            PLAYLIST_ENTRY: {"thumbnails": []},
         }
+
+        if is_youtube_channel:
+            entry_dict[PLAYLIST_ENTRY]["thumbnails"] = [
+                {
+                    "id": "avatar_uncropped",
+                    "url": "https://avatar_uncropped.com",
+                },
+                {
+                    "id": "banner_uncropped",
+                    "url": "https://banner_uncropped.com",
+                },
+            ]
 
         # Create mock video file
         copy_file_fixture(
@@ -113,29 +119,90 @@ def mock_download_collection_thumbnail(mock_downloaded_file_path):
 def mock_download_collection_entries(
     mock_download_collection_thumbnail, mock_entry_dict_factory: Callable, working_directory: str
 ):
-    def _(**kwargs):
-        return mock_entry_dict_factory(**kwargs)
+    @contextlib.contextmanager
+    def _mock_download_collection_entries_factory(is_youtube_channel: bool):
+        def _(**kwargs):
+            return mock_entry_dict_factory(**kwargs)
 
-    collection_1_entry_dicts = [
-        _(uid="21-1", upload_date="20210808", playlist_index=1, playlist_count=4),  # 1
-        _(uid="20-1", upload_date="20200808", playlist_index=2, playlist_count=4),  # 2  98
-        _(uid="20-2", upload_date="20200808", playlist_index=3, playlist_count=4),  # 1  99
-        _(uid="20-3", upload_date="20200807", playlist_index=4, playlist_count=4),
-    ]
-    collection_2_entry_dicts = [
-        # 20-3 should resolve to collection 1 (which is season 2)
-        _(uid="20-3", upload_date="20200807", playlist_index=1, playlist_count=5),
-        _(uid="20-4", upload_date="20200806", playlist_index=2, playlist_count=5),
-        _(uid="20-5", upload_date="20200706", playlist_index=3, playlist_count=5),
-        _(uid="20-6", upload_date="20200706", playlist_index=4, playlist_count=5),
-        _(uid="20-7", upload_date="20200606", playlist_index=5, playlist_count=5),
-    ]
+        collection_1_entry_dicts = [
+            _(
+                uid="21-1",
+                upload_date="20210808",
+                playlist_index=1,
+                playlist_count=4,
+                is_youtube_channel=is_youtube_channel,
+            ),  # 1
+            _(
+                uid="20-1",
+                upload_date="20200808",
+                playlist_index=2,
+                playlist_count=4,
+                is_youtube_channel=is_youtube_channel,
+            ),  # 2  98
+            _(
+                uid="20-2",
+                upload_date="20200808",
+                playlist_index=3,
+                playlist_count=4,
+                is_youtube_channel=is_youtube_channel,
+            ),  # 1  99
+            _(
+                uid="20-3",
+                upload_date="20200807",
+                playlist_index=4,
+                playlist_count=4,
+                is_youtube_channel=is_youtube_channel,
+            ),
+        ]
+        collection_2_entry_dicts = [
+            # 20-3 should resolve to collection 1 (which is season 2)
+            _(
+                uid="20-3",
+                upload_date="20200807",
+                playlist_index=1,
+                playlist_count=5,
+                is_youtube_channel=is_youtube_channel,
+            ),
+            _(
+                uid="20-4",
+                upload_date="20200806",
+                playlist_index=2,
+                playlist_count=5,
+                is_youtube_channel=is_youtube_channel,
+            ),
+            _(
+                uid="20-5",
+                upload_date="20200706",
+                playlist_index=3,
+                playlist_count=5,
+                is_youtube_channel=is_youtube_channel,
+            ),
+            _(
+                uid="20-6",
+                upload_date="20200706",
+                playlist_index=4,
+                playlist_count=5,
+                is_youtube_channel=is_youtube_channel,
+            ),
+            _(
+                uid="20-7",
+                upload_date="20200606",
+                playlist_index=5,
+                playlist_count=5,
+                is_youtube_channel=is_youtube_channel,
+            ),
+        ]
 
-    with patch.object(
-        Downloader, "extract_info_via_info_json"
-    ) as mock_download_metadata, patch.object(
-        Downloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
-    ):
-        # Stub out metadata. TODO: update this if we do metadata plugins
-        mock_download_metadata.side_effect = [collection_1_entry_dicts, collection_2_entry_dicts]
-        yield
+        with patch.object(
+            Downloader, "extract_info_via_info_json"
+        ) as mock_download_metadata, patch.object(
+            Downloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
+        ):
+            # Stub out metadata. TODO: update this if we do metadata plugins
+            mock_download_metadata.side_effect = [
+                collection_1_entry_dicts,
+                collection_2_entry_dicts,
+            ]
+            yield
+
+    return _mock_download_collection_entries_factory

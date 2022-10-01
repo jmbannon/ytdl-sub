@@ -8,17 +8,9 @@ presets:
       download_strategy: "source"
       url: "{url}"
       playlist_thumbnails:
+        # Use latest_entry first, then see if YT channel artwork exists
         - name: "{tv_show_poster_file_name}"
           uid: "latest_entry"
-
-####################################################################################################
-
-  # TV show from a single YouTube channel. Uses avatar and banner as poster and fanart.
-  tv_show_youtube_channel:
-    generic:
-      download_strategy: "source"
-      url: "{url}"
-      playlist_thumbnails:
         - name: "{tv_show_poster_file_name}"
           uid: "avatar_uncropped"
         - name: "{tv_show_fanart_file_name}"
@@ -36,28 +28,6 @@ presets:
       season_number: "{collection_season_number}"
       season_number_padded: "{collection_season_number_padded}"
 
-  tv_show_collection_season_1_youtube_channel:
-    generic:
-      urls:
-        - url: "{collection_season_1_url}"
-          variables:
-            collection_season_number: "1"
-            collection_season_number_padded: "01"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
-            - name: "{tv_show_poster_file_name}"
-              uid: "avatar_uncropped"
-            - name: "{tv_show_fanart_file_name}"
-              uid: "banner_uncropped"
-
-    output_directory_nfo_tags:
-      tags:
-        namedseason:
-          - tag: "{collection_season_1_name}"
-            attributes:
-              number: "1"
-
   tv_show_collection_season_1:
     generic:
       urls:
@@ -66,8 +36,14 @@ presets:
             collection_season_number: "1"
             collection_season_number_padded: "01"
           playlist_thumbnails:
+            # Use latest_entry first, then see if YT channel artwork exists
+            # ONLY FOR SEASON 1!
             - name: "{season_poster_file_name}"
               uid: "latest_entry"
+            - name: "{tv_show_poster_file_name}"
+              uid: "avatar_uncropped"
+            - name: "{tv_show_fanart_file_name}"
+              uid: "banner_uncropped"
 
     output_directory_nfo_tags:
       tags:

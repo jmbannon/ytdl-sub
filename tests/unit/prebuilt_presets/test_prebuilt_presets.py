@@ -15,9 +15,9 @@ class TestPrebuiltTVShowPresets:
     @pytest.mark.parametrize(
         "media_player_preset",
         [
-            *PrebuiltKodiTVShowPresets.get_non_collection_preset_names(),
-            *PrebuiltJellyfinTVShowPresets.get_non_collection_preset_names(),
-            *PrebuiltPlexTVShowPresets.get_non_collection_preset_names(),
+            "kodi_tv_show_url",
+            "jellyfin_tv_show_url",
+            "plex_tv_show_url",
         ],
     )
     @pytest.mark.parametrize(
@@ -28,6 +28,7 @@ class TestPrebuiltTVShowPresets:
             "season_by_year_month__episode_by_day",
         ],
     )
+    @pytest.mark.parametrize("is_youtube_channel", [True, False])
     def test_non_collection_presets_compile(
         self,
         config,
@@ -36,8 +37,13 @@ class TestPrebuiltTVShowPresets:
         mock_download_collection_entries,
         media_player_preset: str,
         tv_show_structure_preset: str,
+        is_youtube_channel: bool,
     ):
-        expected_summary_name = f"unit/{media_player_preset}/{tv_show_structure_preset}"
+        expected_summary_name = "unit/{}/{}/is_yt_{}".format(
+            media_player_preset,
+            tv_show_structure_preset,
+            int(is_youtube_channel),
+        )
         parent_presets = [media_player_preset, tv_show_structure_preset]
 
         subscription = Subscription.from_dict(
@@ -53,7 +59,9 @@ class TestPrebuiltTVShowPresets:
             },
         )
 
-        transaction_log = subscription.download(dry_run=False)
+        with mock_download_collection_entries(is_youtube_channel=is_youtube_channel):
+            transaction_log = subscription.download(dry_run=False)
+
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
@@ -70,9 +78,9 @@ class TestPrebuiltTVShowPresets:
     @pytest.mark.parametrize(
         "media_player_preset",
         [
-            *PrebuiltKodiTVShowPresets.get_collection_preset_names(),
-            *PrebuiltJellyfinTVShowPresets.get_collection_preset_names(),
-            *PrebuiltPlexTVShowPresets.get_collection_preset_names(),
+            "kodi_tv_show_collection",
+            "jellyfin_tv_show_collection",
+            "plex_tv_show_collection",
         ],
     )
     @pytest.mark.parametrize(
@@ -83,7 +91,7 @@ class TestPrebuiltTVShowPresets:
         ],
     )
     @pytest.mark.parametrize("season_indices", [[1], [1, 2]])
-    @pytest.mark.parametrize("is_season_1_youtube_channel", [True, False])
+    @pytest.mark.parametrize("is_youtube_channel", [True, False])
     def test_collection_presets_compile(
         self,
         config,
@@ -93,21 +101,19 @@ class TestPrebuiltTVShowPresets:
         media_player_preset: str,
         tv_show_structure_preset: str,
         season_indices: List[int],
-        is_season_1_youtube_channel: bool,
+        is_youtube_channel: bool,
     ):
         expected_summary_name = "unit/{}/{}/s_{}/is_yt_{}".format(
             media_player_preset,
             tv_show_structure_preset,
             len(season_indices),
-            int(is_season_1_youtube_channel),
+            int(is_youtube_channel),
         )
         parent_presets: List[str] = [media_player_preset, tv_show_structure_preset]
 
         overrides: Dict[str, str] = {}
         for season_index in season_indices:
             parent_presets.append(f"tv_show_collection_season_{season_index}")
-            if season_index == 1 and is_season_1_youtube_channel:
-                parent_presets[-1] += "_youtube_channel"
 
             overrides = dict(
                 overrides,
@@ -132,7 +138,9 @@ class TestPrebuiltTVShowPresets:
             },
         )
 
-        transaction_log = subscription.download(dry_run=False)
+        with mock_download_collection_entries(is_youtube_channel=is_youtube_channel):
+            transaction_log = subscription.download(dry_run=False)
+
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
