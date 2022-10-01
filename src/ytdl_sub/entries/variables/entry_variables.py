@@ -26,6 +26,7 @@ from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER
 from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import SOURCE_WEBPAGE_URL
+from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member
@@ -375,6 +376,46 @@ class EntryVariables(BaseEntryVariables):
             need to support other image types, we always convert to jpg.
         """
         return "jpg"
+
+    @property
+    def upload_date_index(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The i'th entry downloaded with this upload date.
+        """
+        return self.kwargs_get(UPLOAD_DATE_INDEX, 0) + 1
+
+    @property
+    def upload_date_index_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        int
+            The upload_date_index padded two digits
+        """
+        return _pad(self.upload_date_index, 2)
+
+    @property
+    def upload_date_index_reversed(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            100 - upload_date_index
+        """
+        return 100 - self.upload_date_index
+
+    @property
+    def upload_date_index_reversed_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        int
+            The upload_date_index padded two digits
+        """
+        return _pad(self.upload_date_index_reversed, 2)
 
     @property
     def upload_date(self: Self) -> str:
