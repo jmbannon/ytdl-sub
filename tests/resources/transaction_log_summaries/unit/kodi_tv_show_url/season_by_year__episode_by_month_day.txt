@@ -6,7 +6,7 @@ Files created:
   tvshow.nfo
     NFO tags:
       tvshow:
-        title: test tv show
+        title: kodi_tv_show_url_season_by_year__episode_by_month_day
 {output_directory}/Season 2020
   s2020.e080701 - 20-3-thumb.jpg
   s2020.e080701 - 20-3.mp4

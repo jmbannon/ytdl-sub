@@ -45,7 +45,7 @@ class TestPrebuiltTVShowPresets:
                 "preset": parent_presets,
                 "overrides": {
                     "url": "https://your.name.here",
-                    "tv_show_name": "test tv show",
+                    "tv_show_name": f"{media_player_preset}_{tv_show_structure_preset}",
                     "tv_show_directory": output_directory,
                 },
             },
@@ -117,7 +117,7 @@ class TestPrebuiltTVShowPresets:
                 "overrides": dict(
                     overrides,
                     **{
-                        "tv_show_name": "Test TV Show",
+                        "tv_show_name": f"{media_player_preset}_{tv_show_structure_preset}",
                         "tv_show_directory": output_directory,
                     },
                 ),

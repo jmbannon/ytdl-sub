@@ -7,7 +7,7 @@ Files created:
   tvshow.nfo
     NFO tags:
       tvshow:
-        title: test tv show
+        title: jellyfin_tv_show_youtube_channel_season_by_year_month__episode_by_day
 {output_directory}/Season 202008
   s202008.e0701 - 20-3-thumb.jpg
   s202008.e0701 - 20-3.mp4

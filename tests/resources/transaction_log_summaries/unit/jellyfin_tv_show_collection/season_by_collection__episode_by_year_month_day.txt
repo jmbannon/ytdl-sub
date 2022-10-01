@@ -16,7 +16,7 @@ Files created:
             attributes:
               number: 2
             tag: Season 2
-        title: Test TV Show
+        title: jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day
 {output_directory}/Season 01
   s01.e20060601 - 20-7-thumb.jpg
   s01.e20060601 - 20-7.mp4
