@@ -1,157 +1,145 @@
 Files created:
 ----------------------------------------
-{output_directory}
-  .ytdl-sub-subscription_test-download-archive.json
-  season01-poster.jpg
-  season02-poster.jpg
-  tvshow.nfo
-    NFO tags:
-      tvshow:
-        namedseason:
-          -
-            attributes:
-              number: 1
-            tag: Season 1
-          -
-            attributes:
-              number: 2
-            tag: Season 2
-        title: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
 {output_directory}/Season 01
-  s01.e20060601 - 20-7-thumb.jpg
-  s01.e20060601 - 20-7.mp4
+  s01.e20060602 - 20-7-thumb.jpg
+  s01.e20060602 - 20-7.mp4
     Video Tags:
       date: 2020-06-06
-      episode_id: 20060601
+      episode_id: 20060602
       season_number: 1
       synopsis: https://20-7.com
       title: 2020-06-06 - Mock Entry 20-7
-  s01.e20060601 - 20-7.nfo
+  s01.e20060602 - 20-7.nfo
     NFO tags:
       episodedetails:
         aired: 2020-06-06
-        episode: 20060601
+        episode: 20060602
         plot: https://20-7.com
         season: 1
         title: 2020-06-06 - Mock Entry 20-7
         year: 2020
-  s01.e20070601 - 20-6-thumb.jpg
-  s01.e20070601 - 20-6.mp4
+  s01.e20070603 - 20-5-thumb.jpg
+  s01.e20070603 - 20-5.mp4
     Video Tags:
       date: 2020-07-06
-      episode_id: 20070601
-      season_number: 1
-      synopsis: https://20-6.com
-      title: 2020-07-06 - Mock Entry 20-6
-  s01.e20070601 - 20-6.nfo
-    NFO tags:
-      episodedetails:
-        aired: 2020-07-06
-        episode: 20070601
-        plot: https://20-6.com
-        season: 1
-        title: 2020-07-06 - Mock Entry 20-6
-        year: 2020
-  s01.e20070602 - 20-5-thumb.jpg
-  s01.e20070602 - 20-5.mp4
-    Video Tags:
-      date: 2020-07-06
-      episode_id: 20070602
+      episode_id: 20070603
       season_number: 1
       synopsis: https://20-5.com
       title: 2020-07-06 - Mock Entry 20-5
-  s01.e20070602 - 20-5.nfo
+  s01.e20070603 - 20-5.nfo
     NFO tags:
       episodedetails:
         aired: 2020-07-06
-        episode: 20070602
+        episode: 20070603
         plot: https://20-5.com
         season: 1
         title: 2020-07-06 - Mock Entry 20-5
         year: 2020
-  s01.e20080601 - 20-4-thumb.jpg
-  s01.e20080601 - 20-4.mp4
+  s01.e20070603 - 20-6-thumb.jpg
+  s01.e20070603 - 20-6.mp4
+    Video Tags:
+      date: 2020-07-06
+      episode_id: 20070603
+      season_number: 1
+      synopsis: https://20-6.com
+      title: 2020-07-06 - Mock Entry 20-6
+  s01.e20070603 - 20-6.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2020-07-06
+        episode: 20070603
+        plot: https://20-6.com
+        season: 1
+        title: 2020-07-06 - Mock Entry 20-6
+        year: 2020
+  s01.e20080602 - 20-4-thumb.jpg
+  s01.e20080602 - 20-4.mp4
     Video Tags:
       date: 2020-08-06
-      episode_id: 20080601
+      episode_id: 20080602
       season_number: 1
       synopsis: https://20-4.com
       title: 2020-08-06 - Mock Entry 20-4
-  s01.e20080601 - 20-4.nfo
+  s01.e20080602 - 20-4.nfo
     NFO tags:
       episodedetails:
         aired: 2020-08-06
-        episode: 20080601
+        episode: 20080602
         plot: https://20-4.com
         season: 1
         title: 2020-08-06 - Mock Entry 20-4
         year: 2020
 {output_directory}/Season 02
-  s02.e20080701 - 20-3-thumb.jpg
-  s02.e20080701 - 20-3.mp4
+  s02.e20080702 - 20-3-thumb.jpg
+  s02.e20080702 - 20-3.mp4
     Video Tags:
       date: 2020-08-07
-      episode_id: 20080701
+      episode_id: 20080702
       season_number: 2
       synopsis: https://20-3.com
       title: 2020-08-07 - Mock Entry 20-3
-  s02.e20080701 - 20-3.nfo
+  s02.e20080702 - 20-3.nfo
     NFO tags:
       episodedetails:
         aired: 2020-08-07
-        episode: 20080701
+        episode: 20080702
         plot: https://20-3.com
         season: 2
         title: 2020-08-07 - Mock Entry 20-3
         year: 2020
-  s02.e20080801 - 20-2-thumb.jpg
-  s02.e20080801 - 20-2.mp4
+  s02.e20080803 - 20-1-thumb.jpg
+  s02.e20080803 - 20-1.mp4
     Video Tags:
       date: 2020-08-08
-      episode_id: 20080801
-      season_number: 2
-      synopsis: https://20-2.com
-      title: 2020-08-08 - Mock Entry 20-2
-  s02.e20080801 - 20-2.nfo
-    NFO tags:
-      episodedetails:
-        aired: 2020-08-08
-        episode: 20080801
-        plot: https://20-2.com
-        season: 2
-        title: 2020-08-08 - Mock Entry 20-2
-        year: 2020
-  s02.e20080802 - 20-1-thumb.jpg
-  s02.e20080802 - 20-1.mp4
-    Video Tags:
-      date: 2020-08-08
-      episode_id: 20080802
+      episode_id: 20080803
       season_number: 2
       synopsis: https://20-1.com
       title: 2020-08-08 - Mock Entry 20-1
-  s02.e20080802 - 20-1.nfo
+  s02.e20080803 - 20-1.nfo
     NFO tags:
       episodedetails:
         aired: 2020-08-08
-        episode: 20080802
+        episode: 20080803
         plot: https://20-1.com
         season: 2
         title: 2020-08-08 - Mock Entry 20-1
         year: 2020
-  s02.e21080801 - 21-1-thumb.jpg
-  s02.e21080801 - 21-1.mp4
+  s02.e20080803 - 20-2-thumb.jpg
+  s02.e20080803 - 20-2.mp4
+    Video Tags:
+      date: 2020-08-08
+      episode_id: 20080803
+      season_number: 2
+      synopsis: https://20-2.com
+      title: 2020-08-08 - Mock Entry 20-2
+  s02.e20080803 - 20-2.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2020-08-08
+        episode: 20080803
+        plot: https://20-2.com
+        season: 2
+        title: 2020-08-08 - Mock Entry 20-2
+        year: 2020
+  s02.e21080802 - 21-1-thumb.jpg
+  s02.e21080802 - 21-1.mp4
     Video Tags:
       date: 2021-08-08
-      episode_id: 21080801
+      episode_id: 21080802
       season_number: 2
       synopsis: https://21-1.com
       title: 2021-08-08 - Mock Entry 21-1
-  s02.e21080801 - 21-1.nfo
+  s02.e21080802 - 21-1.nfo
     NFO tags:
       episodedetails:
         aired: 2021-08-08
-        episode: 21080801
+        episode: 21080802
         plot: https://21-1.com
         season: 2
         title: 2021-08-08 - Mock Entry 21-1
         year: 2021
+
+Files modified:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json

@@ -3,6 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
   fanart.jpg
+  show.jpg
 {output_directory}/Season 2020
   s2020.e14698 - 20-1-thumb.jpg
   s2020.e14698 - 20-1.mp4

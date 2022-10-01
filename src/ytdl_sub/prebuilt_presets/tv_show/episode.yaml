@@ -24,7 +24,7 @@ presets:
       episode_title: "{upload_date_standardized} - {title}"
       episode_plot: "{webpage_url}"
       episode_year: "{upload_year}"
-      episode_air_date_standardized: "{upload_date_standardized}"
+      episode_date_standardized: "{upload_date_standardized}"
       episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {uid_sanitized}"
       episode_file_path: "Season {season_number_padded}/{episode_file_name}"
       episode_number_suffix: ""
@@ -32,11 +32,13 @@ presets:
   episode_video_tags:
     video_tags:
       tags:
+        show: "{tv_show_name}"
         season_number: "{season_number}"
         episode_id: "{episode_number}"
         title: "{episode_title}"
         synopsis: "{episode_plot}"
-        date: "{episode_air_date_standardized}"
+        year: "{episode_year}"
+        date: "{episode_date_standardized}"
 
   episode_nfo_tags:
     nfo_tags:
@@ -48,7 +50,7 @@ presets:
         title: "{episode_title}"
         plot: "{episode_plot}"
         year: "{episode_year}"
-        aired: "{episode_air_date_standardized}"
+        aired: "{episode_date_standardized}"
 
     output_directory_nfo_tags:
       nfo_name: "tvshow.nfo"

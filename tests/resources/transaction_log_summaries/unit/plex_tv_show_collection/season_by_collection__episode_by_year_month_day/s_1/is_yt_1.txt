@@ -4,6 +4,7 @@ Files created:
   .ytdl-sub-subscription_test-download-archive.json
   Season01.jpg
   fanart.jpg
+  show.jpg
 {output_directory}/Season 01
   s01.e20080701 - 20-3-thumb.jpg
   s01.e20080701 - 20-3.mp4

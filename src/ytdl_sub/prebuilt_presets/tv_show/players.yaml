@@ -4,7 +4,7 @@ presets:
     preset:
       - "episode_video_tags"
     overrides:
-      tv_show_poster_file_name: "show.jpg"
+      tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
       season_poster_file_name: "Season{season_number_padded}.jpg"
 

@@ -5,6 +5,7 @@ Files created:
   Season01.jpg
   Season02.jpg
   fanart.jpg
+  show.jpg
 {output_directory}/Season 01
   s01.e20060601 - 20-7-thumb.jpg
   s01.e20060601 - 20-7.mp4

@@ -23,22 +23,10 @@ from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
 
 
 @pytest.fixture
-def working_directory() -> str:
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield temp_dir
-
-
-@pytest.fixture
 def subscription_name(working_directory) -> str:
     name = "subscription_test"
     os.makedirs(Path(working_directory) / name, exist_ok=True)
     return name
-
-
-@pytest.fixture
-def output_directory() -> str:
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield temp_dir
 
 
 @pytest.fixture
@@ -103,7 +91,7 @@ def mock_download_collection_thumbnail(mock_downloaded_file_path):
     def _mock_download_thumbnail(output_path: str) -> bool:
         # mock_file_factory(file_name=output_path.split("/")[-1])
         output_name = os.path.basename(output_path)
-        if "poster" in output_name:
+        if "poster" in output_name or "show" in output_name:
             copy_file_fixture(fixture_name="poster.jpg", output_file_path=output_path)
             return True
         elif "fanart" in output_name:

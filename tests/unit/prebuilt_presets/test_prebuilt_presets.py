@@ -112,7 +112,7 @@ class TestPrebuiltTVShowPresets:
             overrides = dict(
                 overrides,
                 **{
-                    f"collection_season_{season_index}_name": f"Season {season_index}",
+                    f"collection_season_{season_index}_name": f"Named Season {season_index}",
                     f"collection_season_{season_index}_url": f"https://season.{season_index}.com",
                 },
             )
