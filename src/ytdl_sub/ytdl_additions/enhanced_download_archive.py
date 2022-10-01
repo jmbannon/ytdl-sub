@@ -227,6 +227,21 @@ class DownloadMappings:
             del self._entry_mappings[entry_id]
         return self
 
+    def get_num_entries_with_upload_date(self, upload_date_standardized: str) -> int:
+        """
+        Parameters
+        ----------
+        upload_date_standardized
+            A standardized upload date
+
+        Returns
+        -------
+        Number of entries in the mapping with this upload date
+        """
+        return len(
+            [_ for _ in self._entry_mappings.values() if _.upload_date == upload_date_standardized]
+        )
+
     def get_entries_out_of_range(self, date_range: DateRange) -> Dict[str, DownloadMapping]:
         """
         Parameters

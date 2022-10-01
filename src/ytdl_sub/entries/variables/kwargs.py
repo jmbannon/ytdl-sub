@@ -40,6 +40,8 @@ PLAYLIST_UPLOADER = _("playlist_uploader")
 PLAYLIST_UPLOADER_ID = _("playlist_uploader_id")
 PLAYLIST_UPLOADER_URL = _("playlist_uploader_url")
 
+UPLOAD_DATE_INDEX = _("upload_date_index", backend=True)
+REQUESTED_SUBTITLES = _("requested_subtitles", backend=True)
 UID = _("id")
 EXTRACTOR = _("extractor")
 EPOCH = _("epoch")
