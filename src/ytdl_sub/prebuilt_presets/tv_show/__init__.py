@@ -5,26 +5,18 @@ from typing import Optional
 
 Preset = Dict[str, Any]
 
+KODI_TV_SHOW = "kodi_tv_show"
+JELLYFIN_TV_SHOW = "jellyfin_tv_show"
+PLEX_TV_SHOW = "plex_tv_show"
+
+TV_SHOW_URL = "tv_show_url"
+TV_SHOW_COLLECTION = "tv_show_collection"
+
 
 class PrebuiltPresets:
-    BASE_PRESET: str
-
-    def _preset(self, name: str, presets: List[str]) -> Preset:
-        return {"presets": {name: {"preset": [self.BASE_PRESET] + presets}}}
-
-    def _tv_show_url(self, name: str) -> Preset:
-        """
-        Kodi TV Show with seasons as years, episodes ordered by upload date
-        """
-        return self._preset(
-            name=name, presets=["tv_show_url", "season_by_year__episode_by_month_day"]
-        )
-
-    def _tv_show_collection(self, name: str) -> Preset:
-        return self._preset(
-            name=name,
-            presets=["tv_show_collection", "season_by_collection__episode_by_year_month_day"],
-        )
+    @classmethod
+    def _build_preset(cls, name: str, parent_presets: List[str]) -> Preset:
+        return {"presets": {name: {"preset": parent_presets}}}
 
     @classmethod
     def get_preset_names(cls) -> List[str]:
@@ -32,70 +24,74 @@ class PrebuiltPresets:
         return preset_names
 
     @classmethod
-    def get_collection_preset_names(cls) -> List[str]:
-        return [name for name in cls.get_preset_names() if "collection" in name]
-
-    @classmethod
-    def get_non_collection_preset_names(cls) -> List[str]:
-        return [name for name in cls.get_preset_names() if "collection" not in name]
-
-    @classmethod
-    def get_presets(cls, preset_names: Optional[List[str]] = None) -> List[Preset]:
-        if preset_names is None:
-            preset_names = cls.get_preset_names()
-
-        return [getattr(cls(), preset_name) for preset_name in preset_names]
+    def get_presets(cls) -> List[Preset]:
+        return [getattr(cls(), preset_name) for preset_name in cls.get_preset_names()]
 
 
-class PrebuiltKodiTVShowPresets(PrebuiltPresets):
-    BASE_PRESET = "kodi_tv_show"
+class PrebuiltTvShowUrlPresets(PrebuiltPresets):
+    """
+    Docstring for all TV SHOW URL presets
+    """
+
+    BASE_PRESET = "tv_show_url"
 
     @property
     def kodi_tv_show_url(self) -> Preset:
         """
         Kodi TV Show with seasons as years, episodes ordered by upload date
         """
-        return self._tv_show_url(name="kodi_tv_show_url")
-
-    @property
-    def kodi_tv_show_collection(self) -> Preset:
-        """
-        Kodi TV Show from a collection of multiple URLs. TODO: finish docstring
-        """
-        return self._tv_show_collection(name="kodi_tv_show_collection")
-
-
-class PrebuiltJellyfinTVShowPresets(PrebuiltPresets):
-    BASE_PRESET = "jellyfin_tv_show"
+        return self._build_preset(
+            name="kodi_tv_show_url", parent_presets=[KODI_TV_SHOW, TV_SHOW_URL]
+        )
 
     @property
     def jellyfin_tv_show_url(self) -> Preset:
         """
         Kodi TV Show with seasons as years, episodes ordered by upload date
         """
-        return self._tv_show_url(name="jellyfin_tv_show_url")
-
-    @property
-    def jellyfin_tv_show_collection(self) -> Preset:
-        """
-        Kodi TV Show from a collection of multiple URLs. TODO: finish docstring
-        """
-        return self._tv_show_collection(name="jellyfin_tv_show_collection")
-
-
-class PrebuiltPlexTVShowPresets(PrebuiltPresets):
-    BASE_PRESET = "plex_tv_show"
+        return self._build_preset(
+            name="jellyfin_tv_show_url", parent_presets=[JELLYFIN_TV_SHOW, TV_SHOW_URL]
+        )
 
     @property
     def plex_tv_show_url(self) -> Preset:
         """
         Kodi TV Show with seasons as years, episodes ordered by upload date
         """
-        return self._tv_show_url(name="plex_tv_show_url")
+        return self._build_preset(
+            name="plex_tv_show_url", parent_presets=[PLEX_TV_SHOW, TV_SHOW_URL]
+        )
+
+
+class PrebuiltTvShowCollectionPresets(PrebuiltPresets):
+    """
+    Docstring for all TV SHOW URL presets
+    """
+
+    @property
+    def kodi_tv_show_collection(self) -> Preset:
+        """
+        Kodi TV Show with seasons as years, episodes ordered by upload date
+        """
+        return self._build_preset(
+            name="kodi_tv_show_collection", parent_presets=[KODI_TV_SHOW, TV_SHOW_COLLECTION]
+        )
+
+    @property
+    def jellyfin_tv_show_collection(self) -> Preset:
+        """
+        Kodi TV Show with seasons as years, episodes ordered by upload date
+        """
+        return self._build_preset(
+            name="jellyfin_tv_show_collection",
+            parent_presets=[JELLYFIN_TV_SHOW, TV_SHOW_COLLECTION],
+        )
 
     @property
     def plex_tv_show_collection(self) -> Preset:
         """
-        Kodi TV Show from a collection of multiple URLs. TODO: finish docstring
+        Kodi TV Show with seasons as years, episodes ordered by upload date
         """
-        return self._tv_show_collection(name="plex_tv_show_collection")
+        return self._build_preset(
+            name="plex_tv_show_collection", parent_presets=[PLEX_TV_SHOW, TV_SHOW_COLLECTION]
+        )

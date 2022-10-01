@@ -6,21 +6,13 @@ import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
-from ytdl_sub.prebuilt_presets.tv_show import PrebuiltJellyfinTVShowPresets
-from ytdl_sub.prebuilt_presets.tv_show import PrebuiltKodiTVShowPresets
-from ytdl_sub.prebuilt_presets.tv_show import PrebuiltPlexTVShowPresets
+from ytdl_sub.prebuilt_presets import PrebuiltTvShowCollectionPresets
+from ytdl_sub.prebuilt_presets import PrebuiltTvShowUrlPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 
 
-@pytest.mark.parametrize(
-    "media_player_preset",
-    [
-        "kodi_tv_show_url",
-        "jellyfin_tv_show_url",
-        "plex_tv_show_url",
-    ],
-)
+@pytest.mark.parametrize("media_player_preset", PrebuiltTvShowUrlPresets.get_preset_names())
 @pytest.mark.parametrize(
     "tv_show_structure_preset",
     [
@@ -122,14 +114,7 @@ class TestPrebuiltTVShowPresets:
         )
 
 
-@pytest.mark.parametrize(
-    "media_player_preset",
-    [
-        "kodi_tv_show_collection",
-        "jellyfin_tv_show_collection",
-        "plex_tv_show_collection",
-    ],
-)
+@pytest.mark.parametrize("media_player_preset", PrebuiltTvShowCollectionPresets.get_preset_names())
 @pytest.mark.parametrize(
     "tv_show_structure_preset",
     [
