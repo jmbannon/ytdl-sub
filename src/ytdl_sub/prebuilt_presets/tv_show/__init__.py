@@ -100,3 +100,28 @@ class PrebuiltJellyfinTVShowPresets(PrebuiltPresets):
         Kodi TV Show from a collection of multiple URLs. TODO: finish docstring
         """
         return self._tv_show_collection(name="jellyfin_tv_show_collection")
+
+
+class PrebuiltPlexTVShowPresets(PrebuiltPresets):
+    BASE_PRESET = "plex_tv_show"
+
+    @property
+    def plex_tv_show_url(self) -> Preset:
+        """
+        Kodi TV Show with seasons as years, episodes ordered by upload date
+        """
+        return self._tv_show_url(name="plex_tv_show_url")
+
+    @property
+    def plex_tv_show_youtube_channel(self) -> Preset:
+        """
+        Kodi TV Show from a YouTube channel with seasons as years, episodes ordered by upload date
+        """
+        return self._tv_show_youtube_channel(name="plex_tv_show_youtube_channel")
+
+    @property
+    def plex_tv_show_collection(self) -> Preset:
+        """
+        Kodi TV Show from a collection of multiple URLs. TODO: finish docstring
+        """
+        return self._tv_show_collection(name="plex_tv_show_collection")

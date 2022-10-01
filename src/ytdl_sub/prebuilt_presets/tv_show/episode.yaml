@@ -29,6 +29,33 @@ presets:
       episode_file_path: "Season {season_number_padded}/{episode_file_name}"
       episode_number_suffix: ""
 
+  episode_video_tags:
+    video_tags:
+      tags:
+        season_number: "{season_number}"
+        episode_id: "{episode_number}"
+        title: "{episode_title}"
+        synopsis: "{episode_plot}"
+        date: "{episode_air_date_standardized}"
+
+  episode_nfo_tags:
+    nfo_tags:
+      nfo_name: "{episode_file_path}.nfo"
+      nfo_root: "episodedetails"
+      tags:
+        season: "{season_number}"
+        episode: "{episode_number}"
+        title: "{episode_title}"
+        plot: "{episode_plot}"
+        year: "{episode_year}"
+        aired: "{episode_air_date_standardized}"
+
+    output_directory_nfo_tags:
+      nfo_name: "tvshow.nfo"
+      nfo_root: "tvshow"
+      tags:
+        title: "{tv_show_name}"
+
 ####################################################################################################
 
   season_by_year:

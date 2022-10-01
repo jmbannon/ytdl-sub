@@ -1,0 +1,38 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+  Season01.jpg
+{output_directory}/Season 01
+  s01.e20080701 - 20-3-thumb.jpg
+  s01.e20080701 - 20-3.mp4
+    Video Tags:
+      date: 2020-08-07
+      episode_id: 20080701
+      season_number: 1
+      synopsis: https://20-3.com
+      title: 2020-08-07 - Mock Entry 20-3
+  s01.e20080801 - 20-2-thumb.jpg
+  s01.e20080801 - 20-2.mp4
+    Video Tags:
+      date: 2020-08-08
+      episode_id: 20080801
+      season_number: 1
+      synopsis: https://20-2.com
+      title: 2020-08-08 - Mock Entry 20-2
+  s01.e20080802 - 20-1-thumb.jpg
+  s01.e20080802 - 20-1.mp4
+    Video Tags:
+      date: 2020-08-08
+      episode_id: 20080802
+      season_number: 1
+      synopsis: https://20-1.com
+      title: 2020-08-08 - Mock Entry 20-1
+  s01.e21080801 - 21-1-thumb.jpg
+  s01.e21080801 - 21-1.mp4
+    Video Tags:
+      date: 2021-08-08
+      episode_id: 21080801
+      season_number: 1
+      synopsis: https://21-1.com
+      title: 2021-08-08 - Mock Entry 21-1

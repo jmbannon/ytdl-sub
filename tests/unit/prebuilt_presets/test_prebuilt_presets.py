@@ -7,6 +7,7 @@ from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.prebuilt_presets.tv_show import PrebuiltJellyfinTVShowPresets
 from ytdl_sub.prebuilt_presets.tv_show import PrebuiltKodiTVShowPresets
+from ytdl_sub.prebuilt_presets.tv_show import PrebuiltPlexTVShowPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -16,6 +17,7 @@ class TestPrebuiltTVShowPresets:
         [
             *PrebuiltKodiTVShowPresets.get_non_collection_preset_names(),
             *PrebuiltJellyfinTVShowPresets.get_non_collection_preset_names(),
+            *PrebuiltPlexTVShowPresets.get_non_collection_preset_names(),
         ],
     )
     @pytest.mark.parametrize(
@@ -45,7 +47,7 @@ class TestPrebuiltTVShowPresets:
                 "preset": parent_presets,
                 "overrides": {
                     "url": "https://your.name.here",
-                    "tv_show_name": f"{media_player_preset}_{tv_show_structure_preset}",
+                    "tv_show_name": expected_summary_name.replace("/", "_"),
                     "tv_show_directory": output_directory,
                 },
             },
@@ -70,6 +72,7 @@ class TestPrebuiltTVShowPresets:
         [
             *PrebuiltKodiTVShowPresets.get_collection_preset_names(),
             *PrebuiltJellyfinTVShowPresets.get_collection_preset_names(),
+            *PrebuiltPlexTVShowPresets.get_collection_preset_names(),
         ],
     )
     @pytest.mark.parametrize(
@@ -92,7 +95,12 @@ class TestPrebuiltTVShowPresets:
         season_indices: List[int],
         is_season_1_youtube_channel: bool,
     ):
-        expected_summary_name = f"unit/{media_player_preset}/{tv_show_structure_preset}"
+        expected_summary_name = "unit/{}/{}/s_{}/is_yt_{}".format(
+            media_player_preset,
+            tv_show_structure_preset,
+            len(season_indices),
+            int(is_season_1_youtube_channel),
+        )
         parent_presets: List[str] = [media_player_preset, tv_show_structure_preset]
 
         overrides: Dict[str, str] = {}
@@ -117,7 +125,7 @@ class TestPrebuiltTVShowPresets:
                 "overrides": dict(
                     overrides,
                     **{
-                        "tv_show_name": f"{media_player_preset}_{tv_show_structure_preset}",
+                        "tv_show_name": expected_summary_name.replace("/", "_"),
                         "tv_show_directory": output_directory,
                     },
                 ),
