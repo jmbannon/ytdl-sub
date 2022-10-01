@@ -33,7 +33,9 @@ from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
+from ytdl_sub.entries.variables.kwargs import REQUESTED_SUBTITLES
 from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
+from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.file_handler import FileHandler
@@ -382,9 +384,18 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
         )
 
-        # Workaround for the ytdlp issue
-        # pylint: disable=protected-access
-        entry._kwargs["requested_subtitles"] = download_entry_dict.get("requested_subtitles")
+        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
+            upload_date_standardized=entry.upload_date_standardized
+        )
+
+        entry.add_kwargs(
+            {
+                # Workaround for the yt-dlp issue that does not include subs in playlist downloads
+                REQUESTED_SUBTITLES: download_entry_dict.get(REQUESTED_SUBTITLES),
+                # Tracks number of entries with the same upload date to make them unique
+                UPLOAD_DATE_INDEX: upload_date_idx,
+            }
+        )
         # pylint: enable=protected-access
 
         return entry
