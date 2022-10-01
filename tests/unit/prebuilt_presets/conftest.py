@@ -118,22 +118,24 @@ def mock_download_collection_entries(
         return mock_entry_dict_factory(**kwargs)
 
     collection_1_entry_dicts = [
-        _(uid="A", upload_date="20210808", playlist_index=1, playlist_count=3),
-        _(uid="B-1", upload_date="20200808", playlist_index=2, playlist_count=3),
-        _(uid="B-2", upload_date="20200808", playlist_index=3, playlist_count=3),
+        _(uid="21-1", upload_date="20210808", playlist_index=1, playlist_count=4),  # 1
+        _(uid="20-1", upload_date="20200808", playlist_index=2, playlist_count=4),  # 2  98
+        _(uid="20-2", upload_date="20200808", playlist_index=3, playlist_count=4),  # 1  99
+        _(uid="20-3", upload_date="20200807", playlist_index=4, playlist_count=4),
     ]
     collection_2_entry_dicts = [
-        # A should resolve to collection 1 (which is season 2)
-        _(uid="A", upload_date="20210808", playlist_index=1, playlist_count=4),
-        _(uid="D", upload_date="20210808", playlist_index=2, playlist_count=4),
-        _(uid="E-1", upload_date="20200808", playlist_index=3, playlist_count=4),
-        _(uid="E-2", upload_date="20200808", playlist_index=4, playlist_count=4),
+        # 20-3 should resolve to collection 1 (which is season 2)
+        _(uid="20-3", upload_date="20200807", playlist_index=1, playlist_count=5),
+        _(uid="20-4", upload_date="20200806", playlist_index=2, playlist_count=5),
+        _(uid="20-5", upload_date="20200706", playlist_index=3, playlist_count=5),
+        _(uid="20-6", upload_date="20200706", playlist_index=4, playlist_count=5),
+        _(uid="20-7", upload_date="20200606", playlist_index=5, playlist_count=5),
     ]
 
     with patch.object(
         Downloader, "extract_info_via_info_json"
     ) as mock_download_metadata, patch.object(
-        Downloader, "_download_entry", new=lambda _, entry: entry
+        Downloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
     ):
         # Stub out metadata. TODO: update this if we do metadata plugins
         mock_download_metadata.side_effect = [collection_1_entry_dicts, collection_2_entry_dicts]

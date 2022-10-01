@@ -23,10 +23,7 @@ class TestPrebuiltTVShowPresets:
         [
             "season_by_year__episode_by_month_day",
             "season_by_year__episode_by_month_day_reversed",
-            "season_by_year__episode_by_month_day_hour",
-            "season_by_year__episode_by_month_day_hour_reversed",
             "season_by_year_month__episode_by_day",
-            "season_by_year_month__episode_by_day_hour",
         ],
     )
     def test_non_collection_presets_compile(
@@ -80,8 +77,6 @@ class TestPrebuiltTVShowPresets:
         [
             "season_by_collection__episode_by_year_month_day",
             "season_by_collection__episode_by_year_month_day_reversed",
-            "season_by_collection__episode_by_year_month_day_hour",
-            "season_by_collection__episode_by_year_month_day_hour_reversed",
         ],
     )
     @pytest.mark.parametrize("season_indices", [[1], [1, 2]])

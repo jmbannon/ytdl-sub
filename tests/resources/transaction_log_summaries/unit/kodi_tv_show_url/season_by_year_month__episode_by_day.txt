@@ -8,37 +8,48 @@ Files created:
       tvshow:
         title: test tv show
 {output_directory}/Season 202008
-  s202008.e08 - B-1-thumb.jpg
-  s202008.e08 - B-1.mp4
-  s202008.e08 - B-1.nfo
+  s202008.e0701 - 20-3-thumb.jpg
+  s202008.e0701 - 20-3.mp4
+  s202008.e0701 - 20-3.nfo
     NFO tags:
       episodedetails:
-        aired: 2020-08-08
-        episode: 8
-        plot: https://B-1.com
+        aired: 2020-08-07
+        episode: 7
+        plot: https://20-3.com
         season: 202008
-        title: 2020-08-08 - Mock Entry B-1
+        title: 2020-08-07 - Mock Entry 20-3
         year: 2020
-  s202008.e08 - B-2-thumb.jpg
-  s202008.e08 - B-2.mp4
-  s202008.e08 - B-2.nfo
+  s202008.e0801 - 20-2-thumb.jpg
+  s202008.e0801 - 20-2.mp4
+  s202008.e0801 - 20-2.nfo
     NFO tags:
       episodedetails:
         aired: 2020-08-08
         episode: 8
-        plot: https://B-2.com
+        plot: https://20-2.com
         season: 202008
-        title: 2020-08-08 - Mock Entry B-2
+        title: 2020-08-08 - Mock Entry 20-2
+        year: 2020
+  s202008.e0802 - 20-1-thumb.jpg
+  s202008.e0802 - 20-1.mp4
+  s202008.e0802 - 20-1.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2020-08-08
+        episode: 8
+        plot: https://20-1.com
+        season: 202008
+        title: 2020-08-08 - Mock Entry 20-1
         year: 2020
 {output_directory}/Season 202108
-  s202108.e08 - A-thumb.jpg
-  s202108.e08 - A.mp4
-  s202108.e08 - A.nfo
+  s202108.e0801 - 21-1-thumb.jpg
+  s202108.e0801 - 21-1.mp4
+  s202108.e0801 - 21-1.nfo
     NFO tags:
       episodedetails:
         aired: 2021-08-08
         episode: 8
-        plot: https://A.com
+        plot: https://21-1.com
         season: 202108
-        title: 2021-08-08 - Mock Entry A
+        title: 2021-08-08 - Mock Entry 21-1
         year: 2021

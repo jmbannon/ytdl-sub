@@ -376,13 +376,17 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         elif archive_file_exists:
             FileHandler.copy(src_file_path=backup_archive_path, dst_file_path=archive_path)
 
-    def _download_entry(self, entry: Entry) -> Entry:
-        download_logger.info("Downloading entry %s", entry.title)
+    def _extract_entry_info_with_retry(self, entry: Entry) -> Entry:
         download_entry_dict = self.extract_info_with_retry(
             is_downloaded_fn=None if self.is_dry_run else entry.is_downloaded,
             url=entry.webpage_url,
             ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
         )
+        return Entry(download_entry_dict, working_directory=self.working_directory)
+
+    def _download_entry(self, entry: Entry) -> Entry:
+        download_logger.info("Downloading entry %s", entry.title)
+        download_entry = self._extract_entry_info_with_retry(entry=entry)
 
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
             upload_date_standardized=entry.upload_date_standardized
@@ -391,7 +395,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         entry.add_kwargs(
             {
                 # Workaround for the yt-dlp issue that does not include subs in playlist downloads
-                REQUESTED_SUBTITLES: download_entry_dict.get(REQUESTED_SUBTITLES),
+                REQUESTED_SUBTITLES: download_entry.kwargs_get(REQUESTED_SUBTITLES),
                 # Tracks number of entries with the same upload date to make them unique
                 UPLOAD_DATE_INDEX: upload_date_idx,
             }
@@ -483,7 +487,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                     yield entry_child
 
             for orphan in self._download_entries(orphans):
-                yield self._download_entry(orphan)
+                yield orphan
 
     def download(
         self,
