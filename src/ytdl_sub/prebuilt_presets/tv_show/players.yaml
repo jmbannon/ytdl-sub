@@ -10,7 +10,6 @@ presets:
 
   jellyfin_tv_show:
     preset:
-      - "episode_video_tags"
       - "episode_nfo_tags"
     overrides:
       tv_show_poster_file_name: "poster.jpg"
