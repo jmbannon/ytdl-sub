@@ -1,0 +1,127 @@
+presets:
+
+####################################################################################################
+
+  _episode_base:
+    output_options:
+      output_directory: "{tv_show_directory}/{tv_show_name_sanitized}"
+      file_name: "{episode_file_path}.{ext}"
+      thumbnail_name: "{episode_file_path}-thumb.jpg"
+      maintain_download_archive: True
+
+    chapters:
+      embed_chapters: True
+
+    overrides:
+#   MUST DEFINE:
+#     tv_show_directory
+#     tv_show_name
+#     season_number
+#     season_number_padded
+#     episode_number
+#     episode_number_padded
+      season_title: "{season_number_padded}"
+      episode_title: "{upload_date_standardized} - {title}"
+      episode_plot: "{webpage_url}"
+      episode_year: "{upload_year}"
+      episode_date_standardized: "{upload_date_standardized}"
+      episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {uid_sanitized}"
+      episode_file_path: "Season {season_number_padded}/{episode_file_name}"
+      episode_number_suffix: ""
+
+  _episode_video_tags:
+    video_tags:
+      tags:
+        show: "{tv_show_name}"
+        season_number: "{season_number}"
+        episode_id: "{episode_number}"
+        title: "{episode_title}"
+        synopsis: "{episode_plot}"
+        year: "{episode_year}"
+        date: "{episode_date_standardized}"
+
+  _episode_nfo_tags:
+    nfo_tags:
+      nfo_name: "{episode_file_path}.nfo"
+      nfo_root: "episodedetails"
+      tags:
+        season: "{season_number}"
+        episode: "{episode_number}"
+        title: "{episode_title}"
+        plot: "{episode_plot}"
+        year: "{episode_year}"
+        aired: "{episode_date_standardized}"
+
+    output_directory_nfo_tags:
+      nfo_name: "tvshow.nfo"
+      nfo_root: "tvshow"
+      tags:
+        title: "{tv_show_name}"
+
+####################################################################################################
+
+  _season_by_year:
+    overrides:
+      season_number: "{upload_year}"
+      season_number_padded: "{season_number}"
+
+  _season_by_year_month:
+    overrides:
+      season_number: "{upload_year}{upload_month_padded}"
+      season_number_padded: "{season_number}"
+
+####################################################################################################
+
+  season_by_year_month__episode_by_day:
+    preset:
+      - "_episode_base"
+      - "_season_by_year_month"
+    overrides:
+      episode_number: "{upload_day}"
+      episode_number_padded: "{upload_day_padded}{upload_date_index_padded}"
+
+  season_by_year__episode_by_month_day:
+    preset:
+      - "_episode_base"
+      - "_season_by_year"
+    overrides:
+      episode_number: "{upload_month}{upload_day_padded}"
+      episode_number_padded: "{upload_month_padded}{upload_day_padded}{upload_date_index_padded}"
+
+  season_by_year__episode_by_month_day_reversed:
+    preset:
+      - "_episode_base"
+      - "_season_by_year"
+    overrides:
+      episode_number: "{upload_day_of_year_reversed}{upload_date_index_reversed_padded}"
+      episode_number_padded: "{upload_day_of_year_reversed_padded}{upload_date_index_reversed_padded}"
+
+  ###############
+
+  season_by_collection__episode_by_year_month_day:
+    preset:
+      - "_episode_base"
+    overrides:
+      episode_number: "{upload_year_truncated}{upload_month_padded}{upload_day_padded}{upload_date_index_padded}"
+      episode_number_padded: "{episode_number}"
+
+  season_by_collection__episode_by_year_month_day_reversed:
+    preset:
+      - "_episode_base"
+    overrides:
+      episode_number: "{upload_year_truncated_reversed}{upload_month_reversed_padded}{upload_day_reversed_padded}{upload_date_index_reversed_padded}"
+      episode_number_padded: "{episode_number}"
+
+  season_by_collection__episode_by_playlist_index:
+    preset:
+      - "_episode_base"
+    overrides:
+      episode_number: "{playlist_index}"
+      episode_number_padded: "{playlist_index_padded6}"
+
+  season_by_collection__episode_by_playlist_index_reversed:
+    preset:
+      - "_episode_base"
+    overrides:
+      episode_number: "{playlist_index_reversed}"
+      episode_number_padded: "{playlist_index_reversed_padded6}"

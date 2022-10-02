@@ -31,6 +31,11 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
              kodi_safe: False
     """
 
+    # Hack to make it so collection named seasons do not error
+    # when adding output_directory_nfo info for plex
+    _required_keys = set()
+    _optional_keys = {"kodi_safe", "nfo_name", "nfo_root", "tags"}
+
     @property
     def nfo_root(self) -> StringFormatterValidator:
         """
@@ -105,5 +110,11 @@ class OutputDirectoryNfoTagsPlugin(SharedNfoTagsPlugin):
         """
         Creates an NFO file in the root of the output directory using the last entry
         """
-        if self._last_entry:
-            self._create_nfo(entry=self._last_entry, save_to_entry=False)
+        if (
+            self.plugin_options.nfo_name is None
+            or self.plugin_options.nfo_root is None
+            or self._last_entry is None
+        ):
+            return
+
+        self._create_nfo(entry=self._last_entry, save_to_entry=False)

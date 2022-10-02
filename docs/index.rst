@@ -21,4 +21,5 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   presets
    config

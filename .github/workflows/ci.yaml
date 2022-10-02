@@ -69,6 +69,7 @@ jobs:
 
     - name: Run unit tests with coverage
       run: |
+        sudo apt-get install -y ffmpeg
         source /opt/env/bin/activate
         coverage run -m pytest tests/unit && coverage xml -o /opt/coverage/unit/coverage.xml
 

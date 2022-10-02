@@ -1,7 +1,9 @@
 import contextlib
 import json
 import logging
+import shutil
 import tempfile
+from pathlib import Path
 from typing import Any
 from typing import Callable
 from typing import Dict
@@ -15,6 +17,12 @@ from ytdl_sub.utils.logger import Logger
 
 @pytest.fixture()
 def output_directory():
+    with tempfile.TemporaryDirectory() as temp_dir:
+        yield temp_dir
+
+
+@pytest.fixture
+def working_directory() -> str:
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 

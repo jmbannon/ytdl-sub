@@ -1,4 +1,6 @@
 import os.path
+from io import StringIO
+from pathlib import Path
 from typing import Dict
 
 import yaml
@@ -8,7 +10,7 @@ from ytdl_sub.utils.exceptions import FileNotFoundException
 from ytdl_sub.utils.exceptions import InvalidYamlException
 
 
-def load_yaml(file_path: str) -> Dict:
+def load_yaml(file_path: str | Path) -> Dict:
     """
     Parameters
     ----------
@@ -36,3 +38,14 @@ def load_yaml(file_path: str) -> Dict:
         raise InvalidYamlException(
             f"'{file_path}' has invalid YAML, copy-paste it into a YAML checker to find the issue."
         ) from yaml_exception
+
+
+def dump_yaml(to_dump: Dict) -> str:
+    """
+    Returns
+    -------
+    dict converted to YAML
+    """
+    string_io = StringIO()
+    yaml.safe_dump(to_dump, string_io, indent=2, allow_unicode=True, sort_keys=True)
+    return string_io.getvalue()

@@ -1,9 +1,11 @@
-from pathlib import Path
+import os
 from typing import List
+
+from resources import RESOURCE_PATH
 
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 
-_TRANSACTION_LOG_SUMMARY_PATH = Path("tests/resources/transaction_log_summaries")
+_TRANSACTION_LOG_SUMMARY_PATH = RESOURCE_PATH / "transaction_log_summaries"
 
 
 def assert_transaction_log_matches(
@@ -32,6 +34,7 @@ def assert_transaction_log_matches(
 
     # Write the expected summary file if regenerate is True
     if regenerate_transaction_log:
+        os.makedirs(os.path.dirname(transaction_log_path), exist_ok=True)
         with open(transaction_log_path, "w", encoding="utf-8") as summary_file:
             summary_file.write(
                 transaction_log.to_output_message(output_directory="{output_directory}")

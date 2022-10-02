@@ -31,9 +31,13 @@ class SharedNfoTagsOptions(PluginOptions):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._nfo_name = self._validate_key(key="nfo_name", validator=StringFormatterValidator)
-        self._nfo_root = self._validate_key(key="nfo_root", validator=StringFormatterValidator)
-        self._tags = self._validate_key(key="tags", validator=NfoTagsValidator)
+        self._nfo_name = self._validate_key_if_present(
+            key="nfo_name", validator=StringFormatterValidator
+        )
+        self._nfo_root = self._validate_key_if_present(
+            key="nfo_root", validator=StringFormatterValidator
+        )
+        self._tags = self._validate_key_if_present(key="tags", validator=NfoTagsValidator)
         self._kodi_safe = self._validate_key_if_present(
             key="kodi_safe", validator=BoolValidator, default=False
         ).value

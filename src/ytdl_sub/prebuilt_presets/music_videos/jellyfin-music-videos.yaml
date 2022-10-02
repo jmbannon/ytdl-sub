@@ -1,0 +1,6 @@
+presets:
+
+  kodi-music-videos:
+    preset:
+      - "jellyfin-music-videos"
+      - "kodi-safe"

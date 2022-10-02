@@ -5,9 +5,11 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
+from resources import RESOURCE_PATH
+
 from ytdl_sub.utils.file_handler import get_file_md5_hash
 
-_EXPECTED_DOWNLOADS_SUMMARY_PATH = Path("tests/resources/expected_downloads_summaries")
+_EXPECTED_DOWNLOADS_SUMMARY_PATH = RESOURCE_PATH / "expected_downloads_summaries"
 
 
 def _get_files_in_directory(relative_directory: Path | str) -> List[Path]:
@@ -126,6 +128,7 @@ def assert_expected_downloads(
 
     summary_full_path = _EXPECTED_DOWNLOADS_SUMMARY_PATH / expected_download_summary_file_name
     if regenerate_expected_download_summary:
+        os.makedirs(os.path.dirname(summary_full_path), exist_ok=True)
         ExpectedDownloads.from_directory(directory_path=output_directory).to_summary_file(
             summary_file_path=summary_full_path
         )
