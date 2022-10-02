@@ -72,16 +72,6 @@ presets:
 
 ####################################################################################################
 
-  episode_add_hour_granularity:
-    overrides:
-      episode_number_suffix: "{epoch_hour}{playlist_index_reversed_padded6}"
-
-  episode_add_hour_granularity_reversed:
-    overrides:
-      episode_number_suffix: "{epoch_hour}{playlist_index_padded6}"
-
-####################################################################################################
-
   season_by_year_month__episode_by_day:
     preset:
       - "episode_base"

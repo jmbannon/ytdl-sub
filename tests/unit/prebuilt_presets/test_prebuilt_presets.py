@@ -102,13 +102,11 @@ class TestPrebuiltTVShowPresets:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name=f"{expected_summary_name}.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=False,
             expected_download_summary_file_name=f"{expected_summary_name}.json",
-            regenerate_expected_download_summary=True,
         )
 
 
@@ -224,11 +222,9 @@ class TestPrebuiltTvShowCollectionPresets:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name=f"{expected_summary_name}.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=False,
             expected_download_summary_file_name=f"{expected_summary_name}.json",
-            regenerate_expected_download_summary=True,
         )
