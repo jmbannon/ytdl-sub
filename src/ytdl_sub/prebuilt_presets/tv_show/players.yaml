@@ -1,22 +1,22 @@
 presets:
 
-  plex_tv_show:
+  _plex_tv_show:
     preset:
-      - "episode_video_tags"
+      - "_episode_video_tags"
     overrides:
       tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
       season_poster_file_name: "Season{season_number_padded}.jpg"
 
-  jellyfin_tv_show:
+  _jellyfin_tv_show:
     preset:
-      - "episode_nfo_tags"
+      - "_episode_nfo_tags"
     overrides:
       tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
       season_poster_file_name: "season{season_number_padded}-poster.jpg"
 
-  kodi_tv_show:
+  _kodi_tv_show:
     preset:
-      - "jellyfin_tv_show"
-      - "kodi_safe_nfo"
+      - "_jellyfin_tv_show"
+      - "_kodi_safe_nfo"

@@ -11,14 +11,14 @@ Preset = Dict[str, Any]
 ####################################################
 # TV SHOW TYPES
 
-KODI_TV_SHOW = "kodi_tv_show"
-JELLYFIN_TV_SHOW = "jellyfin_tv_show"
-PLEX_TV_SHOW = "plex_tv_show"
+KODI_TV_SHOW = "_kodi_tv_show"
+JELLYFIN_TV_SHOW = "_jellyfin_tv_show"
+PLEX_TV_SHOW = "_plex_tv_show"
 
 #####################################################
 # TV SHOW URL PRESETS
 
-TV_SHOW_URL = "tv_show_url"
+TV_SHOW_BY_DATE = "_tv_show_by_date"
 
 SEASON_YEAR__EPISODE_MONTH_DAY = "season_by_year__episode_by_month_day"
 SEASON_YEAR__EPISODE_MONTH_DAY_REVERSED = "season_by_year__episode_by_month_day_reversed"
@@ -27,7 +27,7 @@ SEASON_YEAR_MONTH__EPISODE_DAY = "season_by_year_month__episode_by_day"
 #####################################################
 # TV SHOW COLLECTION PRESETS
 
-TV_SHOW_COLLECTION = "tv_show_collection"
+TV_SHOW_COLLECTION = "_tv_show_collection"
 
 SEASON_COLLECTION__EPISODE_Y_M_D = "season_by_collection__episode_by_year_month_day"
 SEASON_COLLECTION__EPISODE_Y_M_D_REV = "season_by_collection__episode_by_year_month_day_reversed"
@@ -74,7 +74,7 @@ class TvShowByDatePresets(PrebuiltPresets):
         Formats a TV show organized by date for Kodi
         """
         return self._build_preset(
-            name="kodi_tv_show_by_date", parent_presets=[KODI_TV_SHOW, TV_SHOW_URL]
+            name="kodi_tv_show_by_date", parent_presets=[KODI_TV_SHOW, TV_SHOW_BY_DATE]
         )
 
     @property
@@ -83,7 +83,7 @@ class TvShowByDatePresets(PrebuiltPresets):
         Formats a TV show organized by date for Jellyfin
         """
         return self._build_preset(
-            name="jellyfin_tv_show_by_date", parent_presets=[JELLYFIN_TV_SHOW, TV_SHOW_URL]
+            name="jellyfin_tv_show_by_date", parent_presets=[JELLYFIN_TV_SHOW, TV_SHOW_BY_DATE]
         )
 
     @property
@@ -92,7 +92,7 @@ class TvShowByDatePresets(PrebuiltPresets):
         Formats a TV show organized by date for Plex
         """
         return self._build_preset(
-            name="plex_tv_show_by_date", parent_presets=[PLEX_TV_SHOW, TV_SHOW_URL]
+            name="plex_tv_show_by_date", parent_presets=[PLEX_TV_SHOW, TV_SHOW_BY_DATE]
         )
 
 

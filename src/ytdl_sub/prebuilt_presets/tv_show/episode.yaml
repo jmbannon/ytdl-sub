@@ -2,7 +2,7 @@ presets:
 
 ####################################################################################################
 
-  episode_base:
+  _episode_base:
     output_options:
       output_directory: "{tv_show_directory}/{tv_show_name_sanitized}"
       file_name: "{episode_file_path}.{ext}"
@@ -29,7 +29,7 @@ presets:
       episode_file_path: "Season {season_number_padded}/{episode_file_name}"
       episode_number_suffix: ""
 
-  episode_video_tags:
+  _episode_video_tags:
     video_tags:
       tags:
         show: "{tv_show_name}"
@@ -40,7 +40,7 @@ presets:
         year: "{episode_year}"
         date: "{episode_date_standardized}"
 
-  episode_nfo_tags:
+  _episode_nfo_tags:
     nfo_tags:
       nfo_name: "{episode_file_path}.nfo"
       nfo_root: "episodedetails"
@@ -60,12 +60,12 @@ presets:
 
 ####################################################################################################
 
-  season_by_year:
+  _season_by_year:
     overrides:
       season_number: "{upload_year}"
       season_number_padded: "{season_number}"
 
-  season_by_year_month:
+  _season_by_year_month:
     overrides:
       season_number: "{upload_year}{upload_month_padded}"
       season_number_padded: "{season_number}"
@@ -74,24 +74,24 @@ presets:
 
   season_by_year_month__episode_by_day:
     preset:
-      - "episode_base"
-      - "season_by_year_month"
+      - "_episode_base"
+      - "_season_by_year_month"
     overrides:
       episode_number: "{upload_day}"
       episode_number_padded: "{upload_day_padded}{upload_date_index_padded}"
 
   season_by_year__episode_by_month_day:
     preset:
-      - "episode_base"
-      - "season_by_year"
+      - "_episode_base"
+      - "_season_by_year"
     overrides:
       episode_number: "{upload_month}{upload_day_padded}"
       episode_number_padded: "{upload_month_padded}{upload_day_padded}{upload_date_index_padded}"
 
   season_by_year__episode_by_month_day_reversed:
     preset:
-      - "episode_base"
-      - "season_by_year"
+      - "_episode_base"
+      - "_season_by_year"
     overrides:
       episode_number: "{upload_day_of_year_reversed}{upload_date_index_reversed_padded}"
       episode_number_padded: "{upload_day_of_year_reversed_padded}{upload_date_index_reversed_padded}"
@@ -100,30 +100,28 @@ presets:
 
   season_by_collection__episode_by_year_month_day:
     preset:
-      - "episode_base"
+      - "_episode_base"
     overrides:
       episode_number: "{upload_year_truncated}{upload_month_padded}{upload_day_padded}{upload_date_index_padded}"
       episode_number_padded: "{episode_number}"
 
   season_by_collection__episode_by_year_month_day_reversed:
     preset:
-      - "episode_base"
+      - "_episode_base"
     overrides:
       episode_number: "{upload_year_truncated_reversed}{upload_month_reversed_padded}{upload_day_reversed_padded}{upload_date_index_reversed_padded}"
       episode_number_padded: "{episode_number}"
 
   season_by_collection__episode_by_playlist_index:
     preset:
-      - "episode_base"
+      - "_episode_base"
     overrides:
       episode_number: "{playlist_index}"
       episode_number_padded: "{playlist_index_padded6}"
 
   season_by_collection__episode_by_playlist_index_reversed:
     preset:
-      - "episode_base"
+      - "_episode_base"
     overrides:
       episode_number: "{playlist_index_reversed}"
       episode_number_padded: "{playlist_index_reversed_padded6}"
-
-####################################################################################################
