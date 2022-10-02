@@ -69,7 +69,7 @@ class TvShowByDatePresets(PrebuiltPresets):
     """
 
     @property
-    def kodi_tv_show_by_date(self) -> Preset:
+    def kodi_tv_show_by_date(self):
         """
         Formats a TV show organized by date for Kodi
         """
@@ -78,7 +78,7 @@ class TvShowByDatePresets(PrebuiltPresets):
         )
 
     @property
-    def jellyfin_tv_show_by_date(self) -> Preset:
+    def jellyfin_tv_show_by_date(self):
         """
         Formats a TV show organized by date for Jellyfin
         """
@@ -87,7 +87,7 @@ class TvShowByDatePresets(PrebuiltPresets):
         )
 
     @property
-    def plex_tv_show_by_date(self) -> Preset:
+    def plex_tv_show_by_date(self):
         """
         Formats a TV show organized by date for Plex
         """
@@ -96,7 +96,7 @@ class TvShowByDatePresets(PrebuiltPresets):
         )
 
 
-class PrebuiltTvShowUrlEpisodeOrderingPresets(PrebuiltPresets):
+class TvShowByDateEpisodeFormattingPresets(PrebuiltPresets):
     @property
     def season_by_year__episode_by_month_day(self) -> Preset:
         """
@@ -119,7 +119,7 @@ class PrebuiltTvShowUrlEpisodeOrderingPresets(PrebuiltPresets):
         return self._document_preset()
 
 
-class PrebuiltTvShowCollectionPresets(PrebuiltPresets):
+class TvShowCollectionPresets(PrebuiltPresets):
     """
     Docstring for all TV SHOW URL presets
     """
@@ -153,7 +153,7 @@ class PrebuiltTvShowCollectionPresets(PrebuiltPresets):
         )
 
 
-class PrebuiltTvShowCollectionEpisodeOrderingPresets(PrebuiltPresets):
+class TvShowCollectionEpisodeFormattingPresets(PrebuiltPresets):
     @property
     def season_by_collection__episode_by_year_month_day(self) -> Preset:
         """
@@ -183,7 +183,7 @@ class PrebuiltTvShowCollectionEpisodeOrderingPresets(PrebuiltPresets):
         return self._document_preset()
 
 
-class PrebuiltTvShowCollectionSeasonPresets(PrebuiltPresets):
+class TvShowCollectionSeasonPresets(PrebuiltPresets):
     @property
     def collection_season_1(self):
         """
