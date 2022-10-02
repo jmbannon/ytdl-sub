@@ -5,7 +5,7 @@ from typing import Dict
 import mergedeep
 
 from ytdl_sub.prebuilt_presets.tv_show import PrebuiltTvShowCollectionPresets
-from ytdl_sub.prebuilt_presets.tv_show import PrebuiltTvShowUrlPresets
+from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
 from ytdl_sub.utils.yaml import load_yaml
 
 
@@ -20,7 +20,7 @@ def _merge_presets() -> Dict[str, Any]:
     # Get all presets from published preset configs
     mergedeep.merge(
         merged_configs,
-        *PrebuiltTvShowUrlPresets.get_presets(),
+        *TvShowByDatePresets.get_presets(),
         *PrebuiltTvShowCollectionPresets.get_presets(),
     )
 

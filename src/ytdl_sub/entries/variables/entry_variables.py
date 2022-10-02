@@ -35,6 +35,7 @@ from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 
 
 def pad(num: int, width: int = 2):
+    """Pad integers"""
     return str(num).zfill(width)
 
 

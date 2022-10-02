@@ -44,46 +44,55 @@ class PrebuiltPresets:
 
     @classmethod
     def get_preset_names(cls) -> Set[str]:
+        """
+        Returns
+        -------
+        Preset names in the set
+        """
         preset_names = [prop for prop in dir(cls) if isinstance(getattr(cls, prop), property)]
         return set(preset_names)
 
     @classmethod
     def get_presets(cls) -> List[Preset]:
+        """
+        Returns
+        -------
+        Preset dicts in the set if they are not added in other yamls
+        """
         return [getattr(cls(), preset_name) for preset_name in cls.get_preset_names()]
 
 
-class PrebuiltTvShowUrlPresets(PrebuiltPresets):
+class TvShowByDatePresets(PrebuiltPresets):
     """
-    Docstring for all TV SHOW URL presets
+    TV Show by Date presets create a TV show from a single URL using upload dates as season/episode
+    numbers.
     """
-
-    BASE_PRESET = "tv_show_url"
 
     @property
-    def kodi_tv_show_url(self) -> Preset:
+    def kodi_tv_show_by_date(self) -> Preset:
         """
-        Kodi TV Show with seasons as years, episodes ordered by upload date
+        Formats a TV show organized by date for Kodi
         """
         return self._build_preset(
-            name="kodi_tv_show_url", parent_presets=[KODI_TV_SHOW, TV_SHOW_URL]
+            name="kodi_tv_show_by_date", parent_presets=[KODI_TV_SHOW, TV_SHOW_URL]
         )
 
     @property
-    def jellyfin_tv_show_url(self) -> Preset:
+    def jellyfin_tv_show_by_date(self) -> Preset:
         """
-        Kodi TV Show with seasons as years, episodes ordered by upload date
+        Formats a TV show organized by date for Jellyfin
         """
         return self._build_preset(
-            name="jellyfin_tv_show_url", parent_presets=[JELLYFIN_TV_SHOW, TV_SHOW_URL]
+            name="jellyfin_tv_show_by_date", parent_presets=[JELLYFIN_TV_SHOW, TV_SHOW_URL]
         )
 
     @property
-    def plex_tv_show_url(self) -> Preset:
+    def plex_tv_show_by_date(self) -> Preset:
         """
-        Kodi TV Show with seasons as years, episodes ordered by upload date
+        Formats a TV show organized by date for Plex
         """
         return self._build_preset(
-            name="plex_tv_show_url", parent_presets=[PLEX_TV_SHOW, TV_SHOW_URL]
+            name="plex_tv_show_by_date", parent_presets=[PLEX_TV_SHOW, TV_SHOW_URL]
         )
 
 
@@ -154,6 +163,20 @@ class PrebuiltTvShowCollectionEpisodeOrderingPresets(PrebuiltPresets):
 
     @property
     def season_by_collection__episode_by_year_month_day_reversed(self) -> Preset:
+        """
+        DOC
+        """
+        return self._document_preset()
+
+    @property
+    def season_by_collection__episode_by_playlist_index(self) -> Preset:
+        """
+        DOC
+        """
+        return self._document_preset()
+
+    @property
+    def season_by_collection__episode_by_playlist_index_reversed(self) -> Preset:
         """
         DOC
         """

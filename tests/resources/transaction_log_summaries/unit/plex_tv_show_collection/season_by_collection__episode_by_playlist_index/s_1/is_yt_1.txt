@@ -1,0 +1,48 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+  Season01.jpg
+  fanart.jpg
+  poster.jpg
+{output_directory}/Season 01
+  s01.e000001 - 21-1-thumb.jpg
+  s01.e000001 - 21-1.mp4
+    Video Tags:
+      date: 2021-08-08
+      episode_id: 1
+      season_number: 1
+      show: unit_plex_tv_show_collection_season_by_collection__episode_by_playlist_index_s_1_is_yt_1
+      synopsis: https://21-1.com
+      title: 2021-08-08 - Mock Entry 21-1
+      year: 2021
+  s01.e000002 - 20-1-thumb.jpg
+  s01.e000002 - 20-1.mp4
+    Video Tags:
+      date: 2020-08-08
+      episode_id: 2
+      season_number: 1
+      show: unit_plex_tv_show_collection_season_by_collection__episode_by_playlist_index_s_1_is_yt_1
+      synopsis: https://20-1.com
+      title: 2020-08-08 - Mock Entry 20-1
+      year: 2020
+  s01.e000003 - 20-2-thumb.jpg
+  s01.e000003 - 20-2.mp4
+    Video Tags:
+      date: 2020-08-08
+      episode_id: 3
+      season_number: 1
+      show: unit_plex_tv_show_collection_season_by_collection__episode_by_playlist_index_s_1_is_yt_1
+      synopsis: https://20-2.com
+      title: 2020-08-08 - Mock Entry 20-2
+      year: 2020
+  s01.e000004 - 20-3-thumb.jpg
+  s01.e000004 - 20-3.mp4
+    Video Tags:
+      date: 2020-08-07
+      episode_id: 4
+      season_number: 1
+      show: unit_plex_tv_show_collection_season_by_collection__episode_by_playlist_index_s_1_is_yt_1
+      synopsis: https://20-3.com
+      title: 2020-08-07 - Mock Entry 20-3
+      year: 2020

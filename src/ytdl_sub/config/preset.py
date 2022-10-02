@@ -415,4 +415,9 @@ class Preset(StrictDictValidator):
 
     @property
     def yaml(self) -> str:
+        """
+        Returns
+        -------
+        Preset in YAML format
+        """
         return dump_yaml({"presets": {self._name: self._value}})

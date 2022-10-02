@@ -41,6 +41,11 @@ def load_yaml(file_path: str | Path) -> Dict:
 
 
 def dump_yaml(to_dump: Dict) -> str:
+    """
+    Returns
+    -------
+    dict converted to YAML
+    """
     string_io = StringIO()
     yaml.safe_dump(to_dump, string_io, indent=2, allow_unicode=True, sort_keys=True)
     return string_io.getvalue()
