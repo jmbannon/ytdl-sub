@@ -57,7 +57,7 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
             input_file_path = entry.get_download_file_path()
             output_file_path = input_file_path.removesuffix(entry.ext) + convert_to
 
-            ffmpeg_args = ["-bitexact", "-i", input_file_path, output_file_path]
+            ffmpeg_args = ["-bitexact", "-i", input_file_path, "-c", "copy", output_file_path]
 
             if not self.is_dry_run:
                 FFMPEG.run(ffmpeg_args)
