@@ -2,6 +2,7 @@ presets:
 
   _plex_tv_show:
     preset:
+      - "_plex_base"
       - "_episode_video_tags"
     overrides:
       tv_show_poster_file_name: "poster.jpg"
@@ -19,5 +20,5 @@ presets:
 
   _kodi_tv_show:
     preset:
+      - "_kodi_base"
       - "_jellyfin_tv_show"
-      - "_kodi_safe_nfo"
