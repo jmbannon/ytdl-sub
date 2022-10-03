@@ -1,0 +1,12 @@
+presets:
+
+  _kodi_base:
+    nfo_tags:
+      kodi_safe: True
+    output_directory_nfo_tags:
+      kodi_safe: True
+
+  _plex_base:
+    file_convert:
+      convert:
+        webm: "mp4"
