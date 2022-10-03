@@ -77,7 +77,7 @@ presets:
       - "_episode_base"
       - "_season_by_year_month"
     overrides:
-      episode_number: "{upload_day}"
+      episode_number: "{upload_day}{upload_date_index_padded}"
       episode_number_padded: "{upload_day_padded}{upload_date_index_padded}"
 
   season_by_year__episode_by_month_day:
@@ -85,7 +85,7 @@ presets:
       - "_episode_base"
       - "_season_by_year"
     overrides:
-      episode_number: "{upload_month}{upload_day_padded}"
+      episode_number: "{upload_month}{upload_day_padded}{upload_date_index_padded}"
       episode_number_padded: "{upload_month_padded}{upload_day_padded}{upload_date_index_padded}"
 
   season_by_year__episode_by_month_day_reversed:
