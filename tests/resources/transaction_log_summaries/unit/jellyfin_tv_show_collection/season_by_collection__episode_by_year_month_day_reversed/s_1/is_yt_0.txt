@@ -14,6 +14,14 @@ Files created:
 {output_directory}/Season 01
   s01.e79052499 - 21-1-thumb.jpg
   s01.e79052499 - 21-1.mp4
+    Video Tags:
+      date: 2021-08-08
+      episode_id: 79052499
+      season_number: 1
+      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_1_is_yt_0
+      synopsis: https://21-1.com
+      title: 2021-08-08 - Mock Entry 21-1
+      year: 2021
   s01.e79052499 - 21-1.nfo
     NFO tags:
       episodedetails:
@@ -25,6 +33,14 @@ Files created:
         year: 2021
   s01.e80052498 - 20-1-thumb.jpg
   s01.e80052498 - 20-1.mp4
+    Video Tags:
+      date: 2020-08-08
+      episode_id: 80052498
+      season_number: 1
+      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_1_is_yt_0
+      synopsis: https://20-1.com
+      title: 2020-08-08 - Mock Entry 20-1
+      year: 2020
   s01.e80052498 - 20-1.nfo
     NFO tags:
       episodedetails:
@@ -36,6 +52,14 @@ Files created:
         year: 2020
   s01.e80052499 - 20-2-thumb.jpg
   s01.e80052499 - 20-2.mp4
+    Video Tags:
+      date: 2020-08-08
+      episode_id: 80052499
+      season_number: 1
+      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_1_is_yt_0
+      synopsis: https://20-2.com
+      title: 2020-08-08 - Mock Entry 20-2
+      year: 2020
   s01.e80052499 - 20-2.nfo
     NFO tags:
       episodedetails:
@@ -47,6 +71,14 @@ Files created:
         year: 2020
   s01.e80052599 - 20-3-thumb.jpg
   s01.e80052599 - 20-3.mp4
+    Video Tags:
+      date: 2020-08-07
+      episode_id: 80052599
+      season_number: 1
+      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_1_is_yt_0
+      synopsis: https://20-3.com
+      title: 2020-08-07 - Mock Entry 20-3
+      year: 2020
   s01.e80052599 - 20-3.nfo
     NFO tags:
       episodedetails:

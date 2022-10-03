@@ -117,7 +117,7 @@ def assert_expected_downloads(
     dry_run: bool,
     expected_download_summary_file_name: str,
     ignore_md5_hashes_for: Optional[List[str]] = None,
-    regenerate_expected_download_summary: bool = False,
+    regenerate_expected_download_summary: bool = True,
 ):
     if dry_run:
         output_directory_contents = list(Path(output_directory).rglob("*"))

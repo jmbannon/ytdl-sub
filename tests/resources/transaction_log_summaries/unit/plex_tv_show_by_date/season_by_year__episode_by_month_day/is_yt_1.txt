@@ -9,7 +9,7 @@ Files created:
   s2020.e080701 - 20-3.mp4
     Video Tags:
       date: 2020-08-07
-      episode_id: 807
+      episode_id: 80701
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_is_yt_1
       synopsis: https://20-3.com
@@ -19,7 +19,7 @@ Files created:
   s2020.e080801 - 20-2.mp4
     Video Tags:
       date: 2020-08-08
-      episode_id: 808
+      episode_id: 80801
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_is_yt_1
       synopsis: https://20-2.com
@@ -29,7 +29,7 @@ Files created:
   s2020.e080802 - 20-1.mp4
     Video Tags:
       date: 2020-08-08
-      episode_id: 808
+      episode_id: 80802
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_is_yt_1
       synopsis: https://20-1.com
@@ -40,7 +40,7 @@ Files created:
   s2021.e080801 - 21-1.mp4
     Video Tags:
       date: 2021-08-08
-      episode_id: 808
+      episode_id: 80801
       season_number: 2021
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_is_yt_1
       synopsis: https://21-1.com
