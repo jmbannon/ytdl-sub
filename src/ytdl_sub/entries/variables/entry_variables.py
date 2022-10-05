@@ -397,7 +397,7 @@ class EntryVariables(BaseEntryVariables):
         Returns
         -------
         str
-            The upload_index padded six digits
+            The download_index padded six digits
         """
         return pad(self.download_index, 6)
 
