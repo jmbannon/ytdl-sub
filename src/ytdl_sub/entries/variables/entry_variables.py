@@ -5,6 +5,7 @@ from yt_dlp.utils import sanitize_filename
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import BaseEntryVariables
 from ytdl_sub.entries.variables.kwargs import CHANNEL
+from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_DESCRIPTION
@@ -378,6 +379,27 @@ class EntryVariables(BaseEntryVariables):
             need to support other image types, we always convert to jpg.
         """
         return "jpg"
+
+    @property
+    def download_index(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The i'th entry downloaded. NOTE that this is fetched dynamically from the download
+            archive.
+        """
+        return self.kwargs_get(DOWNLOAD_INDEX, 0) + 1
+
+    @property
+    def download_index_padded6(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The download_index padded six digits
+        """
+        return pad(self.download_index, 6)
 
     @property
     def upload_date_index(self: Self) -> int:

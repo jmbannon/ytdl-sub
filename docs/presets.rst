@@ -29,6 +29,10 @@ Episode Formatting Presets
 * ``season_by_year__episode_by_month_day_reversed``
    * Episode numbers are reversed, meaning more recent episodes appear at the
      top of a season by having a lower value.
+* ``season_by_year__episode_by_download_index``
+   * Episodes are numbered by the download order. NOTE that this fetched using
+     the length of the download archive. Do not use if you intend to remove
+     old videos.
 
 Usage
 """""
@@ -80,7 +84,8 @@ Episode Formatting Presets
 * ``season_by_collection__episode_by_year_month_day_reversed``
 * ``season_by_collection__episode_by_playlist_index``
    * Only use playlist_index episode formatting for playlists that
-     will never change. Otherwise, indices get messed up.
+     will be fully downloaded once and never again. Otherwise,
+     indices can change.
 * ``season_by_collection__episode_by_playlist_index_reversed``
 
 Season Presets

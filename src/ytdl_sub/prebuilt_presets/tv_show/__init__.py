@@ -22,6 +22,7 @@ TV_SHOW_BY_DATE = "_tv_show_by_date"
 
 SEASON_YEAR__EPISODE_MONTH_DAY = "season_by_year__episode_by_month_day"
 SEASON_YEAR__EPISODE_MONTH_DAY_REVERSED = "season_by_year__episode_by_month_day_reversed"
+SEASON_YEAR__EPISODE_UPLOAD_INDEX = "season_by_year__episode_by_upload_index"
 SEASON_YEAR_MONTH__EPISODE_DAY = "season_by_year_month__episode_by_day"
 
 #####################################################
@@ -116,6 +117,11 @@ class TvShowByDateEpisodeFormattingPresets(PrebuiltPresets):
         """
         DOC
         """
+        return self._document_preset()
+
+    @property
+    def season_by_year__episode_by_download_index(self) -> Preset:
+        """DOC"""
         return self._document_preset()
 
 

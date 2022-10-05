@@ -96,6 +96,14 @@ presets:
       episode_number: "{upload_day_of_year_reversed}{upload_date_index_reversed_padded}"
       episode_number_padded: "{upload_day_of_year_reversed_padded}{upload_date_index_reversed_padded}"
 
+  season_by_year__episode_by_download_index:
+    preset:
+      - "_episode_base"
+      - "_season_by_year"
+    overrides:
+      episode_number: "{download_index}"
+      episode_number_padded: "{download_index_padded6}"
+
   ###############
 
   season_by_collection__episode_by_year_month_day:
