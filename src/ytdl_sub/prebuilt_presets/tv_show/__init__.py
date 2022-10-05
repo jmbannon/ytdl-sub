@@ -32,7 +32,6 @@ TV_SHOW_COLLECTION = "_tv_show_collection"
 
 SEASON_COLLECTION__EPISODE_Y_M_D = "season_by_collection__episode_by_year_month_day"
 SEASON_COLLECTION__EPISODE_Y_M_D_REV = "season_by_collection__episode_by_year_month_day_reversed"
-SEASON_COLLECTION__EPISODE_UPLOAD_INDEX = "season_by_collection__episode_by_upload_index"
 
 
 class PrebuiltPresets:
