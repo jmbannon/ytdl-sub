@@ -75,6 +75,8 @@ def mock_entry_to_dict(
         "uploader": "abc123",
         "uploader_id": "abc123",
         "uploader_url": "https://yourname.here",
+        "download_index": 1,
+        "download_index_padded6": "000001",
         "upload_date_index": 1,
         "upload_date_index_padded": "01",
         "upload_date_index_reversed": 99,

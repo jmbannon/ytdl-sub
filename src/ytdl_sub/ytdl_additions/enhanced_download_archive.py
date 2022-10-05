@@ -189,7 +189,7 @@ class DownloadMappings:
         -------
         True if there are no entry mappings. False otherwise.
         """
-        return len(self._entry_mappings) == 0
+        return self.get_num_entries() == 0
 
     def add_entry(self, entry: Entry, entry_file_path: str) -> "DownloadMappings":
         """
@@ -241,6 +241,14 @@ class DownloadMappings:
         return len(
             [_ for _ in self._entry_mappings.values() if _.upload_date == upload_date_standardized]
         )
+
+    def get_num_entries(self) -> int:
+        """
+        Returns
+        -------
+        Number of entries in the mapping
+        """
+        return len(self._entry_mappings)
 
     def get_entries_out_of_range(self, date_range: DateRange) -> Dict[str, DownloadMapping]:
         """

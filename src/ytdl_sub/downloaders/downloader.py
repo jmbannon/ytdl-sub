@@ -32,6 +32,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
+from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
 from ytdl_sub.entries.variables.kwargs import REQUESTED_SUBTITLES
 from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
@@ -391,11 +392,14 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
             upload_date_standardized=entry.upload_date_standardized
         )
+        download_idx = self._enhanced_download_archive.mapping.get_num_entries()
 
         entry.add_kwargs(
             {
                 # Workaround for the yt-dlp issue that does not include subs in playlist downloads
                 REQUESTED_SUBTITLES: download_entry.kwargs_get(REQUESTED_SUBTITLES),
+                # Tracks number of entries downloaded
+                DOWNLOAD_INDEX: download_idx,
                 # Tracks number of entries with the same upload date to make them unique
                 UPLOAD_DATE_INDEX: upload_date_idx,
             }
