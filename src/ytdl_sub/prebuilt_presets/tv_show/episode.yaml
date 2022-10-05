@@ -133,10 +133,3 @@ presets:
     overrides:
       episode_number: "{playlist_index_reversed}"
       episode_number_padded: "{playlist_index_reversed_padded6}"
-
-  season_by_collection__episode_by_download_index:
-    preset:
-      - "_episode_base"
-    overrides:
-      episode_number: "{download_index}"
-      episode_number_padded: "{download_index_padded6}"

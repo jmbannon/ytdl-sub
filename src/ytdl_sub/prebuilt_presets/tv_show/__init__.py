@@ -189,11 +189,6 @@ class TvShowCollectionEpisodeFormattingPresets(PrebuiltPresets):
         """
         return self._document_preset()
 
-    @property
-    def season_by_collection__episode_by_download_index(self) -> Preset:
-        """DOC"""
-        return self._document_preset()
-
 
 class TvShowCollectionSeasonPresets(PrebuiltPresets):
     @property
