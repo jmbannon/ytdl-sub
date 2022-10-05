@@ -30,9 +30,9 @@ Episode Formatting Presets
    * Episode numbers are reversed, meaning more recent episodes appear at the
      top of a season by having a lower value.
 * ``season_by_year__episode_by_download_index``
-  * Episodes are numbered by the download order. NOTE that this fetched using
-    the length of the download archive. Do not use if you intend to remove
-    old videos.
+   * Episodes are numbered by the download order. NOTE that this fetched using
+     the length of the download archive. Do not use if you intend to remove
+     old videos.
 
 Usage
 """""
