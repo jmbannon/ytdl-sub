@@ -9,6 +9,9 @@ presets:
       thumbnail_name: "{episode_file_path}-thumb.jpg"
       maintain_download_archive: True
 
+    ytdl_options:
+      break_on_existing: True
+
     chapters:
       embed_chapters: True
 

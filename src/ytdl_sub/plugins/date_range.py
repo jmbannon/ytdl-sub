@@ -62,6 +62,11 @@ class DateRangePlugin(Plugin[DateRangeOptions]):
             overrides=self.overrides,
         )
         if source_date_range:
-            ytdl_options_builder.add({"daterange": source_date_range, "break_on_reject": True})
+            ytdl_options_builder.add({"daterange": source_date_range})
+
+            # Only add break_on_reject if after is specified, but not before.
+            # Otherwise, it can break on first metadata pull if it's after the 'before'
+            if self.plugin_options.after and not self.plugin_options.before:
+                ytdl_options_builder.add({"break_on_reject": True})
 
         return ytdl_options_builder.to_dict()
