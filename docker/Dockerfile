@@ -8,6 +8,7 @@ RUN apk update --no-cache && \
     apk add \
       vim \
       g++ \
+      nano \
       make \
       ffmpeg && \
     apk del \
