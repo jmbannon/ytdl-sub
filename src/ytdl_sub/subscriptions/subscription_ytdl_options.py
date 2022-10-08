@@ -84,48 +84,11 @@ class SubscriptionYTDLOptions:
 
         return ytdl_options
 
-    @property
-    def _audio_extract_options(self) -> Dict:
-        if not (audio_extract_plugin := self._get_plugin(AudioExtractPlugin)):
+    def _plugin_ytdl_options(self, plugin: Type[PluginT]) -> Dict:
+        if not (audio_extract_plugin := self._get_plugin(plugin)):
             return {}
 
         return audio_extract_plugin.ytdl_options()
-
-    @property
-    def _subtitle_options(self) -> Dict:
-        if not (subtitle_plugin := self._get_plugin(SubtitlesPlugin)):
-            return {}
-
-        if not self._downloader.supports_subtitles:
-            # TODO: warn here
-            return {}
-
-        return subtitle_plugin.ytdl_options()
-
-    @property
-    def _chapter_options(self) -> Dict:
-        if not (chapters_plugin := self._get_plugin(ChaptersPlugin)):
-            return {}
-
-        if not self._downloader.supports_chapters:
-            # TODO: warn here
-            return {}
-
-        return chapters_plugin.ytdl_options()
-
-    @property
-    def _date_range_options(self) -> Dict:
-        if not (date_range_plugin := self._get_plugin(DateRangePlugin)):
-            return {}
-
-        return date_range_plugin.ytdl_options()
-
-    @property
-    def _file_convert_options(self) -> Dict:
-        if not (file_convert_plugin := self._get_plugin(FileConvertPlugin)):
-            return {}
-
-        return file_convert_plugin.ytdl_options()
 
     @property
     def _user_ytdl_options(self) -> Dict:
@@ -141,21 +104,21 @@ class SubscriptionYTDLOptions:
         ytdl_options_builder = YTDLOptionsBuilder().add(self._global_options)
         if self._dry_run:
             ytdl_options_builder.add(
-                self._date_range_options,
-                self._file_convert_options,
-                self._subtitle_options,
-                self._chapter_options,
+                self._plugin_ytdl_options(DateRangePlugin),
+                self._plugin_ytdl_options(FileConvertPlugin),
+                self._plugin_ytdl_options(SubtitlesPlugin),
+                self._plugin_ytdl_options(ChaptersPlugin),
                 self._user_ytdl_options,  # user ytdl options...
                 self._dry_run_options,  # then dry-run
             )
         else:
             ytdl_options_builder.add(
                 self._output_options,
-                self._date_range_options,
-                self._file_convert_options,
-                self._subtitle_options,
-                self._chapter_options,
-                self._audio_extract_options,
+                self._plugin_ytdl_options(DateRangePlugin),
+                self._plugin_ytdl_options(FileConvertPlugin),
+                self._plugin_ytdl_options(SubtitlesPlugin),
+                self._plugin_ytdl_options(ChaptersPlugin),
+                self._plugin_ytdl_options(AudioExtractPlugin),
                 self._user_ytdl_options,  # user ytdl options last
             )
 
