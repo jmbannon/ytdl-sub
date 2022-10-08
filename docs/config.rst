@@ -188,6 +188,12 @@ date_range
   :members:
   :member-order: bysource
 
+file_convert
+''''''''''''
+.. autoclass:: ytdl_sub.plugins.file_convert.FileConvertOptions()
+  :members:
+  :member-order: bysource
+
 -------------------------------------------------------------------------------
 
 music_tags
