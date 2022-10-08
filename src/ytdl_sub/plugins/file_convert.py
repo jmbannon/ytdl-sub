@@ -8,12 +8,12 @@ from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.validators.audo_codec_validator import VideoCodecTypeValidator
+from ytdl_sub.validators.audo_codec_validator import FileTypeValidator
 
 
 class FileConvertOptions(PluginOptions):
     """
-    Converts media files from one extension to another.
+    Converts video files from one extension to another.
 
     Usage:
 
@@ -29,14 +29,15 @@ class FileConvertOptions(PluginOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._convert_to = self._validate_key(
-            key="convert_to", validator=VideoCodecTypeValidator
-        ).value
+        self._convert_to = self._validate_key(key="convert_to", validator=FileTypeValidator).value
 
     @property
     def convert_to(self) -> str:
         """
-        Convert to a desired extension
+        Convert to a desired file type. Supports:
+
+        * Video: avi, flv, mkv, mov, mp4, webm
+        * Audio: aac, flac, mp3, m4a, opus, vorbis, wav
         """
         return self._convert_to
 
