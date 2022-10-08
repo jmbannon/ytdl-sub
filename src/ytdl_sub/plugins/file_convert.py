@@ -45,6 +45,11 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
     plugin_options_type = FileConvertOptions
 
     def ytdl_options(self) -> Optional[Dict]:
+        """
+        Returns
+        -------
+        ffmpeg video remuxing post processing dict
+        """
         return {
             "postprocessors": [
                 {
