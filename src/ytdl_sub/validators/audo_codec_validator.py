@@ -16,30 +16,14 @@ AUDIO_CODEC_TYPES_EXTENSION_MAPPING: Dict[str, str] = {
 AUDIO_CODEC_TYPES: Set[str] = set(AUDIO_CODEC_TYPES_EXTENSION_MAPPING.keys())
 AUDIO_CODEC_EXTS: Set[str] = set(AUDIO_CODEC_TYPES_EXTENSION_MAPPING.values())
 
-VIDEO_CODEC_EXTS: Set[str] = {
-    "avi",
-    "flv",
-    "mkv",
-    "mov",
-    "mp4",
-    "webm",
-    "3g2",
-    "3gp",
-    "f4v",
-    "mk3d",
-    "divx",
-    "mpg",
-    "ogv",
-    "m4v",
-    "wmv",
-}
+VIDEO_CODEC_EXTS: Set[str] = {"avi", "flv", "mkv", "mov", "mp4", "webm"}
 
 
-class CodecTypeValidator(StringSelectValidator):
+class AudioTypeValidator(StringSelectValidator):
     _expected_value_type_name = "codec"
     _select_values = AUDIO_CODEC_TYPES
 
 
-class VideoCodecTypeValidator(StringSelectValidator):
+class FileTypeValidator(StringSelectValidator):
     _expected_value_type_name = "codec"
-    _select_values = VIDEO_CODEC_EXTS
+    _select_values = AUDIO_CODEC_TYPES.union(VIDEO_CODEC_EXTS)

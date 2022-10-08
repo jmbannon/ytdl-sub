@@ -8,7 +8,7 @@ from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_TYPES_EXTENSION_MAPPING
-from ytdl_sub.validators.audo_codec_validator import CodecTypeValidator
+from ytdl_sub.validators.audo_codec_validator import AudioTypeValidator
 from ytdl_sub.validators.validators import FloatValidator
 
 
@@ -31,7 +31,7 @@ class AudioExtractOptions(PluginOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._codec = self._validate_key(key="codec", validator=CodecTypeValidator).value
+        self._codec = self._validate_key(key="codec", validator=AudioTypeValidator).value
         self._quality = self._validate_key_if_present(key="quality", validator=FloatValidator)
 
     @property
