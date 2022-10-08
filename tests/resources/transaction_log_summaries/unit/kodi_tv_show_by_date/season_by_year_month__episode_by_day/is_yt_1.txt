@@ -7,6 +7,7 @@ Files created:
   tvshow.nfo
     NFO tags:
       tvshow:
+        genre: ytdl-sub
         title: unit_kodi_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_1
 {output_directory}/Season 202008
   s202008.e0701 - 20-3-thumb.jpg
@@ -14,6 +15,7 @@ Files created:
     Video Tags:
       date: 2020-08-07
       episode_id: 701
+      genre: ytdl-sub
       season_number: 202008
       show: unit_kodi_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_1
       synopsis: https://20-3.com
@@ -24,6 +26,7 @@ Files created:
       episodedetails:
         aired: 2020-08-07
         episode: 701
+        genre: ytdl-sub
         plot: https://20-3.com
         season: 202008
         title: 2020-08-07 - Mock Entry 20-3
@@ -33,6 +36,7 @@ Files created:
     Video Tags:
       date: 2020-08-08
       episode_id: 801
+      genre: ytdl-sub
       season_number: 202008
       show: unit_kodi_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_1
       synopsis: https://20-2.com
@@ -43,6 +47,7 @@ Files created:
       episodedetails:
         aired: 2020-08-08
         episode: 801
+        genre: ytdl-sub
         plot: https://20-2.com
         season: 202008
         title: 2020-08-08 - Mock Entry 20-2
@@ -52,6 +57,7 @@ Files created:
     Video Tags:
       date: 2020-08-08
       episode_id: 802
+      genre: ytdl-sub
       season_number: 202008
       show: unit_kodi_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_1
       synopsis: https://20-1.com
@@ -62,6 +68,7 @@ Files created:
       episodedetails:
         aired: 2020-08-08
         episode: 802
+        genre: ytdl-sub
         plot: https://20-1.com
         season: 202008
         title: 2020-08-08 - Mock Entry 20-1
@@ -72,6 +79,7 @@ Files created:
     Video Tags:
       date: 2021-08-08
       episode_id: 801
+      genre: ytdl-sub
       season_number: 202108
       show: unit_kodi_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_1
       synopsis: https://21-1.com
@@ -82,6 +90,7 @@ Files created:
       episodedetails:
         aired: 2021-08-08
         episode: 801
+        genre: ytdl-sub
         plot: https://21-1.com
         season: 202108
         title: 2021-08-08 - Mock Entry 21-1

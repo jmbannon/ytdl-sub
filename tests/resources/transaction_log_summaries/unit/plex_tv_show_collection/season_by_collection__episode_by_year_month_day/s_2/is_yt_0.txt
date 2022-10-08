@@ -10,6 +10,7 @@ Files created:
     Video Tags:
       date: 2020-06-06
       episode_id: 20060601
+      genre: ytdl-sub
       season_number: 1
       show: unit_plex_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
       synopsis: https://20-7.com
@@ -20,6 +21,7 @@ Files created:
     Video Tags:
       date: 2020-07-06
       episode_id: 20070601
+      genre: ytdl-sub
       season_number: 1
       show: unit_plex_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
       synopsis: https://20-6.com
@@ -30,6 +32,7 @@ Files created:
     Video Tags:
       date: 2020-07-06
       episode_id: 20070602
+      genre: ytdl-sub
       season_number: 1
       show: unit_plex_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
       synopsis: https://20-5.com
@@ -40,6 +43,7 @@ Files created:
     Video Tags:
       date: 2020-08-06
       episode_id: 20080601
+      genre: ytdl-sub
       season_number: 1
       show: unit_plex_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
       synopsis: https://20-4.com
@@ -51,6 +55,7 @@ Files created:
     Video Tags:
       date: 2020-08-07
       episode_id: 20080701
+      genre: ytdl-sub
       season_number: 2
       show: unit_plex_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
       synopsis: https://20-3.com
@@ -61,6 +66,7 @@ Files created:
     Video Tags:
       date: 2020-08-08
       episode_id: 20080801
+      genre: ytdl-sub
       season_number: 2
       show: unit_plex_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
       synopsis: https://20-2.com
@@ -71,6 +77,7 @@ Files created:
     Video Tags:
       date: 2020-08-08
       episode_id: 20080802
+      genre: ytdl-sub
       season_number: 2
       show: unit_plex_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
       synopsis: https://20-1.com
@@ -81,6 +88,7 @@ Files created:
     Video Tags:
       date: 2021-08-08
       episode_id: 21080801
+      genre: ytdl-sub
       season_number: 2
       show: unit_plex_tv_show_collection_season_by_collection__episode_by_year_month_day_s_2_is_yt_0
       synopsis: https://21-1.com

@@ -9,6 +9,7 @@ Files created:
     Video Tags:
       date: 2020-08-07
       episode_id: 80701
+      genre: ytdl-sub
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_is_yt_0
       synopsis: https://20-3.com
@@ -19,6 +20,7 @@ Files created:
     Video Tags:
       date: 2020-08-08
       episode_id: 80801
+      genre: ytdl-sub
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_is_yt_0
       synopsis: https://20-2.com
@@ -29,6 +31,7 @@ Files created:
     Video Tags:
       date: 2020-08-08
       episode_id: 80802
+      genre: ytdl-sub
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_is_yt_0
       synopsis: https://20-1.com
@@ -40,6 +43,7 @@ Files created:
     Video Tags:
       date: 2021-08-08
       episode_id: 80801
+      genre: ytdl-sub
       season_number: 2021
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_is_yt_0
       synopsis: https://21-1.com
