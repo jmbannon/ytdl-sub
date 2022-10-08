@@ -8,6 +8,7 @@ from typing import final
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.variables.entry_variables import EntryVariables
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
+from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
 
 
 class Entry(EntryVariables, BaseEntry):
@@ -89,11 +90,11 @@ class Entry(EntryVariables, BaseEntry):
         """
         file_exists = os.path.isfile(self.get_download_file_path())
 
-        # HACK: yt-dlp does not record extracted audio extensions anywhere. If the file is not
-        # found, try it using audio extensions
+        # HACK: yt-dlp does not record extracted/converted extensions anywhere. If the file is not
+        # found, try it using all possible extensions
         if not file_exists:
-            for audio_ext in AUDIO_CODEC_EXTS:
-                if os.path.isfile(self.get_download_file_path().removesuffix(self.ext) + audio_ext):
+            for ext in AUDIO_CODEC_EXTS.union(VIDEO_CODEC_EXTS):
+                if os.path.isfile(self.get_download_file_path().removesuffix(self.ext) + ext):
                     file_exists = True
                     break
 

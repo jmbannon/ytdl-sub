@@ -15,7 +15,7 @@ def preset_dict(output_directory):
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
-        "file_convert": {"convert": {"webm": "mp4"}},
+        "file_convert": {"convert_to": "mp4"},
     }
 
 

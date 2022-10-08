@@ -100,9 +100,6 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
             if not os.path.isfile(extracted_audio_file):
                 raise FileNotDownloadedException("Failed to find the extracted audio file")
 
-        # TODO: create entry function to update kwargs
-        # pylint: disable=protected-access
-        entry._kwargs["ext"] = new_ext
-        # pylint: enable=protected-access
+        entry.add_kwargs({"ext": new_ext})
 
         return entry

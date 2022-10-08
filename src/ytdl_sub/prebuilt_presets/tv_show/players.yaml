@@ -2,12 +2,13 @@ presets:
 
   _plex_tv_show:
     preset:
-      - "_plex_base"
       - "_episode_video_tags"
     overrides:
       tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
       season_poster_file_name: "Season{season_number_padded}.jpg"
+    file_convert:  # Plex currently does not support webm
+      convert_to: "mp4"
 
   _jellyfin_tv_show:
     preset:

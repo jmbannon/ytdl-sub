@@ -1,14 +1,14 @@
+import os
 from typing import Dict
 from typing import Optional
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
-from ytdl_sub.plugins.plugin import PluginPriority
-from ytdl_sub.utils.ffmpeg import FFMPEG
-from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.validators.validators import LiteralDictValidator
+from ytdl_sub.validators.audo_codec_validator import VideoCodecTypeValidator
 
 
 class FileConvertOptions(PluginOptions):
@@ -22,55 +22,69 @@ class FileConvertOptions(PluginOptions):
        presets:
          my_example_preset:
            file_converter:
-             convert:
-               webm: "mp4"
+             convert_to: "mp4"
     """
 
-    _required_keys = {"convert"}
+    _required_keys = {"convert_to"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._convert = self._validate_key(key="convert", validator=LiteralDictValidator).dict
+        self._convert_to = self._validate_key(
+            key="convert_to", validator=VideoCodecTypeValidator
+        ).value
 
     @property
-    def convert(self) -> Dict[str, str]:
+    def convert_to(self) -> str:
         """
-        Convert from one extension to another
+        Convert to a desired extension
         """
-        return self._convert
+        return self._convert_to
 
 
 class FileConvertPlugin(Plugin[FileConvertOptions]):
     plugin_options_type = FileConvertOptions
-    priority = PluginPriority(modify_entry=0)
 
-    def modify_entry(self, entry: Entry) -> Entry:
+    def ytdl_options(self) -> Optional[Dict]:
+        return {
+            "postprocessors": [
+                {
+                    "key": "FFmpegVideoRemuxer",
+                    "when": "post_process",
+                    "preferedformat": self.plugin_options.convert_to,
+                }
+            ]
+        }
+
+    def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
-        If the entry is of the specified file type, convert it
+        Parameters
+        ----------
+        entry
+            Entry with extracted audio
+
+        Returns
+        -------
+        Entry with updated 'ext' source variable
+
+        Raises
+        ------
+        FileNotDownloadedException
+            If the audio file is not found
         """
-        for convert_from, convert_to in self.plugin_options.convert.items():
-            # Entry ext does not need conversion
-            if entry.ext != convert_from:
-                continue
+        new_ext = self.plugin_options.convert_to
+        converted_video_file = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
+        if not self.is_dry_run:
+            if not os.path.isfile(converted_video_file):
+                raise FileNotDownloadedException("Failed to find the converted video file")
 
-            # Entry ext needs conversion
-            input_file_path = entry.get_download_file_path()
-            output_file_path = input_file_path.removesuffix(entry.ext) + convert_to
-
-            ffmpeg_args = ["-bitexact", "-i", input_file_path, "-c", "copy", output_file_path]
-
-            if not self.is_dry_run:
-                FFMPEG.run(ffmpeg_args)
-                FileHandler.delete(input_file_path)
-
+        if entry.ext != new_ext:
             entry.add_kwargs(
                 {
-                    "ext": convert_to,
-                    "__converted_from": convert_from,
+                    "__converted_from": entry.ext,
                 }
             )
 
-            return entry
+        entry.add_kwargs({EXT: new_ext})
 
         return entry
 
