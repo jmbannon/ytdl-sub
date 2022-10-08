@@ -52,6 +52,7 @@ and overriding the following variables:
        tv_show_directory: "/path/to/youtube_shows"
        url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
        # can be modified from their default value
+       # tv_show_genre: "ytdl-sub"
        # episode_title: "{upload_date_standardized} - {title}"
        # episode_description: "{webpage_url}"
 
@@ -120,5 +121,6 @@ one or more season presets, with the following override variables:
        collection_season_2_url: "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
        collection_season_2_name: "Official Music Videos"
        # can be modified from their default value
+       # tv_show_genre: "ytdl-sub"
        # episode_title: "{upload_date_standardized} - {title}"
        # episode_description: "{webpage_url}"

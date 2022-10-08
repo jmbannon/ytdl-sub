@@ -10,6 +10,7 @@ Files created:
     Video Tags:
       date: 2020-08-08
       episode_id: 14698
+      genre: ytdl-sub
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_1
       synopsis: https://20-1.com
@@ -20,6 +21,7 @@ Files created:
     Video Tags:
       date: 2020-08-08
       episode_id: 14699
+      genre: ytdl-sub
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_1
       synopsis: https://20-2.com
@@ -30,6 +32,7 @@ Files created:
     Video Tags:
       date: 2020-08-07
       episode_id: 14799
+      genre: ytdl-sub
       season_number: 2020
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_1
       synopsis: https://20-3.com
@@ -41,6 +44,7 @@ Files created:
     Video Tags:
       date: 2021-08-08
       episode_id: 14699
+      genre: ytdl-sub
       season_number: 2021
       show: unit_plex_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_1
       synopsis: https://21-1.com
