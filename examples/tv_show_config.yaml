@@ -1,0 +1,110 @@
+configuration:
+  working_directory: '.ytdl-sub-downloads'
+
+presets:
+
+  # Your main TV show preset - all your tv show subscriptions will use this.
+  tv_show:
+    preset:
+      # Choose one of the following player types:
+      # - "kodi_tv_show_by_date"
+      # - "jellyfin_tv_show_by_date"
+      # - "plex_tv_show_by_date"
+      - "kodi_tv_show_by_date"  # replace with desired player type
+
+      # Choose one of the following season/episode formats:
+      # - "season_by_year__episode_by_month_day"
+      # - "season_by_year_month__episode_by_day"
+      # - "season_by_year__episode_by_month_day_reversed"
+      # - "season_by_year__episode_by_download_index"
+      - "season_by_year__episode_by_month_day"  # replace with desired season/episode type
+
+      # Include any of the presets listed below in your 'main preset' if you want
+      # it applied to every TV show. Or, use them on the individual subscriptions.
+      # - "only_recent_videos"
+      # - "add_subtitles"
+      # - "sponsorblock"
+      # - "include_description"
+      # - "include_info_json"
+
+    # To download age-restricted videos, you will need to set your cookie
+    # file here as a ytdl parameter. For more info, see
+    # https://ytdl-sub.readthedocs.io/en/latest/faq.html#download-age-restricted-youtube-videos
+    ytdl_options:
+      cookiefile: "/config/cookie_file.txt"  # replace with actual cookie file path
+
+    overrides:
+      tv_show_directory: "/tv_shows"  # replace with path to tv show directory
+
+####################################################################################################
+
+  # Preset to only download and keep recent videos
+  only_recent_videos:
+
+    # Only download videos within the download_range
+    date_range:
+      after: "today-{download_range}"
+
+    # Stops fetching metadata if the video is out of range (saves time + bandwidth)
+    ytdl_options:
+      break_on_reject: True
+
+    # Deletes any videos older than download_range. WARNING: do not use
+    # "season_by_year__episode_by_download_index" if you plan to delete older videos
+    output_options:
+      keep_files_after: "today-{download_range}"
+
+    # Set the duration of download_range, defaults to 2 months
+    overrides:
+      download_range: "2months"
+
+####################################################################################################
+
+  # Preset to download subtitles (either by file or embedded)
+  add_subtitles:
+    # Embed subtitles into the video
+    embed_subtitles: True
+    # And/or download them as a file. Uncomment to download as file:
+    # subtitles_name: "{episode_file_path}.{lang}.{subtitles_ext}"
+    # subtitles_type: "srt"
+
+    languages: "en"  # supports list of multiple languages
+    allow_auto_generated_subtitles: True  # allow auto subtitles
+
+####################################################################################################
+
+  # Preset to cut sponsor segments from videos
+  sponsorblock:
+    # If you download using cron, it is wise to add a delay before downloading ad-filled content to
+    # give folks time to submit sponsor segments. Uncomment to wait 2 days before download a video.
+    # date_range:
+    #  before: "today-2days"
+
+    chapters:
+      # Remove all of these sponsorblock categories
+      sponsorblock_categories:
+        - "intro"
+        - "outro"
+        - "selfpromo"
+        - "preview"
+        - "interaction"
+        - "sponsor"
+        - "music_offtopic"
+      remove_sponsorblock_categories: "all"
+      force_key_frames: False
+
+####################################################################################################
+
+  # Preset to include the video description in the episode plot. By default, it only displays the
+  # webpage url.
+  include_description:
+    overrides:
+      episode_plot: "{webpage_url}\n\n{description}"
+
+####################################################################################################
+
+  # Preset for the hoarders who want to also save the info.json file
+  include_info_json:
+    output_options:
+      info_json_name: "{episode_file_path}.{info_json_ext}"
+

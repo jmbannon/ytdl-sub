@@ -1,0 +1,16 @@
+# Define any number subscriptions in a single file, or use multiple
+# files to organize (i.e by genre)
+
+rick_a:
+  # Mix and match any number of presets to use. You can either lump all settings into
+  # a single preset to save some lines, or modularize them and use many.
+  preset:
+    - "tv_show"
+    - "only_recent_videos"
+
+  overrides:
+    # Required to specify for every subscription
+    tv_show_name: "Rick A"
+    url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+    # Optional
+    tv_show_genre: "Music"
