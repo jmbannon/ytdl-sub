@@ -29,9 +29,7 @@ class FileConvertOptions(PluginOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._convert_to = self._validate_key(
-            key="convert_to", validator=FileTypeValidator
-        ).value
+        self._convert_to = self._validate_key(key="convert_to", validator=FileTypeValidator).value
 
     @property
     def convert_to(self) -> str:
