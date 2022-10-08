@@ -13,21 +13,18 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def recent_preset_dict(output_directory):
     return {
-        "preset": "yt_channel_as_tv",
-        "youtube": {"channel_url": "https://youtube.com/channel/UCcRSMoQqXc_JrBZRHDFGbqA"},
+        "preset": "tv_show",
         "date_range": {"after": "20150101"},
-        # override the output directory with our fixture-generated dir
-        "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
             "max_views": 100000,  # do not download the popular PJ concert
         },
-        "subtitles": {
-            "subtitles_name": "{episode_name}.{lang}.{subtitles_ext}",
-            "allow_auto_generated_subtitles": True,
+        "overrides": {
+            "url": "https://youtube.com/channel/UCcRSMoQqXc_JrBZRHDFGbqA",
+            "tv_show_name": "Project / Zombie",
+            "tv_show_directory": output_directory,
         },
-        "overrides": {"tv_show_name": "Project / Zombie"},
     }
 
 
