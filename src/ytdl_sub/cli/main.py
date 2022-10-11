@@ -12,7 +12,6 @@ from typing import Tuple
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
@@ -38,17 +37,15 @@ def _download_subscriptions_from_yaml_files(
     -------
     List of (subscription, transaction_log)
     """
-    preset_paths: List[str] = args.subscription_paths
-    presets: List[Preset] = []
+    subscription_paths: List[str] = args.subscription_paths
+    subscriptions: List[Subscription] = []
     output: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
 
-    # Load all of the presets first to perform all validation before downloading
-    for preset_path in preset_paths:
-        presets += Preset.from_file_path(config=config, subscription_path=preset_path)
+    # Load all of the subscriptions first to perform all validation before downloading
+    for path in subscription_paths:
+        subscriptions += Subscription.from_file_path(config=config, subscription_path=path)
 
-    for preset in presets:
-        subscription = Subscription.from_preset(preset=preset, config=config)
-
+    for subscription in subscriptions:
         logger.info("Beginning subscription download for %s", subscription.name)
         transaction_log = subscription.download(dry_run=args.dry_run)
 
@@ -80,17 +77,10 @@ def _download_subscription_from_cli(
         extra_arguments=extra_args, config_options=config.config_options
     )
     subscription_args_dict = dl_args_parser.to_subscription_dict()
-
     subscription_name = f"cli-dl-{dl_args_parser.get_args_hash()}"
-    subscription_preset = Preset.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=subscription_args_dict,
-    )
 
-    subscription = Subscription.from_preset(
-        preset=subscription_preset,
-        config=config,
+    subscription = Subscription.from_dict(
+        config=config, preset_name=subscription_name, preset_dict=subscription_args_dict
     )
 
     return subscription, subscription.download(dry_run=args.dry_run)
