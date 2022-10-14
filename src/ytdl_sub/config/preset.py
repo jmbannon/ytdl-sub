@@ -23,7 +23,6 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.yaml import dump_yaml
-from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
@@ -384,34 +383,6 @@ class Preset(StrictDictValidator):
         The Subscription validator
         """
         return cls(config=config, name=preset_name, value=preset_dict)
-
-    @classmethod
-    def from_file_path(cls, config: ConfigFile, subscription_path: str) -> List["Preset"]:
-        """
-        Parameters
-        ----------
-        config:
-            Validated instance of the config
-        subscription_path:
-            File path to the subscription yaml file
-
-        Returns
-        -------
-        List of presets, for each one in the subscription yaml
-        """
-        subscription_dict = load_yaml(file_path=subscription_path)
-
-        subscriptions: List["Preset"] = []
-        for subscription_key, subscription_object in subscription_dict.items():
-            subscriptions.append(
-                Preset.from_dict(
-                    config=config,
-                    preset_name=subscription_key,
-                    preset_dict=subscription_object,
-                )
-            )
-
-        return subscriptions
 
     @property
     def yaml(self) -> str:
