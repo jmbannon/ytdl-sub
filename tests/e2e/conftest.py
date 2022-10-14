@@ -24,7 +24,7 @@ def music_video_config(music_video_config_path):
 
 @pytest.fixture()
 def channel_as_tv_show_config():
-    return ConfigFile.from_file_path(config_path="examples/kodi_tv_shows_config.yaml")
+    return ConfigFile.from_file_path(config_path="examples/tv_show_config.yaml")
 
 
 @pytest.fixture
