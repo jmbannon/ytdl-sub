@@ -1,0 +1,16 @@
+presets:
+
+  kodi_tv_show_by_date:
+    preset:
+      - "_kodi_tv_show"
+      - "_tv_show_by_date"
+
+  jellyfin_tv_show_by_date:
+    preset:
+      - "_jellyfin_tv_show"
+      - "_tv_show_by_date"
+
+  plex_tv_show_by_date:
+    preset:
+      - "_plex_tv_show"
+      - "_tv_show_by_date"
