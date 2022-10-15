@@ -1,32 +1,20 @@
 presets:
 
-####################################################################################################
 
-  # TV show from any single source. Uses latest entry's thumbnail as tv show poster
-  _tv_show_by_date:
-    generic:
-      download_strategy: "source"
-      url: "{url}"
-      playlist_thumbnails:
-        # Use latest_entry first, then see if YT channel artwork exists
-        - name: "{tv_show_poster_file_name}"
-          uid: "latest_entry"
-        - name: "{tv_show_poster_file_name}"
-          uid: "avatar_uncropped"
-        - name: "{tv_show_fanart_file_name}"
-          uid: "banner_uncropped"
+  kodi_tv_show_collection:
+    preset:
+      - "_kodi_tv_show"
+      - "_tv_show_collection"
 
-####################################################################################################
+  jellyfin_tv_show_collection:
+    preset:
+      - "_jellyfin_tv_show"
+      - "_tv_show_collection"
 
-  # TV show from a collection. Must specify additional `tv_show_collection_season` presets in
-  # addition. Each season sets its own `collection_season_number/_padded`
-  _tv_show_collection:
-    generic:
-      download_strategy: "collection"
-
-    overrides:
-      season_number: "{collection_season_number}"
-      season_number_padded: "{collection_season_number_padded}"
+  plex_tv_show_collection:
+    preset:
+      - "_plex_tv_show"
+      - "_tv_show_collection"
 
   collection_season_1:
     generic:

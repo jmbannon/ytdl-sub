@@ -1,0 +1,53 @@
+presets:
+
+  _plex_tv_show:
+    preset:
+      - "_episode_video_tags"
+    overrides:
+      tv_show_poster_file_name: "poster.jpg"
+      tv_show_fanart_file_name: "fanart.jpg"
+      season_poster_file_name: "Season{season_number_padded}.jpg"
+    file_convert:  # Plex currently does not support webm
+      convert_to: "mp4"
+
+  _jellyfin_tv_show:
+    preset:
+      - "_episode_video_tags"
+      - "_episode_nfo_tags"
+    overrides:
+      tv_show_poster_file_name: "poster.jpg"
+      tv_show_fanart_file_name: "fanart.jpg"
+      season_poster_file_name: "season{season_number_padded}-poster.jpg"
+
+  _kodi_tv_show:
+    preset:
+      - "_kodi_base"
+      - "_jellyfin_tv_show"
+
+####################################################################################################
+
+  # TV show from any single source. Uses latest entry's thumbnail as tv show poster
+  _tv_show_by_date:
+    generic:
+      download_strategy: "source"
+      url: "{url}"
+      playlist_thumbnails:
+        # Use latest_entry first, then see if YT channel artwork exists
+        - name: "{tv_show_poster_file_name}"
+          uid: "latest_entry"
+        - name: "{tv_show_poster_file_name}"
+          uid: "avatar_uncropped"
+        - name: "{tv_show_fanart_file_name}"
+          uid: "banner_uncropped"
+
+####################################################################################################
+
+  # TV show from a collection. Must specify additional `tv_show_collection_season` presets in
+  # addition. Each season sets its own `collection_season_number/_padded`
+  _tv_show_collection:
+    generic:
+      download_strategy: "collection"
+
+    overrides:
+      season_number: "{collection_season_number}"
+      season_number_padded: "{collection_season_number_padded}"

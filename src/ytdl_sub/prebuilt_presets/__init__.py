@@ -17,13 +17,6 @@ def _merge_presets() -> Dict[str, Any]:
         if file.is_file() and file.name.endswith("yaml"):
             mergedeep.merge(merged_configs, load_yaml(file))
 
-    # Get all presets from published preset configs
-    mergedeep.merge(
-        merged_configs,
-        *TvShowByDatePresets.get_presets(),
-        *TvShowCollectionPresets.get_presets(),
-    )
-
     return merged_configs["presets"]
 
 
