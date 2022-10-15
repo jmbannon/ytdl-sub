@@ -1,6 +1,11 @@
 from typing import Set
 
-_: str = ""
+
+class PrebuiltPreset:
+    """placeholder"""
+
+
+_ = PrebuiltPreset()
 
 
 class PrebuiltPresets:
@@ -14,7 +19,7 @@ class PrebuiltPresets:
         return set(
             preset_name
             for preset_name in dir(cls)
-            if isinstance(getattr(cls, preset_name), str) and not preset_name.startswith("__")
+            if isinstance(getattr(cls, preset_name), PrebuiltPreset)
         )
 
 
