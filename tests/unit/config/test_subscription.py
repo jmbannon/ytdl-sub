@@ -22,7 +22,7 @@ def preset_file(youtube_video: Dict, output_options: Dict) -> Dict:
             "preset": "parent_preset_3",
             "nfo_tags": {
                 "tags": {"key-4": "test_preset"},
-            }
+            },
         },
     }
 
