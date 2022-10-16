@@ -12,7 +12,6 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def preset_file(youtube_video: Dict, output_options: Dict) -> Dict:
     return {
         "__preset__": {
-            "preset": "parent_preset_3",
             "youtube": youtube_video,
             "output_options": output_options,
             "nfo_tags": {
@@ -20,6 +19,7 @@ def preset_file(youtube_video: Dict, output_options: Dict) -> Dict:
             },
         },
         "test_preset": {
+            "preset": "parent_preset_3",
             "nfo_tags": {
                 "tags": {"key-4": "test_preset"},
             }
