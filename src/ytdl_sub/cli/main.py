@@ -47,6 +47,7 @@ def _download_subscriptions_from_yaml_files(
 
     for subscription in subscriptions:
         logger.info("Beginning subscription download for %s", subscription.name)
+        logger.debug("Subscription full yaml:\n%s", subscription.as_yaml())
         transaction_log = subscription.download(dry_run=args.dry_run)
 
         output.append((subscription, transaction_log))

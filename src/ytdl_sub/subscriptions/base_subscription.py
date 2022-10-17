@@ -134,3 +134,11 @@ class BaseSubscription(ABC):
             self.output_options.maintain_download_archive
             and self.downloader_class.supports_download_archive
         )
+
+    def as_yaml(self) -> str:
+        """
+        Returns
+        -------
+        Subscription in yaml format
+        """
+        return self._preset_options.yaml
