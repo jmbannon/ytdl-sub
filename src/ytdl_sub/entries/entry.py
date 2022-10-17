@@ -82,11 +82,20 @@ class Entry(EntryVariables, BaseEntry):
             file.write(kwargs_json)
 
     @final
+    def is_thumbnail_downloaded(self) -> bool:
+        """
+        Returns
+        -------
+        True if the thumbnail file exist locally. False otherwise.
+        """
+        return self.get_ytdlp_download_thumbnail_path() is not None
+
+    @final
     def is_downloaded(self) -> bool:
         """
         Returns
         -------
-        True if the file and thumbnail exist locally. False otherwise.
+        True if the file exist locally. False otherwise.
         """
         file_exists = os.path.isfile(self.get_download_file_path())
 
