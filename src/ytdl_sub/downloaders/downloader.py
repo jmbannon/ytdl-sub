@@ -147,6 +147,15 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         self.parents: List[EntryParent] = []
         self.downloaded_entries: Dict[str, Entry] = {}
 
+    @property
+    def ytdl_options(self) -> Dict:
+        """
+        Returns
+        -------
+        YTLD options dict
+        """
+        return self._ytdl_options_builder.clone().to_dict()
+
     @contextmanager
     def ytdl_downloader(self, ytdl_options_overrides: Optional[Dict] = None) -> ytdl.YoutubeDL:
         """
@@ -166,7 +175,16 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         -------
         True if dry-run is enabled. False otherwise.
         """
-        return self._ytdl_options_builder.to_dict().get("skip_download", False)
+        return self.ytdl_options.get("skip_download", False)
+
+    @property
+    def is_entry_thumbnails_enabled(self) -> bool:
+        """
+        Returns
+        -------
+        True if entry thumbnails should be downloaded. False otherwise.
+        """
+        return self.ytdl_options.get("writethumbnail", False)
 
     def extract_info(self, ytdl_options_overrides: Optional[Dict] = None, **kwargs) -> Dict:
         """
@@ -186,6 +204,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
     def extract_info_with_retry(
         self,
         is_downloaded_fn: Optional[Callable[[], bool]] = None,
+        is_thumbnail_downloaded_fn: Optional[Callable[[], bool]] = None,
         ytdl_options_overrides: Optional[Dict] = None,
         **kwargs,
     ) -> Dict:
@@ -200,6 +219,8 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         ----------
         is_downloaded_fn
             Optional. Function to check if the entry is downloaded
+        is_thumbnail_downloaded_fn
+            Optional. Function to check if the entry thumbnail is downloaded
         ytdl_options_overrides
             Optional. Dict containing ytdl args to override other predefined ytdl args
         **kwargs
@@ -218,8 +239,20 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             entry_dict = self.extract_info(
                 ytdl_options_overrides=copied_ytdl_options_overrides, **kwargs
             )
-            if is_downloaded_fn is None or is_downloaded_fn():
+
+            is_downloaded = is_downloaded_fn is None or is_downloaded_fn()
+            is_thumbnail_downloaded = (
+                is_thumbnail_downloaded_fn is None or is_thumbnail_downloaded_fn()
+            )
+
+            if is_downloaded and is_thumbnail_downloaded:
                 return entry_dict
+
+            # If the video file is downloaded but the thumbnail is not, then do not download
+            # the video again
+            if is_downloaded and not is_thumbnail_downloaded:
+                copied_ytdl_options_overrides["skip_download"] = True
+                copied_ytdl_options_overrides["writethumbnail"] = True
 
             time.sleep(self._extract_entry_retry_wait_sec)
             num_tries += 1
@@ -354,7 +387,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         Separate download archive writing between collection urls. This is so break_on_existing
         does not break when downloading from subset urls.
         """
-        archive_path = self._ytdl_options_builder.to_dict().get("download_archive", "")
+        archive_path = self.ytdl_options.get("download_archive", "")
         backup_archive_path = f"{archive_path}.backup"
 
         # If archive path exists, maintain download archive is enable
@@ -380,6 +413,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
     def _extract_entry_info_with_retry(self, entry: Entry) -> Entry:
         download_entry_dict = self.extract_info_with_retry(
             is_downloaded_fn=None if self.is_dry_run else entry.is_downloaded,
+            is_thumbnail_downloaded_fn=None
+            if (self.is_dry_run or not self.is_entry_thumbnails_enabled)
+            else entry.is_thumbnail_downloaded,
             url=entry.webpage_url,
             ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
         )
