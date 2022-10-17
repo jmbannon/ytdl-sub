@@ -46,7 +46,11 @@ def _download_subscriptions_from_yaml_files(
         subscriptions += Subscription.from_file_path(config=config, subscription_path=path)
 
     for subscription in subscriptions:
-        logger.info("Beginning subscription download for %s", subscription.name)
+        logger.info(
+            "Beginning subscription %s for %s",
+            ("dry run" if args.dry_run else "download"),
+            subscription.name,
+        )
         logger.debug("Subscription full yaml:\n%s", subscription.as_yaml())
         transaction_log = subscription.download(dry_run=args.dry_run)
 
@@ -84,6 +88,7 @@ def _download_subscription_from_cli(
         config=config, preset_name=subscription_name, preset_dict=subscription_args_dict
     )
 
+    logger.info("Beginning CLI %s", ("dry run" if args.dry_run else "download"))
     return subscription, subscription.download(dry_run=args.dry_run)
 
 
