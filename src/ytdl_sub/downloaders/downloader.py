@@ -21,6 +21,7 @@ from typing import TypeVar
 
 import yt_dlp as ytdl
 from yt_dlp.utils import ExistingVideoReached
+from yt_dlp.utils import MaxDownloadsReached
 from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.preset_options import AddsVariablesMixin
@@ -364,6 +365,8 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             download_logger.debug("RejectedVideoReached, stopping additional downloads")
         except ExistingVideoReached:
             download_logger.debug("ExistingVideoReached, stopping additional downloads")
+        except MaxDownloadsReached:
+            download_logger.debug("MaxDownloadsReached, stopping additional downloads")
 
         return self._get_entry_dicts_from_info_json_files()
 
@@ -382,10 +385,15 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         return self.download_options.collection_validator
 
     @contextlib.contextmanager
-    def _separate_download_archives(self):
+    def _separate_download_archives(self, clear_info_json_files: bool = False):
         """
         Separate download archive writing between collection urls. This is so break_on_existing
         does not break when downloading from subset urls.
+
+        Parameters
+        ----------
+        clear_info_json_files
+            Whether to delete info.json files after yield
         """
         archive_path = self.ytdl_options.get("download_archive", "")
         backup_archive_path = f"{archive_path}.backup"
@@ -409,6 +417,16 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         # If the archive file did exist, restore the backup
         elif archive_file_exists:
             FileHandler.copy(src_file_path=backup_archive_path, dst_file_path=archive_path)
+
+        # Clear info json files if true
+        if clear_info_json_files:
+            info_json_files = [
+                Path(self.working_directory) / path
+                for path in os.listdir(self.working_directory)
+                if path.endswith(".info.json")
+            ]
+            for info_json_file in info_json_files:
+                os.remove(info_json_file)
 
     def _extract_entry_info_with_retry(self, entry: Entry) -> Entry:
         download_entry_dict = self.extract_info_with_retry(
@@ -440,7 +458,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 UPLOAD_DATE_INDEX: upload_date_idx,
             }
         )
-        # pylint: enable=protected-access
 
         return entry
 
@@ -521,7 +538,8 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         if orphans is None:
             orphans = []
 
-        with self._separate_download_archives():
+        # Delete info json files afterwards so other collection URLs do not use them
+        with self._separate_download_archives(clear_info_json_files=True):
             for parent in parents:
                 for entry_child in self._download_parent_entry(parent=parent):
                     yield entry_child
