@@ -21,7 +21,7 @@ class FileConvertOptions(PluginOptions):
 
        presets:
          my_example_preset:
-           file_converter:
+           file_convert:
              convert_to: "mp4"
     """
 
