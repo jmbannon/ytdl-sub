@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -12,6 +13,7 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
+from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 
 
@@ -181,6 +183,13 @@ class OutputOptions(StrictDictValidator):
         "keep_files_before",
         "keep_files_after",
     }
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        if isinstance(value, dict):
+            value["output_directory"] = value.get("output_directory", "placeholder")
+            value["file_name"] = value.get("file_name", "placeholder")
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

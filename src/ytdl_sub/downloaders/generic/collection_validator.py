@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -41,6 +42,12 @@ class CollectionThumbnailListValidator(ListValidator[CollectionThumbnailValidato
 class CollectionUrlValidator(StrictDictValidator):
     _required_keys = {"url"}
     _optional_keys = {"variables", "source_thumbnails", "playlist_thumbnails"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        if isinstance(value, dict):
+            value["url"] = value.get("url", "placeholder")
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

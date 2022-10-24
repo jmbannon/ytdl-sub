@@ -1,4 +1,5 @@
 import os.path
+from typing import Any
 from typing import Dict
 from typing import Optional
 
@@ -27,7 +28,14 @@ class AudioExtractOptions(PluginOptions):
              quality: 128
     """
 
-    _optional_keys = {"codec", "quality"}
+    _required_keys = {"codec"}
+    _optional_keys = {"quality"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        if isinstance(value, dict):
+            value["codec"] = value.get("codec", "mp3")
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

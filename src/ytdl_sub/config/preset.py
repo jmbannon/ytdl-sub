@@ -128,6 +128,19 @@ class Preset(StrictDictValidator):
     # and ensure required keys are present.
     _optional_keys = PRESET_KEYS
 
+    @classmethod
+    def preset_partial_validate(cls, config: ConfigFile, name: str, value: Any) -> None:
+        cls._partial_validate_key(name, value, "output_options", OutputOptions)
+        cls._partial_validate_key(name, value, "ytdl_options", YTDLOptions)
+        cls._partial_validate_key(name, value, "overrides", Overrides)
+        for plugin_name in PluginMapping.plugins():
+            cls._partial_validate_key(
+                name,
+                value,
+                key=plugin_name,
+                validator=PluginMapping.get(plugin_name).plugin_options_type,
+            )
+
     @property
     def _source_variables(self) -> List[str]:
         return Entry.source_variables()

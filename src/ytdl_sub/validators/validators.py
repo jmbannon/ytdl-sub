@@ -16,6 +16,29 @@ ValidationExceptionT = TypeVar("ValidationExceptionT", bound=ValidationException
 ValidatorT = TypeVar("ValidatorT", bound="Validator")
 
 
+def validation_exception(
+    name: str,
+    error_message: str | Exception,
+    exception_class: Type[ValidationExceptionT] = ValidationException,
+) -> ValidationExceptionT:
+    """
+    Parameters
+    ----------
+    name
+        Name of the validator
+    error_message
+        Error message to include in the ValidationException
+    exception_class
+        Class of the exception
+
+    Returns
+    -------
+    Validation exception with a consistent prefix.
+    """
+    prefix = f"Validation error in {name}: "
+    return exception_class(f"{prefix}{error_message}")
+
+
 class Validator(ABC):
     """
     Used to validate the value of a python object. This is the 'base' class that will first
@@ -28,6 +51,18 @@ class Validator(ABC):
 
     # When raising an error, call the type this value instead of its python name
     _expected_value_type_name: Optional[str] = None
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Parameters
+        ----------
+        name
+            Name of the validator
+        value
+            Value of the validator
+        """
+        _ = cls(name=name, value=value)
 
     def __init__(self, name: str, value: Any):
         self._name = name
@@ -56,8 +91,7 @@ class Validator(ABC):
         -------
         Validation exception with a consistent prefix.
         """
-        prefix = f"Validation error in {self._name}: "
-        return exception_class(f"{prefix}{error_message}")
+        return validation_exception(self._name, error_message, exception_class)
 
 
 class ValueValidator(Validator, ABC, Generic[ValueT]):
@@ -230,6 +264,15 @@ class DictValidator(Validator):
             return None
 
         return self._validate_key(key=key, validator=validator, default=default)
+
+    @final
+    @classmethod
+    def _partial_validate_key(
+        cls, name: str, value: Any, key: str, validator: Type[ValidatorT]
+    ) -> None:
+        value_dict = DictValidator(name=name, value=value)
+        if key in value_dict._dict:
+            validator.partial_validate(name=f"{name}.{key}", value=value_dict._dict[key])
 
 
 class LiteralDictValidator(DictValidator):

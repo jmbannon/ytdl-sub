@@ -202,3 +202,7 @@ class TestPreset:
                     },
                 },
             )
+
+    def test_partial_validate(self, config_file):
+        for preset_name, preset_dict in config_file.presets.dict.items():
+            Preset.preset_partial_validate(config_file, preset_name, preset_dict)
