@@ -1,6 +1,5 @@
 from abc import ABC
 from collections import defaultdict
-from typing import Any
 from typing import Dict
 from typing import List
 

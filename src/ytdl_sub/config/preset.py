@@ -11,7 +11,7 @@ from typing import Union
 
 from mergedeep import mergedeep
 
-from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.config.preset_options import OutputOptions
@@ -33,6 +33,7 @@ from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringListValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
+from ytdl_sub.validators.validators import validation_exception
 
 PRESET_KEYS = {
     "preset",
@@ -129,7 +130,11 @@ class Preset(StrictDictValidator):
     _optional_keys = PRESET_KEYS
 
     @classmethod
-    def preset_partial_validate(cls, config: ConfigFile, name: str, value: Any) -> None:
+    def preset_partial_validate(cls, config: ConfigValidator, name: str, value: Any) -> None:
+        # Ensure value is a dict
+        _ = DictValidator(name=name, value=value)
+        assert isinstance(value, dict)
+
         cls._partial_validate_key(name, value, "output_options", OutputOptions)
         cls._partial_validate_key(name, value, "ytdl_options", YTDLOptions)
         cls._partial_validate_key(name, value, "overrides", Overrides)
@@ -140,6 +145,15 @@ class Preset(StrictDictValidator):
                 key=plugin_name,
                 validator=PluginMapping.get(plugin_name).plugin_options_type,
             )
+
+        parent_presets = StringListValidator(name=f"{name}.preset", value=value.get("preset", []))
+        for parent_preset_name in parent_presets.list:
+            if parent_preset_name.value not in config.presets.keys:
+                raise validation_exception(
+                    name=f"{name}.preset",
+                    error_message=f"preset '{parent_preset_name.value}' does not exist in the "
+                    f"provided config. Available presets: {', '.join(config.presets.keys)}",
+                )
 
     @property
     def _source_variables(self) -> List[str]:
@@ -291,7 +305,7 @@ class Preset(StrictDictValidator):
                 self.__validate_override_string_formatter_validator(validator_value)
 
     def _get_presets_to_merge(
-        self, parent_presets: str | List[str], seen_presets: List[str], config: ConfigFile
+        self, parent_presets: str | List[str], seen_presets: List[str], config: ConfigValidator
     ) -> List[Dict]:
         presets_to_merge: List[Dict] = []
 
@@ -326,7 +340,7 @@ class Preset(StrictDictValidator):
 
         return presets_to_merge
 
-    def __merge_parent_preset_dicts_if_present(self, config: ConfigFile):
+    def __merge_parent_preset_dicts_if_present(self, config: ConfigValidator):
         parent_preset_validator = self._validate_key_if_present(
             key="preset", validator=StringListValidator
         )
@@ -345,7 +359,7 @@ class Preset(StrictDictValidator):
             mergedeep.merge({}, *reversed(presets_to_merge), strategy=mergedeep.Strategy.ADDITIVE)
         )
 
-    def __init__(self, config: ConfigFile, name: str, value: Any):
+    def __init__(self, config: ConfigValidator, name: str, value: Any):
         super().__init__(name=name, value=value)
 
         # Perform the merge of parent presets before validating any keys
@@ -380,7 +394,7 @@ class Preset(StrictDictValidator):
         return self._name
 
     @classmethod
-    def from_dict(cls, config: ConfigFile, preset_name: str, preset_dict: Dict) -> "Preset":
+    def from_dict(cls, config: ConfigValidator, preset_name: str, preset_dict: Dict) -> "Preset":
         """
         Parameters
         ----------

@@ -9,7 +9,7 @@ import pytest
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import MainArgs
 from ytdl_sub.cli.main_args_parser import parser
-from ytdl_sub.config.config_file import ConfigOptions
+from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.utils.exceptions import InvalidDlArguments
 
 

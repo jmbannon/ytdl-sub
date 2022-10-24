@@ -13,7 +13,6 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
-from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 
 

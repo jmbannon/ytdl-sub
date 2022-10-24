@@ -8,7 +8,7 @@ from typing import Tuple
 from mergedeep import mergedeep
 
 from ytdl_sub.cli.main_args_parser import MainArgs
-from ytdl_sub.config.config_file import ConfigOptions
+from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.utils.exceptions import InvalidDlArguments
 
 
