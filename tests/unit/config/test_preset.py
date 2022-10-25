@@ -229,6 +229,9 @@ class TestPresetPartialValidate:
         "preset_dict",
         [
             {"youtube": {}, "generic": {}},  # multiple sources
+            {"generic": {}},  # no download strategy
+            {"generic": {"download_strategy": "fail"}},  # bad download strategy
+            {"generic": {"download_strategy": "collection", "bad_key": "nope"}}  # bad strategy args
         ],
     )
     def test_partial_validate__bad_sources(self, preset_dict):
@@ -245,7 +248,7 @@ class TestPresetPartialValidate:
         "preset_dict",
         [
             {"nfo_tags": {"tags": {"key-1": {"attributes": {"test": "2"}}}}},
-            {"generic": {"urls": {"variables_to_set": {"name": "value"}}}},
+            {"generic": {"urls": [{"variables_to_set": {"name": "value"}}]}},
         ],
     )
     def test_partial_validate__incomplete_list_item(self, preset_dict):
