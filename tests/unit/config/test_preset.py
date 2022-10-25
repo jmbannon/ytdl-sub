@@ -2,6 +2,7 @@ from typing import Dict
 
 import pytest
 
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
@@ -203,6 +204,56 @@ class TestPreset:
                 },
             )
 
-    def test_partial_validate(self, config_file):
-        for preset_name, preset_dict in config_file.presets.dict.items():
-            Preset.preset_partial_validate(config_file, preset_name, preset_dict)
+
+class TestPresetPartialValidate:
+    @pytest.mark.parametrize(
+        "preset_dict",
+        [
+            {"nfo_tags": {"tags": {"key-1": "preset_0"}}},
+            {"output_directory_nfo_tags": {"nfo_root": "test"}},
+            {"output_directory": {"file_name": "test"}},
+            {"output_directory": {"keep_files_after": "today"}},
+            {"ytdl_options": {"format": "best"}},
+        ],
+    )
+    def test_partial_validate(self, preset_dict):
+        _ = ConfigFile(
+            name="test_partial_validate",
+            value={
+                "configuration": {"working_directory": "."},
+                "presets": {"partial_preset": preset_dict},
+            },
+        )
+
+    @pytest.mark.parametrize(
+        "preset_dict",
+        [
+            {"youtube": {}, "generic": {}},  # multiple sources
+        ],
+    )
+    def test_partial_validate__bad_sources(self, preset_dict):
+        with pytest.raises(ValidationException):
+            _ = ConfigFile(
+                name="test_partial_validate",
+                value={
+                    "configuration": {"working_directory": "."},
+                    "presets": {"partial_preset": preset_dict},
+                },
+            )
+
+    @pytest.mark.parametrize(
+        "preset_dict",
+        [
+            {"nfo_tags": {"tags": {"key-1": {"attributes": {"test": "2"}}}}},
+            {"generic": {"urls": {"variables_to_set": {"name": "value"}}}},
+        ],
+    )
+    def test_partial_validate__incomplete_list_item(self, preset_dict):
+        with pytest.raises(ValidationException):
+            _ = ConfigFile(
+                name="test_partial_validate",
+                value={
+                    "configuration": {"working_directory": "."},
+                    "presets": {"partial_preset": preset_dict},
+                },
+            )

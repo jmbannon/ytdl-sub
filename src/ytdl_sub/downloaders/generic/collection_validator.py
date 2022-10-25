@@ -156,6 +156,12 @@ class CollectionValidator(StrictDictValidator, AddsVariablesMixin):
 
     _required_keys = {"urls"}
 
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        if isinstance(value, dict):
+            value["urls"] = value.get("urls", [{"url": "placeholder"}])
+        _ = cls(name, value)
+
     def __init__(self, name, value):
         super().__init__(name, value)
         self._urls = self._validate_key(key="urls", validator=CollectionUrlListValidator)

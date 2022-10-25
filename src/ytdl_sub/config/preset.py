@@ -114,6 +114,11 @@ class DownloadStrategyValidator(StrictDictValidator):
         Returns
         -------
         The downloader class
+
+        Raises
+        ------
+        ValidationException
+            If the download strategy is invalid
         """
         try:
             return DownloadStrategyMapping.get(
@@ -130,14 +135,45 @@ class Preset(StrictDictValidator):
     _optional_keys = PRESET_KEYS
 
     @classmethod
+    def _validate_download_strategy(cls, name: str, value: Dict) -> None:
+        sources: List[str] = []
+        for source_name in DownloadStrategyMapping.sources():
+            if source_name in value:
+                sources.append(source_name)
+
+        if len(sources) > 1:
+            raise validation_exception(
+                name=name,
+                error_message=f"Contains the sources {', '.join(sources)} but can only have one",
+            )
+
+        # If no sources, nothing more to validate
+        if not sources:
+            return
+
+        source_name = sources[0]
+        source_dict = copy.deepcopy(value[source_name])
+
+        downloader = DownloadStrategyValidator(name=f"{name}.{source_name}", value=source_dict).get(
+            downloader_source=source_name
+        )
+        del source_dict["download_strategy"]
+
+        downloader.downloader_options_type.partial_validate(
+            name=f"{name}.{source_name}", value=source_dict
+        )
+
+    @classmethod
     def preset_partial_validate(cls, config: ConfigValidator, name: str, value: Any) -> None:
         # Ensure value is a dict
         _ = DictValidator(name=name, value=value)
         assert isinstance(value, dict)
 
+        cls._validate_download_strategy(name, value)
         cls._partial_validate_key(name, value, "output_options", OutputOptions)
         cls._partial_validate_key(name, value, "ytdl_options", YTDLOptions)
         cls._partial_validate_key(name, value, "overrides", Overrides)
+
         for plugin_name in PluginMapping.plugins():
             cls._partial_validate_key(
                 name,
