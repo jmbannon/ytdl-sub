@@ -185,6 +185,9 @@ class OutputOptions(StrictDictValidator):
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate output options
+        """
         if isinstance(value, dict):
             value["output_directory"] = value.get("output_directory", "placeholder")
             value["file_name"] = value.get("file_name", "placeholder")

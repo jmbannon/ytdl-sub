@@ -31,6 +31,9 @@ class SharedNfoTagsOptions(PluginOptions):
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate NFO tag options
+        """
         if isinstance(value, dict):
             value["nfo_name"] = value.get("nfo_name", "placeholder")
             value["nfo_root"] = value.get("nfo_root", "placeholder")

@@ -37,6 +37,9 @@ class YoutubeChannelDownloaderOptions(DownloaderValidator):
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate a YouTube channel source
+        """
         if isinstance(value, dict):
             value["channel_url"] = value.get(
                 "channel_url", "https://www.youtube.com/c/ProjectZombie603"

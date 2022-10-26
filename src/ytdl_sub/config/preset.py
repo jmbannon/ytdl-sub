@@ -128,12 +128,14 @@ class DownloadStrategyValidator(StrictDictValidator):
             raise self._validation_exception(error_message=value_exc)
 
 
-class Preset(StrictDictValidator):
+class _PresetShell(StrictDictValidator):
     # Have all present keys optional since parent presets could not have all the
     # required keys. They will get validated in the init after the mergedeep of dicts
     # and ensure required keys are present.
     _optional_keys = PRESET_KEYS
 
+
+class Preset(_PresetShell):
     @classmethod
     def _validate_download_strategy(cls, name: str, value: Dict) -> None:
         sources: List[str] = []
@@ -144,7 +146,7 @@ class Preset(StrictDictValidator):
         if len(sources) > 1:
             raise validation_exception(
                 name=name,
-                error_message=f"Contains the sources {', '.join(sources)} but can only have one",
+                error_message=f"Contains the sources {', '.join(sources)}' but can only have one",
             )
 
         # If no sources, nothing more to validate
@@ -165,8 +167,22 @@ class Preset(StrictDictValidator):
 
     @classmethod
     def preset_partial_validate(cls, config: ConfigValidator, name: str, value: Any) -> None:
+        """
+        Partially validates a preset. Used to ensure every preset in a ConfigFile looks sane.
+        Cannot fully validate each preset using the Preset init because required fields could
+        be missing, which become filled in a child preset.
+
+        Parameters
+        ----------
+        config
+            Config that this preset belongs to
+        name
+            Preset name
+        value
+            Preset value
+        """
         # Ensure value is a dict
-        _ = DictValidator(name=name, value=value)
+        _ = _PresetShell(name=name, value=value)
         assert isinstance(value, dict)
 
         cls._validate_download_strategy(name, value)

@@ -45,6 +45,9 @@ class CollectionUrlValidator(StrictDictValidator):
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate a YouTube collection url
+        """
         if isinstance(value, dict):
             value["url"] = value.get("url", "placeholder")
         _ = cls(name, value)
@@ -158,6 +161,9 @@ class CollectionValidator(StrictDictValidator, AddsVariablesMixin):
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate a generic collection
+        """
         if isinstance(value, dict):
             value["urls"] = value.get("urls", [{"url": "placeholder"}])
         _ = cls(name, value)

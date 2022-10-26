@@ -33,6 +33,9 @@ class AudioExtractOptions(PluginOptions):
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate audio extract options
+        """
         if isinstance(value, dict):
             value["codec"] = value.get("codec", "mp3")
         _ = cls(name, value)
