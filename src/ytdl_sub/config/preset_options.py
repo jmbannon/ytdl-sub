@@ -191,6 +191,8 @@ class OutputOptions(StrictDictValidator):
         if isinstance(value, dict):
             value["output_directory"] = value.get("output_directory", "placeholder")
             value["file_name"] = value.get("file_name", "placeholder")
+            # Set this to True by default in partial validate to avoid failing from keep_files
+            value["maintain_download_archive"] = value.get("maintain_download_archive", True)
         _ = cls(name, value)
 
     def __init__(self, name, value):

@@ -37,7 +37,7 @@ class TestConfigFilePartiallyValidatesPresets:
             {"nfo_tags": {"tags": {"key-1": "preset_0"}}},
             {"output_directory_nfo_tags": {"nfo_root": "test"}},
             {"output_options": {"file_name": "test"}},
-            {"output_options": {"keep_files_after": "today", "maintain_download_archive": True}},
+            {"output_options": {"keep_files_after": "today"}},
             {"ytdl_options": {"format": "best"}},
             {"overrides": {"a": "b"}},
         ],
