@@ -1,4 +1,5 @@
 import os
+from typing import Any
 from typing import Dict
 from typing import Optional
 
@@ -26,6 +27,15 @@ class FileConvertOptions(PluginOptions):
     """
 
     _required_keys = {"convert_to"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate file_convert
+        """
+        if isinstance(value, dict):
+            value["convert_to"] = value.get("convert_to", "mp3")
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

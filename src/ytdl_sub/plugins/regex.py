@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -148,6 +149,15 @@ class RegexOptions(PluginOptions):
 
     _required_keys = {"from"}
     _optional_keys = {"skip_if_match_fails"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate regex
+        """
+        if isinstance(value, dict):
+            value["from"] = value.get("from", {})
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

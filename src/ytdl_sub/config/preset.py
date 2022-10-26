@@ -146,7 +146,7 @@ class Preset(_PresetShell):
         if len(sources) > 1:
             raise validation_exception(
                 name=name,
-                error_message=f"Contains the sources {', '.join(sources)}' but can only have one",
+                error_message=f"Contains the sources {', '.join(sources)} but can only have one",
             )
 
         # If no sources, nothing more to validate
