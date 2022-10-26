@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -33,6 +34,17 @@ class YoutubeChannelDownloaderOptions(DownloaderValidator):
         "channel_avatar_path",
         "channel_banner_path",
     }
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate a YouTube channel source
+        """
+        if isinstance(value, dict):
+            value["channel_url"] = value.get(
+                "channel_url", "https://www.youtube.com/c/ProjectZombie603"
+            )
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

@@ -1,6 +1,7 @@
 import pathlib
 from typing import Any
 from typing import Dict
+from typing import Set
 
 import mergedeep
 
@@ -21,3 +22,8 @@ def _merge_presets() -> Dict[str, Any]:
 
 
 PREBUILT_PRESETS: Dict[str, Any] = _merge_presets()
+
+PREBUILT_PRESET_NAMES: Set[str] = set(PREBUILT_PRESETS.keys())
+PUBLISHED_PRESET_NAMES: Set[str] = {
+    name for name in PREBUILT_PRESET_NAMES if not name.startswith("_")
+}

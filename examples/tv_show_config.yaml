@@ -86,14 +86,15 @@ presets:
 
   # Preset to download subtitles (either by file or embedded)
   add_subtitles:
-    # Embed subtitles into the video
-    embed_subtitles: True
-    # And/or download them as a file. Uncomment to download as file:
-    # subtitles_name: "{episode_file_path}.{lang}.{subtitles_ext}"
-    # subtitles_type: "srt"
+    subtitles:
+      # Embed subtitles into the video
+      embed_subtitles: True
+      # And/or download them as a file. Uncomment to download as file:
+      # subtitles_name: "{episode_file_path}.{lang}.{subtitles_ext}"
+      # subtitles_type: "srt"
 
-    languages: "en"  # supports list of multiple languages
-    allow_auto_generated_subtitles: True  # allow auto subtitles
+      languages: "en"  # supports list of multiple languages
+      allow_auto_generated_subtitles: True  # allow auto subtitles
 
 ####################################################################################################
 

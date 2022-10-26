@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -181,6 +182,18 @@ class OutputOptions(StrictDictValidator):
         "keep_files_before",
         "keep_files_after",
     }
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate output options
+        """
+        if isinstance(value, dict):
+            value["output_directory"] = value.get("output_directory", "placeholder")
+            value["file_name"] = value.get("file_name", "placeholder")
+            # Set this to True by default in partial validate to avoid failing from keep_files
+            value["maintain_download_archive"] = value.get("maintain_download_archive", True)
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

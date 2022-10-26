@@ -2,6 +2,7 @@ import os
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -27,6 +28,18 @@ class SharedNfoTagsOptions(PluginOptions):
 
     _required_keys = {"nfo_name", "nfo_root", "tags"}
     _optional_keys = {"kodi_safe"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate NFO tag options
+        """
+        if isinstance(value, dict):
+            value["nfo_name"] = value.get("nfo_name", "placeholder")
+            value["nfo_root"] = value.get("nfo_root", "placeholder")
+            value["tags"] = value.get("tags", {})
+
+        _ = cls(name=name, value=value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

@@ -2,7 +2,7 @@ from abc import ABC
 from pathlib import Path
 from typing import Type
 
-from ytdl_sub.config.config_file import ConfigOptions
+from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.config.preset import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions

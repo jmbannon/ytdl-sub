@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 
 import mediafile
@@ -33,6 +34,15 @@ class MusicTagsOptions(PluginOptions):
     """
 
     _required_keys = {"tags"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate music tags
+        """
+        if isinstance(value, dict):
+            value["tags"] = value.get("tags", {})
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

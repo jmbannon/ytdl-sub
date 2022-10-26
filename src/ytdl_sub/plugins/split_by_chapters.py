@@ -1,6 +1,7 @@
 import copy
 import os.path
 from pathlib import Path
+from typing import Any
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -66,6 +67,12 @@ class SplitByChaptersOptions(PluginOptions):
     """
 
     _required_keys = {"when_no_chapters"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        if isinstance(value, dict):
+            value["when_no_chapters"] = value.get("when_no_chapters", "pass")
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

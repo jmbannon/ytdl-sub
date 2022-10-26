@@ -1,5 +1,3 @@
-from typing import Dict
-
 import pytest
 
 from ytdl_sub.config.preset import Preset
@@ -102,7 +100,7 @@ class TestPreset:
                 "youtube": youtube_video,
                 "output_options": dict(
                     output_options,
-                    **{"maintain_download_archive": True, "keep_files_after": "today-{ttl}"}
+                    **{"maintain_download_archive": True, "keep_files_after": "today-{ttl}"},
                 ),
                 "overrides": {"ttl": "2months"},
             },
