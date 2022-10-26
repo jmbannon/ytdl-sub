@@ -6,6 +6,7 @@ import pytest
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import PRESET_KEYS
+from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.utils.exceptions import ValidationException
 
@@ -44,9 +45,18 @@ class TestConfigFilePartiallyValidatesPresets:
     def test_success(self, preset_dict: Dict):
         self._partial_validate(preset_dict)
 
+    @pytest.mark.parametrize("key", ["output_options", "overrides", "ytdl_options"])
+    def test_success__empty_preset_keys(self, key):
+        self._partial_validate({key: {}})
+
     @pytest.mark.parametrize("plugin", PluginMapping.plugins())
     def test_success__empty_plugins(self, plugin: str):
         self._partial_validate({plugin: {}})
+
+    @pytest.mark.parametrize("source", DownloadStrategyMapping.sources())
+    def test_success__empty_sources(self, source: str):
+        for download_strategy in DownloadStrategyMapping.source_download_strategies(source):
+            self._partial_validate({source: {"download_strategy": download_strategy}})
 
     def test_error__bad_preset_section(self):
         self._partial_validate(
@@ -128,4 +138,18 @@ class TestConfigFilePartiallyValidatesPresets:
         self._partial_validate(
             preset_dict=preset_dict,
             expected_error_message="Validation error in partial_preset.ytdl_options",
+        )
+
+    @pytest.mark.parametrize(
+        "preset_dict",
+        [
+            {"preset": "DNE"},
+            {"preset": ["DNE"]},
+        ],
+    )
+    def test_error__non_existent_preset(self, preset_dict):
+        self._partial_validate(
+            preset_dict=preset_dict,
+            expected_error_message="Validation error in partial_preset: "
+            "preset 'DNE' does not exist in the provided config.",
         )

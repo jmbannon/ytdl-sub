@@ -22,6 +22,9 @@ from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
+from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
@@ -43,6 +46,19 @@ PRESET_KEYS = {
     *DownloadStrategyMapping.sources(),
     *PluginMapping.plugins(),
 }
+
+
+def _parent_preset_error_message(
+    current_preset_name: str, parent_preset_name: str, presets: List[str]
+) -> ValidationException:
+    user_defined_presets = set(presets) - PREBUILT_PRESET_NAMES - {current_preset_name}
+
+    return validation_exception(
+        name=current_preset_name,
+        error_message=f"preset '{parent_preset_name}' does not exist in the provided config.\n"
+        f"Available prebuilt presets: {', '.join(sorted(PUBLISHED_PRESET_NAMES))}\n"
+        f"Your presets: {', '.join(sorted(user_defined_presets))}",
+    )
 
 
 class PresetPlugins:
@@ -180,6 +196,11 @@ class Preset(_PresetShell):
             Preset name
         value
             Preset value
+
+        Raises
+        ------
+        ValidationException
+            If validation fails
         """
         # Ensure value is a dict
         _ = _PresetShell(name=name, value=value)
@@ -201,10 +222,10 @@ class Preset(_PresetShell):
         parent_presets = StringListValidator(name=f"{name}.preset", value=value.get("preset", []))
         for parent_preset_name in parent_presets.list:
             if parent_preset_name.value not in config.presets.keys:
-                raise validation_exception(
-                    name=f"{name}.preset",
-                    error_message=f"preset '{parent_preset_name.value}' does not exist in the "
-                    f"provided config. Available presets: {', '.join(config.presets.keys)}",
+                raise _parent_preset_error_message(
+                    current_preset_name=name,
+                    parent_preset_name=parent_preset_name.value,
+                    presets=config.presets.keys,
                 )
 
     @property
@@ -373,9 +394,10 @@ class Preset(_PresetShell):
 
             # Make sure the parent preset actually exists
             if parent_preset not in config.presets.keys:
-                raise self._validation_exception(
-                    f"preset '{parent_preset}' does not exist in the provided config. "
-                    f"Available presets: {', '.join(config.presets.keys)}"
+                raise _parent_preset_error_message(
+                    current_preset_name=self._name,
+                    parent_preset_name=parent_preset,
+                    presets=config.presets.keys,
                 )
 
             parent_preset_dict = copy.deepcopy(config.presets.dict[parent_preset])
