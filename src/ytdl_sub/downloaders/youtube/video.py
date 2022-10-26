@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 
 from ytdl_sub.downloaders.downloader import Downloader
@@ -31,6 +32,15 @@ class YoutubeVideoDownloaderOptions(DownloaderValidator):
     """
 
     _required_keys = {"video_url"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate a YouTube video source
+        """
+        if isinstance(value, dict):
+            value["video_url"] = value.get("video_url", "youtube.com/watch?v=VMAPTo7RVDo")
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

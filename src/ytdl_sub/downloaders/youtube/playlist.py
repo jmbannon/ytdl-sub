@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -30,6 +31,17 @@ class YoutubePlaylistDownloaderOptions(DownloaderValidator):
 
     _required_keys = {"playlist_url"}
     _optional_keys = {"playlist_thumbnail_name"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate a YouTube playlist source
+        """
+        if isinstance(value, dict):
+            value["playlist_url"] = value.get(
+                "playlist_url", "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+            )
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)

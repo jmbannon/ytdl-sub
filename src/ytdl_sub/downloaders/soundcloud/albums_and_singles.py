@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 from typing import Generator
 
@@ -31,6 +32,15 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(DownloaderValidator):
 
     _required_keys = {"url"}
     _optional_keys = {"skip_premiere_tracks"}
+
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate a Soundcloud source
+        """
+        if isinstance(value, dict):
+            value["url"] = value.get("url", "https://soundcloud.com/jessebannon")
+        _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)
