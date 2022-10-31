@@ -2,7 +2,6 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
-  poster.jpg
 {output_directory}/Season 2020
   s2020.e000001 - 20-3-thumb.jpg
   s2020.e000001 - 20-3.mp4

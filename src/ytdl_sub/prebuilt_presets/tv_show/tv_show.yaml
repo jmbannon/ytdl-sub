@@ -32,9 +32,6 @@ presets:
       download_strategy: "source"
       url: "{url}"
       playlist_thumbnails:
-        # Use latest_entry first, then see if YT channel artwork exists
-        - name: "{tv_show_poster_file_name}"
-          uid: "latest_entry"
         - name: "{tv_show_poster_file_name}"
           uid: "avatar_uncropped"
         - name: "{tv_show_fanart_file_name}"

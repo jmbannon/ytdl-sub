@@ -2,7 +2,6 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
-  poster.jpg
   tvshow.nfo
     NFO tags:
       tvshow:
