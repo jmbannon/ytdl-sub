@@ -35,74 +35,130 @@ maximum flexibility while maintaining simplicity.
 
 ## How it Works
 `ytdl-sub` uses YAML configs to define a layout for how you want media to look
-after it is downloaded. See the 
-[walk-through in our wiki](https://github.com/jmbannon/ytdl-sub/wiki)
-to learn how `ytdl-sub` works, our
+after it is downloaded. See our
+[walkthrough guide](https://github.com/jmbannon/ytdl-sub/wiki)
+on how to get started. Ready-to-use
 [example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
-that we personally use, and
+can be found here alongside our
 [readthedocs](https://ytdl-sub.readthedocs.io/en/latest/config.html#)
-for detailed information on specific sections or fields. Downloading looks like this.
+for detailed information on config fields.
+
 
 ### Config
-The `config.yaml` defines how our downloads will look. For this example, let's
-download YouTube channels to look like TV shows, and generate `.nfo` files
-so they appear in Kodi/Jellyfin/Emby.
+The `config.yaml` defines how our downloads will look. For this example, let us
+download YouTube channels to look like TV shows using ytdl-sub's prebuilt presets.
+No additional plugins or programs are needed for Kodi, Jellyfin, Plex, or Emby to
+recognize your downloads. This can also be used to download any yt-dlp supported
+URL, including YouTube playlists, Bitchute channels, etc.
+
 
 ```yaml
+# Set the working directory which will be used to stage downloads
+# before placing them in your desired output directory.
+configuration:
+  working_directory: '.ytdl-sub-downloads'
+
+# Presets are where you create 'sub-configs' that can can be
+# merged together to dictate what is downloaded, how to format it,
+# and what metadata to generate.
 presets:
-  # Each 'preset' defines a source, download strategy, and options for
-  # configuring the download. We will name this preset 'yt_channel_as_tv'
-  yt_channel_as_tv:
-    
-    # Use YouTube as our source. Our strategy is download the entire channel.
-    # Configure channel-specific parameters to make images appear as artwork
-    youtube:
-      download_strategy: "channel"
-      channel_avatar_path: "poster.jpg"
-      channel_banner_path: "fanart.jpg"
-    
-    # Define media file output options using variables
+
+  # Let us create a preset called `only_recent_videos` that will
+  # only download recent videos in the last 2 months.
+  only_recent_videos:
+
+    # Use the `date_range` plugin to specify ytdl-sub to only
+    # download videos after today MINUS {download_range}, which
+    # is an override variable that we can alter per channel.
+    date_range:
+      after: "today-{download_range}"
+
+    # Any yt-dlp argument can be passed via ytdl-sub. Let us set
+    # yt-dlp's `break_on_reject` to True so stop downlaoaded after
+    # any video is rejected. Videos will be rejected if they are
+    # uploaded after our {download_range}.
+    ytdl_options:
+      break_on_reject: True
+
+    # Deletes any videos uploaded after {download_range}.
     output_options:
-      output_directory: "{youtube_tv_shows_directory}/{tv_show_name_sanitized}"
-      file_name: "{episode_name}.{ext}"
-      thumbnail_name: "{episode_name}-thumb.jpg"
-    
-    # Define 'override' variables, which can contain a mix of hardcoded strings
-    # and 'source' variables that are derived from the video itself.
+      keep_files_after: "today-{download_range}"
+
+    # Set the override variable {download_range} to 2months.
+    # This will serve as our default value. We can override
+    # this per channel or in a child preset.
     overrides:
-      youtube_tv_shows_directory: "/path/to/youtube_tv_shows"
-      episode_name: "Season {upload_year}/s{upload_year}.e{upload_month_padded}{upload_day_padded} - {title_sanitized}"
-     
-    # Use the 'nfo_tags' plugin to generate an NFO file for each video.
-    # See the config in the `examples/` directory for a full example
-    nfo_tags:
-      ...
+      download_range: "2months"
+
+  ####################################################################
+
+  # Now let us create a preset that downloads videos and formats
+  # as TV shows.
+  tv_show:
+
+    # Presets can inherit all attributes from other presets. Our
+    # `tv_show` preset will inherit some presets built into ytdl-sub.
+    preset:
+      # Let us specify all the TV show by date presets to support all
+      # players. Really you only need one but this ensures compatiblity
+      # with all players.
+      - "kodi_tv_show_by_date"
+      - "jellyfin_tv_show_by_date"
+      - "plex_tv_show_by_date"
+      # Now we choose a preset that defines how our seasons and
+      # episode numbers look.
+      - "season_by_year__episode_by_month_day"
+
+    # Set override variables that will be applicable to all downloads
+    # in main presets.
+    overrides:
+      tv_show_directory: "/tv_shows"  # Replace with desired directory
+
 ```
 
 ### Subscriptions
 The `subscriptions.yaml` file is where we define content to download using
-presets in the `config.yaml`.
+presets in the `config.yaml`. Each subscription can overwrite any field used
+in a preset.
 ```yaml
-# The name of our subscription
-john_smith_channel:
-  # Inherit all fields in the 'yt_channel_as_tv' preset
-  preset: "yt_channel_as_tv"
+# The name of our subscription. Let us create one to download
+# ALL of Rick A's videos
+rick_a:
+  # Inherit our `tv_show` preset we made above
+  preset:
+    - "tv_show"
   
-  # Add the `channel_url` parameter here since it's unique for each subscription
-  youtube:
-    channel_url: "https://youtube.com/channe/UCsvn_Po0SmunchJYtttWpOxMg"
-    
-  # Similarly, define the {tv_show_name} variable since it's also unique to each
-  # subscription.
+  # Set override variables that are appliciable to this single
+  # subscription download.
   overrides:
-    tv_show_name: "John Smith Vlogs"
+    tv_show_name: "Rick A"
+    url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+
+# Let us make another subscription that will only download Rick B's
+# video's in the last 2 weeks.
+rick_b_recent:
+  # Inherit our `tv_show` AND `only_recent_videos` preset
+  preset:
+    - "tv_show"
+    - "only_recent_videos"
+  
+  # Set override variables that are appliciable to this single
+  # subscription download, and modify the `download_range` to
+  # only grab 2 week's worth of videos
+  overrides:
+    tv_show_name: "Rick A"
+    url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+    download_range: "2weeks"
+
 ```
 The download can now be performed using:
 ```shell
 ytdl-sub sub subscriptions.yaml
 ```
-This method makes it easy to pull new videos from channels or playlists, or
-experiment with new configurations.
+If you wan to preview what your output files will look like, you can dry run using:
+```shell
+ytdl-sub --dry-run sub subscriptions.yaml
+```
 
 ### One-time Download
 There are things we will only want to download once and never again. Anything
@@ -110,26 +166,27 @@ you can define in a subscription can be defined using CLI arguments. This
 example is equivalent to the subscription example above:
 ```shell
 ytdl-sub dl \
-    --preset "yt_channel_as_tv" \
-    --youtube.channel_url "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg" \
-    --overrides.tv_show_name "John Smith Vlogs"
+    --preset "tv_show" \
+    --overrides.tv_show_name "Rick A" \
+    --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 ```
 
 #### Download Aliases
-In the `config.yaml`, we can define alias to make `dl` commands shorter.
+In the `config.yaml`, we can define aliases to make `dl` commands shorter.
 ```yaml
 configuration:
   dl_aliases:
-    tv: "--preset yt_channel_as_tv"
-    channel: "--youtube.channel_url"
+    tv: "--preset tv_show"
     name: "--overrides.tv_show_name"
+    url: "--overrides.url"
+    
 ```
 The above command can now be shortened to
 ```shell
 ytdl-sub dl \
     --tv \
-    --channel "https://youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg" \
-    --name "John Smith Vlogs"
+    --name "Rick A" \
+    --url "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 ```
 
 ### Output
@@ -137,7 +194,7 @@ After `ytdl-sub` runs, the end result will download and format the channel
 files into something ready to be consumed by your favorite media player or
 server. The `--dry-run` flag can be used to view file output before any downloading occurs.
 ```
-/path/to/youtube_tv_shows/John Smith Vlogs
+/path/to/tv_shows/Rick Aß
   /Season 2021
     s2021.e0317 - Pattys Day Video-thumb.jpg
     s2021.e0317 - Pattys Day Video.mp4
@@ -150,6 +207,19 @@ server. The `--dry-run` flag can be used to view file output before any download
   fanart.jpg
   tvshow.nfo
 ```
+
+### Beyond TV Shows
+The above example made heavy-use of `ytdl-sub` prebuilt presets and hides many
+features that are offered. `ytdl-sub` strives to support _any_ use case that
+involves downloading something with yt-dlp. The tools are there to download,
+format, and convert for your media player to recognized:
+- Movies
+- Extracted audio podcasts
+- Music videos
+- Music, including:
+  - Individual songs
+  - Albums
+  - Discographies
 
 ## Installation
 
