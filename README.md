@@ -210,10 +210,11 @@ server. The `--dry-run` flag can be used to view file output before any download
 
 ### Beyond TV Shows
 The above example made heavy-use of `ytdl-sub` prebuilt presets and hides many
-features that are offered. `ytdl-sub` strives to support _any_ use case that
-involves downloading something with yt-dlp. The tools are there to download,
-format, and convert for your media player to recognized:
+features that are offered. `ytdl-sub` strives to support _any_ use case that first requires
+a download via yt-dlp. Use `ytdl-sub` to download, format, and convert media for your media
+player to recognized:
 - Movies
+- TV shows from multiple sources
 - Extracted audio podcasts
 - Music videos
 - Music, including:
