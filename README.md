@@ -36,7 +36,7 @@ maximum flexibility while maintaining simplicity.
 ## How it Works
 `ytdl-sub` uses YAML configs to define a layout for how you want media to look
 after it is downloaded. See our
-[walkthrough guide](https://github.com/jmbannon/ytdl-sub/wiki)
+[walk-through guide](https://github.com/jmbannon/ytdl-sub/wiki)
 on how to get started. Ready-to-use
 [example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
 can be found here alongside our
@@ -74,7 +74,7 @@ presets:
       after: "today-{download_range}"
 
     # Any yt-dlp argument can be passed via ytdl-sub. Let us set
-    # yt-dlp's `break_on_reject` to True so stop downlaoaded after
+    # yt-dlp's `break_on_reject` to True to stop downloading after
     # any video is rejected. Videos will be rejected if they are
     # uploaded after our {download_range}.
     ytdl_options:
@@ -97,11 +97,11 @@ presets:
   tv_show:
 
     # Presets can inherit all attributes from other presets. Our
-    # `tv_show` preset will inherit some presets built into ytdl-sub.
+    # `tv_show` preset will inherit these presets built into ytdl-sub.
     preset:
       # Let us specify all the TV show by date presets to support all
-      # players. Really you only need one but this ensures compatiblity
-      # with all players.
+      # players. You only need to specify one, but this ensures
+      # compatibility with all players.
       - "kodi_tv_show_by_date"
       - "jellyfin_tv_show_by_date"
       - "plex_tv_show_by_date"
@@ -128,23 +128,24 @@ rick_a:
   preset:
     - "tv_show"
   
-  # Set override variables that are appliciable to this single
-  # subscription download.
+  # Set override variables to set the channel URL and the
+  # name we want to give the TV show.
   overrides:
     tv_show_name: "Rick A"
     url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 
-# Let us make another subscription that will only download Rick B's
+# Let us make another subscription that will only download Rick A's
 # video's in the last 2 weeks.
-rick_b_recent:
+rick_a_recent:
   # Inherit our `tv_show` AND `only_recent_videos` preset
+  # Bottom-most presets take precedence.
   preset:
     - "tv_show"
     - "only_recent_videos"
   
-  # Set override variables that are appliciable to this single
-  # subscription download, and modify the `download_range` to
-  # only grab 2 week's worth of videos
+  # Set override variables for this subscription. Modify the
+  # `download_range` to only download and keep 2 weeks' worth
+  # of videos.
   overrides:
     tv_show_name: "Rick A"
     url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
@@ -155,7 +156,7 @@ The download can now be performed using:
 ```shell
 ytdl-sub sub subscriptions.yaml
 ```
-If you wan to preview what your output files will look like, you can dry run using:
+To preview what your output files before doing any downloads, you can dry run using:
 ```shell
 ytdl-sub --dry-run sub subscriptions.yaml
 ```
@@ -192,7 +193,7 @@ ytdl-sub dl \
 ### Output
 After `ytdl-sub` runs, the end result will download and format the channel
 files into something ready to be consumed by your favorite media player or
-server. The `--dry-run` flag can be used to view file output before any downloading occurs.
+server.
 ```
 /path/to/tv_shows/Rick Aß
   /Season 2021
@@ -212,10 +213,13 @@ server. The `--dry-run` flag can be used to view file output before any download
 The above example made heavy-use of `ytdl-sub` prebuilt presets and hides many
 features that are offered. `ytdl-sub` strives to support _any_ use case that first requires
 a download via yt-dlp. Use `ytdl-sub` to download, format, and convert media for your media
-player to recognized:
+player to recognize downloads as:
 - Movies
-- TV shows from multiple sources
-- Extracted audio podcasts
+- TV shows
+  - From a single channel or playlist
+  - From multiple channels or playlists
+  - From individual videos
+- Extracted audio as podcasts
 - Music videos
 - Music, including:
   - Individual songs
