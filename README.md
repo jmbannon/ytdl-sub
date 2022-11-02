@@ -46,10 +46,10 @@ for detailed information on config fields.
 
 ### Config
 The `config.yaml` defines how our downloads will look. For this example, let us
-download YouTube channels to look like TV shows using ytdl-sub's prebuilt presets.
-No additional plugins or programs are needed for Kodi, Jellyfin, Plex, or Emby to
-recognize your downloads. This can also be used to download any yt-dlp supported
-URL, including YouTube playlists, Bitchute channels, etc.
+download YouTube channels and generate metadata to look like TV shows using
+ytdl-sub's prebuilt presets. No additional plugins or programs are needed for
+Kodi, Jellyfin, Plex, or Emby to recognize your downloads. This can also be
+used to download any yt-dlp supported URL, including YouTube playlists, Bitchute channels, etc.
 
 
 ```yaml
