@@ -28,7 +28,7 @@ presets:
 
   # TV show from any single source. Uses latest entry's thumbnail as tv show poster
   _tv_show_by_date:
-    generic:
+    download:
       download_strategy: "source"
       url: "{url}"
       playlist_thumbnails:
@@ -42,7 +42,7 @@ presets:
   # TV show from a collection. Must specify additional `tv_show_collection_season` presets in
   # addition. Each season sets its own `collection_season_number/_padded`
   _tv_show_collection:
-    generic:
+    download:
       download_strategy: "collection"
 
     overrides:

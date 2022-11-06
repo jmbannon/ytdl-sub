@@ -14,7 +14,7 @@ class CollectionDownloadOptions(CollectionValidator, DownloaderValidator):
 
       presets:
         my_example_preset:
-          generic:
+          download:
             # required
             download_strategy: "collection"
             urls:

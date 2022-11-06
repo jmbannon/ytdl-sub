@@ -68,31 +68,31 @@ class TestConfigFilePartiallyValidatesPresets:
 
     def test_error__multiple_sources(self):
         self._partial_validate(
-            preset_dict={"youtube": {}, "generic": {}},
+            preset_dict={"youtube": {}, "download": {}},
             expected_error_message="Validation error in partial_preset: "
-            "Contains the sources generic, youtube but can only have one",
+            "Contains the sources download, youtube but can only have one",
         )
 
     def test_error__no_download_strategy(self):
         self._partial_validate(
-            preset_dict={"generic": {}},
-            expected_error_message="Validation error in partial_preset.generic: "
+            preset_dict={"download": {}},
+            expected_error_message="Validation error in partial_preset.download: "
             "missing the required field 'download_strategy'",
         )
 
     def test_error__bad_download_strategy(self):
         self._partial_validate(
-            preset_dict={"generic": {"download_strategy": "fail"}},
-            expected_error_message="Validation error in partial_preset.generic: "
-            "Tried to use download strategy 'fail' with source 'generic', "
+            preset_dict={"download": {"download_strategy": "fail"}},
+            expected_error_message="Validation error in partial_preset.download: "
+            "Tried to use download strategy 'fail' with source 'download', "
             "which does not exist. Available download strategies: collection, source",
         )
 
     def test_error__bad_download_strategy_args(self):
         self._partial_validate(
-            preset_dict={"generic": {"download_strategy": "collection", "bad_key": "nope"}},
-            expected_error_message="Validation error in partial_preset.generic: "
-            "'partial_preset.generic' contains the field 'bad_key' which is not allowed. "
+            preset_dict={"download": {"download_strategy": "collection", "bad_key": "nope"}},
+            expected_error_message="Validation error in partial_preset.download: "
+            "'partial_preset.download' contains the field 'bad_key' which is not allowed. "
             "Allowed fields: urls",
         )
 
@@ -100,7 +100,7 @@ class TestConfigFilePartiallyValidatesPresets:
         "preset_dict",
         [
             {"nfo_tags": {"tags": {"key-1": {"attributes": {"test": "2"}}}}},
-            {"generic": {"urls": [{"variables_to_set": {"name": "value"}}]}},
+            {"download": {"urls": [{"variables_to_set": {"name": "value"}}]}},
         ],
     )
     def test_partial_validate__incomplete_list_item(self, preset_dict):

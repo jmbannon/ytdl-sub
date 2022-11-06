@@ -17,7 +17,7 @@ presets:
       - "_tv_show_collection"
 
   collection_season_1:
-    generic:
+    download:
       download_strategy: "collection"
       urls:
         - url: "{collection_season_1_url}"
@@ -42,7 +42,7 @@ presets:
               number: "1"
 
   collection_season_2:
-    generic:
+    download:
       download_strategy: "collection"
       urls:
         - url: "{collection_season_2_url}"
@@ -61,7 +61,7 @@ presets:
               number: "2"
 
   collection_season_3:
-    generic:
+    download:
       download_strategy: "collection"
       urls:
         - url: "{collection_season_3_url}"
@@ -80,7 +80,7 @@ presets:
               number: "3"
 
   collection_season_4:
-    generic:
+    download:
       download_strategy: "collection"
       urls:
         - url: "{collection_season_4_url}"
@@ -99,7 +99,7 @@ presets:
               number: "4"
 
   collection_season_5:
-    generic:
+    download:
       download_strategy: "collection"
       urls:
         - url: "{collection_season_5_url}"

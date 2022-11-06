@@ -162,7 +162,7 @@ class CollectionValidator(StrictDictValidator, AddsVariablesMixin):
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
         """
-        Partially validate a generic collection
+        Partially validate a collection
         """
         if isinstance(value, dict):
             value["urls"] = value.get("urls", [{"url": "placeholder"}])

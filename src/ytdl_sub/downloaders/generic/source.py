@@ -14,9 +14,9 @@ class SourceDownloadOptions(CollectionUrlValidator, DownloaderValidator):
 
       presets:
         my_example_preset:
-          generic:
+          download:
             # required
-            download_strategy: "source"
+            download_strategy: "url"
             url: "youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
             # optional
             playlist_thumbnails:
