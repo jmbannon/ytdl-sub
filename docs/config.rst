@@ -36,69 +36,17 @@ download_strategy
 Download strategies dictate what is getting downloaded from a source. Each
 download strategy has its own set of parameters.
 
-youtube
-'''''''
-Download strategies for downloading videos (or audio if you configure `ytdl_options`_ correctly) from Youtube. See
-Download strategies for downloading music from Soundcloud. See
-:class:`Youtube Variables <ytdl_sub.entries.variables.youtube_variables>`
-for available source variables to use.
-
-channel
-_______
-.. autoclass:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloaderOptions()
-  :members: channel_url, channel_avatar_path, channel_banner_path
-  :member-order: bysource
-  :exclude-members: get_date_range
-
-.. autofunction:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
-.. _YouTube Playlist:
-
-playlist
-________
-.. autoclass:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloaderOptions()
-  :members: playlist_url, playlist_thumbnail_name
+url
+'''
+.. autoclass:: ytdl_sub.downloaders.generic.url.UrlDownloadOptions()
+  :members:
   :member-order: bysource
 
-.. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
-video
-_____
-.. autoclass:: ytdl_sub.downloaders.youtube.video.YoutubeVideoDownloaderOptions()
-  :members: video_url
+multi_url
+'''''''''
+.. autoclass:: ytdl_sub.downloaders.generic.multi_url.MultiUrlDownloadOptions()
+  :members:
   :member-order: bysource
-
-.. autofunction:: ytdl_sub.downloaders.youtube.video.YoutubeVideoDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
-merge_playlist
-______________
-.. autoclass:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloaderOptions()
-  :members: playlist_url, add_chapters
-  :member-order: bysource
-
-.. autofunction:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
-soundcloud
-''''''''''
-Download strategies for downloading music from Soundcloud. See
-:class:`Soundcloud Variables <ytdl_sub.entries.variables.soundcloud_variables>`
-for available source variables to use.
-
-albums_and_singles
-__________________
-.. autoclass:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloadOptions()
-  :members: url, skip_premiere_tracks
-  :member-order: bysource
-
-.. autofunction:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloader.ytdl_option_defaults()
 
 -------------------------------------------------------------------------------
 

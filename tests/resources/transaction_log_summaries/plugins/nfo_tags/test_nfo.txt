@@ -1,6 +1,40 @@
 Files created:
 ----------------------------------------
 {output_directory}
+  .ytdl-sub-kodi_safe_xml-download-archive.json
+  test.nfo
+    NFO tags:
+      kodi_safe_root 🎸:
+        kodi_safe_multi_title 🎸:
+          - value 1 🎸
+          - value 2 🎸
+        kodi_safe_multi_title_with_attrs:
+          -
+            attributes:
+              🎸?:
+                value
+                newlines 🎸
+            tag:
+              the
+               tag 1 🎸🎸
+          -
+            attributes:
+              🎸?:
+                value
+                newlines 🎸
+            tag:
+              the
+               tag 2 🎸🎸
+        kodi_safe_title 🎸: kodi_safe_value 🎸
+        kodi_safe_title_with_attrs:
+          attributes:
+            🎸?:
+              value
+              newlines 🎸
+          tag:
+            the
+             tag 🎸🎸
+{output_directory}/Rick Beato
   Rick Beato - Can you hear the difference？ 🎸🔥 #shorts-thumb.jpg
   Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.info.json
   Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.mp4
@@ -40,35 +74,3 @@ Files created:
              tag 🎸🎸
         title: Can you hear the difference? 🎸🔥 #shorts
         year: 2022
-  test.nfo
-    NFO tags:
-      kodi_safe_root 🎸:
-        kodi_safe_multi_title 🎸:
-          - value 1 🎸
-          - value 2 🎸
-        kodi_safe_multi_title_with_attrs:
-          -
-            attributes:
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-               tag 1 🎸🎸
-          -
-            attributes:
-              🎸?:
-                value
-                newlines 🎸
-            tag:
-              the
-               tag 2 🎸🎸
-        kodi_safe_title 🎸: kodi_safe_value 🎸
-        kodi_safe_title_with_attrs:
-          attributes:
-            🎸?:
-              value
-              newlines 🎸
-          tag:
-            the
-             tag 🎸🎸

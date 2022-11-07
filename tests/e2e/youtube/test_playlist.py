@@ -12,7 +12,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def playlist_preset_dict(output_directory):
     return {
         "preset": "music_video",
-        "youtube": {
+        "download": {
             "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
             "playlist_thumbnails": {"name": "poster.jpg", "uid": "latest_entry"},
         },

@@ -12,8 +12,8 @@ from ytdl_sub.utils.exceptions import ValidationException
 @pytest.fixture
 def yt_album_as_chapters_preset_dict(output_directory):
     return {
-        "preset": "yt_album_as_chapters",
-        "youtube": {"video_url": "https://www.youtube.com/watch?v=zeR2_YjlXWA"},
+        "preset": "album_from_chapters",
+        "download": {"url": "https://www.youtube.com/watch?v=zeR2_YjlXWA"},
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
@@ -128,7 +128,7 @@ class TestSplitByChapters:
         mergedeep.merge(
             yt_album_as_chapters_with_regex_preset_dict,
             {
-                "youtube": {"video_url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+                "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
                 "split_by_chapters": {"when_no_chapters": when_no_chapters},
             },
         )

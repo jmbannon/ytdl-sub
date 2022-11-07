@@ -1,6 +1,8 @@
 Files created:
 ----------------------------------------
 {output_directory}
+  .ytdl-sub-file_convert_test-download-archive.json
+{output_directory}/Beyond The Guitar
   Beyond The Guitar - When you hear Hugh Jackman is returning as Wolverine in Deadpool 3-thumb.jpg
   Beyond The Guitar - When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.info.json
   Beyond The Guitar - When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.mp4

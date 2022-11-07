@@ -1,6 +1,8 @@
 Files created:
 ----------------------------------------
 {output_directory}
+  .ytdl-sub-cli-dl-85f0dd8d-download-archive.json
+{output_directory}/JMC
   JMC - Oblivion Mod ＂Falcor＂ p.1-thumb.jpg
   JMC - Oblivion Mod ＂Falcor＂ p.1.info.json
   JMC - Oblivion Mod ＂Falcor＂ p.1.mp4
