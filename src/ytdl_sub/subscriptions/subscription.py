@@ -64,6 +64,8 @@ class Subscription(SubscriptionDownload):
     @classmethod
     def from_file_path(cls, config: ConfigFile, subscription_path: str) -> List["Subscription"]:
         """
+        Loads subscriptions from a file and applies __preset__ to all of them if present.
+
         Parameters
         ----------
         config:
