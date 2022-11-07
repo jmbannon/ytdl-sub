@@ -3,9 +3,10 @@ configuration:
   working_directory: '.ytdl-sub-downloads'
 
 presets:
-  yt_song:
-    youtube:
-      download_strategy: "video"
+  song:
+    download:
+      download_strategy: "url"
+      url: "{url}"
 
     output_options:
       output_directory: "{music_directory}"
@@ -34,15 +35,13 @@ presets:
       custom_track_number: "1"
 
   #  TODO: make a playlist of individual songs into an album. Need playlist_title
-  yt_song_playlist:
-    preset: yt_song
-    youtube:
-      download_strategy: "playlist"
+  song_playlist:
+    preset: "song"
     overrides:
       custom_track_number: "{playlist_index}"
 
-  yt_album_as_chapters:
-    preset: "yt_song"
+  album_from_chapters:
+    preset: "song"
     output_options:
       file_name: "{custom_album_name_sanitized}/{chapter_index_padded} - {custom_track_name_sanitized}.{ext}"
       thumbnail_name: "{custom_album_name_sanitized}/folder.{thumbnail_ext}"

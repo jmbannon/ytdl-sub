@@ -11,10 +11,10 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def playlist_preset_dict(output_directory):
     return {
-        "preset": "yt_music_video_playlist",
+        "preset": "music_video",
         "youtube": {
-            "playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
-            "playlist_thumbnail_name": "poster.jpg",
+            "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
+            "playlist_thumbnails": {"name": "poster.jpg", "uid": "latest_entry"},
         },
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},

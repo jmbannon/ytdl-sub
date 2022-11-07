@@ -1,0 +1,24 @@
+###############################################################################
+# DOWNLOAD MUSIC VIDEO PLAYLIST
+john_smith:
+  preset: "music_video"
+  overrides:
+    url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+    artist: "John Smith and the Instrument Players"
+
+###############################################################################
+# DOWNLOAD SINGLE MUSIC VIDEO VIA CLI
+
+# It is not always ideal to download all of an artist's music videos.
+# Maybe you only like one song of theirs. We can reuse our preset
+# to download a single video instead.
+#
+# Of course, defining yaml configuration to download a single video once
+# and never again seems weird. Instead, we can perform this download via
+# command-line:
+#
+#     ytdl-sub dl                                                        \
+#         --preset "music_video"                                         \
+#         --override.url "https://youtube.com/watch?v=QhY6r6oAErg"       \
+#         --overrides.artist "John Smith and the Instrument Players"
+#

@@ -1,12 +1,13 @@
-# This example shows how to download and format a Youtube video OR playlist
-# to display in Kodi as a music video. Kodi requires music videos to be in
-# a shared directory, so we will configure this to make the output directory
-# formatted as:
+# This example shows how to download and format a music video OR playlist
+# of music videos to display in Kodi as a music video. The format will
+# look like:
 #
 #   /path/to/Music Videos
+#     Elton John/
 #       Elton John - Rocketman-thumb.jpg
 #       Elton John - Rocketman.mp4
 #       Elton John - Rocketman.nfo
+#    System of a Down/
 #       System of a Down - Chop Suey-thumb.jpg
 #       System of a Down - Chop Suey.mp4
 #       System of a Down - Chop Suey.nfo
@@ -16,12 +17,13 @@ configuration:
   working_directory: '.ytdl-sub-downloads'
 
 presets:
-  yt_music_video:
-    # A single YouTube video is our source/download strategy. However, this
-    # can be overwritten to download music videos from a "playlist", as we
-    # will see in a preset below
-    youtube:
-      download_strategy: "video"
+  music_video:
+    # Set the download details
+    download:
+      # We will only use a single URL to download music video(s).
+      # Make {url} an override variable to set later.
+      download_strategy: "url"
+      url: "{url}"
 
     # For advanced YTDL users only; any YTDL parameter can be set here.
     # To download age-restricted videos, you will need to set your cookie
@@ -39,6 +41,7 @@ presets:
       file_name: "{music_video_name}.{ext}"
       thumbnail_name: "{music_video_name}-thumb.jpg"
       info_json_name: "{music_video_name}.{info_json_ext}"
+      maintain_download_archive: True
 
     # For each video downloaded, add a music video NFO file for it. Populate it
     # with tags that Kodi will read and use to display it in the music or music
@@ -55,23 +58,10 @@ presets:
     # Overrides is a section where we can define our own variables, and use them in
     # any other section. We define our music video directory and episode file name
     # here, which gets reused above for the video, thumbnail, and NFO file.
-    # Recommended to override the artist variable.
+    # Recommended to override the artist variable since {channel} is not always
+    # the artist's exact name.
     overrides:
       music_video_directory: "path/to/Music Videos"
-      music_video_name: "{artist_sanitized} - {title_sanitized}"
+      music_video_name: "{artist_sanitized}/{artist_sanitized} - {title_sanitized}"
       artist: "{channel}"
-
-  # It is not always ideal to download all of an artist's music videos.
-  # Maybe you only like one song of theirs. We can reuse our preset above
-  # to download a single video instead.
-  yt_music_video_playlist:
-    preset: "yt_music_video"
-    youtube:
-      download_strategy: "playlist"
-
-    # Setting maintain_download_archive=True is generally a good thing to enable
-    # with playlists and channels because it will store previously downloaded
-    # video ids to tell YTDL not to re-download them on a successive invocation.
-    output_options:
-      maintain_download_archive: True
 

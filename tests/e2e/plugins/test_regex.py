@@ -13,8 +13,8 @@ from ytdl_sub.utils.exceptions import ValidationException
 @pytest.fixture
 def regex_subscription_dict(output_directory):
     return {
-        "preset": "yt_music_video_playlist",
-        "youtube": {"playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
+        "preset": "music_video",
+        "download": {"url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast

@@ -44,9 +44,9 @@ class TestDownloadArgsParser:
         "aliases, cmd, expected_sub_dict",
         [
             (
-                {"mv": "--preset yt_music_video", "v": "--youtube.video_url"},
+                {"mv": "--preset music_video", "v": "--download.url"},
                 "dl --mv --v 123abc",
-                {"preset": "yt_music_video", "youtube": {"video_url": "123abc"}},
+                {"preset": "music_video", "download": {"url": "123abc"}},
             ),
             (
                 {

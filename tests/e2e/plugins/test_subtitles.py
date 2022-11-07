@@ -8,8 +8,8 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def single_video_subs_embed_preset_dict(output_directory):
     return {
-        "preset": "yt_music_video",
-        "youtube": {"video_url": "https://www.youtube.com/watch?v=2lAe1cqCOXo"},
+        "preset": "music_video",
+        "download": {"url": "https://www.youtube.com/watch?v=2lAe1cqCOXo"},
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         "subtitles": {
