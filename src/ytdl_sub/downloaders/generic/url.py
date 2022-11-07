@@ -1,10 +1,10 @@
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
-from ytdl_sub.downloaders.generic.collection_validator import CollectionUrlValidator
-from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
+from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
+from ytdl_sub.downloaders.generic.validators import UrlValidator
 
 
-class SourceDownloadOptions(CollectionUrlValidator, DownloaderValidator):
+class UrlDownloadOptions(UrlValidator, DownloaderValidator):
     """
     Downloads from a single URL supported by yt-dlp.
 
@@ -27,13 +27,13 @@ class SourceDownloadOptions(CollectionUrlValidator, DownloaderValidator):
     """
 
     @property
-    def collection_validator(self) -> CollectionValidator:
+    def collection_validator(self) -> MultiUrlValidator:
         """Returns itself!"""
-        return CollectionValidator(
+        return MultiUrlValidator(
             name=self._name,
             value={"urls": [self._value]},
         )
 
 
-class SourceDownloader(Downloader[SourceDownloadOptions]):
-    downloader_options_type = SourceDownloadOptions
+class UrlDownloader(Downloader[UrlDownloadOptions]):
+    downloader_options_type = UrlDownloadOptions

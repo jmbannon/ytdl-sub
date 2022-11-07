@@ -1,9 +1,9 @@
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
-from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
+from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
 
 
-class CollectionDownloadOptions(CollectionValidator, DownloaderValidator):
+class MultiUrlDownloadOptions(MultiUrlValidator, DownloaderValidator):
     """
     Downloads from multiple URLs. If an entry is returned from more than one URL, it will
     resolve to the bottom-most URL settings.
@@ -16,7 +16,7 @@ class CollectionDownloadOptions(CollectionValidator, DownloaderValidator):
         my_example_preset:
           download:
             # required
-            download_strategy: "collection"
+            download_strategy: "multi_url"
             urls:
               - url: "youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
                 variables:
@@ -39,10 +39,10 @@ class CollectionDownloadOptions(CollectionValidator, DownloaderValidator):
     """
 
     @property
-    def collection_validator(self) -> CollectionValidator:
+    def collection_validator(self) -> MultiUrlValidator:
         """Returns itself!"""
         return self
 
 
-class CollectionDownloader(Downloader[CollectionDownloadOptions]):
-    downloader_options_type = CollectionDownloadOptions
+class MultiUrlDownloader(Downloader[MultiUrlDownloadOptions]):
+    downloader_options_type = MultiUrlDownloadOptions

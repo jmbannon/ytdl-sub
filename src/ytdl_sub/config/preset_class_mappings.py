@@ -3,8 +3,8 @@ from typing import List
 from typing import Type
 
 from ytdl_sub.downloaders.downloader import Downloader
-from ytdl_sub.downloaders.generic.collection import CollectionDownloader
-from ytdl_sub.downloaders.generic.source import SourceDownloader
+from ytdl_sub.downloaders.generic.multi_url import MultiUrlDownloader
+from ytdl_sub.downloaders.generic.url import UrlDownloader
 from ytdl_sub.downloaders.soundcloud.albums_and_singles import SoundcloudAlbumsAndSinglesDownloader
 from ytdl_sub.downloaders.youtube.channel import YoutubeChannelDownloader
 from ytdl_sub.downloaders.youtube.merge_playlist import YoutubeMergePlaylistDownloader
@@ -40,8 +40,8 @@ class DownloadStrategyMapping:
             "albums_and_singles": SoundcloudAlbumsAndSinglesDownloader,
         },
         "download": {
-            "collection": CollectionDownloader,
-            "source": SourceDownloader,
+            "multi_url": MultiUrlDownloader,
+            "url": UrlDownloader,
         },
     }
 
