@@ -26,9 +26,9 @@ from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.config.preset_options import Overrides
-from ytdl_sub.downloaders.generic.collection_validator import CollectionThumbnailListValidator
-from ytdl_sub.downloaders.generic.collection_validator import CollectionUrlValidator
-from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
+from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
+from ytdl_sub.downloaders.generic.validators import UrlThumbnailListValidator
+from ytdl_sub.downloaders.generic.validators import UrlValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
@@ -63,11 +63,11 @@ class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
 
     @property
     @abc.abstractmethod
-    def collection_validator(self) -> CollectionValidator:
+    def collection_validator(self) -> MultiUrlValidator:
         """
         Returns
         -------
-        CollectionValidator
+        MultiUrlValidator
             To determine how the entries are downloaded
         """
 
@@ -380,7 +380,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         self.downloaded_entries[_entry_key(entry)] = entry
 
     @property
-    def collection(self) -> CollectionValidator:
+    def collection(self) -> MultiUrlValidator:
         """Return the download options collection"""
         return self.download_options.collection_validator
 
@@ -480,9 +480,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             for entry_child in self._download_parent_entry(parent=parent_child):
                 yield entry_child
 
-    def _set_collection_variables(
-        self, collection_url: CollectionUrlValidator, entry: Entry | EntryParent
-    ):
+    def _set_collection_variables(self, collection_url: UrlValidator, entry: Entry | EntryParent):
         if isinstance(entry, EntryParent):
             for child in entry.parent_children():
                 self._set_collection_variables(collection_url, child)
@@ -495,7 +493,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             entry.add_variables(variables_to_add=collection_url.variables.dict_with_format_strings)
 
     def _download_url_metadata(
-        self, collection_url: CollectionUrlValidator
+        self, collection_url: UrlValidator
     ) -> Tuple[List[EntryParent], List[Entry]]:
         """
         Downloads only info.json files and forms EntryParent trees
@@ -594,7 +592,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
     def _download_parent_thumbnails(
         self,
         thumbnails_downloaded: Set[str],
-        thumbnail_list_info: CollectionThumbnailListValidator,
+        thumbnail_list_info: UrlThumbnailListValidator,
         entry: Entry,
         is_last_entry: bool,
         parent: EntryParent,
@@ -637,9 +635,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
         return thumbnails_downloaded
 
-    def _download_url_thumbnails(
-        self, collection_url: CollectionUrlValidator, entries: List[Entry]
-    ):
+    def _download_url_thumbnails(self, collection_url: UrlValidator, entries: List[Entry]):
         """
         After all media entries have been downloaded, post processed, and moved to the output
         directory, run this function. This lets the downloader add any extra files directly to the

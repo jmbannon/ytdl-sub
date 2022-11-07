@@ -5,7 +5,7 @@ from typing import Optional
 
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
-from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
+from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.url_validator import YoutubeChannelUrlValidator
 
@@ -59,7 +59,7 @@ class YoutubeChannelDownloaderOptions(DownloaderValidator):
         )
 
     @property
-    def collection_validator(self) -> CollectionValidator:
+    def collection_validator(self) -> MultiUrlValidator:
         """Download from the channel url"""
         playlist_thumbnails: List[Dict] = []
         if self._channel_avatar_path:
@@ -77,7 +77,7 @@ class YoutubeChannelDownloaderOptions(DownloaderValidator):
                 }
             )
 
-        return CollectionValidator(
+        return MultiUrlValidator(
             name=self._name,
             value={
                 "urls": [

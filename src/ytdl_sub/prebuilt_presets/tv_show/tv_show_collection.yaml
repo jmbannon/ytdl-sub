@@ -18,7 +18,7 @@ presets:
 
   collection_season_1:
     download:
-      download_strategy: "collection"
+      download_strategy: "multi_url"
       urls:
         - url: "{collection_season_1_url}"
           variables:
@@ -43,7 +43,7 @@ presets:
 
   collection_season_2:
     download:
-      download_strategy: "collection"
+      download_strategy: "multi_url"
       urls:
         - url: "{collection_season_2_url}"
           variables:
@@ -62,7 +62,7 @@ presets:
 
   collection_season_3:
     download:
-      download_strategy: "collection"
+      download_strategy: "multi_url"
       urls:
         - url: "{collection_season_3_url}"
           variables:
@@ -81,7 +81,7 @@ presets:
 
   collection_season_4:
     download:
-      download_strategy: "collection"
+      download_strategy: "multi_url"
       urls:
         - url: "{collection_season_4_url}"
           variables:
@@ -100,7 +100,7 @@ presets:
 
   collection_season_5:
     download:
-      download_strategy: "collection"
+      download_strategy: "multi_url"
       urls:
         - url: "{collection_season_5_url}"
           variables:

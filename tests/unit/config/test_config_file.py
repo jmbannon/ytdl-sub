@@ -85,12 +85,12 @@ class TestConfigFilePartiallyValidatesPresets:
             preset_dict={"download": {"download_strategy": "fail"}},
             expected_error_message="Validation error in partial_preset.download: "
             "Tried to use download strategy 'fail' with source 'download', "
-            "which does not exist. Available download strategies: collection, source",
+            "which does not exist. Available download strategies: multi_url, url",
         )
 
     def test_error__bad_download_strategy_args(self):
         self._partial_validate(
-            preset_dict={"download": {"download_strategy": "collection", "bad_key": "nope"}},
+            preset_dict={"download": {"download_strategy": "multi_url", "bad_key": "nope"}},
             expected_error_message="Validation error in partial_preset.download: "
             "'partial_preset.download' contains the field 'bad_key' which is not allowed. "
             "Allowed fields: urls",

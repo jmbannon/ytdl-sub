@@ -11,7 +11,7 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.validators import ListValidator
 
 
-class CollectionThumbnailValidator(StrictDictValidator):
+class UrlThumbnailValidator(StrictDictValidator):
     _required_keys = {"name", "uid"}
 
     def __init__(self, name, value):
@@ -35,11 +35,11 @@ class CollectionThumbnailValidator(StrictDictValidator):
         return self._uid
 
 
-class CollectionThumbnailListValidator(ListValidator[CollectionThumbnailValidator]):
-    _inner_list_type = CollectionThumbnailValidator
+class UrlThumbnailListValidator(ListValidator[UrlThumbnailValidator]):
+    _inner_list_type = UrlThumbnailValidator
 
 
-class CollectionUrlValidator(StrictDictValidator):
+class UrlValidator(StrictDictValidator):
     _required_keys = {"url"}
     _optional_keys = {"variables", "source_thumbnails", "playlist_thumbnails"}
 
@@ -62,10 +62,10 @@ class CollectionUrlValidator(StrictDictValidator):
         )
 
         self._source_thumbnails = self._validate_key_if_present(
-            key="source_thumbnails", validator=CollectionThumbnailListValidator, default=[]
+            key="source_thumbnails", validator=UrlThumbnailListValidator, default=[]
         )
         self._playlist_thumbnails = self._validate_key_if_present(
-            key="playlist_thumbnails", validator=CollectionThumbnailListValidator, default=[]
+            key="playlist_thumbnails", validator=UrlThumbnailListValidator, default=[]
         )
 
     @property
@@ -86,7 +86,7 @@ class CollectionUrlValidator(StrictDictValidator):
         return self._variables
 
     @property
-    def source_thumbnails(self) -> Optional[CollectionThumbnailListValidator]:
+    def source_thumbnails(self) -> Optional[UrlThumbnailListValidator]:
         """
         Thumbnails to download from the source, if any exist. The hierarchy is defined as
         source -> playlist -> entry.
@@ -105,7 +105,7 @@ class CollectionUrlValidator(StrictDictValidator):
         return self._source_thumbnails
 
     @property
-    def playlist_thumbnails(self) -> Optional[CollectionThumbnailListValidator]:
+    def playlist_thumbnails(self) -> Optional[UrlThumbnailListValidator]:
         """
         Thumbnails to download from the source, if any exist. The hierarchy is defined as
         source -> playlist -> entry.
@@ -124,8 +124,8 @@ class CollectionUrlValidator(StrictDictValidator):
         return self._playlist_thumbnails
 
 
-class CollectionUrlListValidator(ListValidator[CollectionUrlValidator]):
-    _inner_list_type = CollectionUrlValidator
+class UrlListValidator(ListValidator[UrlValidator]):
+    _inner_list_type = UrlValidator
     _expected_value_type_name = "collection url list"
 
     def __init__(self, name, value):
@@ -151,7 +151,7 @@ class CollectionUrlListValidator(ListValidator[CollectionUrlValidator]):
                     collection_variables[var] = added_variables[var]
 
 
-class CollectionValidator(StrictDictValidator, AddsVariablesMixin):
+class MultiUrlValidator(StrictDictValidator, AddsVariablesMixin):
     """
     Downloads from multiple URLs. If an entry is returned from more than one URL, it will
     resolve to the bottom-most URL settings.
@@ -170,10 +170,10 @@ class CollectionValidator(StrictDictValidator, AddsVariablesMixin):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._urls = self._validate_key(key="urls", validator=CollectionUrlListValidator)
+        self._urls = self._validate_key(key="urls", validator=UrlListValidator)
 
     @property
-    def collection_urls(self) -> CollectionUrlListValidator:
+    def collection_urls(self) -> UrlListValidator:
         """
         Required. The Soundcloud user's url, i.e. ``soundcloud.com/the_username``
         """
