@@ -41,7 +41,7 @@ class DownloadStrategyMapping:
         },
         "download": {
             "collection": CollectionDownloader,
-            "url": SourceDownloader,
+            "source": SourceDownloader,
         },
     }
 
