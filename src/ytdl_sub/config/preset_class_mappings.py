@@ -39,7 +39,7 @@ class DownloadStrategyMapping:
         "soundcloud": {
             "albums_and_singles": SoundcloudAlbumsAndSinglesDownloader,
         },
-        "generic": {
+        "download": {
             "collection": CollectionDownloader,
             "source": SourceDownloader,
         },
