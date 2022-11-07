@@ -22,7 +22,7 @@ configuration
 The ``configuration`` section contains app-wide configs applied to all presets
 and subscriptions.
 
-.. autoclass:: ytdl_sub.config.config_file.ConfigOptions()
+.. autoclass:: ytdl_sub.config.config_validator.ConfigOptions()
   :members:
   :member-order: bysource
 
@@ -264,15 +264,16 @@ channel or playlist.
 The only difference between a ``subscription`` and ``preset`` is that the subscription
 must have all required fields and ``{variables}`` defined so it can perform a download.
 
-Below is an example that downloads YouTube videos:
+Below is an example that downloads a YouTube playlist:
 
 .. code-block:: yaml
   :caption: config.yaml
 
    presets:
      playlist_preset_ex:
-       youtube:
-         download_strategy: "playlist"
+       download:
+         download_strategy: "url"
+         url: "{url}"
        output_options:
          output_directory: "{output_directory}/{playlist_name}"
          file_name: "{playlist_name}.{title}.{ext}"
@@ -284,15 +285,33 @@ Below is an example that downloads YouTube videos:
 
    my_subscription_name:
      preset: "playlist_preset_ex"
-     youtube:
-       playlist_url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
      overrides:
        playlist_name: "diy-playlist"
+       url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
 
-Our preset ``playlist_preset_ex`` uses the `YouTube Playlist`_ download strategy, and defines two
-custom variables: ``{output_directory}`` and ``{playlist_name}``. The subscription sets
-the `parent preset`_ to ``playlist_preset_ex``, and must define the ``playlist_url`` field and
-the ``{playlist_name}`` variable since the preset did not.
+Our preset ``playlist_preset_ex`` defines three
+custom variables: ``{output_directory}``, ``{playlist_name}``, and ``{url}``. The subscription sets
+the `parent preset`_ to ``playlist_preset_ex``, and must define the variables ``{playlist_name}``
+and ``{url}`` since the preset did not.
+
+File Preset
+^^^^^^^^^^^
+You can apply a preset to all subscriptions in the ``subscription.yaml`` file
+by using the file-wide ``__preset__``:
+
+.. code-block:: yaml
+  :caption: subscription.yaml
+
+   __preset__:
+     preset: "playlist_preset_ex"
+
+   my_subscription_name:
+     overrides:
+       url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+       playlist_name: "diy-playlist"
+
+This ``subscription.yaml`` is equivalent to the one above it because all
+subscriptions automatically set ``__preset__`` as a `parent preset`_.
 
 -------------------------------------------------------------------------------
 
