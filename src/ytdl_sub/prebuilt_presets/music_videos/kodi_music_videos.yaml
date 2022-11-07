@@ -2,7 +2,7 @@ presets:
 
   kodi_music_video:
     download:
-      download_strategy: "source"
+      download_strategy: "url"
       url: "{music_video_url}"
 
     output_options:

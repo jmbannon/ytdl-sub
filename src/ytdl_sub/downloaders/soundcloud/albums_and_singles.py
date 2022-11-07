@@ -4,7 +4,7 @@ from typing import Generator
 
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
-from ytdl_sub.downloaders.generic.collection_validator import CollectionValidator
+from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.validators.url_validator import SoundcloudUsernameUrlValidator
 from ytdl_sub.validators.validators import BoolValidator
@@ -52,9 +52,9 @@ class SoundcloudAlbumsAndSinglesDownloadOptions(DownloaderValidator):
         )
 
     @property
-    def collection_validator(self) -> CollectionValidator:
+    def collection_validator(self) -> MultiUrlValidator:
         """Downloads the album tracks first, then the tracks"""
-        return CollectionValidator(
+        return MultiUrlValidator(
             name=self._name,
             value={
                 "urls": [

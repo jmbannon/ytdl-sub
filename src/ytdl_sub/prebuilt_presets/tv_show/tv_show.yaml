@@ -29,7 +29,7 @@ presets:
   # TV show from any single source. Uses latest entry's thumbnail as tv show poster
   _tv_show_by_date:
     download:
-      download_strategy: "source"
+      download_strategy: "url"
       url: "{url}"
       playlist_thumbnails:
         - name: "{tv_show_poster_file_name}"
@@ -43,7 +43,7 @@ presets:
   # addition. Each season sets its own `collection_season_number/_padded`
   _tv_show_collection:
     download:
-      download_strategy: "collection"
+      download_strategy: "multi_url"
 
     overrides:
       season_number: "{collection_season_number}"
