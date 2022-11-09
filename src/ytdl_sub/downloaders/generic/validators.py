@@ -173,7 +173,7 @@ class MultiUrlValidator(StrictDictValidator, AddsVariablesMixin):
         self._urls = self._validate_key(key="urls", validator=UrlListValidator)
 
     @property
-    def collection_urls(self) -> UrlListValidator:
+    def urls(self) -> UrlListValidator:
         """
         Required. The Soundcloud user's url, i.e. ``soundcloud.com/the_username``
         """
@@ -205,7 +205,7 @@ class MultiUrlValidator(StrictDictValidator, AddsVariablesMixin):
         )
 
         # Apply formatting to each new source variable, ensure it resolves
-        for collection_url in self.collection_urls.list:
+        for collection_url in self.urls.list:
             for (
                 source_var_name,
                 source_var_formatter_str,

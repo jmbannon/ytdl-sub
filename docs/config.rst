@@ -39,13 +39,13 @@ download strategy has its own set of parameters.
 url
 '''
 .. autoclass:: ytdl_sub.downloaders.generic.url.UrlDownloadOptions()
-  :members:
+  :members: url, playlist_thumbnails, source_thumbnails
   :member-order: bysource
 
 multi_url
 '''''''''
 .. autoclass:: ytdl_sub.downloaders.generic.multi_url.MultiUrlDownloadOptions()
-  :members:
+  :members: urls
   :member-order: bysource
 
 -------------------------------------------------------------------------------
@@ -119,6 +119,7 @@ audio_extract
 .. autoclass:: ytdl_sub.plugins.audio_extract.AudioExtractOptions()
   :members:
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -127,6 +128,7 @@ chapters
 .. autoclass:: ytdl_sub.plugins.chapters.ChaptersOptions()
   :members:
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -135,12 +137,14 @@ date_range
 .. autoclass:: ytdl_sub.plugins.date_range.DateRangeOptions()
   :members:
   :member-order: bysource
+  :exclude-members: partial_validate
 
 file_convert
 ''''''''''''
 .. autoclass:: ytdl_sub.plugins.file_convert.FileConvertOptions()
   :members:
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -148,6 +152,7 @@ music_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()
   :members:
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -156,6 +161,7 @@ nfo_tags
 .. autoclass:: ytdl_sub.plugins.nfo_tags.NfoTagsOptions()
   :members: nfo_name, nfo_root, tags, kodi_safe
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -164,6 +170,7 @@ output_directory_nfo_tags
 .. autoclass:: ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions()
   :members: nfo_name, nfo_root, tags, kodi_safe
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -175,6 +182,7 @@ regex
 .. autoclass:: ytdl_sub.plugins.regex.SourceVariableRegex()
   :members: match, capture_group_names, capture_group_defaults
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -183,6 +191,7 @@ split_by_chapters
 .. autoclass:: ytdl_sub.plugins.split_by_chapters.SplitByChaptersOptions()
   :members: when_no_chapters
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -191,6 +200,7 @@ subtitles
 .. autoclass:: ytdl_sub.plugins.subtitles.SubtitleOptions()
   :members: subtitles_name, subtitles_type, embed_subtitles, languages, allow_auto_generated_subtitles
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -198,6 +208,7 @@ video_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.video_tags.VideoTagsOptions()
   :members:
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
