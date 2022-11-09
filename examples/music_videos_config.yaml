@@ -29,9 +29,9 @@ presets:
     # To download age-restricted videos, you will need to set your cookie
     # file here as a ytdl parameter. For more info, see
     # https://ytdl-sub.readthedocs.io/en/latest/faq.html#download-age-restricted-youtube-videos
-    #
-    # ytdl_options:
-    #   cookiefile: "path/to/cookie_file.txt
+    ytdl_options:
+      # cookiefile: "path/to/cookie_file.txt
+      break_on_existing: True  # Stop downloads if it already exists
 
     # For each video downloaded, set the file and thumbnail name here.
     # We set both with {music_video_name}, which is a variable we define in
