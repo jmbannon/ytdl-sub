@@ -1,17 +1,5 @@
 Files created:
 ----------------------------------------
-{output_directory}
-  01. Intro (Feat. Racheal Ofori & Barney Artist).info.json
-  02. Answers (Feat. Rick David & Kaya Thomas - Dyke).info.json
-  03. Blaze (Feat. Kaya Thomas - Dyke).info.json
-  04. What If (Interlude).info.json
-  05. No Peace (Feat. Tom Misch).info.json
-  06. Closer (Feat. Lester Duval).info.json
-  07. Delusions： Rumination (Interlude) (Feat. Racheal Ofori).info.json
-  08. Dreams (Feat. Carmody).info.json
-  09. Dreaming (Interlude) (Feat. Racheal Ofori).info.json
-  10. Hopeful (Feat. Jordan Rakei).info.json
-  11. Sunrise (Pillows) (Feat. Emmavie).info.json
 {output_directory}/Alfa Mist - Nocturne [Full Album]
   01 - 01. Intro (Feat. Racheal Ofori & Barney Artist).mp3
     From Chapter Split:
