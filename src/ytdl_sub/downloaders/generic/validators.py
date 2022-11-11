@@ -135,7 +135,6 @@ class UrlValidator(StrictDictValidator):
         return self._source_thumbnails
 
 
-
 class UrlListValidator(ListValidator[UrlValidator]):
     _inner_list_type = UrlValidator
     _expected_value_type_name = "collection url list"
