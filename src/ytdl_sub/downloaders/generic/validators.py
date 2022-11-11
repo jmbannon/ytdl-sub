@@ -86,29 +86,12 @@ class UrlValidator(StrictDictValidator):
         return self._variables
 
     @property
-    def source_thumbnails(self) -> Optional[UrlThumbnailListValidator]:
-        """
-        Thumbnails to download from the source, if any exist. The hierarchy is defined as
-        source -> playlist -> entry.
-
-        Usage:
-
-        .. code-block:: yaml
-
-           source_thumbnails:
-             - name: "poster.jpg"
-               uid: "avatar_uncropped"
-
-        UID is the yt-dlp thumbnail ID or can specify ``latest_entry`` to use the last entry's
-        thumbnail that was downloaded.
-        """
-        return self._source_thumbnails
-
-    @property
     def playlist_thumbnails(self) -> Optional[UrlThumbnailListValidator]:
         """
-        Thumbnails to download from the source, if any exist. The hierarchy is defined as
-        source -> playlist -> entry.
+        Thumbnails to download from the playlist, if any exist. Playlist is the ``yt-dlp`` naming
+        convention for a set that contains multiple entries. For example, the URL
+        ``https://www.youtube.com/c/RickastleyCoUkOfficial`` would have ``playlist`` refer to the
+        channel.
 
         Usage:
 
@@ -117,11 +100,40 @@ class UrlValidator(StrictDictValidator):
            playlist_thumbnails:
              - name: "poster.jpg"
                uid: "avatar_uncropped"
+             - name: "fanart.jpg"
+               uid: "banner_uncropped"
 
-        UID is the yt-dlp thumbnail ID or can specify ``latest_entry`` to use the last entry's
-        thumbnail that was downloaded.
+        ``name`` is the file name relative to the output directory to store the thumbnail.
+        ``uid`` is the yt-dlp thumbnail ID. Can specify ``latest_entry`` to use the latest entry's
+        thumbnail.
         """
         return self._playlist_thumbnails
+
+    @property
+    def source_thumbnails(self) -> Optional[UrlThumbnailListValidator]:
+        """
+        Thumbnails to download from the source, if any exist. Source in this context refers to the
+        set of sets. For example, the URL
+        ``https://www.youtube.com/c/RickastleyCoUkOfficial/playlists``
+        would have ``playlist`` refer to each individual playlist, whereas ``source`` refers
+        to the channel.
+
+        Usage:
+
+        .. code-block:: yaml
+
+           source_thumbnails:
+             - name: "poster.jpg"
+               uid: "avatar_uncropped"
+             - name: "fanart.jpg"
+               uid: "banner_uncropped"
+
+        ``name`` is the file name relative to the output directory to store the thumbnail.
+        ``uid`` is the yt-dlp thumbnail ID. Can specify ``latest_entry`` to use the latest entry's
+        thumbnail.
+        """
+        return self._source_thumbnails
+
 
 
 class UrlListValidator(ListValidator[UrlValidator]):
