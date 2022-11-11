@@ -36,6 +36,8 @@ download_strategy
 Download strategies dictate what is getting downloaded from a source. Each
 download strategy has its own set of parameters.
 
+.. _url:
+
 url
 '''
 .. autoclass:: ytdl_sub.downloaders.generic.url.UrlDownloadOptions()
@@ -45,8 +47,7 @@ url
 multi_url
 '''''''''
 .. autoclass:: ytdl_sub.downloaders.generic.multi_url.MultiUrlDownloadOptions()
-  :members: urls
-  :member-order: bysource
+  :members: urls, variables
 
 -------------------------------------------------------------------------------
 

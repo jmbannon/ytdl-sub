@@ -12,6 +12,7 @@ clean:
 		build/ \
 		dist/ \
 		src/ytdl_sub.egg-info/ \
+		docs/_html/ \
 		.coverage \
 		coverage.xml
 

@@ -71,7 +71,7 @@ class UrlValidator(StrictDictValidator):
     @property
     def url(self) -> OverridesStringFormatterValidator:
         """
-        URL to download from, listed in priority from lowest (top) to highest (bottom). If a
+        Required. URL to download from, listed in priority from lowest (top) to highest (bottom). If a
         download exists in more than one URL, it will resolve to the bottom-most one and inherit
         those variables.
         """
@@ -175,9 +175,19 @@ class MultiUrlValidator(StrictDictValidator, AddsVariablesMixin):
     @property
     def urls(self) -> UrlListValidator:
         """
-        Required. The Soundcloud user's url, i.e. ``soundcloud.com/the_username``
+        Required. A list of :ref:`url` with the addition of the ``variables`` attribute.
         """
         return self._urls
+
+    @property
+    def variables(self) -> DictFormatterValidator:
+        """
+        Optional. Source variables to add to each entry downloaded from its respective :ref:`url`. The top-most
+        :ref:`url` must define all possible variables. Other :ref:`url` entries can redefine all of them or a subset of
+        the top-most variables.
+        """
+        # keep for readthedocs documentation
+        return self._urls.list[0].variables
 
     def added_source_variables(self) -> List[str]:
         """
