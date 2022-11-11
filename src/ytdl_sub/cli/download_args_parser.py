@@ -134,6 +134,12 @@ class DownloadArgsParser:
 
         next_dict[arg_name_split[-1]] = arg_value
 
+        # TODO: handle ints/floats
+        if arg_value == "True":
+            next_dict[arg_name_split[-1]] = True
+        elif arg_value == "False":
+            next_dict[arg_name_split[-1]] = False
+
         return argument_dict
 
     @classmethod
