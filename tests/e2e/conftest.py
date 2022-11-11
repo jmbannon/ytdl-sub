@@ -14,7 +14,7 @@ from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 
 @pytest.fixture()
 def music_video_config_path():
-    return "examples/kodi_music_videos_config.yaml"
+    return "examples/music_videos_config.yaml"
 
 
 @pytest.fixture()
@@ -34,7 +34,7 @@ def soundcloud_discography_config():
 
 @pytest.fixture()
 def youtube_audio_config_path():
-    return "examples/youtube_extract_and_tag_audio.yaml"
+    return "examples/music_audio_from_videos.yaml"
 
 
 @pytest.fixture()

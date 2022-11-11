@@ -10,10 +10,13 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def single_video_preset_dict(output_directory):
     return {
-        "preset": "yt_music_video",
-        "youtube": {"video_url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+        "preset": "music_video",
+        "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
         # override the output directory with our fixture-generated dir
-        "output_options": {"output_directory": output_directory},
+        "output_options": {
+            "output_directory": output_directory,
+            "maintain_download_archive": False,
+        },
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
@@ -79,10 +82,10 @@ class TestYoutubeVideo:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="youtube/test_video.txt",
+            transaction_log_summary_file_name="youtube/test_video_cli.txt",
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
-            expected_download_summary_file_name="youtube/test_video.json",
+            expected_download_summary_file_name="youtube/test_video_cli.json",
         )

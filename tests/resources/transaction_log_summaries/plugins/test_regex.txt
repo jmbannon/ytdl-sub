@@ -2,6 +2,7 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-regex_capture_playlist_test-download-archive.json
+{output_directory}/Project Zombie
   Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
   Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].info.json
   Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].mp4

@@ -51,20 +51,20 @@ class ConfigOptions(StrictDictValidator):
 
            configuration:
              dl_aliases:
-               mv: "--preset yt_music_video"
-               v: "--youtube.video_url"
+               mv: "--preset music_video"
+               u: "--download.url"
 
         Simplifies
 
         .. code-block:: bash
 
-           ytdl-sub dl --preset "yt_music_video" --youtube.video_url "youtube.com/watch?v=a1b2c3"
+           ytdl-sub dl --preset "music_video" --download.url "youtube.com/watch?v=a1b2c3"
 
         to
 
         .. code-block:: bash
 
-           ytdl-sub dl --mv --v "youtube.com/watch?v=a1b2c3"
+           ytdl-sub dl --mv --u "youtube.com/watch?v=a1b2c3"
         """
         if self._dl_aliases:
             return self._dl_aliases.dict

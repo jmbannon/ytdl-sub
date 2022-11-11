@@ -550,7 +550,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
     ) -> Iterable[Entry] | Iterable[Tuple[Entry, FileMetadata]]:
         """The function to perform the download of all media entries"""
         # download the bottom-most urls first since they are top-priority
-        for collection_url in reversed(self.collection.collection_urls.list):
+        for collection_url in reversed(self.collection.urls.list):
             parents, orphan_entries = self._download_url_metadata(collection_url=collection_url)
             collection_url_entries: List[Entry] = []
 

@@ -63,7 +63,7 @@ def preset_dict_to_dl_args(preset_dict: Dict) -> str:
     def _recursive_preset_args(cli_key: str, current_value: Dict | Any) -> List[str]:
         if isinstance(current_value, dict):
             preset_args: List[str] = []
-            for v_key, v_value in current_value.items():
+            for v_key, v_value in sorted(current_value.items()):
                 preset_args.extend(
                     _recursive_preset_args(
                         cli_key=f"{cli_key}.{v_key}" if cli_key else v_key, current_value=v_value

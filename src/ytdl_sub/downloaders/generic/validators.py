@@ -71,9 +71,9 @@ class UrlValidator(StrictDictValidator):
     @property
     def url(self) -> OverridesStringFormatterValidator:
         """
-        URL to download from, listed in priority from lowest (top) to highest (bottom). If a
-        download exists in more than one URL, it will resolve to the bottom-most one and inherit
-        those variables.
+        Required. URL to download from, listed in priority from lowest (top) to highest (bottom).
+        If a download exists in more than one URL, it will resolve to the bottom-most one and
+        inherit those variables.
         """
         return self._url
 
@@ -86,29 +86,12 @@ class UrlValidator(StrictDictValidator):
         return self._variables
 
     @property
-    def source_thumbnails(self) -> Optional[UrlThumbnailListValidator]:
-        """
-        Thumbnails to download from the source, if any exist. The hierarchy is defined as
-        source -> playlist -> entry.
-
-        Usage:
-
-        .. code-block:: yaml
-
-           source_thumbnails:
-             - name: "poster.jpg"
-               uid: "avatar_uncropped"
-
-        UID is the yt-dlp thumbnail ID or can specify ``latest_entry`` to use the last entry's
-        thumbnail that was downloaded.
-        """
-        return self._source_thumbnails
-
-    @property
     def playlist_thumbnails(self) -> Optional[UrlThumbnailListValidator]:
         """
-        Thumbnails to download from the source, if any exist. The hierarchy is defined as
-        source -> playlist -> entry.
+        Thumbnails to download from the playlist, if any exist. Playlist is the ``yt-dlp`` naming
+        convention for a set that contains multiple entries. For example, the URL
+        ``https://www.youtube.com/c/RickastleyCoUkOfficial`` would have ``playlist`` refer to the
+        channel.
 
         Usage:
 
@@ -117,11 +100,39 @@ class UrlValidator(StrictDictValidator):
            playlist_thumbnails:
              - name: "poster.jpg"
                uid: "avatar_uncropped"
+             - name: "fanart.jpg"
+               uid: "banner_uncropped"
 
-        UID is the yt-dlp thumbnail ID or can specify ``latest_entry`` to use the last entry's
-        thumbnail that was downloaded.
+        ``name`` is the file name relative to the output directory to store the thumbnail.
+        ``uid`` is the yt-dlp thumbnail ID. Can specify ``latest_entry`` to use the latest entry's
+        thumbnail.
         """
         return self._playlist_thumbnails
+
+    @property
+    def source_thumbnails(self) -> Optional[UrlThumbnailListValidator]:
+        """
+        Thumbnails to download from the source, if any exist. Source in this context refers to the
+        set of sets. For example, the URL
+        ``https://www.youtube.com/c/RickastleyCoUkOfficial/playlists``
+        would have ``playlist`` refer to each individual playlist, whereas ``source`` refers
+        to the channel.
+
+        Usage:
+
+        .. code-block:: yaml
+
+           source_thumbnails:
+             - name: "poster.jpg"
+               uid: "avatar_uncropped"
+             - name: "fanart.jpg"
+               uid: "banner_uncropped"
+
+        ``name`` is the file name relative to the output directory to store the thumbnail.
+        ``uid`` is the yt-dlp thumbnail ID. Can specify ``latest_entry`` to use the latest entry's
+        thumbnail.
+        """
+        return self._source_thumbnails
 
 
 class UrlListValidator(ListValidator[UrlValidator]):
@@ -173,11 +184,21 @@ class MultiUrlValidator(StrictDictValidator, AddsVariablesMixin):
         self._urls = self._validate_key(key="urls", validator=UrlListValidator)
 
     @property
-    def collection_urls(self) -> UrlListValidator:
+    def urls(self) -> UrlListValidator:
         """
-        Required. The Soundcloud user's url, i.e. ``soundcloud.com/the_username``
+        Required. A list of :ref:`url` with the addition of the ``variables`` attribute.
         """
         return self._urls
+
+    @property
+    def variables(self) -> DictFormatterValidator:
+        """
+        Optional. Source variables to add to each entry downloaded from its respective :ref:`url`.
+        The top-most :ref:`url` must define all possible variables. Other :ref:`url` entries can
+        redefine all of them or a subset of the top-most variables.
+        """
+        # keep for readthedocs documentation
+        return self._urls.list[0].variables
 
     def added_source_variables(self) -> List[str]:
         """
@@ -205,7 +226,7 @@ class MultiUrlValidator(StrictDictValidator, AddsVariablesMixin):
         )
 
         # Apply formatting to each new source variable, ensure it resolves
-        for collection_url in self.collection_urls.list:
+        for collection_url in self.urls.list:
             for (
                 source_var_name,
                 source_var_formatter_str,

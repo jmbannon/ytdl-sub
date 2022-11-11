@@ -1,6 +1,8 @@
 Files created:
 ----------------------------------------
 {output_directory}
+  .ytdl-sub-subtitles_embedded_and_file_test-download-archive.json
+{output_directory}/JMC
   JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind-thumb.jpg
   JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.de.srt
   JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.en.srt

@@ -7,8 +7,8 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def subscription_dict(output_directory):
     return {
-        "preset": "yt_music_video",
-        "youtube": {"video_url": "https://www.youtube.com/shorts/ucYmEqmlhFw"},
+        "preset": "music_video",
+        "download": {"url": "https://www.youtube.com/shorts/ucYmEqmlhFw"},
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast

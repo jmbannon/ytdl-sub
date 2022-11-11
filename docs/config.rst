@@ -36,69 +36,18 @@ download_strategy
 Download strategies dictate what is getting downloaded from a source. Each
 download strategy has its own set of parameters.
 
-youtube
-'''''''
-Download strategies for downloading videos (or audio if you configure `ytdl_options`_ correctly) from Youtube. See
-Download strategies for downloading music from Soundcloud. See
-:class:`Youtube Variables <ytdl_sub.entries.variables.youtube_variables>`
-for available source variables to use.
+.. _url:
 
-channel
-_______
-.. autoclass:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloaderOptions()
-  :members: channel_url, channel_avatar_path, channel_banner_path
-  :member-order: bysource
-  :exclude-members: get_date_range
-
-.. autofunction:: ytdl_sub.downloaders.youtube.channel.YoutubeChannelDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
-.. _YouTube Playlist:
-
-playlist
-________
-.. autoclass:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloaderOptions()
-  :members: playlist_url, playlist_thumbnail_name
+url
+'''
+.. autoclass:: ytdl_sub.downloaders.generic.url.UrlDownloadOptions()
+  :members: url, playlist_thumbnails, source_thumbnails
   :member-order: bysource
 
-.. autofunction:: ytdl_sub.downloaders.youtube.playlist.YoutubePlaylistDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
-video
-_____
-.. autoclass:: ytdl_sub.downloaders.youtube.video.YoutubeVideoDownloaderOptions()
-  :members: video_url
-  :member-order: bysource
-
-.. autofunction:: ytdl_sub.downloaders.youtube.video.YoutubeVideoDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
-merge_playlist
-______________
-.. autoclass:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloaderOptions()
-  :members: playlist_url, add_chapters
-  :member-order: bysource
-
-.. autofunction:: ytdl_sub.downloaders.youtube.merge_playlist.YoutubeMergePlaylistDownloader.ytdl_option_defaults()
-
--------------------------------------------------------------------------------
-
-soundcloud
-''''''''''
-Download strategies for downloading music from Soundcloud. See
-:class:`Soundcloud Variables <ytdl_sub.entries.variables.soundcloud_variables>`
-for available source variables to use.
-
-albums_and_singles
-__________________
-.. autoclass:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloadOptions()
-  :members: url, skip_premiere_tracks
-  :member-order: bysource
-
-.. autofunction:: ytdl_sub.downloaders.soundcloud.albums_and_singles.SoundcloudAlbumsAndSinglesDownloader.ytdl_option_defaults()
+multi_url
+'''''''''
+.. autoclass:: ytdl_sub.downloaders.generic.multi_url.MultiUrlDownloadOptions()
+  :members: urls, variables
 
 -------------------------------------------------------------------------------
 
@@ -171,6 +120,7 @@ audio_extract
 .. autoclass:: ytdl_sub.plugins.audio_extract.AudioExtractOptions()
   :members:
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -179,6 +129,7 @@ chapters
 .. autoclass:: ytdl_sub.plugins.chapters.ChaptersOptions()
   :members:
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -187,12 +138,14 @@ date_range
 .. autoclass:: ytdl_sub.plugins.date_range.DateRangeOptions()
   :members:
   :member-order: bysource
+  :exclude-members: partial_validate
 
 file_convert
 ''''''''''''
 .. autoclass:: ytdl_sub.plugins.file_convert.FileConvertOptions()
   :members:
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -200,6 +153,7 @@ music_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()
   :members:
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -208,6 +162,7 @@ nfo_tags
 .. autoclass:: ytdl_sub.plugins.nfo_tags.NfoTagsOptions()
   :members: nfo_name, nfo_root, tags, kodi_safe
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -216,6 +171,7 @@ output_directory_nfo_tags
 .. autoclass:: ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions()
   :members: nfo_name, nfo_root, tags, kodi_safe
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -227,6 +183,7 @@ regex
 .. autoclass:: ytdl_sub.plugins.regex.SourceVariableRegex()
   :members: match, capture_group_names, capture_group_defaults
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -235,6 +192,7 @@ split_by_chapters
 .. autoclass:: ytdl_sub.plugins.split_by_chapters.SplitByChaptersOptions()
   :members: when_no_chapters
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -243,6 +201,7 @@ subtitles
 .. autoclass:: ytdl_sub.plugins.subtitles.SubtitleOptions()
   :members: subtitles_name, subtitles_type, embed_subtitles, languages, allow_auto_generated_subtitles
   :member-order: bysource
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -250,6 +209,7 @@ video_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.video_tags.VideoTagsOptions()
   :members:
+  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 

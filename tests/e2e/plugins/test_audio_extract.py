@@ -8,8 +8,8 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def single_song_preset_dict(output_directory):
     return {
-        "preset": "yt_song",
-        "youtube": {"video_url": "https://www.youtube.com/watch?v=2lAe1cqCOXo"},
+        "preset": "song",
+        "download": {"url": "https://www.youtube.com/watch?v=2lAe1cqCOXo"},
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
         "ytdl_options": {
@@ -22,8 +22,8 @@ def single_song_preset_dict(output_directory):
 @pytest.fixture
 def multiple_songs_preset_dict(output_directory):
     return {
-        "preset": "yt_song_playlist",
-        "youtube": {"playlist_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
+        "preset": "song_playlist",
+        "download": {"url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
         "output_options": {"output_directory": output_directory},
         "audio_extract": {"codec": "vorbis", "quality": 140},
         # download the worst format so it is fast
@@ -34,6 +34,7 @@ def multiple_songs_preset_dict(output_directory):
     }
 
 
+# TODO: Test album from chapters
 class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_audio_extract_single_song(
