@@ -8,15 +8,16 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def subscription_dict(output_directory):
     return {
-        "preset": "sc_discography",
-        "soundcloud": {"url": "https://soundcloud.com/jessebannon"},
-        # override the output directory with our fixture-generated dir
-        "output_options": {"output_directory": output_directory},
+        "preset": "soundcloud_discography",
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp3]",
         },
-        "overrides": {"artist": "j_b"},
+        "overrides": {
+            "artist": "j_b",
+            "artist_url": "https://soundcloud.com/jessebannon",
+            "music_directory": output_directory,
+        },
     }
 
 
