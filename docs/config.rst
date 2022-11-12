@@ -300,3 +300,51 @@ The `config.yaml`_ uses various types for its configurable fields. Below is a de
 .. autoclass:: ytdl_sub.validators.string_formatter_validators.DictFormatterValidator()
 
 .. autoclass:: ytdl_sub.validators.string_formatter_validators.OverridesDictFormatterValidator()
+
+Deprecation Updates
+-------------------
+
+.. _yt_deprecate:
+
+youtube download strategy
+^^^^^^^^^^^^^^^^^^^^^^^^^
+The ``youtube`` download strategies will be removed in ytdl-sub 0.6 in favor of the
+:ref:`url` download strategy. Update your configs from:
+
+.. code-block:: yaml
+  :caption: deprecated download strategy
+
+   my_subscription_name:
+     youtube:
+       download_strategy: "channel"
+       channel_url: "https://www.youtube.com/c/ProjectZombie603"
+       channel_avatar_path: "poster.jpg"
+       channel_banner_path: "banner.jpg"
+
+to
+
+.. code-block:: yaml
+  :caption: updated download strategy
+
+   my_subscription_name:
+     download:
+       download_strategy: "url"
+       url: "https://www.youtube.com/c/ProjectZombie603"
+       playlist_thumbnails:
+        - name: "poster.jpg"
+          uid: "avatar_uncropped"
+        - name: "banner.jpg"
+          uid: "banner_uncropped"
+
+Despite the longer definition, this more generic download strategy will work
+with any yt-dlp supported site and can better adapt to external changes without
+needing to change the codebase.
+
+.. _sc_deprecate:
+
+soundcloud download strategy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The ``soundcloud`` download strategies will be removed in ytdl-sub 0.6 in favor
+of the :ref:`url` download strategy. Refer to the
+`soundcloud discography config <https://github.com/jmbannon/ytdl-sub/blob/master/examples/soundcloud_discography_config.yaml>`_.
+example on how to update.
