@@ -105,9 +105,9 @@ class SubscriptionYTDLOptions:
         if self._dry_run:
             ytdl_options_builder.add(
                 self._plugin_ytdl_options(DateRangePlugin),
-                self._plugin_ytdl_options(FileConvertPlugin),
-                self._plugin_ytdl_options(SubtitlesPlugin),
                 self._plugin_ytdl_options(ChaptersPlugin),
+                self._plugin_ytdl_options(SubtitlesPlugin),
+                self._plugin_ytdl_options(FileConvertPlugin),
                 self._user_ytdl_options,  # user ytdl options...
                 self._dry_run_options,  # then dry-run
             )
@@ -115,9 +115,9 @@ class SubscriptionYTDLOptions:
             ytdl_options_builder.add(
                 self._output_options,
                 self._plugin_ytdl_options(DateRangePlugin),
-                self._plugin_ytdl_options(FileConvertPlugin),
-                self._plugin_ytdl_options(SubtitlesPlugin),
                 self._plugin_ytdl_options(ChaptersPlugin),
+                self._plugin_ytdl_options(SubtitlesPlugin),
+                self._plugin_ytdl_options(FileConvertPlugin),
                 self._plugin_ytdl_options(AudioExtractPlugin),
                 self._user_ytdl_options,  # user ytdl options last
             )
