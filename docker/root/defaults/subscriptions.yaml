@@ -1,7 +1,18 @@
+# Bare-bones config. Here are some useful links to get started:
+#   Walk-through Guide:  https://github.com/jmbannon/ytdl-sub/wiki/1.-Introduction
+#   Config Examples:     https://github.com/jmbannon/ytdl-sub/tree/master/examples
+#   Prebuilt Presets:    https://ytdl-sub.readthedocs.io/en/latest/presets.html
+#   Config Docs:         https://ytdl-sub.readthedocs.io/en/latest/config.html
+#
+# Examples are included in the /config/examples/ directory.
+# Any config and subscription can be ran using:
+#   ytdl-sub --config /path/to/config.yaml sub /path/to/subscriptions.yaml
+#
+# Or dry-ran with:
+#   ytdl-sub --dry-run --config /path/to/config.yaml sub /path/to/subscriptions.yaml
+#
 rammstein_music_videos:
-  preset: "yt_music_video_playlist"
-  youtube:
-    playlist_url: "https://youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
-  overrides:
-    artist: "Rammstein"
+  preset: "video"
+  download:
+    url: "https://youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
 
