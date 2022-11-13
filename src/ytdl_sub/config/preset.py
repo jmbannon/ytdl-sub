@@ -25,6 +25,7 @@ from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
@@ -46,6 +47,8 @@ PRESET_KEYS = {
     *DownloadStrategyMapping.sources(),
     *PluginMapping.plugins(),
 }
+
+logger = Logger.get()
 
 
 def _parent_preset_error_message(
@@ -180,6 +183,14 @@ class Preset(_PresetShell):
         downloader.downloader_options_type.partial_validate(
             name=f"{name}.{source_name}", value=source_dict
         )
+
+        if source_name != "download":
+            logger.warning(
+                "WARNING: Download strategy '%s' is deprecated and will be removed in ytdl-sub"
+                "v0.6.0. See %s on how to update it",
+                source_name,
+                "https://ytdl-sub.readthedocs.io/en/latest/config.html#deprecation-updates",
+            )
 
     @classmethod
     def preset_partial_validate(cls, config: ConfigValidator, name: str, value: Any) -> None:
