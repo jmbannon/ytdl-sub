@@ -5,6 +5,8 @@
     cp /defaults/config.yaml /config/config.yaml
 [[ ! -e /config/subscriptions.yaml ]] && \
     cp /defaults/subscriptions.yaml /config/subscriptions.yaml
+[[ ! -d /config/examples ]] && \
+    cp -R /defaults/examples /config/
 
 # permissions
 chown -R abc:abc \
