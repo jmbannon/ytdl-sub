@@ -3,6 +3,8 @@ presets:
   _plex_tv_show:
     preset:
       - "_episode_video_tags"
+    ytdl_options:
+      format: "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
     overrides:
       tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
