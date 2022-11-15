@@ -38,12 +38,7 @@ jobs:
 
       - name: Build Wheel
         run: |
-          # Build wheel and copy to docker dir
-          pip install -e .[build]
-          python setup.py bdist_wheel
-          cp dist/*.whl docker/root
-          # Copy examples to docker defaults dir
-          cp -R examples docker/root/defaults/
+          make docker_stage
 
       - name: Save Python build cache
         uses: actions/cache@v3
