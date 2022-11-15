@@ -9,16 +9,18 @@ RUN apk update --no-cache && \
       vim \
       g++ \
       nano \
-      make \
-      ffmpeg && \
+      make && \
     apk del \
       python3 \
       py3-pip && \
     apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
       python3=~3.10 \
       py3-setuptools && \
-    apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/community/ \
-      py3-pip && \
+    apk add \
+      --repository=http://dl-3.alpinelinux.org/alpine/edge/community/ \
+      --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
+      py3-pip \
+      ffmpeg && \
     mkdir -p /config && \
     pip install --no-cache-dir ytdl_sub-*.whl && \
     rm ytdl_sub-*.whl && \
