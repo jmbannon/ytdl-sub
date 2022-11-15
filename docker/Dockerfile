@@ -20,7 +20,6 @@ RUN apk update --no-cache && \
     tar -xf ffmpeg.tar.xz -C ffmpeg_out/ --strip-components 1 && \
     mv ffmpeg_out/bin/* /usr/local/bin/ && \
     rm -rf ffmpeg.tar.xz ffmpeg_out/ && \
-    hash -r && \
     apk del \
       python3 \
       py3-pip && \
@@ -37,8 +36,7 @@ RUN apk update --no-cache && \
       make \
       py3-setuptools
 
-RUN ls -lh /usr/local/bin | grep ff && \
-    hash -r && \
+RUN ls -lh /usr/local/bin/ffmpeg \
     echo $PATH && \
     /usr/local/bin/ffmpeg -version && \
     ffmpeg -version && \
