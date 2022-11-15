@@ -40,6 +40,7 @@ RUN apk update --no-cache && \
 RUN ls -lh /usr/local/bin | grep ff && \
     hash -r && \
     echo $PATH && \
+    /usr/local/bin/ffmpeg -version && \
     ffmpeg -version && \
     ffprobe -version
 
