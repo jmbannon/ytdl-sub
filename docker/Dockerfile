@@ -37,7 +37,7 @@ RUN apk update --no-cache && \
       py3-setuptools
 
 RUN ls -lh /usr/local/bin | grep ff && \
-    && source ~/.bashrc && \
+    hash -r && \
     echo $PATH && \
     ffmpeg -version && \
     ffprobe -version
