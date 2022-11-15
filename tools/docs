@@ -1,4 +1,0 @@
-# Uncomment to build api docs
-# sphinx-apidoc -f -o docs/source src/ytdl_sub
-sphinx-build -a -b html docs docs/_html
-

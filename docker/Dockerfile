@@ -21,8 +21,7 @@ RUN apk update --no-cache && \
     apk del \
       g++ \
       make \
-      py3-setuptools \
-      py3-pip
+      py3-setuptools
 
 ###############################################################################
 # CONTAINER CONFIGS
