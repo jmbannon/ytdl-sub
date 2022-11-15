@@ -21,6 +21,7 @@ RUN apk update --no-cache && \
     mv ffmpeg_out/bin/* /usr/bin/ && \
     rm -rf ffmpeg.tar.xz ffmpeg_out/ && \
     ffmpeg -version && \
+    ffprobe -version && \
     apk del \
       python3 \
       py3-pip && \
