@@ -213,19 +213,23 @@ class EntryParent(BaseEntry):
             for parent in parents
             if not parent.child_entries and _url_matches(parent.webpage_url)
         ]
-        if len(top_level_parents) == 0:
-            return None
 
         match len(top_level_parents):
             case 0:
                 return None
             case 1:
                 return top_level_parents[0]
-            case _:
-                raise ValueError(
-                    "Detected multiple top-level parents. "
-                    "Please file an issue on GitHub with the URLs used to produce this error"
-                )
+            case 2:
+                # Channels can have two of the same .info.json. Handle it here
+                top0 = top_level_parents[0]
+                top1 = top_level_parents[1]
+                if top0.uploader_id == top1.uploader_id:
+                    return top0 if not top0.webpage_url.endswith("/videos") else top1
+
+        raise ValueError(
+            "Detected multiple top-level parents. "
+            "Please file an issue on GitHub with the URLs used to produce this error"
+        )
 
     @classmethod
     def from_entry_dicts(
