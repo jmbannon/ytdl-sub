@@ -9,8 +9,17 @@ RUN apk update --no-cache && \
       vim \
       g++ \
       nano \
-      make \
-      ffmpeg && \
+      make && \
+    # Install yt-dlp patched ffmpeg
+    if [ `uname -m` = "x86_64" ]; then \
+      wget "https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz" -O ffmpeg.tar.xz; \
+    else \
+      wget "https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz" -O ffmpeg.tar.xz; \
+    fi && \
+    mkdir ffmpeg_out && \
+    tar -xf ffmpeg.tar.xz -C ffmpeg_out/ --strip-components 1 && \
+    mv ffmpeg_out/bin/* /usr/bin/ && \
+    rm -rf ffmpeg.tar.xz ffmpeg_out/ && \
     apk del \
       python3 \
       py3-pip && \
