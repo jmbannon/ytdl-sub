@@ -108,6 +108,9 @@ In this example, ``child_preset`` will inherit all fields from ``custom_preset``
 and ``parent_preset`` in that order. The bottom-most preset has the highest
 priority.
 
+If you are only inheriting from one preset, the syntax ``preset: "parent_preset"`` is
+valid YAML. Inheriting from multiple presets require use of a list.
+
 -------------------------------------------------------------------------------
 
 
