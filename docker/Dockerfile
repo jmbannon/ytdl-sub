@@ -18,9 +18,9 @@ RUN apk update --no-cache && \
     fi && \
     mkdir ffmpeg_out && \
     tar -xf ffmpeg.tar.xz -C ffmpeg_out/ --strip-components 1 && \
-    mv ffmpeg_out/bin/* /usr/bin/ && \
+    mv ffmpeg_out/bin/* /usr/local/bin/ && \
     rm -rf ffmpeg.tar.xz ffmpeg_out/ && \
-    ls -lh /usr/bin | grep ff && \
+    ls -lh /usr/local/bin | grep ff && \
     ffmpeg -version && \
     ffprobe -version && \
     apk del \
