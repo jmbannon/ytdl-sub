@@ -75,6 +75,14 @@ class SubscriptionYTDLOptions:
         }
 
     @property
+    def _info_json_only_options(self) -> Dict:
+        return {
+            "skip_download": True,
+            "writethumbnail": False,
+            "writeinfojson": True,
+        }
+
+    @property
     def _output_options(self) -> Dict:
         ytdl_options = {}
         output_options = self._preset.output_options
@@ -94,12 +102,26 @@ class SubscriptionYTDLOptions:
     def _user_ytdl_options(self) -> Dict:
         return self._preset.ytdl_options.dict
 
-    def builder(self) -> YTDLOptionsBuilder:
+    def metadata_builder(self) -> YTDLOptionsBuilder:
         """
         Returns
         -------
         YTDLOptionsBuilder
-            Builder with values set based on the subscription
+            Builder with values set for fetching metadata (.info.json) only
+        """
+        return YTDLOptionsBuilder().add(
+            self._global_options,
+            self._plugin_ytdl_options(DateRangePlugin),
+            self._user_ytdl_options,  # user ytdl options...
+            self._info_json_only_options,  # then info_json_only options
+        )
+
+    def download_builder(self) -> YTDLOptionsBuilder:
+        """
+        Returns
+        -------
+        YTDLOptionsBuilder
+            Builder with values set based on the subscription for actual downloading
         """
         ytdl_options_builder = YTDLOptionsBuilder().add(self._global_options)
         if self._dry_run:

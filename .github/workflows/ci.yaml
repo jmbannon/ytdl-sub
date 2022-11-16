@@ -50,7 +50,7 @@ jobs:
     - name: Run linters
       run: |
         source /opt/env/bin/activate
-        ./tools/linter check
+        make check_lint
 
   test-unit:
     runs-on: ubuntu-22.04

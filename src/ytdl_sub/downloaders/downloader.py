@@ -122,7 +122,8 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         self,
         download_options: DownloaderOptionsT,
         enhanced_download_archive: EnhancedDownloadArchive,
-        ytdl_options_builder: YTDLOptionsBuilder,
+        download_ytdl_options: YTDLOptionsBuilder,
+        metadata_ytdl_options: YTDLOptionsBuilder,
         overrides: Overrides,
     ):
         """
@@ -132,41 +133,56 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             Options validator for this downloader
         enhanced_download_archive
             Download archive
-        ytdl_options_builder
-            YTDL options builder
+        download_ytdl_options
+            YTDL options builder for downloading media
+        metadata_ytdl_options
+            YTDL options builder for downloading metadata
         overrides
             Override variables
         """
         DownloadArchiver.__init__(self=self, enhanced_download_archive=enhanced_download_archive)
         self.download_options = download_options
         self.overrides = overrides
-
-        self._ytdl_options_builder = ytdl_options_builder.clone().add(
-            self.ytdl_option_defaults(), before=True
-        )
-
+        self._download_ytdl_options_builder = download_ytdl_options
+        self._metadata_ytdl_options_builder = metadata_ytdl_options
         self.parents: List[EntryParent] = []
         self.downloaded_entries: Dict[str, Entry] = {}
 
     @property
-    def ytdl_options(self) -> Dict:
+    def download_ytdl_options(self) -> Dict:
         """
         Returns
         -------
-        YTLD options dict
+        YTLD options dict for downloading
         """
-        return self._ytdl_options_builder.clone().to_dict()
+        return (
+            self._download_ytdl_options_builder.clone()
+            .add(self.ytdl_option_defaults(), before=True)
+            .to_dict()
+        )
 
+    @property
+    def metadata_ytdl_options(self) -> Dict:
+        """
+        Returns
+        -------
+        YTDL options dict for fetching metadata
+        """
+        return (
+            self._metadata_ytdl_options_builder.clone()
+            .add(self.ytdl_option_defaults(), before=True)
+            .to_dict()
+        )
+
+    @classmethod
     @contextmanager
-    def ytdl_downloader(self, ytdl_options_overrides: Optional[Dict] = None) -> ytdl.YoutubeDL:
+    def ytdl_downloader(cls, ytdl_options_overrides: Dict) -> ytdl.YoutubeDL:
         """
         Context manager to interact with yt_dlp.
         """
-        ytdl_options = self._ytdl_options_builder.clone().add(ytdl_options_overrides).to_dict()
-
-        download_logger.debug("ytdl_options: %s", str(ytdl_options))
+        download_logger.debug("ytdl_options: %s", str(ytdl_options_overrides))
         with Logger.handle_external_logs(name="yt-dlp"):
-            with ytdl.YoutubeDL(ytdl_options) as ytdl_downloader:
+            with ytdl.YoutubeDL(ytdl_options_overrides) as ytdl_downloader:
                 yield ytdl_downloader
 
     @property
@@ -176,7 +192,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         -------
         True if dry-run is enabled. False otherwise.
         """
-        return self.ytdl_options.get("skip_download", False)
+        return self.download_ytdl_options.get("skip_download", False)
 
     @property
     def is_entry_thumbnails_enabled(self) -> bool:
@@ -185,9 +201,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         -------
         True if entry thumbnails should be downloaded. False otherwise.
         """
-        return self.ytdl_options.get("writethumbnail", False)
+        return self.download_ytdl_options.get("writethumbnail", False)
 
-    def extract_info(self, ytdl_options_overrides: Optional[Dict] = None, **kwargs) -> Dict:
+    def extract_info(self, ytdl_options_overrides: Dict, **kwargs) -> Dict:
         """
         Wrapper around yt_dlp.YoutubeDL.YoutubeDL.extract_info
         All kwargs will passed to the extract_info function.
@@ -204,9 +220,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
     def extract_info_with_retry(
         self,
+        ytdl_options_overrides: Dict,
         is_downloaded_fn: Optional[Callable[[], bool]] = None,
         is_thumbnail_downloaded_fn: Optional[Callable[[], bool]] = None,
-        ytdl_options_overrides: Optional[Dict] = None,
         **kwargs,
     ) -> Dict:
         """
@@ -218,12 +234,12 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
         Parameters
         ----------
+        ytdl_options_overrides
+            Dict containing ytdl args to override other predefined ytdl args
         is_downloaded_fn
             Optional. Function to check if the entry is downloaded
         is_thumbnail_downloaded_fn
             Optional. Function to check if the entry thumbnail is downloaded
-        ytdl_options_overrides
-            Optional. Dict containing ytdl args to override other predefined ytdl args
         **kwargs
             arguments passed directory to YoutubeDL extract_info
 
@@ -318,8 +334,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
     def extract_info_via_info_json(
         self,
-        ytdl_options_overrides: Optional[Dict] = None,
-        only_info_json: bool = False,
+        ytdl_options_overrides: Dict,
         log_prefix_on_info_json_dl: Optional[str] = None,
         **kwargs,
     ) -> List[Dict]:
@@ -334,33 +349,16 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         Parameters
         ----------
         ytdl_options_overrides
-            Optional. Dict containing ytdl args to override other predefined ytdl args
-        only_info_json
-            Default false. Skip download and thumbnail download if True.
+            Dict containing ytdl args to override other predefined ytdl args
         log_prefix_on_info_json_dl
             Optional. Spin a new thread to listen for new info.json files. Log
             f'{log_prefix_on_info_json_dl} {title}' when a new one appears
         **kwargs
             arguments passed directory to YoutubeDL extract_info
         """
-        ytdl_options_builder = self._ytdl_options_builder.clone()
-        if ytdl_options_overrides is None:
-            ytdl_options_overrides = {}
-
-        ytdl_options_builder.add({"writeinfojson": True}, ytdl_options_overrides)
-        if only_info_json:
-            ytdl_options_builder.add(
-                {
-                    "skip_download": True,
-                    "writethumbnail": False,
-                }
-            )
-
         try:
             with self._listen_and_log_downloaded_info_json(log_prefix=log_prefix_on_info_json_dl):
-                _ = self.extract_info(
-                    ytdl_options_overrides=ytdl_options_builder.to_dict(), **kwargs
-                )
+                _ = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
             download_logger.debug("RejectedVideoReached, stopping additional downloads")
         except ExistingVideoReached:
@@ -395,7 +393,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         clear_info_json_files
             Whether to delete info.json files after yield
         """
-        archive_path = self.ytdl_options.get("download_archive", "")
+        archive_path = self.download_ytdl_options.get("download_archive", "")
         backup_archive_path = f"{archive_path}.backup"
 
         # If archive path exists, maintain download archive is enable
@@ -435,7 +433,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             if (self.is_dry_run or not self.is_entry_thumbnails_enabled)
             else entry.is_thumbnail_downloaded,
             url=entry.webpage_url,
-            ytdl_options_overrides={"writeinfojson": False, "skip_download": self.is_dry_run},
+            ytdl_options_overrides=self.download_ytdl_options,
         )
         return Entry(download_entry_dict, working_directory=self.working_directory)
 
@@ -502,7 +500,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
         with self._separate_download_archives():
             entry_dicts = self.extract_info_via_info_json(
-                only_info_json=True,
+                ytdl_options_overrides=self.metadata_ytdl_options,
                 url=url,
                 log_prefix_on_info_json_dl="Downloading metadata for",
             )

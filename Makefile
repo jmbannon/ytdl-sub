@@ -1,4 +1,14 @@
 
+lint:
+	@-isort .
+	@-black .
+	@-pylint src/
+	@-pydocstyle src/*
+check_lint:
+	isort . --check-only --diff  \
+		&& black . --check  \
+		&& pylint src/  \
+		&& pydocstyle src/*
 wheel: clean
 	pip3 install build
 	python3 -m build
@@ -21,4 +31,4 @@ clean:
 		docker/root/defaults/examples \
 		coverage.xml
 
-.PHONY: wheel docker docs clean
+.PHONY: lint check_lint wheel docker_stage docker docs clean
