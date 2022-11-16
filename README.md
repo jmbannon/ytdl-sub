@@ -185,7 +185,6 @@ configuration:
     tv: "--preset tv_show"
     name: "--overrides.tv_show_name"
     url: "--overrides.url"
-    
 ```
 The above command can now be shortened to
 ```shell
