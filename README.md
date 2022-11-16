@@ -9,12 +9,12 @@
 
 `ytdl-sub` is a command-line tool that downloads media via 
 [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-and prepares it for your favorite media player
-([Kodi](https://github.com/xbmc/xbmc), 
+and prepares it for your favorite media player, including
+[Kodi](https://github.com/xbmc/xbmc), 
 [Jellyfin](https://github.com/jellyfin/jellyfin), 
 [Plex](https://github.com/plexinc/pms-docker),
 [Emby](https://github.com/plexinc/pms-docker),
-modern music players).
+and modern music players.
 
 We recognize that everyone stores their 
 media differently. Our approach for file and metadata formatting is to provide
@@ -293,5 +293,10 @@ pip install -e .
 
 ## Contributing
 There are many ways to contribute, even without coding. Please take a look in
-our [Github Issues](https://github.com/jmbannon/ytdl-sub/issues) to ask
+our [GitHub Issues](https://github.com/jmbannon/ytdl-sub/issues) to ask
 questions, submit a feature request, or pick up a bug.
+
+## Support
+We are pretty active in our
+[Discord channel](https://discord.gg/v8j9RAHb4k)
+if you have any questions.
