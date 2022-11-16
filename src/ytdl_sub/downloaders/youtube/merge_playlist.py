@@ -146,7 +146,7 @@ class YoutubeMergePlaylistDownloader(Downloader[YoutubeMergePlaylistDownloaderOp
         """Download a single Youtube video, then split it into multiple videos"""
         url = self.overrides.apply_formatter(self.collection.urls.list[0].url)
 
-        entry_dict = self.extract_info(url=url)
+        entry_dict = self.extract_info(url=url, ytdl_options_overrides=self.download_ytdl_options)
         merged_video = self._to_merged_video(entry_dict=entry_dict)
 
         merged_video_metadata = self._get_chapters(

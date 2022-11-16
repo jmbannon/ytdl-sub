@@ -237,19 +237,20 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
         plugins = self._initialize_plugins()
 
-        ytdl_options_builder = SubscriptionYTDLOptions(
+        subscription_ytdl_options = SubscriptionYTDLOptions(
             preset=self._preset_options,
             plugins=plugins,
             enhanced_download_archive=self._enhanced_download_archive,
             working_directory=self.working_directory,
             dry_run=dry_run,
-        ).builder()
+        )
 
         with self._subscription_download_context_managers():
             downloader = self.downloader_class(
                 download_options=self.downloader_options,
                 enhanced_download_archive=self._enhanced_download_archive,
-                ytdl_options_builder=ytdl_options_builder,
+                download_ytdl_options=subscription_ytdl_options.download_builder(),
+                metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
                 overrides=self.overrides,
             )
 
