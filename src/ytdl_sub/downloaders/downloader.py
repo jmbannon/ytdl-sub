@@ -37,6 +37,7 @@ from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
 from ytdl_sub.entries.variables.kwargs import REQUESTED_SUBTITLES
 from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
+from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
@@ -448,8 +449,10 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
         entry.add_kwargs(
             {
-                # Workaround for the yt-dlp issue that does not include subs in playlist downloads
+                # Subtitles are not downloaded in metadata run, only here, so move over
                 REQUESTED_SUBTITLES: download_entry.kwargs_get(REQUESTED_SUBTITLES),
+                # Same with sponsorblock chapters
+                SPONSORBLOCK_CHAPTERS: download_entry.kwargs_get(SPONSORBLOCK_CHAPTERS),
                 # Tracks number of entries downloaded
                 DOWNLOAD_INDEX: download_idx,
                 # Tracks number of entries with the same upload date to make them unique

@@ -249,7 +249,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
             downloader = self.downloader_class(
                 download_options=self.downloader_options,
                 enhanced_download_archive=self._enhanced_download_archive,
-                subscription_ytdl_options=subscription_ytdl_options,
+                download_ytdl_options=subscription_ytdl_options.download_builder(),
+                metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
                 overrides=self.overrides,
             )
 
