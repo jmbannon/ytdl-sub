@@ -9,27 +9,32 @@
 
 `ytdl-sub` is a command-line tool that downloads media via 
 [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-and prepares it for your favorite media player
-([Kodi](https://github.com/xbmc/xbmc), 
+and prepares it for your favorite media player, including
+[Kodi](https://github.com/xbmc/xbmc), 
 [Jellyfin](https://github.com/jellyfin/jellyfin), 
 [Plex](https://github.com/plexinc/pms-docker),
 [Emby](https://github.com/plexinc/pms-docker),
-modern music players).
+and modern music players.
 
 We recognize that everyone stores their 
 media differently. Our approach for file and metadata formatting is to provide
 maximum flexibility while maintaining simplicity.
 
-### YouTube Channels as TV Shows in Jellyfin
+### YouTube Channels as TV Shows
+#### Plex
+![unknown](https://user-images.githubusercontent.com/10107080/202107286-d8f38c7b-7caf-413a-b9a3-0bbbaded3646.png)
+
+#### Jellyfin
 ![jellyfin](https://user-images.githubusercontent.com/10107080/182677243-b4184e51-9780-4094-bd40-ea4ff58555d0.PNG)
 
-### Music Videos and Concerts in Jellyfin
+### Music Videos and Concerts
+#### Kodi
+![kodi](https://user-images.githubusercontent.com/10107080/182677268-d1bf2ff0-9b9c-4a04-98ec-443a67ada734.png)
+#### Jellyfin
 ![jelly_mv](https://user-images.githubusercontent.com/10107080/182677256-43aeb029-0c3f-4648-9fd2-352b9666b262.PNG)
 
-### Music Videos and Concerts in Kodi
-![kodi](https://user-images.githubusercontent.com/10107080/182677268-d1bf2ff0-9b9c-4a04-98ec-443a67ada734.png)
-
-### SoundCloud Albums and Singles in MusicBee
+### SoundCloud Albums and Singles
+#### MusicBee
 ![sc_mb](https://user-images.githubusercontent.com/10107080/182685415-06adf477-3dd3-475d-bbcd-53b0152b9f0a.PNG)
 
 
@@ -180,7 +185,6 @@ configuration:
     tv: "--preset tv_show"
     name: "--overrides.tv_show_name"
     url: "--overrides.url"
-    
 ```
 The above command can now be shortened to
 ```shell
@@ -236,7 +240,7 @@ recommended way to use ytdl-sub.
 
 The docker image is intended to be used as a console. For automating 
 `subscriptions.yaml` downloads to pull new media, see
-[this guide](https://ytdl-sub.readthedocs.io/en/latest/getting_started.html#setting-up-automated-downloads)
+[this guide](https://github.com/jmbannon/ytdl-sub/wiki/7.-Automate-Downloading-New-Content-Using-Your-Configs)
 on how set up a cron job in the docker container.
 
 ### Docker Compose
@@ -288,5 +292,10 @@ pip install -e .
 
 ## Contributing
 There are many ways to contribute, even without coding. Please take a look in
-our [Github Issues](https://github.com/jmbannon/ytdl-sub/issues) to ask
+our [GitHub Issues](https://github.com/jmbannon/ytdl-sub/issues) to ask
 questions, submit a feature request, or pick up a bug.
+
+## Support
+We are pretty active in our
+[Discord channel](https://discord.gg/v8j9RAHb4k)
+if you have any questions.
