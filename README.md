@@ -14,7 +14,7 @@ and prepares it for your favorite media player, including
 [Jellyfin](https://github.com/jellyfin/jellyfin), 
 [Plex](https://github.com/plexinc/pms-docker),
 [Emby](https://github.com/plexinc/pms-docker),
-and modern music players.
+and modern music players. No additional plugins or external scrapers are needed.
 
 We recognize that everyone stores their 
 media differently. Our approach for file and metadata formatting is to provide
