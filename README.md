@@ -20,16 +20,21 @@ We recognize that everyone stores their
 media differently. Our approach for file and metadata formatting is to provide
 maximum flexibility while maintaining simplicity.
 
-### YouTube Channels as TV Shows in Jellyfin
+### YouTube Channels as TV Shows
+#### Plex
+![unknown](https://user-images.githubusercontent.com/10107080/202107286-d8f38c7b-7caf-413a-b9a3-0bbbaded3646.png)
+
+#### Jellyfin
 ![jellyfin](https://user-images.githubusercontent.com/10107080/182677243-b4184e51-9780-4094-bd40-ea4ff58555d0.PNG)
 
-### Music Videos and Concerts in Jellyfin
+### Music Videos and Concerts
+#### Kodi
+![kodi](https://user-images.githubusercontent.com/10107080/182677268-d1bf2ff0-9b9c-4a04-98ec-443a67ada734.png)
+#### Jellyfin
 ![jelly_mv](https://user-images.githubusercontent.com/10107080/182677256-43aeb029-0c3f-4648-9fd2-352b9666b262.PNG)
 
-### Music Videos and Concerts in Kodi
-![kodi](https://user-images.githubusercontent.com/10107080/182677268-d1bf2ff0-9b9c-4a04-98ec-443a67ada734.png)
-
-### SoundCloud Albums and Singles in MusicBee
+### SoundCloud Albums and Singles
+#### MusicBee
 ![sc_mb](https://user-images.githubusercontent.com/10107080/182685415-06adf477-3dd3-475d-bbcd-53b0152b9f0a.PNG)
 
 
@@ -236,7 +241,7 @@ recommended way to use ytdl-sub.
 
 The docker image is intended to be used as a console. For automating 
 `subscriptions.yaml` downloads to pull new media, see
-[this guide](https://ytdl-sub.readthedocs.io/en/latest/getting_started.html#setting-up-automated-downloads)
+[this guide](https://github.com/jmbannon/ytdl-sub/wiki/7.-Automate-Downloading-New-Content-Using-Your-Configs)
 on how set up a cron job in the docker container.
 
 ### Docker Compose
