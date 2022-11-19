@@ -13,7 +13,7 @@ and prepares it for your favorite media player, including
 [Kodi](https://github.com/xbmc/xbmc), 
 [Jellyfin](https://github.com/jellyfin/jellyfin), 
 [Plex](https://github.com/plexinc/pms-docker),
-[Emby](https://github.com/plexinc/pms-docker),
+[Emby](https://emby.media/),
 and modern music players. No additional plugins or external scrapers are needed.
 
 We recognize that everyone stores their 
