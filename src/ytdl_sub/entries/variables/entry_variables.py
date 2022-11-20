@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Union
 
 from yt_dlp.utils import sanitize_filename
@@ -447,9 +448,9 @@ class EntryVariables(BaseEntryVariables):
         Returns
         -------
         str
-            The entry's uploaded date, in YYYYMMDD format.
+            The entry's uploaded date, in YYYYMMDD format. If not present, return today's date.
         """
-        return self.kwargs(UPLOAD_DATE)
+        return self.kwargs_get(UPLOAD_DATE, datetime.now().strftime("%Y%m%d"))
 
     @property
     def upload_year(self: Self) -> int:

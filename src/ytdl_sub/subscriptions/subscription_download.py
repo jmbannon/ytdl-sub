@@ -217,7 +217,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
             # If split_entry is None from modify_entry, do not post process
             if split_entry:
-                self._process_entry(
+                self._post_process_entry(
                     plugins=plugins,
                     dry_run=dry_run,
                     entry=split_entry,

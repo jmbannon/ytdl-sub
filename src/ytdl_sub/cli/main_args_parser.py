@@ -47,9 +47,10 @@ parser.add_argument(
     choices=LoggerLevels.names(),
     dest="ytdl_sub_log_level",
 )
+
+subparsers = parser.add_subparsers(dest="subparser")
 ###################################################################################################
 # SUBSCRIPTION PARSER
-subparsers = parser.add_subparsers(dest="subparser")
 subscription_parser = subparsers.add_parser("sub")
 subscription_parser.add_argument(
     "subscription_paths",
@@ -61,3 +62,28 @@ subscription_parser.add_argument(
 ###################################################################################################
 # DOWNLOAD PARSER
 download_parser = subparsers.add_parser("dl")
+###################################################################################################
+# VIEW PARSER
+
+
+class ViewArgs(Enum):
+    SPLIT_CHAPTERS = "--split-chapters"
+
+    @classmethod
+    def all(cls) -> List[str]:
+        """
+        Returns
+        -------
+        List of all args used in main CLI
+        """
+        return list(map(lambda arg: arg.value, cls))
+
+
+view_parser = subparsers.add_parser("view")
+view_parser.add_argument(
+    "-sc",
+    ViewArgs.SPLIT_CHAPTERS.value,
+    action="store_true",
+    help="View source variables after splitting by chapters",
+)
+view_parser.add_argument("url", help="URL to view source variables for")
