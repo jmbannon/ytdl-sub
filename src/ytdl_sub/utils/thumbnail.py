@@ -1,3 +1,4 @@
+import os
 import tempfile
 from typing import Optional
 from urllib.request import urlopen
@@ -29,6 +30,11 @@ def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) ->
     """
     download_thumbnail_path = entry.get_ytdlp_download_thumbnail_path()
     download_thumbnail_path_as_jpg = entry.get_download_thumbnail_path()
+
+    # If it was already converted, do not convert again
+    if os.path.isfile(download_thumbnail_path_as_jpg):
+        return
+
     if not download_thumbnail_path:
         if error_if_not_found:
             raise ValueError("Thumbnail not found")

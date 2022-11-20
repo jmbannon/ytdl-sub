@@ -17,6 +17,7 @@ presets:
       quality: 128
 
     music_tags:
+      embed_thumbnail: False  # Set to True to embed album art
       tags:
         artist: "{custom_artist_name}"
         albumartist: "{custom_artist_name}"

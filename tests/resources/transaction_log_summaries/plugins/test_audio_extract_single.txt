@@ -2,7 +2,7 @@ Files created:
 ----------------------------------------
 {output_directory}
   YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.mp3
-    Music Tags:
+    Embedded Thumbnail, Music Tags:
       album: Singles
       albumartist: YouTube
       artist: YouTube

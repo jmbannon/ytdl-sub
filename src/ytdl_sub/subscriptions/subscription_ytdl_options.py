@@ -53,16 +53,10 @@ class SubscriptionYTDLOptions:
         """
         ytdl_options = {
             # Download all files in the format of {id}.{ext}
-            "outtmpl": str(Path(self._working_directory) / "%(id)s.%(ext)s")
+            "outtmpl": str(Path(self._working_directory) / "%(id)s.%(ext)s"),
+            # Always write thumbnails
+            "writethumbnail": True,
         }
-
-        if (
-            self._downloader.supports_download_archive
-            and self._preset.output_options.maintain_download_archive
-        ):
-            ytdl_options["download_archive"] = str(
-                Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
-            )
 
         return ytdl_options
 
@@ -71,7 +65,6 @@ class SubscriptionYTDLOptions:
         return {
             "skip_download": True,
             "writethumbnail": False,
-            # TODO: find a way to not write subtitles; using `simulate: True` breaks tests
         }
 
     @property
@@ -85,10 +78,14 @@ class SubscriptionYTDLOptions:
     @property
     def _output_options(self) -> Dict:
         ytdl_options = {}
-        output_options = self._preset.output_options
 
-        if output_options.thumbnail_name:
-            ytdl_options["writethumbnail"] = True
+        if (
+            self._downloader.supports_download_archive
+            and self._preset.output_options.maintain_download_archive
+        ):
+            ytdl_options["download_archive"] = str(
+                Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
+            )
 
         return ytdl_options
 
@@ -111,6 +108,7 @@ class SubscriptionYTDLOptions:
         """
         return YTDLOptionsBuilder().add(
             self._global_options,
+            self._output_options,
             self._plugin_ytdl_options(DateRangePlugin),
             self._user_ytdl_options,  # user ytdl options...
             self._info_json_only_options,  # then info_json_only options
@@ -123,25 +121,18 @@ class SubscriptionYTDLOptions:
         YTDLOptionsBuilder
             Builder with values set based on the subscription for actual downloading
         """
-        ytdl_options_builder = YTDLOptionsBuilder().add(self._global_options)
+        ytdl_options_builder = YTDLOptionsBuilder().add(
+            self._global_options,
+            self._output_options,
+            self._plugin_ytdl_options(DateRangePlugin),
+            self._plugin_ytdl_options(FileConvertPlugin),
+            self._plugin_ytdl_options(SubtitlesPlugin),
+            self._plugin_ytdl_options(ChaptersPlugin),
+            self._plugin_ytdl_options(AudioExtractPlugin),
+            self._user_ytdl_options,  # user ytdl options...
+        )
+        # Add dry run options last if enabled
         if self._dry_run:
-            ytdl_options_builder.add(
-                self._plugin_ytdl_options(DateRangePlugin),
-                self._plugin_ytdl_options(FileConvertPlugin),
-                self._plugin_ytdl_options(SubtitlesPlugin),
-                self._plugin_ytdl_options(ChaptersPlugin),
-                self._user_ytdl_options,  # user ytdl options...
-                self._dry_run_options,  # then dry-run
-            )
-        else:
-            ytdl_options_builder.add(
-                self._output_options,
-                self._plugin_ytdl_options(DateRangePlugin),
-                self._plugin_ytdl_options(FileConvertPlugin),
-                self._plugin_ytdl_options(SubtitlesPlugin),
-                self._plugin_ytdl_options(ChaptersPlugin),
-                self._plugin_ytdl_options(AudioExtractPlugin),
-                self._user_ytdl_options,  # user ytdl options last
-            )
+            ytdl_options_builder.add(self._dry_run_options)
 
         return ytdl_options_builder
