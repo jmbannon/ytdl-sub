@@ -68,7 +68,7 @@ class TestChapters:
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_chapters_sb_and_embedded_subs.json",
             ignore_md5_hashes_for=[
-                "JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
+                "JMC/JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
             ],
         )
 
@@ -107,6 +107,6 @@ class TestChapters:
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_chapters_from_ts_with_subs.json",
             ignore_md5_hashes_for=[
-                "JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
+                "JMC/JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
             ],
         )
