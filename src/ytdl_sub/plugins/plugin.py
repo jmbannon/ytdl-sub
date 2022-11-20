@@ -56,7 +56,7 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
     plugin_options_type: Type[PluginOptionsT] = NotImplemented
     priority: PluginPriority = PluginPriority()
 
-    # If the plugin creates multile entries from a single entry
+    # If the plugin creates multiple entries from a single entry
     is_split_plugin: bool = False
 
     def __init__(
@@ -95,7 +95,7 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         """
         return []
 
-    def modify_entry(self, entry: Entry) -> Optional[Entry | Tuple[Entry, FileMetadata]]:
+    def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
         For each entry downloaded, modify the entry in some way before sending it to
         post-processing.

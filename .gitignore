@@ -142,3 +142,5 @@ dmypy.json
 docker/*.whl
 docker/root/*.whl
 docker/root/defaults/examples
+
+.local/

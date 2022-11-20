@@ -1,0 +1,20 @@
+presets:
+
+  _view:
+    download:
+      download_strategy: "url"
+      url: "{url}"
+    output_options:
+      output_directory: "/tmp/ytdl-sub-view"
+      file_name: "{uid}.{ext}"
+      thumbnail_name: "{uid}.{thumbnail_ext}"
+    ytdl_options:
+      max_downloads: 2
+    _view:
+      _placeholder: ""
+
+  _view_split_chapters:
+    preset:
+      - "_view"
+    split_by_chapters:
+      when_no_chapters: "pass"
