@@ -53,16 +53,10 @@ class SubscriptionYTDLOptions:
         """
         ytdl_options = {
             # Download all files in the format of {id}.{ext}
-            "outtmpl": str(Path(self._working_directory) / "%(id)s.%(ext)s")
+            "outtmpl": str(Path(self._working_directory) / "%(id)s.%(ext)s"),
+            # Always write thumbnails
+            "writethumbnail": True,
         }
-
-        if (
-            self._downloader.supports_download_archive
-            and self._preset.output_options.maintain_download_archive
-        ):
-            ytdl_options["download_archive"] = str(
-                Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
-            )
 
         return ytdl_options
 
@@ -71,7 +65,6 @@ class SubscriptionYTDLOptions:
         return {
             "skip_download": True,
             "writethumbnail": False,
-            # TODO: find a way to not write subtitles; using `simulate: True` breaks tests
         }
 
     @property
@@ -85,10 +78,14 @@ class SubscriptionYTDLOptions:
     @property
     def _output_options(self) -> Dict:
         ytdl_options = {}
-        output_options = self._preset.output_options
 
-        if output_options.thumbnail_name:
-            ytdl_options["writethumbnail"] = True
+        if (
+            self._downloader.supports_download_archive
+            and self._preset.output_options.maintain_download_archive
+        ):
+            ytdl_options["download_archive"] = str(
+                Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
+            )
 
         return ytdl_options
 

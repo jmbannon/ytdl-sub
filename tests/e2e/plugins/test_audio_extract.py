@@ -11,6 +11,9 @@ def single_song_preset_dict(output_directory):
         "preset": "song",
         "download": {"url": "https://www.youtube.com/watch?v=2lAe1cqCOXo"},
         "output_options": {"output_directory": output_directory},
+        "music_tags": {
+            "embed_thumbnail": True
+        },
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
@@ -34,7 +37,6 @@ def multiple_songs_preset_dict(output_directory):
     }
 
 
-# TODO: Test album from chapters
 class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_audio_extract_single_song(
