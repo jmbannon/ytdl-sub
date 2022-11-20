@@ -1,4 +1,5 @@
 {
+  ".ytdl-sub-split_by_chapters_with_regex_video-download-archive.json": "11367ac13068646e35a53d25deeba834",
   "Oblivion Mod ＂Falcor＂ p.1/01 - Oblivion Mod ＂Falcor＂ p.1.mp3": "6d570f225f6c3a14de0ba4c912995641",
   "Oblivion Mod ＂Falcor＂ p.1/folder.jpg": "fb95b510681676e81c321171fc23143e"
 }

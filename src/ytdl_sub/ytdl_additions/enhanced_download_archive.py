@@ -13,6 +13,7 @@ from typing import Set
 from yt_dlp import DateRange
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -587,7 +588,15 @@ class EnhancedDownloadArchive:
         if output_file_name is None:
             output_file_name = file_name
 
-        if entry:
+        # If the entry is created from splitting via chapters, store it to the mapping
+        # using its parent entry
+        if entry and entry.kwargs_contains(SPLIT_BY_CHAPTERS_PARENT_ENTRY):
+            parent_entry = Entry(
+                entry_dict=entry.kwargs(SPLIT_BY_CHAPTERS_PARENT_ENTRY),
+                working_directory=entry.working_directory(),
+            )
+            self.mapping.add_entry(parent_entry, entry_file_path=output_file_name)
+        elif entry:
             self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
 
         self._file_handler.move_file_to_output_directory(
