@@ -15,7 +15,7 @@ def yt_album_as_chapters_preset_dict(output_directory):
         "preset": "album_from_chapters",
         "download": {"url": "https://www.youtube.com/watch?v=zeR2_YjlXWA"},
         # override the output directory with our fixture-generated dir
-        "output_options": {"output_directory": output_directory},
+        "output_options": {"output_directory": output_directory, "maintain_download_archive": True},
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
@@ -88,6 +88,10 @@ class TestSplitByChapters:
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/split_by_chapters_video.json",
         )
+
+        if not dry_run:
+            transaction_log = subscription.download()
+            assert transaction_log.is_empty
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_video_with_chapters_and_regex(
