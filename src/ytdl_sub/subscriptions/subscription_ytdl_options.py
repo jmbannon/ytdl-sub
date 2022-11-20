@@ -108,6 +108,7 @@ class SubscriptionYTDLOptions:
         """
         return YTDLOptionsBuilder().add(
             self._global_options,
+            self._output_options,
             self._plugin_ytdl_options(DateRangePlugin),
             self._user_ytdl_options,  # user ytdl options...
             self._info_json_only_options,  # then info_json_only options
@@ -120,25 +121,18 @@ class SubscriptionYTDLOptions:
         YTDLOptionsBuilder
             Builder with values set based on the subscription for actual downloading
         """
-        ytdl_options_builder = YTDLOptionsBuilder().add(self._global_options)
+        ytdl_options_builder = YTDLOptionsBuilder().add(
+            self._global_options,
+            self._output_options,
+            self._plugin_ytdl_options(DateRangePlugin),
+            self._plugin_ytdl_options(FileConvertPlugin),
+            self._plugin_ytdl_options(SubtitlesPlugin),
+            self._plugin_ytdl_options(ChaptersPlugin),
+            self._plugin_ytdl_options(AudioExtractPlugin),
+            self._user_ytdl_options,  # user ytdl options...
+        )
+        # Add dry run options last if enabled
         if self._dry_run:
-            ytdl_options_builder.add(
-                self._plugin_ytdl_options(DateRangePlugin),
-                self._plugin_ytdl_options(FileConvertPlugin),
-                self._plugin_ytdl_options(SubtitlesPlugin),
-                self._plugin_ytdl_options(ChaptersPlugin),
-                self._user_ytdl_options,  # user ytdl options...
-                self._dry_run_options,  # then dry-run
-            )
-        else:
-            ytdl_options_builder.add(
-                self._output_options,
-                self._plugin_ytdl_options(DateRangePlugin),
-                self._plugin_ytdl_options(FileConvertPlugin),
-                self._plugin_ytdl_options(SubtitlesPlugin),
-                self._plugin_ytdl_options(ChaptersPlugin),
-                self._plugin_ytdl_options(AudioExtractPlugin),
-                self._user_ytdl_options,  # user ytdl options last
-            )
+            ytdl_options_builder.add(self._dry_run_options)
 
         return ytdl_options_builder
