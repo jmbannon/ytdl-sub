@@ -107,9 +107,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
 
                 with open(entry.get_download_thumbnail_path(), "rb") as thumb:
                     mediafile_img = mediafile.Image(
-                        data=thumb.read(),
-                        desc="cover",
-                        type=mediafile.ImageType.front
+                        data=thumb.read(), desc="cover", type=mediafile.ImageType.front
                     )
 
                 audio_file.images = [mediafile_img]
