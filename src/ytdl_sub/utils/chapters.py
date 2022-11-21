@@ -1,13 +1,12 @@
 import json
-import os
 import re
 import subprocess
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
@@ -19,11 +18,11 @@ class Timestamp:
     # 1:00:00 title
     # 01:00:00 title
     # where capture group 1 and 2 are the timestamp and title, respectively
-    _SPLIT_TIMESTAMP_REGEX = re.compile(r"^((?:\d\d:)?(?:\d:)?(?:\d)?\d:\d\d)$")
+    TIMESTAMP_REGEX = re.compile(r"((?:\d\d:)?(?:\d:)?(?:\d)?\d:\d\d)")
 
     @classmethod
     def _normalize_timestamp_str(cls, timestamp_str: str) -> str:
-        match = cls._SPLIT_TIMESTAMP_REGEX.match(timestamp_str)
+        match = cls.TIMESTAMP_REGEX.match(timestamp_str)
         if not match:
             raise ValueError(f"Cannot parse youtube timestamp '{timestamp_str}'")
 
@@ -158,6 +157,14 @@ class Chapters:
         """
         return self.timestamps[0].timestamp_sec == 0
 
+    def to_file_metadata_dict(self) -> Dict:
+        """
+        Returns
+        -------
+        Metadata dict
+        """
+        return {ts.readable_str: title for ts, title in zip(self.timestamps, self.titles)}
+
     def to_file_metadata(self, title: Optional[str] = None) -> FileMetadata:
         """
         Parameters
@@ -170,54 +177,48 @@ class Chapters:
         Chapter metadata in the format of { readable_timestamp_str: title }
         """
         return FileMetadata.from_dict(
-            value_dict={ts.readable_str: title for ts, title in zip(self.timestamps, self.titles)},
+            value_dict=self.to_file_metadata_dict(),
             title=title,
             sort_dict=False,  # timestamps + titles are already sorted
         )
 
     @classmethod
-    def from_timestamps_file(cls, chapters_file_path: str) -> "Chapters":
+    def from_string(cls, input_str: str) -> "Chapters":
         """
+        From a string (description or comment), try to extract Chapters.
+        The scraping logic is simple, if three or more successive lines have timestamps, grab
+        as many in succession as possible. Remove the timestamp portion to get the chapter title.
+
         Parameters
         ----------
-        chapters_file_path
-            Path to file containing chapters
+        input_str
+            String to scrape
 
-        Raises
-        ------
-        ValidationException
-            File path does not exist or contains invalid formatting
+        Returns
+        -------
+        Chapters
+            Could be empty
         """
-        if not os.path.isfile(chapters_file_path):
-            raise ValidationException(
-                f"chapter/timestamp file path '{chapters_file_path}' does not exist."
-            )
-
-        with open(chapters_file_path, "r", encoding="utf-8") as file:
-            lines = file.readlines()
-
         timestamps: List[Timestamp] = []
         titles: List[str] = []
 
-        for idx, line in enumerate(lines):
-            line_split = line.strip().split(maxsplit=1)
+        for line in input_str.split("\n"):
+            # Timestamp captured, store it
+            if match := Timestamp.TIMESTAMP_REGEX.search(line):
+                timestamp_str = match.group(1)
+                timestamps.append(Timestamp.from_str(timestamp_str))
 
-            # Allow the last line to be blank
-            if idx == len(lines) - 1 and not line.strip():
-                break
+                # Remove timestamp and surrounding whitespace from it
+                title_str = re.sub(f"\\s*{re.escape(timestamp_str)}\\s*", " ", line).strip()
+                titles.append(title_str)
+            elif len(timestamps) >= 3:
+                return Chapters(timestamps=timestamps, titles=titles)
+            # Timestamp was not stored, if only contained 1, reset
+            else:
+                timestamps = []
+                titles = []
 
-            if len(line_split) != 2:
-                raise ValidationException(
-                    f"Chapter/Timestamp file '{chapters_file_path}' could not parse '{line}': "
-                    f"must be in the format of 'HH:MM:SS title"
-                )
-
-            timestamp_str, title = tuple(x for x in line_split)
-
-            timestamps.append(Timestamp.from_str(timestamp_str))
-            titles.append(title)
-
-        return cls(timestamps=timestamps, titles=titles)
+        return Chapters(timestamps=timestamps, titles=titles)
 
     @classmethod
     def from_embedded_chapters(cls, file_path: str) -> "Chapters":
@@ -280,3 +281,26 @@ class Chapters:
             titles.append(chapter["title"])
 
         return Chapters(timestamps=timestamps, titles=titles)
+
+    @classmethod
+    def from_empty(cls) -> "Chapters":
+        """
+        Initialize empty chapters
+        """
+        return Chapters(timestamps=[], titles=[])
+
+    def __len__(self) -> int:
+        """
+        Returns
+        -------
+        Number of chapters
+        """
+        return len(self.timestamps)
+
+    def is_empty(self) -> bool:
+        """
+        Returns
+        -------
+        True if no chapters. False otherwise.
+        """
+        return len(self) == 0

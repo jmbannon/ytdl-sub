@@ -33,6 +33,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
+from ytdl_sub.entries.variables.kwargs import COMMENTS
 from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
 from ytdl_sub.entries.variables.kwargs import REQUESTED_SUBTITLES
@@ -453,6 +454,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 REQUESTED_SUBTITLES: download_entry.kwargs_get(REQUESTED_SUBTITLES),
                 # Same with sponsorblock chapters
                 SPONSORBLOCK_CHAPTERS: download_entry.kwargs_get(SPONSORBLOCK_CHAPTERS),
+                COMMENTS: download_entry.kwargs_get(COMMENTS),
                 # Tracks number of entries downloaded
                 DOWNLOAD_INDEX: download_idx,
                 # Tracks number of entries with the same upload date to make them unique
