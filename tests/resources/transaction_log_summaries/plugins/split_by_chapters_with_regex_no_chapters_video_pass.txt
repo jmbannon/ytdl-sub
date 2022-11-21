@@ -7,7 +7,9 @@ Files created:
     Music Tags:
       album: Oblivion Mod "Falcor" p.1
       albumartist: Project Zombie
+      albumartists: Project Zombie
       artist: Project Zombie
+      artists: Project Zombie
       genre: Unset
       title: Oblivion Mod "Falcor" p.1
       track: 1

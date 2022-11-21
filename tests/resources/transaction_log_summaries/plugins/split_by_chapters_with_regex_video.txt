@@ -10,7 +10,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Intro (Feat. Racheal Ofori & Barney Artist)
       track: 1
@@ -22,7 +24,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Answers (Feat. Rick David & Kaya Thomas - Dyke)
       track: 2
@@ -34,7 +38,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Blaze (Feat. Kaya Thomas - Dyke)
       track: 3
@@ -46,7 +52,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: What If (Interlude)
       track: 4
@@ -58,7 +66,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: No Peace (Feat. Tom Misch)
       track: 5
@@ -70,7 +80,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Closer (Feat. Lester Duval)
       track: 6
@@ -82,7 +94,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Delusions: Rumination (Interlude) (Feat. Racheal Ofori)
       track: 7
@@ -94,7 +108,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Dreams (Feat. Carmody)
       track: 8
@@ -106,7 +122,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Dreaming (Interlude) (Feat. Racheal Ofori)
       track: 9
@@ -118,7 +136,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Hopeful (Feat. Jordan Rakei)
       track: 10
@@ -130,7 +150,9 @@ Files created:
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
+      albumartists: Alfa Mist
       artist: Alfa Mist
+      artists: Alfa Mist
       genre: Unset
       title: Sunrise (Pillows) (Feat. Emmavie)
       track: 11
