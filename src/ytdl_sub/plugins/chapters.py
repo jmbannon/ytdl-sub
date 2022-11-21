@@ -62,9 +62,6 @@ class ChaptersOptions(PluginOptions):
     Embeds chapters to video files if they are present. Additional options to add SponsorBlock
     chapters and remove specific ones. Can also remove chapters using regex.
 
-    Note that at this time, chapter removal with regex will not work with chapters added via
-    timestamp file.
-
     Usage:
 
     .. code-block:: yaml
@@ -90,6 +87,8 @@ class ChaptersOptions(PluginOptions):
 
     _optional_keys = {
         "embed_chapters",
+        "allow_chapters_from_description",
+        "allow_chapters_from_comments",
         "embed_chapter_timestamps",
         "sponsorblock_categories",
         "remove_sponsorblock_categories",
@@ -117,6 +116,12 @@ class ChaptersOptions(PluginOptions):
         self._embed_chapter_timestamps = self._validate_key_if_present(
             "embed_chapter_timestamps", StringValidator
         )
+        self._allow_chapters_from_description = self._validate_key_if_present(
+            key="allow_chapters_from_description", validator=BoolValidator, default=False
+        ).value
+        self._allow_chapters_from_comments = self._validate_key_if_present(
+            key="allow_chapters_from_comments", validator=BoolValidator, default=False
+        ).value
 
         if self._remove_sponsorblock_categories and not self._sponsorblock_categories:
             raise self._validation_exception(

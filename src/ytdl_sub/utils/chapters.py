@@ -19,11 +19,11 @@ class Timestamp:
     # 1:00:00 title
     # 01:00:00 title
     # where capture group 1 and 2 are the timestamp and title, respectively
-    _SPLIT_TIMESTAMP_REGEX = re.compile(r"^((?:\d\d:)?(?:\d:)?(?:\d)?\d:\d\d)$")
+    TIMESTAMP_REGEX = re.compile(r"((?:\d\d:)?(?:\d:)?(?:\d)?\d:\d\d)")
 
     @classmethod
     def _normalize_timestamp_str(cls, timestamp_str: str) -> str:
-        match = cls._SPLIT_TIMESTAMP_REGEX.match(timestamp_str)
+        match = cls.TIMESTAMP_REGEX.match(timestamp_str)
         if not match:
             raise ValueError(f"Cannot parse youtube timestamp '{timestamp_str}'")
 
@@ -220,6 +220,44 @@ class Chapters:
         return cls(timestamps=timestamps, titles=titles)
 
     @classmethod
+    def from_string(cls, input_str: str) -> "Chapters":
+        """
+        From a string (description or comment), try to extract Chapters.
+        The scraping logic is simple, if three or more successive lines have timestamps, grab
+        as many in succession as possible. Remove the timestamp portion to get the chapter title.
+
+        Parameters
+        ----------
+        input_str
+            String to scrape
+
+        Returns
+        -------
+        Chapters
+            Could be empty
+        """
+        timestamps: List[Timestamp] = []
+        titles: List[str] = []
+
+        for line in input_str.split("\n"):
+            # Timestamp captured, store it
+            if match := Timestamp.TIMESTAMP_REGEX.search(line):
+                timestamp_str = match.group(1)
+                timestamps.append(Timestamp.from_str(timestamp_str))
+
+                # Remove timestamp and surrounding whitespace from it
+                title_str = re.sub(f"\\s*{re.escape(timestamp_str)}\\s*", " ", line).strip()
+                titles.append(title_str)
+            elif len(timestamps) >= 3:
+                return Chapters(timestamps=timestamps, titles=titles)
+            # Timestamp was not stored, if only contained 1, reset
+            else:
+                timestamps = []
+                titles = []
+
+        return Chapters(timestamps=timestamps, titles=titles)
+
+    @classmethod
     def from_embedded_chapters(cls, file_path: str) -> "Chapters":
         """
         Parameters
@@ -280,3 +318,6 @@ class Chapters:
             titles.append(chapter["title"])
 
         return Chapters(timestamps=timestamps, titles=titles)
+
+    def __len__(self):
+        return len(self.timestamps)
