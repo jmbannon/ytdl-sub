@@ -5,7 +5,9 @@ Files created:
     Music Tags:
       album: Singles
       albumartist: Project Zombie
+      albumartists: Project Zombie
       artist: Project Zombie
+      artists: Project Zombie
       genre: Unset
       title: Jesse's Minecraft Server [Trailer - Feb.1]
       track: 3
@@ -14,7 +16,9 @@ Files created:
     Music Tags:
       album: Singles
       albumartist: Project Zombie
+      albumartists: Project Zombie
       artist: Project Zombie
+      artists: Project Zombie
       genre: Unset
       title: Jesse's Minecraft Server [Trailer - Feb.27]
       track: 2
@@ -23,7 +27,9 @@ Files created:
     Music Tags:
       album: Singles
       albumartist: Project Zombie
+      albumartists: Project Zombie
       artist: Project Zombie
+      artists: Project Zombie
       genre: Unset
       title: Jesse's Minecraft Server [Trailer - Mar.21]
       track: 1

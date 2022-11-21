@@ -99,7 +99,12 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         if not self.is_dry_run:
             audio_file = mediafile.MediaFile(entry.get_download_file_path())
             for tag_name, tag_value in tags_to_write.items():
-                setattr(audio_file, tag_name, tag_value)
+                # If the attribute is a List-type, set it as the first element of the list
+                if isinstance(getattr(audio_file, tag_name), list):
+                    setattr(audio_file, tag_name, [tag_value])
+                # Otherwise, set as single value
+                else:
+                    setattr(audio_file, tag_name, tag_value)
 
             if self.plugin_options.embed_thumbnail:
                 # convert the entry thumbnail so it is embedded as jpg
