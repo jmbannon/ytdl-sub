@@ -139,6 +139,24 @@ class ChaptersOptions(PluginOptions):
         return self._embed_chapters
 
     @property
+    def allow_chapters_from_comments(self) -> bool:
+        """
+        Optional. If chapters do not exist in the video/description itself, attempt to scrape
+        comments to find the chapters. Defaults to False.
+        """
+        return self._allow_chapters_from_comments
+
+    @property
+    def remove_chapters_regex(self) -> Optional[List[re.Pattern]]:
+        """
+        Optional. List of regex patterns to match chapter titles against and remove them from the
+        entry.
+        """
+        if self._remove_chapters_regex:
+            return [validator.compiled_regex for validator in self._remove_chapters_regex.list]
+        return None
+
+    @property
     def sponsorblock_categories(self) -> Optional[List[str]]:
         """
         Optional. List of SponsorBlock categories to embed as chapters. Supports "sponsor",
@@ -169,16 +187,6 @@ class ChaptersOptions(PluginOptions):
         return None
 
     @property
-    def remove_chapters_regex(self) -> Optional[List[re.Pattern]]:
-        """
-        Optional. List of regex patterns to match chapter titles against and remove them from the
-        entry.
-        """
-        if self._remove_chapters_regex:
-            return [validator.compiled_regex for validator in self._remove_chapters_regex.list]
-        return None
-
-    @property
     def force_key_frames(self) -> bool:
         """
         Optional. Force keyframes at cuts when removing sections. This is slow due to needing a
@@ -186,14 +194,6 @@ class ChaptersOptions(PluginOptions):
         False.
         """
         return self._force_key_frames
-
-    @property
-    def allow_chapters_from_comments(self) -> bool:
-        """
-        Optional. If chapters do not exist in the video/description itself, attempt to scrape
-        comments to find the chapters. Defaults to False.
-        """
-        return self._allow_chapters_from_comments
 
 
 class ChaptersPlugin(Plugin[ChaptersOptions]):
