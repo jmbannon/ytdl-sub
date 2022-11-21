@@ -7,6 +7,8 @@ from typing import Set
 
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import COMMENTS
+from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.chapters import Chapters
@@ -69,7 +71,14 @@ class ChaptersOptions(PluginOptions):
        presets:
          my_example_preset:
            chapters:
+             # Embedded Chapter Fields
              embed_chapters: True
+             allow_chapters_from_comments: False
+             remove_chapters_regex:
+               - "Intro"
+               - "Outro"
+
+             # Sponsorblock Fields
              sponsorblock_categories:
                - "outro"
                - "selfpromo"
@@ -79,15 +88,12 @@ class ChaptersOptions(PluginOptions):
                - "music_offtopic"
                - "intro"
              remove_sponsorblock_categories: "all"
-             remove_chapters_regex:
-               - "Intro"
-               - "Outro"
              force_key_frames: False
+
     """
 
     _optional_keys = {
         "embed_chapters",
-        "allow_chapters_from_description",
         "allow_chapters_from_comments",
         "embed_chapter_timestamps",
         "sponsorblock_categories",
@@ -116,9 +122,6 @@ class ChaptersOptions(PluginOptions):
         self._embed_chapter_timestamps = self._validate_key_if_present(
             "embed_chapter_timestamps", StringValidator
         )
-        self._allow_chapters_from_description = self._validate_key_if_present(
-            key="allow_chapters_from_description", validator=BoolValidator, default=False
-        ).value
         self._allow_chapters_from_comments = self._validate_key_if_present(
             key="allow_chapters_from_comments", validator=BoolValidator, default=False
         ).value
@@ -126,6 +129,11 @@ class ChaptersOptions(PluginOptions):
         if self._remove_sponsorblock_categories and not self._sponsorblock_categories:
             raise self._validation_exception(
                 "Must specify sponsorblock_categories if you are going to remove any of them"
+            )
+
+        if self._remove_sponsorblock_categories and self._allow_chapters_from_comments:
+            raise self._validation_exception(
+                "Cannot remove sponsorblock categories and embed chapters from comments"
             )
 
         if self._embed_chapters and self._embed_chapter_timestamps:
@@ -210,6 +218,14 @@ class ChaptersOptions(PluginOptions):
             return self._embed_chapter_timestamps.value
         return None
 
+    @property
+    def allow_chapters_from_comments(self) -> bool:
+        """
+        Optional. If chapters do not exist in the video/description itself, attempt to scrape
+        comments to find the chapters. Defaults to False.
+        """
+        return self._allow_chapters_from_comments
+
 
 class ChaptersPlugin(Plugin[ChaptersOptions]):
     plugin_options_type = ChaptersOptions
@@ -250,6 +266,9 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                     ]
                 }
             )
+
+        if self.plugin_options.allow_chapters_from_comments:
+            builder.add({"getcomments": True})
 
         if self._is_removing_chapters:
             remove_chapters_post_processor = {
@@ -312,15 +331,28 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         -------
         entry
         """
+        chapters = Chapters.from_empty()
+
         if self.plugin_options.embed_chapter_timestamps and not self.is_dry_run:
             chapters = Chapters.from_timestamps_file(
                 chapters_file_path=self.plugin_options.embed_chapter_timestamps
             )
-            set_ffmpeg_metadata_chapters(
-                file_path=entry.get_download_file_path(),
-                chapters=chapters,
-                file_duration_sec=entry.kwargs("duration"),
-            )
+
+        if not _contains_any_chapters(entry) and self.plugin_options.allow_chapters_from_comments:
+            for comment in entry.kwargs_get(COMMENTS, []):
+                chapters = Chapters.from_string(comment.get("text", ""))
+                if not chapters.is_empty():
+                    break
+
+        if not chapters.is_empty():
+            entry.add_kwargs({YTDL_SUB_CUSTOM_CHAPTERS: chapters.to_file_metadata_dict()})
+
+            if not self.is_dry_run:
+                set_ffmpeg_metadata_chapters(
+                    file_path=entry.get_download_file_path(),
+                    chapters=chapters,
+                    file_duration_sec=entry.kwargs("duration"),
+                )
 
         return entry
 
@@ -335,11 +367,20 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         -------
         FileMetadata outlining which chapters/SponsorBlock segments got removed
         """
-        if self.plugin_options.embed_chapter_timestamps:
-            chapters = Chapters.from_timestamps_file(
-                chapters_file_path=self.plugin_options.embed_chapter_timestamps
+        if custom_chapters_metadata := entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS):
+            title: str = ""
+
+            if self.plugin_options.embed_chapter_timestamps:
+                title = "Chapters embedded from timestamp file"
+            elif self.plugin_options.allow_chapters_from_comments:
+                title = "Chapters from comments"
+
+            assert title, "title should not be empty"
+            return FileMetadata.from_dict(
+                value_dict=custom_chapters_metadata,
+                title=title,
+                sort_dict=False,  # timestamps + titles are already sorted
             )
-            return chapters.to_file_metadata(title="Chapters embedded from timestamp file")
 
         if self.plugin_options.embed_chapters:
             metadata_dict = {}

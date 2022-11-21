@@ -2,6 +2,7 @@ import json
 import os
 import re
 import subprocess
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -158,6 +159,14 @@ class Chapters:
         """
         return self.timestamps[0].timestamp_sec == 0
 
+    def to_file_metadata_dict(self) -> Dict:
+        """
+        Returns
+        -------
+        Metadata dict
+        """
+        return {ts.readable_str: title for ts, title in zip(self.timestamps, self.titles)}
+
     def to_file_metadata(self, title: Optional[str] = None) -> FileMetadata:
         """
         Parameters
@@ -170,7 +179,7 @@ class Chapters:
         Chapter metadata in the format of { readable_timestamp_str: title }
         """
         return FileMetadata.from_dict(
-            value_dict={ts.readable_str: title for ts, title in zip(self.timestamps, self.titles)},
+            value_dict=self.to_file_metadata_dict(),
             title=title,
             sort_dict=False,  # timestamps + titles are already sorted
         )
@@ -319,5 +328,25 @@ class Chapters:
 
         return Chapters(timestamps=timestamps, titles=titles)
 
-    def __len__(self):
+    @classmethod
+    def from_empty(cls) -> "Chapters":
+        """
+        Initialize empty chapters
+        """
+        return Chapters(timestamps=[], titles=[])
+
+    def __len__(self) -> int:
+        """
+        Returns
+        -------
+        Number of chapters
+        """
         return len(self.timestamps)
+
+    def is_empty(self) -> bool:
+        """
+        Returns
+        -------
+        True if no chapters. False otherwise.
+        """
+        return len(self) == 0
