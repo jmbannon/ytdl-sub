@@ -20,7 +20,9 @@ presets:
       embed_thumbnail: False  # Set to True to embed album art
       tags:
         artist: "{custom_artist_name}"
+        artists: "{custom_artist_name}"
         albumartist: "{custom_artist_name}"
+        albumartists: "{custom_artist_name}"
         title: "{custom_track_name}"
         album: "{custom_album_name}"
         track: "{custom_track_number}"

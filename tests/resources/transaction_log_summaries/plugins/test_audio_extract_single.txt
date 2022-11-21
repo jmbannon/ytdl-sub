@@ -5,7 +5,9 @@ Files created:
     Embedded Thumbnail, Music Tags:
       album: Singles
       albumartist: YouTube
+      albumartists: YouTube
       artist: YouTube
+      artists: YouTube
       genre: Unset
       title: YouTube Rewind 2019: For the Record | #YouTubeRewind
       track: 1
