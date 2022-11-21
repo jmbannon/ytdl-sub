@@ -1,5 +1,4 @@
 import json
-import os
 import re
 import subprocess
 from typing import Dict
@@ -8,7 +7,6 @@ from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
@@ -183,50 +181,6 @@ class Chapters:
             title=title,
             sort_dict=False,  # timestamps + titles are already sorted
         )
-
-    @classmethod
-    def from_timestamps_file(cls, chapters_file_path: str) -> "Chapters":
-        """
-        Parameters
-        ----------
-        chapters_file_path
-            Path to file containing chapters
-
-        Raises
-        ------
-        ValidationException
-            File path does not exist or contains invalid formatting
-        """
-        if not os.path.isfile(chapters_file_path):
-            raise ValidationException(
-                f"chapter/timestamp file path '{chapters_file_path}' does not exist."
-            )
-
-        with open(chapters_file_path, "r", encoding="utf-8") as file:
-            lines = file.readlines()
-
-        timestamps: List[Timestamp] = []
-        titles: List[str] = []
-
-        for idx, line in enumerate(lines):
-            line_split = line.strip().split(maxsplit=1)
-
-            # Allow the last line to be blank
-            if idx == len(lines) - 1 and not line.strip():
-                break
-
-            if len(line_split) != 2:
-                raise ValidationException(
-                    f"Chapter/Timestamp file '{chapters_file_path}' could not parse '{line}': "
-                    f"must be in the format of 'HH:MM:SS title"
-                )
-
-            timestamp_str, title = tuple(x for x in line_split)
-
-            timestamps.append(Timestamp.from_str(timestamp_str))
-            titles.append(title)
-
-        return cls(timestamps=timestamps, titles=titles)
 
     @classmethod
     def from_string(cls, input_str: str) -> "Chapters":

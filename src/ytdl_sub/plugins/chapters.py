@@ -18,7 +18,6 @@ from ytdl_sub.validators.regex_validator import RegexListValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import ListValidator
-from ytdl_sub.validators.validators import StringValidator
 
 SPONSORBLOCK_HIGHLIGHT_CATEGORIES: Set[str] = {"poi_highlight"}
 SPONSORBLOCK_CATEGORIES: Set[str] = SPONSORBLOCK_HIGHLIGHT_CATEGORIES | {
@@ -95,7 +94,6 @@ class ChaptersOptions(PluginOptions):
     _optional_keys = {
         "embed_chapters",
         "allow_chapters_from_comments",
-        "embed_chapter_timestamps",
         "sponsorblock_categories",
         "remove_sponsorblock_categories",
         "remove_chapters_regex",
@@ -119,9 +117,6 @@ class ChaptersOptions(PluginOptions):
         self._force_key_frames = self._validate_key_if_present(
             key="force_key_frames", validator=BoolValidator, default=False
         ).value
-        self._embed_chapter_timestamps = self._validate_key_if_present(
-            "embed_chapter_timestamps", StringValidator
-        )
         self._allow_chapters_from_comments = self._validate_key_if_present(
             key="allow_chapters_from_comments", validator=BoolValidator, default=False
         ).value
@@ -134,11 +129,6 @@ class ChaptersOptions(PluginOptions):
         if self._remove_sponsorblock_categories and self._allow_chapters_from_comments:
             raise self._validation_exception(
                 "Cannot remove sponsorblock categories and embed chapters from comments"
-            )
-
-        if self._embed_chapters and self._embed_chapter_timestamps:
-            raise self._validation_exception(
-                "Cannot embed chapters from the source and from a timestamp file"
             )
 
     @property
@@ -196,27 +186,6 @@ class ChaptersOptions(PluginOptions):
         False.
         """
         return self._force_key_frames
-
-    @property
-    def embed_chapter_timestamps(self) -> Optional[str]:
-        """
-        Optional. The path to the file containing the timestamps to embed into the file as
-        chapters. Should be formatted as:
-
-        .. code-block:: markdown
-
-           0:00 Intro
-           0:24 Blackwater Park
-           10:23 Bleak
-           16:39 Jokes
-           1:02:23 Ending
-
-        This should only be used with single entity download strategies. Otherwise, an entire
-        playlist or channel would all the same embedded chapters.
-        """
-        if self._embed_chapter_timestamps:
-            return self._embed_chapter_timestamps.value
-        return None
 
     @property
     def allow_chapters_from_comments(self) -> bool:
@@ -333,11 +302,6 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         """
         chapters = Chapters.from_empty()
 
-        if self.plugin_options.embed_chapter_timestamps and not self.is_dry_run:
-            chapters = Chapters.from_timestamps_file(
-                chapters_file_path=self.plugin_options.embed_chapter_timestamps
-            )
-
         if not _contains_any_chapters(entry) and self.plugin_options.allow_chapters_from_comments:
             for comment in entry.kwargs_get(COMMENTS, []):
                 chapters = Chapters.from_string(comment.get("text", ""))
@@ -368,14 +332,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         FileMetadata outlining which chapters/SponsorBlock segments got removed
         """
         if custom_chapters_metadata := entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS):
-            title: str = ""
-
-            if self.plugin_options.embed_chapter_timestamps:
-                title = "Chapters embedded from timestamp file"
-            elif self.plugin_options.allow_chapters_from_comments:
-                title = "Chapters from comments"
-
-            assert title, "title should not be empty"
+            title: str = "Chapters from comments"
             return FileMetadata.from_dict(
                 value_dict=custom_chapters_metadata,
                 title=title,
