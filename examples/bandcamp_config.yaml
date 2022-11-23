@@ -1,0 +1,109 @@
+# This example shows how to download and format a Bandcamp page (artist, album, track)
+# with tags and album art. End result of config organizes output as such:
+#
+#   /path/to/music
+#       /The Be Sharps
+#           /[2020] My first upload
+#               01 - My first upload.mp3
+#               folder.jpg
+#           /[2021] My first album
+#               01 - Track one.mp3
+#               02 - Track two.mp3
+#               folder.jpg
+#       /Another artist
+#           ...
+#
+# This configuration seems to work with all Bandcamp media type pages, e.g.,
+#   Discography | bandcamp:artist (artist.bandcamp.com/music)
+#   Album       | bandcamp:album  (artist.bandcamp.com/album)
+#   Track       | bandcamp:track  (artist.bandcamp.com/track)
+#
+################################################################################
+
+configuration:
+  # recommend tmpfs for RAM drive if enough spare memory
+  working_directory: '.ytdl-sub-downloads'
+
+presets:
+
+  # Sleep option to avoid getting throttled (have not experienced w/ Bandcamp)
+  sleep:
+    ytdl_options:
+      sleep_interval_requests: 1  # number of sleep requests to make
+      sleep_interval: 5           # minimum time to sleep (s)
+      max_sleep_interval: 18      # maximum time to sleep (s)
+
+################################################################################
+
+# Bandcamp v0.1
+
+  bandcamp:
+    download:
+      download_strategy: "url"
+      # highly recommend using https://artist.bandcamp.com/music links
+      # override URL in subscription
+      url: "{url}"
+
+    # Advanced(?) YTDL options, most yt-dlp params can be set here, see:
+    # https://github.com/yt-dlp/yt-dlp/blob/2022.04.08/yt_dlp/YoutubeDL.py#L197
+    ytdl_options:
+      break_on_existing: True       # do not DL again if track exists
+      format: 'bestaudio[ext=mp3]'  # most BC tracks are 128k MP3
+      ignoreerrors: True            # do not exit due to errors
+
+    # See overrides section for how {music_directory}, {album_path},
+    # and {track_file_name} are built from source variables
+    output_options:
+      output_directory: "{music_directory}"
+      file_name: "{album_path}/{track_file_name}.{ext}"
+      thumbnail_name: "{album_path}/folder.{thumbnail_ext}" # always JPG
+      maintain_download_archive: True
+
+    # See https://ytdl-sub.readthedocs.io/en/latest/config.html#music-tags
+    # Comments have anecdotal warnings on tag data
+    #
+    # Chose to use an override for artist due to ease of formatting plus
+    # Bandcamp has a lot of non-artist pages (e.g., record labels) hosting
+    # music, which creates bad folder names. Or you can try your luck...
+    #
+    # Options: channel, channel_sanitized, playlist_uploader,
+    #          playlist_uploader_id, uploader, uploader_id
+    #
+    # 
+    # Additional warning: no release year returned from Bandcamp source vars.
+    #   By default this config uses {upload year}, but other data exists...
+    #
+    # Options: epoch_date, playlist_max_upload_year, upload_date,
+    #          upload_date_standardized, upload_day,  upload_day_of_year, 
+    #          upload_day_of_year_reversed_padded, upload_day_of_year_padded, 
+    #          upload_day_of_year_reversed, upload_day_padded, 
+    #          upload_day_reversed, upload_day_reversed_padded, upload_month,
+    #          upload_month_padded, upload_month_reversed, 
+    #          upload_month_reversed_padded, upload_year (default),
+    #          upload_year_truncated, upload_year_truncated_reversed
+    #
+    # Recommendation: keep it simple, just use upload_date and sort it out with
+    #   the music organization tool of your choice afterwards. Optionally, you
+    #   could choose to organize subscriptions by album and manually override 
+    #   the year for each album, but that is a LOT of subscriptions to manage.
+    music_tags:
+      tags:
+        artist: "{artist}"
+        albumartist: "{artist}"
+        title: "{title_sanitized}"           # sometimes contains artist name
+        album: "{playlist_title_sanitized}"  # duplicates '/' inc. escape char
+        track: "{playlist_index_padded}"     # padding corrects sort order
+        # No release year returned from Bandcamp in ytdl-sub data. 
+        # Options: epoch_date, playlist_max_upload_year, upload_date (or d/m/y)
+        year: "{upload_year}"
+        genre: "{genre}"                     # override in subscription
+
+    # Overrides !important if you want to modify default file organization.
+    # Define music directory (base path for downloads), directory per album, 
+    # file names for tracks, and org scheme (e.g., by artist is default).
+    # Overrides below are used above to define output options.
+    overrides:
+      album_directory_name: "[{upload_year}] {playlist_title_sanitized}"
+      track_file_name: "{playlist_index_padded} - {title_sanitized}"
+      album_path: "{artist}/{album_directory_name}"
+      music_directory: "/downloads/music"
