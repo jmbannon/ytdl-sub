@@ -1,0 +1,31 @@
+# Define any number subscriptions in a single file, or use multiple
+# files to organize (i.e by genre)
+
+# TEMPLATE
+# sub_name:
+#   preset:
+#     - "bandcamp"
+#     #- "tired" # wait 1s between all requests, 10s for downloads
+#     #- "sleepy" # wait 1s between initial, between 5-18s for downloads
+#   overrides:
+#     artist: "<required>"
+#     genre: "<required by default>"
+#     url: "<required>"
+
+# Example
+
+# If trying to snag all available discography for an artist on Bandcamp,
+# recommend using https://artist.bandcamp.com/music format. Some artists
+# default to this page, but many default to a track or album. If you want all
+# media scraped, use /music format.
+#
+# If you do not want to set genre manually via overrides, you must set the
+# default value in bandcamp-config.yaml and remove the genre override here.
+
+daysndaze:
+  preset:
+    - "bandcamp"                                 # add presets if needed
+  overrides:
+    artist: "Days N Daze"                        # required
+    genre: "folk punk"                           # required by default
+    url: "https://daysndaze.bandcamp.com/music"  # required
