@@ -16,7 +16,12 @@ RUN apk update --no-cache && \
       py3-pip \
       py3-setuptools && \
     mkdir -p /config && \
+    # Ensure ffmpeg is installed property
+    ffmpeg -version && \
+    # Install ytdl-sub, ensure it is installed propertly
     pip install --no-cache-dir ytdl_sub-*.whl && \
+    ytdl-sub -h && \
+    # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
     apk del \
       g++ \
