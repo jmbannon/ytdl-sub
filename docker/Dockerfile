@@ -11,14 +11,10 @@ RUN apk update --no-cache && \
       g++ \
       nano \
       make \
+      ffmpeg \
       python3=~3.10 \
       py3-pip \
       py3-setuptools && \
-    apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/community/ \
-      libcrypto1.1 \
-      libcrypto3 \
-      libsrt \
-      ffmpeg && \
     mkdir -p /config && \
     pip install --no-cache-dir ytdl_sub-*.whl && \
     rm ytdl_sub-*.whl && \
