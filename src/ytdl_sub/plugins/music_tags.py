@@ -64,9 +64,10 @@ class MusicTagsOptions(PluginOptions):
              tags:
                artist: "{artist}"
                album: "{album}"
+               genre: "ytdl-sub"
                # Supports id3v2.4 multi-tags
-               genre:
-                 - "Lofi"
+               albumartists:
+                 - "{artist}"
                  - "ytdl-sub"
              # Optional
              embed_thumbnail: False
@@ -95,7 +96,8 @@ class MusicTagsOptions(PluginOptions):
     @property
     def tags(self) -> MusicTagsValidator:
         """
-        Key/values of tag names/tag values. Supports source and override variables.
+        Key, values of tag names, tag values. Supports source and override variables.
+        Supports lists which will get written to MP3s as id3v2.4 multi-tags.
         """
         return self._tags
 
