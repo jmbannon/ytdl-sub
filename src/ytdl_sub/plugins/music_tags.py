@@ -1,5 +1,7 @@
+from collections import defaultdict
 from typing import Any
 from typing import Dict
+from typing import List
 
 import mediafile
 
@@ -7,9 +9,39 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
+from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
+
+logger = Logger.get("music_tags")
+
+
+class MusicTagsValidator(StrictDictValidator):
+    """
+    Validator for the music_tag's `tags` field. Treat each value as a list.
+    Can still specify it like a single value but under-the-hood it's a list of a single element.
+    """
+
+    _optional_keys = set(list(mediafile.MediaFile.sorted_fields()))
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        self._tags: Dict[str, List[StringFormatterValidator]] = {}
+        for key in self._keys:
+            self._tags[key] = self._validate_key(key=key, validator=ListFormatterValidator).list
+
+    @property
+    def as_lists(self) -> Dict[str, List[StringFormatterValidator]]:
+        """
+        Returns
+        -------
+        Tag formatter(s) as a list
+        """
+        return self._tags
 
 
 class MusicTagsOptions(PluginOptions):
@@ -32,7 +64,11 @@ class MusicTagsOptions(PluginOptions):
              tags:
                artist: "{artist}"
                album: "{album}"
-               genre: "ytdl downloaded music"
+               genre: "ytdl-sub"
+               # Supports id3v2.4 multi-tags
+               albumartists:
+                 - "{artist}"
+                 - "ytdl-sub"
              # Optional
              embed_thumbnail: False
     """
@@ -52,15 +88,16 @@ class MusicTagsOptions(PluginOptions):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._tags = self._validate_key(key="tags", validator=DictFormatterValidator)
+        self._tags = self._validate_key(key="tags", validator=MusicTagsValidator)
         self._embed_thumbnail = self._validate_key_if_present(
             key="embed_thumbnail", validator=BoolValidator, default=False
         ).value
 
     @property
-    def tags(self) -> DictFormatterValidator:
+    def tags(self) -> MusicTagsValidator:
         """
-        Key/values of tag names/tag values. Supports source and override variables.
+        Key, values of tag names, tag values. Supports source and override variables.
+        Supports lists which will get written to MP3s as id3v2.4 multi-tags.
         """
         return self._tags
 
@@ -79,32 +116,29 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         """
         Tags the entry's audio file using values defined in the metadata options
         """
-        supported_fields = list(mediafile.MediaFile.sorted_fields())
-        tags_to_write: Dict[str, str] = {}
-        for tag_name, tag_formatter in self.plugin_options.tags.dict.items():
-            if tag_name not in supported_fields:
-                # TODO: Add support for custom fields
-                self._logger.warning(
-                    "tag '%s' is not supported for %s files. Supported tags: %s",
-                    tag_name,
-                    entry.ext,
-                    ", ".join(sorted(supported_fields)),
-                )
-                continue
-
-            tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
-            tags_to_write[tag_name] = tag_value
+        # Resolve the tags into this dict
+        tags_to_write: Dict[str, List[str]] = defaultdict(list)
+        for tag_name, tag_formatters in self.plugin_options.tags.as_lists.items():
+            for tag_formatter in tag_formatters:
+                tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
+                tags_to_write[tag_name].append(tag_value)
 
         # write the actual tags if its not a dry run
         if not self.is_dry_run:
             audio_file = mediafile.MediaFile(entry.get_download_file_path())
             for tag_name, tag_value in tags_to_write.items():
-                # If the attribute is a List-type, set it as the first element of the list
+                # If the attribute is a List-type, set it as the list type
                 if isinstance(getattr(audio_file, tag_name), list):
-                    setattr(audio_file, tag_name, [tag_value])
+                    setattr(audio_file, tag_name, tag_value)
                 # Otherwise, set as single value
                 else:
-                    setattr(audio_file, tag_name, tag_value)
+                    if len(tag_value) > 1:
+                        logger.warning(
+                            "Music tag '%s' does not support lists. "
+                            "Only setting the first element",
+                            tag_name,
+                        )
+                    setattr(audio_file, tag_name, tag_value[0])
 
             if self.plugin_options.embed_thumbnail:
                 # convert the entry thumbnail so it is embedded as jpg
