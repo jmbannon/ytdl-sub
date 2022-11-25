@@ -25,9 +25,11 @@ Files created:
       date: 2020-06-06
       episode_id: 1
       genre: ytdl-sub
-      season_number: 1
       show: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_0
-      synopsis: https://20-7.com
+      synopsis:
+        https://20-7.com
+
+        The Description
       title: 2020-06-06 - Mock Entry 20-7
       year: 2020
   s01.e000001 - 20-7.nfo
@@ -36,7 +38,10 @@ Files created:
         aired: 2020-06-06
         episode: 1
         genre: ytdl-sub
-        plot: https://20-7.com
+        plot:
+          https://20-7.com
+
+          The Description
         season: 1
         title: 2020-06-06 - Mock Entry 20-7
         year: 2020
@@ -46,9 +51,11 @@ Files created:
       date: 2020-07-06
       episode_id: 2
       genre: ytdl-sub
-      season_number: 1
       show: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_0
-      synopsis: https://20-6.com
+      synopsis:
+        https://20-6.com
+
+        The Description
       title: 2020-07-06 - Mock Entry 20-6
       year: 2020
   s01.e000002 - 20-6.nfo
@@ -57,7 +64,10 @@ Files created:
         aired: 2020-07-06
         episode: 2
         genre: ytdl-sub
-        plot: https://20-6.com
+        plot:
+          https://20-6.com
+
+          The Description
         season: 1
         title: 2020-07-06 - Mock Entry 20-6
         year: 2020
@@ -67,9 +77,11 @@ Files created:
       date: 2020-07-06
       episode_id: 3
       genre: ytdl-sub
-      season_number: 1
       show: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_0
-      synopsis: https://20-5.com
+      synopsis:
+        https://20-5.com
+
+        The Description
       title: 2020-07-06 - Mock Entry 20-5
       year: 2020
   s01.e000003 - 20-5.nfo
@@ -78,7 +90,10 @@ Files created:
         aired: 2020-07-06
         episode: 3
         genre: ytdl-sub
-        plot: https://20-5.com
+        plot:
+          https://20-5.com
+
+          The Description
         season: 1
         title: 2020-07-06 - Mock Entry 20-5
         year: 2020
@@ -88,9 +103,11 @@ Files created:
       date: 2020-08-06
       episode_id: 4
       genre: ytdl-sub
-      season_number: 1
       show: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_0
-      synopsis: https://20-4.com
+      synopsis:
+        https://20-4.com
+
+        The Description
       title: 2020-08-06 - Mock Entry 20-4
       year: 2020
   s01.e000004 - 20-4.nfo
@@ -99,7 +116,10 @@ Files created:
         aired: 2020-08-06
         episode: 4
         genre: ytdl-sub
-        plot: https://20-4.com
+        plot:
+          https://20-4.com
+
+          The Description
         season: 1
         title: 2020-08-06 - Mock Entry 20-4
         year: 2020
@@ -110,9 +130,11 @@ Files created:
       date: 2020-08-07
       episode_id: 1
       genre: ytdl-sub
-      season_number: 2
       show: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_0
-      synopsis: https://20-3.com
+      synopsis:
+        https://20-3.com
+
+        The Description
       title: 2020-08-07 - Mock Entry 20-3
       year: 2020
   s02.e000001 - 20-3.nfo
@@ -121,7 +143,10 @@ Files created:
         aired: 2020-08-07
         episode: 1
         genre: ytdl-sub
-        plot: https://20-3.com
+        plot:
+          https://20-3.com
+
+          The Description
         season: 2
         title: 2020-08-07 - Mock Entry 20-3
         year: 2020
@@ -131,9 +156,11 @@ Files created:
       date: 2020-08-08
       episode_id: 2
       genre: ytdl-sub
-      season_number: 2
       show: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_0
-      synopsis: https://20-2.com
+      synopsis:
+        https://20-2.com
+
+        The Description
       title: 2020-08-08 - Mock Entry 20-2
       year: 2020
   s02.e000002 - 20-2.nfo
@@ -142,7 +169,10 @@ Files created:
         aired: 2020-08-08
         episode: 2
         genre: ytdl-sub
-        plot: https://20-2.com
+        plot:
+          https://20-2.com
+
+          The Description
         season: 2
         title: 2020-08-08 - Mock Entry 20-2
         year: 2020
@@ -152,9 +182,11 @@ Files created:
       date: 2020-08-08
       episode_id: 3
       genre: ytdl-sub
-      season_number: 2
       show: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_0
-      synopsis: https://20-1.com
+      synopsis:
+        https://20-1.com
+
+        The Description
       title: 2020-08-08 - Mock Entry 20-1
       year: 2020
   s02.e000003 - 20-1.nfo
@@ -163,7 +195,10 @@ Files created:
         aired: 2020-08-08
         episode: 3
         genre: ytdl-sub
-        plot: https://20-1.com
+        plot:
+          https://20-1.com
+
+          The Description
         season: 2
         title: 2020-08-08 - Mock Entry 20-1
         year: 2020
@@ -173,9 +208,11 @@ Files created:
       date: 2021-08-08
       episode_id: 4
       genre: ytdl-sub
-      season_number: 2
       show: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_0
-      synopsis: https://21-1.com
+      synopsis:
+        https://21-1.com
+
+        The Description
       title: 2021-08-08 - Mock Entry 21-1
       year: 2021
   s02.e000004 - 21-1.nfo
@@ -184,7 +221,10 @@ Files created:
         aired: 2021-08-08
         episode: 4
         genre: ytdl-sub
-        plot: https://21-1.com
+        plot:
+          https://21-1.com
+
+          The Description
         season: 2
         title: 2021-08-08 - Mock Entry 21-1
         year: 2021
