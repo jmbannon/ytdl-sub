@@ -11,7 +11,8 @@ from resources import copy_file_fixture
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.downloader import Downloader
-from ytdl_sub.entries.variables.kwargs import EPOCH, DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
