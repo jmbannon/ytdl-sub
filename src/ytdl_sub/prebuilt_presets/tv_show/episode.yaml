@@ -27,7 +27,7 @@ presets:
       tv_show_genre: "ytdl-sub"
       season_title: "{season_number_padded}"
       episode_title: "{upload_date_standardized} - {title}"
-      episode_plot: "{webpage_url}"
+      episode_plot: "{webpage_url}\n\n{description}"
       episode_year: "{upload_year}"
       episode_date_standardized: "{upload_date_standardized}"
       episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {uid_sanitized}"
@@ -38,7 +38,6 @@ presets:
       tags:
         show: "{tv_show_name}"
         genre: "{tv_show_genre}"
-        season_number: "{season_number}"
         episode_id: "{episode_number}"
         title: "{episode_title}"
         synopsis: "{episode_plot}"
@@ -50,7 +49,8 @@ presets:
       nfo_name: "{episode_file_path}.nfo"
       nfo_root: "episodedetails"
       tags:
-        genre: "{tv_show_genre}"
+        genre:
+         - "{tv_show_genre}"
         season: "{season_number}"
         episode: "{episode_number}"
         title: "{episode_title}"
@@ -63,7 +63,8 @@ presets:
       nfo_root: "tvshow"
       tags:
         title: "{tv_show_name}"
-        genre: "{tv_show_genre}"
+        genre:
+         - "{tv_show_genre}"
 
 ####################################################################################################
 

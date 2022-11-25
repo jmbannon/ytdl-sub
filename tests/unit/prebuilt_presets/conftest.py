@@ -11,6 +11,7 @@ from resources import copy_file_fixture
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
@@ -66,6 +67,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             UPLOAD_DATE: upload_date,
             WEBPAGE_URL: f"https://{uid}.com",
             PLAYLIST_ENTRY: {"thumbnails": []},
+            DESCRIPTION: "The Description",
         }
 
         if is_youtube_channel:

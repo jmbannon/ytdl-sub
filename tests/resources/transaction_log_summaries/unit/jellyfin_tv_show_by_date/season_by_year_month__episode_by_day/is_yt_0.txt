@@ -14,9 +14,11 @@ Files created:
       date: 2020-08-07
       episode_id: 701
       genre: ytdl-sub
-      season_number: 202008
       show: unit_jellyfin_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
-      synopsis: https://20-3.com
+      synopsis:
+        https://20-3.com
+
+        The Description
       title: 2020-08-07 - Mock Entry 20-3
       year: 2020
   s202008.e0701 - 20-3.nfo
@@ -25,7 +27,10 @@ Files created:
         aired: 2020-08-07
         episode: 701
         genre: ytdl-sub
-        plot: https://20-3.com
+        plot:
+          https://20-3.com
+
+          The Description
         season: 202008
         title: 2020-08-07 - Mock Entry 20-3
         year: 2020
@@ -35,9 +40,11 @@ Files created:
       date: 2020-08-08
       episode_id: 801
       genre: ytdl-sub
-      season_number: 202008
       show: unit_jellyfin_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
-      synopsis: https://20-2.com
+      synopsis:
+        https://20-2.com
+
+        The Description
       title: 2020-08-08 - Mock Entry 20-2
       year: 2020
   s202008.e0801 - 20-2.nfo
@@ -46,7 +53,10 @@ Files created:
         aired: 2020-08-08
         episode: 801
         genre: ytdl-sub
-        plot: https://20-2.com
+        plot:
+          https://20-2.com
+
+          The Description
         season: 202008
         title: 2020-08-08 - Mock Entry 20-2
         year: 2020
@@ -56,9 +66,11 @@ Files created:
       date: 2020-08-08
       episode_id: 802
       genre: ytdl-sub
-      season_number: 202008
       show: unit_jellyfin_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
-      synopsis: https://20-1.com
+      synopsis:
+        https://20-1.com
+
+        The Description
       title: 2020-08-08 - Mock Entry 20-1
       year: 2020
   s202008.e0802 - 20-1.nfo
@@ -67,7 +79,10 @@ Files created:
         aired: 2020-08-08
         episode: 802
         genre: ytdl-sub
-        plot: https://20-1.com
+        plot:
+          https://20-1.com
+
+          The Description
         season: 202008
         title: 2020-08-08 - Mock Entry 20-1
         year: 2020
@@ -78,9 +93,11 @@ Files created:
       date: 2021-08-08
       episode_id: 801
       genre: ytdl-sub
-      season_number: 202108
       show: unit_jellyfin_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
-      synopsis: https://21-1.com
+      synopsis:
+        https://21-1.com
+
+        The Description
       title: 2021-08-08 - Mock Entry 21-1
       year: 2021
   s202108.e0801 - 21-1.nfo
@@ -89,7 +106,10 @@ Files created:
         aired: 2021-08-08
         episode: 801
         genre: ytdl-sub
-        plot: https://21-1.com
+        plot:
+          https://21-1.com
+
+          The Description
         season: 202108
         title: 2021-08-08 - Mock Entry 21-1
         year: 2021
