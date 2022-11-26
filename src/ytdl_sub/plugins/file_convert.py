@@ -5,9 +5,13 @@ from typing import Optional
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import EXT
-from ytdl_sub.plugins.plugin import Plugin, PluginPriority
+from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
+from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.ffmpeg import FFMPEG
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.audo_codec_validator import FileTypeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -30,7 +34,7 @@ class FileConvertOptions(PluginOptions):
          my_example_preset:
            file_convert:
              convert_to: "mp4"
-             convert_with: "custom"
+             convert_with: "ffmpeg"
              ffmpeg_post_process_args: "asfd"
     """
 
@@ -48,9 +52,15 @@ class FileConvertOptions(PluginOptions):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._convert_to: str = self._validate_key(key="convert_to", validator=FileTypeValidator).value
-        self._convert_with: str = self._validate_key_if_present(key="convert_with", validator=FileConvertWithValidator, default="yt-dlp").value
-        self._ffmpeg_post_process_args: Optional[str] = self._validate_key_if_present(key="ffmpeg_post_process_args", validator=OverridesStringFormatterValidator)
+        self._convert_to: str = self._validate_key(
+            key="convert_to", validator=FileTypeValidator
+        ).value
+        self._convert_with: str = self._validate_key_if_present(
+            key="convert_with", validator=FileConvertWithValidator, default="yt-dlp"
+        ).value
+        self._ffmpeg_post_process_args = self._validate_key_if_present(
+            key="ffmpeg_post_process_args", validator=OverridesStringFormatterValidator
+        )
 
         if self._convert_to == "ffmpeg" and not self._ffmpeg_post_process_args:
             raise self._validation_exception(
@@ -78,7 +88,7 @@ class FileConvertOptions(PluginOptions):
         return self._convert_with
 
     @property
-    def ffmpeg_post_process_args(self) -> Optional[str]:
+    def ffmpeg_post_process_args(self) -> Optional[OverridesStringFormatterValidator]:
         """
         Optional. ffmpeg args to post-process an entry file with. The args will be inserted in the
         form of:
@@ -130,16 +140,43 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
         Raises
         ------
         FileNotDownloadedException
-            If the audio file is not found
+            If the downloaded file is not found
+        ValidationException
+            User ffmpeg arguments errored
         """
         new_ext = self.plugin_options.convert_to
+        input_video_file_path = entry.get_download_file_path()
         converted_video_file_path = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
-        if self.plugin_options.convert_with == "yt-dlp":
-            if not self.is_dry_run:
-                if not os.path.isfile(converted_video_file_path):
-                    raise FileNotDownloadedException("Failed to find the converted video file")
-        else: # ffmpeg
 
+        # FFMpeg input video file should already be converted
+        if self.plugin_options.convert_with == "yt-dlp":
+            input_video_file_path = converted_video_file_path
+
+        if not self.is_dry_run:
+            if not os.path.isfile(input_video_file_path):
+                raise FileNotDownloadedException("Failed to find the input file")
+
+            if self.plugin_options.ffmpeg_post_process_args:
+                tmp_output_file = (
+                    converted_video_file_path.removesuffix(new_ext) + f".tmp.{new_ext}"
+                )
+                ffmpeg_args_list = self.overrides.apply_formatter(
+                    self.plugin_options.ffmpeg_post_process_args
+                ).split()
+                ffmpeg_args = ["-i", input_video_file_path] + ffmpeg_args_list + [tmp_output_file]
+                try:
+                    FFMPEG.run(ffmpeg_args)
+                except Exception as exc:
+                    raise ValidationException(
+                        f"ffmpeg_post_process_args {' '.join(ffmpeg_args)} result in an error"
+                    ) from exc
+
+                if not os.path.isfile(tmp_output_file):
+                    raise ValidationException(
+                        "file_convert ffmpeg_post_process_args did not produce an output file"
+                    )
+
+                FileHandler.move(tmp_output_file, converted_video_file_path)
 
         if entry.ext != new_ext:
             entry.add_kwargs(
