@@ -47,6 +47,8 @@ def assert_transaction_log_matches(
     # Split, ensure there are the same number of new lines
     summary_lines: List[str] = summary.split("\n")
     expected_summary_lines: List[str] = expected_summary.split("\n")
+    print(summary_lines)
+    print(expected_summary_lines)
     assert len(summary_lines) == len(
         expected_summary_lines
     ), f"Summary number of lines differ: {len(summary_lines) != len(expected_summary_lines)}"
