@@ -34,8 +34,21 @@ class FileConvertOptions(PluginOptions):
          my_example_preset:
            file_convert:
              convert_to: "mp4"
+
+    Supports custom ffmpeg conversions:
+
+    .. code-block:: yaml
+
+       presets:
+         my_example_preset:
+           file_convert:
+             convert_to: "mkv"
              convert_with: "ffmpeg"
-             ffmpeg_post_process_args: "asfd"
+             ffmpeg_post_process_args: >
+               -bitexact
+               -vcodec copy
+               -acodec copy
+               -scodec mov_text
     """
 
     _required_keys = {"convert_to"}
