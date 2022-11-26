@@ -61,7 +61,7 @@ class TestFileConvert:
                 "file_convert": {
                     "convert_to": "mkv",
                     "convert_with": "ffmpeg",
-                    "ffmpeg_post_process_args": "-vcodec copy -acodec copy -scodec mov_text",
+                    "ffmpeg_post_process_args": "-bitexact -vcodec copy -acodec copy -scodec mov_text",
                 }
             },
         )

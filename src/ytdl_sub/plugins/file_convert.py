@@ -116,15 +116,17 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
         -------
         ffmpeg video remuxing post processing dict
         """
-        return {
-            "postprocessors": [
-                {
-                    "key": "FFmpegVideoRemuxer",
-                    "when": "post_process",
-                    "preferedformat": self.plugin_options.convert_to,
-                }
-            ]
-        }
+        if self.plugin_options.convert_with == "yt-dlp":
+            return {
+                "postprocessors": [
+                    {
+                        "key": "FFmpegVideoRemuxer",
+                        "when": "post_process",
+                        "preferedformat": self.plugin_options.convert_to,
+                    }
+                ]
+            }
+        return None
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
@@ -144,7 +146,10 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
         ValidationException
             User ffmpeg arguments errored
         """
+        # Get original_ext here since there is mkv/yt-dlp shenanigans
+        original_ext = entry.ext
         new_ext = self.plugin_options.convert_to
+
         input_video_file_path = entry.get_download_file_path()
         converted_video_file_path = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
 
@@ -157,9 +162,7 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
                 raise FileNotDownloadedException("Failed to find the input file")
 
             if self.plugin_options.ffmpeg_post_process_args:
-                tmp_output_file = (
-                    converted_video_file_path.removesuffix(new_ext) + f".tmp.{new_ext}"
-                )
+                tmp_output_file = converted_video_file_path.removesuffix(new_ext) + f"tmp.{new_ext}"
                 ffmpeg_args_list = self.overrides.apply_formatter(
                     self.plugin_options.ffmpeg_post_process_args
                 ).split()
@@ -177,11 +180,13 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
                     )
 
                 FileHandler.move(tmp_output_file, converted_video_file_path)
+                FileHandler.delete(tmp_output_file)
+                FileHandler.delete(input_video_file_path)
 
-        if entry.ext != new_ext:
+        if original_ext != new_ext:
             entry.add_kwargs(
                 {
-                    "__converted_from": entry.ext,
+                    "__converted_from": original_ext,
                 }
             )
 
