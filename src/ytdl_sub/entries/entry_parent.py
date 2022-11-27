@@ -67,6 +67,17 @@ class EntryParent(BaseEntry):
             [child.to_type(Entry) for child in self.child_entries if self.is_entry(child)]
         )
 
+    @functools.cache
+    def num_children(self) -> int:
+        """
+        Returns
+        -------
+        Total number of (nested) entry children
+        """
+        return sum(parent.num_children() for parent in self.parent_children()) + len(
+            self.entry_children()
+        )
+
     def _playlist_variables(self, idx: int, children: List[TBaseEntry], parent_type: str) -> Dict:
         _count = self.kwargs_get(PLAYLIST_COUNT, len(children))
         _index = children[idx].kwargs_get(PLAYLIST_INDEX, idx + 1)

@@ -51,6 +51,8 @@ from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
+# pylint: disable=too-many-instance-attributes
+
 download_logger = Logger.get(name="downloader")
 
 
@@ -149,6 +151,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         self._metadata_ytdl_options_builder = metadata_ytdl_options
         self.parents: List[EntryParent] = []
         self.downloaded_entries: Dict[str, Entry] = {}
+
+        self._url_total_entries: int = 0
+        self._url_entries_downloaded: int = 0
 
     @property
     def download_ytdl_options(self) -> Dict:
@@ -440,7 +445,6 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         return Entry(download_entry_dict, working_directory=self.working_directory)
 
     def _download_entry(self, entry: Entry) -> Entry:
-        download_logger.info("Downloading entry %s", entry.title)
         download_entry = self._extract_entry_info_with_retry(entry=entry)
 
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
@@ -468,9 +472,23 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         # Download entries in reverse order since they are scraped in the opposite direction.
         # Helps deal with break_on_existing
         for entry in reversed(entries):
+            self._url_entries_downloaded += 1
+
             if self._is_downloaded(entry):
+                download_logger.info(
+                    "Already downloaded entry %d/%d: %s",
+                    self._url_entries_downloaded,
+                    self._url_total_entries,
+                    entry.title,
+                )
                 continue
 
+            download_logger.info(
+                "Downloading entry %d/%d: %s",
+                self._url_entries_downloaded,
+                self._url_total_entries,
+                entry.title,
+            )
             yield self._download_entry(entry)
             self._mark_downloaded(entry)
 
@@ -528,17 +546,12 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
     def _download(
         self,
-        parents: Optional[List[EntryParent]] = None,
-        orphans: Optional[List[Entry]] = None,
+        parents: List[EntryParent],
+        orphans: List[Entry],
     ) -> Generator[Entry, None, None]:
         """
         Downloads the leaf entries from EntryParent trees
         """
-        if parents is None:
-            parents = []
-        if orphans is None:
-            orphans = []
-
         # Delete info json files afterwards so other collection URLs do not use them
         with self._separate_download_archives(clear_info_json_files=True):
             for parent in parents:
@@ -557,6 +570,15 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             parents, orphan_entries = self._download_url_metadata(collection_url=collection_url)
             collection_url_entries: List[Entry] = []
 
+            # Set url entry trackers to print progress
+            self._url_total_entries = sum(parent.num_children() for parent in parents) + len(
+                orphan_entries
+            )
+            self._url_entries_downloaded = 0
+
+            download_logger.info(
+                "Beginning downloads for %s", self.overrides.apply_formatter(collection_url.url)
+            )
             for entry in self._download(parents=parents, orphans=orphan_entries):
                 yield entry
                 collection_url_entries.append(entry)
