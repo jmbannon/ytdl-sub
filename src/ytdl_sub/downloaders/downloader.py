@@ -624,7 +624,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 continue
 
             if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is None:
-                download_logger.warning("TODO: Failed to download channel's avatar image")
+                download_logger.warning("Failed to find thumbnail id '%s'", thumbnail_id)
                 continue
 
             if self._download_thumbnail(
@@ -634,7 +634,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 self.save_file(file_name=thumbnail_name)
                 thumbnails_downloaded.add(thumbnail_name)
             else:
-                download_logger.warning("TODO: Failed to download channel's avatar image")
+                download_logger.warning("Failed to download thumbnail id '%s'", thumbnail_id)
 
         return thumbnails_downloaded
 

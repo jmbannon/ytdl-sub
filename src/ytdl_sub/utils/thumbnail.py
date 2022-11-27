@@ -60,7 +60,8 @@ def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Opt
     -------
     True to indicate it converted the thumbnail from url. None if the retry failed.
     """
-    with urlopen(thumbnail_url) as file:
+    # timeout after 8 seconds
+    with urlopen(thumbnail_url, timeout=8.0) as file:
         with tempfile.NamedTemporaryFile() as thumbnail:
             thumbnail.write(file.read())
 
