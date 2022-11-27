@@ -152,6 +152,14 @@ file_convert
 
 -------------------------------------------------------------------------------
 
+match_filters
+'''''''''''''
+.. autoclass:: ytdl_sub.plugins.match_filters.MatchFiltersOptions()
+  :members:
+  :exclude-members: partial_validate
+
+-------------------------------------------------------------------------------
+
 music_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()
