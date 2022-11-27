@@ -97,6 +97,15 @@ class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
 DownloaderOptionsT = TypeVar("DownloaderOptionsT", bound=DownloaderValidator)
 
 
+class URLDownloadState:
+    def __init__(self, entries_total: int):
+        self.entries_total = entries_total
+        self.entries_downloaded = 0
+
+        self.entries: List[Entry] = []
+        self.thumbnails_downloaded: Set[str] = set()
+
+
 class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
@@ -149,11 +158,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         self.overrides = overrides
         self._download_ytdl_options_builder = download_ytdl_options
         self._metadata_ytdl_options_builder = metadata_ytdl_options
-        self.parents: List[EntryParent] = []
         self.downloaded_entries: Dict[str, Entry] = {}
 
-        self._url_total_entries: int = 0
-        self._url_entries_downloaded: int = 0
+        self._url_state: Optional[URLDownloadState] = None
 
     @property
     def download_ytdl_options(self) -> Dict:
@@ -472,21 +479,21 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         # Download entries in reverse order since they are scraped in the opposite direction.
         # Helps deal with break_on_existing
         for entry in reversed(entries):
-            self._url_entries_downloaded += 1
+            self._url_state.entries_downloaded += 1
 
             if self._is_downloaded(entry):
                 download_logger.info(
                     "Already downloaded entry %d/%d: %s",
-                    self._url_entries_downloaded,
-                    self._url_total_entries,
+                    self._url_state.entries_downloaded,
+                    self._url_state.entries_total,
                     entry.title,
                 )
                 continue
 
             download_logger.info(
                 "Downloading entry %d/%d: %s",
-                self._url_entries_downloaded,
-                self._url_total_entries,
+                self._url_state.entries_downloaded,
+                self._url_state.entries_total,
                 entry.title,
             )
             yield self._download_entry(entry)
@@ -528,21 +535,21 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 log_prefix_on_info_json_dl="Downloading metadata for",
             )
 
-        self.parents = EntryParent.from_entry_dicts(
+        parents = EntryParent.from_entry_dicts(
             url=url,
             entry_dicts=entry_dicts,
             working_directory=self.working_directory,
         )
         orphans = EntryParent.from_entry_dicts_with_no_parents(
-            parents=self.parents, entry_dicts=entry_dicts, working_directory=self.working_directory
+            parents=parents, entry_dicts=entry_dicts, working_directory=self.working_directory
         )
 
-        for parent_entry in self.parents:
+        for parent_entry in parents:
             self._set_collection_variables(collection_url, parent_entry)
         for entry in orphans:
             self._set_collection_variables(collection_url, entry)
 
-        return self.parents, orphans
+        return parents, orphans
 
     def _download(
         self,
@@ -568,24 +575,21 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.collection.urls.list):
             parents, orphan_entries = self._download_url_metadata(collection_url=collection_url)
-            collection_url_entries: List[Entry] = []
 
-            # Set url entry trackers to print progress
-            self._url_total_entries = sum(parent.num_children() for parent in parents) + len(
-                orphan_entries
+            # TODO: Encapsulate this logic into its own class
+            self._url_state = URLDownloadState(
+                entries_total=sum(parent.num_children() for parent in parents) + len(orphan_entries)
             )
-            self._url_entries_downloaded = 0
 
             download_logger.info(
                 "Beginning downloads for %s", self.overrides.apply_formatter(collection_url.url)
             )
             for entry in self._download(parents=parents, orphans=orphan_entries):
                 yield entry
-                collection_url_entries.append(entry)
-
-            self._download_url_thumbnails(
-                collection_url=collection_url, entries=collection_url_entries
-            )
+                # Add entry to URL state
+                self._url_state.entries.append(entry)
+                # Update thumbnails in case of last_entry
+                self._download_url_thumbnails(collection_url=collection_url)
 
     @classmethod
     def _download_thumbnail(
@@ -616,12 +620,10 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
     def _download_parent_thumbnails(
         self,
-        thumbnails_downloaded: Set[str],
         thumbnail_list_info: UrlThumbnailListValidator,
         entry: Entry,
-        is_last_entry: bool,
         parent: EntryParent,
-    ) -> Set[str]:
+    ) -> None:
         """
         Downloads and moves channel avatar and banner images to the output directory.
         """
@@ -629,20 +631,19 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
             thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
 
-            # already downloaded
-            if thumbnail_name in thumbnails_downloaded:
-                continue
-
+            # If latest entry, always update the thumbnail on each entry
             if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
                 # always save in dry-run even if it doesn't exist...
-                if is_last_entry and (
-                    self.is_dry_run or os.path.isfile(entry.get_download_thumbnail_path())
-                ):
+                if self.is_dry_run or os.path.isfile(entry.get_download_thumbnail_path()):
                     self.save_file(
                         file_name=entry.get_download_thumbnail_name(),
                         output_file_name=thumbnail_name,
                     )
-                    thumbnails_downloaded.add(thumbnail_name)
+                    self._url_state.thumbnails_downloaded.add(thumbnail_name)
+                continue
+
+            # If not latest entry and the thumbnail has already been downloaded, then skip
+            if thumbnail_name in self._url_state.thumbnails_downloaded:
                 continue
 
             if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is None:
@@ -654,40 +655,30 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 output_thumbnail_path=str(Path(self.working_directory) / thumbnail_name),
             ):
                 self.save_file(file_name=thumbnail_name)
-                thumbnails_downloaded.add(thumbnail_name)
+                self._url_state.thumbnails_downloaded.add(thumbnail_name)
             else:
                 download_logger.warning("Failed to download thumbnail id '%s'", thumbnail_id)
 
-        return thumbnails_downloaded
-
-    def _download_url_thumbnails(self, collection_url: UrlValidator, entries: List[Entry]):
+    def _download_url_thumbnails(self, collection_url: UrlValidator):
         """
         After all media entries have been downloaded, post processed, and moved to the output
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
         """
-        thumbnails_downloaded: Set[str] = set()
-
-        for idx, entry in enumerate(entries):
-            is_last_entry = idx == len(entries) - 1
-
+        for entry in self._url_state.entries:
             if entry.kwargs_contains(PLAYLIST_ENTRY):
-                thumbnails_downloaded = self._download_parent_thumbnails(
-                    thumbnails_downloaded=thumbnails_downloaded,
+                self._download_parent_thumbnails(
                     thumbnail_list_info=collection_url.playlist_thumbnails,
                     entry=entry,
-                    is_last_entry=is_last_entry,
                     parent=EntryParent(
                         entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
                     ),
                 )
 
             if entry.kwargs_contains(SOURCE_ENTRY):
-                thumbnails_downloaded = self._download_parent_thumbnails(
-                    thumbnails_downloaded=thumbnails_downloaded,
+                self._download_parent_thumbnails(
                     thumbnail_list_info=collection_url.source_thumbnails,
                     entry=entry,
-                    is_last_entry=is_last_entry,
                     parent=EntryParent(
                         entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
                     ),
