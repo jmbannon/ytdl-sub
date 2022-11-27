@@ -15,6 +15,7 @@ from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin
 from ytdl_sub.plugins.file_convert import FileConvertPlugin
 from ytdl_sub.plugins.internal.view import ViewPlugin
+from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
 from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
@@ -121,6 +122,7 @@ class PluginMapping:
         "audio_extract": AudioExtractPlugin,
         "date_range": DateRangePlugin,
         "file_convert": FileConvertPlugin,
+        "match_filters": MatchFiltersPlugin,
         "music_tags": MusicTagsPlugin,
         "video_tags": VideoTagsPlugin,
         "nfo_tags": NfoTagsPlugin,
