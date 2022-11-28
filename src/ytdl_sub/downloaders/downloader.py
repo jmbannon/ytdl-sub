@@ -189,7 +189,8 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         """
         download_logger.debug("ytdl_options: %s", str(ytdl_options_overrides))
         with Logger.handle_external_logs(name="yt-dlp"):
-            with ytdl.YoutubeDL(ytdl_options_overrides) as ytdl_downloader:
+            # Deep copy ytdl_options in case yt-dlp modifies the dict
+            with ytdl.YoutubeDL(copy.deepcopy(ytdl_options_overrides)) as ytdl_downloader:
                 yield ytdl_downloader
 
     @property
