@@ -1,4 +1,3 @@
-import functools
 import math
 from typing import Dict
 from typing import List
@@ -55,19 +54,16 @@ class EntryParent(BaseEntry):
         super().__init__(entry_dict=entry_dict, working_directory=working_directory)
         self.child_entries: List["EntryParent"] = []
 
-    @functools.cache
     def parent_children(self) -> List["EntryParent"]:
         """This parent's children that are also parents"""
         return _sort_entries([child for child in self.child_entries if self.is_entry_parent(child)])
 
-    @functools.cache
     def entry_children(self) -> List[Entry]:
         """This parent's children that are entries"""
         return _sort_entries(
             [child.to_type(Entry) for child in self.child_entries if self.is_entry(child)]
         )
 
-    @functools.cache
     def num_children(self) -> int:
         """
         Returns

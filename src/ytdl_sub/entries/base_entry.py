@@ -358,3 +358,11 @@ class BaseEntry(BaseEntryVariables, ABC):
             entry_ext = entry_dict.get("ext")
 
         return entry_ext is not None
+
+    def ytdl_uid(self) -> str:
+        """
+        Returns
+        -------
+        extractor + uid, making this a unique hash for any entry
+        """
+        return self.extractor + self.uid

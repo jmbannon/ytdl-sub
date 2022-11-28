@@ -1,6 +1,7 @@
 import argparse
 import errno
 import fcntl
+import gc
 import os
 import sys
 import tempfile
@@ -59,6 +60,7 @@ def _download_subscriptions_from_yaml_files(
         transaction_log = subscription.download(dry_run=args.dry_run)
 
         output.append((subscription, transaction_log))
+        gc.collect()  # Garbage collect after each subscription download
 
     return output
 
