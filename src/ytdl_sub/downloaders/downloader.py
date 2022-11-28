@@ -30,7 +30,6 @@ from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
 from ytdl_sub.downloaders.generic.validators import UrlThumbnailListValidator
 from ytdl_sub.downloaders.generic.validators import UrlValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
-from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.variables.kwargs import COMMENTS
@@ -54,10 +53,6 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadAr
 # pylint: disable=too-many-instance-attributes
 
 download_logger = Logger.get(name="downloader")
-
-
-def _entry_key(entry: BaseEntry) -> str:
-    return entry.extractor + entry.uid
 
 
 class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
@@ -101,8 +96,6 @@ class URLDownloadState:
     def __init__(self, entries_total: int):
         self.entries_total = entries_total
         self.entries_downloaded = 0
-
-        self.entries: List[Entry] = []
         self.thumbnails_downloaded: Set[str] = set()
 
 
@@ -158,7 +151,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         self.overrides = overrides
         self._download_ytdl_options_builder = download_ytdl_options
         self._metadata_ytdl_options_builder = metadata_ytdl_options
-        self.downloaded_entries: Dict[str, Entry] = {}
+        self._downloaded_entries: Set[str] = set()
 
         self._url_state: Optional[URLDownloadState] = None
 
@@ -386,10 +379,10 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
     # DOWNLOAD FUNCTIONS
 
     def _is_downloaded(self, entry: Entry) -> bool:
-        return _entry_key(entry) in self.downloaded_entries
+        return entry.ytdl_uid() in self._downloaded_entries
 
     def _mark_downloaded(self, entry: Entry) -> None:
-        self.downloaded_entries[_entry_key(entry)] = entry
+        self._downloaded_entries.add(entry.ytdl_uid())
 
     @property
     def collection(self) -> MultiUrlValidator:
@@ -586,10 +579,8 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             )
             for entry in self._download(parents=parents, orphans=orphan_entries):
                 yield entry
-                # Add entry to URL state
-                self._url_state.entries.append(entry)
                 # Update thumbnails in case of last_entry
-                self._download_url_thumbnails(collection_url=collection_url)
+                self._download_url_thumbnails(collection_url=collection_url, entry=entry)
 
     @classmethod
     def _download_thumbnail(
@@ -659,27 +650,26 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             else:
                 download_logger.warning("Failed to download thumbnail id '%s'", thumbnail_id)
 
-    def _download_url_thumbnails(self, collection_url: UrlValidator):
+    def _download_url_thumbnails(self, collection_url: UrlValidator, entry: Entry):
         """
         After all media entries have been downloaded, post processed, and moved to the output
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
         """
-        for entry in self._url_state.entries:
-            if entry.kwargs_contains(PLAYLIST_ENTRY):
-                self._download_parent_thumbnails(
-                    thumbnail_list_info=collection_url.playlist_thumbnails,
-                    entry=entry,
-                    parent=EntryParent(
-                        entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
-                    ),
-                )
+        if entry.kwargs_contains(PLAYLIST_ENTRY):
+            self._download_parent_thumbnails(
+                thumbnail_list_info=collection_url.playlist_thumbnails,
+                entry=entry,
+                parent=EntryParent(
+                    entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
+                ),
+            )
 
-            if entry.kwargs_contains(SOURCE_ENTRY):
-                self._download_parent_thumbnails(
-                    thumbnail_list_info=collection_url.source_thumbnails,
-                    entry=entry,
-                    parent=EntryParent(
-                        entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
-                    ),
-                )
+        if entry.kwargs_contains(SOURCE_ENTRY):
+            self._download_parent_thumbnails(
+                thumbnail_list_info=collection_url.source_thumbnails,
+                entry=entry,
+                parent=EntryParent(
+                    entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
+                ),
+            )

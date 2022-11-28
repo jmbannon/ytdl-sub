@@ -1,4 +1,3 @@
-import functools
 import math
 from typing import Dict
 from typing import List
@@ -53,21 +52,22 @@ def _sort_entries(entries: List[TBaseEntry]) -> List[TBaseEntry]:
 class EntryParent(BaseEntry):
     def __init__(self, entry_dict: Dict, working_directory: str):
         super().__init__(entry_dict=entry_dict, working_directory=working_directory)
-        self.child_entries: List["EntryParent"] = []
+        self._parent_children: List["EntryParent"] = []
+        self._entry_children: List[Entry] = []
 
-    @functools.cache
     def parent_children(self) -> List["EntryParent"]:
         """This parent's children that are also parents"""
-        return _sort_entries([child for child in self.child_entries if self.is_entry_parent(child)])
+        return self._parent_children
 
-    @functools.cache
     def entry_children(self) -> List[Entry]:
         """This parent's children that are entries"""
-        return _sort_entries(
-            [child.to_type(Entry) for child in self.child_entries if self.is_entry(child)]
-        )
+        return self._entry_children
 
-    @functools.cache
+    @property
+    def children(self) -> List[TBaseEntry]:
+        """Children, both entries and parent entries, cast as BaseEntry"""
+        return self._parent_children + self._entry_children
+
     def num_children(self) -> int:
         """
         Returns
@@ -166,7 +166,7 @@ class EntryParent(BaseEntry):
         """
         Populates a tree of EntryParents that belong to this instance
         """
-        self.child_entries = [
+        entries = [
             EntryParent(
                 entry_dict=entry_dict,
                 working_directory=self.working_directory(),
@@ -174,6 +174,12 @@ class EntryParent(BaseEntry):
             for entry_dict in entry_dicts
             if entry_dict in self
         ]
+
+        self._parent_children = _sort_entries([ent for ent in entries if self.is_entry_parent(ent)])
+        self._entry_children = _sort_entries(
+            [ent.to_type(Entry) for ent in entries if self.is_entry(ent)]
+        )
+
         return self
 
     def get_thumbnail_url(self, thumbnail_id: str) -> Optional[str]:
@@ -204,9 +210,7 @@ class EntryParent(BaseEntry):
         if not playlist_id:
             return False
 
-        return self.uid == playlist_id or any(
-            child.__contains__(item) for child in self.child_entries
-        )
+        return self.uid == playlist_id or any(child.__contains__(item) for child in self.children)
 
     @classmethod
     def _get_disconnected_root_parent(
@@ -220,9 +224,7 @@ class EntryParent(BaseEntry):
             return webpage_url in url or url in webpage_url
 
         top_level_parents = [
-            parent
-            for parent in parents
-            if not parent.child_entries and _url_matches(parent.webpage_url)
+            parent for parent in parents if not parent.children and _url_matches(parent.webpage_url)
         ]
 
         match len(top_level_parents):
@@ -263,7 +265,7 @@ class EntryParent(BaseEntry):
         # If a disconnected root parent exists, connect it here
         if (root_parent := cls._get_disconnected_root_parent(url, parents)) is not None:
             parents.remove(root_parent)
-            root_parent.child_entries = parents
+            root_parent._parent_children = parents
             parents = [root_parent]
 
         for parent in parents:
