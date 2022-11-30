@@ -400,8 +400,9 @@ class EnhancedDownloadArchive:
         Returns
         -------
         The download archive's file name (no path)
+        Used to recreate yt-dlp's download archive in the working directory
         """
-        return f".ytdl-subscribe-{self.subscription_name}-download-archive.txt"
+        return f".ytdl-sub-{self.subscription_name}-download-archive.txt"
 
     @property
     def working_directory(self) -> str:
@@ -440,7 +441,7 @@ class EnhancedDownloadArchive:
         return str(Path(self.output_directory) / self._mapping_file_name)
 
     @property
-    def _mapping_working_file_path(self) -> str:
+    def mapping_working_file_path(self) -> str:
         """
         Returns
         -------
@@ -449,7 +450,7 @@ class EnhancedDownloadArchive:
         return str(Path(self.working_directory) / self._mapping_file_name)
 
     @property
-    def _archive_working_file_path(self) -> str:
+    def archive_working_file_path(self) -> str:
         """
         Returns
         -------
@@ -503,7 +504,7 @@ class EnhancedDownloadArchive:
             return self
 
         # Otherwise, create a ytdl download archive file in the working directory.
-        self.mapping.to_download_archive().to_file(self._archive_working_file_path)
+        self.mapping.to_download_archive().to_file(self.archive_working_file_path)
 
         return self
 
@@ -555,7 +556,7 @@ class EnhancedDownloadArchive:
         self
         """
         if not self.get_file_handler_transaction_log().is_empty:
-            self._download_mapping.to_file(output_json_file=self._mapping_working_file_path)
+            self._download_mapping.to_file(output_json_file=self.mapping_working_file_path)
             self.save_file_to_output_directory(file_name=self._mapping_file_name)
         return self
 

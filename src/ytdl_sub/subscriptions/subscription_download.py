@@ -137,6 +137,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 self._enhanced_download_archive.remove_stale_files(date_range=date_range_to_keep)
 
             self._enhanced_download_archive.save_download_mappings()
+            FileHandler.delete(self._enhanced_download_archive.archive_working_file_path)
+            FileHandler.delete(self._enhanced_download_archive.mapping_working_file_path)
 
     @contextlib.contextmanager
     def _subscription_download_context_managers(self) -> None:

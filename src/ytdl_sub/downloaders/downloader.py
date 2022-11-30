@@ -422,7 +422,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             FileHandler.delete(file_path=archive_path)
         # If the archive file did exist, restore the backup
         elif archive_file_exists:
-            FileHandler.copy(src_file_path=backup_archive_path, dst_file_path=archive_path)
+            FileHandler.move(src_file_path=backup_archive_path, dst_file_path=archive_path)
 
         # Clear info json files if true
         if clear_info_json_files:
