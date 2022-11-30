@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -7,6 +8,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -205,5 +207,12 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
                     output_file_name=output_subtitle_file_name,
                     entry=entry,
                 )
+
+                # Delete any possible original subtitle files before conversion
+                for possible_ext in SUBTITLE_EXTENSIONS:
+                    possible_subs_file = (
+                        Path(self.working_directory) / f"{entry.uid}.{lang}.{possible_ext}"
+                    )
+                    FileHandler.delete(possible_subs_file)
 
         return file_metadata

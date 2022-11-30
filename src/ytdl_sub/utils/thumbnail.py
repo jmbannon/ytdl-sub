@@ -5,6 +5,7 @@ from urllib.request import urlopen
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import FFMPEG
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.retry import retry
 
 
@@ -42,6 +43,7 @@ def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) ->
 
     if not download_thumbnail_path == download_thumbnail_path_as_jpg:
         FFMPEG.run(["-bitexact", "-i", download_thumbnail_path, download_thumbnail_path_as_jpg])
+        FileHandler.delete(download_thumbnail_path)
 
 
 @retry(times=5, exceptions=(Exception,))
