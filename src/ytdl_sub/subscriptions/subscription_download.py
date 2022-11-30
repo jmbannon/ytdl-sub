@@ -11,6 +11,7 @@ from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
@@ -94,6 +95,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 entry=entry,
             )
 
+    def _delete_working_directory(self, is_error: bool) -> None:
+        _ = is_error
+        shutil.rmtree(self.working_directory)
+
     @contextlib.contextmanager
     def _prepare_working_directory(self):
         """
@@ -104,8 +109,11 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         try:
             yield
-        finally:
-            shutil.rmtree(self.working_directory)
+        except Exception as exc:
+            self._delete_working_directory(is_error=True)
+            raise exc
+        else:
+            self._delete_working_directory(is_error=False)
 
     @contextlib.contextmanager
     def _maintain_archive_file(self):
@@ -267,6 +275,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
                     self._process_entry(
                         plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
                     )
+
+                FileHandler.delete(entry.get_download_file_path())
+                FileHandler.delete(entry.get_download_thumbnail_path())
+                FileHandler.delete(entry.get_download_info_json_path())
 
             for plugin in plugins:
                 plugin.post_process_subscription()

@@ -579,9 +579,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 "Beginning downloads for %s", self.overrides.apply_formatter(collection_url.url)
             )
             for entry in self._download(parents=parents, orphans=orphan_entries):
-                yield entry
                 # Update thumbnails in case of last_entry
                 self._download_url_thumbnails(collection_url=collection_url, entry=entry)
+                yield entry
 
     @classmethod
     def _download_thumbnail(
@@ -630,6 +630,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                     self.save_file(
                         file_name=entry.get_download_thumbnail_name(),
                         output_file_name=thumbnail_name,
+                        copy_file=True,
                     )
                     self._url_state.thumbnails_downloaded.add(thumbnail_name)
                 continue

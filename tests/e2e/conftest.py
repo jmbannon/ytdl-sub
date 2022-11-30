@@ -1,3 +1,4 @@
+import json
 import sys
 import tempfile
 from typing import List
@@ -10,6 +11,7 @@ from ytdl_sub.cli.main import main
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
+from ytdl_sub.utils.yaml import load_yaml
 
 
 @pytest.fixture()
@@ -17,29 +19,46 @@ def music_video_config_path():
     return "examples/music_videos_config.yaml"
 
 
-@pytest.fixture()
-def music_video_config(music_video_config_path):
-    return ConfigFile.from_file_path(config_path=music_video_config_path)
+def _load_config(config_path: str, working_directory: str) -> ConfigFile:
+    config_dict = load_yaml(file_path=config_path)
+    config_dict["configuration"]["working_directory"] = working_directory
+
+    return ConfigFile.from_dict(config_dict)
 
 
 @pytest.fixture()
-def channel_as_tv_show_config():
-    return ConfigFile.from_file_path(config_path="examples/tv_show_config.yaml")
+def music_video_config(music_video_config_path, working_directory) -> ConfigFile:
+    return _load_config(music_video_config_path, working_directory)
+
+
+@pytest.fixture()
+def music_video_config_for_cli(music_video_config) -> str:
+    with tempfile.NamedTemporaryFile(suffix=".yaml") as tmp_file:
+        tmp_file.write(json.dumps(music_video_config._value).encode("utf-8"))
+        tmp_file.flush()
+        yield tmp_file.name
+
+
+@pytest.fixture()
+def channel_as_tv_show_config(working_directory) -> ConfigFile:
+    return _load_config(
+        config_path="examples/tv_show_config.yaml", working_directory=working_directory
+    )
 
 
 @pytest.fixture
-def soundcloud_discography_config():
-    return ConfigFile.from_file_path(config_path="examples/soundcloud_discography_config.yaml")
+def soundcloud_discography_config(working_directory) -> ConfigFile:
+    return _load_config(
+        config_path="examples/soundcloud_discography_config.yaml",
+        working_directory=working_directory,
+    )
 
 
 @pytest.fixture()
-def youtube_audio_config_path():
-    return "examples/music_audio_from_videos.yaml"
-
-
-@pytest.fixture()
-def youtube_audio_config(youtube_audio_config_path):
-    return ConfigFile.from_file_path(config_path=youtube_audio_config_path)
+def youtube_audio_config(working_directory) -> ConfigFile:
+    return _load_config(
+        config_path="examples/music_audio_from_videos.yaml", working_directory=working_directory
+    )
 
 
 @pytest.fixture

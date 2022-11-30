@@ -10,6 +10,7 @@ from typing import Optional
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.xml import XmlElement
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
@@ -170,6 +171,8 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
             self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata, entry=entry)
         else:
             self.save_file(file_name=nfo_file_name, file_metadata=nfo_metadata)
+
+        FileHandler.delete(nfo_file_path)
 
 
 class NfoTagsOptions(SharedNfoTagsOptions):
