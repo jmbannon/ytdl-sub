@@ -95,9 +95,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 entry=entry,
             )
 
-    def _delete_working_directory(self, is_error: bool) -> None:
+    def _delete_working_directory(self, is_error: bool = False) -> None:
         _ = is_error
-        shutil.rmtree(self.working_directory)
+        if os.path.isdir(self.working_directory):
+            shutil.rmtree(self.working_directory)
 
     @contextlib.contextmanager
     def _prepare_working_directory(self):
@@ -105,6 +106,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         Context manager to create all directories to the working directory. Deletes the entire
         working directory when cleaning up.
         """
+        self._delete_working_directory()
         os.makedirs(self.working_directory, exist_ok=True)
 
         try:
@@ -113,7 +115,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             self._delete_working_directory(is_error=True)
             raise exc
         else:
-            self._delete_working_directory(is_error=False)
+            self._delete_working_directory()
 
     @contextlib.contextmanager
     def _maintain_archive_file(self):

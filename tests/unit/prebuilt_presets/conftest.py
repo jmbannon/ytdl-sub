@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 from typing import Callable
 from typing import Dict
+from typing import List
 from unittest.mock import patch
 
 import pytest
@@ -126,85 +127,83 @@ def mock_download_collection_entries(
         def _(**kwargs):
             return mock_entry_dict_factory(**kwargs)
 
-        collection_1_entry_dicts = [
-            _(
-                uid="21-1",
-                upload_date="20210808",
-                playlist_index=1,
-                playlist_count=4,
-                is_youtube_channel=is_youtube_channel,
-            ),  # 1
-            _(
-                uid="20-1",
-                upload_date="20200808",
-                playlist_index=2,
-                playlist_count=4,
-                is_youtube_channel=is_youtube_channel,
-            ),  # 2  98
-            _(
-                uid="20-2",
-                upload_date="20200808",
-                playlist_index=3,
-                playlist_count=4,
-                is_youtube_channel=is_youtube_channel,
-            ),  # 1  99
-            _(
-                uid="20-3",
-                upload_date="20200807",
-                playlist_index=4,
-                playlist_count=4,
-                is_youtube_channel=is_youtube_channel,
-            ),
-        ]
-        collection_2_entry_dicts = [
-            # 20-3 should resolve to collection 1 (which is season 2)
-            _(
-                uid="20-3",
-                upload_date="20200807",
-                playlist_index=1,
-                playlist_count=5,
-                is_youtube_channel=is_youtube_channel,
-            ),
-            _(
-                uid="20-4",
-                upload_date="20200806",
-                playlist_index=2,
-                playlist_count=5,
-                is_youtube_channel=is_youtube_channel,
-            ),
-            _(
-                uid="20-5",
-                upload_date="20200706",
-                playlist_index=3,
-                playlist_count=5,
-                is_youtube_channel=is_youtube_channel,
-            ),
-            _(
-                uid="20-6",
-                upload_date="20200706",
-                playlist_index=4,
-                playlist_count=5,
-                is_youtube_channel=is_youtube_channel,
-            ),
-            _(
-                uid="20-7",
-                upload_date="20200606",
-                playlist_index=5,
-                playlist_count=5,
-                is_youtube_channel=is_youtube_channel,
-            ),
-        ]
+        def _write_entries_to_working_dir(*args, **kwargs) -> List[Dict]:
+            if (len(args[0].collection.urls.list) == 1) or (
+                "season.2" in kwargs["url"] and len(args[0].download_options.urls.list) > 1
+            ):
+                return [
+                    _(
+                        uid="21-1",
+                        upload_date="20210808",
+                        playlist_index=1,
+                        playlist_count=4,
+                        is_youtube_channel=is_youtube_channel,
+                    ),  # 1
+                    _(
+                        uid="20-1",
+                        upload_date="20200808",
+                        playlist_index=2,
+                        playlist_count=4,
+                        is_youtube_channel=is_youtube_channel,
+                    ),  # 2  98
+                    _(
+                        uid="20-2",
+                        upload_date="20200808",
+                        playlist_index=3,
+                        playlist_count=4,
+                        is_youtube_channel=is_youtube_channel,
+                    ),  # 1  99
+                    _(
+                        uid="20-3",
+                        upload_date="20200807",
+                        playlist_index=4,
+                        playlist_count=4,
+                        is_youtube_channel=is_youtube_channel,
+                    ),
+                ]
+            return [
+                # 20-3 should resolve to collection 1 (which is season 2)
+                _(
+                    uid="20-3",
+                    upload_date="20200807",
+                    playlist_index=1,
+                    playlist_count=5,
+                    is_youtube_channel=is_youtube_channel,
+                ),
+                _(
+                    uid="20-4",
+                    upload_date="20200806",
+                    playlist_index=2,
+                    playlist_count=5,
+                    is_youtube_channel=is_youtube_channel,
+                ),
+                _(
+                    uid="20-5",
+                    upload_date="20200706",
+                    playlist_index=3,
+                    playlist_count=5,
+                    is_youtube_channel=is_youtube_channel,
+                ),
+                _(
+                    uid="20-6",
+                    upload_date="20200706",
+                    playlist_index=4,
+                    playlist_count=5,
+                    is_youtube_channel=is_youtube_channel,
+                ),
+                _(
+                    uid="20-7",
+                    upload_date="20200606",
+                    playlist_index=5,
+                    playlist_count=5,
+                    is_youtube_channel=is_youtube_channel,
+                ),
+            ]
 
         with patch.object(
-            Downloader, "extract_info_via_info_json"
-        ) as mock_download_metadata, patch.object(
-            Downloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
-        ):
+            Downloader, "extract_info_via_info_json", new=_write_entries_to_working_dir
+        ), patch.object(Downloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry):
             # Stub out metadata. TODO: update this if we do metadata plugins
-            mock_download_metadata.side_effect = [
-                collection_1_entry_dicts,
-                collection_2_entry_dicts,
-            ]
             yield
 
     return _mock_download_collection_entries_factory

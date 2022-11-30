@@ -1,4 +1,5 @@
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -27,10 +28,11 @@ def working_directory() -> str:
     """
     with tempfile.TemporaryDirectory() as temp_dir:
 
-        def _assert_working_directory_empty(self, is_error: bool):
+        def _assert_working_directory_empty(self, is_error: bool = False):
             files = [str(file_path) for file_path in _get_files_in_directory(temp_dir)]
             num_files = len(files)
-            shutil.rmtree(temp_dir)
+            if os.path.isdir(temp_dir):
+                shutil.rmtree(temp_dir)
 
             if not is_error:
                 if num_files > 0:
