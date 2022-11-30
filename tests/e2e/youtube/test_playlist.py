@@ -97,7 +97,7 @@ class TestPlaylist:
     def test_playlist_download_from_cli_sub(
         self,
         preset_dict_to_subscription_yaml_generator,
-        music_video_config_path,
+        music_video_config_for_cli,
         playlist_preset_dict,
         output_directory,
         dry_run,
@@ -106,7 +106,7 @@ class TestPlaylist:
             subscription_name="music_video_playlist_test", preset_dict=playlist_preset_dict
         ) as subscription_path:
             args = "--dry-run " if dry_run else ""
-            args += f"--config {music_video_config_path} "
+            args += f"--config {music_video_config_for_cli} "
             args += f"sub {subscription_path}"
             subscription_transaction_log = mock_run_from_cli(args=args)
 

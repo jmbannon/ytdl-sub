@@ -11,6 +11,7 @@ from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
@@ -94,6 +95,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 entry=entry,
             )
 
+    def _delete_working_directory(self, is_error: bool) -> None:
+        _ = is_error
+        shutil.rmtree(self.working_directory)
+
     @contextlib.contextmanager
     def _prepare_working_directory(self):
         """
@@ -104,8 +109,11 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         try:
             yield
-        finally:
-            shutil.rmtree(self.working_directory)
+        except Exception as exc:
+            self._delete_working_directory(is_error=True)
+            raise exc
+        else:
+            self._delete_working_directory(is_error=False)
 
     @contextlib.contextmanager
     def _maintain_archive_file(self):
@@ -129,6 +137,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 self._enhanced_download_archive.remove_stale_files(date_range=date_range_to_keep)
 
             self._enhanced_download_archive.save_download_mappings()
+            FileHandler.delete(self._enhanced_download_archive.archive_working_file_path)
+            FileHandler.delete(self._enhanced_download_archive.mapping_working_file_path)
 
     @contextlib.contextmanager
     def _subscription_download_context_managers(self) -> None:
@@ -156,6 +166,12 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         return plugins
 
+    @classmethod
+    def _cleanup_entry_files(cls, entry: Entry):
+        FileHandler.delete(entry.get_download_file_path())
+        FileHandler.delete(entry.get_download_thumbnail_path())
+        FileHandler.delete(entry.get_download_info_json_path())
+
     def _post_process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
     ):
@@ -177,19 +193,26 @@ class SubscriptionDownload(BaseSubscription, ABC):
     def _process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
     ) -> None:
+        entry_: Optional[Entry] = entry
+
         # First, modify the entry with all plugins
         for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.modify_entry):
-            # Return if it is None, it is indicated to not process any further
-            if (entry := plugin.modify_entry(entry)) is None:
-                return
+            # Break if it is None, it is indicated to not process any further
+            if (entry_ := plugin.modify_entry(entry_)) is None:
+                break
 
-        self._post_process_entry(
-            plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
-        )
+        if entry_:
+            self._post_process_entry(
+                plugins=plugins, dry_run=dry_run, entry=entry_, entry_metadata=entry_metadata
+            )
+
+        self._cleanup_entry_files(entry)
 
     def _process_split_entry(
         self, split_plugin: Plugin, plugins: List[Plugin], dry_run: bool, entry: Entry
     ) -> None:
+        entry_: Optional[Entry] = entry
+
         plugins_pre_split = sorted(
             [plugin for plugin in plugins if not plugin.priority.modify_entry_after_split],
             key=lambda _plugin: _plugin.priority.modify_entry,
@@ -202,27 +225,33 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         # First, modify the entry with pre_split plugins
         for plugin in plugins_pre_split:
-            # Return if it is None, it is indicated to not process any further
-            if (entry := plugin.modify_entry(entry)) is None:
-                return
+            # Break if it is None, it is indicated to not process any further
+            if (entry_ := plugin.modify_entry(entry_)) is None:
+                break
 
         # Then, perform the split
-        for split_entry, split_entry_metadata in split_plugin.split(entry=entry):
+        if entry_:
+            for split_entry, split_entry_metadata in split_plugin.split(entry=entry_):
+                split_entry_: Optional[Entry] = split_entry
 
-            for plugin in plugins_post_split:
-                # Return if it is None, it is indicated to not process any further.
-                # Break out of the plugin loop
-                if (split_entry := plugin.modify_entry(split_entry)) is None:
-                    break
+                for plugin in plugins_post_split:
+                    # Return if it is None, it is indicated to not process any further.
+                    # Break out of the plugin loop
+                    if (split_entry_ := plugin.modify_entry(split_entry_)) is None:
+                        break
 
-            # If split_entry is None from modify_entry, do not post process
-            if split_entry:
-                self._post_process_entry(
-                    plugins=plugins,
-                    dry_run=dry_run,
-                    entry=split_entry,
-                    entry_metadata=split_entry_metadata,
-                )
+                # If split_entry is None from modify_entry, do not post process
+                if split_entry_:
+                    self._post_process_entry(
+                        plugins=plugins,
+                        dry_run=dry_run,
+                        entry=split_entry_,
+                        entry_metadata=split_entry_metadata,
+                    )
+
+                self._cleanup_entry_files(split_entry)
+
+        self._cleanup_entry_files(entry)
 
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """

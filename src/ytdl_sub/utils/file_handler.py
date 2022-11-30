@@ -414,6 +414,9 @@ class FileHandler:
                 self.copy(src_file_path=source_file_path, dst_file_path=output_file_path)
             else:
                 self.move(src_file_path=source_file_path, dst_file_path=output_file_path)
+        # Simulate the file being moved during dry run by deleting it
+        elif self.dry_run and not copy_file:
+            FileHandler.delete(source_file_path)
 
     def delete_file_from_output_directory(self, file_name: str):
         """
