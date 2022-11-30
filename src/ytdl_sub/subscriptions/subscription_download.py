@@ -166,6 +166,12 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         return plugins
 
+    @classmethod
+    def _cleanup_entry_files(cls, entry: Entry):
+        FileHandler.delete(entry.get_download_file_path())
+        FileHandler.delete(entry.get_download_thumbnail_path())
+        FileHandler.delete(entry.get_download_info_json_path())
+
     def _post_process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
     ):
@@ -183,6 +189,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
         # Re-save the download archive after each entry is moved to the output directory
         if self.maintain_download_archive:
             self._enhanced_download_archive.save_download_mappings()
+
+        # Clean up any files that remain
+        self._cleanup_entry_files(entry=entry)
 
     def _process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
@@ -278,9 +287,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                         plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
                     )
 
-                FileHandler.delete(entry.get_download_file_path())
-                FileHandler.delete(entry.get_download_thumbnail_path())
-                FileHandler.delete(entry.get_download_info_json_path())
+                self._cleanup_entry_files(entry=entry)
 
             for plugin in plugins:
                 plugin.post_process_subscription()

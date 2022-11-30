@@ -208,11 +208,13 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
                     entry=entry,
                 )
 
-                # Delete any possible original subtitle files before conversion
-                for possible_ext in SUBTITLE_EXTENSIONS:
-                    possible_subs_file = (
-                        Path(self.working_directory) / f"{entry.uid}.{lang}.{possible_ext}"
-                    )
-                    FileHandler.delete(possible_subs_file)
+        # Delete any possible original subtitle files before conversion
+        # Can happen for both file and embedded subs
+        for lang in langs:
+            for possible_ext in SUBTITLE_EXTENSIONS:
+                possible_subs_file = (
+                    Path(self.working_directory) / f"{entry.uid}.{lang}.{possible_ext}"
+                )
+                FileHandler.delete(possible_subs_file)
 
         return file_metadata
