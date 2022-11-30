@@ -190,21 +190,23 @@ class SubscriptionDownload(BaseSubscription, ABC):
         if self.maintain_download_archive:
             self._enhanced_download_archive.save_download_mappings()
 
-        # Clean up any files that remain
-        self._cleanup_entry_files(entry=entry)
-
     def _process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
     ) -> None:
+        entry_: Optional[Entry] = entry
+
         # First, modify the entry with all plugins
         for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.modify_entry):
-            # Return if it is None, it is indicated to not process any further
-            if (entry := plugin.modify_entry(entry)) is None:
-                return
+            # Break if it is None, it is indicated to not process any further
+            if (entry_ := plugin.modify_entry(entry_)) is None:
+                break
 
-        self._post_process_entry(
-            plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
-        )
+        if entry_:
+            self._post_process_entry(
+                plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+            )
+
+        self._cleanup_entry_files(entry)
 
     def _process_split_entry(
         self, split_plugin: Plugin, plugins: List[Plugin], dry_run: bool, entry: Entry
@@ -227,21 +229,24 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         # Then, perform the split
         for split_entry, split_entry_metadata in split_plugin.split(entry=entry):
+            split_entry_: Optional[Entry] = split_entry
 
             for plugin in plugins_post_split:
                 # Return if it is None, it is indicated to not process any further.
                 # Break out of the plugin loop
-                if (split_entry := plugin.modify_entry(split_entry)) is None:
+                if (split_entry_ := plugin.modify_entry(split_entry_)) is None:
                     break
 
             # If split_entry is None from modify_entry, do not post process
-            if split_entry:
+            if split_entry_:
                 self._post_process_entry(
                     plugins=plugins,
                     dry_run=dry_run,
-                    entry=split_entry,
+                    entry=split_entry_,
                     entry_metadata=split_entry_metadata,
                 )
+
+            self._cleanup_entry_files(split_entry)
 
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
@@ -286,8 +291,6 @@ class SubscriptionDownload(BaseSubscription, ABC):
                     self._process_entry(
                         plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
                     )
-
-                self._cleanup_entry_files(entry=entry)
 
             for plugin in plugins:
                 plugin.post_process_subscription()
