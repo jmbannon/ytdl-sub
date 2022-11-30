@@ -1,7 +1,6 @@
 import contextlib
 import json
 import logging
-import shutil
 import tempfile
 from typing import Any
 from typing import Callable
@@ -10,43 +9,20 @@ from typing import List
 from unittest.mock import patch
 
 import pytest
-from expected_download import _get_files_in_directory
 
-from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
 from ytdl_sub.utils.logger import Logger
 
-logger = Logger.get("test")
+
+@pytest.fixture
+def working_directory() -> str:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        yield temp_dir
 
 
 @pytest.fixture()
 def output_directory():
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
-
-
-@pytest.fixture
-def working_directory() -> str:
-    """
-    Any time the working directory is used, ensure no files remain on cleaning it up
-    """
-    with tempfile.TemporaryDirectory() as temp_dir:
-
-        def _assert_working_directory_empty(self, is_error: bool):
-            files = [str(file_path) for file_path in _get_files_in_directory(temp_dir)]
-            num_files = len(files)
-            shutil.rmtree(temp_dir)
-
-            if not is_error:
-                if num_files > 0:
-                    logger.error("left-over files in working dir:\n%s", "\n".join(files))
-                assert num_files == 0
-
-        with patch.object(
-            SubscriptionDownload,
-            "_delete_working_directory",
-            new=_assert_working_directory_empty,
-        ):
-            yield temp_dir
 
 
 @contextlib.contextmanager

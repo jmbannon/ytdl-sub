@@ -25,12 +25,6 @@ from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
 
 
 @pytest.fixture
-def working_directory() -> str:
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield temp_dir
-
-
-@pytest.fixture
 def subscription_name(working_directory) -> str:
     name = "subscription_test"
     os.makedirs(Path(working_directory) / name, exist_ok=True)
