@@ -46,7 +46,7 @@ def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) ->
         FileHandler.delete(download_thumbnail_path)
 
 
-@retry(times=5, exceptions=(Exception,))
+@retry(times=3, exceptions=(Exception,))
 def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Optional[bool]:
     """
     Downloads and converts a thumbnail from a url into a jpg
@@ -63,10 +63,11 @@ def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Opt
     True to indicate it converted the thumbnail from url. None if the retry failed.
     """
     # timeout after 8 seconds
-    with urlopen(thumbnail_url, timeout=8.0) as file:
+    with urlopen(thumbnail_url, timeout=1.0) as file:
         with tempfile.NamedTemporaryFile() as thumbnail:
             thumbnail.write(file.read())
 
-            FFMPEG.run(["-bitexact", "-i", thumbnail.name, output_thumbnail_path, "-bitexact"])
+            os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
+            FFMPEG.run(["-bitexact", "-i", thumbnail.name, output_thumbnail_path])
 
     return True
