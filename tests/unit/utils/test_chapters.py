@@ -61,6 +61,7 @@ def chapter_description_2() -> str:
 08. 19:40 Between Two Worlds
 """
 
+
 @pytest.fixture
 def chapter_description_3() -> str:
     return """Tracklist Nightcore :
@@ -84,6 +85,7 @@ def chapter_description_3() -> str:
 57:20 (Nightcore) Chime & Adam Tell - Whole
 """
 
+
 class TestChapters:
     def test_chapters_from_str_1(self, chapter_description_1):
         chapters = Chapters.from_string(chapter_description_1)
@@ -98,4 +100,7 @@ class TestChapters:
     def test_chapters_from_str_3(self, chapter_description_3):
         chapters = Chapters.from_string(chapter_description_3)
         assert len(chapters) == 18
-        assert chapters.titles[8] == '(Nightcore) Electro-Light & Jordan Kelvin James - Wait For You (feat. Anna Yvette)'
+        assert (
+            chapters.titles[8]
+            == "(Nightcore) Electro-Light & Jordan Kelvin James - Wait For You (feat. Anna Yvette)"
+        )
