@@ -63,11 +63,6 @@ class EntryParent(BaseEntry):
         """This parent's children that are entries"""
         return self._entry_children
 
-    @property
-    def children(self) -> List[TBaseEntry]:
-        """Children, both entries and parent entries, cast as BaseEntry"""
-        return self._parent_children + self._entry_children
-
     def num_children(self) -> int:
         """
         Returns
@@ -210,7 +205,7 @@ class EntryParent(BaseEntry):
         if not playlist_id:
             return False
 
-        return self.uid == playlist_id or any([item in child for child in self.parent_children()])
+        return self.uid == playlist_id or any(item in child for child in self.parent_children())
 
     @classmethod
     def _get_disconnected_root_parent(
@@ -224,7 +219,9 @@ class EntryParent(BaseEntry):
             return webpage_url in url or url in webpage_url
 
         top_level_parents = [
-            parent for parent in parents if not parent.children and _url_matches(parent.webpage_url)
+            parent
+            for parent in parents
+            if parent.num_children() == 0 and _url_matches(parent.webpage_url)
         ]
 
         match len(top_level_parents):
