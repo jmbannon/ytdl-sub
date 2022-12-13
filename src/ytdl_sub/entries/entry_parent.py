@@ -210,7 +210,7 @@ class EntryParent(BaseEntry):
         if not playlist_id:
             return False
 
-        return self.uid == playlist_id or any(child.__contains__(item) for child in self.children)
+        return self.uid == playlist_id or any([item in child for child in self.parent_children()])
 
     @classmethod
     def _get_disconnected_root_parent(
