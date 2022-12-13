@@ -1,60 +1,86 @@
 # Extracts audio from YouTube videos, converts it to mp3, and adds audio tags to it.
 configuration:
   working_directory: '.ytdl-sub-downloads'
+  umask: "002"
 
 presets:
-  song:
+  single:
     download:
       download_strategy: "url"
       url: "{url}"
 
     output_options:
       output_directory: "{music_directory}"
-      file_name: "{custom_track_name_sanitized}.{ext}"
+      file_name: "{track_full_path}"
+      thumbnail_name: "{album_cover_path}"
+
+    ytdl_options:
+      break_on_existing: True
 
     audio_extract:
       codec: "mp3"
-      quality: 128
+      quality: 320
 
     music_tags:
-      embed_thumbnail: False  # Set to True to embed album art
       tags:
-        artist: "{custom_artist_name}"
-        artists: "{custom_artist_name}"
-        albumartist: "{custom_artist_name}"
-        albumartists: "{custom_artist_name}"
-        title: "{custom_track_name}"
-        album: "{custom_album_name}"
-        track: "{custom_track_number}"
-        year: "{upload_year}"
-        genre: "Unset"
+        artist: "{track_artist}"
+        artists: "{track_artist}"
+        albumartist: "{track_artist}"
+        albumartists: "{track_artist}"
+        title: "{track_title}"
+        album: "{track_album}"
+        track: "{track_number}"
+        tracktotal: "{track_total}"
+        year: "{track_year}"
+        genre: "{track_genre}"
 
     overrides:
-      music_directory: "/path/to/music"
-      custom_track_name: "{title}"
-      custom_album_name: "Singles"
-      custom_artist_name: "{channel}"
-      custom_track_number: "1"
+      # Track Overrides
+      track_title: "{title}"
+      track_album: "Singles"
+      track_artist: "{channel}"
+      track_number: "1"
+      track_number_padded: "01"
+      track_total: "1"
+      track_year: "{upload_year}"
+      track_genre: "Unset"
+      # Directory Overrides
+      music_directory: "/music/tagged_manual"
+      artist_dir: "{track_artist_sanitized}"
+      album_dir: "[{track_year}] {track_album_sanitized}"
+      track_file_name: "{track_number_padded} - {track_title_sanitized}.{ext}"
+      track_full_path: "{artist_dir}/{album_dir}/{track_file_name}"
+      album_cover_path: "{artist_dir}/{album_dir}/folder.{thumbnail_ext}"
 
-  #  TODO: make a playlist of individual songs into an album. Need playlist_title
-  song_playlist:
-    preset: "song"
-    overrides:
-      custom_track_number: "{playlist_index}"
 
-  album_from_chapters:
-    preset: "song"
+  albums_from_playlists:
+    preset: "single"
+
     output_options:
-      file_name: "{custom_album_name_sanitized}/{chapter_index_padded} - {custom_track_name_sanitized}.{ext}"
-      thumbnail_name: "{custom_album_name_sanitized}/folder.{thumbnail_ext}"
+      maintain_download_archive: True
+
+    overrides:
+      track_album: "{playlist_title}"
+      track_number: "{playlist_index}"
+      track_number_padded: "{playlist_index_padded}"
+      track_total: "{playlist_count}"
+      track_year: "{playlist_max_upload_year}"
+
+
+  albums_from_chapters:
+    preset: "single"
+
+    output_options:
+      maintain_download_archive: True
 
     chapters:
       embed_chapters: True
-
     split_by_chapters:
       when_no_chapters: "pass"
 
     overrides:
-      custom_track_name: "{chapter_title}"
-      custom_album_name: "{title}"  # Have the video name be the album
-      custom_track_number: "{chapter_index}"
+      track_title: "{chapter_title}"  # Chapter title is the track title
+      track_album: "{title}"  # Video's title is the album title
+      track_number: "{chapter_index}"
+      track_number_padded: "{chapter_index_padded}"
+      track_total: "{chapter_count}"
