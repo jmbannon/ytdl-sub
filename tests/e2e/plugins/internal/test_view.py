@@ -2,6 +2,7 @@ from typing import Optional
 
 import pytest
 from e2e.conftest import mock_run_from_cli
+
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
@@ -27,7 +28,7 @@ class TestView:
 
         video_metadata: Optional[FileMetadata] = None
         for file_name, metadata in transaction_log.files_created.items():
-            if file_name.endswith('webm'):
+            if file_name.endswith("webm"):
                 video_metadata = metadata
                 break
 
