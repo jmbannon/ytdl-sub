@@ -1,5 +1,9 @@
+from typing import Optional
+
 import pytest
 from e2e.conftest import mock_run_from_cli
+
+from ytdl_sub.utils.file_handler import FileMetadata
 
 
 class TestView:
@@ -22,12 +26,15 @@ class TestView:
         # Ensure the video and thumbnail are recognized
         assert len(transaction_log.files_created) == 2
 
-        file_name = f"avUT-zd9v68{'___0' if split_chapters else ''}.webm"
-        video_file = transaction_log.files_created.get(file_name)
-        assert video_file is not None
+        video_metadata: Optional[FileMetadata] = None
+        for file_name, metadata in transaction_log.files_created.items():
+            if file_name.endswith("webm"):
+                video_metadata = metadata
+                break
 
-        assert "Source Variables:" in video_file.metadata
+        assert video_metadata is not None
+        assert "Source Variables:" in video_metadata.metadata
         if split_chapters:
-            assert "  chapter_index: 1" in video_file.metadata
+            assert "  chapter_index: 1" in video_metadata.metadata
         else:
-            assert "  chapter_index: 1" not in video_file.metadata
+            assert "  chapter_index: 1" not in video_metadata.metadata

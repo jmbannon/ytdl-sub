@@ -1,4 +1,3 @@
-import shutil
 import subprocess
 import tempfile
 from typing import Dict
@@ -7,6 +6,7 @@ from typing import Optional
 
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get(name="ffmpeg")
@@ -132,8 +132,7 @@ def set_ffmpeg_metadata_chapters(
                 output_file_path,
             ]
         )
-
-        shutil.move(src=output_file_path, dst=file_path)
+        FileHandler.move(output_file_path, file_path)
 
 
 def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -> None:
@@ -154,4 +153,4 @@ def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -
     ffmpeg_args.extend(["-codec", "copy", output_file_path])
 
     FFMPEG.run(ffmpeg_args)
-    shutil.move(src=output_file_path, dst=file_path)
+    FileHandler.move(output_file_path, file_path)
