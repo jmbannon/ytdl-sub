@@ -33,6 +33,25 @@ class FFMPEG:
             ) from subprocess_error
 
     @classmethod
+    def tmp_file_path(cls, relative_file_path: str, extension: Optional[str] = None) -> str:
+        """
+        Parameters
+        ----------
+        relative_file_path
+            Path of input file that is going to be modified
+        extension
+            Desired output extension. Defaults to input file's extension
+
+        Returns
+        -------
+        Temporary file path for ffmpeg output
+        """
+        if extension is None:
+            extension = relative_file_path.split(".")[-1]
+
+        return f"{relative_file_path}.out.{extension}"
+
+    @classmethod
     def run(cls, ffmpeg_args: List[str]) -> None:
         """
         Runs an ffmpeg command. Should not include 'ffmpeg' as the beginning argument.
@@ -110,8 +129,7 @@ def set_ffmpeg_metadata_chapters(
     if chapters:
         lines += _create_metadata_chapters(chapters=chapters, file_duration_sec=file_duration_sec)
 
-    file_path_ext = file_path.split(".")[-1]
-    output_file_path = f"{file_path}.out.{file_path_ext}"
+    tmp_file_path = FFMPEG.tmp_file_path(relative_file_path=file_path)
     with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", encoding="utf-8") as metadata_file:
         metadata_file.write("\n".join(lines))
         metadata_file.flush()
@@ -129,10 +147,10 @@ def set_ffmpeg_metadata_chapters(
                 "-bitexact",  # for reproducibility
                 "-codec",
                 "copy",
-                output_file_path,
+                tmp_file_path,
             ]
         )
-        FileHandler.move(output_file_path, file_path)
+        FileHandler.move(tmp_file_path, file_path)
 
 
 def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -> None:
@@ -144,13 +162,12 @@ def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -
     key_values
         The key/values to add
     """
-    file_path_ext = file_path.split(".")[-1]
-    output_file_path = f"{file_path}.out.{file_path_ext}"
+    tmp_file_path = FFMPEG.tmp_file_path(file_path)
 
     ffmpeg_args = ["-i", file_path, "-map", "0"]
     for key, value in key_values.items():
         ffmpeg_args.extend(["-metadata", f"{key}={value}"])
-    ffmpeg_args.extend(["-codec", "copy", output_file_path])
+    ffmpeg_args.extend(["-codec", "copy", tmp_file_path])
 
     FFMPEG.run(ffmpeg_args)
-    FileHandler.move(output_file_path, file_path)
+    FileHandler.move(tmp_file_path, file_path)
