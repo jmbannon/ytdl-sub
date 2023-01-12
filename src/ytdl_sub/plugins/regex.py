@@ -104,7 +104,9 @@ class FromSourceVariablesRegex(StrictDictValidator):
 class RegexOptions(PluginOptions):
     r"""
     Performs regex matching on an entry's source variables. Regex can be used to filter entries
-    from proceeding with download or capture groups to create new source variables.
+    from proceeding with download or capture groups to create new source variables. NOTE to
+    use backslashes anywhere in your regex, i.e. `\d`, you must add another backslash escape,
+    meaning `\d` becomes `\\d`. This is because YAML requires an escape for any backslash usage.
 
     Usage:
 
@@ -113,8 +115,9 @@ class RegexOptions(PluginOptions):
        presets:
          my_example_preset:
            regex:
-             # By default, if any match fails and has no defaults, the entry will be skipped.
-             # If set to False, ytdl-sub will error and stop all downloads from proceeding.
+             # By default, if any match fails and has no defaults, the entry will
+             # be skipped. If False, ytdl-sub will error and stop all downloads
+             # from proceeding.
              skip_if_match_fails: True
 
              from:
@@ -128,19 +131,20 @@ class RegexOptions(PluginOptions):
                # For each entry's `description` value...
                description:
                  # Match with capture groups and defaults.
-                 # This tries to scrape a date from the description and produce new source variables
+                 # This tries to scrape a date from the description and produce new
+                 # source variables
                  match:
                   - "([0-9]{4})-([0-9]{2})-([0-9]{2})"
 
-                 # Each capture group creates these new source variables, respectively, as well
-                 # a sanitized version, i.e. `captured_upload_year_sanitized`
+                 # Each capture group creates these new source variables, respectively,
+                 # as well a sanitized version, i.e. `captured_upload_year_sanitized`
                  capture_group_names:
                   - "captured_upload_year"
                   - "captured_upload_month"
                   - "captured_upload_day"
 
-                 # And if the string does not match, use these as respective default values for the
-                 # new source variables.
+                 # And if the string does not match, use these as respective default
+                 # values for the new source variables.
                  capture_group_defaults:
                    - "{upload_year}"
                    - "{upload_month}"
