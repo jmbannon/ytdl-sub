@@ -10,18 +10,18 @@ class TestPreset:
     @pytest.mark.parametrize(
         "source, download_strategy",
         [
-            ("youtube", {"download_strategy": "video", "video_url": "youtube.com/watch?v=123abc"}),
+            ("download", {"download_strategy": "url", "url": "youtube.com/watch?v=123abc"}),
             (
-                "youtube",
+                "download",
                 {
-                    "download_strategy": "playlist",
-                    "playlist_url": "youtube.com/playlist?list=123abc",
+                    "download_strategy": "url",
+                    "url": "youtube.com/playlist?list=123abc",
                 },
             ),
-            ("youtube", {"download_strategy": "channel", "channel_url": "youtube.com/c/123abc"}),
+            ("download", {"download_strategy": "url", "url": "youtube.com/c/123abc"}),
             (
-                "soundcloud",
-                {"download_strategy": "albums_and_singles", "url": "soundcloud.com/123abc"},
+                "download",
+                {"download_strategy": "url", "url": "soundcloud.com/123abc"},
             ),
         ],
     )
@@ -37,7 +37,7 @@ class TestPreset:
             config=config_file,
             name="test",
             value={
-                "youtube": youtube_video,
+                "download": youtube_video,
                 "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
                 "overrides": {"dne_var": "not dne"},
             },
@@ -49,7 +49,7 @@ class TestPreset:
             name="test",
             value={
                 "preset": "parent_preset_1",
-                "youtube": youtube_video,
+                "download": youtube_video,
                 "output_options": output_options,
                 "nfo_tags": {"tags": {"key-2": "this-preset"}},
             },
@@ -74,7 +74,7 @@ class TestPreset:
             name="test",
             value={
                 "preset": preset_value,
-                "youtube": youtube_video,
+                "download": youtube_video,
                 "output_options": output_options,
                 "nfo_tags": {"tags": {"key-3": "this-preset"}},
             },
@@ -97,7 +97,7 @@ class TestPreset:
             config=config_file,
             name="test",
             value={
-                "youtube": youtube_video,
+                "download": youtube_video,
                 "output_options": dict(
                     output_options,
                     **{"maintain_download_archive": True, "keep_files_after": "today-{ttl}"},
@@ -122,7 +122,7 @@ class TestPreset:
                 name="test",
                 value={
                     "preset": parent_preset,
-                    "youtube": youtube_video,
+                    "download": youtube_video,
                     "output_options": output_options,
                 },
             )
@@ -138,7 +138,7 @@ class TestPreset:
                 config=config_file,
                 name="test",
                 value={
-                    "youtube": youtube_video,
+                    "download": youtube_video,
                     "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
                 },
             )
@@ -154,7 +154,7 @@ class TestPreset:
                 config=config_file,
                 name="test",
                 value={
-                    "youtube": youtube_video,
+                    "download": youtube_video,
                     "output_options": {"output_directory": "{dne_var}", "file_name": "file"},
                 },
             )
@@ -170,7 +170,7 @@ class TestPreset:
                 config=config_file,
                 name="test",
                 value={
-                    "youtube": youtube_video,
+                    "download": youtube_video,
                     "output_options": {"output_directory": "dir", "file_name": "file"},
                     "nfo_tags": {
                         "nfo_name": "the nfo name",
@@ -191,7 +191,7 @@ class TestPreset:
                 config=config_file,
                 name="test",
                 value={
-                    "youtube": youtube_video,
+                    "download": youtube_video,
                     "output_options": {"output_directory": "dir", "file_name": "file"},
                     "output_directory_nfo_tags": {
                         "nfo_name": "the nfo name",

@@ -12,7 +12,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def preset_file(youtube_video: Dict, output_options: Dict) -> Dict:
     return {
         "__preset__": {
-            "youtube": youtube_video,
+            "download": youtube_video,
             "output_options": output_options,
             "nfo_tags": {
                 "tags": {"key-3": "file_preset"},

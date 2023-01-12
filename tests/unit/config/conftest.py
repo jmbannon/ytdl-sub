@@ -48,6 +48,6 @@ def output_options() -> Dict:
 @pytest.fixture
 def youtube_video() -> Dict:
     return {
-        "download_strategy": "video",
-        "video_url": "youtube.com/watch?v=123abc",
+        "download_strategy": "url",
+        "url": "youtube.com/watch?v=123abc",
     }
