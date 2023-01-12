@@ -69,7 +69,7 @@ jobs:
 
     - name: Run unit tests with coverage
       run: |
-        sudo apt-get install -y ffmpeg
+        sudo apt-get install -y --fix-missing ffmpeg
         source /opt/env/bin/activate
         coverage run -m pytest tests/unit && coverage xml -o /opt/coverage/unit/coverage.xml
 
@@ -96,7 +96,7 @@ jobs:
 
     - name: Run e2e soundcloud tests with coverage
       run: |
-        sudo apt-get install -y ffmpeg
+        sudo apt-get install -y --fix-missing ffmpeg
         source /opt/env/bin/activate
         coverage run -m pytest tests/e2e/soundcloud && coverage xml -o /opt/coverage/soundcloud/coverage.xml
 
@@ -123,7 +123,7 @@ jobs:
 
     - name: Run e2e youtube tests with coverage
       run: |
-        sudo apt-get install -y ffmpeg
+        sudo apt-get install -y --fix-missing ffmpeg
         source /opt/env/bin/activate
         coverage run -m pytest tests/e2e/youtube && coverage xml -o /opt/coverage/youtube/coverage.xml
 
@@ -150,7 +150,7 @@ jobs:
 
     - name: Run e2e plugin tests with coverage
       run: |
-        sudo apt-get install -y ffmpeg
+        sudo apt-get install -y --fix-missing ffmpeg
         source /opt/env/bin/activate
         coverage run -m pytest tests/e2e/plugins && coverage xml -o /opt/coverage/plugins/coverage.xml
 
