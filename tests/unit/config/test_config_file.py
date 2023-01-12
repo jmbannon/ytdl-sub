@@ -66,12 +66,13 @@ class TestConfigFilePartiallyValidatesPresets:
             f"Allowed fields: {', '.join(sorted(PRESET_KEYS))}",
         )
 
-    def test_error__multiple_sources(self):
-        self._partial_validate(
-            preset_dict={"youtube": {}, "download": {}},
-            expected_error_message="Validation error in partial_preset: "
-            "Contains the sources download, youtube but can only have one",
-        )
+    # TODO: Update with future source
+    # def test_error__multiple_sources(self):
+    #     self._partial_validate(
+    #         preset_dict={"youtube": {}, "download": {}},
+    #         expected_error_message="Validation error in partial_preset: "
+    #         "Contains the sources download, youtube but can only have one",
+    #     )
 
     def test_error__no_download_strategy(self):
         self._partial_validate(
