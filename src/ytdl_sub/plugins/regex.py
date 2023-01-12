@@ -105,8 +105,9 @@ class RegexOptions(PluginOptions):
     r"""
     Performs regex matching on an entry's source variables. Regex can be used to filter entries
     from proceeding with download or capture groups to create new source variables. NOTE to
-    use backslashes anywhere in your regex, i.e. `\d`, you must add another backslash escape,
-    meaning `\d` becomes `\\d`. This is because YAML requires an escape for any backslash usage.
+    use backslashes anywhere in your regex, i.e. ``\d``, you must add another backslash escape. This
+    means ``\d`` should be written as ``\\d``. This is because YAML requires an escape for any
+    backslash usage.
 
     Usage:
 
@@ -124,9 +125,10 @@ class RegexOptions(PluginOptions):
                # For each entry's `title` value...
                title:
                  # Perform this regex match on it to act as a filter.
-                 # This will only download videos with "Official Video" in it.
+                 # This will only download videos with "[Official Video]" in it. Note that we
+                 # double backslash to make YAML happy
                  match:
-                  - '\[Official Video\]'
+                  - '\\[Official Video\\]'
 
                # For each entry's `description` value...
                description:
