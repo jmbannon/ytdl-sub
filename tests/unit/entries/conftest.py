@@ -116,6 +116,7 @@ def mock_entry_to_dict(
         "playlist_webpage_url": "https://yourname.here",
         "playlist_uid": "abc123",
         "playlist_uploader": "abc123",
+        "playlist_uploader_sanitized": "abc123",
         "playlist_uploader_id": "abc123",
         "playlist_uploader_url": "https://yourname.here",
         "source_count": 1,

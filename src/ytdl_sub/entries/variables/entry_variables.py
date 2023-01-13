@@ -301,6 +301,16 @@ class EntryVariables(BaseEntryVariables):
         return self.kwargs_get(PLAYLIST_UPLOADER, self.uploader)
 
     @property
+    def playlist_uploader_sanitized(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The playlist uploader, sanitized.
+        """
+        return sanitize_filename(self.playlist_uploader)
+
+    @property
     def playlist_uploader_url(self: Self) -> str:
         """
         Returns
