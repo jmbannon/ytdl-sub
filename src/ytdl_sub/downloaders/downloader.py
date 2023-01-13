@@ -45,6 +45,7 @@ from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
+from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.utils.thumbnail import convert_url_thumbnail
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
@@ -625,6 +626,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
             # If latest entry, always update the thumbnail on each entry
             if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
+                # Make sure the entry's thumbnail is converted to jpg
+                convert_download_thumbnail(entry, error_if_not_found=False)
+
                 # always save in dry-run even if it doesn't exist...
                 if self.is_dry_run or os.path.isfile(entry.get_download_thumbnail_path()):
                     self.save_file(
