@@ -5,11 +5,6 @@ from typing import Type
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.generic.multi_url import MultiUrlDownloader
 from ytdl_sub.downloaders.generic.url import UrlDownloader
-from ytdl_sub.downloaders.soundcloud.albums_and_singles import SoundcloudAlbumsAndSinglesDownloader
-from ytdl_sub.downloaders.youtube.channel import YoutubeChannelDownloader
-from ytdl_sub.downloaders.youtube.merge_playlist import YoutubeMergePlaylistDownloader
-from ytdl_sub.downloaders.youtube.playlist import YoutubePlaylistDownloader
-from ytdl_sub.downloaders.youtube.video import YoutubeVideoDownloader
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin
@@ -32,15 +27,6 @@ class DownloadStrategyMapping:
     """
 
     _MAPPING: Dict[str, Dict[str, Type[Downloader]]] = {
-        "youtube": {
-            "video": YoutubeVideoDownloader,
-            "playlist": YoutubePlaylistDownloader,
-            "channel": YoutubeChannelDownloader,
-            "merge_playlist": YoutubeMergePlaylistDownloader,
-        },
-        "soundcloud": {
-            "albums_and_singles": SoundcloudAlbumsAndSinglesDownloader,
-        },
         "download": {
             "multi_url": MultiUrlDownloader,
             "url": UrlDownloader,

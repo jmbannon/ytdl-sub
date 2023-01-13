@@ -67,9 +67,26 @@ class YTDLOptions(LiteralDictValidator):
            presets:
              my_example_preset:
                ytdl_options:
+                 # Ignore any download related errors and continue
                  ignoreerrors: True
+                 # Stop downloading additional metadata/videos if it
+                 # exists in your download archive
+                 break_on_existing: True
+                 # Stop downloading additional metadata/videos if it
+                 # is out of your date range
+                 break_on_reject: True
+                 # Path to your YouTube cookies file to download 18+ restricted content
+                 cookiefile: "/path/to/cookies/file.txt"
+                 # Only download this number of videos/audio
+                 max_downloads: 10
+                 # Download and use English title/description/etc YouTube metadata
+                 extractor_args:
+                   youtube:
+                     lang:
+                       - "en"
 
-    where each key is a ytdl argument.
+
+    where each key is a ytdl argument. Include in the example are some popular ytdl_options.
     """
 
 

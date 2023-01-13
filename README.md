@@ -298,4 +298,6 @@ questions, submit a feature request, or pick up a bug.
 ## Support
 We are pretty active in our
 [Discord channel](https://discord.gg/v8j9RAHb4k)
-if you have any questions.
+if you have any questions. Also see our
+[FAQ](https://github.com/jmbannon/ytdl-sub/wiki/FAQ)
+for commonly asked questions.
