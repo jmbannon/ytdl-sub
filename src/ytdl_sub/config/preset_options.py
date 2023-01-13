@@ -79,6 +79,12 @@ class YTDLOptions(LiteralDictValidator):
                  cookiefile: "/path/to/cookies/file.txt"
                  # Only download this number of videos/audio
                  max_downloads: 10
+                 # Download and use English title/description/etc YouTube metadata
+                 extractor_args:
+                   youtube:
+                     lang:
+                       - "en"
+
 
     where each key is a ytdl argument. Include in the example are some popular ytdl_options.
     """
