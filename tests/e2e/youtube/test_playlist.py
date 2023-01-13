@@ -11,13 +11,11 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def playlist_preset_dict(output_directory):
     return {
-        "preset": "music_video",
-        "download": {
-            "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
-            "playlist_thumbnails": {"name": "poster.jpg", "uid": "latest_entry"},
-        },
-        # override the output directory with our fixture-generated dir
-        "output_options": {"output_directory": output_directory},
+        "preset": [
+            "jellyfin_tv_show_collection",
+            "season_by_collection__episode_by_year_month_day",
+            "collection_season_1",
+        ],
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
@@ -38,10 +36,15 @@ def playlist_preset_dict(output_directory):
             }
         },
         "subtitles": {
-            "subtitles_name": "{music_video_name}.{lang}.{subtitles_ext}",
+            "subtitles_name": "{episode_file_path}.{lang}.{subtitles_ext}",
             "allow_auto_generated_subtitles": True,
         },
-        "overrides": {"artist": "JMC"},
+        "overrides": {
+            "tv_show_name": "JMC",
+            "tv_show_directory": output_directory,
+            "collection_season_1_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
+            "collection_season_1_name": "JMC - Season 1",
+        },
     }
 
 
