@@ -8,9 +8,11 @@ import mediafile
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
+from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -116,6 +118,13 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         """
         Tags the entry's audio file using values defined in the metadata options
         """
+        if entry.ext not in AUDIO_CODEC_EXTS:
+            raise ValidationException(
+                f"music_tags plugin received a video with the extension '{entry.ext}'. Only audio "
+                f"files are supported for setting music tags. Ensure you are converting the video "
+                f"to audio using the audio_extract plugin."
+            )
+
         # Resolve the tags into this dict
         tags_to_write: Dict[str, List[str]] = defaultdict(list)
         for tag_name, tag_formatters in self.plugin_options.tags.as_lists.items():
