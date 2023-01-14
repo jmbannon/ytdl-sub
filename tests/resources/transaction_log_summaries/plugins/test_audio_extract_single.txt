@@ -1,7 +1,7 @@
 Files created:
 ----------------------------------------
-{output_directory}
-  YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.mp3
+{output_directory}/YouTube/[2019] Singles
+  01 - YouTube Rewind 2019: For the Record | #YouTubeRewind.mp3
     Embedded Thumbnail, Music Tags:
       album: Singles
       albumartist: YouTube
@@ -14,4 +14,6 @@ Files created:
         - multi_tag_2
       title: YouTube Rewind 2019: For the Record | #YouTubeRewind
       track: 1
+      tracktotal: 1
       year: 2019
+  folder.jpg

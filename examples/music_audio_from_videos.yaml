@@ -1,26 +1,68 @@
-# Extracts audio from YouTube videos, converts it to mp3, and adds audio tags to it.
+# This config builds presets to download and format the following use-cases:
+#   - YouTube
+#     - Songs
+#       - From a single video
+#     - Albums
+#       - From a video, where each song is represented by chapters
+#       - From a playlist where each video is a song on the album
+#     - Discographies
+#       - From a channel or a channel's set of playlists
+#   - Bandcamp
+#     - Track, Album, Artist URL as a Discography
+#   - Soundcloud
+#     - Track, Album, Artist URL as a Discography
+#
+# All files will look like:
+#
+#   music_directory/
+#     Artist/
+#       [2022] Some Single/
+#         01 - Some Single.mp3
+#         folder.jpg
+#       [2023] Latest Album/
+#         01 - Track Title.mp3
+#         02 - Another Track.mp3
+#         folder.jpg
+#
+# The idea is to format files under music_directory as `Artist/Album/Song`. Singles that do not
+# belong to an album will be represented like albums with a single track.
+#
+# Each file will be properly tagged regardless of file extension (suppers flac, ogg, mp3, etc)
+# and should show up nicely in music players that take advantage of tags.
 configuration:
   working_directory: '.ytdl-sub-downloads'
   umask: "002"
 
 presets:
-  single:
-    download:
-      download_strategy: "url"
-      url: "{url}"
 
+  # The `base` preset that represents how all files will be structured after downloading.
+  # Every other preset afterwards will inherit this preset.
+  base:
+    # Store all music under our music_directory (to be set as an override variable).
+    # Store each resulting file with its full track path, and treat thumbnails as the album covers.
+    #
+    # Maintain a download archive. This will produce a hidden file in your music directory
+    # containing an archive of all audio previously downloaded. This makes it so we do not
+    # re-download files we already have.
     output_options:
       output_directory: "{music_directory}"
       file_name: "{track_full_path}"
       thumbnail_name: "{album_cover_path}"
+      maintain_download_archive: True
 
+    # Set break_on_existing to True. This will stop fetching any more metadata once we
+    # hit a video/audio that we already have downloaded.
     ytdl_options:
       break_on_existing: True
 
+    # Extract any audio from files using this codec and quality.
     audio_extract:
       codec: "mp3"
       quality: 320
 
+    # Set these music tags on every resulting audio file.
+    # It is recommended to keep most of this as-is, and use override
+    # variables to set them to be what you want.
     music_tags:
       tags:
         artist: "{track_artist}"
@@ -34,31 +76,51 @@ presets:
         year: "{track_year}"
         genre: "{track_genre}"
 
+    # For every configurable field, make it an override variable,
+    # so we can carefully tune different use-cases by only modifying override variables.
     overrides:
-      # Track Overrides
+      # Track Overrides. By default, set overrides to make each song its own album
       track_title: "{title}"
-      track_album: "Singles"
+      track_album: "{title}"
       track_artist: "{channel}"
       track_number: "1"
       track_number_padded: "01"
       track_total: "1"
       track_year: "{upload_year}"
       track_genre: "Unset"
-      # Directory Overrides
-      music_directory: "/music/tagged_manual"
+      # Filename Overrides
+      track_file_name: "{track_number_padded} - {track_title_sanitized}.{ext}"
+      album_file_name: "folder.{thumbnail_ext}"
+      # Directory Name Overrides
+      music_directory: "OVERRIDE THIS WITH YOUR MUSIC DIRECTORY"
       artist_dir: "{track_artist_sanitized}"
       album_dir: "[{track_year}] {track_album_sanitized}"
-      track_file_name: "{track_number_padded} - {track_title_sanitized}.{ext}"
+      # Full Filepath Overrides
       track_full_path: "{artist_dir}/{album_dir}/{track_file_name}"
-      album_cover_path: "{artist_dir}/{album_dir}/folder.{thumbnail_ext}"
+      album_cover_path: "{artist_dir}/{album_dir}/{album_file_name}"
 
+####################################################################################################
 
+  # Make the 'single` preset accept a single URL using the override variable 'url'
+  # Each audio file will reside in its own album.
+  single:
+    # Inherit from `base`
+    preset: "base"
+
+    download:
+      download_strategy: "url"
+      url: "{url}"
+
+####################################################################################################
+
+  # Make the 'albums_from_playlists' preset format audio files to reside under albums, where
+  # each album is a playlist. If a file downloaded using this preset is not part of a playlist,
+  # it will default to how it'd look as a `single`.
   albums_from_playlists:
+    # Inherit from single
     preset: "single"
 
-    output_options:
-      maintain_download_archive: True
-
+    # Override various track properties using playlist variables.
     overrides:
       track_album: "{playlist_title}"
       track_number: "{playlist_index}"
@@ -66,21 +128,29 @@ presets:
       track_total: "{playlist_count}"
       track_year: "{playlist_max_upload_year}"
 
+####################################################################################################
 
+  # Make the 'albums_from_chapters' preset format audio files to reside under an album, where the
+  # video itself is an album containing all the songs in it represented by chapters.
   albums_from_chapters:
+    # Inherit from single
     preset: "single"
 
-    output_options:
-      maintain_download_archive: True
-
+    # Embed chapters if present. If no chapters are present, allow parsing comments that contain
+    # timestamps to each song, and use those as chapters.
     chapters:
       embed_chapters: True
+      allow_chapters_from_comments: True
+
+    # Split each file by its chapters. If a file does not have chapters, simply 'pass' on it and
+    # process the next audio/video file.
     split_by_chapters:
       when_no_chapters: "pass"
 
+    # Override various track properties using chapter variables.
     overrides:
-      track_title: "{chapter_title}"  # Chapter title is the track title
-      track_album: "{title}"  # Video's title is the album title
+      track_title: "{chapter_title}"   # Chapter title is the track title
+      track_album: "{title}"           # Video's title is the album title
       track_number: "{chapter_index}"
       track_number_padded: "{chapter_index_padded}"
       track_total: "{chapter_count}"

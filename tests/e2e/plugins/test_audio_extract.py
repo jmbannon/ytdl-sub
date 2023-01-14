@@ -8,9 +8,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def single_song_preset_dict(output_directory):
     return {
-        "preset": "song",
-        "download": {"url": "https://www.youtube.com/watch?v=2lAe1cqCOXo"},
-        "output_options": {"output_directory": output_directory},
+        "preset": "single",
         # test multi-tags
         "music_tags": {"embed_thumbnail": True, "tags": {"genres": ["multi_tag_1", "multi_tag_2"]}},
         # download the worst format so it is fast
@@ -18,21 +16,27 @@ def single_song_preset_dict(output_directory):
             "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
+        "overrides": {
+            "url": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
+            "music_directory": output_directory,
+        }
     }
 
 
 @pytest.fixture
 def multiple_songs_preset_dict(output_directory):
     return {
-        "preset": "song_playlist",
-        "download": {"url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
-        "output_options": {"output_directory": output_directory},
+        "preset": "albums_from_playlists",
         "audio_extract": {"codec": "vorbis", "quality": 140},
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
+        "overrides": {
+            "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
+            "music_directory": output_directory,
+        }
     }
 
 
