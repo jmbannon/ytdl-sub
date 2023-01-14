@@ -38,14 +38,14 @@ class TestBandcamp:
     def test_download_artist_url(
         self,
         subscription_dict,
-        youtube_audio_config,
+        music_audio_config,
         output_directory,
         dry_run,
     ):
         discography_subscription = Subscription.from_dict(
             preset_dict=subscription_dict,
             preset_name="jb",
-            config=youtube_audio_config,
+            config=music_audio_config,
         )
         transaction_log = discography_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(

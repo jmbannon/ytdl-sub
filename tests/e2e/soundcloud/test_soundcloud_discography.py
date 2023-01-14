@@ -14,8 +14,8 @@ def subscription_dict(output_directory):
             "format": "worst[ext=mp3]",
         },
         "overrides": {
-            "artist": "j_b",
-            "artist_url": "https://soundcloud.com/jessebannon",
+            "track_artist": "j_b",
+            "sc_artist_url": "https://soundcloud.com/jessebannon",
             "music_directory": output_directory,
         },
     }
@@ -31,14 +31,14 @@ class TestSoundcloudDiscography:
     def test_discography_download(
         self,
         subscription_dict,
-        soundcloud_discography_config,
+        music_audio_config,
         output_directory,
         dry_run,
     ):
         discography_subscription = Subscription.from_dict(
             preset_dict=subscription_dict,
             preset_name="jb",
-            config=soundcloud_discography_config,
+            config=music_audio_config,
         )
         transaction_log = discography_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(

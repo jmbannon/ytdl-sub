@@ -44,13 +44,13 @@ class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_audio_extract_single_song(
         self,
-        youtube_audio_config,
+        music_audio_config,
         single_song_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=youtube_audio_config,
+            config=music_audio_config,
             preset_name="single_song_test",
             preset_dict=single_song_preset_dict,
         )
@@ -70,13 +70,13 @@ class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_audio_extract_multiple_songs(
         self,
-        youtube_audio_config,
+        music_audio_config,
         multiple_songs_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=youtube_audio_config,
+            config=music_audio_config,
             preset_name="multiple_songs_test",
             preset_dict=multiple_songs_preset_dict,
         )

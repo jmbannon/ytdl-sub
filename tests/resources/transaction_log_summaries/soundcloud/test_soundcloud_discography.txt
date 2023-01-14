@@ -7,10 +7,13 @@ Files created:
     Music Tags:
       album: Baby Santana's Dorian Groove
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: Baby Santana's Dorian Groove
       track: 1
+      tracktotal: 1
       year: 2021
   folder.jpg
 {output_directory}/j_b/[2021] Purple Clouds
@@ -18,10 +21,13 @@ Files created:
     Music Tags:
       album: Purple Clouds
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: Purple Clouds
       track: 1
+      tracktotal: 1
       year: 2021
   folder.jpg
 {output_directory}/j_b/[2022] Acoustic Treats
@@ -29,99 +35,132 @@ Files created:
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: 20160426 184214
       track: 1
+      tracktotal: 11
       year: 2022
   02 - 20160502 123150.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: 20160502 123150
       track: 2
+      tracktotal: 11
       year: 2022
   03 - 20160504 143832.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: 20160504 143832
       track: 3
+      tracktotal: 11
       year: 2022
   04 - 20160601 221234.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: 20160601 221234
       track: 4
+      tracktotal: 11
       year: 2022
   05 - 20160601 222440.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: 20160601 222440
       track: 5
+      tracktotal: 11
       year: 2022
   06 - 20170604 190236.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: 20170604 190236
       track: 6
+      tracktotal: 11
       year: 2022
   07 - 20170612 193646.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: 20170612 193646
       track: 7
+      tracktotal: 11
       year: 2022
   08 - 20170628 215206.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: 20170628 215206
       track: 8
+      tracktotal: 11
       year: 2022
   09 - Finding Home.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: Finding Home
       track: 9
+      tracktotal: 11
       year: 2022
   10 - Shallow Water WIP.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: Shallow Water WIP
       track: 10
+      tracktotal: 11
       year: 2022
   11 - Untold History.mp3
     Music Tags:
       album: Acoustic Treats
       albumartist: j_b
+      albumartists: j_b
       artist: j_b
+      artists: j_b
       genre: Unset
       title: Untold History
       track: 11
+      tracktotal: 11
       year: 2022
   folder.jpg

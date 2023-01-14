@@ -17,6 +17,7 @@
 #
 ####################################################################################################
 # YOUTUBE - PLAYLIST OF ALBUMS
+# See https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i
 #
 # Downloads the GameChops Albums' playlist. Each video in the playlist is an album with
 # chapters representing songs.
@@ -44,9 +45,9 @@ game_chops:
     track_title: "{captured_track_title}"
 
 
-
 ####################################################################################################
 # BANDCAMP - DISCOGRAPHY
+# See https://emilyharpist.bandcamp.com/
 #
 # Downloads the GameChops Albums' playlist. Each video in the playlist is an album with
 # chapters representing songs.
@@ -71,9 +72,9 @@ emily_hopkins:
     track_title: "{captured_track_title}"
 
 
-
 ####################################################################################################
 # YOUTUBE - MANY ALBUMS FROM MANY ARTISTS UPLOADED BY A CHANNEL
+# See https://www.youtube.com/@heavymetalofeasternbloc
 #
 # Downloads the entire 'Heavy Metal from the Eastern Bloc' channel. Each video they upload
 # is an album from Eastern Europe with chapters representing songs.
