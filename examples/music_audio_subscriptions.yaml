@@ -46,33 +46,6 @@ game_chops:
 
 
 ####################################################################################################
-# BANDCAMP - DISCOGRAPHY
-# See https://emilyharpist.bandcamp.com/
-#
-# Downloads the GameChops Albums' playlist. Each video in the playlist is an album with
-# chapters representing songs.
-emily_hopkins:
-  preset: "albums_from_playlists"
-  regex:
-    from:
-      title:
-        match:
-          - "^Emily Hopkins - (.*)"  # Captures 'title' from 'Emily Hopkins - title'
-        capture_group_names:
-          - "captured_track_title"
-        capture_group_defaults:
-          - "{title}"
-
-  # Explicitly set the URL, track artist, and genre.
-  # Override various track properties using the regex variables we extracted.
-  overrides:
-    url: "https://emilyharpist.bandcamp.com/"
-    track_artist: "Emily Hopkins"
-    track_genre: "Lofi"
-    track_title: "{captured_track_title}"
-
-
-####################################################################################################
 # YOUTUBE - MANY ALBUMS FROM MANY ARTISTS UPLOADED BY A CHANNEL
 # See https://www.youtube.com/@heavymetalofeasternbloc
 #
@@ -118,3 +91,48 @@ eastern_bloc:
     track_title: "{captured_track_title}"
     track_year: "{captured_track_year}"
     track_genre: "Eastern Bloc {captured_track_genre}"
+
+
+####################################################################################################
+# BANDCAMP - DISCOGRAPHY
+# See https://emilyharpist.bandcamp.com/
+#
+# Downloads the GameChops Albums' playlist. Each video in the playlist is an album with
+# chapters representing songs.
+emily_hopkins:
+  preset: "albums_from_playlists"
+  regex:
+    from:
+      title:
+        match:
+          - "^Emily Hopkins - (.*)"  # Captures 'title' from 'Emily Hopkins - title'
+        capture_group_names:
+          - "captured_track_title"
+        capture_group_defaults:
+          - "{title}"
+
+  # Explicitly set the URL, track artist, and genre.
+  # Override various track properties using the regex variables we extracted.
+  overrides:
+    url: "https://emilyharpist.bandcamp.com/"
+    track_artist: "Emily Hopkins"
+    track_genre: "Lofi"
+    track_title: "{captured_track_title}"
+
+
+####################################################################################################
+# SOUNDCLOUD - DISCOGRAPHY
+# See https://soundcloud.com/jessebannon
+#
+# Downloads my acoustic 'album' and various tracks from SoundCloud using the soundcloud
+# discography preset. I'm not very good so keep your expectations low :-)
+jmbannon:
+  # Inherit soundcloud_discography preset
+  preset: "soundcloud_discography"
+
+  # Explicitly set the SoundCloud artist url, track artist, and genre.
+  overrides:
+    sc_artist_url: "sc_artist_url"
+    track_artist: "jmbannon"
+    track_genre: "Acoustic"
+

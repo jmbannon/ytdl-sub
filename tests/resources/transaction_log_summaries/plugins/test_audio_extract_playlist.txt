@@ -1,31 +1,11 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  Jesse's Minecraft Server [Trailer - Feb.1].ogg
+  .ytdl-sub-multiple_songs_test-download-archive.json
+{output_directory}/Project Zombie/[2011] Jesse's Minecraft Server
+  01 - Jesse's Minecraft Server [Trailer - Mar.21].ogg
     Music Tags:
-      album: Singles
-      albumartist: Project Zombie
-      albumartists: Project Zombie
-      artist: Project Zombie
-      artists: Project Zombie
-      genre: Unset
-      title: Jesse's Minecraft Server [Trailer - Feb.1]
-      track: 3
-      year: 2011
-  Jesse's Minecraft Server [Trailer - Feb.27].ogg
-    Music Tags:
-      album: Singles
-      albumartist: Project Zombie
-      albumartists: Project Zombie
-      artist: Project Zombie
-      artists: Project Zombie
-      genre: Unset
-      title: Jesse's Minecraft Server [Trailer - Feb.27]
-      track: 2
-      year: 2011
-  Jesse's Minecraft Server [Trailer - Mar.21].ogg
-    Music Tags:
-      album: Singles
+      album: Jesse's Minecraft Server
       albumartist: Project Zombie
       albumartists: Project Zombie
       artist: Project Zombie
@@ -33,4 +13,30 @@ Files created:
       genre: Unset
       title: Jesse's Minecraft Server [Trailer - Mar.21]
       track: 1
+      tracktotal: 3
       year: 2011
+  02 - Jesse's Minecraft Server [Trailer - Feb.27].ogg
+    Music Tags:
+      album: Jesse's Minecraft Server
+      albumartist: Project Zombie
+      albumartists: Project Zombie
+      artist: Project Zombie
+      artists: Project Zombie
+      genre: Unset
+      title: Jesse's Minecraft Server [Trailer - Feb.27]
+      track: 2
+      tracktotal: 3
+      year: 2011
+  03 - Jesse's Minecraft Server [Trailer - Feb.1].ogg
+    Music Tags:
+      album: Jesse's Minecraft Server
+      albumartist: Project Zombie
+      albumartists: Project Zombie
+      artist: Project Zombie
+      artists: Project Zombie
+      genre: Unset
+      title: Jesse's Minecraft Server [Trailer - Feb.1]
+      track: 3
+      tracktotal: 3
+      year: 2011
+  folder.jpg

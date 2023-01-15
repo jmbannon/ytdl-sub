@@ -19,7 +19,7 @@ def single_song_preset_dict(output_directory):
         "overrides": {
             "url": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
             "music_directory": output_directory,
-        }
+        },
     }
 
 
@@ -36,7 +36,7 @@ def multiple_songs_preset_dict(output_directory):
         "overrides": {
             "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
             "music_directory": output_directory,
-        }
+        },
     }
 
 

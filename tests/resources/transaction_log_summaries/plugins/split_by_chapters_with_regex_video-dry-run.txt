@@ -2,7 +2,7 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-split_by_chapters_with_regex_video-download-archive.json
-{output_directory}/Nocturne
+{output_directory}/Alfa Mist/[2017] Nocturne
   01 - Intro (Feat. Racheal Ofori & Barney Artist).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
@@ -17,6 +17,7 @@ Files created:
       genre: Unset
       title: Intro (Feat. Racheal Ofori & Barney Artist)
       track: 1
+      tracktotal: 11
       year: 2017
   02 - Answers (Feat. Rick David & Kaya Thomas - Dyke).mp3
     From Chapter Split:
@@ -32,6 +33,7 @@ Files created:
       genre: Unset
       title: Answers (Feat. Rick David & Kaya Thomas - Dyke)
       track: 2
+      tracktotal: 11
       year: 2017
   03 - Blaze (Feat. Kaya Thomas - Dyke).mp3
     From Chapter Split:
@@ -47,6 +49,7 @@ Files created:
       genre: Unset
       title: Blaze (Feat. Kaya Thomas - Dyke)
       track: 3
+      tracktotal: 11
       year: 2017
   04 - What If (Interlude).mp3
     From Chapter Split:
@@ -62,6 +65,7 @@ Files created:
       genre: Unset
       title: What If (Interlude)
       track: 4
+      tracktotal: 11
       year: 2017
   05 - No Peace (Feat. Tom Misch).mp3
     From Chapter Split:
@@ -77,6 +81,7 @@ Files created:
       genre: Unset
       title: No Peace (Feat. Tom Misch)
       track: 5
+      tracktotal: 11
       year: 2017
   06 - Closer (Feat. Lester Duval).mp3
     From Chapter Split:
@@ -92,8 +97,9 @@ Files created:
       genre: Unset
       title: Closer (Feat. Lester Duval)
       track: 6
+      tracktotal: 11
       year: 2017
-  07 - Delusions： Rumination (Interlude) (Feat. Racheal Ofori).mp3
+  07 - Delusions: Rumination (Interlude) (Feat. Racheal Ofori).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -107,6 +113,7 @@ Files created:
       genre: Unset
       title: Delusions: Rumination (Interlude) (Feat. Racheal Ofori)
       track: 7
+      tracktotal: 11
       year: 2017
   08 - Dreams (Feat. Carmody).mp3
     From Chapter Split:
@@ -122,6 +129,7 @@ Files created:
       genre: Unset
       title: Dreams (Feat. Carmody)
       track: 8
+      tracktotal: 11
       year: 2017
   09 - Dreaming (Interlude) (Feat. Racheal Ofori).mp3
     From Chapter Split:
@@ -137,6 +145,7 @@ Files created:
       genre: Unset
       title: Dreaming (Interlude) (Feat. Racheal Ofori)
       track: 9
+      tracktotal: 11
       year: 2017
   10 - Hopeful (Feat. Jordan Rakei).mp3
     From Chapter Split:
@@ -152,6 +161,7 @@ Files created:
       genre: Unset
       title: Hopeful (Feat. Jordan Rakei)
       track: 10
+      tracktotal: 11
       year: 2017
   11 - Sunrise (Pillows) (Feat. Emmavie).mp3
     From Chapter Split:
@@ -167,5 +177,6 @@ Files created:
       genre: Unset
       title: Sunrise (Pillows) (Feat. Emmavie)
       track: 11
+      tracktotal: 11
       year: 2017
   folder.jpg
