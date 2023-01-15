@@ -2,11 +2,10 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
-  Season01.jpg
-  Season02.jpg
   fanart.jpg
   poster.jpg
 {output_directory}/Season 01
+  Season01.jpg
   s01.e80052699 - 20-4-thumb.jpg
   s01.e80052699 - 20-4.mp4
     Video Tags:
@@ -60,6 +59,7 @@ Files created:
       title: 2020-06-06 - Mock Entry 20-7
       year: 2020
 {output_directory}/Season 02
+  Season02.jpg
   s02.e79052499 - 21-1-thumb.jpg
   s02.e79052499 - 21-1.mp4
     Video Tags:
