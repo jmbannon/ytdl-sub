@@ -2,10 +2,10 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
-  Season01.jpg
   fanart.jpg
   poster.jpg
 {output_directory}/Season 01
+  Season01.jpg
   s01.e000001 - 20-3-thumb.jpg
   s01.e000001 - 20-3.mp4
     Video Tags:

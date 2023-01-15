@@ -2,8 +2,8 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
-  Season01.jpg
 {output_directory}/Season 01
+  Season01.jpg
   s01.e79052499 - 21-1-thumb.jpg
   s01.e79052499 - 21-1.mp4
     Video Tags:
