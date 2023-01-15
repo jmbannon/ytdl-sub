@@ -24,9 +24,7 @@ def subscription_dict(output_directory):
         "ytdl_options": {
             "max_downloads": 15,
         },
-        "date_range": {
-            "before": "20230101"
-        },
+        "date_range": {"before": "20230101"},
         "overrides": {
             "url": "https://funkypselicave.bandcamp.com/",
             "track_title": "{captured_track_title}",
