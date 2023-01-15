@@ -12,14 +12,15 @@ from ytdl_sub.utils.exceptions import ValidationException
 @pytest.fixture
 def yt_album_as_chapters_preset_dict(output_directory):
     return {
-        "preset": "album_from_chapters",
-        "download": {"url": "https://www.youtube.com/watch?v=zeR2_YjlXWA"},
-        # override the output directory with our fixture-generated dir
-        "output_options": {"output_directory": output_directory, "maintain_download_archive": True},
+        "preset": "albums_from_chapters",
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
+        },
+        "overrides": {
+            "url": "https://www.youtube.com/watch?v=zeR2_YjlXWA",
+            "music_directory": output_directory,
         },
     }
 
@@ -33,7 +34,7 @@ def yt_album_as_chapters_with_regex_preset_dict(yt_album_as_chapters_preset_dict
                 "from": {
                     "chapter_title": {
                         "match": r"\d+\. (.+)",
-                        "capture_group_names": "captured_chapter_title",
+                        "capture_group_names": "captured_track_title",
                         "capture_group_defaults": "{chapter_title}",
                     },
                     "title": {
@@ -42,8 +43,8 @@ def yt_album_as_chapters_with_regex_preset_dict(yt_album_as_chapters_preset_dict
                             "(.+) - (.+)",
                         ],
                         "capture_group_names": [
-                            "captured_artist",
-                            "captured_album",
+                            "captured_track_artist",
+                            "captured_track_album",
                         ],
                         "capture_group_defaults": [
                             "{channel}",
@@ -53,9 +54,9 @@ def yt_album_as_chapters_with_regex_preset_dict(yt_album_as_chapters_preset_dict
                 }
             },
             "overrides": {
-                "custom_track_name": "{captured_chapter_title}",
-                "custom_album_name": "{captured_album}",
-                "custom_artist_name": "{captured_artist}",
+                "track_title": "{captured_track_title}",
+                "track_album": "{captured_track_album}",
+                "track_artist": "{captured_track_artist}",
             },
         },
     )
@@ -66,13 +67,13 @@ class TestSplitByChapters:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_video_with_chapters(
         self,
-        youtube_audio_config,
+        music_audio_config,
         yt_album_as_chapters_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=youtube_audio_config,
+            config=music_audio_config,
             preset_name="split_by_chapters_video",
             preset_dict=yt_album_as_chapters_preset_dict,
         )
@@ -96,13 +97,13 @@ class TestSplitByChapters:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_video_with_chapters_and_regex(
         self,
-        youtube_audio_config,
+        music_audio_config,
         yt_album_as_chapters_with_regex_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=youtube_audio_config,
+            config=music_audio_config,
             preset_name="split_by_chapters_with_regex_video",
             preset_dict=yt_album_as_chapters_with_regex_preset_dict,
         )
@@ -123,7 +124,7 @@ class TestSplitByChapters:
     @pytest.mark.parametrize("when_no_chapters", ["pass", "drop", "error"])
     def test_video_with_no_chapters_and_regex(
         self,
-        youtube_audio_config,
+        music_audio_config,
         yt_album_as_chapters_with_regex_preset_dict,
         output_directory,
         dry_run,
@@ -138,7 +139,7 @@ class TestSplitByChapters:
         )
 
         subscription = Subscription.from_dict(
-            config=youtube_audio_config,
+            config=music_audio_config,
             preset_name="split_by_chapters_with_regex_video",
             preset_dict=yt_album_as_chapters_with_regex_preset_dict,
         )

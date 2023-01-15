@@ -8,27 +8,35 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def subscription_dict(output_directory):
     return {
-        "preset": "soundcloud_discography",
-        # download the worst format so it is fast
-        "ytdl_options": {
-            "format": "worst[ext=mp3]",
+        "preset": "albums_from_playlists",
+        "regex": {
+            "skip_if_match_fails": False,  # Error if regex match fails
+            "from": {
+                "title": {
+                    "match": ["^(.*) - (.*)"],  # Captures 'title' from 'Emily Hopkins - title'
+                    "capture_group_names": [
+                        "captured_track_artist",
+                        "captured_track_title",
+                    ],
+                }
+            },
         },
+        "ytdl_options": {
+            "max_downloads": 15,
+        },
+        "date_range": {"before": "20230101"},
         "overrides": {
-            "track_artist": "j_b",
-            "sc_artist_url": "https://soundcloud.com/jessebannon",
+            "url": "https://funkypselicave.bandcamp.com/",
+            "track_title": "{captured_track_title}",
+            "track_artist": "{captured_track_artist}",
             "music_directory": output_directory,
         },
     }
 
 
-class TestSoundcloudDiscography:
-    """
-    Downloads my (bad) SC recordings I made. Ensure the above files exist and have the
-    expected md5 file hashes.
-    """
-
+class TestBandcamp:
     @pytest.mark.parametrize("dry_run", [True, False])
-    def test_discography_download(
+    def test_download_artist_url(
         self,
         subscription_dict,
         music_audio_config,
@@ -44,10 +52,10 @@ class TestSoundcloudDiscography:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="soundcloud/test_soundcloud_discography.txt",
+            transaction_log_summary_file_name="bandcamp/test_artist_url.txt",
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
-            expected_download_summary_file_name="soundcloud/test_soundcloud_discography.json",
+            expected_download_summary_file_name="bandcamp/test_artist_url.json",
         )

@@ -1,0 +1,186 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-jb-download-archive.json
+{output_directory}/El Jazzy Chavo/[2022] S950 Funk
+  01 - Spark it.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Spark it
+      track: 1
+      tracktotal: 15
+      year: 2022
+  02 - Astronomikal Funk.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Astronomikal Funk
+      track: 2
+      tracktotal: 15
+      year: 2022
+  03 - Impulse.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Impulse
+      track: 3
+      tracktotal: 15
+      year: 2022
+  04 - September.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: September
+      track: 4
+      tracktotal: 15
+      year: 2022
+  05 - Interlune.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Interlune
+      track: 5
+      tracktotal: 15
+      year: 2022
+  06 - Ninjutsu Techniques.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Ninjutsu Techniques
+      track: 6
+      tracktotal: 15
+      year: 2022
+  07 - Space Funk Flow.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Space Funk Flow
+      track: 7
+      tracktotal: 15
+      year: 2022
+  08 - Cellar Groove.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Cellar Groove
+      track: 8
+      tracktotal: 15
+      year: 2022
+  09 - Solar Wind.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Solar Wind
+      track: 9
+      tracktotal: 15
+      year: 2022
+  10 - Interlune II.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Interlune II
+      track: 10
+      tracktotal: 15
+      year: 2022
+  11 - Ghetto Anthem.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Ghetto Anthem
+      track: 11
+      tracktotal: 15
+      year: 2022
+  12 - Street Degree.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Street Degree
+      track: 12
+      tracktotal: 15
+      year: 2022
+  13 - Trouble World.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Trouble World
+      track: 13
+      tracktotal: 15
+      year: 2022
+  14 - Relaxation.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Relaxation
+      track: 14
+      tracktotal: 15
+      year: 2022
+  15 - Journey From Within.mp3
+    Music Tags:
+      album: S950 Funk
+      albumartist: El Jazzy Chavo
+      albumartists: El Jazzy Chavo
+      artist: El Jazzy Chavo
+      artists: El Jazzy Chavo
+      genre: Unset
+      title: Journey From Within
+      track: 15
+      tracktotal: 15
+      year: 2022
+  folder.jpg

@@ -1,0 +1,138 @@
+# Define any number of subscriptions in a single file, or use multiple
+# files to organize (i.e by use-case, website, genre, etc)
+#
+# Each example show-cases every use case:
+#   - YouTube
+#     - Songs
+#       - From a single video
+#     - Albums
+#       - From a video, where each song is represented by chapters
+#       - From a playlist where each video is a song on the album
+#     - Discographies
+#       - From a channel or a channel's set of playlists
+#   - Bandcamp
+#     - Track, Album, Artist URL as a Discography
+#   - Soundcloud
+#     - Track, Album, Artist URL as a Discography
+#
+####################################################################################################
+# YOUTUBE - PLAYLIST OF ALBUMS
+# See https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i
+#
+# Downloads the GameChops Albums' playlist. Each video in the playlist is an album with
+# chapters representing songs.
+game_chops:
+  preset: "albums_from_chapters"
+
+  # Perform regex to extract title from the chapter's title to not include the track number.
+  # Configuring this hard is a bit overkill, but I'm a perfectionist :-)
+  regex:
+    from:
+      chapter_title:
+        match:
+          - "^\\d+\\.\\.(.*)"  # Captures 'title' from '1..title'
+        capture_group_names:
+          - "captured_track_title"
+        capture_group_defaults:
+          - "{chapter_title}"
+
+  # Explicitly set the URL, track artist, and genre.
+  # Override various track properties using the regex variables we extracted.
+  overrides:
+    url: "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
+    track_artist: "GameChops"
+    track_genre: "Lofi"
+    track_title: "{captured_track_title}"
+
+
+####################################################################################################
+# YOUTUBE - MANY ALBUMS FROM MANY ARTISTS UPLOADED BY A CHANNEL
+# See https://www.youtube.com/@heavymetalofeasternbloc
+#
+# Downloads the entire 'Heavy Metal from the Eastern Bloc' channel. Each video they upload
+# is an album from Eastern Europe with chapters representing songs.
+eastern_bloc:
+  # Inherit albums from chapters
+  preset: "albums_from_chapters"
+
+  # Perform regex on many fields (title, description, chapter title) to extract as much
+  # metadata as possible
+  regex:
+    skip_if_match_fails: False  # Error if regex match fails
+    from:
+      title:
+        match:
+          - "^(.*) - (.*) \\|\\|.*"  # Captures artist, album from 'artist - album ||...'
+          - "^(.*) - (.*) \\[.*"  # Captures artist, ablum from 'artist - album [...'
+          - "^(.*) - (.*)"  # Captures artist, ablum from 'artist - album'
+        capture_group_names:
+          - "captured_track_artist"
+          - "captured_track_album"
+      description:
+        match:
+          - "Genre:\\s*(.*)\\s*\n(?:Rec.+|Year):\\s*.*(\\d{4})\\s*\\n"  # Captures genre and recorded year
+        capture_group_names:
+          - "captured_track_genre"
+          - "captured_track_year"
+      chapter_title:
+        match:
+          - "^(?:\\d+\\.\\s*|)(.*)"  # Captures title from '1. title'
+        capture_group_names:
+          - "captured_track_title"
+        capture_group_defaults:
+          - "{chapter_title}"
+
+  # Explicitly set the URL.
+  # Override various track properties using the regex variables we extracted.
+  overrides:
+    url: "https://www.youtube.com/@heavymetalofeasternbloc"
+    track_artist: "{captured_track_artist}"
+    track_album: "{captured_track_album}"
+    track_title: "{captured_track_title}"
+    track_year: "{captured_track_year}"
+    track_genre: "Eastern Bloc {captured_track_genre}"
+
+
+####################################################################################################
+# BANDCAMP - DISCOGRAPHY
+# See https://emilyharpist.bandcamp.com/
+#
+# Downloads the GameChops Albums' playlist. Each video in the playlist is an album with
+# chapters representing songs.
+emily_hopkins:
+  preset: "albums_from_playlists"
+  regex:
+    from:
+      title:
+        match:
+          - "^Emily Hopkins - (.*)"  # Captures 'title' from 'Emily Hopkins - title'
+        capture_group_names:
+          - "captured_track_title"
+        capture_group_defaults:
+          - "{title}"
+
+  # Explicitly set the URL, track artist, and genre.
+  # Override various track properties using the regex variables we extracted.
+  overrides:
+    url: "https://emilyharpist.bandcamp.com/"
+    track_artist: "Emily Hopkins"
+    track_genre: "Lofi"
+    track_title: "{captured_track_title}"
+
+
+####################################################################################################
+# SOUNDCLOUD - DISCOGRAPHY
+# See https://soundcloud.com/jessebannon
+#
+# Downloads my acoustic 'album' and various tracks from SoundCloud using the soundcloud
+# discography preset. I'm not very good so keep your expectations low :-)
+jmbannon:
+  # Inherit soundcloud_discography preset
+  preset: "soundcloud_discography"
+
+  # Explicitly set the SoundCloud artist url, track artist, and genre.
+  overrides:
+    sc_artist_url: "sc_artist_url"
+    track_artist: "jmbannon"
+    track_genre: "Acoustic"
+

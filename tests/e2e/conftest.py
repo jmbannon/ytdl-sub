@@ -79,18 +79,10 @@ def channel_as_tv_show_config(working_directory) -> ConfigFile:
     )
 
 
-@pytest.fixture
-def soundcloud_discography_config(working_directory) -> ConfigFile:
-    return _load_config(
-        config_path="examples/soundcloud_discography_config.yaml",
-        working_directory=working_directory,
-    )
-
-
 @pytest.fixture()
-def youtube_audio_config(working_directory) -> ConfigFile:
+def music_audio_config(working_directory) -> ConfigFile:
     return _load_config(
-        config_path="examples/music_audio_from_videos.yaml", working_directory=working_directory
+        config_path="examples/music_audio_config.yaml", working_directory=working_directory
     )
 
 
