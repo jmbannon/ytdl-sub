@@ -49,11 +49,9 @@ class TestBandcamp:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="bandcamp/test_artist_url.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="bandcamp/test_artist_url.json",
-            regenerate_expected_download_summary=True,
         )
