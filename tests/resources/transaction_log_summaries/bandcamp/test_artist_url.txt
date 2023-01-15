@@ -2,255 +2,149 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-jb-download-archive.json
-{output_directory}/El Jazzy Chavo/[2022] S950 Funk
-  01 - Spark it.mp3
+{output_directory}/El Jazzy Chavo/[2020] Perspectives
+  01 - Drizzling rain.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Spark it
+      title: Drizzling rain
       track: 1
-      tracktotal: 15
-      year: 2022
-  02 - Astronomikal Funk.mp3
+      tracktotal: 12
+      year: 2020
+  02 - Hallucinations.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Astronomikal Funk
+      title: Hallucinations
       track: 2
-      tracktotal: 15
-      year: 2022
-  03 - Impulse.mp3
+      tracktotal: 12
+      year: 2020
+  03 - Lungs.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Impulse
+      title: Lungs
       track: 3
-      tracktotal: 15
-      year: 2022
-  04 - September.mp3
+      tracktotal: 12
+      year: 2020
+  04 - Insects.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: September
+      title: Insects
       track: 4
-      tracktotal: 15
-      year: 2022
-  05 - Interlune.mp3
+      tracktotal: 12
+      year: 2020
+  05 - Midas touch.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Interlune
+      title: Midas touch
       track: 5
-      tracktotal: 15
-      year: 2022
-  06 - Ninjutsu Techniques.mp3
+      tracktotal: 12
+      year: 2020
+  06 - Underwater sunbeams.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Ninjutsu Techniques
+      title: Underwater sunbeams
       track: 6
-      tracktotal: 15
-      year: 2022
-  07 - Space Funk Flow.mp3
+      tracktotal: 12
+      year: 2020
+  07 - Omniverse.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Space Funk Flow
+      title: Omniverse
       track: 7
-      tracktotal: 15
-      year: 2022
-  08 - Cellar Groove.mp3
+      tracktotal: 12
+      year: 2020
+  08 - Side effect.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Cellar Groove
+      title: Side effect
       track: 8
-      tracktotal: 15
-      year: 2022
-  09 - Solar Wind.mp3
+      tracktotal: 12
+      year: 2020
+  09 - Seagulls of Dystopia.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Solar Wind
+      title: Seagulls of Dystopia
       track: 9
-      tracktotal: 15
-      year: 2022
-  10 - Interlune II.mp3
+      tracktotal: 12
+      year: 2020
+  10 - Dream book.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Interlune II
+      title: Dream book
       track: 10
-      tracktotal: 15
-      year: 2022
-  11 - Ghetto Anthem.mp3
+      tracktotal: 12
+      year: 2020
+  11 - Triopetra.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Ghetto Anthem
+      title: Triopetra
       track: 11
-      tracktotal: 15
-      year: 2022
-  12 - Street Degree.mp3
+      tracktotal: 12
+      year: 2020
+  12 - One moment before afterlife.mp3
     Music Tags:
-      album: S950 Funk
+      album: Perspectives
       albumartist: El Jazzy Chavo
       albumartists: El Jazzy Chavo
       artist: El Jazzy Chavo
       artists: El Jazzy Chavo
       genre: Unset
-      title: Street Degree
+      title: One moment before afterlife
       track: 12
-      tracktotal: 15
-      year: 2022
-  13 - Trouble World.mp3
-    Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Trouble World
-      track: 13
-      tracktotal: 15
-      year: 2022
-  14 - Relaxation.mp3
-    Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Relaxation
-      track: 14
-      tracktotal: 15
-      year: 2022
-  15 - Journey From Within.mp3
-    Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Journey From Within
-      track: 15
-      tracktotal: 15
-      year: 2022
-  folder.jpg
-{output_directory}/Various Artists - Dooku/[2021] Jingles From The Slums
-  05 - Paradise Nebula.mp3
-    Music Tags:
-      album: Jingles From The Slums
-      albumartist: Various Artists - Dooku
-      albumartists: Various Artists - Dooku
-      artist: Various Artists - Dooku
-      artists: Various Artists - Dooku
-      genre: Unset
-      title: Paradise Nebula
-      track: 5
-      tracktotal: 14
-      year: 2021
-  folder.jpg
-{output_directory}/Various Artists - El Jazzy Chavo/[2021] Jingles From The Slums
-  03 - Map of your Hands.mp3
-    Music Tags:
-      album: Jingles From The Slums
-      albumartist: Various Artists - El Jazzy Chavo
-      albumartists: Various Artists - El Jazzy Chavo
-      artist: Various Artists - El Jazzy Chavo
-      artists: Various Artists - El Jazzy Chavo
-      genre: Unset
-      title: Map of your Hands
-      track: 3
-      tracktotal: 14
-      year: 2021
-  folder.jpg
-{output_directory}/Various Artists - Flux The Cynic/[2021] Jingles From The Slums
-  04 - Seasons Change.mp3
-    Music Tags:
-      album: Jingles From The Slums
-      albumartist: Various Artists - Flux The Cynic
-      albumartists: Various Artists - Flux The Cynic
-      artist: Various Artists - Flux The Cynic
-      artists: Various Artists - Flux The Cynic
-      genre: Unset
-      title: Seasons Change
-      track: 4
-      tracktotal: 14
-      year: 2021
-  folder.jpg
-{output_directory}/Various Artists - Junk33/[2021] Jingles From The Slums
-  01 - Brown Sugar.mp3
-    Music Tags:
-      album: Jingles From The Slums
-      albumartist: Various Artists - Junk33
-      albumartists: Various Artists - Junk33
-      artist: Various Artists - Junk33
-      artists: Various Artists - Junk33
-      genre: Unset
-      title: Brown Sugar
-      track: 1
-      tracktotal: 14
-      year: 2021
-  folder.jpg
-{output_directory}/Various Artists - Nigma/[2021] Jingles From The Slums
-  02 - Shine.mp3
-    Music Tags:
-      album: Jingles From The Slums
-      albumartist: Various Artists - Nigma
-      albumartists: Various Artists - Nigma
-      artist: Various Artists - Nigma
-      artists: Various Artists - Nigma
-      genre: Unset
-      title: Shine
-      track: 2
-      tracktotal: 14
-      year: 2021
+      tracktotal: 12
+      year: 2020
   folder.jpg

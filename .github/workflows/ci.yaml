@@ -102,11 +102,33 @@ jobs:
         source /opt/env/bin/activate
         coverage run -m pytest tests/e2e/soundcloud && coverage xml -o /opt/coverage/soundcloud/coverage.xml
 
+  test-bandcamp:
+    runs-on: ubuntu-22.04
+    needs: test-build
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Restore Python build cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/env
+        key: ${{github.sha}}-env
+
+    - name: Run e2e soundcloud tests with coverage
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+        source /opt/env/bin/activate
+        coverage run -m pytest tests/e2e/bandcamp && coverage xml -o /opt/coverage/bandcamp/coverage.xml
+
     - name: Save coverage
       uses: actions/cache@v3
       with:
-        path: /opt/coverage/soundcloud
-        key: ${{github.sha}}-coverage-soundcloud
+        path: /opt/coverage/bandcamp
+        key: ${{github.sha}}-coverage-bandcamp
 
   test-youtube:
     runs-on: ubuntu-22.04
@@ -169,6 +191,7 @@ jobs:
     needs: [
       test-unit,
       test-soundcloud,
+      test-bandcamp,
       test-youtube,
       test-plugins
     ]
@@ -188,6 +211,12 @@ jobs:
         path: /opt/coverage/soundcloud
         key: ${{github.sha}}-coverage-soundcloud
 
+    - name: Restore bandcamp test coverage
+      uses: actions/cache@v3
+      with:
+        path: /opt/coverage/bandcamp
+        key: ${{github.sha}}-coverage-bandcamp
+
     - name: Restore youtube test coverage
       uses: actions/cache@v3
       with:
@@ -204,4 +233,4 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: /opt/coverage/unit/coverage.xml,/opt/coverage/soundcloud/coverage.xml,/opt/coverage/youtube/coverage.xml,/opt/coverage/plugins/coverage.xml
+        files: /opt/coverage/unit/coverage.xml,/opt/coverage/soundcloud/coverage.xml,/opt/coverage/bandcamp/coverage.xml,/opt/coverage/youtube/coverage.xml,/opt/coverage/plugins/coverage.xml

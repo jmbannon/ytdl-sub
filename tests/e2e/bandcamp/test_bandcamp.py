@@ -9,9 +9,6 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def subscription_dict(output_directory):
     return {
         "preset": "albums_from_playlists",
-        "ytdl_options": {
-            "max_downloads": 20,
-        },
         "regex": {
             "skip_if_match_fails": False,  # Error if regex match fails
             "from": {
@@ -25,7 +22,7 @@ def subscription_dict(output_directory):
             },
         },
         "overrides": {
-            "url": "https://funkypselicave.bandcamp.com/",
+            "url": "https://funkypselicave.bandcamp.com/album/perspectives",
             "track_title": "{captured_track_title}",
             "track_artist": "{captured_track_artist}",
             "music_directory": output_directory,
