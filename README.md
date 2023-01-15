@@ -34,8 +34,12 @@ maximum flexibility while maintaining simplicity.
 ![jelly_mv](https://user-images.githubusercontent.com/10107080/182677256-43aeb029-0c3f-4648-9fd2-352b9666b262.PNG)
 
 ### SoundCloud Albums and Singles
-#### MusicBee
+#### MusicBee (any file or tag-based music player)
 ![sc_mb](https://user-images.githubusercontent.com/10107080/182685415-06adf477-3dd3-475d-bbcd-53b0152b9f0a.PNG)
+
+### Bandcamp Discography
+#### Navidrome (any file or tag-based music server)
+![bc_nav](https://user-images.githubusercontent.com/10107080/212503861-1d8748e6-6f6d-4043-b543-84226cd1f662.png)
 
 
 ## How it Works
