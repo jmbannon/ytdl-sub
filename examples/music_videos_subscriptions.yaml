@@ -19,6 +19,6 @@ john_smith:
 #
 #     ytdl-sub dl                                                        \
 #         --preset "music_video"                                         \
-#         --override.url "https://youtube.com/watch?v=QhY6r6oAErg"       \
+#         --overrides.url "https://youtube.com/watch?v=QhY6r6oAErg"      \
 #         --overrides.artist "John Smith and the Instrument Players"
 #
