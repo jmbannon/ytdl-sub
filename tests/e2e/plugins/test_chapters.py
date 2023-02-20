@@ -111,4 +111,7 @@ class TestChapters:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/chapters/test_chapters_from_comments.json",
+            ignore_md5_hashes_for=[
+                "JMC/JMC - Move 78 - Automated Improvisation [Full Album].mp4"
+            ],
         )

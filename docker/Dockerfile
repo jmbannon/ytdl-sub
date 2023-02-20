@@ -20,12 +20,15 @@ RUN mkdir -p /config && \
     apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
       ffmpeg=5.1.2-r8 && \
       ffmpeg -version && \
-    # Install phantomjs, ensure it is properly installed
-    cd /usr/share && \
+    # Install phantomjs if using x86_64, ensure it is properly installed
+    if [[ $(uname -m) == "x86_64" ]]; then \
+      cd /usr/share && \
       curl -L https://github.com/Overbryd/docker-phantomjs-alpine/releases/download/2.11/phantomjs-alpine-x86_64.tar.bz2 | tar xj && \
       ln -s /usr/share/phantomjs/phantomjs /usr/bin/phantomjs && \
+      echo "Phantom JS version:" && \
       phantomjs --version && \
-      cd - && \
+      cd -; \
+    fi && \
     # Install ytdl-sub, ensure it is installed properly
     pip install --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
