@@ -1,5 +1,6 @@
 import sys
 
+from ytdl_sub import __version__
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
@@ -31,6 +32,7 @@ def main():
         sys.exit(1)
     except Exception:  # pylint: disable=broad-except
         logger.exception("An uncaught error occurred:")
+        logger.error("Version: %s", __version__)
         logger.error(
             "Please upload the error log file '%s' and make a Github "
             "issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
