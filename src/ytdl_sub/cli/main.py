@@ -4,7 +4,6 @@ import fcntl
 import gc
 import os
 import sys
-import tempfile
 from contextlib import contextmanager
 from pathlib import Path
 from typing import List
@@ -133,7 +132,11 @@ def _working_directory_lock(config: ConfigFile):
         Other lock error occurred
     """
     working_directory_path = Path(os.getcwd()) / config.config_options.working_directory
-    lock_file_path = Path(tempfile.gettempdir()) / str(working_directory_path).replace("/", "_")
+    lock_file_path = (
+        Path(os.getcwd())
+        / config.config_options.flock_directory
+        / str(working_directory_path).replace("/", "_")
+    )
 
     lock_file = open(lock_file_path, "w", encoding="utf-8")
 
