@@ -144,6 +144,3 @@ docker/root/*.whl
 docker/root/defaults/examples
 
 .local/
-
-# Ignore updates to root __init__, will write new versions when running make
-src/ytdl_sub/__init__.py
