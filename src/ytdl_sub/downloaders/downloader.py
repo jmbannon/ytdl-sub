@@ -369,11 +369,17 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             with self._listen_and_log_downloaded_info_json(log_prefix=log_prefix_on_info_json_dl):
                 _ = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
-            download_logger.debug("RejectedVideoReached, stopping additional downloads")
+            download_logger.info(
+                "RejectedVideoReached, stopping additional downloads. "
+                "Disable by setting `ytdl_options.break_on_reject` to False."
+            )
         except ExistingVideoReached:
-            download_logger.debug("ExistingVideoReached, stopping additional downloads")
+            download_logger.info(
+                "ExistingVideoReached, stopping additional downloads. "
+                "Disable by setting `ytdl_options.break_on_existing` to False."
+            )
         except MaxDownloadsReached:
-            download_logger.debug("MaxDownloadsReached, stopping additional downloads")
+            download_logger.info("MaxDownloadsReached, stopping additional downloads.")
 
         return self._get_entry_dicts_from_info_json_files()
 
@@ -644,7 +650,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 continue
 
             if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is None:
-                download_logger.warning("Failed to find thumbnail id '%s'", thumbnail_id)
+                download_logger.debug("Failed to find thumbnail id '%s'", thumbnail_id)
                 continue
 
             if self._download_thumbnail(
@@ -654,7 +660,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 self.save_file(file_name=thumbnail_name)
                 self._url_state.thumbnails_downloaded.add(thumbnail_name)
             else:
-                download_logger.warning("Failed to download thumbnail id '%s'", thumbnail_id)
+                download_logger.debug("Failed to download thumbnail id '%s'", thumbnail_id)
 
     def _download_url_thumbnails(self, collection_url: UrlValidator, entry: Entry):
         """
