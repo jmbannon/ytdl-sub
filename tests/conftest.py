@@ -26,7 +26,7 @@ def output_directory():
 
 
 @contextlib.contextmanager
-def assert_debug_log(logger: logging.Logger, expected_message: str):
+def assert_logs(logger: logging.Logger, expected_message: str, log_level: str = "debug"):
     """
     Patches any function, but calls the original function.
     Intended to see if the particular function is called.
@@ -36,7 +36,7 @@ def assert_debug_log(logger: logging.Logger, expected_message: str):
     def _wrapped_debug(*args, **kwargs):
         debug_logger.info(*args, **kwargs)
 
-    with patch.object(logger, "debug", wraps=_wrapped_debug) as patched_debug:
+    with patch.object(logger, log_level, wraps=_wrapped_debug) as patched_debug:
         yield
 
     for call_args in patched_debug.call_args_list:

@@ -1,5 +1,5 @@
 import pytest
-from conftest import assert_debug_log
+from conftest import assert_logs
 from e2e.conftest import mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
@@ -82,9 +82,10 @@ class TestPlaylist:
 
         # Ensure another invocation will hit ExistingVideoReached
         if not dry_run:
-            with assert_debug_log(
+            with assert_logs(
                 logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
+                log_level="info",
             ):
                 _ = playlist_subscription.download()
 
@@ -129,9 +130,10 @@ class TestPlaylist:
 
             if not dry_run:
                 # Ensure another invocation will hit ExistingVideoReached
-                with assert_debug_log(
+                with assert_logs(
                     logger=ytdl_sub.downloaders.downloader.download_logger,
                     expected_message="ExistingVideoReached, stopping additional downloads",
+                    log_level="info",
                 ):
                     _ = mock_run_from_cli(args=args)[0][1]
 

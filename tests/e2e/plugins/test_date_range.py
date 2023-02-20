@@ -2,7 +2,7 @@ import copy
 
 import mergedeep
 import pytest
-from conftest import assert_debug_log
+from conftest import assert_logs
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
@@ -67,9 +67,10 @@ class TestDateRange:
         )
         if not dry_run:
             # try downloading again, ensure nothing more was downloaded
-            with assert_debug_log(
+            with assert_logs(
                 logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
+                log_level="info",
             ):
                 transaction_log = recent_channel_subscription.download()
                 assert_transaction_log_matches(
@@ -137,7 +138,7 @@ class TestDateRange:
 
         # First, download recent vids. Always download since we want to test dry-run
         # on the rolling recent portion.
-        with assert_debug_log(
+        with assert_logs(
             logger=ytdl_sub.downloaders.downloader.download_logger,
             expected_message="RejectedVideoReached, stopping additional downloads",
         ):
@@ -156,9 +157,10 @@ class TestDateRange:
 
         # Then, download the rolling recent vids subscription. This should remove one of the
         # two videos
-        with assert_debug_log(
+        with assert_logs(
             logger=ytdl_sub.downloaders.downloader.download_logger,
             expected_message="ExistingVideoReached, stopping additional downloads",
+            log_level="info",
         ):
             transaction_log = rolling_recent_channel_subscription.download(dry_run=dry_run)
 
@@ -182,9 +184,10 @@ class TestDateRange:
         # Invoke the rolling download again, ensure downloading stopped early from it already
         # existing
         if not dry_run:
-            with assert_debug_log(
+            with assert_logs(
                 logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
+                log_level="info",
             ):
                 transaction_log = rolling_recent_channel_subscription.download()
 
