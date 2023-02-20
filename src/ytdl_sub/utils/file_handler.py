@@ -361,15 +361,12 @@ class FileHandler:
         """
         try:
             shutil.move(src=src_file_path, dst=dst_file_path)
-        except OSError as os_error_exc:
+        except OSError:
             # Invalid cross-device link
             # Can happen from using os.rename under the hood, which requires the two file on the
             # same filesystem. Work around it by copying and deleting the file
-            if os_error_exc.errno == 18:
-                cls.copy(src_file_path, dst_file_path)
-                cls.delete(src_file_path)
-            else:
-                raise
+            cls.copy(src_file_path, dst_file_path)
+            cls.delete(src_file_path)
 
     @classmethod
     def delete(cls, file_path: Union[str, Path]):
