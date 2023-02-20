@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
+from resources import REGENERATE_FIXTURES
 from resources import RESOURCE_PATH
 
 from ytdl_sub.utils.file_handler import get_file_md5_hash
@@ -117,7 +118,7 @@ def assert_expected_downloads(
     dry_run: bool,
     expected_download_summary_file_name: str,
     ignore_md5_hashes_for: Optional[List[str]] = None,
-    regenerate_expected_download_summary: bool = False,
+    regenerate_expected_download_summary: bool = REGENERATE_FIXTURES,
 ):
     if dry_run:
         output_directory_contents = list(Path(output_directory).rglob("*"))

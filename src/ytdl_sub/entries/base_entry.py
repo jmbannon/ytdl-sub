@@ -24,6 +24,35 @@ from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
 # pylint: disable=no-member
 
 
+def _sanitize_plex(string: str) -> str:
+    out = ""
+    for char in string:
+        match char:
+            case "0":
+                out += "０"
+            case "1":
+                out += "１"
+            case "2":
+                out += "２"
+            case "3":
+                out += "３"
+            case "4":
+                out += "４"
+            case "5":
+                out += "５"
+            case "6":
+                out += "６"
+            case "7":
+                out += "７"
+            case "8":
+                out += "８"
+            case "9":
+                out += "９"
+            case _:
+                out += char
+    return out
+
+
 class BaseEntryVariables:
     """
     Source variables are ``{variables}`` that contain metadata from downloaded media.
@@ -52,6 +81,17 @@ class BaseEntryVariables:
             The sanitized uid of the entry, which is safe to use for Unix and Windows file names.
         """
         return sanitize_filename(self.uid)
+
+    @property
+    def uid_sanitized_plex(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The sanitized uid with additional sanitizing for Plex. Replaces numbers with
+            fixed-width numbers so Plex does not recognize them as season or episode numbers.
+        """
+        return _sanitize_plex(self.uid_sanitized)
 
     @property
     def extractor(self: "BaseEntry") -> str:
@@ -112,6 +152,17 @@ class BaseEntryVariables:
             The sanitized title of the entry, which is safe to use for Unix and Windows file names.
         """
         return sanitize_filename(self.title)
+
+    @property
+    def title_sanitized_plex(self) -> str:
+        """
+        Returns
+        -------
+        str
+            The sanitized title with additional sanitizing for Plex. Replaces numbers with
+            fixed-width numbers so Plex does not recognize them as season or episode numbers.
+        """
+        return _sanitize_plex(self.title_sanitized)
 
     @property
     def webpage_url(self: "BaseEntry") -> str:
