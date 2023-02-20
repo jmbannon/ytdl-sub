@@ -130,6 +130,8 @@ def mock_entry_to_dict(
         "source_uploader": "abc123",
         "source_uploader_id": "abc123",
         "source_uploader_url": "https://yourname.here",
+        "uid_sanitized_plex": "abc１２３",
+        "title_sanitized_plex": "entry ｛title｝",
     }
 
 

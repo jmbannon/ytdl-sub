@@ -2,6 +2,8 @@ presets:
 
   _plex_tv_show:
     preset:
+      - "_plex_base"
+      - "_episode_base"
       - "_episode_video_tags"
     ytdl_options:
       format: "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
@@ -14,6 +16,8 @@ presets:
 
   _jellyfin_tv_show:
     preset:
+      - "_base"
+      - "_episode_base"
       - "_episode_video_tags"
       - "_episode_nfo_tags"
     overrides:

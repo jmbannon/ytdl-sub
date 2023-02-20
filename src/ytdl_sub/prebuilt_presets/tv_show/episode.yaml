@@ -30,7 +30,7 @@ presets:
       episode_plot: "{webpage_url}\n\n{description}"
       episode_year: "{upload_year}"
       episode_date_standardized: "{upload_date_standardized}"
-      episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {uid_sanitized}"
+      episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {file_uid}"
       episode_file_path: "Season {season_number_padded}/{episode_file_name}"
 
   _episode_video_tags:
@@ -82,7 +82,6 @@ presets:
 
   season_by_year_month__episode_by_day:
     preset:
-      - "_episode_base"
       - "_season_by_year_month"
     overrides:
       episode_number: "{upload_day}{upload_date_index_padded}"
@@ -90,7 +89,6 @@ presets:
 
   season_by_year__episode_by_month_day:
     preset:
-      - "_episode_base"
       - "_season_by_year"
     overrides:
       episode_number: "{upload_month}{upload_day_padded}{upload_date_index_padded}"
@@ -98,7 +96,6 @@ presets:
 
   season_by_year__episode_by_month_day_reversed:
     preset:
-      - "_episode_base"
       - "_season_by_year"
     overrides:
       episode_number: "{upload_day_of_year_reversed}{upload_date_index_reversed_padded}"
@@ -106,7 +103,6 @@ presets:
 
   season_by_year__episode_by_download_index:
     preset:
-      - "_episode_base"
       - "_season_by_year"
     overrides:
       episode_number: "{download_index}"
@@ -115,29 +111,21 @@ presets:
   ###############
 
   season_by_collection__episode_by_year_month_day:
-    preset:
-      - "_episode_base"
     overrides:
       episode_number: "{upload_year_truncated}{upload_month_padded}{upload_day_padded}{upload_date_index_padded}"
       episode_number_padded: "{episode_number}"
 
   season_by_collection__episode_by_year_month_day_reversed:
-    preset:
-      - "_episode_base"
     overrides:
       episode_number: "{upload_year_truncated_reversed}{upload_month_reversed_padded}{upload_day_reversed_padded}{upload_date_index_reversed_padded}"
       episode_number_padded: "{episode_number}"
 
   season_by_collection__episode_by_playlist_index:
-    preset:
-      - "_episode_base"
     overrides:
       episode_number: "{playlist_index}"
       episode_number_padded: "{playlist_index_padded6}"
 
   season_by_collection__episode_by_playlist_index_reversed:
-    preset:
-      - "_episode_base"
     overrides:
       episode_number: "{playlist_index_reversed}"
       episode_number_padded: "{playlist_index_reversed_padded6}"

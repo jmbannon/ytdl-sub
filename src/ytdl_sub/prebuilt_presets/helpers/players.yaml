@@ -1,7 +1,21 @@
 presets:
 
+  _base:
+    overrides:
+      file_uid: "{uid_sanitized}"
+      file_title: "{title_sanitized}"
+
   _kodi_base:
+    preset:
+      - "_base"
     nfo_tags:
       kodi_safe: True
     output_directory_nfo_tags:
       kodi_safe: True
+
+  _plex_base:
+    preset:
+      - "_base"
+    overrides:
+      file_uid: "{uid_sanitized_plex}"
+      file_title: "{title_sanitized_plex}"
