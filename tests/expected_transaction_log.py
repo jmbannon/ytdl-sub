@@ -1,7 +1,7 @@
 import os
 from typing import List
 
-from resources import RESOURCE_PATH
+from resources import RESOURCE_PATH, REGENERATE_FIXTURES
 
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 
@@ -12,7 +12,7 @@ def assert_transaction_log_matches(
     output_directory: str,
     transaction_log: FileHandlerTransactionLog,
     transaction_log_summary_file_name: str,
-    regenerate_transaction_log: bool = False,
+    regenerate_transaction_log: bool = REGENERATE_FIXTURES,
 ):
     """
     Parameters

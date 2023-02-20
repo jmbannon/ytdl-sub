@@ -1,6 +1,8 @@
 import shutil
 from pathlib import Path
 
+REGENERATE_FIXTURES: bool = False
+
 RESOURCE_PATH = Path("tests/resources")
 _FILE_FIXTURE_PATH = RESOURCE_PATH / "file_fixtures"
 
