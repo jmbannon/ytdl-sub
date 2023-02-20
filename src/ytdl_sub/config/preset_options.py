@@ -114,6 +114,10 @@ class Overrides(DictFormatterValidator):
 
     Override variables can contain explicit values and other variables, including both override
     and source variables.
+
+    In addition, any override variable defined will automatically create a ``sanitized`` variable
+    for use. In the example above, ``output_directory_sanitized`` will exist and perform
+    sanitization on the value when used.
     """
 
     # pylint: enable=line-too-long
