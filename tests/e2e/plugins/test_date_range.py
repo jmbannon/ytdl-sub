@@ -141,6 +141,7 @@ class TestDateRange:
         with assert_logs(
             logger=ytdl_sub.downloaders.downloader.download_logger,
             expected_message="RejectedVideoReached, stopping additional downloads",
+            log_level="info",
         ):
             transaction_log = recent_channel_subscription.download(dry_run=False)
 
