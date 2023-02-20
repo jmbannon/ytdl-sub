@@ -20,7 +20,7 @@ jobs:
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: [ "3.10" ]
@@ -49,7 +49,7 @@ jobs:
 
   # Build ARM64 container, only on master branch to save time testing
   package-arm64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [
       build
     ]
@@ -93,7 +93,7 @@ jobs:
 
   # Build AMD64 container
   package-amd64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [
       build
     ]
@@ -137,7 +137,7 @@ jobs:
   # On master branch, build the docker manifest file from the cached
   # docker builds and push to the registry
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [
       build,
       package-arm64,
