@@ -1,2 +1,1 @@
-# `make` overwrites with proper version
-__version__ = "0000.00.00"
+__version__ = "2023.02.20+29a67ce"
