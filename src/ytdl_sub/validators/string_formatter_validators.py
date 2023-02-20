@@ -213,8 +213,9 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
     """
 
     _variable_not_found_error_msg_formatter = (
-        "Override variable '{variable_name}' does not exist. "
-        "Available override variables: {available_fields}"
+        "Override variable '{variable_name}' does not exist. For this field, ensure your override "
+        "variable does not contain any source variables - it is a requirement that this be a "
+        "static string. Available override variables: {available_fields}"
     )
 
 
