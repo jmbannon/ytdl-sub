@@ -134,7 +134,7 @@ def _working_directory_lock(config: ConfigFile):
     working_directory_path = Path(os.getcwd()) / config.config_options.working_directory
     lock_file_path = (
         Path(os.getcwd())
-        / config.config_options.flock_directory
+        / config.config_options.lock_directory
         / str(working_directory_path).replace("/", "_")
     )
 

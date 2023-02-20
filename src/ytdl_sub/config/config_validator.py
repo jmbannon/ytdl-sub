@@ -12,7 +12,7 @@ from ytdl_sub.validators.validators import StringValidator
 
 class ConfigOptions(StrictDictValidator):
     _required_keys = {"working_directory"}
-    _optional_keys = {"umask", "dl_aliases", "flock_directory"}
+    _optional_keys = {"umask", "dl_aliases", "lock_directory"}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
@@ -26,8 +26,8 @@ class ConfigOptions(StrictDictValidator):
         self._dl_aliases = self._validate_key_if_present(
             key="dl_aliases", validator=LiteralDictValidator
         )
-        self._flock_directory = self._validate_key(
-            key="flock_directory", validator=StringValidator, default="/tmp"
+        self._lock_directory = self._validate_key(
+            key="lock_directory", validator=StringValidator, default="/tmp"
         )
 
     @property
@@ -74,13 +74,13 @@ class ConfigOptions(StrictDictValidator):
         return {}
 
     @property
-    def flock_directory(self) -> str:
+    def lock_directory(self) -> str:
         """
         Optional. The directory to temporarily store file locks, which prevents multiple instances
         of ``ytdl-sub`` from running. Note that file locks do not work on network-mounted
         directories. Ensure that this directory resides on the host machine. Defaults to ``/tmp``.
         """
-        return self._flock_directory.value
+        return self._lock_directory.value
 
 
 class ConfigValidator(StrictDictValidator):
