@@ -15,6 +15,8 @@ class StringDatetimeValidator(OverridesStringFormatterValidator):
        (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
 
     Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in this.
+    Note that yt-dlp will round times to the closest day, meaning that `day` is the lowest
+    granularity possible.
     """
 
     _expected_value_type_name = "datetime string"
