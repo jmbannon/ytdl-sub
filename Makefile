@@ -1,7 +1,17 @@
-
+# Get version related variables
 export DATE=$(shell date +'%Y.%m.%d')
-export REV=$(shell git rev-parse --short HEAD)
-export VERSION="$(DATE)+$(REV)"
+export DATE_COMMIT_COUNT=$(shell git rev-list --count HEAD --since=1.day)
+export COMMIT_HASH=$(shell git rev-parse --short HEAD)
+
+# Set Local version to YYYY.MM.DD-<hash>
+export LOCAL_VERSION="$(DATE)+$(COMMIT_HASH)"
+
+# Set PyPi version to YYYY.MM.DD or YYYY.MM.DD.postN if N > 0
+ifeq ("$(DATE_COMMIT_COUNT)", "0")
+	export PYPI_VERSION="$(DATE)"
+else
+	export PYPI_VERSION="$(DATE).post$(DATE_COMMIT_COUNT)"
+endif
 
 lint:
 	@-isort .
@@ -14,7 +24,7 @@ check_lint:
 		&& pylint src/  \
 		&& pydocstyle src/*
 wheel: clean
-	$(shell echo "__version__ = \"$(VERSION)\"" > src/ytdl_sub/__init__.py)
+	$(shell echo "__pypi_version__ = \"$(PYPI_VERSION)\"\n__local_version__ = \"$(LOCAL_VERSION)\"" > src/ytdl_sub/__init__.py)
 	pip3 install build
 	python3 -m build
 docker_stage: wheel
