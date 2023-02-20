@@ -12,7 +12,7 @@ from ytdl_sub.validators.validators import StringValidator
 
 class ConfigOptions(StrictDictValidator):
     _required_keys = {"working_directory"}
-    _optional_keys = {"umask", "dl_aliases"}
+    _optional_keys = {"umask", "dl_aliases", "lock_directory"}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
@@ -26,6 +26,9 @@ class ConfigOptions(StrictDictValidator):
         self._dl_aliases = self._validate_key_if_present(
             key="dl_aliases", validator=LiteralDictValidator
         )
+        self._lock_directory = self._validate_key(
+            key="lock_directory", validator=StringValidator, default="/tmp"
+        )
 
     @property
     def working_directory(self) -> str:
@@ -38,14 +41,14 @@ class ConfigOptions(StrictDictValidator):
     @property
     def umask(self) -> Optional[str]:
         """
-        Umask (octal format) to apply to every created file. Defaults to "022".
+        Optional. Umask (octal format) to apply to every created file. Defaults to "022".
         """
         return self._umask.value
 
     @property
     def dl_aliases(self) -> Optional[Dict[str, str]]:
         """
-        Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
+        Optional. Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
 
         .. code-block:: yaml
 
@@ -69,6 +72,15 @@ class ConfigOptions(StrictDictValidator):
         if self._dl_aliases:
             return self._dl_aliases.dict
         return {}
+
+    @property
+    def lock_directory(self) -> str:
+        """
+        Optional. The directory to temporarily store file locks, which prevents multiple instances
+        of ``ytdl-sub`` from running. Note that file locks do not work on network-mounted
+        directories. Ensure that this directory resides on the host machine. Defaults to ``/tmp``.
+        """
+        return self._lock_directory.value
 
 
 class ConfigValidator(StrictDictValidator):
