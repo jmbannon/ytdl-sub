@@ -32,11 +32,11 @@ def main():
         sys.exit(1)
     except Exception:  # pylint: disable=broad-except
         logger.exception("An uncaught error occurred:")
-        logger.error("Version: %s", __version__)
         logger.error(
-            "Please upload the error log file '%s' and make a Github "
+            "Version %s\nPlease upload the error log file '%s' and make a Github "
             "issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
             "command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!",
+            __version__,
             Logger.debug_log_filename(),
         )
         sys.exit(1)
