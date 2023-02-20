@@ -110,6 +110,8 @@ class TestStringFormatterValidator(object):
         if string_formatter_class == OverridesStringFormatterValidator:
             expected_error_msg = (
                 f"Validation error in test: Override variable 'bah_humbug' does not exist. "
+                f"For this field, ensure your override variable does not contain any source "
+                f"variables - it is a requirement that this be a static string. "
                 f"Available override variables: {', '.join(sorted(variable_dict.keys()))}"
             )
 
