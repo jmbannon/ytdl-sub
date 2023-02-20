@@ -5,7 +5,8 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
-from resources import RESOURCE_PATH, REGENERATE_FIXTURES
+from resources import REGENERATE_FIXTURES
+from resources import RESOURCE_PATH
 
 from ytdl_sub.utils.file_handler import get_file_md5_hash
 

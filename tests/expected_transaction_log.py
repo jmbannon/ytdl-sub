@@ -1,7 +1,8 @@
 import os
 from typing import List
 
-from resources import RESOURCE_PATH, REGENERATE_FIXTURES
+from resources import REGENERATE_FIXTURES
+from resources import RESOURCE_PATH
 
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 

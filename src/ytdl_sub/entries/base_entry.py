@@ -25,32 +25,33 @@ from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
 
 
 def _sanitize_plex(string: str) -> str:
-    out = ''
+    out = ""
     for char in string:
         match char:
-            case '0':
-                out += '０'
-            case '1':
-                out += '１'
-            case '2':
-                out += '２'
-            case '3':
-                out += '３'
-            case '4':
-                out += '４'
-            case '5':
-                out += '５'
-            case '6':
-                out += '６'
-            case '7':
-                out += '７'
-            case '8':
-                out += '８'
-            case '9':
-                out += '９'
+            case "0":
+                out += "０"
+            case "1":
+                out += "１"
+            case "2":
+                out += "２"
+            case "3":
+                out += "３"
+            case "4":
+                out += "４"
+            case "5":
+                out += "５"
+            case "6":
+                out += "６"
+            case "7":
+                out += "７"
+            case "8":
+                out += "８"
+            case "9":
+                out += "９"
             case _:
                 out += char
     return out
+
 
 class BaseEntryVariables:
     """
