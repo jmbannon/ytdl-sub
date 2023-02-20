@@ -1,4 +1,8 @@
 
+export DATE=$(shell date +'%Y.%m.%d')
+export REV=$(shell git rev-parse --short HEAD)
+export VERSION="$(DATE)+$(REV)"
+
 lint:
 	@-isort .
 	@-black .
@@ -10,13 +14,14 @@ check_lint:
 		&& pylint src/  \
 		&& pydocstyle src/*
 wheel: clean
+	$(shell echo "__version__ = \"$(VERSION)\"" > src/ytdl_sub/__init__.py)
 	pip3 install build
 	python3 -m build
 docker_stage: wheel
 	cp dist/*.whl docker/root/
 	cp -R examples docker/root/defaults/
 docker: docker_stage
-	sudo docker build --no-cache -t ytdl-sub:0.1 docker/
+	sudo docker build --no-cache -t ytdl-sub:local docker/
 docs:
 	sphinx-build -a -b html docs docs/_html
 clean:
