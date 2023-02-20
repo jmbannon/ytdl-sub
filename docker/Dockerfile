@@ -1,26 +1,34 @@
-FROM ghcr.io/linuxserver/baseimage-alpine:3.16
+FROM ghcr.io/linuxserver/baseimage-alpine:3.17
 
 ###############################################################################
 # YTDL-SUB INSTALL
 
 COPY root/ /
-RUN apk update --no-cache && \
+RUN mkdir -p /config && \
+    apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
+    apk add --no-cache --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
       vim \
       g++ \
       nano \
       make \
-      ffmpeg \
       python3=~3.10 \
       py3-pip \
+      fontconfig \
       py3-setuptools && \
-    mkdir -p /config && \
-    # Ensure ffmpeg is installed property
-    ffmpeg -version && \
-    # Install ytdl-sub, ensure it is installed propertly
+    # Install edge ffmpeg, ensure it is properly installed
+    apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+      ffmpeg=5.1.2-r8 && \
+      ffmpeg -version && \
+    # Install phantomjs, ensure it is properly installed
+    cd /usr/share && \
+      curl -L https://github.com/Overbryd/docker-phantomjs-alpine/releases/download/2.11/phantomjs-alpine-x86_64.tar.bz2 | tar xj && \
+      ln -s /usr/share/phantomjs/phantomjs /usr/bin/phantomjs && \
+      phantomjs --version && \
+      cd - && \
+    # Install ytdl-sub, ensure it is installed properly
     pip install --no-cache-dir ytdl_sub-*.whl && \
-    ytdl-sub -h && \
+      ytdl-sub -h && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
     apk del \
