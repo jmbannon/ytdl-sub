@@ -1,6 +1,6 @@
 # Get version related variables
 export DATE=$(shell date +'%Y.%m.%d')
-export DATE_COMMIT_COUNT=$(shell git rev-list --count HEAD --since=1.day)
+export DATE_COMMIT_COUNT=$(shell git rev-list --count HEAD --since="$(DATE) 00:00:00")
 export COMMIT_HASH=$(shell git rev-parse --short HEAD)
 
 # Set Local version to YYYY.MM.DD-<hash>
