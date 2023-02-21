@@ -281,6 +281,12 @@ docker run -d \
     ghcr.io/jmbannon/ytdl-sub:latest
 ```
 
+### PIP
+You can install our [PyPI package](https://pypi.org/project/ytdl-sub/) with:
+```commandline
+python3 -m pip install -U yt-dlp
+```
+
 ### Building Docker Image Locally
 Run `make docker` in the root directory of this repo to build the image. This
 will build the python wheel and install it in the Dockerfile.
