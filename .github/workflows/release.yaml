@@ -24,7 +24,7 @@ jobs:
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           
           echo "LOCAL_VERSION='${{ env.DATE }}+${{ env.COMMIT_HASH }}'" >> $GITHUB_ENV
-          if [ ${{ env.COMMIT_HASH }} == "0" ]
+          if [ ${{ env.COMMIT_HASH }} = "0" ]
           then
             echo "PYPI_VERSION=$(DATE)" >> $GITHUB_ENV
           else
