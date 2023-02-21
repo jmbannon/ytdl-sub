@@ -13,8 +13,8 @@ on:
   pull_request:
 
 jobs:
-  build-n-publish:
-    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+  build-and-publish:
+    name: Build and publish ytdl-sub
     runs-on: ubuntu-22.04
     strategy:
       matrix:
