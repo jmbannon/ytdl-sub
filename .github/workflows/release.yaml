@@ -26,6 +26,7 @@ jobs:
 
       - name: Build Wheel
         run: |
+          git status
           make wheel
 
       - name: Publish distribution 📦 to PyPI
