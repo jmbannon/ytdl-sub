@@ -16,8 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: master
-          fetch-depth: 0  # fetch all git history
+          fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
@@ -26,7 +25,6 @@ jobs:
 
       - name: Build Wheel
         run: |
-          git status
           make wheel
 
       - name: Publish distribution 📦 to PyPI
@@ -40,8 +38,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Set version envs 1/3
         run: |
