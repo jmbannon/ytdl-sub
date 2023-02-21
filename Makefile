@@ -25,6 +25,7 @@ check_lint:
 		&& pydocstyle src/*
 wheel: clean
 	$(shell echo "__pypi_version__ = \"$(PYPI_VERSION)\"\n__local_version__ = \"$(LOCAL_VERSION)\"" > src/ytdl_sub/__init__.py)
+	cat src/ytdl_sub/__init__.py
 	pip3 install build
 	python3 -m build
 docker_stage: wheel
