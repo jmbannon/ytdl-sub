@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.ytdl_sub import __version__
+from src.ytdl_sub import __local_version__
 from src.ytdl_sub.main import main
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
@@ -64,5 +64,5 @@ def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_mess
 
     assert mock_error.call_count == 1
     assert mock_error.call_args.args[0] == expected_uncaught_error_message
-    assert mock_error.call_args.args[1] == __version__
+    assert mock_error.call_args.args[1] == __local_version__
     assert mock_error.call_args.args[2] == Logger.debug_log_filename()
