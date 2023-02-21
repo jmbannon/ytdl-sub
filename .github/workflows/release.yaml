@@ -5,9 +5,6 @@ on:
     branches:
       - master
 
-  # Run tests for any PRs.
-  pull_request:
-
 jobs:
   release:
     name: release
@@ -47,8 +44,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: $(PYPI_VERSION)
-          release_name: ytdl-sub $(PYPI_VERSION)
+          tag_name: ${{ env.PYPI_VERSION }}
+          release_name: ytdl-sub ${{ env.PYPI_VERSION }}
           body: |
             See https://github.com/jmbannon/ytdl-sub#installation for installation steps
           draft: false
