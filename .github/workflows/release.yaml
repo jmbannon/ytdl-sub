@@ -46,7 +46,7 @@ jobs:
 
       - name: Set version envs 2/3
         run: |
-          echo "DATE_COMMIT_COUNT=$(git rev-list --count HEAD --since='${{ env.DATE }} 00:00:00')" >> $GITHUB_ENV
+          echo "DATE_COMMIT_COUNT=$(git rev-list --count master --since='${{ env.DATE }} 00:00:00')" >> $GITHUB_ENV
 
       - name: Set version envs 3/3
         run: |
