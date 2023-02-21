@@ -4,6 +4,7 @@ on:
     # publish only when pushed to master
     branches:
       - master
+  pull_request:
 
 jobs:
   release:
@@ -40,12 +41,10 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
+          name: ytdl-sub ${{ env.PYPI_VERSION }}
           tag_name: ${{ env.PYPI_VERSION }}
-          release_name: ytdl-sub ${{ env.PYPI_VERSION }}
           body: |
             See https://github.com/jmbannon/ytdl-sub#installation for installation steps
           draft: false
