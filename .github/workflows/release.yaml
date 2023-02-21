@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+  # Run tests for any PRs.
+  pull_request:
+
 jobs:
   release:
     name: release
@@ -19,7 +22,7 @@ jobs:
           date +'%Y.%m.%d' >> $DATE
           git rev-list --count HEAD --since="$(DATE) 00:00:00" >> $DATE_COMMIT_COUNT
           
-          if [ "$(DATE_COMMIT_COUNT)" = "0" ]; then
+          if [ "$(DATE_COMMIT_COUNT)" == "0" ]; then
             echo "$DATE" >> $PYPI_VERSION
           else
             echo "$(DATE).post$(DATE_COMMIT_COUNT)" >> $PYPI_VERSION
