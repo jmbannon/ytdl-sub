@@ -1,10 +1,9 @@
-name: ytld-sub release
+name: ytld-sub Release
 on:
   push:
     # publish only when pushed to master
     branches:
       - master
-
 jobs:
   pypi-publish:
     name: pypi-publish
@@ -15,6 +14,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
+          ref: master
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
@@ -36,8 +38,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: master  # Needed for correct commit count. TODO: define once using GH actions
 
       - name: Set version envs 1/3
         run: |
@@ -46,7 +50,7 @@ jobs:
 
       - name: Set version envs 2/3
         run: |
-          echo "DATE_COMMIT_COUNT=$(git rev-list --count HEAD --since='${{ env.DATE }} 00:00:00')" >> $GITHUB_ENV
+          echo "DATE_COMMIT_COUNT=$(git rev-list --count master --since='${{ env.DATE }} 00:00:00')" >> $GITHUB_ENV
 
       - name: Set version envs 3/3
         run: |
@@ -64,6 +68,7 @@ jobs:
           echo "${{ env.LOCAL_VERSION }}"
 
       - name: Create Release
+        if: ${{ github.ref == 'refs/heads/master' }}
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
