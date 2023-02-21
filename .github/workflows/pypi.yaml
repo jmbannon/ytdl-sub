@@ -1,4 +1,4 @@
-name: ytld-sub PyPI Push
+name: ytld-sub PyPI
 on:
   push:
     # Publish `master` as Docker `latest` image.
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-and-publish:
-    name: Build and publish ytdl-sub
+    name: build-and-publish
     runs-on: ubuntu-22.04
     strategy:
       matrix:
