@@ -19,13 +19,13 @@ jobs:
 
       - name: Get release version
         run:
-          date +'%Y.%m.%d' >> $DATE
-          git rev-list --count HEAD --since="$(DATE) 00:00:00" >> $DATE_COMMIT_COUNT
+          export DATE=`date +'%Y.%m.%d'`
+          export DATE_COMMIT_COUNT=`git rev-list --count HEAD --since="$(DATE) 00:00:00"`
           
           if [ "$(DATE_COMMIT_COUNT)" == "0" ]; then
-            echo "$DATE" >> $PYPI_VERSION
+            export PYPI_VERSION=$(DATE)
           else
-            echo "$(DATE).post$(DATE_COMMIT_COUNT)" >> $PYPI_VERSION
+            export PYPI_VERSION=`$(DATE).post$(DATE_COMMIT_COUNT)`
           endif
 
       - name: Create Release
