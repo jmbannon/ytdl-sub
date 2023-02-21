@@ -1,0 +1,50 @@
+name: ytld-sub release
+on:
+  push:
+    # publish only when pushed to master
+    branches:
+      - master
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set version envs 1/3
+        run: |
+          echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Set version envs 2/3
+        run: |
+          echo "DATE_COMMIT_COUNT=$(git rev-list --count HEAD --since='${{ env.DATE }} 00:00:00')" >> $GITHUB_ENV
+
+      - name: Set version envs 3/3
+        run: |
+          echo "LOCAL_VERSION=${{ env.DATE }}+${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
+          if [ ${{ env.COMMIT_HASH }} = "0" ]
+          then
+            echo "PYPI_VERSION=${{ env.DATE }}" >> $GITHUB_ENV
+          else
+            echo "PYPI_VERSION=${{ env.DATE }}.post${{ env.DATE_COMMIT_COUNT }}" >> $GITHUB_ENV
+          fi
+
+      - name: Test version envs
+        run: |
+          echo "${{ env.PYPI_VERSION }}"
+          echo "${{ env.LOCAL_VERSION }}"
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ytdl-sub ${{ env.PYPI_VERSION }}
+          tag_name: ${{ env.PYPI_VERSION }}
+          body: |
+            See https://github.com/jmbannon/ytdl-sub#installation for installation steps
+          draft: false
+          prerelease: false
