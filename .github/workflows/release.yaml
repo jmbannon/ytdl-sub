@@ -17,16 +17,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get release version
+      - name: Set version envs
         run:
-          export DATE=`date +'%Y.%m.%d'`
-          export DATE_COMMIT_COUNT=`git rev-list --count HEAD --since="$(DATE) 00:00:00"`
+          echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+          echo "DATE_COMMIT_COUNT=$(git rev-list --count HEAD --since='$(DATE) 00:00:00')" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$(shell git rev-parse --short HEAD)" >> $GITHUB_ENV
           
+          echo "LOCAL_VERSION='$(DATE)+$(COMMIT_HASH)'" >> $GITHUB_ENV
           if [ "$(DATE_COMMIT_COUNT)" == "0" ]; then
-            export PYPI_VERSION=$(DATE)
+            echo "PYPI_VERSION=$(DATE)" >> $GITHUB_ENV
           else
-            export PYPI_VERSION=`$(DATE).post$(DATE_COMMIT_COUNT)`
+            echo "PYPI_VERSION='$(DATE).post$(DATE_COMMIT_COUNT)'"
           endif
+
+      - name: Test version envs
+        run:
+          echo $PYPI_VERSION
+          echo $LOCAL_VERSION
 
       - name: Create Release
         id: create_release
