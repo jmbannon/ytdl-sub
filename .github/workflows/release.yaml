@@ -31,9 +31,9 @@ jobs:
           echo "LOCAL_VERSION='${{ env.DATE }}+${{ env.COMMIT_HASH }}'" >> $GITHUB_ENV
           if [ ${{ env.COMMIT_HASH }} = "0" ]
           then
-            echo "PYPI_VERSION=${{ env.DATE }}" >> $GITHUB_ENV
+            echo "PYPI_VERSION='${{ env.DATE }}'" >> $GITHUB_ENV
           else
-            echo "PYPI_VERSION='${{ env.DATE }}.post${{ env.DATE_COMMIT_COUNT }}'"
+            echo "PYPI_VERSION='${{ env.DATE }}.post${{ env.DATE_COMMIT_COUNT }}'" >> $GITHUB_ENV
           fi
 
       - name: Test version envs
