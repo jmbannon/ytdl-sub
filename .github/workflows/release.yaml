@@ -4,7 +4,6 @@ on:
     # publish only when pushed to master
     branches:
       - master
-  pull_request:
 
 jobs:
   release:
