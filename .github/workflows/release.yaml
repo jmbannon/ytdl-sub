@@ -27,6 +27,7 @@ jobs:
           echo "DATE_COMMIT_COUNT=$(git rev-list --count HEAD --since='${{ env.DATE }} 00:00:00')" >> $GITHUB_ENV
 
       - name: Set version envs 3/3
+        run: |
           echo "LOCAL_VERSION='${{ env.DATE }}+${{ env.COMMIT_HASH }}'" >> $GITHUB_ENV
           if [ ${{ env.COMMIT_HASH }} = "0" ]
           then
