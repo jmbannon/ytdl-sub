@@ -24,16 +24,17 @@ jobs:
           echo "COMMIT_HASH=$(shell git rev-parse --short HEAD)" >> $GITHUB_ENV
           
           echo "LOCAL_VERSION='$(DATE)+$(COMMIT_HASH)'" >> $GITHUB_ENV
-          if [ "$(DATE_COMMIT_COUNT)" == "0" ]; then
+          if [ "$(DATE_COMMIT_COUNT)" == "0" ]
+          then
             echo "PYPI_VERSION=$(DATE)" >> $GITHUB_ENV
           else
             echo "PYPI_VERSION='$(DATE).post$(DATE_COMMIT_COUNT)'"
-          endif
+          fi
 
       - name: Test version envs
         run: |
-          echo $PYPI_VERSION
-          echo $LOCAL_VERSION
+          echo "${{ env.PYPI_VERSION }}"
+          echo "${{ env.LOCAL_VERSION }}"
 
       - name: Create Release
         id: create_release
