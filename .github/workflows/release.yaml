@@ -21,10 +21,10 @@ jobs:
         run: |
           echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
           echo "DATE_COMMIT_COUNT=$(git rev-list --count HEAD --since='$(DATE) 00:00:00')" >> $GITHUB_ENV
-          echo "COMMIT_HASH=$(shell git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           
-          echo "LOCAL_VERSION='$(DATE)+$(COMMIT_HASH)'" >> $GITHUB_ENV
-          if [ "$(DATE_COMMIT_COUNT)" == "0" ]
+          echo "LOCAL_VERSION='${{ env.DATE }}+${{ env.COMMIT_HASH }}'" >> $GITHUB_ENV
+          if [ ${{ env.COMMIT_HASH }} == "0" ]
           then
             echo "PYPI_VERSION=$(DATE)" >> $GITHUB_ENV
           else
