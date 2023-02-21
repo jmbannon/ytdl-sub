@@ -17,18 +17,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set version envs
+      - name: Set version envs 1/3
         run: |
           echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
-          echo "DATE_COMMIT_COUNT=$(git rev-list --count HEAD --since='$(DATE) 00:00:00')" >> $GITHUB_ENV
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          
+
+      - name: Set version envs 2/3
+        run: |
+          echo "DATE_COMMIT_COUNT=$(git rev-list --count HEAD --since='${{ env.DATE }} 00:00:00')" >> $GITHUB_ENV
+
+      - name: Set version envs 3/3
           echo "LOCAL_VERSION='${{ env.DATE }}+${{ env.COMMIT_HASH }}'" >> $GITHUB_ENV
           if [ ${{ env.COMMIT_HASH }} = "0" ]
           then
-            echo "PYPI_VERSION=$(DATE)" >> $GITHUB_ENV
+            echo "PYPI_VERSION=${{ env.DATE }}" >> $GITHUB_ENV
           else
-            echo "PYPI_VERSION='$(DATE).post$(DATE_COMMIT_COUNT)'"
+            echo "PYPI_VERSION='${{ env.DATE }}.post${{ env.DATE_COMMIT_COUNT }}'"
           fi
 
       - name: Test version envs
