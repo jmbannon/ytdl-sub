@@ -66,6 +66,7 @@ jobs:
           echo "${{ env.LOCAL_VERSION }}"
 
       - name: Create Release
+        if: ${{ github.ref == 'refs/heads/master' }}
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
