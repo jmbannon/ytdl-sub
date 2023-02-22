@@ -81,7 +81,7 @@ jobs:
   build-arm:
     name: build-arm
     needs:
-      - get-version
+      - set-version
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -124,7 +124,7 @@ jobs:
   github-release:
     name: github-release
     needs:
-      - get-version
+      - set-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -149,7 +149,7 @@ jobs:
   pypi-publish:
     name: pypi-publish
     needs:
-      - get-version
+      - set-version
     runs-on: ubuntu-22.04
     strategy:
       matrix:
