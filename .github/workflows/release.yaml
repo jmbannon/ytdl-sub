@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ "aarch64", "armv7" ]
+        arch: [ "aarch64" ]
     steps:
       - uses: actions/checkout@v3
       - uses: uraimo/run-on-arch-action@v2
@@ -86,7 +86,7 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add python3 py3-pip
+            apk add python3 py3-pip make
             python3 -m pip install -e .
             echo "Done!"
             python3 -m pip install pyinstaller
