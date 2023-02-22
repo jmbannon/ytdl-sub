@@ -84,13 +84,15 @@ jobs:
           arch: ${{ matrix.arch }}
           distro: alpine_latest
 
-          # Not required, but speeds up builds by storing container images in
-          # a GitHub package registry.
-          githubToken: ${{ github.token }}
+          # Mount the artifacts directory as /artifacts in the container
+          dockerRunArgs: |
+            --volume "${PWD}/artifacts:/artifacts"
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apt-get -y install zip
+            apk add zip
+            python --version
+            python3 --version
             pip install -e .[build]
             EXEC_SUFFIX=${{ matrix.package-suffix }} make executable
             zip dist/ytdl-sub${{ matrix.package-suffix }}.zip dist/ytdl-sub${{ matrix.package-suffix }}
