@@ -39,35 +39,7 @@ jobs:
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
 
-  pypi-publish:
-    name: pypi-publish
-    needs:
-      - get-version
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python-version: [ "3.10" ]
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
-          ref: master
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Build Wheel
-        run: |
-          make wheel
-
-      - name: Publish distribution 📦 to PyPI
-        if: ${{ github.ref == 'refs/heads/master' }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+  ##################################################################################################
 
   build-unix:
     name: build-unix
@@ -126,6 +98,8 @@ jobs:
             dist/ytdl-sub${{ matrix.package-suffix }}.zip
             dist/ytdl-sub${{ matrix.package-suffix }}.tar.gz
 
+  ##################################################################################################
+
   github-release:
     name: github-release
     needs:
@@ -145,3 +119,33 @@ jobs:
             See https://github.com/jmbannon/ytdl-sub#installation for installation steps
           draft: false
           prerelease: false
+
+  pypi-publish:
+    name: pypi-publish
+    needs:
+      - get-version
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: [ "3.10" ]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
+          ref: master
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build Wheel
+        run: |
+          make wheel
+
+      - name: Publish distribution 📦 to PyPI
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
