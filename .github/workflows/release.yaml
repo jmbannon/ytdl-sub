@@ -44,8 +44,7 @@ jobs:
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
 
-      - name: Store output
-        id: output
+      - id: outputs
         run: |
           echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
           echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
