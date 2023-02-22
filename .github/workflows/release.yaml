@@ -57,15 +57,11 @@ jobs:
           sudo apt-get -y install zip
           pip install -e .[build]
           EXEC_SUFFIX=_linux make executable
-          zip dist/ytdl-sub_linux.zip dist/ytdl-sub_linux
-          tar czf dist/ytdl-sub_linux.tar.gz dist/ytdl-sub_linux
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           path: |
             dist/ytdl-sub_linux
-            dist/ytdl-sub_linux.zip
-            dist/ytdl-sub_linux.tar.gz
 
   build-arm:
     name: build-arm
