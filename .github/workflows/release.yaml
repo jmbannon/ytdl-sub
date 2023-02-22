@@ -39,22 +39,17 @@ jobs:
             echo "PYPI_VERSION=${{ env.DATE }}.post${{ env.DATE_COMMIT_COUNT }}" >> $GITHUB_ENV
           fi
 
-      - name: Set init contents
-        run: |
-          echo 'INIT_CONTENTS=\'__pypi_version__ = "${{ env.PYPI_VERSION }}"\n__local_version__ = "${{ env.LOCAL_VERSION }}"\'' >> $GITHUB_ENV
-
-      - name: Test outputs
+      - name: Test versions
         run: |
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
-          echo "${{ env.INIT_CONTENTS }}"
 
       - name: Store output
         id: output
         run: |
           echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
           echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
-          echo "init_contents=${{ env.INIT_CONTENTS }}" >> "$GITHUB_OUTPUT"
+          echo 'init_contents=__pypi_version__ = "${{ env.PYPI_VERSION }}"\n__local_version__ = ${{ env.LOCAL_VERSION }}"' >> "$GITHUB_OUTPUT"
           
 
   ##################################################################################################
