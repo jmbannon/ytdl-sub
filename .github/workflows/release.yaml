@@ -87,10 +87,8 @@ jobs:
           # Set an output parameter `uname` for use in subsequent steps
           run: |
             apk add python3 py3-pip
-            ls -lh
-            pwd            
-            python3 --version
-            pip install -e .[build]
+            pip install -e .
+            pip install pyinstaller
             EXEC_SUFFIX=_${{ matrix.arch }} make executable
             mv dist/ytdl-sub_${{ matrix.arch }} /artifacts
 
