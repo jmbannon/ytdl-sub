@@ -90,11 +90,11 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add zip python3 python3-pip
+            apk add zip python3 py3-pip
             ls -lh
             pwd            
             python3 --version
-            pip3 install -e .[build]
+            pip install -e .[build]
             EXEC_SUFFIX=_${{ matrix.arch }} make executable
             mv dist/ytdl-sub_${{ matrix.arch }} /artifacts
 
