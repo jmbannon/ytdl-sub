@@ -40,16 +40,6 @@ jobs:
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
 
-      - name: Write to init file
-        run: |
-          echo "__pypi_version__ = \"${{ env.PYPI_VERSION }}\"\n__local_version__ = \"${{ env.LOCAL_VERSION }}\"" > src/ytdl_sub/__init__.py
-
-      - name: Save modified init
-        uses: actions/cache@v3
-        with:
-          path: src/ytdl_sub/__init__.py
-          key: ${{ env.PYPI_VERSION }}
-
   ##################################################################################################
 
   build-unix:
@@ -59,11 +49,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Restore modified init
-        uses: actions/cache@v3
-        with:
-          path: src/ytdl_sub/__init__.py
-          key: ${{ env.PYPI_VERSION }}
+      - name: Write version to init file
+        run: |
+          echo "__pypi_version__ = \"${{ env.PYPI_VERSION }}\"\n__local_version__ = \"${{ env.LOCAL_VERSION }}\"" > src/ytdl_sub/__init__.py
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -88,11 +76,9 @@ jobs:
         arch: [ "aarch64" ]
     steps:
       - uses: actions/checkout@v3
-      - name: Restore modified init
-        uses: actions/cache@v3
-        with:
-          path: src/ytdl_sub/__init__.py
-          key: ${{ env.PYPI_VERSION }}
+      - name: Write to init file
+        run: |
+          echo "__pypi_version__ = \"${{ env.PYPI_VERSION }}\"\n__local_version__ = \"${{ env.LOCAL_VERSION }}\"" > src/ytdl_sub/__init__.py
       - uses: uraimo/run-on-arch-action@v2
         name: Run commands
         id: runcmd
@@ -128,11 +114,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Restore modified init
-        uses: actions/cache@v3
-        with:
-          path: src/ytdl_sub/__init__.py
-          key: ${{ env.PYPI_VERSION }}
+      - name: Write to init file
+        run: |
+          echo "__pypi_version__ = \"${{ env.PYPI_VERSION }}\"\n__local_version__ = \"${{ env.LOCAL_VERSION }}\"" > src/ytdl_sub/__init__.py
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
@@ -160,11 +144,9 @@ jobs:
         with:
           fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
           ref: master
-      - name: Restore modified init
-        uses: actions/cache@v3
-        with:
-          path: src/ytdl_sub/__init__.py
-          key: ${{ env.PYPI_VERSION }}
+      - name: Write to init file
+        run: |
+          echo "__pypi_version__ = \"${{ env.PYPI_VERSION }}\"\n__local_version__ = \"${{ env.LOCAL_VERSION }}\"" > src/ytdl_sub/__init__.py
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
