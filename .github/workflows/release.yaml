@@ -75,9 +75,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - arm-image: "dietpi:rpi_armv7_bullseye"
+          - arm-image: "raspi_2_bullseye:20230102"
             package-suffix: "_armv7"
-          - arm-image: "dietpi:rpi_armv8_bullseye"
+          - arm-image: "raspi_4_bullseye:20230102"
             package-suffix: "_aarch64"
     steps:
       - uses: actions/checkout@v3
