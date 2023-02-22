@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ "aarch64", "armv7", "armv6"]
+        arch: [ "aarch64", "armv7" ]
     steps:
       - uses: actions/checkout@v3
       - uses: uraimo/run-on-arch-action@v2
@@ -88,6 +88,7 @@ jobs:
           run: |
             apk add python3 py3-pip
             python3 -m pip install -e .
+            echo "Done!"
             python3 -m pip install pyinstaller
             EXEC_SUFFIX=_${{ matrix.arch }} make executable
             mv dist/ytdl-sub_${{ matrix.arch }} /artifacts
