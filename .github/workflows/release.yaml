@@ -6,7 +6,7 @@ on:
       - master
   pull_request:
 jobs:
-  get-version:
+  set-version:
     name: github-release
     runs-on: ubuntu-latest
 
@@ -40,15 +40,30 @@ jobs:
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
 
+      - name: Write to init file
+        run: |
+          echo "__pypi_version__ = \"${{ env.PYPI_VERSION }}\"\n__local_version__ = \"${{ env.LOCAL_VERSION }}\"" > src/ytdl_sub/__init__.py
+
+      - name: Save modified init
+        uses: actions/cache@v3
+        with:
+          path: src/ytdl_sub/__init__.py
+          key: ${{ env.PYPI_VERSION }}
+
   ##################################################################################################
 
   build-unix:
     name: build-unix
     needs:
-      - get-version
+      - set-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Restore modified init
+        uses: actions/cache@v3
+        with:
+          path: src/ytdl_sub/__init__.py
+          key: ${{ env.PYPI_VERSION }}
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -73,6 +88,11 @@ jobs:
         arch: [ "aarch64" ]
     steps:
       - uses: actions/checkout@v3
+      - name: Restore modified init
+        uses: actions/cache@v3
+        with:
+          path: src/ytdl_sub/__init__.py
+          key: ${{ env.PYPI_VERSION }}
       - uses: uraimo/run-on-arch-action@v2
         name: Run commands
         id: runcmd
@@ -86,12 +106,12 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add python3 py3-pip make git
+            apk add python3 py3-pip
             python3 -m pip install -e .
             echo "Done!"
             python3 -m pip install pyinstaller
-            EXEC_SUFFIX=_${{ matrix.arch }} make executable
-            mv dist/ytdl-sub_${{ matrix.arch }} /artifacts
+            pyinstaller ytdl-sub.spec
+            mv dist/ytdl-sub /artifacts/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -108,6 +128,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Restore modified init
+        uses: actions/cache@v3
+        with:
+          path: src/ytdl_sub/__init__.py
+          key: ${{ env.PYPI_VERSION }}
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
@@ -135,7 +160,11 @@ jobs:
         with:
           fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
           ref: master
-
+      - name: Restore modified init
+        uses: actions/cache@v3
+        with:
+          path: src/ytdl_sub/__init__.py
+          key: ${{ env.PYPI_VERSION }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
