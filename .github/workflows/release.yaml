@@ -90,28 +90,19 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add zip
-            python --version
+            apk add zip python3 python3-pip
+            ls -lh
+            pwd            
             python3 --version
-            pip install -e .[build]
-            EXEC_SUFFIX=${{ matrix.package-suffix }} make executable
-            zip dist/ytdl-sub${{ matrix.package-suffix }}.zip dist/ytdl-sub${{ matrix.package-suffix }}
-            tar czf dist/ytdl-sub${{ matrix.package-suffix }}.tar.gz dist/ytdl-sub${{ matrix.package-suffix }}
-            uname -a
-            echo ::set-output name=uname::$(uname -a)
-
-      - name: Get the output
-        # Echo the `uname` output parameter from the `runcmd` step
-        run: |
-          echo "The uname output was ${{ steps.runcmd.outputs.uname }}"
+            pip3 install -e .[build]
+            EXEC_SUFFIX=_${{ matrix.arch }} make executable
+            mv dist/ytdl-sub_${{ matrix.arch }} /artifacts
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           path: |
-            dist/ytdl-sub${{ matrix.package-suffix }}
-            dist/ytdl-sub${{ matrix.package-suffix }}.zip
-            dist/ytdl-sub${{ matrix.package-suffix }}.tar.gz
+            artifacts/ytdl-sub_${{ matrix.arch }}
 
   ##################################################################################################
 
