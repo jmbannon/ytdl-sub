@@ -18,7 +18,7 @@ RUN mkdir -p /config && \
       py3-setuptools && \
     # Install edge ffmpeg, ensure it is properly installed
     apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-      ffmpeg=5.1.2-r8 && \
+      "ffmpeg>5.1" && \
       ffmpeg -version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
