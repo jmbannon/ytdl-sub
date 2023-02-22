@@ -10,9 +10,9 @@ jobs:
     name: version
     runs-on: ubuntu-latest
     outputs:
-      pypi_version: ${{ steps.id.outputs.pypi_version }}
-      local_version: ${{ steps.id.outputs.local_version }}
-      init_contents: ${{ steps.id.outputs.init_contents }}
+      pypi_version: ${{ steps.set_outputs.outputs.pypi_version }}
+      local_version: ${{ steps.set_outputs.outputs.local_version }}
+      init_contents: ${{ steps.set_outputs.outputs.init_contents }}
 
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +44,7 @@ jobs:
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
 
-      - id: outputs
+      - id: set_outputs
         run: |
           echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
           echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
