@@ -5,35 +5,7 @@ on:
     branches:
       - master
 jobs:
-  pypi-publish:
-    name: pypi-publish
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python-version: [ "3.10" ]
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
-          ref: master
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Build Wheel
-        run: |
-          make wheel
-
-      - name: Publish distribution 📦 to PyPI
-        if: ${{ github.ref == 'refs/heads/master' }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
-
-  github-release:
+  get-version:
     name: github-release
     runs-on: ubuntu-latest
 
@@ -66,6 +38,68 @@ jobs:
         run: |
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
+
+  pypi-publish:
+    name: pypi-publish
+    needs:
+      - get-version
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: [ "3.10" ]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
+          ref: master
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build Wheel
+        run: |
+          make wheel
+
+      - name: Publish distribution 📦 to PyPI
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  build-unix:
+    name: build-unix
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install and Package
+        run: |
+          sudo apt-get -y install zip
+          pip install -e .[build]
+          EXEC_SUFFIX=_linux make executable
+          zip dist/ytdl-sub_linux.zip dist/ytdl-sub_linux
+          tar czf dist/ytdl-sub_linux.tar.gz dist/ytdl-sub_linux
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            dist/ytdl-sub_linux
+            dist/ytdl-sub_linux.zip
+            dist/ytdl-sub_linux.tar.gz
+
+  github-release:
+    name: github-release
+    needs:
+      - get-version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
