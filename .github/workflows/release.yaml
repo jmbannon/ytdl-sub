@@ -71,8 +71,9 @@ jobs:
 
   build-unix:
     name: build-unix
+    needs:
+      - get-version
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -92,6 +93,38 @@ jobs:
             dist/ytdl-sub_linux
             dist/ytdl-sub_linux.zip
             dist/ytdl-sub_linux.tar.gz
+
+  build-arm:
+    name: build-arm
+    needs:
+      - get-version
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - arm-image: "dietpi:rpi_armv7_bullseye"
+            package-suffix: "_armv7"
+          - arm-image: "dietpi:rpi_armv8_bullseye"
+            package-suffix: "_aarch64"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pguyot/arm-runner-action@v2
+        id: build_image
+        with:
+          base_image: ${{ matrix.arm-image }}
+          commands: |
+            sudo apt-get -y install zip
+            pip install -e .[build]
+            EXEC_SUFFIX=${{ matrix.package-suffix }} make executable
+            zip dist/ytdl-sub${{ matrix.package-suffix }}.zip dist/ytdl-sub${{ matrix.package-suffix }}
+            tar czf dist/ytdl-sub${{ matrix.package-suffix }}.tar.gz dist/ytdl-sub${{ matrix.package-suffix }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            dist/ytdl-sub${{ matrix.package-suffix }}
+            dist/ytdl-sub${{ matrix.package-suffix }}.zip
+            dist/ytdl-sub${{ matrix.package-suffix }}.tar.gz
 
   github-release:
     name: github-release
