@@ -6,9 +6,13 @@ on:
       - master
   pull_request:
 jobs:
-  set-version:
-    name: set-version
+  version:
+    name: version
     runs-on: ubuntu-latest
+    outputs:
+      pypi_version: ${{ steps.id.outputs.pypi_version }}
+      local_version: ${{ steps.id.outputs.local_version }}
+      init_contents: ${{ steps.id.outputs.init_contents }}
 
     steps:
       - uses: actions/checkout@v3
@@ -35,23 +39,36 @@ jobs:
             echo "PYPI_VERSION=${{ env.DATE }}.post${{ env.DATE_COMMIT_COUNT }}" >> $GITHUB_ENV
           fi
 
-      - name: Test version envs
+      - name: Set init contents
+        run: |
+          echo 'INIT_CONTENTS=\'__pypi_version__ = "${{ env.PYPI_VERSION }}"\n__local_version__ = "${{ env.LOCAL_VERSION }}"\'' >> $GITHUB_ENV
+
+      - name: Test outputs
         run: |
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
+          echo "${{ env.INIT_CONTENTS }}"
+
+      - name: Store output
+        id: output
+        run: |
+          echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
+          echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
+          echo "init_contents=${{ env.INIT_CONTENTS }}" >> "$GITHUB_OUTPUT"
+          
 
   ##################################################################################################
 
   build-unix:
     name: build-unix
     needs:
-      - set-version
+      - version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
         run: |
-          echo '__pypi_version__ = "${{ env.PYPI_VERSION }}"\n__local_version__ = "${{ env.LOCAL_VERSION }}"' > src/ytdl_sub/__init__.py
+          echo "${{version.output.outputs.init_contents}}" > src/ytdl_sub/__init__.py
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -69,7 +86,7 @@ jobs:
   build-arm:
     name: build-arm
     needs:
-      - set-version
+      - version
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -78,7 +95,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Write version to init file
         run: |
-          echo "__pypi_version__ = \\"${{ env.PYPI_VERSION }}\\"\\n__local_version__ = \\"${{ env.LOCAL_VERSION }}\\"" > src/ytdl_sub/__init__.py
+          echo "${{version.output.outputs.init_contents}}" > src/ytdl_sub/__init__.py
       - uses: uraimo/run-on-arch-action@v2
         name: Run commands
         id: runcmd
@@ -110,13 +127,13 @@ jobs:
   github-release:
     name: github-release
     needs:
-      - set-version
+      - version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
         run: |
-          echo "__pypi_version__ = \\"${{ env.PYPI_VERSION }}\\"\\n__local_version__ = \\"${{ env.LOCAL_VERSION }}\\"" > src/ytdl_sub/__init__.py
+          echo "${{version.output.outputs.init_contents}}" > src/ytdl_sub/__init__.py
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
@@ -133,7 +150,7 @@ jobs:
   pypi-publish:
     name: pypi-publish
     needs:
-      - set-version
+      - version
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -146,7 +163,7 @@ jobs:
           ref: master
       - name: Write version to init file
         run: |
-          echo "__pypi_version__ = \\"${{ env.PYPI_VERSION }}\\"\\n__local_version__ = \\"${{ env.LOCAL_VERSION }}\\"" > src/ytdl_sub/__init__.py
+          echo "${{version.output.outputs.init_contents}}" > src/ytdl_sub/__init__.py
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
