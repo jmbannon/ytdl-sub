@@ -132,8 +132,9 @@ jobs:
             make -j 8
             make altinstall
             python3.10 --version
-            pip3 install --upgrade pip
-            pip3 install pyinstaller
+            python3.10 -m pip install --upgrade pip
+            python3.10 -m pip install -e .
+            python3.10 -m pip install pyinstaller
             pyinstaller --log-level=DEBUG ytdl-sub.spec
             mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
             cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
