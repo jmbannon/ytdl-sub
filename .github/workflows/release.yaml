@@ -58,7 +58,10 @@ jobs:
     needs:
       - version
     runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux_2_28_x86_64
+    container:
+      image: quay.io/pypa/manylinux_2_28_x86_64
+      volumes:
+        - /opt/builds:/opt/builds
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
@@ -68,7 +71,7 @@ jobs:
         run: |
           cat /etc/os-release
           dnf update -y
-          dnf install -y epel-release
+          dnf install -y epel-release tar zstd
           dnf install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel wget make
           wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
           tar -xf Python-3.10.10.tar.xz
@@ -83,8 +86,9 @@ jobs:
           # Build executable
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
+          chmod +x dist/ytdl-sub
+          dist/ytdl-sub -h
           mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
-
       - name: Save build to cache
         uses: actions/cache@v3
         with:
@@ -122,6 +126,7 @@ jobs:
             pip3 install pyinstaller
             pyinstaller --log-level=DEBUG ytdl-sub.spec
             mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
+            cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
 
       - name: Save build to cache
         uses: actions/cache@v3
@@ -149,24 +154,28 @@ jobs:
         with:
           path: /opt/builds/ytdl-sub_linux
           key: ${{github.sha}}-linux
+          fail-on-cache-miss: True
 
       - name: Restore aarch64 build
         uses: actions/cache@v3
         with:
           path: /opt/builds/ytdl-sub_aarch64
           key: ${{github.sha}}-aarch64
+          fail-on-cache-miss: True
 
       - name: Restore armv7 build
         uses: actions/cache@v3
         with:
           path: /opt/builds/ytdl-sub_armv7
           key: ${{github.sha}}-armv7
+          fail-on-cache-miss: True
 
       - name: Restore armv6 build
         uses: actions/cache@v3
         with:
           path: /opt/builds/ytdl-sub_armv6
           key: ${{github.sha}}-armv6
+          fail-on-cache-miss: True
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
