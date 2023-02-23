@@ -104,10 +104,12 @@ jobs:
           # Set an output parameter `uname` for use in subsequent steps
           run: |
             apk add python3 py3-pip
-            python3 -m pip install -e .
+            pip3 install --upgrade pip
+            pip3 install -e .
             echo "Done!"
-            python3 -m pip install pyinstaller
+            pip3 install pyinstaller
             echo "installed"
+            which pyinstaller
             pyinstaller --help
             pyinstaller --debug=all ytdl-sub.spec
             mv dist/ytdl-sub /artifacts/ytdl-sub_${{ matrix.arch }}
