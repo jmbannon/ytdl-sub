@@ -58,7 +58,10 @@ jobs:
     needs:
       - version
     runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux_2_28_x86_64
+    container:
+      image: quay.io/pypa/manylinux_2_28_x86_64
+      volumes:
+        - /opt/builds:/opt/builds
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
@@ -91,6 +94,7 @@ jobs:
         with:
           path: /opt/builds/ytdl-sub_linux
           key: ${{ github.sha }}-linux
+          fail-on-cache-miss: True
 
   build-arm:
     name: build-arm
@@ -130,6 +134,7 @@ jobs:
         with:
           path: /opt/builds/ytdl-sub_${{ matrix.arch }}
           key: ${{ github.sha }}-${{ matrix.arch }}
+          fail-on-cache-miss: True
 
   ##################################################################################################
 
@@ -151,24 +156,28 @@ jobs:
         with:
           path: /opt/builds/ytdl-sub_linux
           key: ${{github.sha}}-linux
+          fail-on-cache-miss: True
 
       - name: Restore aarch64 build
         uses: actions/cache@v3
         with:
           path: /opt/builds/ytdl-sub_aarch64
           key: ${{github.sha}}-aarch64
+          fail-on-cache-miss: True
 
       - name: Restore armv7 build
         uses: actions/cache@v3
         with:
           path: /opt/builds/ytdl-sub_armv7
           key: ${{github.sha}}-armv7
+          fail-on-cache-miss: True
 
       - name: Restore armv6 build
         uses: actions/cache@v3
         with:
           path: /opt/builds/ytdl-sub_armv6
           key: ${{github.sha}}-armv6
+          fail-on-cache-miss: True
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
