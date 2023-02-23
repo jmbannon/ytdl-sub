@@ -108,7 +108,7 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen zlib-dev
+            apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen zlib-dev rust
             pip3 install --upgrade pip
             pip3 install -e .[build]
             pyinstaller --log-level=DEBUG ytdl-sub.spec
