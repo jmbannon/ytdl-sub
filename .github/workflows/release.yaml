@@ -73,11 +73,6 @@ jobs:
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
           mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
-          # Build wheel
-          mkdir -p /opt/wheels
-          python3 -m build
-          mv dist/ytdl-sub-${{ needs.version.outputs.pypi_version }}.tar.gz /opt/wheels
-          mv dist/ytdl-sub-${{ needs.version.outputs.pypi_version }}-py3-none-any.whl /opt/wheels
 
       - name: Save build to cache
         uses: actions/cache@v3
