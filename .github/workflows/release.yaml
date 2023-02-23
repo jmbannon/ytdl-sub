@@ -94,7 +94,6 @@ jobs:
         with:
           path: /opt/builds/ytdl-sub_linux
           key: ${{ github.sha }}-linux
-          fail-on-cache-miss: True
 
   build-arm:
     name: build-arm
@@ -134,7 +133,6 @@ jobs:
         with:
           path: /opt/builds/ytdl-sub_${{ matrix.arch }}
           key: ${{ github.sha }}-${{ matrix.arch }}
-          fail-on-cache-miss: True
 
   ##################################################################################################
 
