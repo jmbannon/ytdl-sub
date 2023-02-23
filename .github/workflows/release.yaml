@@ -179,12 +179,6 @@ jobs:
       - name: Inspect build directory
         run: |
           ls -lh /opt/builds
-          sudo find / | grep ytdl-sub | true
-
-      - name: Move linux build into dir with other builds
-        run: |
-          sudo mv /root/opt/builds/* /opt/builds
-          sudo chown -R runner:docker /opt/builds
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
