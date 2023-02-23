@@ -116,7 +116,7 @@ jobs:
         id: runcmd
         with:
           arch: ${{ matrix.arch }}
-          distro: stretch
+          distro: buster
 
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
