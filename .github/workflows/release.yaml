@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ "aarch64" ]
+        arch: [ "aarch64", "armv7", "armv6" ]
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
@@ -106,12 +106,8 @@ jobs:
             apk add python3 py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen
             pip3 install --upgrade pip
             pip3 install -e .
-            echo "Done!"
             pip3 install pyinstaller
-            echo "installed"
-            which pyinstaller
-            pyinstaller --help
-            pyinstaller --debug=all ytdl-sub.spec
+            pyinstaller ytdl-sub.spec
             mv dist/ytdl-sub /artifacts/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload artifacts
