@@ -84,6 +84,9 @@ jobs:
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
           mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
+      - name: Test Package
+        run: |
+          cd /opt/builds && ./ytdl-sub_linux view "https://www.youtube.com/watch?v=hxV9b-1hjfw"
 
       - name: Save build to cache
         uses: actions/cache@v3
@@ -122,6 +125,7 @@ jobs:
             pip3 install pyinstaller
             pyinstaller --log-level=DEBUG ytdl-sub.spec
             mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
+            cd /builds && ./ytdl-sub_${{ matrix.arch }} view "https://www.youtube.com/watch?v=hxV9b-1hjfw"
 
       - name: Save build to cache
         uses: actions/cache@v3
