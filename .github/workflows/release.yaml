@@ -73,12 +73,6 @@ jobs:
           cat /etc/os-release
           dnf update -y
           dnf install -y epel-release tar wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
-      - name: Install zstd
-        run: |
-          wget https://github.com/facebook/zstd/archive/refs/tags/v1.5.4.tar.gz
-          tar -xf v1.5.4.tar.gz
-          cd zstd-1.5.4 && make install
-          zstd --quiet --version
       - name: Install Python
         run: |
           wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
