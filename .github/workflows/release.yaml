@@ -58,17 +58,28 @@ jobs:
     needs:
       - version
     runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux_2_28_x86_64
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install and Package
+      - name: Install Python
         run: |
-          pip install -e .[build]
+          cat /etc/os-release
+          dnf update -y
+          dnf install -y epel-release
+          dnf install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel wget make
+          wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
+          tar -xf Python-3.10.10.tar.xz
+          cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+          make -j 8
+          make altinstall
+          python3.10 --version
+      - name: Build Package
+        run: |
+          python3.10 -m pip install --upgrade pip
+          python3.10 -m pip install -e .[build]
           # Build executable
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
