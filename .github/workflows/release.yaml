@@ -107,6 +107,8 @@ jobs:
             python3 -m pip install -e .
             echo "Done!"
             python3 -m pip install pyinstaller
+            echo "installed"
+            pyinstaller --help
             pyinstaller ytdl-sub.spec
             mv dist/ytdl-sub /artifacts/ytdl-sub_${{ matrix.arch }}
 
