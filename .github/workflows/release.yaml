@@ -116,17 +116,28 @@ jobs:
         id: runcmd
         with:
           arch: ${{ matrix.arch }}
-          distro: alpine_latest
+          distro: stretch
 
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
             --volume "/opt/builds:/builds"
 
-          # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen zlib-dev rust cargo
+            # install python
+            sudo apt update
+            sudo apt install wget build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev  
+            sudo apt-get install wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
+            wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
+            tar -xf Python-3.10.10.tar.xz
+            cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+            make -j 8
+            make altinstall
+            python3.10 --version
+            # install ytdl-sub
             pip3 install --upgrade pip
+            pip3 install -e .
             pip3 install pyinstaller
+            # build executable
             pyinstaller --log-level=DEBUG ytdl-sub.spec
             mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
             cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
