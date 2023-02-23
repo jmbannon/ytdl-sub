@@ -79,7 +79,7 @@ jobs:
       - name: Build Package
         run: |
           python3.10 -m pip install --upgrade pip
-          python3.10 -m install -e .[build]
+          python3.10 -m pip install -e .[build]
           # Build executable
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
