@@ -58,6 +58,7 @@ jobs:
     needs:
       - version
     runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
