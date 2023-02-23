@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ "aarch64", "armv7" ]
+        arch: [ "aarch64" ]
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
@@ -95,7 +95,7 @@ jobs:
         id: runcmd
         with:
           arch: ${{ matrix.arch }}
-          distro: ubuntu22.04
+          distro: alpine_latest
 
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
@@ -103,7 +103,7 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            sudo apt-get install python3 python3-pip
+            apk add python3 py3-pip
             python3 -m pip install -e .
             echo "Done!"
             python3 -m pip install pyinstaller
