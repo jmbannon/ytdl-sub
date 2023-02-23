@@ -67,7 +67,7 @@ jobs:
       - name: Install Python
         run: |
           cat /etc/os-release
-          sudo dnf update
+          dnf update
       - name: Install and Package
         run: |
           python --version
