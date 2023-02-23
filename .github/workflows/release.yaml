@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ "aarch64" ]
+        arch: [ "aarch64", "armv7" ]
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
