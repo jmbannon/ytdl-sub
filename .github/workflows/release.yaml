@@ -85,18 +85,6 @@ jobs:
           path: /opt/builds/ytdl-sub_linux
           key: ${{ github.sha }}-linux
 
-      - name: Save wheel to cache
-        uses: actions/cache@v3
-        with:
-          path: /opt/wheels/ytdl-sub-${{ needs.version.outputs.pypi_version }}-py3-none-any.whl
-          key: ${{ github.sha }}-wheel
-
-      - name: Save targz to cache
-        uses: actions/cache@v3
-        with:
-          path: /opt/wheels/ytdl-sub-${{ needs.version.outputs.pypi_version }}.tar.gz
-          key: ${{ github.sha }}-targz
-
   build-arm:
     name: build-arm
     needs:
@@ -194,31 +182,26 @@ jobs:
   pypi-publish:
     name: pypi-publish
     needs:
-      - build-linux
+      - version
     runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
-
-      - name: Restore wheel
-        uses: actions/cache@v3
-        with:
-          path: /opt/wheels/ytdl-sub-${{ needs.version.outputs.pypi_version }}-py3-none-any.whl
-          key: ${{ github.sha }}-wheel
-
-      - name: Restore targz
-        uses: actions/cache@v3
-        with:
-          path: /opt/wheels/ytdl-sub-${{ needs.version.outputs.pypi_version }}.tar.gz
-          key: ${{ github.sha }}-targz
+          python-version: '3.10'
+      - name: Write version to init file
+        run: |
+          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+      - name: Build wheel
+        run: |
+          # Build wheel
+          pip install -e .
+          pip install build
+          python3 -m build
 
       - name: Publish distribution 📦 to PyPI
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
-          packages_dir: /opt/wheels
