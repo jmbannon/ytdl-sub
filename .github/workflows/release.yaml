@@ -69,7 +69,7 @@ jobs:
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
       - name: Install base packages
-      - run:
+        run: |
           cat /etc/os-release
           dnf update -y
           dnf install -y epel-release tar wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
