@@ -198,7 +198,7 @@ jobs:
       - name: Inspect build directory
         run: |
           ls -lh /opt/builds
-          find . | grep _linux
+          find / | grep ytdl-sub | true
 
       - name: Move linux build into dir with other builds
         run: |
