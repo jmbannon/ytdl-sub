@@ -68,11 +68,12 @@ jobs:
           python-version: '3.10'
       - name: Install and Package
         run: |
-          sudo apt-get -y install zip
           pip install -e .[build]
-          EXEC_SUFFIX=_linux make executable
+          pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
-          mv dist/ytdl-sub_linux /opt/builds
+          mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
+          python3 -m build
+          ls -lh dist/
 
       - name: Save build to cache
         uses: actions/cache@v3
@@ -102,16 +103,18 @@ jobs:
 
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
-            --volume "/opt/builds:/artifacts"
+            --volume "/opt/builds:/builds"
+            --volume "/opt/wheels:/wheels"
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
             apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen zlib-dev
             pip3 install --upgrade pip
-            pip3 install -e .
-            pip3 install pyinstaller
+            pip3 install -e .[build]
             pyinstaller --log-level=DEBUG ytdl-sub.spec
-            mv dist/ytdl-sub /artifacts/ytdl-sub_${{ matrix.arch }}
+            mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
+            python3 -m build
+            ls -lh dist/
 
       - name: Save build to cache
         uses: actions/cache@v3
