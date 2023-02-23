@@ -61,8 +61,11 @@ jobs:
     needs:
       - version
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ "x86_64", "aarch64" ]
     container:
-      image: quay.io/pypa/manylinux_2_28_x86_64
+      image: quay.io/pypa/manylinux_2_28_${{ matrix.arch }}
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
@@ -90,57 +93,7 @@ jobs:
           mkdir -p /opt/builds
           chmod ugo+rwx dist/ytdl-sub
           dist/ytdl-sub -h
-          mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
-
-      - name: Upload build
-        uses: actions/upload-artifact@v3
-        with:
-          name: ytdl-sub_linux
-          path: /opt/builds/ytdl-sub_linux
-
-  build-arm:
-    name: build-arm
-    needs:
-      - version
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [ "aarch64", "armv7", "armv6" ]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Write version to init file
-        run: |
-          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-      - uses: uraimo/run-on-arch-action@v2
-        name: Run commands
-        id: runcmd
-        with:
-          arch: ${{ matrix.arch }}
-          distro: stretch
-
-          # Mount the artifacts directory as /artifacts in the container
-          dockerRunArgs: |
-            --volume "/opt/builds:/builds"
-
-          run: |
-            # install python
-            apt update
-            apt install wget build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev  
-            apt-get install wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
-            wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
-            tar -xf Python-3.10.10.tar.xz
-            cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
-            make -j 8
-            make altinstall
-            python3.10 --version
-            # install ytdl-sub
-            pip3 install --upgrade pip
-            pip3 install -e .
-            pip3 install pyinstaller
-            # build executable
-            pyinstaller --log-level=DEBUG ytdl-sub.spec
-            mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
-            cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
+          mv dist/ytdl-sub /opt/builds/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload build
         uses: actions/upload-artifact@v3
@@ -155,7 +108,6 @@ jobs:
     needs:
       - version
       - build-linux
-      - build-arm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -163,29 +115,17 @@ jobs:
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
 
-      - name: Restore armv6 build
-        uses: actions/download-artifact@v3
-        with:
-          name: ytdl-sub_armv6
-          path: /opt/builds/ytdl-sub_armv6
-
-      - name: Restore armv7 build
-        uses: actions/download-artifact@v3
-        with:
-          name: ytdl-sub_armv7
-          path: /opt/builds/ytdl-sub_armv7
-
       - name: Restore aarch64 build
         uses: actions/download-artifact@v3
         with:
           name: ytdl-sub_aarch64
           path: /opt/builds/ytdl-sub_aarch64
 
-      - name: Restore linux build
+      - name: Restore x86_64 build
         uses: actions/download-artifact@v3
         with:
           name: ytdl-sub_linux
-          path: /opt/builds/ytdl-sub_linux
+          path: /opt/builds/ytdl-sub_x86_64
 
       - name: Inspect build directory
         run: |
@@ -203,10 +143,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            /opt/builds/ytdl-sub_linux
+            /opt/builds/ytdl-sub_x86_64
             /opt/builds/ytdl-sub_aarch64
-            /opt/builds/ytdl-sub_armv7
-            /opt/builds/ytdl-sub_armv6
 
   pypi-publish:
     name: pypi-publish
