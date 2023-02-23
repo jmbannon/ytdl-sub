@@ -101,12 +101,11 @@ jobs:
           tar --version
           zstd --version
 
-      - name: Save build to cache
-        uses: actions/cache@v3
+      - name: Upload build
+        uses: actions/upload-artifact@v3
         with:
+          name: ytdl-sub_linux
           path: /opt/builds/ytdl-sub_linux
-          key: ${{ github.sha }}-linux
-          enableCrossOsArchive: True
 
   build-arm:
     name: build-arm
@@ -141,12 +140,11 @@ jobs:
             mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
             cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
 
-      - name: Save build to cache
-        uses: actions/cache@v3
+      - name: Upload build
+        uses: actions/upload-artifact@v3
         with:
+          name: ytdl-sub_${{ matrix.arch }}
           path: /opt/builds/ytdl-sub_${{ matrix.arch }}
-          key: ${{ github.sha }}-${{ matrix.arch }}
-          enableCrossOsArchive: True
 
   ##################################################################################################
 
@@ -163,37 +161,29 @@ jobs:
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
 
-      - name: Restore linux build
-        uses: actions/cache@v3
+      - name: Restore armv6 build
+        uses: actions/download-artifact@v3
         with:
-          path: /opt/builds/ytdl-sub_linux
-          key: ${{github.sha}}-linux
-          fail-on-cache-miss: True
-          enableCrossOsArchive: True
-
-      - name: Restore aarch64 build
-        uses: actions/cache@v3
-        with:
-          path: /opt/builds/ytdl-sub_aarch64
-          key: ${{github.sha}}-aarch64
-          fail-on-cache-miss: True
-          enableCrossOsArchive: True
+          name: ytdl-sub_armv6
+          path: /opt/builds/ytdl-sub_armv6
 
       - name: Restore armv7 build
-        uses: actions/cache@v3
+        uses: actions/download-artifact@v3
         with:
+          name: ytdl-sub_armv7
           path: /opt/builds/ytdl-sub_armv7
-          key: ${{github.sha}}-armv7
-          fail-on-cache-miss: True
-          enableCrossOsArchive: True
 
-      - name: Restore armv6 build
-        uses: actions/cache@v3
+      - name: Restore aarch64 build
+        uses: actions/download-artifact@v3
         with:
-          path: /opt/builds/ytdl-sub_armv6
-          key: ${{github.sha}}-armv6
-          fail-on-cache-miss: True
-          enableCrossOsArchive: True
+          name: ytdl-sub_aarch64
+          path: /opt/builds/ytdl-sub_aarch64
+
+      - name: Restore linux build
+        uses: actions/download-artifact@v3
+        with:
+          name: ytdl-sub_linux
+          path: /opt/builds/ytdl-sub_linux
 
       - name: Inspect build directory
         run: |
