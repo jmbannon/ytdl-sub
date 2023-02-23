@@ -77,7 +77,7 @@ jobs:
         run: |
           wget https://github.com/facebook/zstd/archive/refs/tags/v1.5.4.tar.gz
           tar -xf v1.5.4.tar.gz
-          cd v1.5.4 && make install
+          cd zstd-1.5.4 && make install
           zstd --quiet --version
       - name: Install Python
         run: |
