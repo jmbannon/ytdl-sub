@@ -69,17 +69,33 @@ jobs:
       - name: Install and Package
         run: |
           pip install -e .[build]
+          # Build executable
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
           mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
+          @ Build wheel
+          mkdir -p /opt/wheels
           python3 -m build
-          ls -lh dist/
+          mv dist/ytdl-sub-${{ needs.version.outputs.pypi_version }}.tar.gz /opt/wheels
+          mv dist/ytdl-sub-${{ needs.version.outputs.pypi_version }}-py3-none-any.whl /opt/wheels
 
       - name: Save build to cache
         uses: actions/cache@v3
         with:
           path: /opt/builds/ytdl-sub_linux
           key: ${{ github.sha }}-linux
+
+      - name: Save wheel to cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/wheels/ytdl-sub-${{ needs.version.outputs.pypi_version }}-py3-none-any.whl
+          key: ${{ github.sha }}-wheel
+
+      - name: Save targz to cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/wheels/ytdl-sub-${{ needs.version.outputs.pypi_version }}.tar.gz
+          key: ${{ github.sha }}-targz
 
   build-arm:
     name: build-arm
@@ -104,17 +120,14 @@ jobs:
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
             --volume "/opt/builds:/builds"
-            --volume "/opt/wheels:/wheels"
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
             apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen zlib-dev rust cargo
             pip3 install --upgrade pip
-            pip3 install -e .[build]
+            pip3 install pyinstaller
             pyinstaller --log-level=DEBUG ytdl-sub.spec
             mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
-            python3 -m build
-            ls -lh dist/
 
       - name: Save build to cache
         uses: actions/cache@v3
@@ -181,31 +194,31 @@ jobs:
   pypi-publish:
     name: pypi-publish
     needs:
-      - version
+      - build-linux
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python-version: [ "3.10" ]
 
     steps:
       - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
-          fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
-          ref: master
-      - name: Write version to init file
-        run: |
-          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
 
-      - name: Build Wheel
-        run: |
-          make wheel
+      - name: Restore wheel
+        uses: actions/cache@v3
+        with:
+          path: /opt/wheels/ytdl-sub-${{ needs.version.outputs.pypi_version }}-py3-none-any.whl
+          key: ${{ github.sha }}-wheel
+
+      - name: Restore targz
+        uses: actions/cache@v3
+        with:
+          path: /opt/wheels/ytdl-sub-${{ needs.version.outputs.pypi_version }}.tar.gz
+          key: ${{ github.sha }}-targz
 
       - name: Publish distribution 📦 to PyPI
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+          packages_dir: /opt/wheels
