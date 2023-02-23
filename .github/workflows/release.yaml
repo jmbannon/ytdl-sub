@@ -71,7 +71,7 @@ jobs:
         run: |
           cat /etc/os-release
           dnf update -y
-          dnf install -y epel-release
+          dnf install -y epel-release tar zstd
           dnf install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel wget make
           wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
           tar -xf Python-3.10.10.tar.xz
