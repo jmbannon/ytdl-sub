@@ -96,6 +96,7 @@ jobs:
         with:
           path: /opt/builds/ytdl-sub_linux
           key: ${{ github.sha }}-linux
+          enableCrossOsArchive: True
 
   build-arm:
     name: build-arm
@@ -135,6 +136,7 @@ jobs:
         with:
           path: /opt/builds/ytdl-sub_${{ matrix.arch }}
           key: ${{ github.sha }}-${{ matrix.arch }}
+          enableCrossOsArchive: True
 
   ##################################################################################################
 
@@ -157,6 +159,7 @@ jobs:
           path: /opt/builds/ytdl-sub_linux
           key: ${{github.sha}}-linux
           fail-on-cache-miss: True
+          enableCrossOsArchive: True
 
       - name: Restore aarch64 build
         uses: actions/cache@v3
@@ -164,6 +167,7 @@ jobs:
           path: /opt/builds/ytdl-sub_aarch64
           key: ${{github.sha}}-aarch64
           fail-on-cache-miss: True
+          enableCrossOsArchive: True
 
       - name: Restore armv7 build
         uses: actions/cache@v3
@@ -171,6 +175,7 @@ jobs:
           path: /opt/builds/ytdl-sub_armv7
           key: ${{github.sha}}-armv7
           fail-on-cache-miss: True
+          enableCrossOsArchive: True
 
       - name: Restore armv6 build
         uses: actions/cache@v3
@@ -178,6 +183,11 @@ jobs:
           path: /opt/builds/ytdl-sub_armv6
           key: ${{github.sha}}-armv6
           fail-on-cache-miss: True
+          enableCrossOsArchive: True
+
+      - name: Inspect build directory
+        run: |
+          ls -lh /opt/builds
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
