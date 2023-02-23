@@ -65,9 +65,9 @@ jobs:
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
       - name: Install Python
+        run: |
           cat /etc/os-release
           sudo dnf update
-        run: |
       - name: Install and Package
         run: |
           python --version
