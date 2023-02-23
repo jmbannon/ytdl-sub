@@ -4,38 +4,15 @@ on:
     # publish only when pushed to master
     branches:
       - master
+  pull_request:
 jobs:
-  pypi-publish:
-    name: pypi-publish
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python-version: [ "3.10" ]
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Needed for correct commit count. TODO: define once using GH actions
-          ref: master
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Build Wheel
-        run: |
-          make wheel
-
-      - name: Publish distribution 📦 to PyPI
-        if: ${{ github.ref == 'refs/heads/master' }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
-
-  github-release:
-    name: github-release
+  version:
+    name: version
     runs-on: ubuntu-latest
+    outputs:
+      pypi_version: ${{ steps.set_outputs.outputs.pypi_version }}
+      local_version: ${{ steps.set_outputs.outputs.local_version }}
+      init_contents: ${{ steps.set_outputs.outputs.init_contents }}
 
     steps:
       - uses: actions/checkout@v3
@@ -55,26 +32,171 @@ jobs:
       - name: Set version envs 3/3
         run: |
           echo "LOCAL_VERSION=${{ env.DATE }}+${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
-          if [ ${{ env.COMMIT_HASH }} = "0" ]
+          if [ ${{ env.DATE_COMMIT_COUNT }} = "0" ]
           then
             echo "PYPI_VERSION=${{ env.DATE }}" >> $GITHUB_ENV
           else
             echo "PYPI_VERSION=${{ env.DATE }}.post${{ env.DATE_COMMIT_COUNT }}" >> $GITHUB_ENV
           fi
 
-      - name: Test version envs
+      - name: Test versions
         run: |
           echo "${{ env.PYPI_VERSION }}"
           echo "${{ env.LOCAL_VERSION }}"
+
+      - id: set_outputs
+        run: |
+          echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
+          echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
+          echo 'init_contents=__pypi_version__ = "${{ env.PYPI_VERSION }}";__local_version__ = "${{ env.LOCAL_VERSION }}"' >> "$GITHUB_OUTPUT"
+          
+
+  ##################################################################################################
+
+  build-linux:
+    name: build-linux
+    needs:
+      - version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Write version to init file
+        run: |
+          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install and Package
+        run: |
+          pip install -e .[build]
+          # Build executable
+          pyinstaller ytdl-sub.spec
+          mkdir -p /opt/builds
+          mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
+
+      - name: Save build to cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_linux
+          key: ${{ github.sha }}-linux
+
+  build-arm:
+    name: build-arm
+    needs:
+      - version
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ "aarch64", "armv7", "armv6" ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Write version to init file
+        run: |
+          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+      - uses: uraimo/run-on-arch-action@v2
+        name: Run commands
+        id: runcmd
+        with:
+          arch: ${{ matrix.arch }}
+          distro: alpine_latest
+
+          # Mount the artifacts directory as /artifacts in the container
+          dockerRunArgs: |
+            --volume "/opt/builds:/builds"
+
+          # Set an output parameter `uname` for use in subsequent steps
+          run: |
+            apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen zlib-dev rust cargo
+            pip3 install --upgrade pip
+            pip3 install pyinstaller
+            pyinstaller --log-level=DEBUG ytdl-sub.spec
+            mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
+
+      - name: Save build to cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_${{ matrix.arch }}
+          key: ${{ github.sha }}-${{ matrix.arch }}
+
+  ##################################################################################################
+
+  github-release:
+    name: github-release
+    needs:
+      - version
+      - build-linux
+      - build-arm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Write version to init file
+        run: |
+          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+
+      - name: Restore linux build
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_linux
+          key: ${{github.sha}}-linux
+
+      - name: Restore aarch64 build
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_aarch64
+          key: ${{github.sha}}-aarch64
+
+      - name: Restore armv7 build
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_armv7
+          key: ${{github.sha}}-armv7
+
+      - name: Restore armv6 build
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_armv6
+          key: ${{github.sha}}-armv6
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          name: ytdl-sub ${{ env.PYPI_VERSION }}
-          tag_name: ${{ env.PYPI_VERSION }}
+          name: ytdl-sub ${{ needs.version.outputs.pypi_version }}
+          tag_name: ${{ needs.version.outputs.pypi_version }}
           body: |
             See https://github.com/jmbannon/ytdl-sub#installation for installation steps
           draft: false
           prerelease: false
+          files: |
+            /opt/builds/ytdl-sub_linux
+            /opt/builds/ytdl-sub_aarch64
+            /opt/builds/ytdl-sub_armv7
+            /opt/builds/ytdl-sub_armv6
+
+  pypi-publish:
+    name: pypi-publish
+    needs:
+      - version
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Write version to init file
+        run: |
+          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+      - name: Build wheel
+        run: |
+          # Build wheel
+          pip install -e .
+          pip install build
+          python3 -m build
+
+      - name: Publish distribution 📦 to PyPI
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}

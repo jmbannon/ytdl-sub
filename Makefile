@@ -33,6 +33,9 @@ docker_stage: wheel
 	cp -R examples docker/root/defaults/
 docker: docker_stage
 	sudo docker build --no-cache -t ytdl-sub:local docker/
+executable: clean
+	pyinstaller ytdl-sub.spec
+	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}
 docs:
 	sphinx-build -a -b html docs docs/_html
 clean:
