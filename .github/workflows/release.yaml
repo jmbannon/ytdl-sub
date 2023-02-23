@@ -103,11 +103,11 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add python3 py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen
+            apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen
             pip3 install --upgrade pip
             pip3 install -e .
             pip3 install pyinstaller
-            pyinstaller ytdl-sub.spec
+            pyinstaller --log-level=DEBUG ytdl-sub.spec
             mv dist/ytdl-sub /artifacts/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload artifacts
