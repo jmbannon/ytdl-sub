@@ -91,9 +91,6 @@ jobs:
           chmod ugo+rwx dist/ytdl-sub
           dist/ytdl-sub -h
           mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
-          ls -lh /opt/builds/
-          tar --version
-          zstd --version
 
       - name: Upload build
         uses: actions/upload-artifact@v3
