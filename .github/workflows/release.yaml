@@ -163,25 +163,25 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ytdl-sub_armv6
-          path: /opt/builds/ytdl-sub_armv6
+          path: /opt/builds
 
       - name: Restore armv7 build
         uses: actions/download-artifact@v3
         with:
           name: ytdl-sub_armv7
-          path: /opt/builds/ytdl-sub_armv7
+          path: /opt/builds
 
       - name: Restore aarch64 build
         uses: actions/download-artifact@v3
         with:
           name: ytdl-sub_aarch64
-          path: /opt/builds/ytdl-sub_aarch64
+          path: /opt/builds
 
       - name: Restore linux build
         uses: actions/download-artifact@v3
         with:
           name: ytdl-sub_linux
-          path: /opt/builds/ytdl-sub_linux
+          path: /opt/builds
 
       - name: Inspect build directory
         run: |
