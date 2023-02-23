@@ -95,7 +95,7 @@ jobs:
         id: runcmd
         with:
           arch: ${{ matrix.arch }}
-          distro: alpine_latest
+          distro: ubuntu22.04
 
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
@@ -103,13 +103,12 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add python3 py3-pip
             python3 -m pip install -e .
             echo "Done!"
             python3 -m pip install pyinstaller
             echo "installed"
             pyinstaller --help
-            pyinstaller ytdl-sub.spec
+            pyinstaller --debug=all ytdl-sub.spec
             mv dist/ytdl-sub /artifacts/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload artifacts
