@@ -72,9 +72,8 @@ jobs:
           dnf install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel wget make
           wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
           tar -xf Python-3.10.10.tar.xz
-          cd Python-3.10.10 && ./configure --enable-optimizations
-          make -j 2
-          nproc
+          cd Python-3.10.10 && ./configure --with-ensurepip=install
+          make -j 8
           make altinstall
           python3.10 --version
       - name: Build Package
