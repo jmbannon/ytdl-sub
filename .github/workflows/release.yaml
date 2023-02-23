@@ -93,6 +93,7 @@ jobs:
           dist/ytdl-sub -h
           mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
           ls -lh /opt/builds/
+          tar --version
       - name: Save build to cache
         uses: actions/cache@v3
         with:
