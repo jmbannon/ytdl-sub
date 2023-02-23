@@ -198,6 +198,11 @@ jobs:
       - name: Inspect build directory
         run: |
           ls -lh /opt/builds
+          find . | grep _linux
+
+      - name: Move linux build into dir with other builds
+        run: |
+          mv ~/opt/builds/* /opt/builds
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
