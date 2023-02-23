@@ -58,15 +58,16 @@ jobs:
     needs:
       - version
     runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux_2_24_x86_64
+    container: quay.io/pypa/manylinux_2_28_x86_64
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+      - name: Install Python
+          cat /etc/os-release
+          sudo dnf update
+        run: |
       - name: Install and Package
         run: |
           python --version
