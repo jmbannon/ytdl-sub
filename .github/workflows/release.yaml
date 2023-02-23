@@ -63,44 +63,46 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: quay.io/pypa/manylinux_2_28_x86_64
+      volumes:
+        - /opt/builds:/opt/builds
+      steps:
+        - uses: actions/checkout@v3
+        - name: Write version to init file
+          run: |
+            echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+        - name: Install base packages
+          run: |
+            cat /etc/os-release
+            dnf update -y
+            dnf install -y epel-release tar wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
+        - name: Install zstd
+          run: |
+            wget https://github.com/facebook/zstd/archive/refs/tags/v1.5.4.tar.gz
+            tar -xf v1.5.4.tar.gz
+            cd zstd-1.5.4 && make install
+            zstd --quiet --version
+        - name: Install Python
+          run: |
+            wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
+            tar -xf Python-3.10.10.tar.xz
+            cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+            make -j 8
+            make altinstall
+            python3.10 --version
+        - name: Build Package
+          run: |
+            python3.10 -m pip install --upgrade pip
+            python3.10 -m pip install -e .[build]
+            # Build executable
+            pyinstaller ytdl-sub.spec
+            mkdir -p /opt/builds
+            chmod ugo+rwx dist/ytdl-sub
+            dist/ytdl-sub -h
+            mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
+            ls -lh /opt/builds/
+            tar --version
+            zstd --version
     steps:
-      - uses: actions/checkout@v3
-      - name: Write version to init file
-        run: |
-          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-      - name: Install base packages
-        run: |
-          cat /etc/os-release
-          dnf update -y
-          dnf install -y epel-release tar wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
-      - name: Install zstd
-        run: |
-          wget https://github.com/facebook/zstd/archive/refs/tags/v1.5.4.tar.gz
-          tar -xf v1.5.4.tar.gz
-          cd zstd-1.5.4 && make install
-          zstd --quiet --version
-      - name: Install Python
-        run: |
-          wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
-          tar -xf Python-3.10.10.tar.xz
-          cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
-          make -j 8
-          make altinstall
-          python3.10 --version
-      - name: Build Package
-        run: |
-          python3.10 -m pip install --upgrade pip
-          python3.10 -m pip install -e .[build]
-          # Build executable
-          pyinstaller ytdl-sub.spec
-          mkdir -p /opt/builds
-          chmod ugo+rwx dist/ytdl-sub
-          dist/ytdl-sub -h
-          mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
-          ls -lh /opt/builds/
-          tar --version
-          zstd --version
-
       - name: Save build to cache
         uses: actions/cache@v3
         with:
@@ -198,12 +200,6 @@ jobs:
       - name: Inspect build directory
         run: |
           ls -lh /opt/builds
-          sudo find / | grep ytdl-sub | true
-
-      - name: Move linux build into dir with other builds
-        run: |
-          sudo mv /root/opt/builds/* /opt/builds
-          sudo chown -R runner:docker /opt/builds
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
