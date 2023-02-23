@@ -5,6 +5,8 @@ on:
     branches:
       - master
   pull_request:
+env:
+  ACTIONS_STEP_DEBUG: true
 jobs:
   version:
     name: version
