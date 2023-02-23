@@ -103,7 +103,17 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add python3 py3-pip
+            apk add
+              python3 \
+              py3-pip \
+              zlib-dev \
+              musl-dev \
+              libc-dev \
+              libffi-dev \
+              gcc \
+              g++ \
+              git \
+              pwgen
             pip3 install --upgrade pip
             pip3 install -e .
             echo "Done!"
