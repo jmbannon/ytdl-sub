@@ -70,12 +70,19 @@ jobs:
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-      - name: Install Python
-        run: |
+      - name: Install base packages
+      - run:
           cat /etc/os-release
           dnf update -y
-          dnf install -y epel-release tar zstd
-          dnf install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel wget make
+          dnf install -y epel-release tar wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
+      - name: Install zstd
+        run: |
+          wget https://github.com/facebook/zstd/archive/refs/tags/v1.5.4.tar.gz
+          tar -xf v1.5.4.tar.gz
+          cd v1.5.4 && make install
+          zstd --quiet --version
+      - name: Install Python
+        run: |
           wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
           tar -xf Python-3.10.10.tar.xz
           cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
