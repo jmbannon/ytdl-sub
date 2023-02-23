@@ -48,7 +48,7 @@ jobs:
         run: |
           echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
           echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
-          echo 'init_contents=__pypi_version__ = "${{ env.PYPI_VERSION }}";__local_version__ = ${{ env.LOCAL_VERSION }}"' >> "$GITHUB_OUTPUT"
+          echo 'init_contents=__pypi_version__ = "${{ env.PYPI_VERSION }}";__local_version__ = "${{ env.LOCAL_VERSION }}"' >> "$GITHUB_OUTPUT"
           
 
   ##################################################################################################
