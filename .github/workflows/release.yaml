@@ -53,8 +53,8 @@ jobs:
 
   ##################################################################################################
 
-  build-unix:
-    name: build-unix
+  build-linux:
+    name: build-linux
     needs:
       - version
     runs-on: ubuntu-latest
@@ -71,11 +71,14 @@ jobs:
           sudo apt-get -y install zip
           pip install -e .[build]
           EXEC_SUFFIX=_linux make executable
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+          mkdir -p /opt/builds
+          mv dist/ytdl-sub_linux /opt/builds
+
+      - name: Save build to cache
+        uses: actions/cache@v3
         with:
-          path: |
-            dist/ytdl-sub_linux
+          path: /opt/builds/ytdl-sub_linux
+          key: ${{ github.sha }}-linux
 
   build-arm:
     name: build-arm
@@ -99,22 +102,22 @@ jobs:
 
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
-            --volume "${PWD}/artifacts:/artifacts"
+            --volume "/opt/builds:/artifacts"
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen
+            apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen zlib-dev
             pip3 install --upgrade pip
             pip3 install -e .
             pip3 install pyinstaller
             pyinstaller --log-level=DEBUG ytdl-sub.spec
             mv dist/ytdl-sub /artifacts/ytdl-sub_${{ matrix.arch }}
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+      - name: Save build to cache
+        uses: actions/cache@v3
         with:
-          path: |
-            artifacts/ytdl-sub_${{ matrix.arch }}
+          path: /opt/builds/ytdl-sub_${{ matrix.arch }}
+          key: ${{ github.sha }}-${{ matrix.arch }}
 
   ##################################################################################################
 
@@ -122,12 +125,39 @@ jobs:
     name: github-release
     needs:
       - version
+      - build-linux
+      - build-arm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+
+      - name: Restore linux build
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_linux
+          key: ${{github.sha}}-linux
+
+      - name: Restore aarch64 build
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_aarch64
+          key: ${{github.sha}}-aarch64
+
+      - name: Restore armv7 build
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_armv7
+          key: ${{github.sha}}-armv7
+
+      - name: Restore armv6 build
+        uses: actions/cache@v3
+        with:
+          path: /opt/builds/ytdl-sub_armv6
+          key: ${{github.sha}}-armv6
+
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
         id: create_release
@@ -139,6 +169,11 @@ jobs:
             See https://github.com/jmbannon/ytdl-sub#installation for installation steps
           draft: false
           prerelease: false
+          files: |
+            /opt/builds/ytdl-sub_linux
+            /opt/builds/ytdl-sub_aarch64
+            /opt/builds/ytdl-sub_armv7
+            /opt/builds/ytdl-sub_armv6
 
   pypi-publish:
     name: pypi-publish
