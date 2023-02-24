@@ -125,10 +125,13 @@ jobs:
           name: ytdl-sub_x86_64
           path: /opt/builds
 
+      - name: Rename x86_64 build
+        run: |
+          mv /opt/builds/ytdl-sub_x86_64 /opt/builds/ytdl-sub
+
       - name: Inspect build directory, rename x86_64 build
         run: |
           ls -lh /opt/builds
-          mv /opt/builds/ytdl-sub_x86_64 /opt/builds/ytdl-sub
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
@@ -142,7 +145,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            /opt/builds/ytdl-sub_x86_64
+            /opt/builds/ytdl-sub
             /opt/builds/ytdl-sub_aarch64
 
   pypi-publish:
