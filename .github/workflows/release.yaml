@@ -84,7 +84,6 @@ jobs:
           python3.10 -m ensurepip --upgrade
       - name: Build Package
         run: |
-          python3.10 -m pip install --upgrade pip
           python3.10 -m pip install -e .[build]
           # Build executable
           pyinstaller ytdl-sub.spec
@@ -131,10 +130,9 @@ jobs:
             wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
             tar -xf Python-3.10.10.tar.xz
             cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
-            make -j 8
+            make -j 1
             make altinstall
             python3.10 --version
-            python3.10 -m ensurepip --upgrade
             python3.10 -m pip install -e .
             python3.10 -m pip install pyinstaller
             pyinstaller --log-level=DEBUG ytdl-sub.spec
