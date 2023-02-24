@@ -132,6 +132,7 @@ jobs:
             make -j 8
             make altinstall
             python3.10 --version
+            python3.10 -m pip install distutils
             python3.10 -m pip install -e .
             python3.10 -m pip install pyinstaller
             pyinstaller --log-level=DEBUG ytdl-sub.spec
