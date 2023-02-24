@@ -125,7 +125,7 @@ jobs:
           # Set an output parameter `uname` for use in subsequent steps
           run: |
             apt-get update -y
-            apt-get install -y wget build-essential gcc g++ libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev openssl
+            apt-get install -y wget build-essential gcc g++ libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev openssl python3-distutils
             wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
             tar -xf Python-3.10.10.tar.xz
             cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
