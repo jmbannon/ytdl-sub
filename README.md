@@ -281,17 +281,26 @@ docker run -d \
     ghcr.io/jmbannon/ytdl-sub:latest
 ```
 
-### PIP
-You can install our [PyPI package](https://pypi.org/project/ytdl-sub/) with:
+### Executable
+Download and use our latest executable using the command below. For Windows users, use this method in
+[WSL](https://learn.microsoft.com/en-us/windows/wsl/). FFmpeg is a required dependency.
 ```commandline
-python3 -m pip install -U yt-dlp
+curl -L https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub > ytdl-sub
+chmod +x ytdl-sub
+./ytdl-sub -h
+```
+
+### PIP
+You can install our [PyPI package](https://pypi.org/project/ytdl-sub/). Both FFmpeg and Python 3.10 or greater are required.
+```commandline
+python3 -m pip install -U ytdl-sub
 ```
 
 ### Building Docker Image Locally
 Run `make docker` in the root directory of this repo to build the image. This
 will build the python wheel and install it in the Dockerfile.
 
-### Virtualenv
+### Building Python Package Locally
 With a Python 3.10 virtual environment, you can clone and install the repo using
 ```commandline
 git clone https://github.com/jmbannon/ytdl-sub.git
