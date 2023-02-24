@@ -21,17 +21,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: master  # Needed for correct commit count. TODO: define once using GH actions
+          ref: master
 
-      - name: Set version envs 1/3
+      - name: Set date and commit hash variables
         run: |
           echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Set version envs 2/3
+      - name: Count number of commits on master on day, minus 1 to account for post-push
         run: |
           echo "DATE_COMMIT_COUNT=$(($(git rev-list --count master --since='${{ env.DATE }} 00:00:00')-1))" >> $GITHUB_ENV
-      - name: Set version envs 3/3
+      - name: Set pypi and local version values
         run: |
           echo "LOCAL_VERSION=${{ env.DATE }}+${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
           if [ ${{ env.DATE_COMMIT_COUNT }} -le "0" ]
@@ -85,7 +85,8 @@ jobs:
           python3.10 -m ensurepip --upgrade
       - name: Build Package
         run: |
-          python3.10 -m pip install -e .[build]
+          python3.10 -m pip install -e .
+          python3.10 -m pip install pyinstaller
           # Build executable
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
