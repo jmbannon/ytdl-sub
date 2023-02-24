@@ -30,12 +30,11 @@ jobs:
 
       - name: Set version envs 2/3
         run: |
-          echo "DATE_COMMIT_COUNT=$(git rev-list --count master --since='${{ env.DATE }} 00:00:00')" >> $GITHUB_ENV
-
+          echo "DATE_COMMIT_COUNT=$(($(git rev-list --count master --since='${{ env.DATE }} 00:00:00')-1))" >> $GITHUB_ENV
       - name: Set version envs 3/3
         run: |
           echo "LOCAL_VERSION=${{ env.DATE }}+${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
-          if [ ${{ env.DATE_COMMIT_COUNT }} = "0" ]
+          if [ ${{ env.DATE_COMMIT_COUNT }} -le "0" ]
           then
             echo "PYPI_VERSION=${{ env.DATE }}" >> $GITHUB_ENV
           else
@@ -52,7 +51,6 @@ jobs:
           echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
           echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
           echo 'init_contents=__pypi_version__ = "${{ env.PYPI_VERSION }}";__local_version__ = "${{ env.LOCAL_VERSION }}"' >> "$GITHUB_OUTPUT"
-          
 
   ##################################################################################################
 
@@ -60,6 +58,9 @@ jobs:
     name: build-linux
     needs:
       - version
+    strategy:
+      matrix:
+        arch: [ "aarch64", "x86_64" ]
     runs-on: ubuntu-latest
     container:
       image: quay.io/pypa/manylinux_2_28_x86_64
@@ -81,55 +82,16 @@ jobs:
           make -j 8
           make altinstall
           python3.10 --version
+          python3.10 -m ensurepip --upgrade
       - name: Build Package
         run: |
-          python3.10 -m pip install --upgrade pip
           python3.10 -m pip install -e .[build]
           # Build executable
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
           chmod ugo+rwx dist/ytdl-sub
           dist/ytdl-sub -h
-          mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
-
-      - name: Upload build
-        uses: actions/upload-artifact@v3
-        with:
-          name: ytdl-sub_linux
-          path: /opt/builds/ytdl-sub_linux
-
-  build-arm:
-    name: build-arm
-    needs:
-      - version
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [ "aarch64", "armv7", "armv6" ]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Write version to init file
-        run: |
-          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-      - uses: uraimo/run-on-arch-action@v2
-        name: Run commands
-        id: runcmd
-        with:
-          arch: ${{ matrix.arch }}
-          distro: alpine_latest
-
-          # Mount the artifacts directory as /artifacts in the container
-          dockerRunArgs: |
-            --volume "/opt/builds:/builds"
-
-          # Set an output parameter `uname` for use in subsequent steps
-          run: |
-            apk add python3 python3-dev py3-pip musl-dev libc-dev libffi-dev gcc g++ pwgen zlib-dev rust cargo
-            pip3 install --upgrade pip
-            pip3 install pyinstaller
-            pyinstaller --log-level=DEBUG ytdl-sub.spec
-            mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
-            cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
+          mv dist/ytdl-sub /opt/builds/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload build
         uses: actions/upload-artifact@v3
@@ -144,7 +106,6 @@ jobs:
     needs:
       - version
       - build-linux
-      - build-arm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -152,33 +113,22 @@ jobs:
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
 
-      - name: Restore armv6 build
-        uses: actions/download-artifact@v3
-        with:
-          name: ytdl-sub_armv6
-          path: /opt/builds/ytdl-sub_armv6
-
-      - name: Restore armv7 build
-        uses: actions/download-artifact@v3
-        with:
-          name: ytdl-sub_armv7
-          path: /opt/builds/ytdl-sub_armv7
-
       - name: Restore aarch64 build
         uses: actions/download-artifact@v3
         with:
           name: ytdl-sub_aarch64
-          path: /opt/builds/ytdl-sub_aarch64
+          path: /opt/builds
 
-      - name: Restore linux build
+      - name: Restore x86_64 build
         uses: actions/download-artifact@v3
         with:
-          name: ytdl-sub_linux
-          path: /opt/builds/ytdl-sub_linux
+          name: ytdl-sub_x86_64
+          path: /opt/builds
 
-      - name: Inspect build directory
+      - name: Inspect build directory, rename x86_64 build
         run: |
           ls -lh /opt/builds
+          mv /opt/builds/ytdl-sub_x86_64 /opt/builds/ytdl-sub
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
@@ -192,10 +142,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            /opt/builds/ytdl-sub_linux
+            /opt/builds/ytdl-sub_x86_64
             /opt/builds/ytdl-sub_aarch64
-            /opt/builds/ytdl-sub_armv7
-            /opt/builds/ytdl-sub_armv6
 
   pypi-publish:
     name: pypi-publish
