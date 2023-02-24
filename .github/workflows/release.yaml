@@ -60,6 +60,9 @@ jobs:
     name: build-linux
     needs:
       - version
+    strategy:
+      matrix:
+        arch: [ "aarch64", "x86_64" ]
     runs-on: ubuntu-latest
     container:
       image: quay.io/pypa/manylinux_2_28_x86_64
@@ -90,59 +93,59 @@ jobs:
           mkdir -p /opt/builds
           chmod ugo+rwx dist/ytdl-sub
           dist/ytdl-sub -h
-          mv dist/ytdl-sub /opt/builds/ytdl-sub_linux
-
-      - name: Upload build
-        uses: actions/upload-artifact@v3
-        with:
-          name: ytdl-sub_linux
-          path: /opt/builds/ytdl-sub_linux
-
-  build-arm:
-    name: build-arm
-    needs:
-      - version
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [ "aarch64", "armv7" ]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Write version to init file
-        run: |
-          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-      - uses: uraimo/run-on-arch-action@v2
-        name: Run commands
-        id: runcmd
-        with:
-          arch: ${{ matrix.arch }}
-          distro: ubuntu18.04
-
-          # Mount the artifacts directory as /artifacts in the container
-          dockerRunArgs: |
-            --volume "/opt/builds:/builds"
-
-          # Set an output parameter `uname` for use in subsequent steps
-          run: |
-            apt-get update -y
-            apt-get install -y software-properties-common curl
-            add-apt-repository -y ppa:deadsnakes/ppa
-            apt-get update -y
-            apt-get install -y python3.10
-            python3.10 --version
-            curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
-            python3.10 -m pip install --upgrade pip
-            python3.10 -m pip install -e .
-            python3.10 -m pip install pyinstaller
-            pyinstaller --log-level=DEBUG ytdl-sub.spec
-            mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
-            cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
+          mv dist/ytdl-sub /opt/builds/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload build
         uses: actions/upload-artifact@v3
         with:
           name: ytdl-sub_${{ matrix.arch }}
           path: /opt/builds/ytdl-sub_${{ matrix.arch }}
+
+#  build-arm:
+#    name: build-arm
+#    needs:
+#      - version
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        arch: [ "aarch64", "armv7" ]
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Write version to init file
+#        run: |
+#          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+#      - uses: uraimo/run-on-arch-action@v2
+#        name: Run commands
+#        id: runcmd
+#        with:
+#          arch: ${{ matrix.arch }}
+#          distro: ubuntu18.04
+#
+#          # Mount the artifacts directory as /artifacts in the container
+#          dockerRunArgs: |
+#            --volume "/opt/builds:/builds"
+#
+#          # Set an output parameter `uname` for use in subsequent steps
+#          run: |
+#            apt-get update -y
+#            apt-get install -y software-properties-common curl
+#            add-apt-repository -y ppa:deadsnakes/ppa
+#            apt-get update -y
+#            apt-get install -y python3.10
+#            python3.10 --version
+#            curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
+#            python3.10 -m pip install --upgrade pip
+#            python3.10 -m pip install -e .
+#            python3.10 -m pip install pyinstaller
+#            pyinstaller --log-level=DEBUG ytdl-sub.spec
+#            mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
+#            cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
+#
+#      - name: Upload build
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: ytdl-sub_${{ matrix.arch }}
+#          path: /opt/builds/ytdl-sub_${{ matrix.arch }}
 
   ##################################################################################################
 
@@ -151,7 +154,6 @@ jobs:
     needs:
       - version
       - build-linux
-      - build-arm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -159,28 +161,16 @@ jobs:
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
 
-      - name: Restore armv6 build
-        uses: actions/download-artifact@v3
-        with:
-          name: ytdl-sub_armv6
-          path: /opt/builds
-
-      - name: Restore armv7 build
-        uses: actions/download-artifact@v3
-        with:
-          name: ytdl-sub_armv7
-          path: /opt/builds
-
       - name: Restore aarch64 build
         uses: actions/download-artifact@v3
         with:
           name: ytdl-sub_aarch64
           path: /opt/builds
 
-      - name: Restore linux build
+      - name: Restore x86_64 build
         uses: actions/download-artifact@v3
         with:
-          name: ytdl-sub_linux
+          name: ytdl-sub_x86_64
           path: /opt/builds
 
       - name: Inspect build directory
@@ -199,10 +189,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            /opt/builds/ytdl-sub_linux
+            /opt/builds/ytdl-sub_x86_64
             /opt/builds/ytdl-sub_aarch64
-            /opt/builds/ytdl-sub_armv7
-            /opt/builds/ytdl-sub_armv6
 
   pypi-publish:
     name: pypi-publish
