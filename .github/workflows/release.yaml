@@ -31,11 +31,11 @@ jobs:
       - name: Set version envs 2/3
         run: |
           DATE_COMMIT_COUNT_=$(git rev-list --count master --since='${{ env.DATE }} 00:00:00')
-          if [ $DATE_COMMIT_COUNT = "0" ]
+          if [ $(DATE_COMMIT_COUNT_) = "0" ]
           then
-            echo "DATE_COMMIT_COUNT=$DATE_COMMIT_COUNT_" >> $GITHUB_ENV
+            echo "DATE_COMMIT_COUNT=$(DATE_COMMIT_COUNT_)" >> $GITHUB_ENV
           else
-            echo "DATE_COMMIT_COUNT=$(($DATE_COMMIT_COUNT_-1))" >> $GITHUB_ENV
+            echo "DATE_COMMIT_COUNT=$(($(DATE_COMMIT_COUNT_)-1))" >> $GITHUB_ENV
           fi
 
       - name: Set version envs 3/3
