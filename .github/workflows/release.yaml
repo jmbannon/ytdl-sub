@@ -30,18 +30,11 @@ jobs:
 
       - name: Set version envs 2/3
         run: |
-          DATE_COMMIT_COUNT_=$(git rev-list --count master --since='${{ env.DATE }} 00:00:00')
-          if [ "$(DATE_COMMIT_COUNT_)" == "0" ]
-          then
-            echo "DATE_COMMIT_COUNT=$(DATE_COMMIT_COUNT_)" >> $GITHUB_ENV
-          else
-            echo "DATE_COMMIT_COUNT=$(($(DATE_COMMIT_COUNT_)-1))" >> $GITHUB_ENV
-          fi
-
+          echo "DATE_COMMIT_COUNT=$(($(git rev-list --count master --since='${{ env.DATE }} 00:00:00')-1))" >> $GITHUB_ENV
       - name: Set version envs 3/3
         run: |
           echo "LOCAL_VERSION=${{ env.DATE }}+${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
-          if [ "${{ env.DATE_COMMIT_COUNT }}" = "0" ]
+          if [ ${{ env.DATE_COMMIT_COUNT }} -le "0" ]
           then
             echo "PYPI_VERSION=${{ env.DATE }}" >> $GITHUB_ENV
           else
