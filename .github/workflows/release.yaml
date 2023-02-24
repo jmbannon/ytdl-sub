@@ -124,7 +124,8 @@ jobs:
 
           # Set an output parameter `uname` for use in subsequent steps
           run: |
-            apt-get install software-properties-common
+            apt-get update -y
+            apt-get install -y software-properties-common
             add-apt-repository ppa:deadsnakes/ppa
             apt-get update -y
             apt-get install -y python3.10
