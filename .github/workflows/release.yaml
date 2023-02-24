@@ -81,6 +81,7 @@ jobs:
           make -j 8
           make altinstall
           python3.10 --version
+          python3.10 -m ensurepip --upgrade
       - name: Build Package
         run: |
           python3.10 -m pip install --upgrade pip
