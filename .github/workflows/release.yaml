@@ -72,6 +72,7 @@ jobs:
         run: |
           cat /etc/os-release
           dnf update -y
+          aptitude build-dep python3
           dnf install -y epel-release tar wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
       - name: Install Python
         run: |
