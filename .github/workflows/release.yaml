@@ -52,7 +52,6 @@ jobs:
           echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
           echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
           echo 'init_contents=__pypi_version__ = "${{ env.PYPI_VERSION }}";__local_version__ = "${{ env.LOCAL_VERSION }}"' >> "$GITHUB_OUTPUT"
-          
 
   ##################################################################################################
 
@@ -101,52 +100,6 @@ jobs:
           name: ytdl-sub_${{ matrix.arch }}
           path: /opt/builds/ytdl-sub_${{ matrix.arch }}
 
-#  build-arm:
-#    name: build-arm
-#    needs:
-#      - version
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        arch: [ "aarch64", "armv7" ]
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Write version to init file
-#        run: |
-#          echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
-#      - uses: uraimo/run-on-arch-action@v2
-#        name: Run commands
-#        id: runcmd
-#        with:
-#          arch: ${{ matrix.arch }}
-#          distro: ubuntu18.04
-#
-#          # Mount the artifacts directory as /artifacts in the container
-#          dockerRunArgs: |
-#            --volume "/opt/builds:/builds"
-#
-#          # Set an output parameter `uname` for use in subsequent steps
-#          run: |
-#            apt-get update -y
-#            apt-get install -y software-properties-common curl
-#            add-apt-repository -y ppa:deadsnakes/ppa
-#            apt-get update -y
-#            apt-get install -y python3.10
-#            python3.10 --version
-#            curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
-#            python3.10 -m pip install --upgrade pip
-#            python3.10 -m pip install -e .
-#            python3.10 -m pip install pyinstaller
-#            pyinstaller --log-level=DEBUG ytdl-sub.spec
-#            mv dist/ytdl-sub /builds/ytdl-sub_${{ matrix.arch }}
-#            cd /builds && ./ytdl-sub_${{ matrix.arch }} -h
-#
-#      - name: Upload build
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: ytdl-sub_${{ matrix.arch }}
-#          path: /opt/builds/ytdl-sub_${{ matrix.arch }}
-
   ##################################################################################################
 
   github-release:
@@ -173,9 +126,10 @@ jobs:
           name: ytdl-sub_x86_64
           path: /opt/builds
 
-      - name: Inspect build directory
+      - name: Inspect build directory, rename x86_64 build
         run: |
           ls -lh /opt/builds
+          mv /opt/builds/ytdl-sub_x86_64 /opt/builds/ytdl-sub
 
       - name: Create Release
         if: ${{ github.ref == 'refs/heads/master' }}
