@@ -134,12 +134,21 @@ class StringFormatterValidator(Validator):
         """
         return self._value
 
-    def __apply_formatter(
+    def _apply_formatter(
         self, formatter: "StringFormatterValidator", variable_dict: Dict[str, str]
     ) -> "StringFormatterValidator":
         # Ensure the variable names exist within the entry and overrides
         for variable_name in formatter.format_variables:
-            if variable_name not in variable_dict:
+            # If the variable exists, but is sanitized...
+            if variable_name.endswith('_sanitized') and variable_name.removesuffix('_sanitized') in variable_dict:
+                # Resolve just the non-sanitized version, then sanitize it
+                variable_dict[variable_name] = sanitize_filename(
+                    StringFormatterValidator(
+                        name=self._name, value=f"{{{variable_name.removesuffix('_sanitized')}}}"
+                    ).apply_formatter(variable_dict)
+                )
+            # If the variable doesn't exist, error
+            elif variable_name not in variable_dict:
                 available_fields = ", ".join(sorted(variable_dict.keys()))
                 raise self._validation_exception(
                     self._variable_not_found_error_msg_formatter.format(
@@ -152,37 +161,6 @@ class StringFormatterValidator(Validator):
             name=self._name,
             value=formatter.format_string.format(**OrderedDict(variable_dict)),
         )
-
-    def _apply_formatter(self, variable_dict: Dict[str, str], resolve_sanitized: bool = False):
-        formatter = self
-        recursion_depth = 0
-        max_depth = self._max_format_recursion
-
-        if resolve_sanitized:
-            for format_variable in formatter.format_variables:
-                # Must resolve the sanitized variable completely
-                if format_variable.endswith("_sanitized"):
-                    # pylint: disable=protected-access
-                    variable_dict[format_variable] = sanitize_filename(
-                        StringFormatterValidator(
-                            name=self._name, value=f"{{{format_variable}}}"
-                        )._apply_formatter(variable_dict, resolve_sanitized=False)
-                    )
-                    # pylint: enable=protected-access
-
-        while formatter.format_variables and recursion_depth < max_depth:
-            formatter = self.__apply_formatter(formatter=formatter, variable_dict=variable_dict)
-            recursion_depth += 1
-
-        if formatter.format_variables:
-            raise self._validation_exception(
-                f"Attempted to format but failed after reaching max recursion depth of "
-                f"{max_depth}. Try to keep variables dependent on only one other variable at max. "
-                f"Unresolved variables: {', '.join(sorted(formatter.format_variables))}",
-                exception_class=StringFormattingException,
-            )
-
-        return formatter.format_string
 
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
         """
@@ -197,7 +175,23 @@ class StringFormatterValidator(Validator):
         -------
         Format string formatted
         """
-        return self._apply_formatter(variable_dict=variable_dict, resolve_sanitized=True)
+        formatter = self
+        recursion_depth = 0
+        max_depth = self._max_format_recursion
+
+        while formatter.format_variables and recursion_depth < max_depth:
+            formatter = self._apply_formatter(formatter=formatter, variable_dict=variable_dict)
+            recursion_depth += 1
+
+        if formatter.format_variables:
+            raise self._validation_exception(
+                f"Attempted to format but failed after reaching max recursion depth of "
+                f"{max_depth}. Try to keep variables dependent on only one other variable at max. "
+                f"Unresolved variables: {', '.join(sorted(formatter.format_variables))}",
+                exception_class=StringFormattingException,
+            )
+
+        return formatter.format_string
 
 
 # pylint: disable=line-too-long
