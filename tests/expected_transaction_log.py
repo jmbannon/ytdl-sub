@@ -43,7 +43,7 @@ def assert_transaction_log_matches(
 
     # Read the expected summary file
     with open(transaction_log_path, "r", encoding="utf-8") as summary_file:
-        expected_summary = summary_file.read().format(output_directory=output_directory)
+        expected_summary = summary_file.read().format(output_directory=FileHandlerTransactionLog.format_path_str(output_directory))
 
     # Split, ensure there are the same number of new lines
     summary_lines: List[str] = summary.split("\n")

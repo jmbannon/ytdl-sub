@@ -11,6 +11,7 @@ from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.validators.file_path_validators import StringFormatterFilePathValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
@@ -58,7 +59,7 @@ class SubtitleOptions(PluginOptions):
     def __init__(self, name, value):
         super().__init__(name, value)
         self._subtitles_name = self._validate_key_if_present(
-            key="subtitles_name", validator=StringFormatterValidator
+            key="subtitles_name", validator=StringFormatterFilePathValidator
         )
         self._subtitles_type = self._validate_key_if_present(
             key="subtitles_type", validator=SubtitlesTypeValidator, default="srt"

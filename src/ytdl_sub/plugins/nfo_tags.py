@@ -16,6 +16,7 @@ from ytdl_sub.utils.xml import XmlElement
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_string
 from ytdl_sub.utils.xml import to_xml
+from ytdl_sub.validators.file_path_validators import StringFormatterFilePathValidator
 from ytdl_sub.validators.nfo_validators import NfoTagsValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -46,7 +47,7 @@ class SharedNfoTagsOptions(PluginOptions):
         super().__init__(name, value)
 
         self._nfo_name = self._validate_key_if_present(
-            key="nfo_name", validator=StringFormatterValidator
+            key="nfo_name", validator=StringFormatterFilePathValidator
         )
         self._nfo_root = self._validate_key_if_present(
             key="nfo_root", validator=StringFormatterValidator
@@ -57,7 +58,7 @@ class SharedNfoTagsOptions(PluginOptions):
         ).value
 
     @property
-    def nfo_name(self) -> StringFormatterValidator:
+    def nfo_name(self) -> StringFormatterFilePathValidator:
         """
         The NFO file name.
         """

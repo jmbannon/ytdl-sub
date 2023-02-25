@@ -155,6 +155,15 @@ class FileHandlerTransactionLog:
     Tracks file 'transactions' performed by a FileHandler
     """
 
+    @classmethod
+    def format_path_str(cls, path_str: Path | str) -> str:
+        """
+        Returns
+        -------
+        str formatted to always look like a unix string
+        """
+        return str(path_str).replace(os.sep, '/')
+
     def __init__(self):
         self.files_created: Dict[str, FileMetadata] = {}
         self.files_modified: Dict[str, FileMetadata] = {}
@@ -240,6 +249,10 @@ class FileHandlerTransactionLog:
         for file_path, file_metadata in sorted(file_set.items()):
             file_directory = os.path.dirname(Path(output_directory) / file_path)
             file_name = os.path.basename(Path(output_directory) / file_path)
+
+            # Format file directories/names to always look like unix
+            file_directory = cls.format_path_str(file_directory)
+            file_name = cls.format_path_str(file_name)
 
             directory_set[file_directory][file_name] = file_metadata
 
