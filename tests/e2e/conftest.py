@@ -3,6 +3,7 @@ import os
 import shutil
 import sys
 import tempfile
+from pathlib import Path
 from typing import List
 from typing import Tuple
 from unittest.mock import patch
@@ -48,11 +49,11 @@ def working_directory() -> str:
 
 
 @pytest.fixture()
-def music_video_config_path():
-    return "examples/music_videos_config.yaml"
+def music_video_config_path() -> Path:
+    return Path("examples/music_videos_config.yaml")
 
 
-def _load_config(config_path: str, working_directory: str) -> ConfigFile:
+def _load_config(config_path: Path, working_directory: Path) -> ConfigFile:
     config_dict = load_yaml(file_path=config_path)
     config_dict["configuration"]["working_directory"] = working_directory
 
@@ -75,14 +76,14 @@ def music_video_config_for_cli(music_video_config) -> str:
 @pytest.fixture()
 def channel_as_tv_show_config(working_directory) -> ConfigFile:
     return _load_config(
-        config_path="examples/tv_show_config.yaml", working_directory=working_directory
+        config_path=Path("examples/tv_show_config.yaml"), working_directory=working_directory
     )
 
 
 @pytest.fixture()
 def music_audio_config(working_directory) -> ConfigFile:
     return _load_config(
-        config_path="examples/music_audio_config.yaml", working_directory=working_directory
+        config_path=Path("examples/music_audio_config.yaml"), working_directory=working_directory
     )
 
 
