@@ -1,5 +1,5 @@
 {
-  ".ytdl-sub-split_by_chapters_with_regex_video-download-archive.json": "ed212171889707bf65462878248fc0b8",
-  "Project Zombie/[2010] Oblivion Mod \"Falcor\" p.1/01 - Oblivion Mod \"Falcor\" p.1.mp3": "a3c01f164eeca4541aeed49264d2fc8c",
-  "Project Zombie/[2010] Oblivion Mod \"Falcor\" p.1/folder.jpg": "fb95b510681676e81c321171fc23143e"
+  ".ytdl-sub-split_by_chapters_with_regex_video-download-archive.json": "4008e43668447f1a3a6a55520a6ff475",
+  "Project Zombie/[2010] Oblivion Mod ＂Falcor＂ p.1/01 - Oblivion Mod ＂Falcor＂ p.1.mp3": "a3c01f164eeca4541aeed49264d2fc8c",
+  "Project Zombie/[2010] Oblivion Mod ＂Falcor＂ p.1/folder.jpg": "fb95b510681676e81c321171fc23143e"
 }
