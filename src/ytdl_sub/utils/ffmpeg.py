@@ -1,4 +1,5 @@
 import subprocess
+import sys
 import tempfile
 from typing import Dict
 from typing import List
@@ -26,7 +27,10 @@ class FFMPEG:
     @classmethod
     def _ensure_installed(cls):
         try:
-            subprocess.check_output(["which", "ffmpeg"])
+            if sys.platform.startswith("win32"):
+                subprocess.check_output([".\\ffmpeg", "-version"])
+            else:
+                subprocess.check_output(["which", "ffmpeg"])
         except subprocess.CalledProcessError as subprocess_error:
             raise ValidationException(
                 "Trying to use a feature which requires ffmpeg, but it cannot be found"
