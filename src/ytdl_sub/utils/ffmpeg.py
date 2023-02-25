@@ -9,6 +9,7 @@ from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.system import IS_WINDOWS
 
 logger = Logger.get(name="ffmpeg")
 
@@ -27,7 +28,7 @@ class FFMPEG:
     @classmethod
     def _ensure_installed(cls):
         try:
-            if sys.platform.startswith("win32"):
+            if IS_WINDOWS:
                 subprocess.check_output([".\\ffmpeg", "-version"])
             else:
                 subprocess.check_output(["which", "ffmpeg"])

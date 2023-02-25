@@ -95,6 +95,9 @@ class TestLogger:
         assert lines == ["[ytdl-sub:name_test] info test\n", "[ytdl-sub:name_test] debug test\n"]
 
         # Ensure the file cleans up too
+        for handler in logger.handlers:
+            handler.close()
+
         Logger.cleanup(delete_debug_file=True)
         assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
 

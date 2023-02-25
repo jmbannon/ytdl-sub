@@ -1,3 +1,5 @@
+import os
+import re
 import tempfile
 
 import pytest
@@ -21,10 +23,13 @@ def bad_yaml() -> str:
 
 @pytest.fixture
 def bad_yaml_file_path(bad_yaml) -> str:
-    with tempfile.NamedTemporaryFile(suffix=".yaml") as tmp_file:
+    # Do not delete the file in the context manager - for Windows compatibility
+    with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
         tmp_file.write(bad_yaml.encode("utf-8"))
         tmp_file.flush()
-        yield tmp_file.name
+
+    yield tmp_file.name
+    os.remove(tmp_file.name)
 
 
 def test_load_yaml_file_not_found():
@@ -36,6 +41,6 @@ def test_load_yaml_file_not_found():
 def test_load_yaml_invalid_syntax(bad_yaml_file_path):
     with pytest.raises(
         InvalidYamlException,
-        match=f"'{bad_yaml_file_path}' has invalid YAML, copy-paste it into a YAML checker to find the issue.",
+        match=re.escape(f"'{bad_yaml_file_path}' has invalid YAML, copy-paste it into a YAML checker to find the issue."),
     ):
         load_yaml(file_path=bad_yaml_file_path)

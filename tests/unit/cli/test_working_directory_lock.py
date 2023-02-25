@@ -6,6 +6,7 @@ import pytest
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_lock import working_directory_lock
+from ytdl_sub.utils.system import IS_WINDOWS
 
 
 @pytest.fixture
@@ -16,6 +17,9 @@ def config() -> ConfigFile:
 
 
 def test_working_directory_lock(config: ConfigFile):
+    if IS_WINDOWS:
+        return
+
     new_pid = os.fork()
     if new_pid == 0:  # is child
         with working_directory_lock(config=config):
