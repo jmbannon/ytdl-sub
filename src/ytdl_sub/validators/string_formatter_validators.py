@@ -140,7 +140,10 @@ class StringFormatterValidator(Validator):
         # Ensure the variable names exist within the entry and overrides
         for variable_name in formatter.format_variables:
             # If the variable exists, but is sanitized...
-            if variable_name.endswith('_sanitized') and variable_name.removesuffix('_sanitized') in variable_dict:
+            if (
+                variable_name.endswith("_sanitized")
+                and variable_name.removesuffix("_sanitized") in variable_dict
+            ):
                 # Resolve just the non-sanitized version, then sanitize it
                 variable_dict[variable_name] = sanitize_filename(
                     StringFormatterValidator(
