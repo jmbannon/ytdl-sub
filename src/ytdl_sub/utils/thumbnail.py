@@ -64,18 +64,20 @@ def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Opt
     """
     # timeout after 8 seconds
     with urlopen(thumbnail_url, timeout=1.0) as file:
-        with tempfile.NamedTemporaryFile() as thumbnail:
+        with tempfile.NamedTemporaryFile(delete=False) as thumbnail:
             thumbnail.write(file.read())
 
-            os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
+        os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
 
-            tmp_output_path = FFMPEG.tmp_file_path(
-                relative_file_path=thumbnail.name, extension="jpg"
-            )
-            FFMPEG.run(["-bitexact", "-i", thumbnail.name, tmp_output_path])
+        tmp_output_path = FFMPEG.tmp_file_path(
+            relative_file_path=thumbnail.name, extension="jpg"
+        )
+        FFMPEG.run(["-bitexact", "-i", thumbnail.name, tmp_output_path])
 
-            # Have FileHandler handle the move to a potential cross-device
-            FileHandler.move(tmp_output_path, output_thumbnail_path)
-            FileHandler.delete(tmp_output_path)
+        # Have FileHandler handle the move to a potential cross-device
+        FileHandler.move(tmp_output_path, output_thumbnail_path)
+        FileHandler.delete(tmp_output_path)
+
+        os.remove(thumbnail.name)
 
     return True

@@ -68,7 +68,7 @@ class FFMPEG:
         """
         cls._ensure_installed()
 
-        cmd = ["ffmpeg"]
+        cmd = [".\\ffmpeg.exe" if IS_WINDOWS else "ffmpeg"]
         cmd.extend(ffmpeg_args)
         logger.debug("Running %s", " ".join(cmd))
         with Logger.handle_external_logs(name="ffmpeg"):
