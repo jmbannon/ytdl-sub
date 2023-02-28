@@ -1,3 +1,4 @@
+import tempfile
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -5,14 +6,24 @@ from typing import Optional
 from mergedeep import mergedeep
 
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
+from ytdl_sub.utils.system import IS_WINDOWS
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
 
+if IS_WINDOWS:
+    _DEFAULT_LOCK_DIRECTORY = tempfile.TemporaryDirectory().name
+    _DEFAULT_FFMPEG_PATH = ".\\ffmpeg.exe"
+    _DEFAULT_FFPROBE_PATH = ".\\ffprobe.exe"
+else:
+    _DEFAULT_LOCK_DIRECTORY = "/tmp"
+    _DEFAULT_FFMPEG_PATH = "/usr/bin/ffmpeg"
+    _DEFAULT_FFPROBE_PATH = "/usr/bin/ffprobe"
+
 
 class ConfigOptions(StrictDictValidator):
     _required_keys = {"working_directory"}
-    _optional_keys = {"umask", "dl_aliases", "lock_directory"}
+    _optional_keys = {"umask", "dl_aliases", "lock_directory", "ffmpeg_path", "ffprobe_path"}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
@@ -27,7 +38,14 @@ class ConfigOptions(StrictDictValidator):
             key="dl_aliases", validator=LiteralDictValidator
         )
         self._lock_directory = self._validate_key(
-            key="lock_directory", validator=StringValidator, default="/tmp"
+            key="lock_directory", validator=StringValidator, default=_DEFAULT_LOCK_DIRECTORY
+        )
+        # TODO: Validate these exist
+        self._ffmpeg_path = self._validate_key(
+            key="ffmpeg_path", validator=StringValidator, default=_DEFAULT_FFMPEG_PATH
+        )
+        self._ffprobe_path = self._validate_key(
+            key="ffprobe_path", validator=StringValidator, default=_DEFAULT_FFPROBE_PATH
         )
 
     @property
@@ -81,6 +99,20 @@ class ConfigOptions(StrictDictValidator):
         directories. Ensure that this directory resides on the host machine. Defaults to ``/tmp``.
         """
         return self._lock_directory.value
+
+    @property
+    def ffmpeg_path(self) -> str:
+        """
+        TODO: Fill out!
+        """
+        return self._ffmpeg_path.value
+
+    @property
+    def ffprobe_path(self) -> str:
+        """
+        TODO: Fill out!
+        """
+        return self._ffprobe_path.value
 
 
 class ConfigValidator(StrictDictValidator):

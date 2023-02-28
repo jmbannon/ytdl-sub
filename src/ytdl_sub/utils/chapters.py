@@ -221,10 +221,12 @@ class Chapters:
         return Chapters(timestamps=timestamps, titles=titles)
 
     @classmethod
-    def from_embedded_chapters(cls, file_path: str) -> "Chapters":
+    def from_embedded_chapters(cls, ffprobe_path: str, file_path: str) -> "Chapters":
         """
         Parameters
         ----------
+        ffprobe_path
+            Path to ffprobe executable
         file_path
             File to read ffmpeg chapter metadata from
 
@@ -234,7 +236,7 @@ class Chapters:
         """
         proc = subprocess.run(
             [
-                "ffprobe",
+                ffprobe_path,
                 "-loglevel",
                 "quiet",
                 "-print_format",

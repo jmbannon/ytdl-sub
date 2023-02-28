@@ -11,6 +11,7 @@ from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -265,6 +266,12 @@ class SubscriptionDownload(BaseSubscription, ABC):
             If true, do not download any video/audio files or move anything to the output
             directory.
         """
+        # Set ffmpeg paths
+        FFMPEG.set_paths(
+            ffmpeg_path=self._config_options.ffmpeg_path,
+            ffprobe_path=self._config_options.ffprobe_path,
+        )
+
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
         plugins = self._initialize_plugins()
 

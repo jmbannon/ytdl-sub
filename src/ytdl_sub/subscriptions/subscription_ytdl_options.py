@@ -15,6 +15,7 @@ from ytdl_sub.plugins.file_convert import FileConvertPlugin
 from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
+from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 PluginT = TypeVar("PluginT", bound=Plugin)
@@ -57,6 +58,7 @@ class SubscriptionYTDLOptions:
             "outtmpl": str(Path(self._working_directory) / "%(id)s.%(ext)s"),
             # Always write thumbnails
             "writethumbnail": True,
+            "ffmpeg_location": FFMPEG.ffmpeg_path(),
         }
 
         return ytdl_options

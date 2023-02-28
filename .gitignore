@@ -145,3 +145,4 @@ docker/root/defaults/examples
 .local/
 
 ffmpeg.exe
+ffprobe.exe

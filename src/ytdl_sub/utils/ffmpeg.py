@@ -10,7 +10,6 @@ from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.system import IS_WINDOWS
 
 logger = Logger.get(name="ffmpeg")
 
@@ -26,13 +25,28 @@ def _ffmpeg_metadata_escape(str_to_escape: str) -> str:
 
 
 class FFMPEG:
+    _FFMPEG_PATH: str = ""
+    _FFPROBE_PATH: str = ""
+
+    @classmethod
+    def set_paths(cls, ffmpeg_path: str, ffprobe_path: str) -> None:
+        cls._FFMPEG_PATH = ffmpeg_path
+        cls._FFPROBE_PATH = ffprobe_path
+
+    @classmethod
+    def ffmpeg_path(cls) -> str:
+        assert cls._FFMPEG_PATH, "ffmpeg has not been set"
+        return cls._FFMPEG_PATH
+
+    @classmethod
+    def ffprobe_path(cls) -> str:
+        assert cls._FFPROBE_PATH, "ffprobe has not been set"
+        return cls._FFPROBE_PATH
+
     @classmethod
     def _ensure_installed(cls):
         try:
-            if IS_WINDOWS:
-                subprocess.check_output([".\\ffmpeg", "-version"])
-            else:
-                subprocess.check_output(["which", "ffmpeg"])
+            subprocess.check_output([cls.ffmpeg_path(), "-version"])
         except subprocess.CalledProcessError as subprocess_error:
             raise ValidationException(
                 "Trying to use a feature which requires ffmpeg, but it cannot be found"
@@ -69,7 +83,7 @@ class FFMPEG:
         """
         cls._ensure_installed()
 
-        cmd = [".\\ffmpeg.exe" if IS_WINDOWS else "ffmpeg"]
+        cmd = [cls.ffmpeg_path()]
         cmd.extend(ffmpeg_args)
         logger.debug("Running %s", " ".join(cmd))
         with Logger.handle_external_logs(name="ffmpeg"):
