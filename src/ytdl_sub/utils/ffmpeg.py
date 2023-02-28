@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 import tempfile
@@ -135,27 +136,28 @@ def set_ffmpeg_metadata_chapters(
         lines += _create_metadata_chapters(chapters=chapters, file_duration_sec=file_duration_sec)
 
     tmp_file_path = FFMPEG.tmp_file_path(relative_file_path=file_path)
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", encoding="utf-8") as metadata_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", encoding="utf-8", delete=False) as metadata_file:
         metadata_file.write("\n".join(lines))
         metadata_file.flush()
 
-        FFMPEG.run(
-            [
-                "-i",
-                file_path,
-                "-i",
-                metadata_file.name,
-                "-map",
-                "0",
-                "-map_chapters",
-                "1",
-                "-bitexact",  # for reproducibility
-                "-codec",
-                "copy",
-                tmp_file_path,
-            ]
-        )
-        FileHandler.move(tmp_file_path, file_path)
+    FFMPEG.run(
+        [
+            "-i",
+            file_path,
+            "-i",
+            metadata_file.name,
+            "-map",
+            "0",
+            "-map_chapters",
+            "1",
+            "-bitexact",  # for reproducibility
+            "-codec",
+            "copy",
+            tmp_file_path,
+        ]
+    )
+    FileHandler.move(tmp_file_path, file_path)
+    os.remove(metadata_file.name)
 
 
 def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -> None:

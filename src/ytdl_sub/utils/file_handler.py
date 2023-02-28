@@ -320,7 +320,7 @@ class FileHandlerTransactionLog:
             )
 
         if self.is_empty:
-            lines.append(f"No new, modified, or removed files in '{output_directory}'")
+            lines.append(f"No new, modified, or removed files in '{self.format_path_str(output_directory)}'")
 
         return "\n".join(lines)
 
