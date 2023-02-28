@@ -15,7 +15,7 @@ from ytdl_sub.cli.main import main
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog, FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import load_yaml
 
@@ -67,10 +67,13 @@ def music_video_config(music_video_config_path, working_directory) -> ConfigFile
 
 @pytest.fixture()
 def music_video_config_for_cli(music_video_config) -> str:
-    with tempfile.NamedTemporaryFile(suffix=".yaml") as tmp_file:
+    with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
         tmp_file.write(json.dumps(music_video_config._value).encode("utf-8"))
-        tmp_file.flush()
+
+    try:
         yield tmp_file.name
+    finally:
+        FileHandler.delete(tmp_file.name)
 
 
 @pytest.fixture()
@@ -98,10 +101,13 @@ def timestamps_file_path():
         "00:01:01 Part 5\n",
     ]
 
-    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", suffix=".txt") as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", suffix=".txt", delete=False) as tmp:
         tmp.writelines(timestamps)
-        tmp.seek(0)
+
+    try:
         yield tmp.name
+    finally:
+        FileHandler.delete(tmp.name)
 
 
 def mock_run_from_cli(args: str) -> List[Tuple[Subscription, FileHandlerTransactionLog]]:

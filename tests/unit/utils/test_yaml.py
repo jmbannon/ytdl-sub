@@ -6,6 +6,7 @@ import pytest
 
 from ytdl_sub.utils.exceptions import FileNotFoundException
 from ytdl_sub.utils.exceptions import InvalidYamlException
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.yaml import load_yaml
 
 
@@ -28,8 +29,10 @@ def bad_yaml_file_path(bad_yaml) -> str:
         tmp_file.write(bad_yaml.encode("utf-8"))
         tmp_file.flush()
 
-    yield tmp_file.name
-    os.remove(tmp_file.name)
+    try:
+        yield tmp_file.name
+    finally:
+        FileHandler.delete(tmp_file.name)
 
 
 def test_load_yaml_file_not_found():

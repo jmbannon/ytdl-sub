@@ -140,24 +140,26 @@ def set_ffmpeg_metadata_chapters(
         metadata_file.write("\n".join(lines))
         metadata_file.flush()
 
-    FFMPEG.run(
-        [
-            "-i",
-            file_path,
-            "-i",
-            metadata_file.name,
-            "-map",
-            "0",
-            "-map_chapters",
-            "1",
-            "-bitexact",  # for reproducibility
-            "-codec",
-            "copy",
-            tmp_file_path,
-        ]
-    )
-    FileHandler.move(tmp_file_path, file_path)
-    os.remove(metadata_file.name)
+    try:
+        FFMPEG.run(
+            [
+                "-i",
+                file_path,
+                "-i",
+                metadata_file.name,
+                "-map",
+                "0",
+                "-map_chapters",
+                "1",
+                "-bitexact",  # for reproducibility
+                "-codec",
+                "copy",
+                tmp_file_path,
+            ]
+        )
+        FileHandler.move(tmp_file_path, file_path)
+    finally:
+        FileHandler.delete(metadata_file.name)
 
 
 def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -> None:
