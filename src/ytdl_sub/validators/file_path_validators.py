@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
+from typing import Dict
 
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -21,6 +22,7 @@ class ExistingFileValidator(StringValidator):
     def value(self) -> str:
         """Turn into a Path, then a string, to get correct directory separators"""
         return str(Path(self._value))
+
 
 class StringFormatterFilePathValidator(StringFormatterValidator):
     _expected_value_type_name = "filepath"
