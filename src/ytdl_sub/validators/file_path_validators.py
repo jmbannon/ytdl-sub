@@ -9,7 +9,7 @@ from ytdl_sub.validators.validators import StringValidator
 
 
 class ExistingFileValidator(StringValidator):
-    _expected_value_type = "file"
+    _expected_value_type_name = "file"
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
