@@ -11,14 +11,17 @@ from ytdl_sub.utils.system import IS_WINDOWS
 logger = Logger.get()
 
 if IS_WINDOWS:
+
     @contextmanager
     def working_directory_lock(config: ConfigFile):
+        """Windows does not support working directory lock"""
         logger.info(
             "Working directory lock not supported in Windows. "
             "Ensure only one instance of ytdl-sub runs at once using working directory %s",
             config.config_options.working_directory,
         )
         yield
+
 else:
     import fcntl
 
@@ -59,4 +62,3 @@ else:
         finally:
             fcntl.flock(lock_file, fcntl.LOCK_UN)
             lock_file.close()
-

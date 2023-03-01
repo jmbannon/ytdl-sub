@@ -15,7 +15,8 @@ from ytdl_sub.cli.main import main
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog, FileHandler
+from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import load_yaml
 
@@ -101,7 +102,9 @@ def timestamps_file_path():
         "00:01:01 Part 5\n",
     ]
 
-    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", suffix=".txt", delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", suffix=".txt", delete=False
+    ) as tmp:
         tmp.writelines(timestamps)
 
     try:

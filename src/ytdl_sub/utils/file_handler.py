@@ -162,7 +162,7 @@ class FileHandlerTransactionLog:
         -------
         str formatted to always look like a unix string
         """
-        return str(path_str).replace(os.sep, '/')
+        return str(path_str).replace(os.sep, "/")
 
     def __init__(self):
         self.files_created: Dict[str, FileMetadata] = {}
@@ -320,7 +320,9 @@ class FileHandlerTransactionLog:
             )
 
         if self.is_empty:
-            lines.append(f"No new, modified, or removed files in '{self.format_path_str(output_directory)}'")
+            lines.append(
+                f"No new, modified, or removed files in '{self.format_path_str(output_directory)}'"
+            )
 
         return "\n".join(lines)
 

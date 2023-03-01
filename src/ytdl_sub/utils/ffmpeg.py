@@ -1,6 +1,4 @@
-import os
 import subprocess
-import sys
 import tempfile
 from typing import Dict
 from typing import List
@@ -30,16 +28,19 @@ class FFMPEG:
 
     @classmethod
     def set_paths(cls, ffmpeg_path: str, ffprobe_path: str) -> None:
+        """Set ffmpeg paths for usage"""
         cls._FFMPEG_PATH = ffmpeg_path
         cls._FFPROBE_PATH = ffprobe_path
 
     @classmethod
     def ffmpeg_path(cls) -> str:
+        """Ensure the ffmpeg path has been set and return it"""
         assert cls._FFMPEG_PATH, "ffmpeg has not been set"
         return cls._FFMPEG_PATH
 
     @classmethod
     def ffprobe_path(cls) -> str:
+        """Ensure the ffprobe path has been set and return it"""
         assert cls._FFPROBE_PATH, "ffprobe has not been set"
         return cls._FFPROBE_PATH
 
@@ -150,7 +151,9 @@ def set_ffmpeg_metadata_chapters(
         lines += _create_metadata_chapters(chapters=chapters, file_duration_sec=file_duration_sec)
 
     tmp_file_path = FFMPEG.tmp_file_path(relative_file_path=file_path)
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", encoding="utf-8", delete=False) as metadata_file:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".txt", encoding="utf-8", delete=False
+    ) as metadata_file:
         metadata_file.write("\n".join(lines))
         metadata_file.flush()
 

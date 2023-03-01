@@ -1,4 +1,3 @@
-import tempfile
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -12,7 +11,7 @@ from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
 
 if IS_WINDOWS:
-    _DEFAULT_LOCK_DIRECTORY = tempfile.TemporaryDirectory().name
+    _DEFAULT_LOCK_DIRECTORY = ""  # Not supported in Windows
     _DEFAULT_FFMPEG_PATH = ".\\ffmpeg.exe"
     _DEFAULT_FFPROBE_PATH = ".\\ffprobe.exe"
 else:

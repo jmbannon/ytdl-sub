@@ -7,8 +7,10 @@ from typing import Optional
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.validators.file_path_validators import OverridesStringFormatterValidatorFilePathValidator, \
-    StringFormatterFilePathValidator
+from ytdl_sub.validators.file_path_validators import (
+    OverridesStringFormatterValidatorFilePathValidator,
+)
+from ytdl_sub.validators.file_path_validators import StringFormatterFilePathValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
