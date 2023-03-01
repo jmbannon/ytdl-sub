@@ -168,7 +168,10 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         if self.is_dry_run:
             chapters = Chapters.from_entry_chapters(entry=entry)
         else:
-            chapters = Chapters.from_embedded_chapters(file_path=entry.get_download_file_path())
+            chapters = Chapters.from_embedded_chapters(
+                ffprobe_path=FFMPEG.ffprobe_path(),
+                file_path=entry.get_download_file_path(),
+            )
 
         # If no chapters, do not split anything
         if not chapters.contains_any_chapters():

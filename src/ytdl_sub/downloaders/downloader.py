@@ -439,7 +439,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
                 if path.endswith(".info.json")
             ]
             for info_json_file in info_json_files:
-                os.remove(info_json_file)
+                FileHandler.delete(info_json_file)
 
     def _extract_entry_info_with_retry(self, entry: Entry) -> Entry:
         download_entry_dict = self.extract_info_with_retry(

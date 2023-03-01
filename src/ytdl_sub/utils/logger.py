@@ -90,6 +90,9 @@ class Logger:
     _DEBUG_LOGGER_FILE = tempfile.NamedTemporaryFile(prefix="ytdl-sub.", delete=False)
     # pylint: enable=R1732
 
+    # Keep track of all Loggers created
+    _LOGGERS: List[logging.Logger] = []
+
     @classmethod
     def debug_log_filename(cls) -> str:
         """
@@ -151,6 +154,7 @@ class Logger:
         if debug_file:
             logger.addHandler(cls._get_debug_file_handler())
 
+        cls._LOGGERS.append(logger)
         return logger
 
     @classmethod
@@ -200,6 +204,10 @@ class Logger:
         delete_debug_file
             Whether to delete the debug log file. Defaults to True.
         """
+        for logger in cls._LOGGERS:
+            for handler in logger.handlers:
+                handler.close()
+
         cls._DEBUG_LOGGER_FILE.close()
 
         if delete_debug_file:

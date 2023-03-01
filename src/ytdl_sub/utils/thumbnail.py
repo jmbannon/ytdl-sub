@@ -64,9 +64,10 @@ def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Opt
     """
     # timeout after 8 seconds
     with urlopen(thumbnail_url, timeout=1.0) as file:
-        with tempfile.NamedTemporaryFile() as thumbnail:
+        with tempfile.NamedTemporaryFile(delete=False) as thumbnail:
             thumbnail.write(file.read())
 
+        try:
             os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
 
             tmp_output_path = FFMPEG.tmp_file_path(
@@ -76,6 +77,8 @@ def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Opt
 
             # Have FileHandler handle the move to a potential cross-device
             FileHandler.move(tmp_output_path, output_thumbnail_path)
+        finally:
             FileHandler.delete(tmp_output_path)
+            FileHandler.delete(thumbnail.name)
 
     return True

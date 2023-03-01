@@ -23,10 +23,31 @@ def _ffmpeg_metadata_escape(str_to_escape: str) -> str:
 
 
 class FFMPEG:
+    _FFMPEG_PATH: str = ""
+    _FFPROBE_PATH: str = ""
+
+    @classmethod
+    def set_paths(cls, ffmpeg_path: str, ffprobe_path: str) -> None:
+        """Set ffmpeg paths for usage"""
+        cls._FFMPEG_PATH = ffmpeg_path
+        cls._FFPROBE_PATH = ffprobe_path
+
+    @classmethod
+    def ffmpeg_path(cls) -> str:
+        """Ensure the ffmpeg path has been set and return it"""
+        assert cls._FFMPEG_PATH, "ffmpeg has not been set"
+        return cls._FFMPEG_PATH
+
+    @classmethod
+    def ffprobe_path(cls) -> str:
+        """Ensure the ffprobe path has been set and return it"""
+        assert cls._FFPROBE_PATH, "ffprobe has not been set"
+        return cls._FFPROBE_PATH
+
     @classmethod
     def _ensure_installed(cls):
         try:
-            subprocess.check_output(["which", "ffmpeg"])
+            subprocess.check_output([cls.ffmpeg_path(), "-version"])
         except subprocess.CalledProcessError as subprocess_error:
             raise ValidationException(
                 "Trying to use a feature which requires ffmpeg, but it cannot be found"
@@ -63,7 +84,7 @@ class FFMPEG:
         """
         cls._ensure_installed()
 
-        cmd = ["ffmpeg"]
+        cmd = [cls.ffmpeg_path()]
         cmd.extend(ffmpeg_args)
         logger.debug("Running %s", " ".join(cmd))
         with Logger.handle_external_logs(name="ffmpeg"):
@@ -130,10 +151,13 @@ def set_ffmpeg_metadata_chapters(
         lines += _create_metadata_chapters(chapters=chapters, file_duration_sec=file_duration_sec)
 
     tmp_file_path = FFMPEG.tmp_file_path(relative_file_path=file_path)
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", encoding="utf-8") as metadata_file:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".txt", encoding="utf-8", delete=False
+    ) as metadata_file:
         metadata_file.write("\n".join(lines))
         metadata_file.flush()
 
+    try:
         FFMPEG.run(
             [
                 "-i",
@@ -151,6 +175,8 @@ def set_ffmpeg_metadata_chapters(
             ]
         )
         FileHandler.move(tmp_file_path, file_path)
+    finally:
+        FileHandler.delete(metadata_file.name)
 
 
 def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -> None:

@@ -1,7 +1,9 @@
 import contextlib
 import json
 import logging
+import os
 import tempfile
+from pathlib import Path
 from typing import Any
 from typing import Callable
 from typing import Dict
@@ -10,17 +12,18 @@ from unittest.mock import patch
 
 import pytest
 
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 
 
 @pytest.fixture
-def working_directory() -> str:
+def working_directory() -> Path:
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 
 
 @pytest.fixture()
-def output_directory():
+def output_directory() -> Path:
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 
@@ -83,9 +86,12 @@ def preset_dict_to_subscription_yaml_generator() -> Callable:
     @contextlib.contextmanager
     def _preset_dict_to_subscription_yaml_generator(subscription_name: str, preset_dict: Dict):
         subscription_dict = {subscription_name: preset_dict}
-        with tempfile.NamedTemporaryFile(suffix=".yaml") as tmp_file:
+        with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
             tmp_file.write(json.dumps(subscription_dict).encode("utf-8"))
-            tmp_file.flush()
+
+        try:
             yield tmp_file.name
+        finally:
+            FileHandler.delete(tmp_file.name)
 
     return _preset_dict_to_subscription_yaml_generator
