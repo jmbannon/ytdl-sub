@@ -285,7 +285,7 @@ docker run -d \
 Download and use our latest executable using the command below. For Windows users, use this method in
 [WSL](https://learn.microsoft.com/en-us/windows/wsl/). FFmpeg is a required dependency.
 ```commandline
-curl -L https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub > ytdl-sub
+curl -L -o ytdl-sub https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub
 chmod +x ytdl-sub
 ./ytdl-sub -h
 ```

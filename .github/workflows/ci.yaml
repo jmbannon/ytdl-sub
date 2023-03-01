@@ -126,7 +126,6 @@ jobs:
 
   test-plugins:
     runs-on: ubuntu-22.04
-    needs: test-build
     permissions:
       contents: read
 
