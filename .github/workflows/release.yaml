@@ -136,6 +136,7 @@ jobs:
     needs:
       - version
       - build-linux
+      - build-windows
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
