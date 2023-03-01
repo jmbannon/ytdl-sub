@@ -6,6 +6,7 @@ from mergedeep import mergedeep
 
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
 from ytdl_sub.utils.system import IS_WINDOWS
+from ytdl_sub.validators.file_path_validators import ExistingFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
@@ -39,12 +40,11 @@ class ConfigOptions(StrictDictValidator):
         self._lock_directory = self._validate_key(
             key="lock_directory", validator=StringValidator, default=_DEFAULT_LOCK_DIRECTORY
         )
-        # TODO: Validate these exist
         self._ffmpeg_path = self._validate_key(
-            key="ffmpeg_path", validator=StringValidator, default=_DEFAULT_FFMPEG_PATH
+            key="ffmpeg_path", validator=ExistingFileValidator, default=_DEFAULT_FFMPEG_PATH
         )
         self._ffprobe_path = self._validate_key(
-            key="ffprobe_path", validator=StringValidator, default=_DEFAULT_FFPROBE_PATH
+            key="ffprobe_path", validator=ExistingFileValidator, default=_DEFAULT_FFPROBE_PATH
         )
 
     @property
@@ -102,14 +102,16 @@ class ConfigOptions(StrictDictValidator):
     @property
     def ffmpeg_path(self) -> str:
         """
-        TODO: Fill out!
+        Optional. Path to ffmpeg executable. Defaults to ``/usr/bin/ffmpeg`` for Linux, and
+        ``ffmpeg.exe`` for Windows (in the same directory as ytdl-sub).
         """
         return self._ffmpeg_path.value
 
     @property
     def ffprobe_path(self) -> str:
         """
-        TODO: Fill out!
+        Optional. Path to ffprobe executable. Defaults to ``/usr/bin/ffprobe`` for Linux, and
+        ``ffprobe.exe`` for Windows (in the same directory as ytdl-sub).
         """
         return self._ffprobe_path.value
 
