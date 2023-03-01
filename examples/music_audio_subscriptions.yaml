@@ -97,8 +97,7 @@ eastern_bloc:
 # BANDCAMP - DISCOGRAPHY
 # See https://emilyharpist.bandcamp.com/
 #
-# Downloads the GameChops Albums' playlist. Each video in the playlist is an album with
-# chapters representing songs.
+# Downloads Emily's entire bandcamp discography. yt-dlp represents albums as playlist.
 emily_hopkins:
   preset: "albums_from_playlists"
   regex:
