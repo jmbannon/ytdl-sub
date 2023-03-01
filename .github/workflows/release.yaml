@@ -102,6 +102,35 @@ jobs:
 
   ##################################################################################################
 
+  build-windows:
+    name: build-windows
+    needs:
+      - version
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Write version to init file
+        run: |
+          echo '${{ needs.version.outputs.init_contents }}'> src/ytdl_sub/__init__.py
+      - name: Build Package
+        run: |
+          python -m pip install -e .
+          python -m pip install pyinstaller
+          pyinstaller ytdl-sub.spec
+          .\dist\ytdl-sub.exe -h
+
+      - name: Upload build
+        uses: actions/upload-artifact@v3
+        with:
+          name: ytdl-sub_exe
+          path: .\dist\ytdl-sub.exe
+
+  ##################################################################################################
+
   github-release:
     name: github-release
     needs:
@@ -113,6 +142,12 @@ jobs:
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
+
+      - name: Restore exe build
+        uses: actions/download-artifact@v3
+        with:
+          name: ytdl-sub_exe
+          path: /opt/builds
 
       - name: Restore aarch64 build
         uses: actions/download-artifact@v3
@@ -148,6 +183,7 @@ jobs:
           files: |
             /opt/builds/ytdl-sub
             /opt/builds/ytdl-sub_aarch64
+            /opt/builds/ytdl-sub.exe
 
   pypi-publish:
     name: pypi-publish
