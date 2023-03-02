@@ -235,84 +235,21 @@ player to recognize downloads as:
   - Discographies
 
 ## Installation
+`ytdl-sub` can be installed on the following platforms.
 
-The ytdl-sub docker image uses
-[LinuxServer's](https://www.linuxserver.io/)
-[base alpine image](https://github.com/linuxserver/docker-baseimage-alpine).
-It looks, feels, and operates like other LinuxServer images. This is the 
-recommended way to use ytdl-sub.
-
-The docker image is intended to be used as a console. For automating 
-`subscriptions.yaml` downloads to pull new media, see
-[this guide](https://github.com/jmbannon/ytdl-sub/wiki/7.-Automate-Downloading-New-Content-Using-Your-Configs)
-on how set up a cron job in the docker container.
-
-### Docker Compose
-```yaml
-services:
-  ytdl-sub:
-    image: ghcr.io/jmbannon/ytdl-sub:latest
-    container_name: ytdl-sub
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Los_Angeles
-    volumes:
-      - <path/to/ytdl-sub/config>:/config
-      - <path/to/tv_shows>:/tv_shows # optional
-      - <path/to/movies>:/movies # optional
-      - <path/to/music_videos>:/music_videos # optional
-      - <path/to/music>:/music # optional
-    restart: unless-stopped
-```
-### Docker CLI
-```commandline
-docker run -d \
-    --name=ytdl-sub \
-    -e PUID=1000 \
-    -e PGID=1000 \
-    -e TZ=America/Los_Angeles \
-    -v <path/to/ytdl-sub/config>:/config \
-    -v <OPTIONAL/path/to/tv_shows>:/tv_shows \
-    -v <OPTIONAL/path/to/movies>:/movies \
-    -v <OPTIONAL/path/to/music_videos>:/music_videos \
-    -v <OPTIONAL/path/to/music>:/music \
-    --restart unless-stopped \
-    ghcr.io/jmbannon/ytdl-sub:latest
-```
-
-### Executable
-Download and use our latest executable using the command below. For Windows users, use this method in
-[WSL](https://learn.microsoft.com/en-us/windows/wsl/). FFmpeg is a required dependency.
-```commandline
-curl -L -o ytdl-sub https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub
-chmod +x ytdl-sub
-./ytdl-sub -h
-```
-
-### PIP
-You can install our [PyPI package](https://pypi.org/project/ytdl-sub/). Both FFmpeg and Python 3.10 or greater are required.
-```commandline
-python3 -m pip install -U ytdl-sub
-```
-
-### Building Docker Image Locally
-Run `make docker` in the root directory of this repo to build the image. This
-will build the python wheel and install it in the Dockerfile.
-
-### Building Python Package Locally
-With a Python 3.10 virtual environment, you can clone and install the repo using
-```commandline
-git clone https://github.com/jmbannon/ytdl-sub.git
-cd ytdl-sub
-
-pip install -e .
-```
+- Docker Compose
+- Docker CLI
+- Windows
+- Linux
+- Linux ARM
+- PIP
+- Local Install
+- Local Docker Build
 
 ## Contributing
 There are many ways to contribute, even without coding. Please take a look in
-our [GitHub Issues](https://github.com/jmbannon/ytdl-sub/issues) to ask
-questions, submit a feature request, or pick up a bug.
+our [GitHub Issues](https://github.com/jmbannon/ytdl-sub/issues) to submit a feature request, or 
+pick up a bug.
 
 ## Support
 We are pretty active in our
