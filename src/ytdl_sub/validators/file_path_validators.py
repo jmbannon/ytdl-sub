@@ -16,7 +16,8 @@ class FFmpegFileValidator(StringValidator):
         super().__init__(name, value)
         if not os.path.isfile(self.value):
             raise self._validation_exception(
-                f"Expects an {self._ffmpeg_dependency} executable at '{self.value}', but does not exist"
+                f"Expects an {self._ffmpeg_dependency} executable at '{self.value}', but does not exist. "
+                f"See https://github.com/jmbannon/ytdl-sub#installation on how to install ffmpeg dependencies."
             )
 
     @property
