@@ -237,14 +237,14 @@ player to recognize downloads as:
 ## Installation
 `ytdl-sub` can be installed on the following platforms.
 
-- Docker Compose
-- Docker CLI
-- Windows
-- Linux
-- Linux ARM
-- PIP
-- Local Install
-- Local Docker Build
+- [Docker Compose](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker-compose_)
+- [Docker CLI](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker)
+- [Windows](https://ytdl-sub.readthedocs.io/en/latest/install.html#windows)
+- [Linux](https://ytdl-sub.readthedocs.io/en/latest/install.html#linux)
+- [Linux ARM](https://ytdl-sub.readthedocs.io/en/latest/install.html#linux-arm)
+- [PIP](https://ytdl-sub.readthedocs.io/en/latest/install.html#pip)
+- [Local Install](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-install)
+- [Local Docker Build](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-docker-build)
 
 ## Contributing
 There are many ways to contribute, even without coding. Please take a look in
