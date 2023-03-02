@@ -89,8 +89,8 @@ You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is u
    chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe
 
    # May need sudo / root permissions to perform
-   mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg.exe /usr/bin/ffmpeg
-   mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe.exe /usr/bin/ffprobe
+   mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg
+   mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe
 
 Linux ARM
 --------------
@@ -112,8 +112,8 @@ You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is u
    chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe
 
    # May need sudo / root permissions to perform
-   mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg.exe /usr/bin/ffmpeg
-   mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe.exe /usr/bin/ffprobe
+   mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg /usr/bin/ffmpeg
+   mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe /usr/bin/ffprobe
 
 
 PIP
