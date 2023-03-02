@@ -36,7 +36,8 @@ parser.add_argument(
 parser.add_argument(
     MainArgs.DRY_RUN.value,
     action="store_true",
-    help="does not perform any video downloads or writes to output directories",
+    help="preview what a download would output, "
+    "does not perform any video downloads or writes to output directories",
 )
 parser.add_argument(
     MainArgs.LOG_LEVEL.value,

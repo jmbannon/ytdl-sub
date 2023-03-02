@@ -22,5 +22,7 @@ Contents
    :maxdepth: 2
 
    install
+   usage
+   getting_started
    presets
    config

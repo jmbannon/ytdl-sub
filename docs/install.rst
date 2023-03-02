@@ -140,7 +140,7 @@ With a Python 3.10 virtual environment, you can clone and install the repo using
    pip install -e .
 
 Local Docker Build
---------------
+-------------------
 Run ``make docker`` in the root directory of this repo to build the image. This
 will build the python wheel and install it in the Dockerfile.
 
