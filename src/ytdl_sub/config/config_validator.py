@@ -6,7 +6,7 @@ from mergedeep import mergedeep
 
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
 from ytdl_sub.utils.system import IS_WINDOWS
-from ytdl_sub.validators.file_path_validators import ExistingFileValidator
+from ytdl_sub.validators.file_path_validators import FFmpegFileValidator, FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
@@ -41,10 +41,10 @@ class ConfigOptions(StrictDictValidator):
             key="lock_directory", validator=StringValidator, default=_DEFAULT_LOCK_DIRECTORY
         )
         self._ffmpeg_path = self._validate_key(
-            key="ffmpeg_path", validator=ExistingFileValidator, default=_DEFAULT_FFMPEG_PATH
+            key="ffmpeg_path", validator=FFmpegFileValidator, default=_DEFAULT_FFMPEG_PATH
         )
         self._ffprobe_path = self._validate_key(
-            key="ffprobe_path", validator=ExistingFileValidator, default=_DEFAULT_FFPROBE_PATH
+            key="ffprobe_path", validator=FFprobeFileValidator, default=_DEFAULT_FFPROBE_PATH
         )
 
     @property

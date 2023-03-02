@@ -227,7 +227,7 @@ class DictValidator(Validator):
         if key not in self._dict and default is None:
             raise self._validation_exception(f"{key} is missing when it should be present.")
 
-        validator_name = f"{self._name}.{key}"
+        validator_name = f"{self._name}.{key}" if self._name else key
         validator_instance = validator(
             name=validator_name,
             value=self._dict.get(key, default),
