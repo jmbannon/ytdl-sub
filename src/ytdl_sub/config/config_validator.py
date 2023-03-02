@@ -65,6 +65,8 @@ class ConfigOptions(StrictDictValidator):
     @property
     def dl_aliases(self) -> Optional[Dict[str, str]]:
         """
+        .. _dl_aliases:
+
         Optional. Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
 
         .. code-block:: yaml
