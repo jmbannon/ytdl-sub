@@ -6,7 +6,8 @@ from mergedeep import mergedeep
 
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
 from ytdl_sub.utils.system import IS_WINDOWS
-from ytdl_sub.validators.file_path_validators import FFmpegFileValidator, FFprobeFileValidator
+from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
+from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
