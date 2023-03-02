@@ -235,7 +235,17 @@ player to recognize downloads as:
   - Discographies
 
 ## Installation
+- Docker Compose
+- Docker CLI
+- Windows
+- Linux
+- Linux ARM
+- PIP
+- Local Install
+- Local Docker Build
 
+All installations require a 64-bit CPU. 32-bit is not supported.
+### Docker Compose
 The ytdl-sub docker image uses
 [LinuxServer's](https://www.linuxserver.io/)
 [base alpine image](https://github.com/linuxserver/docker-baseimage-alpine).
@@ -246,8 +256,6 @@ The docker image is intended to be used as a console. For automating
 `subscriptions.yaml` downloads to pull new media, see
 [this guide](https://github.com/jmbannon/ytdl-sub/wiki/7.-Automate-Downloading-New-Content-Using-Your-Configs)
 on how set up a cron job in the docker container.
-
-### Docker Compose
 ```yaml
 services:
   ytdl-sub:
@@ -281,13 +289,65 @@ docker run -d \
     ghcr.io/jmbannon/ytdl-sub:latest
 ```
 
-### Executable
-Download and use our latest executable using the command below. For Windows users, use this method in
-[WSL](https://learn.microsoft.com/en-us/windows/wsl/). FFmpeg is a required dependency.
+### Windows
+#### Install ytdl-sub
+From powershell, run:
+```commandline
+curl.exe -L -o ytdl-sub.exe https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub.exe
+ytdl-sub.exe -h
+```
+#### Install ffmpeg
+FFmpeg is a required dependency, and must be in the same directory as ytdl-sub. The commands below downloads
+[yt-dlp's ffmpeg build](https://github.com/yt-dlp/FFmpeg-Builds) for Windows.
+```commandline
+curl.exe -L -o ffmpeg.zip https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
+tar -xf ffmpeg.zip
+move "ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe" "ffmpeg.exe"
+move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
+```
+
+### Linux
+#### Install ytdl-sub
+Download and use our executable using the command below.
 ```commandline
 curl -L -o ytdl-sub https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub
 chmod +x ytdl-sub
-./ytdl-sub -h
+mv ytdl-sub /usr/bin  # May need sudo/root permissions
+ytdl-sub -h
+```
+#### Install ffmpeg
+FFmpeg is a required dependency. You can install it using your native package
+manager or download
+[yt-dlp's ffmpeg build](https://github.com/yt-dlp/FFmpeg-Builds) for Linux using the commands below:
+```commandline
+curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
+tar -xf ffmpeg.tar.gz
+chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg
+chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe
+mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg.exe /usr/bin/ffmpeg
+mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe.exe /usr/bin/ffprobe
+```
+
+### Linux ARM
+#### Install ytdl-sub
+Download and use our executable using the command below.
+```commandline
+curl -L -o ytdl-sub https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub_aarch64
+chmod +x ytdl-sub
+mv ytdl-sub /usr/bin
+ytdl-sub -h
+```
+#### Install ffmpeg
+FFmpeg is a required dependency. You can install it using your native package
+manager or download
+[yt-dlp's ffmpeg build](https://github.com/yt-dlp/FFmpeg-Builds) for Linux using the commands below:
+```commandline
+curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz
+tar -xf ffmpeg.tar.gz
+chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg
+chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe
+mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg.exe /usr/bin/ffmpeg
+mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe.exe /usr/bin/ffprobe
 ```
 
 ### PIP
