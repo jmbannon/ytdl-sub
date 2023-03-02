@@ -70,7 +70,7 @@ class TestDateRange:
             with assert_logs(
                 logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
-                log_level="info",
+                log_level="debug",
             ):
                 transaction_log = recent_channel_subscription.download()
                 assert_transaction_log_matches(
@@ -141,7 +141,7 @@ class TestDateRange:
         with assert_logs(
             logger=ytdl_sub.downloaders.downloader.download_logger,
             expected_message="RejectedVideoReached, stopping additional downloads",
-            log_level="info",
+            log_level="debug",
         ):
             transaction_log = recent_channel_subscription.download(dry_run=False)
 
@@ -161,7 +161,7 @@ class TestDateRange:
         with assert_logs(
             logger=ytdl_sub.downloaders.downloader.download_logger,
             expected_message="ExistingVideoReached, stopping additional downloads",
-            log_level="info",
+            log_level="debug",
         ):
             transaction_log = rolling_recent_channel_subscription.download(dry_run=dry_run)
 
@@ -188,7 +188,7 @@ class TestDateRange:
             with assert_logs(
                 logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
-                log_level="info",
+                log_level="debug",
             ):
                 transaction_log = rolling_recent_channel_subscription.download()
 

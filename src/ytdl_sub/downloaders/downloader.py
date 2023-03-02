@@ -369,14 +369,14 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             with self._listen_and_log_downloaded_info_json(log_prefix=log_prefix_on_info_json_dl):
                 _ = self.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
-            download_logger.info(
-                "RejectedVideoReached, stopping additional downloads. "
-                "Disable by setting `ytdl_options.break_on_reject` to False."
+            download_logger.debug(
+                "RejectedVideoReached, stopping additional downloads "
+                "(Can be disable by setting `ytdl_options.break_on_reject` to False)."
             )
         except ExistingVideoReached:
-            download_logger.info(
+            download_logger.debug(
                 "ExistingVideoReached, stopping additional downloads. "
-                "Disable by setting `ytdl_options.break_on_existing` to False."
+                "(Can be disable by setting `ytdl_options.break_on_existing` to False)."
             )
         except MaxDownloadsReached:
             download_logger.info("MaxDownloadsReached, stopping additional downloads.")

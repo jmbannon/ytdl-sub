@@ -85,7 +85,7 @@ class TestPlaylist:
             with assert_logs(
                 logger=ytdl_sub.downloaders.downloader.download_logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
-                log_level="info",
+                log_level="debug",
             ):
                 _ = playlist_subscription.download()
 
@@ -133,7 +133,7 @@ class TestPlaylist:
                 with assert_logs(
                     logger=ytdl_sub.downloaders.downloader.download_logger,
                     expected_message="ExistingVideoReached, stopping additional downloads",
-                    log_level="info",
+                    log_level="debug",
                 ):
                     _ = mock_run_from_cli(args=args)[0][1]
 
