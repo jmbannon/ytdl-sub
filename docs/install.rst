@@ -5,6 +5,8 @@ Install
 .. contents::
     :depth: 2
 
+All installations require a 64-bit CPU. 32-bit is not supported.
+
 Docker Compose
 --------------
 The ytdl-sub docker image uses

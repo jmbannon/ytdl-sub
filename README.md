@@ -235,6 +235,8 @@ player to recognize downloads as:
   - Discographies
 
 ## Installation
+`ytdl-sub` can be installed on the following platforms.
+
 - Docker Compose
 - Docker CLI
 - Windows
@@ -243,8 +245,6 @@ player to recognize downloads as:
 - PIP
 - Local Install
 - Local Docker Build
-
-All installations require a 64-bit CPU. 32-bit is not supported.
 
 ## Contributing
 There are many ways to contribute, even without coding. Please take a look in
