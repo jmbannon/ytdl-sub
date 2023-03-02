@@ -30,6 +30,7 @@ on how set up a cron job in the docker container.
          - PUID=1000
          - PGID=1000
          - TZ=America/Los_Angeles
+         - DOCKER_MODS=linuxserver/mods:universal-cron
        volumes:
          - <path/to/ytdl-sub/config>:/config
          - <path/to/tv_shows>:/tv_shows # optional
@@ -47,6 +48,7 @@ Docker
        -e PUID=1000 \
        -e PGID=1000 \
        -e TZ=America/Los_Angeles \
+       -e DOCKER_MODS=linuxserver/mods:universal-cron \
        -v <path/to/ytdl-sub/config>:/config \
        -v <OPTIONAL/path/to/tv_shows>:/tv_shows \
        -v <OPTIONAL/path/to/movies>:/movies \
