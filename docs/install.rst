@@ -2,8 +2,8 @@ Install
 =======
 ``ytdl-sub`` can be installed on the following platforms.
 
-.. contents:: Table of Contents
-    :depth: 1
+.. contents::
+    :depth: 2
 
 Docker Compose
 --------------
@@ -72,6 +72,7 @@ From powershell, run:
 Linux
 --------------
 Requires ffmpeg as a dependency. Can typically be installed with any Linux package manager.
+
 .. code-block:: bash
 
    curl -L -o ytdl-sub https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub
@@ -94,6 +95,7 @@ You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is u
 Linux ARM
 --------------
 Requires ffmpeg as a dependency. Can typically be installed with any Linux package manager.
+
 .. code-block:: bash
 
    curl -L -o ytdl-sub https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub_aarch64
