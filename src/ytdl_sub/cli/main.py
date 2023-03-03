@@ -35,6 +35,10 @@ def _download_subscriptions_from_yaml_files(
     Returns
     -------
     List of (subscription, transaction_log)
+
+    Raises
+    ------
+    Validation exception if main arg is specified as a subscription path
     """
     subscription_paths: List[str] = args.subscription_paths
     subscriptions: List[Subscription] = []
