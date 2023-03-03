@@ -16,6 +16,9 @@ presets:
       - "_plex_tv_show"
       - "_tv_show_collection"
 
+####################################################################################################
+# SEASON PRESETS
+
   collection_season_1:
     download:
       download_strategy: "multi_url"
@@ -26,7 +29,7 @@ presets:
             collection_season_number_padded: "01"
           playlist_thumbnails:
             # Use latest_entry first, then see if YT channel artwork exists
-            # ONLY FOR SEASON 1!
+            # ONLY FOR SEASON 1! The channel artwork will be the show's artwork.
             - name: "{season_poster_file_name}"
               uid: "latest_entry"
             - name: "{tv_show_poster_file_name}"
