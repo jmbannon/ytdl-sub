@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import List
 
 from resources import REGENERATE_FIXTURES
@@ -10,7 +11,7 @@ _TRANSACTION_LOG_SUMMARY_PATH = RESOURCE_PATH / "transaction_log_summaries"
 
 
 def assert_transaction_log_matches(
-    output_directory: str,
+    output_directory: Path,
     transaction_log: FileHandlerTransactionLog,
     transaction_log_summary_file_name: str,
     regenerate_transaction_log: bool = REGENERATE_FIXTURES,

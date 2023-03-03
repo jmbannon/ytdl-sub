@@ -75,7 +75,8 @@ class MainArguments:
 # SHARED OPTIONS
 def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults: bool) -> None:
     """
-    Add shared arguments to sub parsers
+    Add shared arguments to sub parsers. Needed to be able to specify args after positional args.
+    i.e. support both ``ytdl-sub --dry-run sub`` and ``ytdl-sub sub --dry-run``
 
     Parameters
     ----------
@@ -98,6 +99,7 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         action="store_true",
         help="preview what a download would output, "
         "does not perform any video downloads or writes to output directories",
+        default=argparse.SUPPRESS if suppress_defaults else False,
     )
     arg_parser.add_argument(
         MainArguments.LOG_LEVEL.short,
