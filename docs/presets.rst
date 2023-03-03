@@ -98,7 +98,8 @@ Season Presets
 * ``collection_season_2``
 * ``collection_season_3``
 * ``collection_season_4``
-* ``collection_season_5``
+* ``...``
+* ``collection_season_20``
 
 Example
 """""""
