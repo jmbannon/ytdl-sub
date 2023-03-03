@@ -3,6 +3,7 @@ from typing import Any
 
 from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.preset import Preset
+from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.yaml import load_yaml
 
 
@@ -25,6 +26,11 @@ class ConfigFile(ConfigValidator):
         """
         if self.config_options.umask:
             os.umask(int(self.config_options.umask, 8))
+
+        FFMPEG.set_paths(
+            ffmpeg_path=self.config_options.ffmpeg_path,
+            ffprobe_path=self.config_options.ffprobe_path,
+        )
 
         return self
 
