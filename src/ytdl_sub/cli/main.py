@@ -136,6 +136,7 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
 
     args, extra_args = parser.parse_known_args()
 
+    # Load the config
     config: ConfigFile = ConfigFile.from_file_path(args.config).initialize()
     transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
 
@@ -165,6 +166,4 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
                 transaction_log.to_output_message(subscription.output_directory),
             )
 
-    # Ran successfully, so we can delete the debug file
-    Logger.cleanup(delete_debug_file=True)
     return transaction_logs

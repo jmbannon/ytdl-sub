@@ -27,6 +27,7 @@ def main():
     logger = Logger.get()
     try:
         _main()
+        Logger.cleanup()  # Ran successfully, so we can delete the debug file
     except ValidationException as validation_exception:
         logger.error(validation_exception)
         sys.exit(1)

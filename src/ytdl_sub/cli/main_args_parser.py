@@ -4,6 +4,7 @@ from enum import Enum
 from typing import List
 from typing import Optional
 
+from ytdl_sub import __local_version__
 from ytdl_sub.utils.logger import LoggerLevels
 
 
@@ -75,6 +76,7 @@ class MainArguments:
 parser = argparse.ArgumentParser(
     description="ytdl-sub: Automate download and adding metadata with YoutubeDL"
 )
+parser.add_argument("--version", action="version", version="%(prog)s " + __local_version__)
 parser.add_argument(
     MainArguments.CONFIG.short,
     MainArguments.CONFIG.long,
