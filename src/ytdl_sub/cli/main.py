@@ -40,7 +40,7 @@ def _download_subscriptions_from_yaml_files(
     subscriptions: List[Subscription] = []
     output: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
 
-    # Load all of the subscriptions first to perform all validation before downloading
+    # Load all the subscriptions first to perform all validation before downloading
     for path in subscription_paths:
         subscriptions += Subscription.from_file_path(config=config, subscription_path=path)
 
@@ -55,6 +55,7 @@ def _download_subscriptions_from_yaml_files(
 
         output.append((subscription, transaction_log))
         gc.collect()  # Garbage collect after each subscription download
+        Logger.cleanup()  # Cleanup logger after each successful subscription download
 
     return output
 

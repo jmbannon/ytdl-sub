@@ -95,11 +95,27 @@ class TestLogger:
         assert lines == ["[ytdl-sub:name_test] info test\n", "[ytdl-sub:name_test] debug test\n"]
 
         # Ensure the file cleans up too
-        for handler in logger.handlers:
-            handler.close()
-
         Logger.cleanup()
         assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
+
+    def test_logger_can_be_cleaned_during_execution(self):
+        Logger._LOGGER_LEVEL = LoggerLevels.INFO
+        logger = Logger.get(name="name_test")
+
+        for _ in range(2):
+            logger.info("info test")
+            logger.debug("debug test")
+
+            with open(Logger._DEBUG_LOGGER_FILE.name, "r", encoding="utf-8") as log_file:
+                lines = log_file.readlines()
+
+            assert lines == [
+                "[ytdl-sub:name_test] info test\n",
+                "[ytdl-sub:name_test] debug test\n",
+            ]
+
+            Logger.cleanup(delete_debug_file=True)
+            assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
 
     @pytest.mark.parametrize(
         "log_level, expected_stdout",

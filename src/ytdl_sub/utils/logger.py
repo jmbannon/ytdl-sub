@@ -197,7 +197,7 @@ class Logger:
     @classmethod
     def cleanup(cls, delete_debug_file: bool = True):
         """
-        Cleans up any log files left behind.
+        Cleans up any log files left behind
 
         Parameters
         ----------
