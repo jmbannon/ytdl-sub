@@ -2,6 +2,7 @@ import argparse
 from enum import Enum
 from typing import List
 
+from ytdl_sub import __local_version__
 from ytdl_sub.utils.logger import LoggerLevels
 
 
@@ -25,6 +26,7 @@ class MainArgs(Enum):
 parser = argparse.ArgumentParser(
     description="ytdl-sub: Automate download and adding metadata with YoutubeDL"
 )
+parser.add_argument("--version", action="version", version="%(prog)s " + __local_version__)
 parser.add_argument(
     "-c",
     MainArgs.CONFIG.value,
