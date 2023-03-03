@@ -41,7 +41,7 @@ class DownloadArgsParser:
         self._config_options = config_options
 
         for arg in extra_arguments:
-            if arg in MainArguments.all():
+            if arg in MainArguments.all_arguments():
                 raise InvalidDlArguments(
                     f"'{arg}' is a ytdl-sub argument and must placed behind 'dl'"
                 )

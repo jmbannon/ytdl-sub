@@ -69,6 +69,12 @@ View Options
 -----------------
 .. code-block::
 
-   ytdl-sub view [URL]
+   ytdl-sub view [-sc] [URL]
+
+.. code-block:: text
+
+  -sc, --split-chapters
+                        View source variables after splitting by chapters
+
 
 Preview the source variables for a given URL. Helps when creating new configs.

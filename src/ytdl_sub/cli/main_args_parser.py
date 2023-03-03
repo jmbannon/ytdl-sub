@@ -72,41 +72,58 @@ class MainArguments:
 
 
 ###################################################################################################
+# SHARED OPTIONS
+def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults: bool) -> None:
+    """
+    Add shared arguments to sub parsers
+
+    Parameters
+    ----------
+    arg_parser
+        The parser to add shared args to
+    suppress_defaults
+        bool. Suppress sub parser defaults so they do not override the defaults in the parent parser
+    """
+    arg_parser.add_argument(
+        MainArguments.CONFIG.short,
+        MainArguments.CONFIG.long,
+        metavar="CONFIGPATH",
+        type=str,
+        help="path to the config yaml, uses config.yaml if not provided",
+        default=argparse.SUPPRESS if suppress_defaults else "config.yaml",
+    )
+    arg_parser.add_argument(
+        MainArguments.DRY_RUN.short,
+        MainArguments.DRY_RUN.long,
+        action="store_true",
+        help="preview what a download would output, "
+        "does not perform any video downloads or writes to output directories",
+    )
+    arg_parser.add_argument(
+        MainArguments.LOG_LEVEL.short,
+        MainArguments.LOG_LEVEL.long,
+        metavar="|".join(LoggerLevels.names()),
+        type=str,
+        help="level of logs to print to console, defaults to info",
+        default=argparse.SUPPRESS if suppress_defaults else LoggerLevels.INFO.name,
+        choices=LoggerLevels.names(),
+        dest="ytdl_sub_log_level",
+    )
+
+
+###################################################################################################
 # GLOBAL PARSER
 parser = argparse.ArgumentParser(
-    description="ytdl-sub: Automate download and adding metadata with YoutubeDL"
+    description="ytdl-sub: Automate download and adding metadata with YoutubeDL",
 )
 parser.add_argument("--version", action="version", version="%(prog)s " + __local_version__)
-parser.add_argument(
-    MainArguments.CONFIG.short,
-    MainArguments.CONFIG.long,
-    metavar="CONFIGPATH",
-    type=str,
-    help="path to the config yaml, uses config.yaml if not provided",
-    default="config.yaml",
-)
-parser.add_argument(
-    MainArguments.DRY_RUN.short,
-    MainArguments.DRY_RUN.long,
-    action="store_true",
-    help="preview what a download would output, "
-    "does not perform any video downloads or writes to output directories",
-)
-parser.add_argument(
-    MainArguments.LOG_LEVEL.short,
-    MainArguments.LOG_LEVEL.long,
-    metavar="|".join(LoggerLevels.names()),
-    type=str,
-    help="level of logs to print to console, defaults to info",
-    default=LoggerLevels.INFO.name,
-    choices=LoggerLevels.names(),
-    dest="ytdl_sub_log_level",
-)
+_add_shared_arguments(parser, suppress_defaults=False)
 
 subparsers = parser.add_subparsers(dest="subparser")
 ###################################################################################################
 # SUBSCRIPTION PARSER
 subscription_parser = subparsers.add_parser("sub")
+_add_shared_arguments(subscription_parser, suppress_defaults=True)
 subscription_parser.add_argument(
     "subscription_paths",
     metavar="SUBPATH",
@@ -135,6 +152,7 @@ class ViewArgs(Enum):
 
 
 view_parser = subparsers.add_parser("view")
+_add_shared_arguments(view_parser, suppress_defaults=True)
 view_parser.add_argument(
     "-sc",
     ViewArgs.SPLIT_CHAPTERS.value,

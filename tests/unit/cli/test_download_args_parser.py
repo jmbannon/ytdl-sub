@@ -151,7 +151,7 @@ class TestDownloadArgsParser:
                 extra_arguments=extra_args, config_options=config_options
             ).to_subscription_dict()
 
-    @pytest.mark.parametrize("main_argument", MainArguments.all())
+    @pytest.mark.parametrize("main_argument", MainArguments.all_arguments())
     def test_error_uses_main_args(self, main_argument, config_options_generator):
         config_options = config_options_generator()
         extra_args = _get_extra_arguments(cmd_string=f"dl {main_argument}")
