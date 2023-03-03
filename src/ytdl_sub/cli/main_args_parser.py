@@ -1,38 +1,36 @@
 import argparse
 import dataclasses
-from enum import Enum
 from typing import List
-from typing import Optional
 
 from ytdl_sub import __local_version__
 from ytdl_sub.utils.logger import LoggerLevels
 
 
 @dataclasses.dataclass
-class MainArgument:
+class CLIArgument:
     short: str
     long: str
     is_positional: bool = False
 
 
 class MainArguments:
-    CONFIG = MainArgument(
+    CONFIG = CLIArgument(
         short="-c",
         long="--config",
     )
-    DRY_RUN = MainArgument(
+    DRY_RUN = CLIArgument(
         short="-d",
         long="--dry-run",
         is_positional=True,
     )
-    LOG_LEVEL = MainArgument(
+    LOG_LEVEL = CLIArgument(
         short="-l",
         long="--log-level",
         is_positional=True,
     )
 
     @classmethod
-    def all(cls) -> List[MainArgument]:
+    def all(cls) -> List[CLIArgument]:
         """
         Returns
         -------
@@ -51,24 +49,6 @@ class MainArguments:
         for arg in cls.all():
             all_args.extend([arg.short, arg.long])
         return all_args
-
-    @classmethod
-    def get_argument_if_exists(cls, input_args: List[str]) -> Optional[str]:
-        """
-        Parameters
-        ----------
-        input_args
-            List of arguments
-
-        Returns
-        -------
-        True if a Main argument is in the input arguments. False otherwise.
-        """
-        for input_arg in input_args:
-            for main_arg in cls.all_arguments():
-                if input_arg == main_arg:
-                    return input_arg
-        return None
 
 
 ###################################################################################################
@@ -140,24 +120,18 @@ download_parser = subparsers.add_parser("dl")
 # VIEW PARSER
 
 
-class ViewArgs(Enum):
-    SPLIT_CHAPTERS = "--split-chapters"
-
-    @classmethod
-    def all(cls) -> List[str]:
-        """
-        Returns
-        -------
-        List of all args used in main CLI
-        """
-        return list(map(lambda arg: arg.value, cls))
+class ViewArguments:
+    SPLIT_CHAPTERS = CLIArgument(
+        short="-sc",
+        long="--split-chapters",
+    )
 
 
 view_parser = subparsers.add_parser("view")
 _add_shared_arguments(view_parser, suppress_defaults=True)
 view_parser.add_argument(
-    "-sc",
-    ViewArgs.SPLIT_CHAPTERS.value,
+    ViewArguments.SPLIT_CHAPTERS.short,
+    ViewArguments.SPLIT_CHAPTERS.long,
     action="store_true",
     help="View source variables after splitting by chapters",
 )
