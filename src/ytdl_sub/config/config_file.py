@@ -16,7 +16,10 @@ class ConfigFile(ConfigValidator):
         for preset_name, preset_dict in self.presets.dict.items():
             Preset.preset_partial_validate(config=self, name=preset_name, value=preset_dict)
 
-    def initialize(self):
+        # After validation, perform initialization
+        self._initialize()
+
+    def _initialize(self):
         """
         Configures things (umask, pgid) prior to any downloading
 

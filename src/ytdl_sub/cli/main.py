@@ -127,7 +127,7 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     args, extra_args = parser.parse_known_args()
 
     # Load the config
-    config: ConfigFile = ConfigFile.from_file_path(args.config).initialize()
+    config: ConfigFile = ConfigFile.from_file_path(args.config)
     transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
 
     with working_directory_lock(config=config):
