@@ -5,9 +5,11 @@ from typing import List
 from typing import Tuple
 
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
+from ytdl_sub.cli.main_args_parser import MainArguments
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_lock import working_directory_lock
 from ytdl_sub.utils.logger import Logger
@@ -35,10 +37,18 @@ def _download_subscriptions_from_yaml_files(
     Returns
     -------
     List of (subscription, transaction_log)
+
+    Raises
+    ------
+    Validation exception if main arg is specified as a subscription path
     """
     subscription_paths: List[str] = args.subscription_paths
     subscriptions: List[Subscription] = []
     output: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
+
+    # Make sure no main args are passed as a subscription path
+    if main_argument := MainArguments.get_argument_if_exists(subscription_paths) is not None:
+        raise ValidationException(f"The argument '{main_argument}' must be passed before 'sub'")
 
     # Load all the subscriptions first to perform all validation before downloading
     for path in subscription_paths:
