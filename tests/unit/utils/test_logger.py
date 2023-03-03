@@ -10,7 +10,7 @@ from ytdl_sub.utils.logger import LoggerLevels
 def cleanup_debug_file():
     Logger.set_log_level(log_level_name=LoggerLevels.DEBUG.name)
     yield
-    Logger.cleanup(delete_debug_file=True)
+    Logger.cleanup()
 
 
 class TestLogger:
@@ -98,7 +98,7 @@ class TestLogger:
         for handler in logger.handlers:
             handler.close()
 
-        Logger.cleanup(delete_debug_file=True)
+        Logger.cleanup()
         assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
 
     @pytest.mark.parametrize(
