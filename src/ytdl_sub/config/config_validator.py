@@ -3,13 +3,14 @@ from typing import Dict
 from typing import Optional
 
 from mergedeep import mergedeep
+from yt_dlp.utils import datetime_from_str
 
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
 from ytdl_sub.utils.system import IS_WINDOWS
 from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
 from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.validators import LiteralDictValidator
+from ytdl_sub.validators.validators import LiteralDictValidator, BoolValidator
 from ytdl_sub.validators.validators import StringValidator
 
 if IS_WINDOWS:
@@ -21,10 +22,46 @@ else:
     _DEFAULT_FFMPEG_PATH = "/usr/bin/ffmpeg"
     _DEFAULT_FFPROBE_PATH = "/usr/bin/ffprobe"
 
+class PersistLogsValidator(StrictDictValidator):
+    _required_keys = {"logs_directory"}
+    _optional_keys = {"keep_logs_after", "keep_successful_logs"}
+
+    def __init__(self, name: str, value: Any):
+        super().__init__(name, value)
+
+        self._logs_directory = self._validate_key(
+            key="logs_directory", validator=StringValidator
+        )
+
+        self._keep_logs_after: Optional[str] = None
+        if keep_logs_validator := self._validate_key_if_present(
+            key="keep_logs_after", validator=StringValidator
+        ):
+            try:
+                self._keep_logs_after = datetime_from_str(keep_logs_validator.value)
+            except Exception as exc:
+                raise self._validation_exception(f"Invalid datetime string: {str(exc)}")
+
+        self._keep_successful_logs = self._validate_key(
+            key="keep_successful_logs", validator=BoolValidator, default=True
+        )
+
+    @property
+    def logs_directory(self) -> str:
+        return self._logs_directory.value
+
+    @property
+    def keep_logs_after(self) -> Optional[str]:
+        return self._keep_logs_after
+
+    @property
+    def keep_successful_logs(self) -> bool:
+        return self._keep_successful_logs.value
+
 
 class ConfigOptions(StrictDictValidator):
     _required_keys = {"working_directory"}
-    _optional_keys = {"umask", "dl_aliases", "lock_directory", "ffmpeg_path", "ffprobe_path"}
+    _optional_keys = {"umask", "dl_aliases", "persist_logs", "lock_directory", "ffmpeg_path", "ffprobe_path"}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
@@ -37,6 +74,9 @@ class ConfigOptions(StrictDictValidator):
         )
         self._dl_aliases = self._validate_key_if_present(
             key="dl_aliases", validator=LiteralDictValidator
+        )
+        self._persist_logs = self._validate_key_if_present(
+            key="persist_logs", validator=PersistLogsValidator
         )
         self._lock_directory = self._validate_key(
             key="lock_directory", validator=StringValidator, default=_DEFAULT_LOCK_DIRECTORY
@@ -92,6 +132,11 @@ class ConfigOptions(StrictDictValidator):
         if self._dl_aliases:
             return self._dl_aliases.dict
         return {}
+
+    @property
+    def persist_logs(self) -> Optional[PersistLogsValidator]:
+        # TODO: nested docstring???
+        return self._persist_logs
 
     @property
     def lock_directory(self) -> str:

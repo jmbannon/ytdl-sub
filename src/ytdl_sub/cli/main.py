@@ -1,8 +1,12 @@
 import argparse
+from datetime import datetime
 import gc
 import sys
+from pathlib import Path
 from typing import List
 from typing import Tuple
+
+from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
@@ -17,6 +21,18 @@ logger = Logger.get()
 # View is a command to run a simple dry-run on a URL using the `_view` preset.
 # Use ytdl-sub dl arguments to use the preset
 _VIEW_EXTRA_ARGS_FORMATTER = "--preset _view --overrides.url {}"
+
+def _get_subscription_log_file_path(config: ConfigFile, subscription_name: str, success: bool) -> Path:
+    assert config.config_options.persist_logs, "persist_logs should not be None"
+
+    log_time = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+    log_subscription_name = sanitize_filename(subscription_name).lower().replace(" ", "_")
+    log_success = "success" if success else "error"
+
+    log_filename = f"{log_time}.{log_subscription_name}.{log_success}.log"
+    persist_log_path = Path(config.config_options.persist_logs.logs_directory) / log_filename
+
+    return persist_log_path
 
 
 def _download_subscriptions_from_yaml_files(
@@ -59,6 +75,10 @@ def _download_subscriptions_from_yaml_files(
 
         output.append((subscription, transaction_log))
         gc.collect()  # Garbage collect after each subscription download
+
+        if config.config_options.persist_logs:
+            FileHandler.copy(Logger.debug_log_filename(), )
+
         Logger.cleanup()  # Cleanup logger after each successful subscription download
 
     return output
