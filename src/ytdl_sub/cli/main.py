@@ -12,7 +12,7 @@ from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog, FileHandler
 from ytdl_sub.utils.file_lock import working_directory_lock
 from ytdl_sub.utils.logger import Logger
 
@@ -22,17 +22,23 @@ logger = Logger.get()
 # Use ytdl-sub dl arguments to use the preset
 _VIEW_EXTRA_ARGS_FORMATTER = "--preset _view --overrides.url {}"
 
-def _get_subscription_log_file_path(config: ConfigFile, subscription_name: str, success: bool) -> Path:
-    assert config.config_options.persist_logs, "persist_logs should not be None"
+def _maybe_write_subscription_log_file(config: ConfigFile, subscription: Subscription, success: bool) -> None:
+    # If persisting logs is disabled, do nothing
+    if not config.config_options.persist_logs:
+        return
+
+    # If persisting successful logs is disabled, do nothing
+    if success and not config.config_options.persist_logs.keep_successful_logs:
+        return
 
     log_time = datetime.now().strftime("%Y-%m-%d-%H%M%S")
-    log_subscription_name = sanitize_filename(subscription_name).lower().replace(" ", "_")
+    log_subscription_name = sanitize_filename(subscription.name).lower().replace(" ", "_")
     log_success = "success" if success else "error"
 
     log_filename = f"{log_time}.{log_subscription_name}.{log_success}.log"
     persist_log_path = Path(config.config_options.persist_logs.logs_directory) / log_filename
 
-    return persist_log_path
+    FileHandler.copy(Logger.debug_log_filename(), persist_log_path)
 
 
 def _download_subscriptions_from_yaml_files(
@@ -71,14 +77,21 @@ def _download_subscriptions_from_yaml_files(
             subscription.name,
         )
         logger.debug("Subscription full yaml:\n%s", subscription.as_yaml())
-        transaction_log = subscription.download(dry_run=args.dry_run)
+
+        try:
+            transaction_log = subscription.download(dry_run=args.dry_run)
+        except Exception as exc:
+            Logger.log_exit_exception(logger=logger, exception=exc)
+            _maybe_write_subscription_log_file(
+                config=config, subscription=subscription,
+                success=False
+            )
+            raise
 
         output.append((subscription, transaction_log))
         gc.collect()  # Garbage collect after each subscription download
 
-        if config.config_options.persist_logs:
-            FileHandler.copy(Logger.debug_log_filename(), )
-
+        _maybe_write_subscription_log_file(config=config, subscription=subscription, success=True)
         Logger.cleanup()  # Cleanup logger after each successful subscription download
 
     return output

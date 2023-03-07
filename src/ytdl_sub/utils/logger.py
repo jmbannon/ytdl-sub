@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from typing import List
 from typing import Optional
 
+from ytdl_sub import __local_version__
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 
 
@@ -89,6 +91,9 @@ class Logger:
     # pylint: disable=R1732
     _DEBUG_LOGGER_FILE = tempfile.NamedTemporaryFile(prefix="ytdl-sub.", delete=False)
     # pylint: enable=R1732
+
+    # Whether the final exception lines were added to the debug log
+    _LOGGED_EXIT_EXCEPTION: bool = False
 
     # Keep track of all Loggers created
     _LOGGERS: List[logging.Logger] = []
@@ -195,6 +200,25 @@ class Logger:
                     yield
 
     @classmethod
+    def log_exit_exception(cls, logger: logging.Logger, exception: Exception, filename: Optional[str] = None):
+        if not cls._LOGGED_EXIT_EXCEPTION:
+            # Log validation exceptions as-is
+            if isinstance(exception, ValidationException):
+                logger.error(exception)
+            # For other uncaught errors, log as bug:
+            else:
+                logger.exception("An uncaught error occurred:")
+                logger.error(
+                    "Version %s\nPlease upload the error log file '%s' and make a Github "
+                    "issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
+                    "command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!",
+                    __local_version__,
+                    filename if filename else Logger.debug_log_filename(),
+                )
+
+            cls._LOGGED_EXIT_EXCEPTION = True
+
+    @classmethod
     def cleanup(cls, delete_debug_file: bool = True):
         """
         Cleans up any log files left behind
@@ -212,3 +236,4 @@ class Logger:
 
         if delete_debug_file:
             FileHandler.delete(cls.debug_log_filename())
+            cls._LOGGED_EXIT_EXCEPTION = False
