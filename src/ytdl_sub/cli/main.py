@@ -1,4 +1,5 @@
 import gc
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -54,6 +55,7 @@ def _maybe_write_subscription_log_file(
     if not success:
         Logger.log_exit_exception(exception=exception, log_filepath=persist_log_path)
 
+    os.makedirs(os.path.dirname(persist_log_path), exist_ok=True)
     FileHandler.copy(Logger.debug_log_filename(), persist_log_path)
 
 

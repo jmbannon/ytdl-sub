@@ -1,4 +1,6 @@
+import os.path
 import re
+import shutil
 import tempfile
 import time
 from pathlib import Path
@@ -16,9 +18,15 @@ from ytdl_sub.utils.logger import Logger
 
 
 @pytest.fixture
-def persist_logs_directory():
+def persist_logs_directory() -> str:
+    # Delete the temp_dir on creation
     with tempfile.TemporaryDirectory() as temp_dir:
-        yield temp_dir
+        pass
+
+    yield temp_dir
+
+    if os.path.isdir(temp_dir):
+        shutil.rmtree(temp_dir)
 
 
 @pytest.fixture
