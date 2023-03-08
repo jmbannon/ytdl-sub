@@ -416,7 +416,13 @@ class FileHandler:
             Optional. Metadata to record to the transaction log for this file
         copy_file
             Optional. If True, copy the file. Move otherwise
+
+        Returns
+        -------
+        bool
+            True if modified. False otherwise.
         """
+        is_modified = False
         source_file_path = Path(self.working_directory) / file_name
         output_file_path = Path(self.output_directory) / output_file_name
 
@@ -429,6 +435,7 @@ class FileHandler:
                 self.file_handler_transaction_log.log_modified_file(
                     file_name=output_file_name, file_metadata=file_metadata
                 )
+                is_modified = True
         # output file does not already exist, creates a new file
         else:
             self.file_handler_transaction_log.log_created_file(
@@ -444,6 +451,8 @@ class FileHandler:
         # Simulate the file being moved during dry run by deleting it
         elif self.dry_run and not copy_file:
             FileHandler.delete(source_file_path)
+
+        return is_modified
 
     def delete_file_from_output_directory(self, file_name: str):
         """

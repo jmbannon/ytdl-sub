@@ -135,6 +135,42 @@ class BaseSubscription(ABC):
             and self.downloader_class.supports_download_archive
         )
 
+    @property
+    def num_entries_added(self) -> int:
+        """
+        Returns
+        -------
+        Number of entries added
+        """
+        return self._enhanced_download_archive.num_entries_added
+
+    @property
+    def num_entries_modified(self) -> int:
+        """
+        Returns
+        -------
+        Number of entries modified
+        """
+        return self._enhanced_download_archive.num_entries_modified
+
+    @property
+    def num_entries_removed(self) -> int:
+        """
+        Returns
+        -------
+        Number of entries removed
+        """
+        return self._enhanced_download_archive.num_entries_removed
+
+    @property
+    def num_entries(self) -> int:
+        """
+        Returns
+        -------
+        The number of entries
+        """
+        return self._enhanced_download_archive.num_entries
+
     def as_yaml(self) -> str:
         """
         Returns

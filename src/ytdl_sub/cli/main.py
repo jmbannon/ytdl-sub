@@ -1,4 +1,5 @@
 import gc
+import logging
 import os
 import sys
 from datetime import datetime
@@ -7,6 +8,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from colorama import Fore
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
@@ -209,6 +211,79 @@ def _output_transaction_log(
             transaction_log_file.write(transaction_log_file_contents)
 
 
+def _green(value: str) -> str:
+    return Fore.GREEN + value + Fore.RESET
+
+
+def _red(value: str) -> str:
+    return Fore.RED + value + Fore.RESET
+
+
+def _str_int(value: int) -> str:
+    if value > 0:
+        return f"+{value}"
+    if value < 0:
+        return f"-{value}"
+    return str(value)
+
+
+def _color_int(value: int) -> str:
+    str_int = _str_int(value)
+    if value > 0:
+        return _green(str_int)
+    if value < 0:
+        return _red(str_int)
+    return str_int
+
+
+def _output_summary(transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]]):
+    summary: List[str] = []
+
+    # Initialize widths to 0
+    width_sub_name: int = 0
+    width_num_entries_added: int = 0
+    width_num_entries_modified: int = 0
+    width_num_entries_removed: int = 0
+    width_num_entries: int = 0
+
+    # Calculate min width needed
+    for subscription, _ in transaction_logs:
+        width_sub_name = max(width_sub_name, len(subscription.name))
+        width_num_entries_added = max(
+            width_num_entries_added, len(_str_int(subscription.num_entries_added))
+        )
+        width_num_entries_modified = max(
+            width_num_entries_modified, len(_str_int(subscription.num_entries_modified))
+        )
+        width_num_entries_removed = max(
+            width_num_entries_removed, len(_str_int(subscription.num_entries_removed * -1))
+        )
+        width_num_entries = max(width_num_entries, len(str(subscription.num_entries)))
+
+    # Add spacing for aesthetics
+    width_sub_name += 4
+    width_num_entries += 4
+
+    # Build the summary
+    for subscription, _ in transaction_logs:
+        num_entries_added = _color_int(subscription.num_entries_added)
+        num_entries_modified = _color_int(subscription.num_entries_modified)
+        num_entries_removed = _color_int(subscription.num_entries_removed * -1)
+        num_entries = str(subscription.num_entries)
+        status = _green("success")
+
+        summary.append(
+            f"{subscription.name:<{width_sub_name}} "
+            f"{num_entries_added:>{width_num_entries_added}} "
+            f"{num_entries_modified:>{width_num_entries_modified}} "
+            f"{num_entries_removed:>{width_num_entries_removed}} "
+            f"{num_entries:>{width_num_entries}} "
+            f"{status}"
+        )
+
+    return "\n".join(summary)
+
+
 def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     """
     Entrypoint for ytdl-sub, without the error handling
@@ -252,5 +327,8 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
             transaction_logs=transaction_logs,
             transaction_log_file_path=args.transaction_log,
         )
+
+    # Hack to always show download summary, even if logs are set to quiet
+    logger.log(logging.WARNING, "Download Summary:\n%s", _output_summary(transaction_logs))
 
     return transaction_logs
