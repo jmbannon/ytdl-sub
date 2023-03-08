@@ -13,6 +13,7 @@ from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_lock import working_directory_lock
@@ -172,6 +173,42 @@ def _view_url_from_cli(
     return subscription, subscription.download(dry_run=True)
 
 
+def _maybe_validate_transaction_log_file(transaction_log_file_path: Optional[str]) -> None:
+    if transaction_log_file_path:
+        try:
+            with open(transaction_log_file_path, "w", encoding="utf-8"):
+                pass
+        except Exception as exc:
+            raise ValidationException(
+                f"Transaction log file '{transaction_log_file_path}' cannot be written to. "
+                f"Reason: {str(exc)}"
+            ) from exc
+
+
+def _output_transaction_log(
+    transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]],
+    transaction_log_file_path: str,
+) -> None:
+    transaction_log_file_contents = ""
+    for subscription, transaction_log in transaction_logs:
+        if transaction_log.is_empty:
+            transaction_log_contents = f"No files changed for {subscription.name}"
+        else:
+            transaction_log_contents = (
+                f"Transaction log for {subscription.name}:\n"
+                f"{transaction_log.to_output_message(subscription.output_directory)}"
+            )
+
+        if transaction_log_file_path:
+            transaction_log_file_contents += transaction_log_contents
+        else:
+            logger.info(transaction_log_contents)
+
+    if transaction_log_file_contents:
+        with open(transaction_log_file_path, "w", encoding="utf-8") as transaction_log_file:
+            transaction_log_file.write(transaction_log_file_contents)
+
+
 def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     """
     Entrypoint for ytdl-sub, without the error handling
@@ -186,6 +223,9 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     # Load the config
     config: ConfigFile = ConfigFile.from_file_path(args.config)
     transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
+
+    # If transaction log file is specified, make sure we can open it
+    _maybe_validate_transaction_log_file(transaction_log_file_path=args.transaction_log)
 
     with working_directory_lock(config=config):
         if args.subparser == "sub":
@@ -207,14 +247,10 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
                 _view_url_from_cli(config=config, url=args.url, split_chapters=args.split_chapters)
             )
 
-    for subscription, transaction_log in transaction_logs:
-        if transaction_log.is_empty:
-            logger.info("No files changed for %s", subscription.name)
-        else:
-            logger.info(
-                "Downloads for %s:\n%s\n",
-                subscription.name,
-                transaction_log.to_output_message(subscription.output_directory),
-            )
+    if not args.suppress_transaction_log:
+        _output_transaction_log(
+            transaction_logs=transaction_logs,
+            transaction_log_file_path=args.transaction_log,
+        )
 
     return transaction_logs
