@@ -1,10 +1,7 @@
 import sys
 from unittest.mock import patch
 
-import pytest
-
 from ytdl_sub.cli.main import main
-from ytdl_sub.utils.exceptions import ValidationException
 
 
 def test_args_after_sub_work():
