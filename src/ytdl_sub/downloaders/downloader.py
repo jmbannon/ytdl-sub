@@ -458,7 +458,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
             upload_date_standardized=entry.upload_date_standardized
         )
-        download_idx = self._enhanced_download_archive.mapping.get_num_entries()
+        download_idx = self._enhanced_download_archive.num_entries
 
         entry.add_kwargs(
             {

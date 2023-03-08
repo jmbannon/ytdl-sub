@@ -363,6 +363,19 @@ class EnhancedDownloadArchive:
 
         self._logger = Logger.get(name=subscription_name)
 
+        self.num_entries_added: int = 0
+        self.num_entries_modified: int = 0
+        self.num_entries_removed: int = 0
+
+    @property
+    def num_entries(self) -> int:
+        """
+        Returns
+        -------
+        Total number of entries in the mapping
+        """
+        return self.mapping.get_num_entries()
+
     def reinitialize(self, dry_run: bool) -> "EnhancedDownloadArchive":
         """
         Re-initialize the enhanced download archive for successive downloads w/the same
@@ -544,6 +557,7 @@ class EnhancedDownloadArchive:
                 self._file_handler.delete_file_from_output_directory(file_name=file_name)
 
             self.mapping.remove_entry(entry_id=uid)
+            self.num_entries_removed += 1
 
         return self
 
@@ -600,12 +614,20 @@ class EnhancedDownloadArchive:
         elif entry:
             self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
 
-        self._file_handler.move_file_to_output_directory(
+        is_modified = self._file_handler.move_file_to_output_directory(
             file_name=file_name,
             file_metadata=file_metadata,
             output_file_name=output_file_name,
             copy_file=copy_file,
         )
+
+        # Determine if it's the entry file by seeing if the file_name to move matches the entry
+        # download file name
+        is_entry_file = entry and entry.get_download_file_name() == file_name
+        if is_entry_file and is_modified:
+            self.num_entries_modified += 1
+        elif is_entry_file:
+            self.num_entries_added += 1
 
     def get_file_handler_transaction_log(self) -> FileHandlerTransactionLog:
         """
