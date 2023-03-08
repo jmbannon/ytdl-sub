@@ -48,14 +48,31 @@ class PersistLogsValidator(StrictDictValidator):
 
     @property
     def logs_directory(self) -> str:
+        """
+        Required. The directory to store the logs in.
+        """
         return self._logs_directory.value
 
     @property
     def keep_logs_after(self) -> Optional[str]:
+        """
+        Optional. Keep logs after this date, in yt-dlp datetime format.
+
+        .. code-block:: Markdown
+
+           A string in the format YYYYMMDD or
+           (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
+
+        For example, ``today-1week`` means keep 1 week's worth of logs. By default, ytdl-sub will
+        keep all log files.
+        """
         return self._keep_logs_after
 
     @property
     def keep_successful_logs(self) -> bool:
+        """
+        Optional. Whether to store logs when downloading is successful. Defaults to True.
+        """
         return self._keep_successful_logs.value
 
 
@@ -142,7 +159,9 @@ class ConfigOptions(StrictDictValidator):
 
     @property
     def persist_logs(self) -> Optional[PersistLogsValidator]:
-        # TODO: nested docstring???
+        """
+        Persist logs validator. readthedocs in the validator itself!
+        """
         return self._persist_logs
 
     @property

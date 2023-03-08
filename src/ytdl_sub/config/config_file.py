@@ -1,5 +1,6 @@
 import os
 from typing import Any
+from typing import Dict
 
 from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.preset import Preset
@@ -65,3 +66,11 @@ class ConfigFile(ConfigValidator):
         """
         config_dict = load_yaml(file_path=config_path)
         return ConfigFile.from_dict(config_dict)
+
+    def as_dict(self) -> Dict[str, Any]:
+        """
+        Returns
+        -------
+        The config in its dict form
+        """
+        return self._value

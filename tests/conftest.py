@@ -139,7 +139,7 @@ def preset_dict_to_subscription_yaml_generator() -> Callable:
 # Example config fixtures
 
 
-def _load_config(config_path: Path, working_directory: Path) -> ConfigFile:
+def _load_config(config_path: Path, working_directory: str) -> ConfigFile:
     config_dict = load_yaml(file_path=config_path)
     config_dict["configuration"]["working_directory"] = working_directory
 
@@ -154,6 +154,11 @@ def music_video_config_path() -> Path:
 @pytest.fixture()
 def music_video_config(music_video_config_path, working_directory) -> ConfigFile:
     return _load_config(music_video_config_path, working_directory)
+
+
+@pytest.fixture()
+def music_video_subscription_path() -> Path:
+    return Path("examples/music_videos_subscriptions.yaml")
 
 
 @pytest.fixture()
