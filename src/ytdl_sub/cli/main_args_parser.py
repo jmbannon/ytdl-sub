@@ -28,6 +28,16 @@ class MainArguments:
         long="--log-level",
         is_positional=True,
     )
+    TRANSACTION_LOG = CLIArgument(
+        short="-t",
+        long="--transaction-log",
+        is_positional=True,
+    )
+    SUPPRESS_TRANSACTION_LOG = CLIArgument(
+        short="-st",
+        long="--suppress-transaction-log",
+        is_positional=True,
+    )
 
     @classmethod
     def all(cls) -> List[CLIArgument]:
@@ -36,7 +46,13 @@ class MainArguments:
         -------
         List of MainArgument classes
         """
-        return [cls.CONFIG, cls.DRY_RUN, cls.LOG_LEVEL]
+        return [
+            cls.CONFIG,
+            cls.DRY_RUN,
+            cls.LOG_LEVEL,
+            cls.TRANSACTION_LOG,
+            cls.SUPPRESS_TRANSACTION_LOG,
+        ]
 
     @classmethod
     def all_arguments(cls) -> List[str]:
@@ -91,6 +107,21 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         choices=LoggerLevels.names(),
         dest="ytdl_sub_log_level",
     )
+    arg_parser.add_argument(
+        MainArguments.TRANSACTION_LOG.short,
+        MainArguments.TRANSACTION_LOG.long,
+        metavar="TRANSACTIONPATH",
+        type=str,
+        help="path to store the transaction log output of all files added, modified, deleted",
+        default=argparse.SUPPRESS if suppress_defaults else "",
+    )
+    arg_parser.add_argument(
+        MainArguments.SUPPRESS_TRANSACTION_LOG.short,
+        MainArguments.SUPPRESS_TRANSACTION_LOG.long,
+        action="store_true",
+        help="do not output transaction logs to console or file",
+        default=argparse.SUPPRESS if suppress_defaults else False,
+    )
 
 
 ###################################################################################################
@@ -98,7 +129,7 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
 parser = argparse.ArgumentParser(
     description="ytdl-sub: Automate download and adding metadata with YoutubeDL",
 )
-parser.add_argument("--version", action="version", version="%(prog)s " + __local_version__)
+parser.add_argument("-v", "--version", action="version", version="%(prog)s " + __local_version__)
 _add_shared_arguments(parser, suppress_defaults=False)
 
 subparsers = parser.add_subparsers(dest="subparser")

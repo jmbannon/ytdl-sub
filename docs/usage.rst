@@ -15,12 +15,16 @@ General options must be specified before the command (i.e. ``sub``).
 .. code-block:: text
 
   -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
   -c CONFIGPATH, --config CONFIGPATH
                         path to the config yaml, uses config.yaml if not provided
-  --dry-run             preview what a download would output, does not perform any
-                        video downloads or writes to output directories
-  --log-level quiet|info|verbose|debug
+  -d, --dry-run         preview what a download would output, does not perform any video downloads or writes to output directories
+  -l quiet|info|verbose|debug, --log-level quiet|info|verbose|debug
                         level of logs to print to console, defaults to info
+  -t TRANSACTIONPATH, --transaction-log TRANSACTIONPATH
+                        path to store the transaction log output of all files added, modified, deleted
+  -st, --suppress-transaction-log
+                        do not output transaction logs to console or file
 
 Sub Options
 -----------
