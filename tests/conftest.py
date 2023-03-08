@@ -14,6 +14,17 @@ import pytest
 
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.logger import LoggerLevels
+
+
+@pytest.fixture(autouse=True)
+def cleanup_debug_file():
+    """
+    Clean logs after every test
+    """
+    Logger.set_log_level(log_level_name=LoggerLevels.DEBUG.name)
+    yield
+    Logger.cleanup()
 
 
 @pytest.fixture

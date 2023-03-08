@@ -6,13 +6,6 @@ from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.logger import LoggerLevels
 
 
-@pytest.fixture(autouse=True)
-def cleanup_debug_file():
-    Logger.set_log_level(log_level_name=LoggerLevels.DEBUG.name)
-    yield
-    Logger.cleanup()
-
-
 class TestLogger:
     @pytest.mark.parametrize(
         "log_level",

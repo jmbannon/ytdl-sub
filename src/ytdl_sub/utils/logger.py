@@ -196,9 +196,12 @@ class Logger:
         )
 
         with StreamToLogger(logger=logger) as redirect_stream:
-            with contextlib.redirect_stdout(new_target=redirect_stream):
-                with contextlib.redirect_stderr(new_target=redirect_stream):
-                    yield
+            try:
+                with contextlib.redirect_stdout(new_target=redirect_stream):
+                    with contextlib.redirect_stderr(new_target=redirect_stream):
+                        yield
+            finally:
+                redirect_stream.flush()
 
     @classmethod
     def log_exit_exception(cls, exception: Exception, log_filepath: Optional[Path] = None):
