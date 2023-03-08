@@ -56,6 +56,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         playlist_index: int = 1,
         playlist_count: int = 1,
         is_youtube_channel: bool = False,
+        mock_download_to_working_dir: bool = True,
     ) -> Dict:
         entry_dict = {
             UID: uid,
@@ -84,12 +85,14 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             ]
 
         # Create mock video file
-        copy_file_fixture(
-            fixture_name="sample_vid.mp4", output_file_path=mock_downloaded_file_path(f"{uid}.mp4")
-        )
-        copy_file_fixture(
-            fixture_name="thumb.jpg", output_file_path=mock_downloaded_file_path(f"{uid}.jpg")
-        )
+        if mock_download_to_working_dir:
+            copy_file_fixture(
+                fixture_name="sample_vid.mp4",
+                output_file_path=mock_downloaded_file_path(f"{uid}.mp4"),
+            )
+            copy_file_fixture(
+                fixture_name="thumb.jpg", output_file_path=mock_downloaded_file_path(f"{uid}.jpg")
+            )
         return entry_dict
 
     return _mock_entry_dict_factory
@@ -124,36 +127,33 @@ def mock_download_collection_entries(
 ):
     @contextlib.contextmanager
     def _mock_download_collection_entries_factory(is_youtube_channel: bool):
-        def _(**kwargs):
-            return mock_entry_dict_factory(**kwargs)
-
         def _write_entries_to_working_dir(*args, **kwargs) -> List[Dict]:
             if (len(args[0].collection.urls.list) == 1) or (
                 "season.2" in kwargs["url"] and len(args[0].download_options.urls.list) > 1
             ):
                 return [
-                    _(
+                    mock_entry_dict_factory(
                         uid="21-1",
                         upload_date="20210808",
                         playlist_index=1,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                     ),  # 1
-                    _(
+                    mock_entry_dict_factory(
                         uid="20-1",
                         upload_date="20200808",
                         playlist_index=2,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                     ),  # 2  98
-                    _(
+                    mock_entry_dict_factory(
                         uid="20-2",
                         upload_date="20200808",
                         playlist_index=3,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                     ),  # 1  99
-                    _(
+                    mock_entry_dict_factory(
                         uid="20-3",
                         upload_date="20200807",
                         playlist_index=4,
@@ -163,35 +163,36 @@ def mock_download_collection_entries(
                 ]
             return [
                 # 20-3 should resolve to collection 1 (which is season 2)
-                _(
+                mock_entry_dict_factory(
                     uid="20-3",
                     upload_date="20200807",
                     playlist_index=1,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
+                    mock_download_to_working_dir=False,
                 ),
-                _(
+                mock_entry_dict_factory(
                     uid="20-4",
                     upload_date="20200806",
                     playlist_index=2,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                 ),
-                _(
+                mock_entry_dict_factory(
                     uid="20-5",
                     upload_date="20200706",
                     playlist_index=3,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                 ),
-                _(
+                mock_entry_dict_factory(
                     uid="20-6",
                     upload_date="20200706",
                     playlist_index=4,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                 ),
-                _(
+                mock_entry_dict_factory(
                     uid="20-7",
                     upload_date="20200606",
                     playlist_index=5,

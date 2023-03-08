@@ -9,6 +9,7 @@ from src.ytdl_sub import __local_version__
 from src.ytdl_sub.main import main
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.logger import LoggerLevels
 
 
 @pytest.fixture
@@ -66,3 +67,16 @@ def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_mess
     assert mock_error.call_args.args[0] == expected_uncaught_error_message
     assert mock_error.call_args.args[1] == __local_version__
     assert mock_error.call_args.args[2] == Logger.debug_log_filename()
+
+
+def test_args_after_sub_work(mock_sys_exit):
+    with mock_sys_exit(expected_exit_code=0), patch.object(
+        sys,
+        "argv",
+        ["ytdl-sub", "-c", "examples/tv_show_config.yaml", "sub", "--log-level", "verbose"],
+    ), patch("ytdl_sub.cli.main._download_subscriptions_from_yaml_files") as mock_sub:
+        main()
+
+        assert mock_sub.call_count == 1
+        assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
+        assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE

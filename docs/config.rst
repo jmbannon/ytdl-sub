@@ -29,7 +29,25 @@ and subscriptions.
 .. autoclass:: ytdl_sub.config.config_validator.ConfigOptions()
   :members:
   :member-order: bysource
+  :exclude-members: persist_logs
 
+persist_logs
+""""""""""""
+Within ``configuration``, define whether logs from subscription downloads
+should be persisted.
+
+.. code-block:: yaml
+
+   configuration:
+     persist_logs:
+       logs_directory: "/path/to/log/directory"
+
+Log files are stored as
+``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``.
+
+.. autoclass:: ytdl_sub.config.config_validator.PersistLogsValidator()
+  :members:
+  :member-order: bysource
 
 presets
 ^^^^^^^

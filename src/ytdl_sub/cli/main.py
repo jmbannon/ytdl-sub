@@ -1,13 +1,18 @@
-import argparse
 import gc
 import sys
+from datetime import datetime
+from pathlib import Path
 from typing import List
+from typing import Optional
 from typing import Tuple
+
+from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_lock import working_directory_lock
 from ytdl_sub.utils.logger import Logger
@@ -19,8 +24,41 @@ logger = Logger.get()
 _VIEW_EXTRA_ARGS_FORMATTER = "--preset _view --overrides.url {}"
 
 
+def _maybe_write_subscription_log_file(
+    config: ConfigFile,
+    subscription: Subscription,
+    dry_run: bool,
+    exception: Optional[Exception] = None,
+) -> None:
+    success: bool = exception is None
+
+    # If dry-run, do nothing
+    if dry_run:
+        return
+
+    # If persisting logs is disabled, do nothing
+    if not config.config_options.persist_logs:
+        return
+
+    # If persisting successful logs is disabled, do nothing
+    if success and not config.config_options.persist_logs.keep_successful_logs:
+        return
+
+    log_time = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+    log_subscription_name = sanitize_filename(subscription.name).lower().replace(" ", "_")
+    log_success = "success" if success else "error"
+
+    log_filename = f"{log_time}.{log_subscription_name}.{log_success}.log"
+    persist_log_path = Path(config.config_options.persist_logs.logs_directory) / log_filename
+
+    if not success:
+        Logger.log_exit_exception(exception=exception, log_filepath=persist_log_path)
+
+    FileHandler.copy(Logger.debug_log_filename(), persist_log_path)
+
+
 def _download_subscriptions_from_yaml_files(
-    config: ConfigFile, args: argparse.Namespace
+    config: ConfigFile, subscription_paths: List[str], dry_run: bool
 ) -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     """
     Downloads all subscriptions from one or many subscription yaml files.
@@ -29,8 +67,10 @@ def _download_subscriptions_from_yaml_files(
     ----------
     config
         Configuration file
-    args
-        Arguments from argparse
+    subscription_paths
+        Path to subscription files to download
+    dry_run
+        Whether to dry run or not
 
     Returns
     -------
@@ -38,9 +78,9 @@ def _download_subscriptions_from_yaml_files(
 
     Raises
     ------
-    Validation exception if main arg is specified as a subscription path
+    Exception
+        Any exception during download
     """
-    subscription_paths: List[str] = args.subscription_paths
     subscriptions: List[Subscription] = []
     output: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
 
@@ -51,15 +91,26 @@ def _download_subscriptions_from_yaml_files(
     for subscription in subscriptions:
         logger.info(
             "Beginning subscription %s for %s",
-            ("dry run" if args.dry_run else "download"),
+            ("dry run" if dry_run else "download"),
             subscription.name,
         )
         logger.debug("Subscription full yaml:\n%s", subscription.as_yaml())
-        transaction_log = subscription.download(dry_run=args.dry_run)
 
-        output.append((subscription, transaction_log))
-        gc.collect()  # Garbage collect after each subscription download
-        Logger.cleanup()  # Cleanup logger after each successful subscription download
+        try:
+            transaction_log = subscription.download(dry_run=dry_run)
+        except Exception as exc:  # pylint: disable=broad-except
+            _maybe_write_subscription_log_file(
+                config=config, subscription=subscription, dry_run=dry_run, exception=exc
+            )
+            raise
+        else:
+            output.append((subscription, transaction_log))
+            _maybe_write_subscription_log_file(
+                config=config, subscription=subscription, dry_run=dry_run
+            )
+            Logger.cleanup()  # Cleanup logger after each successful subscription download
+        finally:
+            gc.collect()  # Garbage collect after each subscription download
 
     return output
 
@@ -136,7 +187,11 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
 
     with working_directory_lock(config=config):
         if args.subparser == "sub":
-            transaction_logs = _download_subscriptions_from_yaml_files(config=config, args=args)
+            transaction_logs = _download_subscriptions_from_yaml_files(
+                config=config,
+                subscription_paths=args.subscription_paths,
+                dry_run=args.dry_run,
+            )
 
         # One-off download
         elif args.subparser == "dl":
