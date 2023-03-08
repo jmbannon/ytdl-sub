@@ -53,6 +53,7 @@ class PersistLogsValidator(StrictDictValidator):
         """
         return self._logs_directory.value
 
+    # pylint: disable=line-too-long
     @property
     def keep_logs_after(self) -> Optional[str]:
         """
@@ -67,6 +68,8 @@ class PersistLogsValidator(StrictDictValidator):
         keep all log files.
         """
         return self._keep_logs_after
+
+    # pylint: enable=line-too-long
 
     @property
     def keep_successful_logs(self) -> bool:
