@@ -114,7 +114,7 @@ class TestLogger:
                 "[ytdl-sub:name_test] debug test\n",
             ]
 
-            Logger.cleanup(delete_debug_file=True)
+            Logger.cleanup()
             assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
 
     @pytest.mark.parametrize(

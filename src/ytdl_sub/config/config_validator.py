@@ -10,7 +10,8 @@ from ytdl_sub.utils.system import IS_WINDOWS
 from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
 from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.validators import LiteralDictValidator, BoolValidator
+from ytdl_sub.validators.validators import BoolValidator
+from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
 
 if IS_WINDOWS:
@@ -22,6 +23,7 @@ else:
     _DEFAULT_FFMPEG_PATH = "/usr/bin/ffmpeg"
     _DEFAULT_FFPROBE_PATH = "/usr/bin/ffprobe"
 
+
 class PersistLogsValidator(StrictDictValidator):
     _required_keys = {"logs_directory"}
     _optional_keys = {"keep_logs_after", "keep_successful_logs"}
@@ -29,9 +31,7 @@ class PersistLogsValidator(StrictDictValidator):
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
 
-        self._logs_directory = self._validate_key(
-            key="logs_directory", validator=StringValidator
-        )
+        self._logs_directory = self._validate_key(key="logs_directory", validator=StringValidator)
 
         self._keep_logs_after: Optional[str] = None
         if keep_logs_validator := self._validate_key_if_present(
@@ -61,7 +61,14 @@ class PersistLogsValidator(StrictDictValidator):
 
 class ConfigOptions(StrictDictValidator):
     _required_keys = {"working_directory"}
-    _optional_keys = {"umask", "dl_aliases", "persist_logs", "lock_directory", "ffmpeg_path", "ffprobe_path"}
+    _optional_keys = {
+        "umask",
+        "dl_aliases",
+        "persist_logs",
+        "lock_directory",
+        "ffmpeg_path",
+        "ffprobe_path",
+    }
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)

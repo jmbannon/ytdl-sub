@@ -1,9 +1,10 @@
 import argparse
-from datetime import datetime
 import gc
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import List
+from typing import Optional
 from typing import Tuple
 
 from yt_dlp.utils import sanitize_filename
@@ -12,7 +13,8 @@ from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog, FileHandler
+from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_lock import working_directory_lock
 from ytdl_sub.utils.logger import Logger
 
@@ -22,14 +24,17 @@ logger = Logger.get()
 # Use ytdl-sub dl arguments to use the preset
 _VIEW_EXTRA_ARGS_FORMATTER = "--preset _view --overrides.url {}"
 
-def _maybe_write_subscription_log_file(config: ConfigFile, subscription: Subscription, success: bool) -> None:
+
+def _maybe_write_subscription_log_file(
+    config: ConfigFile, subscription: Subscription, success: bool
+) -> Optional[Path]:
     # If persisting logs is disabled, do nothing
     if not config.config_options.persist_logs:
-        return
+        return None
 
     # If persisting successful logs is disabled, do nothing
     if success and not config.config_options.persist_logs.keep_successful_logs:
-        return
+        return None
 
     log_time = datetime.now().strftime("%Y-%m-%d-%H%M%S")
     log_subscription_name = sanitize_filename(subscription.name).lower().replace(" ", "_")
@@ -39,6 +44,7 @@ def _maybe_write_subscription_log_file(config: ConfigFile, subscription: Subscri
     persist_log_path = Path(config.config_options.persist_logs.logs_directory) / log_filename
 
     FileHandler.copy(Logger.debug_log_filename(), persist_log_path)
+    return persist_log_path
 
 
 def _download_subscriptions_from_yaml_files(
@@ -60,7 +66,8 @@ def _download_subscriptions_from_yaml_files(
 
     Raises
     ------
-    Validation exception if main arg is specified as a subscription path
+    Exception
+        Any exception during download
     """
     subscription_paths: List[str] = args.subscription_paths
     subscriptions: List[Subscription] = []
@@ -80,19 +87,20 @@ def _download_subscriptions_from_yaml_files(
 
         try:
             transaction_log = subscription.download(dry_run=args.dry_run)
-        except Exception as exc:
-            Logger.log_exit_exception(logger=logger, exception=exc)
-            _maybe_write_subscription_log_file(
-                config=config, subscription=subscription,
-                success=False
+        except Exception as exc:  # pylint: disable=broad-except
+            persisted_log_path = _maybe_write_subscription_log_file(
+                config=config, subscription=subscription, success=False
             )
+            Logger.log_exit_exception(exception=exc, log_filepath=persisted_log_path)
             raise
-
-        output.append((subscription, transaction_log))
-        gc.collect()  # Garbage collect after each subscription download
-
-        _maybe_write_subscription_log_file(config=config, subscription=subscription, success=True)
-        Logger.cleanup()  # Cleanup logger after each successful subscription download
+        else:
+            output.append((subscription, transaction_log))
+            _maybe_write_subscription_log_file(
+                config=config, subscription=subscription, success=True
+            )
+            Logger.cleanup()  # Cleanup logger after each successful subscription download
+        finally:
+            gc.collect()  # Garbage collect after each subscription download
 
     return output
 
