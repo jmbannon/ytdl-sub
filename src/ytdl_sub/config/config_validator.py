@@ -54,20 +54,20 @@ class PersistLogsValidator(StrictDictValidator):
         return self._logs_directory.value
 
     # pylint: disable=line-too-long
-    @property
-    def keep_logs_after(self) -> Optional[str]:
-        """
-        Optional. Keep logs after this date, in yt-dlp datetime format.
-
-        .. code-block:: Markdown
-
-           A string in the format YYYYMMDD or
-           (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
-
-        For example, ``today-1week`` means keep 1 week's worth of logs. By default, ytdl-sub will
-        keep all log files.
-        """
-        return self._keep_logs_after
+    # @property
+    # def keep_logs_after(self) -> Optional[str]:
+    #     """
+    #     Optional. Keep logs after this date, in yt-dlp datetime format.
+    #
+    #     .. code-block:: Markdown
+    #
+    #        A string in the format YYYYMMDD or
+    #        (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
+    #
+    #     For example, ``today-1week`` means keep 1 week's worth of logs. By default, ytdl-sub will
+    #     keep all log files.
+    #     """
+    #     return self._keep_logs_after
 
     # pylint: enable=line-too-long
 

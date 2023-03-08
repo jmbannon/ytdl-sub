@@ -42,6 +42,9 @@ should be persisted.
      persist_logs:
        logs_directory: "/path/to/log/directory"
 
+Log files are stored as
+``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``.
+
 .. autoclass:: ytdl_sub.config.config_validator.PersistLogsValidator()
   :members:
   :member-order: bysource
