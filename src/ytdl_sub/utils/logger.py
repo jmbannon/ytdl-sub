@@ -155,7 +155,7 @@ class Logger:
             logger_name += f":{name}"
 
         logger = logging.Logger(name=logger_name, level=logging.DEBUG)
-        if stdout and cls._LOGGER_LEVEL.level >= LoggerLevels.INFO.level:
+        if stdout:
             logger.addHandler(cls._get_stdout_handler())
         if debug_file:
             logger.addHandler(cls._get_debug_file_handler())

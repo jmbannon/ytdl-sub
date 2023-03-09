@@ -1,5 +1,4 @@
 import gc
-import logging
 import os
 import sys
 from datetime import datetime
@@ -329,6 +328,6 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
         )
 
     # Hack to always show download summary, even if logs are set to quiet
-    logger.log(logging.WARNING, "Download Summary:\n%s", _output_summary(transaction_logs))
+    logger.warning("Download Summary:\n%s", _output_summary(transaction_logs))
 
     return transaction_logs

@@ -25,6 +25,25 @@ class TestLogger:
             Logger.set_log_level("nope")
 
     @pytest.mark.parametrize(
+        "log_level",
+        [
+            LoggerLevels.QUIET,
+            LoggerLevels.INFO,
+            LoggerLevels.VERBOSE,
+            LoggerLevels.DEBUG,
+        ],
+    )
+    def test_logger_warning_stdout(self, capsys, log_level):
+        Logger._LOGGER_LEVEL = log_level
+        logger = Logger.get(name="name_test")
+
+        logger.warning("test")
+        captured = capsys.readouterr()
+
+        # Warning should always be captured
+        assert captured.out == "[ytdl-sub:name_test] test\n"
+
+    @pytest.mark.parametrize(
         "log_level, outputs_to_stdout",
         [
             (LoggerLevels.QUIET, False),
