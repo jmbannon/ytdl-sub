@@ -6,7 +6,11 @@ import tempfile
 import time
 from pathlib import Path
 from typing import Callable
+from typing import List
 from typing import Optional
+from typing import Tuple
+from unittest.mock import MagicMock
+from unittest.mock import Mock
 from unittest.mock import patch
 
 import mergedeep
@@ -14,6 +18,7 @@ import pytest
 from conftest import assert_logs
 
 from ytdl_sub.cli.main import _download_subscriptions_from_yaml_files
+from ytdl_sub.cli.main import _output_summary
 from ytdl_sub.cli.main import logger as main_logger
 from ytdl_sub.cli.main import main
 from ytdl_sub.config.config_file import ConfigFile
@@ -246,3 +251,27 @@ def test_transaction_log_to_logger(
     ):
         transaction_logs = main()
         assert transaction_logs
+
+
+def test_output_summary():
+    subscription_values: List[Tuple[str, int, int, int, int]] = [
+        ("long_name_but_lil_values", 0, 0, 0, 6),
+        ("john_smith", 1, 0, 0, 52),
+        ("david_gore", 0, 0, 0, 4),
+        ("christopher_snoop", 50, 0, 3, 518),
+        ("beyond funk", 0, 0, 0, 176),
+    ]
+
+    mock_subscriptions: List[Tuple[MagicMock, FileHandlerTransactionLog]] = []
+    for values in subscription_values:
+        sub = Mock()
+        sub.name = values[0]
+        sub.num_entries_added = values[1]
+        sub.num_entries_modified = values[2]
+        sub.num_entries_removed = values[3]
+        sub.num_entries = values[4]
+
+        mock_subscriptions.append((sub, FileHandlerTransactionLog()))
+
+    _ = _output_summary(transaction_logs=mock_subscriptions)
+    assert True  # Test used for manual inspection - too hard to test ansi color codes
