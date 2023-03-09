@@ -218,11 +218,13 @@ def _red(value: str) -> str:
     return Fore.RED + value + Fore.RESET
 
 
+def _no_color(value: str) -> str:
+    return Fore.RESET + value + Fore.RESET
+
+
 def _str_int(value: int) -> str:
     if value > 0:
         return f"+{value}"
-    if value < 0:
-        return f"-{value}"
     return str(value)
 
 
@@ -232,7 +234,7 @@ def _color_int(value: int) -> str:
         return _green(str_int)
     if value < 0:
         return _red(str_int)
-    return str_int
+    return _no_color(str_int)
 
 
 def _output_summary(transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]]):
@@ -249,13 +251,13 @@ def _output_summary(transaction_logs: List[Tuple[Subscription, FileHandlerTransa
     for subscription, _ in transaction_logs:
         width_sub_name = max(width_sub_name, len(subscription.name))
         width_num_entries_added = max(
-            width_num_entries_added, len(_str_int(subscription.num_entries_added))
+            width_num_entries_added, len(_color_int(subscription.num_entries_added))
         )
         width_num_entries_modified = max(
-            width_num_entries_modified, len(_str_int(subscription.num_entries_modified))
+            width_num_entries_modified, len(_color_int(subscription.num_entries_modified))
         )
         width_num_entries_removed = max(
-            width_num_entries_removed, len(_str_int(subscription.num_entries_removed * -1))
+            width_num_entries_removed, len(_color_int(subscription.num_entries_removed * -1))
         )
         width_num_entries = max(width_num_entries, len(str(subscription.num_entries)))
 
