@@ -81,6 +81,7 @@ class FilePathValidatorMixin:
         return str(file_path)
 
 
+# pylint: disable=line-too-long
 class StringFormatterFileNameValidator(StringFormatterValidator, FilePathValidatorMixin):
     """
     Same as a
@@ -88,6 +89,8 @@ class StringFormatterFileNameValidator(StringFormatterValidator, FilePathValidat
     but ensures the file name does not exceed the OS limit (typically 255 bytes). If it does exceed,
     it will preserve the extension and truncate the end of the file name.
     """
+
+    # pylint: enable=line-too-long
 
     _expected_value_type_name = "filepath"
 
