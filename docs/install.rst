@@ -37,7 +37,7 @@ on how set up a cron job in the docker container.
          - <path/to/movies>:/movies # optional
          - <path/to/music_videos>:/music_videos # optional
          - <path/to/music>:/music # optional
-      restart: unless-stopped
+       restart: unless-stopped
 
 Docker
 --------------
