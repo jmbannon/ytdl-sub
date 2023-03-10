@@ -10,12 +10,8 @@ from ytdl_sub.validators.string_formatter_validators import OverridesStringForma
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import StringValidator
 
-_MAX_FILE_NAME_LEN: int = 0
-_MAX_FILE_NAME_BYTES: int = 0
 if IS_WINDOWS:
-    from ctypes.wintypes import MAX_PATH
-
-    _MAX_FILE_NAME_LEN = MAX_PATH
+    _MAX_FILE_NAME_BYTES = 255
 else:
     _MAX_FILE_NAME_BYTES = os.pathconf("/", "PC_NAME_MAX")
 
@@ -48,9 +44,7 @@ class StringFormatterFilePathValidator(StringFormatterValidator):
 
     @classmethod
     def _is_file_name_too_long(cls, file_name: str) -> bool:
-        return (_MAX_FILE_NAME_LEN and len(file_name) > _MAX_FILE_NAME_LEN) or (
-            _MAX_FILE_NAME_BYTES and len(file_name.encode("utf-8")) > _MAX_FILE_NAME_BYTES
-        )
+        return len(file_name.encode("utf-8")) > _MAX_FILE_NAME_BYTES
 
     @classmethod
     def _get_extension_split(cls, file_name: str) -> Tuple[str, str]:
@@ -71,13 +65,10 @@ class StringFormatterFilePathValidator(StringFormatterValidator):
     @classmethod
     def _truncate_file_name(cls, file_name: str) -> str:
         file_sub_name, file_ext = cls._get_extension_split(file_name)
-        if _MAX_FILE_NAME_LEN:
-            to_trim = len(file_name) - _MAX_FILE_NAME_LEN + 1
-            file_sub_name = file_sub_name[:-to_trim]
-        elif _MAX_FILE_NAME_BYTES:
-            desired_size = _MAX_FILE_NAME_BYTES - len(file_ext.encode("utf-8")) - 1
-            while len(file_sub_name.encode("utf-8")) > desired_size:
-                file_sub_name = file_sub_name[:-1]
+
+        desired_size = _MAX_FILE_NAME_BYTES - len(file_ext.encode("utf-8")) - 1
+        while len(file_sub_name.encode("utf-8")) > desired_size:
+            file_sub_name = file_sub_name[:-1]
 
         return f"{file_sub_name}.{file_ext}"
 
