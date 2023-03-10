@@ -127,3 +127,16 @@ one or more season presets, with the following override variables:
        # tv_show_genre: "ytdl-sub"
        # episode_title: "{upload_date_standardized} - {title}"
        # episode_description: "{webpage_url}"
+
+Common
+------
+
+Common presets are applicable to any config.
+
+Best Video Quality
+^^^^^^^^^^^^^^^^^^
+
+Add the following preset to download the best available video and audio quality, and remux
+it into an MP4 container:
+
+* ``best_video_quality``
