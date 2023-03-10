@@ -1,0 +1,9 @@
+
+
+presets:
+
+  best_video_quality:
+    ytdl_options:
+      format: "bestvideo+bestaudio/best"
+      merge_output_format: "mp4"
+      remux_video: "mp4"
