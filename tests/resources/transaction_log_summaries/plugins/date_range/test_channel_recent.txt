@@ -10,8 +10,8 @@ Files created:
         genre: ytdl-sub
         title: Project / Zombie
 {output_directory}/Season 2018
-  s2018.e102901 - hP-PL_V2wR8-thumb.jpg
-  s2018.e102901 - hP-PL_V2wR8.mp4
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
     Video Tags:
       date: 2018-10-29
       episode_id: 102901
@@ -31,7 +31,7 @@ Files created:
         https://www.youtube.com/watch?v=lPldcjlv3_Y
       title: 2018-10-29 - Jesse's Minecraft Server | Teaser Trailer
       year: 2018
-  s2018.e102901 - hP-PL_V2wR8.nfo
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo
     NFO tags:
       episodedetails:
         aired: 2018-10-29
@@ -52,8 +52,8 @@ Files created:
         season: 2018
         title: 2018-10-29 - Jesse's Minecraft Server | Teaser Trailer
         year: 2018
-  s2018.e110201 - LN2e6idGluI-thumb.jpg
-  s2018.e110201 - LN2e6idGluI.mp4
+  s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id-thumb.jpg
+  s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id.mp4
     Video Tags:
       date: 2018-11-02
       episode_id: 110201
@@ -76,7 +76,7 @@ Files created:
         https://www.youtube.com/watch?v=lPldcjlv3_Y
       title: 2018-11-02 - Jesse's Minecraft Server | IP mc.jesse.id
       year: 2018
-  s2018.e110201 - LN2e6idGluI.nfo
+  s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id.nfo
     NFO tags:
       episodedetails:
         aired: 2018-11-02

@@ -39,7 +39,59 @@ class FFprobeFileValidator(FFmpegFileValidator):
     _ffmpeg_dependency = "ffprobe"
 
 
-class StringFormatterFilePathValidator(StringFormatterValidator):
+class FilePathValidatorMixin:
+    @classmethod
+    def _is_file_name_too_long(cls, file_name: str) -> bool:
+        return len(file_name.encode("utf-8")) > _MAX_FILE_NAME_BYTES
+
+    @classmethod
+    def _get_extension_split(cls, file_name: str) -> Tuple[str, str]:
+        if file_name.endswith(".info.json"):
+            ext = "info.json"
+        elif any(file_name.endswith(f".{subtitle_ext}") for subtitle_ext in SUBTITLE_EXTENSIONS):
+            file_name_split = file_name.split(".")
+            ext = file_name_split[-1]
+
+            # Try to capture .lang.ext
+            if len(file_name_split) > 2 and len(file_name_split[-2]) < 6:
+                ext = f"{file_name_split[-2]}.{file_name_split[-1]}"
+        else:
+            ext = file_name.rsplit(".", maxsplit=1)[-1]
+
+        return file_name[: -len(ext)], ext
+
+    @classmethod
+    def _truncate_file_name(cls, file_name: str) -> str:
+        file_sub_name, file_ext = cls._get_extension_split(file_name)
+
+        desired_size = _MAX_FILE_NAME_BYTES - len(file_ext.encode("utf-8")) - 1
+        while len(file_sub_name.encode("utf-8")) > desired_size:
+            file_sub_name = file_sub_name[:-1]
+
+        return f"{file_sub_name}.{file_ext}"
+
+    @classmethod
+    def _maybe_truncate_file_path(cls, file_path: Path) -> str:
+        """Turn into a Path, then a string, to get correct directory separators"""
+        file_directory, file_name = os.path.split(Path(file_path))
+
+        if cls._is_file_name_too_long(file_name):
+            return str(Path(file_directory) / cls._truncate_file_name(file_name))
+
+        return str(file_path)
+
+
+# pylint: disable=line-too-long
+class StringFormatterFileNameValidator(StringFormatterValidator, FilePathValidatorMixin):
+    """
+    Same as a
+    :class:`StringFormatterValidator <ytdl_sub.validators.string_formatter_validators.StringFormatterValidator>`
+    but ensures the file name does not exceed the OS limit (typically 255 bytes). If it does exceed,
+    it will preserve the extension and truncate the end of the file name.
+    """
+
+    # pylint: enable=line-too-long
+
     _expected_value_type_name = "filepath"
 
     @classmethod
@@ -75,15 +127,10 @@ class StringFormatterFilePathValidator(StringFormatterValidator):
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
         """Turn into a Path, then a string, to get correct directory separators"""
         file_path = Path(super().apply_formatter(variable_dict))
-        file_directory, file_name = os.path.split(Path(file_path))
-
-        if self._is_file_name_too_long(file_name):
-            return str(Path(file_directory) / self._truncate_file_name(file_name))
-
-        return str(file_path)
+        return self._maybe_truncate_file_path(file_path)
 
 
-class OverridesStringFormatterValidatorFilePathValidator(OverridesStringFormatterValidator):
+class OverridesStringFormatterFilePathValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "static filepath"
 
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:

@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
-from ytdl_sub.validators.file_path_validators import StringFormatterFilePathValidator
+from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 
 
 class TestStringFormatterFilePathValidator:
@@ -26,7 +26,7 @@ class TestStringFormatterFilePathValidator:
             file_name = (file_name_char * file_name_len) + ext
             file_path = str(Path(temp_dir) / file_name)
 
-            formatter = StringFormatterFilePathValidator(name="test", value=str(file_path))
+            formatter = StringFormatterFileNameValidator(name="test", value=str(file_path))
             truncated_file_path = formatter.apply_formatter({})
 
             assert truncated_file_path.count(".") == ext.count(".")
