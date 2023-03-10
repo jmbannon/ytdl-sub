@@ -328,6 +328,8 @@ The `config.yaml`_ uses various types for its configurable fields. Below is a de
 
 .. autoclass:: ytdl_sub.validators.string_formatter_validators.OverridesStringFormatterValidator()
 
+.. autoclass:: ytdl_sub.validators.file_path_validators.StringFormatterFileNameValidator()
+
 .. autoclass:: ytdl_sub.validators.string_datetime.StringDatetimeValidator()
 
 .. autoclass:: ytdl_sub.validators.string_formatter_validators.DictFormatterValidator()

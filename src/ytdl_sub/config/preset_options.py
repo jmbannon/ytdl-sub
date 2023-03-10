@@ -7,10 +7,8 @@ from typing import Optional
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.validators.file_path_validators import (
-    OverridesStringFormatterValidatorFilePathValidator,
-)
-from ytdl_sub.validators.file_path_validators import StringFormatterFilePathValidator
+from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
+from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
@@ -226,18 +224,18 @@ class OutputOptions(StrictDictValidator):
         # Output directory should resolve without any entry variables.
         # This is to check the directory for any download-archives before any downloads begin
         self._output_directory = self._validate_key(
-            key="output_directory", validator=OverridesStringFormatterValidatorFilePathValidator
+            key="output_directory", validator=OverridesStringFormatterFilePathValidator
         )
 
         # file name and thumbnails however can use entry variables
         self._file_name = self._validate_key(
-            key="file_name", validator=StringFormatterFilePathValidator
+            key="file_name", validator=StringFormatterFileNameValidator
         )
         self._thumbnail_name = self._validate_key_if_present(
-            key="thumbnail_name", validator=StringFormatterFilePathValidator
+            key="thumbnail_name", validator=StringFormatterFileNameValidator
         )
         self._info_json_name = self._validate_key_if_present(
-            key="info_json_name", validator=StringFormatterFilePathValidator
+            key="info_json_name", validator=StringFormatterFileNameValidator
         )
 
         self._maintain_download_archive = self._validate_key_if_present(
