@@ -17,7 +17,6 @@ class TestStringFormatterFilePathValidator:
         + [f".en.{ext}" for ext in SUBTITLE_EXTENSIONS],
     )
     def test_truncates_file_name_successfully(self, ext: str):
-        ext = ".info.json"
         with tempfile.TemporaryDirectory() as temp_dir:
             file_name = ("a" * 10000) + ext
             file_path = str(Path(temp_dir) / file_name)

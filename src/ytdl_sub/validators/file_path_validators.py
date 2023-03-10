@@ -83,13 +83,13 @@ class StringFormatterFilePathValidator(StringFormatterValidator):
 
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
         """Turn into a Path, then a string, to get correct directory separators"""
-        file_path = str(Path(super().apply_formatter(variable_dict)))
+        file_path = Path(super().apply_formatter(variable_dict))
         file_directory, file_name = os.path.split(Path(file_path))
 
         if self._is_file_name_too_long(file_name):
             return str(Path(file_directory) / self._truncate_file_name(file_name))
 
-        return file_path
+        return str(file_path)
 
 
 class OverridesStringFormatterValidatorFilePathValidator(OverridesStringFormatterValidator):
