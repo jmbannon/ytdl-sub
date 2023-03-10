@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Set
 
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
@@ -11,14 +10,12 @@ from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
 from ytdl_sub.validators.file_path_validators import StringFormatterFilePathValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import StringListValidator
-
-SUBTITLE_EXTENSIONS: Set[str] = {"srt", "vtt", "ass", "lrc"}
-
 
 logger = Logger.get(name="subtitles")
 
