@@ -16,9 +16,11 @@ class TestStringFormatterFilePathValidator:
         ]
         + [f"en-US.{ext}" for ext in SUBTITLE_EXTENSIONS],
     )
-    @pytest.mark.parametrize('file_name_char', ['a', '𒃀'])
-    @pytest.mark.parametrize('file_name_len', [10, 10000])
-    def test_truncates_file_name_successfully(self, ext: str, file_name_char: str, file_name_len: int):
+    @pytest.mark.parametrize("file_name_char", ["a", "𒃀"])
+    @pytest.mark.parametrize("file_name_len", [10, 10000])
+    def test_truncates_file_name_successfully(
+        self, ext: str, file_name_char: str, file_name_len: int
+    ):
         ext = f".{ext}"  # pytest args with . in the beginning act weird
         with tempfile.TemporaryDirectory() as temp_dir:
             file_name = (file_name_char * file_name_len) + ext
