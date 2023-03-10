@@ -11,6 +11,7 @@ from typing import Optional
 from typing import Set
 
 from yt_dlp import DateRange
+from yt_dlp.utils import make_archive_id
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
@@ -313,7 +314,7 @@ class DownloadMappings:
         """
         lines: List[str] = []
         for entry_id, metadata in self._entry_mappings.items():
-            lines.append(f"{metadata.extractor} {entry_id}")
+            lines.append(make_archive_id(ie=metadata.extractor, video_id=entry_id))
 
         return DownloadArchive(download_archive_lines=lines)
 
