@@ -28,8 +28,10 @@ def cleanup_debug_file():
     Clean logs after every test
     """
     Logger.set_log_level(log_level_name=LoggerLevels.DEBUG.name)
-    yield
-    Logger.cleanup()
+    try:
+        yield
+    finally:
+        Logger.cleanup()
 
 
 @pytest.fixture

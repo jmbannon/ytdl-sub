@@ -1,4 +1,5 @@
 import os.path
+import time
 
 import pytest
 
@@ -147,6 +148,9 @@ class TestLogger:
         with Logger.handle_external_logs(name="name_test"):
             print("test line 1")
             print("test line 2")
+
+        # Wait for flushed logs
+        time.sleep(0.1)
 
         # Ensure it goes to stdout only if it is expected to
         captured = capsys.readouterr()
