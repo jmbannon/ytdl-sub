@@ -476,10 +476,14 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
         return entry
 
-    def _download_entries(self, entries: List[Entry]) -> Generator[Entry, None, None]:
-        # Download entries in reverse order since they are scraped in the opposite direction.
-        # Helps deal with break_on_existing
-        for entry in reversed(entries):
+    def _download_entries(
+        self, url_validator: UrlValidator, entries: List[Entry]
+    ) -> Generator[Entry, None, None]:
+        entries_to_iterate = entries
+        if url_validator.download_reverse:
+            entries_to_iterate = reversed(entries)
+
+        for entry in entries_to_iterate:
             self._url_state.entries_downloaded += 1
 
             if self._is_downloaded(entry):
@@ -500,13 +504,19 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             yield self._download_entry(entry)
             self._mark_downloaded(entry)
 
-    def _download_parent_entry(self, parent: EntryParent) -> Generator[Entry, None, None]:
-        for entry_child in self._download_entries(parent.entry_children()):
+    def _download_parent_entry(
+        self, url_validator: UrlValidator, parent: EntryParent
+    ) -> Generator[Entry, None, None]:
+        for entry_child in self._download_entries(
+            url_validator=url_validator, entries=parent.entry_children()
+        ):
             yield entry_child
 
         # Recursion the parent's parent entries
         for parent_child in reversed(parent.parent_children()):
-            for entry_child in self._download_parent_entry(parent=parent_child):
+            for entry_child in self._download_parent_entry(
+                url_validator=url_validator, parent=parent_child
+            ):
                 yield entry_child
 
     def _set_collection_variables(self, collection_url: UrlValidator, entry: Entry | EntryParent):
@@ -554,6 +564,7 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
 
     def _download(
         self,
+        url_validator: UrlValidator,
         parents: List[EntryParent],
         orphans: List[Entry],
     ) -> Generator[Entry, None, None]:
@@ -563,10 +574,12 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         # Delete info json files afterwards so other collection URLs do not use them
         with self._separate_download_archives(clear_info_json_files=True):
             for parent in parents:
-                for entry_child in self._download_parent_entry(parent=parent):
+                for entry_child in self._download_parent_entry(
+                    url_validator=url_validator, parent=parent
+                ):
                     yield entry_child
 
-            for orphan in self._download_entries(orphans):
+            for orphan in self._download_entries(url_validator=url_validator, entries=orphans):
                 yield orphan
 
     def download(
@@ -585,7 +598,9 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
             download_logger.info(
                 "Beginning downloads for %s", self.overrides.apply_formatter(collection_url.url)
             )
-            for entry in self._download(parents=parents, orphans=orphan_entries):
+            for entry in self._download(
+                url_validator=collection_url, parents=parents, orphans=orphan_entries
+            ):
                 # Update thumbnails in case of last_entry
                 self._download_url_thumbnails(collection_url=collection_url, entry=entry)
                 yield entry

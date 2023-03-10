@@ -24,6 +24,7 @@ class UrlDownloadOptions(UrlValidator, DownloaderValidator):
                 uid: "avatar_uncropped"
               - name: "fanart.jpg"
                 uid: "banner_uncropped"
+            download_reverse: True
     """
 
     @property
