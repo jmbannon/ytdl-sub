@@ -2,6 +2,7 @@ import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -34,6 +35,18 @@ def test_single_video_subs_embed_and_file_preset_dict(single_video_subs_embed_pr
 
 
 class TestSubtitles:
+    def test_subtitle_lang_variable_partial_validates(self, music_video_config):
+        music_video_config_dict = music_video_config.as_dict()
+        music_video_config_dict["presets"]["music_video"]["subtitles"] = {
+            "embed_subtitles": False,
+            "languages": ["en", "de"],
+            "allow_auto_generated_subtitles": True,
+            "subtitles_name": "{episode_file_path}.{lang}.{subtitles_ext}",
+            "subtitles_type": "srt",
+        }
+
+        _ = ConfigFile.from_dict(music_video_config_dict)
+
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_subtitles_embedded(
         self,
