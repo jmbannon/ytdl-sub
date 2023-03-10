@@ -63,7 +63,7 @@ download strategy has its own set of parameters.
 url
 '''
 .. autoclass:: ytdl_sub.downloaders.generic.url.UrlDownloadOptions()
-  :members: url, playlist_thumbnails, source_thumbnails
+  :members: url, playlist_thumbnails, source_thumbnails, download_reverse
   :member-order: bysource
 
 multi_url

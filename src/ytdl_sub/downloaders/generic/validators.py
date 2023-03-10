@@ -142,7 +142,7 @@ class UrlValidator(StrictDictValidator):
     def download_reverse(self) -> bool:
         """
         Optional. Whether to download entries in the reverse order of the metadata downloaded.
-        Default to True.
+        Defaults to True.
         """
         return self._download_reverse.value
 
