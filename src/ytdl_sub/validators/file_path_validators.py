@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -16,8 +17,6 @@ if IS_WINDOWS:
 
     _MAX_FILE_NAME_LEN = MAX_PATH
 else:
-    import os
-
     _MAX_FILE_NAME_BYTES = os.pathconf("/", "PC_NAME_MAX")
 
 
