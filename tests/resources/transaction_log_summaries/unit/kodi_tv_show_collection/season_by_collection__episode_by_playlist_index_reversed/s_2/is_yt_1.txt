@@ -21,8 +21,8 @@ Files created:
             tag: Named Season 2
         title: unit_kodi_tv_show_collection_season_by_collection__episode_by_playlist_index_reversed_s_2_is_yt_1
 {output_directory}/Season 01
-  s01.e000001 - 20-7-thumb.jpg
-  s01.e000001 - 20-7.mp4
+  s01.e000001 - Mock Entry 20-7-thumb.jpg
+  s01.e000001 - Mock Entry 20-7.mp4
     Video Tags:
       date: 2020-06-06
       episode_id: 1
@@ -34,7 +34,7 @@ Files created:
         The Description
       title: 2020-06-06 - Mock Entry 20-7
       year: 2020
-  s01.e000001 - 20-7.nfo
+  s01.e000001 - Mock Entry 20-7.nfo
     NFO tags:
       episodedetails:
         aired: 2020-06-06
@@ -47,8 +47,8 @@ Files created:
         season: 1
         title: 2020-06-06 - Mock Entry 20-7
         year: 2020
-  s01.e000002 - 20-6-thumb.jpg
-  s01.e000002 - 20-6.mp4
+  s01.e000002 - Mock Entry 20-6-thumb.jpg
+  s01.e000002 - Mock Entry 20-6.mp4
     Video Tags:
       date: 2020-07-06
       episode_id: 2
@@ -60,7 +60,7 @@ Files created:
         The Description
       title: 2020-07-06 - Mock Entry 20-6
       year: 2020
-  s01.e000002 - 20-6.nfo
+  s01.e000002 - Mock Entry 20-6.nfo
     NFO tags:
       episodedetails:
         aired: 2020-07-06
@@ -73,8 +73,8 @@ Files created:
         season: 1
         title: 2020-07-06 - Mock Entry 20-6
         year: 2020
-  s01.e000003 - 20-5-thumb.jpg
-  s01.e000003 - 20-5.mp4
+  s01.e000003 - Mock Entry 20-5-thumb.jpg
+  s01.e000003 - Mock Entry 20-5.mp4
     Video Tags:
       date: 2020-07-06
       episode_id: 3
@@ -86,7 +86,7 @@ Files created:
         The Description
       title: 2020-07-06 - Mock Entry 20-5
       year: 2020
-  s01.e000003 - 20-5.nfo
+  s01.e000003 - Mock Entry 20-5.nfo
     NFO tags:
       episodedetails:
         aired: 2020-07-06
@@ -99,8 +99,8 @@ Files created:
         season: 1
         title: 2020-07-06 - Mock Entry 20-5
         year: 2020
-  s01.e000004 - 20-4-thumb.jpg
-  s01.e000004 - 20-4.mp4
+  s01.e000004 - Mock Entry 20-4-thumb.jpg
+  s01.e000004 - Mock Entry 20-4.mp4
     Video Tags:
       date: 2020-08-06
       episode_id: 4
@@ -112,7 +112,7 @@ Files created:
         The Description
       title: 2020-08-06 - Mock Entry 20-4
       year: 2020
-  s01.e000004 - 20-4.nfo
+  s01.e000004 - Mock Entry 20-4.nfo
     NFO tags:
       episodedetails:
         aired: 2020-08-06
@@ -126,8 +126,8 @@ Files created:
         title: 2020-08-06 - Mock Entry 20-4
         year: 2020
 {output_directory}/Season 02
-  s02.e000001 - 20-3-thumb.jpg
-  s02.e000001 - 20-3.mp4
+  s02.e000001 - Mock Entry 20-3-thumb.jpg
+  s02.e000001 - Mock Entry 20-3.mp4
     Video Tags:
       date: 2020-08-07
       episode_id: 1
@@ -139,7 +139,7 @@ Files created:
         The Description
       title: 2020-08-07 - Mock Entry 20-3
       year: 2020
-  s02.e000001 - 20-3.nfo
+  s02.e000001 - Mock Entry 20-3.nfo
     NFO tags:
       episodedetails:
         aired: 2020-08-07
@@ -152,8 +152,8 @@ Files created:
         season: 2
         title: 2020-08-07 - Mock Entry 20-3
         year: 2020
-  s02.e000002 - 20-2-thumb.jpg
-  s02.e000002 - 20-2.mp4
+  s02.e000002 - Mock Entry 20-2-thumb.jpg
+  s02.e000002 - Mock Entry 20-2.mp4
     Video Tags:
       date: 2020-08-08
       episode_id: 2
@@ -165,7 +165,7 @@ Files created:
         The Description
       title: 2020-08-08 - Mock Entry 20-2
       year: 2020
-  s02.e000002 - 20-2.nfo
+  s02.e000002 - Mock Entry 20-2.nfo
     NFO tags:
       episodedetails:
         aired: 2020-08-08
@@ -178,8 +178,8 @@ Files created:
         season: 2
         title: 2020-08-08 - Mock Entry 20-2
         year: 2020
-  s02.e000003 - 20-1-thumb.jpg
-  s02.e000003 - 20-1.mp4
+  s02.e000003 - Mock Entry 20-1-thumb.jpg
+  s02.e000003 - Mock Entry 20-1.mp4
     Video Tags:
       date: 2020-08-08
       episode_id: 3
@@ -191,7 +191,7 @@ Files created:
         The Description
       title: 2020-08-08 - Mock Entry 20-1
       year: 2020
-  s02.e000003 - 20-1.nfo
+  s02.e000003 - Mock Entry 20-1.nfo
     NFO tags:
       episodedetails:
         aired: 2020-08-08
@@ -204,8 +204,8 @@ Files created:
         season: 2
         title: 2020-08-08 - Mock Entry 20-1
         year: 2020
-  s02.e000004 - 21-1-thumb.jpg
-  s02.e000004 - 21-1.mp4
+  s02.e000004 - Mock Entry 21-1-thumb.jpg
+  s02.e000004 - Mock Entry 21-1.mp4
     Video Tags:
       date: 2021-08-08
       episode_id: 4
@@ -217,7 +217,7 @@ Files created:
         The Description
       title: 2021-08-08 - Mock Entry 21-1
       year: 2021
-  s02.e000004 - 21-1.nfo
+  s02.e000004 - Mock Entry 21-1.nfo
     NFO tags:
       episodedetails:
         aired: 2021-08-08

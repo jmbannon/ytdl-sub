@@ -16,8 +16,8 @@ Files created:
         playlist_uploader: Project Zombie
         title: JMC
 {output_directory}/Season 01
-  s01.e11020101 - 0SVukUyys10-thumb.jpg
-  s01.e11020101 - 0SVukUyys10.mp4
+  s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+  s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
     Video Tags:
       date: 2011-02-01
       episode_id: 11020101
@@ -35,7 +35,7 @@ Files created:
         http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
       title: 2011-02-01 - Jesse's Minecraft Server [Trailer - Feb.1]
       year: 2011
-  s01.e11020101 - 0SVukUyys10.nfo
+  s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
     NFO tags:
       episodedetails:
         aired: 2011-02-01
@@ -56,8 +56,8 @@ Files created:
         season: 1
         title: 2011-02-01 - Jesse's Minecraft Server [Trailer - Feb.1]
         year: 2011
-  s01.e11022701 - qPybBrXspds-thumb.jpg
-  s01.e11022701 - qPybBrXspds.mp4
+  s01.e11022701 - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
+  s01.e11022701 - Jesse's Minecraft Server [Trailer - Feb.27].mp4
     Video Tags:
       date: 2011-02-27
       episode_id: 11022701
@@ -94,7 +94,7 @@ Files created:
         I claim no ownership of this song, all the credit goes to Pearl Jam and their producers.
       title: 2011-02-27 - Jesse's Minecraft Server [Trailer - Feb.27]
       year: 2011
-  s01.e11022701 - qPybBrXspds.nfo
+  s01.e11022701 - Jesse's Minecraft Server [Trailer - Feb.27].nfo
     NFO tags:
       episodedetails:
         aired: 2011-02-27
@@ -134,8 +134,8 @@ Files created:
         season: 1
         title: 2011-02-27 - Jesse's Minecraft Server [Trailer - Feb.27]
         year: 2011
-  s01.e11032101 - DBjFvs6HafU-thumb.jpg
-  s01.e11032101 - DBjFvs6HafU.mp4
+  s01.e11032101 - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
+  s01.e11032101 - Jesse's Minecraft Server [Trailer - Mar.21].mp4
     Video Tags:
       date: 2011-03-21
       episode_id: 11032101
@@ -172,7 +172,7 @@ Files created:
         I claim no ownership of this song, all the credit goes to Pearl Jam and their producers.
       title: 2011-03-21 - Jesse's Minecraft Server [Trailer - Mar.21]
       year: 2011
-  s01.e11032101 - DBjFvs6HafU.nfo
+  s01.e11032101 - Jesse's Minecraft Server [Trailer - Mar.21].nfo
     NFO tags:
       episodedetails:
         aired: 2011-03-21

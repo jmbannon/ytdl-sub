@@ -30,7 +30,7 @@ presets:
       episode_plot: "{webpage_url}\n\n{description}"
       episode_year: "{upload_year}"
       episode_date_standardized: "{upload_date_standardized}"
-      episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {file_uid}"
+      episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {file_title}"
       episode_file_path: "Season {season_number_padded}/{episode_file_name}"
 
   _episode_video_tags:
