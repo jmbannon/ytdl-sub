@@ -27,6 +27,9 @@ def cleanup_debug_file():
     """
     Clean logs after every test
     """
+    with tempfile.NamedTemporaryFile(prefix="ytdl-sub.", delete=False) as debug_log_file:
+        Logger._DEBUG_LOGGER_FILE = debug_log_file
+
     Logger.set_log_level(log_level_name=LoggerLevels.DEBUG.name)
     try:
         yield
