@@ -1,7 +1,9 @@
 import pytest
+from conftest import assert_logs
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
+import ytdl_sub.downloaders.downloader
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -59,3 +61,19 @@ class TestBandcamp:
             dry_run=dry_run,
             expected_download_summary_file_name="bandcamp/test_artist_url.json",
         )
+
+        # Ensure another invocation will hit ExistingVideoReached
+        if not dry_run:
+            with assert_logs(
+                logger=ytdl_sub.downloaders.downloader.download_logger,
+                expected_message="ExistingVideoReached, stopping additional downloads",
+                log_level="debug",
+            ):
+                transaction_log = discography_subscription.download()
+
+            assert transaction_log.is_empty
+            assert_expected_downloads(
+                output_directory=output_directory,
+                dry_run=dry_run,
+                expected_download_summary_file_name="bandcamp/test_artist_url.json",
+            )
