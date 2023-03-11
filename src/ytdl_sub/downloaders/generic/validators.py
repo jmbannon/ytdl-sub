@@ -8,6 +8,7 @@ from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import ListValidator
 
 
@@ -41,7 +42,7 @@ class UrlThumbnailListValidator(ListValidator[UrlThumbnailValidator]):
 
 class UrlValidator(StrictDictValidator):
     _required_keys = {"url"}
-    _optional_keys = {"variables", "source_thumbnails", "playlist_thumbnails"}
+    _optional_keys = {"variables", "source_thumbnails", "playlist_thumbnails", "download_reverse"}
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
@@ -66,6 +67,9 @@ class UrlValidator(StrictDictValidator):
         )
         self._playlist_thumbnails = self._validate_key_if_present(
             key="playlist_thumbnails", validator=UrlThumbnailListValidator, default=[]
+        )
+        self._download_reverse = self._validate_key(
+            key="download_reverse", validator=BoolValidator, default=True
         )
 
     @property
@@ -133,6 +137,14 @@ class UrlValidator(StrictDictValidator):
         thumbnail.
         """
         return self._source_thumbnails
+
+    @property
+    def download_reverse(self) -> bool:
+        """
+        Optional. Whether to download entries in the reverse order of the metadata downloaded.
+        Defaults to True.
+        """
+        return self._download_reverse.value
 
 
 class UrlListValidator(ListValidator[UrlValidator]):
