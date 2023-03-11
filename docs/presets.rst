@@ -140,3 +140,24 @@ Add the following preset to download the best available video and audio quality,
 it into an MP4 container:
 
 * ``best_video_quality``
+
+Chunk Initial Download
+^^^^^^^^^^^^^^^^^^^^^^
+
+If you are archiving a large channel, ``ytdl-sub`` will try pulling each video's metadata from
+newest to oldest before starting any downloads. It is a long process and not ideal. A better method
+is to chunk the process by using the following preset:
+
+* ``chunk_initial_download``
+
+It will download videos starting from the oldest one, and only download 20 at a time. You can
+change this number by setting:
+
+.. code-block:: yaml
+
+   ytdl_options:
+     max_downloads: 30  # Desired number to download per invocation
+
+Once the entire channel is downloaded, remove this preset. Then it will pull metadata from newest to
+oldest again, and stop pulling additional metadata once it reaches a video that has already been
+downloaded.
