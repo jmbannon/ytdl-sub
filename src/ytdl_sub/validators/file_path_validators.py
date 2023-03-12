@@ -4,6 +4,7 @@ from typing import Any
 from typing import Dict
 from typing import Tuple
 
+from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
 from ytdl_sub.utils.system import IS_WINDOWS
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -46,18 +47,7 @@ class FilePathValidatorMixin:
 
     @classmethod
     def _get_extension_split(cls, file_name: str) -> Tuple[str, str]:
-        if file_name.endswith(".info.json"):
-            ext = "info.json"
-        elif any(file_name.endswith(f".{subtitle_ext}") for subtitle_ext in SUBTITLE_EXTENSIONS):
-            file_name_split = file_name.split(".")
-            ext = file_name_split[-1]
-
-            # Try to capture .lang.ext
-            if len(file_name_split) > 2 and len(file_name_split[-2]) < 6:
-                ext = f"{file_name_split[-2]}.{file_name_split[-1]}"
-        else:
-            ext = file_name.rsplit(".", maxsplit=1)[-1]
-
+        ext = get_file_extension(file_name)
         return file_name[: -len(ext)], ext
 
     @classmethod

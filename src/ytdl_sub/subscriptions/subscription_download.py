@@ -1,9 +1,14 @@
 import contextlib
+import json
 import os
 import shutil
 from abc import ABC
+from pathlib import Path
+from typing import Iterable
 from typing import List
 from typing import Optional
+from typing import Set
+from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
@@ -14,7 +19,9 @@ from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
 def _get_split_plugin(plugins: List[Plugin]) -> Optional[Plugin]:
@@ -286,6 +293,84 @@ class SubscriptionDownload(BaseSubscription, ABC):
             )
 
             for entry in downloader.download():
+                entry_metadata = FileMetadata()
+                if isinstance(entry, tuple):
+                    entry, entry_metadata = entry
+
+                if split_plugin := _get_split_plugin(plugins):
+                    self._process_split_entry(
+                        split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
+                    )
+                else:
+                    self._process_entry(
+                        plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+                    )
+
+            for plugin in plugins:
+                plugin.post_process_subscription()
+
+        return self._enhanced_download_archive.get_file_handler_transaction_log()
+
+    def _get_entries_for_reformat(
+        self, original_enhanced_download_archive: EnhancedDownloadArchive
+    ) -> Iterable[Entry]:
+        # ytdl-sub reformat asf.yaml --output xzy/
+        entry_mapping: List[Tuple[Entry, Set[str]]] = []
+        for download_mapping in original_enhanced_download_archive.mapping._entry_mappings.values():
+            maybe_entry: Optional[Entry] = None
+            for file_name in download_mapping.file_names:
+                if file_name.endswith(".info.json"):
+                    try:
+                        with open(
+                            Path(self.output_directory) / file_name, "r", encoding="utf-8"
+                        ) as maybe_info_json:
+                            maybe_entry = Entry(
+                                entry_dict=json.load(maybe_info_json),
+                                working_directory=self.working_directory,
+                            )
+                    except Exception:
+                        raise ValidationException(
+                            "info.json file cannot be loaded - subscription cannot be reformatted"
+                        )
+
+            if not maybe_entry:
+                raise ValidationException(
+                    ".info.json file could not be found - subscription cannot be reformatted"
+                )
+
+            entry_mapping.append((maybe_entry, download_mapping.file_names))
+
+        for entry, file_names in entry_mapping:
+            for file_name in file_names:
+                # Remove any subdirectory part of the file name
+                _, file_name_no_dirs = os.path.split(Path(file_name))
+                ext = get_file_extension(file_name_no_dirs)
+
+                FileHandler.copy(
+                    src_file_path=Path(self.output_directory) / file_name,
+                    dst_file_path=Path(self.working_directory) / f"{entry.uid}.{ext}",
+                )
+
+                yield entry
+
+    def reformat(
+        self, reformat_output_directory: str, dry_run: bool = False
+    ) -> FileHandlerTransactionLog:
+        original_enhanced_download_archive = self._enhanced_download_archive
+        self._enhanced_download_archive = EnhancedDownloadArchive(
+            subscription_name=self.name,
+            working_directory=self.working_directory,
+            output_directory=reformat_output_directory,
+            dry_run=dry_run,
+        )
+
+        self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+        plugins = self._initialize_plugins()
+
+        with self._subscription_download_context_managers():
+            for entry in self._get_entries_for_reformat(
+                original_enhanced_download_archive=original_enhanced_download_archive
+            ):
                 entry_metadata = FileMetadata()
                 if isinstance(entry, tuple):
                     entry, entry_metadata = entry
