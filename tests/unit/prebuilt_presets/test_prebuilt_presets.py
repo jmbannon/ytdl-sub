@@ -109,6 +109,40 @@ class TestPrebuiltTVShowPresets:
             expected_download_summary_file_name=f"{expected_summary_name}.json",
         )
 
+        ###################################### Perform reformat
+
+        reformatted_tv_show_structure_preset = "season_by_year__episode_by_download_index"
+        reformatted_expected_summary_name = "unit/{}/{}/is_yt_{}".format(
+            media_player_preset,
+            reformatted_tv_show_structure_preset,
+            int(is_youtube_channel),
+        )
+
+        reformatted_subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict={
+                "preset": parent_presets + [reformatted_tv_show_structure_preset],
+                "overrides": {
+                    "url": "https://your.name.here",
+                    "tv_show_name": expected_summary_name.replace("/", "_"),
+                    "tv_show_directory": output_directory,
+                },
+            },
+        )
+
+        reformatted_transaction_log = reformatted_subscription.reformat(dry_run=False)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=reformatted_transaction_log,
+            transaction_log_summary_file_name=f"{reformatted_expected_summary_name}.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name=f"{reformatted_expected_summary_name}.json",
+        )
+
 
 @pytest.mark.parametrize("media_player_preset", TvShowCollectionPresets.get_preset_names())
 @pytest.mark.parametrize(

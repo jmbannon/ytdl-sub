@@ -1,10 +1,11 @@
 import contextlib
+import copy
 import json
 import os
 import shutil
 from abc import ABC
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Dict
 from typing import List
 from typing import Optional
 from typing import Set
@@ -21,7 +22,8 @@ from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
-from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive, \
+    DownloadMappings
 
 
 def _get_split_plugin(plugins: List[Plugin]) -> Optional[Plugin]:
@@ -150,10 +152,25 @@ class SubscriptionDownload(BaseSubscription, ABC):
             FileHandler.delete(self._enhanced_download_archive.mapping_working_file_path)
 
     @contextlib.contextmanager
+    def _remove_empty_directories_in_output_directory(self):
+        try:
+            yield
+        finally:
+            if self._enhanced_download_archive.is_dry_run:
+                return
+
+            for root, dir_names, filenames in os.walk(Path(self.output_directory), topdown=False):
+                for dir_name in dir_names:
+                    dir_path = Path(root) / dir_name
+                    if len(os.listdir(dir_path)) == 0:
+                        os.rmdir(dir_path)
+
+    @contextlib.contextmanager
     def _subscription_download_context_managers(self) -> None:
         with (
             self._prepare_working_directory(),
             self._maintain_archive_file(),
+            self._remove_empty_directories_in_output_directory(),
         ):
             yield
 
@@ -324,11 +341,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
             )
 
     def _get_entries_for_reformat(
-        self, original_enhanced_download_archive: EnhancedDownloadArchive
+        self, download_mappings: DownloadMappings, dry_run: bool
     ) -> Iterable[Entry]:
-        # ytdl-sub reformat asf.yaml --output xzy/
         entry_mapping: List[Tuple[Entry, Set[str]]] = []
-        for download_mapping in original_enhanced_download_archive.mapping._entry_mappings.values():
+        for download_mapping in download_mappings._entry_mappings.values():
             maybe_entry: Optional[Entry] = None
             for file_name in download_mapping.file_names:
                 if file_name.endswith(".info.json"):
@@ -353,38 +369,42 @@ class SubscriptionDownload(BaseSubscription, ABC):
             entry_mapping.append((maybe_entry, download_mapping.file_names))
 
         for entry, file_names in entry_mapping:
+            file_names_mtime: Dict[Path, float] = {}
             for file_name in file_names:
                 ext = get_file_extension(file_name)
+
+                file_path = Path(self.output_directory) / file_name
+                working_directory_file_path = Path(self.working_directory) / f"{entry.uid}.{ext}"
+
+                file_names_mtime[file_path] = os.path.getmtime(file_path)
 
                 # NFO files will always get rewritten, so ignore
                 if ext == "nfo":
                     continue
 
-                if not original_enhanced_download_archive.is_dry_run:
+                if not dry_run:
                     FileHandler.copy(
-                        src_file_path=Path(self.output_directory) / file_name,
-                        dst_file_path=Path(self.working_directory) / f"{entry.uid}.{ext}",
+                        src_file_path=file_path,
+                        dst_file_path=working_directory_file_path,
                     )
 
             yield entry
 
-    def reformat(self, dry_run: bool = False) -> FileHandlerTransactionLog:
-        original_enhanced_download_archive = self._enhanced_download_archive
-        self._enhanced_download_archive = EnhancedDownloadArchive(
-            subscription_name=self.name,
-            working_directory=self.working_directory,
-            output_directory=self.output_directory,
-            dry_run=dry_run,
-        )
+            for file_path, mtime in file_names_mtime.items():
+                # If the entry file_path is unchanged, then delete it since it was not part of the
+                # reformat output
+                if os.path.getmtime(file_path) == mtime:
+                    FileHandler.delete(file_path)
 
-        self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+    def reformat(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         plugins = self._initialize_plugins()
 
         with self._subscription_download_context_managers():
+            download_mappings = self._enhanced_download_archive.mapping
+            self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+
             return self._process_subscription(
                 plugins=plugins,
-                entries=self._get_entries_for_reformat(
-                    original_enhanced_download_archive=original_enhanced_download_archive
-                ),
+                entries=self._get_entries_for_reformat(download_mappings=download_mappings, dry_run=dry_run),
                 dry_run=dry_run,
             )
