@@ -262,6 +262,31 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         self._cleanup_entry_files(entry)
 
+    def _process_subscription(
+        self,
+        plugins: List[Plugin],
+        entries: Iterable[Entry] | Iterable[Tuple[Entry, FileMetadata]],
+        dry_run: bool,
+    ) -> FileHandlerTransactionLog:
+        for entry in entries:
+            entry_metadata = FileMetadata()
+            if isinstance(entry, tuple):
+                entry, entry_metadata = entry
+
+            if split_plugin := _get_split_plugin(plugins):
+                self._process_split_entry(
+                    split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
+                )
+            else:
+                self._process_entry(
+                    plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+                )
+
+        for plugin in plugins:
+            plugin.post_process_subscription()
+
+        return self._enhanced_download_archive.get_file_handler_transaction_log()
+
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
         Performs the subscription download
@@ -292,24 +317,11 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 overrides=self.overrides,
             )
 
-            for entry in downloader.download():
-                entry_metadata = FileMetadata()
-                if isinstance(entry, tuple):
-                    entry, entry_metadata = entry
-
-                if split_plugin := _get_split_plugin(plugins):
-                    self._process_split_entry(
-                        split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
-                    )
-                else:
-                    self._process_entry(
-                        plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
-                    )
-
-            for plugin in plugins:
-                plugin.post_process_subscription()
-
-        return self._enhanced_download_archive.get_file_handler_transaction_log()
+            return self._process_subscription(
+                plugins=plugins,
+                entries=downloader.download(),
+                dry_run=dry_run,
+            )
 
     def _get_entries_for_reformat(
         self, original_enhanced_download_archive: EnhancedDownloadArchive
@@ -328,10 +340,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
                                 entry_dict=json.load(maybe_info_json),
                                 working_directory=self.working_directory,
                             )
-                    except Exception:
+                    except Exception as exc:
                         raise ValidationException(
                             "info.json file cannot be loaded - subscription cannot be reformatted"
-                        )
+                        ) from exc
 
             if not maybe_entry:
                 raise ValidationException(
@@ -356,14 +368,12 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
             yield entry
 
-    def reformat(
-        self, reformat_output_directory: Path, dry_run: bool = False
-    ) -> FileHandlerTransactionLog:
+    def reformat(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         original_enhanced_download_archive = self._enhanced_download_archive
         self._enhanced_download_archive = EnhancedDownloadArchive(
             subscription_name=self.name,
             working_directory=self.working_directory,
-            output_directory=reformat_output_directory,
+            output_directory=self.output_directory,
             dry_run=dry_run,
         )
 
@@ -371,23 +381,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
         plugins = self._initialize_plugins()
 
         with self._subscription_download_context_managers():
-            for entry in self._get_entries_for_reformat(
-                original_enhanced_download_archive=original_enhanced_download_archive
-            ):
-                entry_metadata = FileMetadata()
-                if isinstance(entry, tuple):
-                    entry, entry_metadata = entry
-
-                if split_plugin := _get_split_plugin(plugins):
-                    self._process_split_entry(
-                        split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
-                    )
-                else:
-                    self._process_entry(
-                        plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
-                    )
-
-            for plugin in plugins:
-                plugin.post_process_subscription()
-
-        return self._enhanced_download_archive.get_file_handler_transaction_log()
+            return self._process_subscription(
+                plugins=plugins,
+                entries=self._get_entries_for_reformat(
+                    original_enhanced_download_archive=original_enhanced_download_archive
+                ),
+                dry_run=dry_run,
+            )

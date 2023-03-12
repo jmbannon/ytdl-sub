@@ -1,10 +1,9 @@
 from pathlib import Path
 
 import pytest
-from yt_dlp.utils import sanitize_filename
-
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -80,16 +79,14 @@ class TestChannel:
         if not reformat:
             return
 
-        reformat_directory = Path(reformat_directory) / sanitize_filename("Project / Zombie")
-        full_channel_subscription.reformat(reformat_output_directory=reformat_directory, dry_run=dry_run)
+        full_channel_subscription.reformat(dry_run=dry_run)
         assert_transaction_log_matches(
-            output_directory=reformat_directory,
+            output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="youtube/test_channel_full.txt",
         )
         assert_expected_downloads(
-            output_directory=reformat_directory,
+            output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_channel_full.json",
         )
-
