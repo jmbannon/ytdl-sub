@@ -342,19 +342,22 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         for entry, file_names in entry_mapping:
             for file_name in file_names:
-                # Remove any subdirectory part of the file name
-                _, file_name_no_dirs = os.path.split(Path(file_name))
-                ext = get_file_extension(file_name_no_dirs)
+                ext = get_file_extension(file_name)
 
-                FileHandler.copy(
-                    src_file_path=Path(self.output_directory) / file_name,
-                    dst_file_path=Path(self.working_directory) / f"{entry.uid}.{ext}",
-                )
+                # NFO files will always get rewritten, so ignore
+                if ext == "nfo":
+                    continue
 
-                yield entry
+                if not original_enhanced_download_archive.is_dry_run:
+                    FileHandler.copy(
+                        src_file_path=Path(self.output_directory) / file_name,
+                        dst_file_path=Path(self.working_directory) / f"{entry.uid}.{ext}",
+                    )
+
+            yield entry
 
     def reformat(
-        self, reformat_output_directory: str, dry_run: bool = False
+        self, reformat_output_directory: Path, dry_run: bool = False
     ) -> FileHandlerTransactionLog:
         original_enhanced_download_archive = self._enhanced_download_archive
         self._enhanced_download_archive = EnhancedDownloadArchive(

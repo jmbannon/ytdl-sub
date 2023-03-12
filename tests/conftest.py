@@ -70,6 +70,10 @@ def output_directory() -> Path:
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 
+@pytest.fixture()
+def reformat_directory() -> Path:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        yield temp_dir
 
 @contextlib.contextmanager
 def assert_logs(logger: logging.Logger, expected_message: str, log_level: str = "debug"):
