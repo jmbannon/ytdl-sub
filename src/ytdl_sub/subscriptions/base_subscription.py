@@ -8,7 +8,7 @@ from ytdl_sub.config.preset import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.downloaders.downloader import BaseDownloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -52,7 +52,7 @@ class BaseSubscription(ABC):
         )
 
     @property
-    def downloader_class(self) -> Type[Downloader]:
+    def downloader_class(self) -> Type[BaseDownloader]:
         """
         Returns
         -------
@@ -130,10 +130,7 @@ class BaseSubscription(ABC):
         -------
         Whether to maintain a download archive
         """
-        return (
-            self.output_options.maintain_download_archive
-            and self.downloader_class.supports_download_archive
-        )
+        return self.output_options.maintain_download_archive
 
     @property
     def num_entries_added(self) -> int:

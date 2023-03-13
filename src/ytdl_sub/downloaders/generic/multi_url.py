@@ -1,5 +1,5 @@
-from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
+from ytdl_sub.downloaders.downloader import YtDlpDownloader
 from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
 
 
@@ -44,5 +44,5 @@ class MultiUrlDownloadOptions(MultiUrlValidator, DownloaderValidator):
         return self
 
 
-class MultiUrlDownloader(Downloader[MultiUrlDownloadOptions]):
+class MultiUrlDownloader(YtDlpDownloader[MultiUrlDownloadOptions]):
     downloader_options_type = MultiUrlDownloadOptions

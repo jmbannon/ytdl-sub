@@ -17,7 +17,7 @@ from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.downloaders.downloader import BaseDownloader
 from ytdl_sub.downloaders.downloader import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
@@ -123,7 +123,7 @@ class DownloadStrategyValidator(StrictDictValidator):
             validator=StringValidator,
         ).value
 
-    def get(self, downloader_source: str) -> Type[Downloader]:
+    def get(self, downloader_source: str) -> Type[BaseDownloader]:
         """
         Parameters
         ----------
@@ -243,13 +243,13 @@ class Preset(_PresetShell):
     def _source_variables(self) -> List[str]:
         return Entry.source_variables()
 
-    def __validate_and_get_downloader(self, downloader_source: str) -> Type[Downloader]:
+    def __validate_and_get_downloader(self, downloader_source: str) -> Type[BaseDownloader]:
         return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(
             downloader_source=downloader_source
         )
 
     def __validate_and_get_downloader_options(
-        self, downloader_source: str, downloader: Type[Downloader]
+        self, downloader_source: str, downloader: Type[BaseDownloader]
     ) -> DownloaderValidator:
         # Remove the download_strategy key before validating it against the downloader options
         # TODO: make this cleaner
@@ -260,8 +260,8 @@ class Preset(_PresetShell):
 
     def __validate_and_get_downloader_and_options(
         self,
-    ) -> Tuple[Type[Downloader], DownloaderValidator]:
-        downloader: Optional[Type[Downloader]] = None
+    ) -> Tuple[Type[BaseDownloader], DownloaderValidator]:
+        downloader: Optional[Type[BaseDownloader]] = None
         download_options: Optional[DownloaderValidator] = None
         downloader_sources = DownloadStrategyMapping.sources()
 
