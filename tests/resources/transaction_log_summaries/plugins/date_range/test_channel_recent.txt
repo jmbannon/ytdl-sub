@@ -11,6 +11,7 @@ Files created:
         title: Project / Zombie
 {output_directory}/Season 2018
   s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.info.json
   s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
     Video Tags:
       date: 2018-10-29
@@ -53,6 +54,7 @@ Files created:
         title: 2018-10-29 - Jesse's Minecraft Server | Teaser Trailer
         year: 2018
   s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id-thumb.jpg
+  s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id.info.json
   s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id.mp4
     Video Tags:
       date: 2018-11-02

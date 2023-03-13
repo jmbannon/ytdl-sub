@@ -9,6 +9,7 @@ Files created:
         title: unit_jellyfin_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
 {output_directory}/Season 202008
   s202008.e0701 - Mock Entry 20-3-thumb.jpg
+  s202008.e0701 - Mock Entry 20-3.info.json
   s202008.e0701 - Mock Entry 20-3.mp4
     Video Tags:
       date: 2020-08-07
@@ -35,6 +36,7 @@ Files created:
         title: 2020-08-07 - Mock Entry 20-3
         year: 2020
   s202008.e0801 - Mock Entry 20-2-thumb.jpg
+  s202008.e0801 - Mock Entry 20-2.info.json
   s202008.e0801 - Mock Entry 20-2.mp4
     Video Tags:
       date: 2020-08-08
@@ -61,6 +63,7 @@ Files created:
         title: 2020-08-08 - Mock Entry 20-2
         year: 2020
   s202008.e0802 - Mock Entry 20-1-thumb.jpg
+  s202008.e0802 - Mock Entry 20-1.info.json
   s202008.e0802 - Mock Entry 20-1.mp4
     Video Tags:
       date: 2020-08-08
@@ -88,6 +91,7 @@ Files created:
         year: 2020
 {output_directory}/Season 202108
   s202108.e0801 - Mock Entry 21-1-thumb.jpg
+  s202108.e0801 - Mock Entry 21-1.info.json
   s202108.e0801 - Mock Entry 21-1.mp4
     Video Tags:
       date: 2021-08-08

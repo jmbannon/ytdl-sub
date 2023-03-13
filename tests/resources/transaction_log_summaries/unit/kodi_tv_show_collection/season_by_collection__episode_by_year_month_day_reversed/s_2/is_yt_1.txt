@@ -22,6 +22,7 @@ Files created:
         title: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
 {output_directory}/Season 01
   s01.e80052699 - Mock Entry 20-4-thumb.jpg
+  s01.e80052699 - Mock Entry 20-4.info.json
   s01.e80052699 - Mock Entry 20-4.mp4
     Video Tags:
       date: 2020-08-06
@@ -48,6 +49,7 @@ Files created:
         title: 2020-08-06 - Mock Entry 20-4
         year: 2020
   s01.e80062698 - Mock Entry 20-5-thumb.jpg
+  s01.e80062698 - Mock Entry 20-5.info.json
   s01.e80062698 - Mock Entry 20-5.mp4
     Video Tags:
       date: 2020-07-06
@@ -74,6 +76,7 @@ Files created:
         title: 2020-07-06 - Mock Entry 20-5
         year: 2020
   s01.e80062699 - Mock Entry 20-6-thumb.jpg
+  s01.e80062699 - Mock Entry 20-6.info.json
   s01.e80062699 - Mock Entry 20-6.mp4
     Video Tags:
       date: 2020-07-06
@@ -100,6 +103,7 @@ Files created:
         title: 2020-07-06 - Mock Entry 20-6
         year: 2020
   s01.e80072599 - Mock Entry 20-7-thumb.jpg
+  s01.e80072599 - Mock Entry 20-7.info.json
   s01.e80072599 - Mock Entry 20-7.mp4
     Video Tags:
       date: 2020-06-06
@@ -127,6 +131,7 @@ Files created:
         year: 2020
 {output_directory}/Season 02
   s02.e79052499 - Mock Entry 21-1-thumb.jpg
+  s02.e79052499 - Mock Entry 21-1.info.json
   s02.e79052499 - Mock Entry 21-1.mp4
     Video Tags:
       date: 2021-08-08
@@ -153,6 +158,7 @@ Files created:
         title: 2021-08-08 - Mock Entry 21-1
         year: 2021
   s02.e80052498 - Mock Entry 20-1-thumb.jpg
+  s02.e80052498 - Mock Entry 20-1.info.json
   s02.e80052498 - Mock Entry 20-1.mp4
     Video Tags:
       date: 2020-08-08
@@ -179,6 +185,7 @@ Files created:
         title: 2020-08-08 - Mock Entry 20-1
         year: 2020
   s02.e80052499 - Mock Entry 20-2-thumb.jpg
+  s02.e80052499 - Mock Entry 20-2.info.json
   s02.e80052499 - Mock Entry 20-2.mp4
     Video Tags:
       date: 2020-08-08
@@ -205,6 +212,7 @@ Files created:
         title: 2020-08-08 - Mock Entry 20-2
         year: 2020
   s02.e80052599 - Mock Entry 20-3-thumb.jpg
+  s02.e80052599 - Mock Entry 20-3.info.json
   s02.e80052599 - Mock Entry 20-3.mp4
     Video Tags:
       date: 2020-08-07

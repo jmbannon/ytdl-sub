@@ -7,5 +7,6 @@ Files removed:
 ----------------------------------------
 {output_directory}/Season 2018
   s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.info.json
   s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
   s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo
