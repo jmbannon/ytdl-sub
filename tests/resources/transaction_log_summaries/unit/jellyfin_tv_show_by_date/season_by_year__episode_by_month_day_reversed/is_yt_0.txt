@@ -6,7 +6,7 @@ Files created:
     NFO tags:
       tvshow:
         genre: ytdl-sub
-        title: unit_jellyfin_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_0
+        title: Best Prebuilt TV Show by Date
 {output_directory}/Season 2020
   s2020.e14698 - Mock Entry 20-1-thumb.jpg
   s2020.e14698 - Mock Entry 20-1.info.json
@@ -15,7 +15,7 @@ Files created:
       date: 2020-08-08
       episode_id: 14698
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_0
+      show: Best Prebuilt TV Show by Date
       synopsis:
         https://20-1.com
 
@@ -42,7 +42,7 @@ Files created:
       date: 2020-08-08
       episode_id: 14699
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_0
+      show: Best Prebuilt TV Show by Date
       synopsis:
         https://20-2.com
 
@@ -69,7 +69,7 @@ Files created:
       date: 2020-08-07
       episode_id: 14799
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_0
+      show: Best Prebuilt TV Show by Date
       synopsis:
         https://20-3.com
 
@@ -97,7 +97,7 @@ Files created:
       date: 2021-08-08
       episode_id: 14699
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_by_date_season_by_year__episode_by_month_day_reversed_is_yt_0
+      show: Best Prebuilt TV Show by Date
       synopsis:
         https://21-1.com
 

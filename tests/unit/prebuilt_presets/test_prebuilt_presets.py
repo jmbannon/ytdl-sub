@@ -89,7 +89,7 @@ class TestPrebuiltTVShowPresets:
                 "preset": parent_presets,
                 "overrides": {
                     "url": "https://your.name.here",
-                    "tv_show_name": expected_summary_name.replace("/", "_"),
+                    "tv_show_name": "Best Prebuilt TV Show by Date",
                     "tv_show_directory": output_directory,
                 },
             },
@@ -245,7 +245,7 @@ class TestPrebuiltTvShowCollectionPresets:
                 "overrides": dict(
                     overrides,
                     **{
-                        "tv_show_name": expected_summary_name.replace("/", "_"),
+                        "tv_show_name": "Best Prebuilt TV Show Collection",
                         "tv_show_directory": output_directory,
                     },
                 ),

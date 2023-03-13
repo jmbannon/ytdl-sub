@@ -11,7 +11,7 @@ Files created:
           attributes:
             number: 1
           tag: Named Season 1
-        title: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_s_1_is_yt_0
+        title: Best Prebuilt TV Show Collection
 {output_directory}/Season 01
   s01.e20080701 - Mock Entry 20-3-thumb.jpg
   s01.e20080701 - Mock Entry 20-3.info.json
@@ -20,7 +20,7 @@ Files created:
       date: 2020-08-07
       episode_id: 20080701
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_s_1_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-3.com
 
@@ -47,7 +47,7 @@ Files created:
       date: 2020-08-08
       episode_id: 20080801
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_s_1_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-2.com
 
@@ -74,7 +74,7 @@ Files created:
       date: 2020-08-08
       episode_id: 20080802
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_s_1_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-1.com
 
@@ -101,7 +101,7 @@ Files created:
       date: 2021-08-08
       episode_id: 21080801
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_year_month_day_s_1_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://21-1.com
 

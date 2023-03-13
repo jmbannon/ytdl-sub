@@ -19,7 +19,7 @@ Files created:
             attributes:
               number: 2
             tag: Named Season 2
-        title: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+        title: Best Prebuilt TV Show Collection
 {output_directory}/Season 01
   s01.e80052699 - Mock Entry 20-4-thumb.jpg
   s01.e80052699 - Mock Entry 20-4.info.json
@@ -28,7 +28,7 @@ Files created:
       date: 2020-08-06
       episode_id: 80052699
       genre: ytdl-sub
-      show: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-4.com
 
@@ -55,7 +55,7 @@ Files created:
       date: 2020-07-06
       episode_id: 80062698
       genre: ytdl-sub
-      show: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-5.com
 
@@ -82,7 +82,7 @@ Files created:
       date: 2020-07-06
       episode_id: 80062699
       genre: ytdl-sub
-      show: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-6.com
 
@@ -109,7 +109,7 @@ Files created:
       date: 2020-06-06
       episode_id: 80072599
       genre: ytdl-sub
-      show: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-7.com
 
@@ -137,7 +137,7 @@ Files created:
       date: 2021-08-08
       episode_id: 79052499
       genre: ytdl-sub
-      show: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://21-1.com
 
@@ -164,7 +164,7 @@ Files created:
       date: 2020-08-08
       episode_id: 80052498
       genre: ytdl-sub
-      show: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-1.com
 
@@ -191,7 +191,7 @@ Files created:
       date: 2020-08-08
       episode_id: 80052499
       genre: ytdl-sub
-      show: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-2.com
 
@@ -218,7 +218,7 @@ Files created:
       date: 2020-08-07
       episode_id: 80052599
       genre: ytdl-sub
-      show: unit_kodi_tv_show_collection_season_by_collection__episode_by_year_month_day_reversed_s_2_is_yt_1
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-3.com
 
