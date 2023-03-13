@@ -135,7 +135,10 @@ class TestPrebuiltTVShowPresets:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=reformatted_transaction_log,
-            transaction_log_summary_file_name=f"{reformatted_expected_summary_name}.txt",
+            transaction_log_summary_file_name=(
+                f"{expected_summary_name}_reformatted_to_{reformatted_expected_summary_name}.txt"
+            ),
+            regenerate_transaction_log=True
         )
         assert_expected_downloads(
             output_directory=output_directory,

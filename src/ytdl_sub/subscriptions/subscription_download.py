@@ -1,5 +1,4 @@
 import contextlib
-import copy
 import json
 import os
 import shutil
@@ -24,7 +23,6 @@ from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMappings
-from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
 def _get_split_plugin(plugins: List[Plugin]) -> Optional[Plugin]:
@@ -157,14 +155,12 @@ class SubscriptionDownload(BaseSubscription, ABC):
         try:
             yield
         finally:
-            if self._enhanced_download_archive.is_dry_run:
-                return
-
-            for root, dir_names, filenames in os.walk(Path(self.output_directory), topdown=False):
-                for dir_name in dir_names:
-                    dir_path = Path(root) / dir_name
-                    if len(os.listdir(dir_path)) == 0:
-                        os.rmdir(dir_path)
+            if not self._enhanced_download_archive.is_dry_run:
+                for root, dir_names, filenames in os.walk(Path(self.output_directory), topdown=False):
+                    for dir_name in dir_names:
+                        dir_path = Path(root) / dir_name
+                        if len(os.listdir(dir_path)) == 0:
+                            os.rmdir(dir_path)
 
     @contextlib.contextmanager
     def _subscription_download_context_managers(self) -> None:
@@ -370,14 +366,14 @@ class SubscriptionDownload(BaseSubscription, ABC):
             entry_mapping.append((maybe_entry, download_mapping.file_names))
 
         for entry, file_names in entry_mapping:
-            file_names_mtime: Dict[Path, float] = {}
+            file_names_mtime: Dict[str, float] = {}
             for file_name in file_names:
                 ext = get_file_extension(file_name)
 
                 file_path = Path(self.output_directory) / file_name
                 working_directory_file_path = Path(self.working_directory) / f"{entry.uid}.{ext}"
 
-                file_names_mtime[file_path] = os.path.getmtime(file_path)
+                file_names_mtime[file_name] = os.path.getmtime(file_path)
 
                 # NFO files will always get rewritten, so ignore
                 if ext == "nfo":
@@ -391,11 +387,13 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
             yield entry
 
-            for file_path, mtime in file_names_mtime.items():
+            for file_name, mtime in file_names_mtime.items():
                 # If the entry file_path is unchanged, then delete it since it was not part of the
                 # reformat output
-                if os.path.getmtime(file_path) == mtime:
-                    FileHandler.delete(file_path)
+                if os.path.getmtime(Path(self.output_directory) / file_name) == mtime:
+                    self._enhanced_download_archive._file_handler.delete_file_from_output_directory(
+                        file_name
+                    )
 
     def update_with_info_json(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         plugins = self._initialize_plugins()
