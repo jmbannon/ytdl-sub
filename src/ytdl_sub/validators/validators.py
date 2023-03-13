@@ -260,7 +260,11 @@ class DictValidator(Validator):
         -------
         An instance of the specified validator
         """
+        # If the key does not exist and default is None, return None
         if key not in self._dict and default is None:
+            return None
+        # If the key exists but is None (null in YAML) or empty string, return None
+        if key in self._dict and self._dict[key] in (None, ""):
             return None
 
         return self._validate_key(key=key, validator=validator, default=default)

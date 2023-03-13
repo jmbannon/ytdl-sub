@@ -80,6 +80,13 @@ class TestDictValidator:
         assert isinstance(out, StringValidator)
         assert out.value == "default"
 
+    @pytest.mark.parametrize("empty_value", [None, ""])
+    def test_dict_validator_validate_key_if_present_has_empty_value(self, empty_value):
+        dict_validator = DictValidator(name="validate_key", value={"key_name": empty_value})
+        out = dict_validator._validate_key_if_present(key="key_name", validator=StringValidator)
+
+        assert out is None
+
     @pytest.mark.parametrize("bad_value", [True, None, {}])
     def test_dict_validator_validate_key_errors_none_bad_validation(self, bad_value):
         dict_validator = DictValidator(name="parent", value={"child": bad_value})
