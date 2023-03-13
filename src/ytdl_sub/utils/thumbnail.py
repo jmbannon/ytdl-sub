@@ -47,7 +47,9 @@ def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) ->
 
 
 @retry(times=3, exceptions=(Exception,))
-def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Optional[bool]:
+def download_and_convert_url_thumbnail(
+    thumbnail_url: Optional[str], output_thumbnail_path: str
+) -> Optional[bool]:
     """
     Downloads and converts a thumbnail from a url into a jpg
 
@@ -62,6 +64,9 @@ def convert_url_thumbnail(thumbnail_url: str, output_thumbnail_path: str) -> Opt
     -------
     True to indicate it converted the thumbnail from url. None if the retry failed.
     """
+    if not thumbnail_url:
+        return None
+
     # timeout after 8 seconds
     with urlopen(thumbnail_url, timeout=1.0) as file:
         with tempfile.NamedTemporaryFile(delete=False) as thumbnail:
