@@ -3,7 +3,6 @@ from typing import List
 from typing import Type
 
 from ytdl_sub.downloaders.downloader import BaseDownloader
-from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.generic.multi_url import MultiUrlDownloader
 from ytdl_sub.downloaders.generic.url import UrlDownloader
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
@@ -82,7 +81,7 @@ class DownloadStrategyMapping:
             )
 
     @classmethod
-    def get(cls, source: str, download_strategy: str) -> Type[Downloader]:
+    def get(cls, source: str, download_strategy: str) -> Type[BaseDownloader]:
         """
         Parameters
         ----------

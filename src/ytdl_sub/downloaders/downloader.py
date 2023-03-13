@@ -122,7 +122,7 @@ class BaseDownloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         """The function to perform the download of all media entries"""
 
 
-class Downloader(BaseDownloader[DownloaderOptionsT], ABC):
+class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.

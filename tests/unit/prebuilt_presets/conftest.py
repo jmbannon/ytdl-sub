@@ -11,7 +11,7 @@ import pytest
 from resources import copy_file_fixture
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.downloaders.downloader import Downloader
+from ytdl_sub.downloaders.downloader import YtDlpDownloader
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
@@ -112,7 +112,7 @@ def mock_download_collection_thumbnail(mock_downloaded_file_path):
         return False
 
     with patch.object(
-        Downloader,
+        YtDlpDownloader,
         "_download_thumbnail",
         new=lambda _, thumbnail_url, output_thumbnail_path: _mock_download_thumbnail(
             output_thumbnail_path
@@ -202,8 +202,10 @@ def mock_download_collection_entries(
             ]
 
         with patch.object(
-            Downloader, "extract_info_via_info_json", new=_write_entries_to_working_dir
-        ), patch.object(Downloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry):
+            YtDlpDownloader, "extract_info_via_info_json", new=_write_entries_to_working_dir
+        ), patch.object(
+            YtDlpDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
+        ):
             # Stub out metadata. TODO: update this if we do metadata plugins
             yield
 
