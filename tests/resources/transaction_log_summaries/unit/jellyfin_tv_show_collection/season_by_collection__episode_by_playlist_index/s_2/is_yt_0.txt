@@ -17,7 +17,7 @@ Files created:
             attributes:
               number: 2
             tag: Named Season 2
-        title: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+        title: Best Prebuilt TV Show Collection
 {output_directory}/Season 01
   s01.e000002 - Mock Entry 20-4-thumb.jpg
   s01.e000002 - Mock Entry 20-4.info.json
@@ -26,7 +26,7 @@ Files created:
       date: 2020-08-06
       episode_id: 2
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-4.com
 
@@ -53,7 +53,7 @@ Files created:
       date: 2020-07-06
       episode_id: 3
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-5.com
 
@@ -80,7 +80,7 @@ Files created:
       date: 2020-07-06
       episode_id: 4
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-6.com
 
@@ -107,7 +107,7 @@ Files created:
       date: 2020-06-06
       episode_id: 5
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-7.com
 
@@ -135,7 +135,7 @@ Files created:
       date: 2021-08-08
       episode_id: 1
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://21-1.com
 
@@ -162,7 +162,7 @@ Files created:
       date: 2020-08-08
       episode_id: 2
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-1.com
 
@@ -189,7 +189,7 @@ Files created:
       date: 2020-08-08
       episode_id: 3
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-2.com
 
@@ -216,7 +216,7 @@ Files created:
       date: 2020-08-07
       episode_id: 4
       genre: ytdl-sub
-      show: unit_jellyfin_tv_show_collection_season_by_collection__episode_by_playlist_index_s_2_is_yt_0
+      show: Best Prebuilt TV Show Collection
       synopsis:
         https://20-3.com
 

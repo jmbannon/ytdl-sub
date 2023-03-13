@@ -10,7 +10,7 @@ Files created:
       date: 2020-08-07
       episode_id: 701
       genre: ytdl-sub
-      show: unit_plex_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
+      show: Best Prebuilt TV Show by Date
       synopsis:
         https://20-3.com
 
@@ -24,7 +24,7 @@ Files created:
       date: 2020-08-08
       episode_id: 801
       genre: ytdl-sub
-      show: unit_plex_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
+      show: Best Prebuilt TV Show by Date
       synopsis:
         https://20-2.com
 
@@ -38,7 +38,7 @@ Files created:
       date: 2020-08-08
       episode_id: 802
       genre: ytdl-sub
-      show: unit_plex_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
+      show: Best Prebuilt TV Show by Date
       synopsis:
         https://20-1.com
 
@@ -53,7 +53,7 @@ Files created:
       date: 2021-08-08
       episode_id: 801
       genre: ytdl-sub
-      show: unit_plex_tv_show_by_date_season_by_year_month__episode_by_day_is_yt_0
+      show: Best Prebuilt TV Show by Date
       synopsis:
         https://21-1.com
 
