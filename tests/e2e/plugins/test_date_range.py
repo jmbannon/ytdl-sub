@@ -7,6 +7,7 @@ from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
 import ytdl_sub.downloaders.downloader
+from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -68,7 +69,7 @@ class TestDateRange:
         if not dry_run:
             # try downloading again, ensure nothing more was downloaded
             with assert_logs(
-                logger=ytdl_sub.downloaders.downloader.download_logger,
+                logger=YTDLP.logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
                 log_level="debug",
             ):
@@ -139,7 +140,7 @@ class TestDateRange:
         # First, download recent vids. Always download since we want to test dry-run
         # on the rolling recent portion.
         with assert_logs(
-            logger=ytdl_sub.downloaders.downloader.download_logger,
+            logger=YTDLP.logger,
             expected_message="RejectedVideoReached, stopping additional downloads",
             log_level="debug",
         ):
@@ -159,7 +160,7 @@ class TestDateRange:
         # Then, download the rolling recent vids subscription. This should remove one of the
         # two videos
         with assert_logs(
-            logger=ytdl_sub.downloaders.downloader.download_logger,
+            logger=YTDLP.logger,
             expected_message="ExistingVideoReached, stopping additional downloads",
             log_level="debug",
         ):
@@ -186,7 +187,7 @@ class TestDateRange:
         # existing
         if not dry_run:
             with assert_logs(
-                logger=ytdl_sub.downloaders.downloader.download_logger,
+                logger=YTDLP.logger,
                 expected_message="ExistingVideoReached, stopping additional downloads",
                 log_level="debug",
             ):

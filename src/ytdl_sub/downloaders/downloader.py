@@ -20,8 +20,7 @@ from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
 from ytdl_sub.downloaders.generic.validators import UrlThumbnailListValidator
 from ytdl_sub.downloaders.generic.validators import UrlValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
-from ytdl_sub.downloaders.ytdlp import extract_info_via_info_json
-from ytdl_sub.downloaders.ytdlp import extract_info_with_retry
+from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.variables.kwargs import COMMENTS
@@ -266,7 +265,7 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
                 FileHandler.delete(info_json_file)
 
     def _extract_entry_info_with_retry(self, entry: Entry) -> Entry:
-        download_entry_dict = extract_info_with_retry(
+        download_entry_dict = YTDLP.extract_info_with_retry(
             ytdl_options_overrides=self.download_ytdl_options,
             is_downloaded_fn=None if self.is_dry_run else entry.is_downloaded,
             is_thumbnail_downloaded_fn=None
@@ -334,7 +333,7 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
         url = self.overrides.apply_formatter(collection_url.url)
 
         with self._separate_download_archives():
-            entry_dicts = extract_info_via_info_json(
+            entry_dicts = YTDLP.extract_info_via_info_json(
                 working_directory=self.working_directory,
                 ytdl_options_overrides=self.metadata_ytdl_options,
                 log_prefix_on_info_json_dl="Downloading metadata for",

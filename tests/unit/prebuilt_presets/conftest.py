@@ -12,6 +12,7 @@ from resources import copy_file_fixture
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.downloader import YtDlpDownloader
+from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
@@ -100,23 +101,22 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
 
 @pytest.fixture
 def mock_download_collection_thumbnail(mock_downloaded_file_path):
-    def _mock_download_thumbnail(output_path: str) -> bool:
-        # mock_file_factory(file_name=output_path.split("/")[-1])
-        output_name = os.path.basename(output_path)
+    def _mock_download_and_convert_url_thumbnail(
+        thumbnail_url: str, output_thumbnail_path: str
+    ) -> bool:
+        _ = thumbnail_url
+        output_name = os.path.basename(output_thumbnail_path)
         if "poster" in output_name or "show" in output_name:
-            copy_file_fixture(fixture_name="poster.jpg", output_file_path=output_path)
+            copy_file_fixture(fixture_name="poster.jpg", output_file_path=output_thumbnail_path)
             return True
         elif "fanart" in output_name:
-            copy_file_fixture(fixture_name="fanart.jpeg", output_file_path=output_path)
+            copy_file_fixture(fixture_name="fanart.jpeg", output_file_path=output_thumbnail_path)
             return True
         return False
 
-    with patch.object(
-        YtDlpDownloader,
-        "_download_thumbnail",
-        new=lambda _, thumbnail_url, output_thumbnail_path: _mock_download_thumbnail(
-            output_thumbnail_path
-        ),
+    with patch(
+        "ytdl_sub.downloaders.downloader.download_and_convert_url_thumbnail",
+        new=_mock_download_and_convert_url_thumbnail,
     ):
         yield  # TODO: create file here
 
@@ -126,11 +126,9 @@ def mock_download_collection_entries(
     mock_download_collection_thumbnail, mock_entry_dict_factory: Callable, working_directory: str
 ):
     @contextlib.contextmanager
-    def _mock_download_collection_entries_factory(is_youtube_channel: bool):
+    def _mock_download_collection_entries_factory(is_youtube_channel: bool, num_urls: int = 1):
         def _write_entries_to_working_dir(*args, **kwargs) -> List[Dict]:
-            if (len(args[0].collection.urls.list) == 1) or (
-                "season.2" in kwargs["url"] and len(args[0].download_options.urls.list) > 1
-            ):
+            if num_urls == 1 or ("season.2" in kwargs["url"] and num_urls > 1):
                 return [
                     mock_entry_dict_factory(
                         uid="21-1",
@@ -202,7 +200,7 @@ def mock_download_collection_entries(
             ]
 
         with patch.object(
-            YtDlpDownloader, "extract_info_via_info_json", new=_write_entries_to_working_dir
+            YTDLP, "extract_info_via_info_json", new=_write_entries_to_working_dir
         ), patch.object(
             YtDlpDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
         ):

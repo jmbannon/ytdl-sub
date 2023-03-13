@@ -215,7 +215,9 @@ class TestPrebuiltTvShowCollectionPresets:
             },
         )
 
-        with mock_download_collection_entries(is_youtube_channel=is_youtube_channel):
+        with mock_download_collection_entries(
+            is_youtube_channel=is_youtube_channel, num_urls=len(season_indices)
+        ):
             transaction_log = subscription.download(dry_run=False)
 
         assert_transaction_log_matches(
