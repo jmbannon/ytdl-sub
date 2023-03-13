@@ -3,6 +3,7 @@ from conftest import preset_dict_to_dl_args
 from e2e.conftest import mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from mergedeep import mergedeep
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -28,6 +29,31 @@ def single_video_preset_dict(output_directory):
             }
         },
         "overrides": {"artist": "JMC"},
+    }
+
+
+@pytest.fixture
+def single_tv_show_video_nulled_values_preset_dict(output_directory):
+    return {
+        "preset": [
+            "jellyfin_tv_show_by_date",
+            "season_by_year__episode_by_download_index",
+            "chunk_initial_download",
+        ],
+        "download": {"url": "https://www.youtube.com/@ProjectZombie603"},
+        # set file output fields to None
+        "output_options": {
+            "thumbnail_name": "",
+            "info_json_name": "",
+        },
+        "ytdl_options": {
+            "format": "worst[ext=mp4]",
+            "max_downloads": 2,
+        },
+        "overrides": {
+            "tv_show_name": "Project Zombie",
+            "tv_show_directory": output_directory,
+        },
     }
 
 
@@ -88,4 +114,23 @@ class TestYoutubeVideo:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_video_cli.json",
+        )
+
+    def test_single_video_nulled_values(
+        self,
+        channel_as_tv_show_config,
+        single_tv_show_video_nulled_values_preset_dict,
+        output_directory,
+    ):
+        single_video_subscription = Subscription.from_dict(
+            config=channel_as_tv_show_config,
+            preset_name="tv_video_nulled_values",
+            preset_dict=single_tv_show_video_nulled_values_preset_dict,
+        )
+
+        transaction_log = single_video_subscription.download(dry_run=True)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_video_nulled_values.txt",
         )

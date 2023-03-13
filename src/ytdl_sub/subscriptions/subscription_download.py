@@ -396,7 +396,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 if os.path.getmtime(file_path) == mtime:
                     FileHandler.delete(file_path)
 
-    def reformat(self, dry_run: bool = False) -> FileHandlerTransactionLog:
+    def update_with_info_json(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         plugins = self._initialize_plugins()
 
         with self._subscription_download_context_managers():

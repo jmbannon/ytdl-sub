@@ -17,6 +17,7 @@ Files created:
         title: JMC
 {output_directory}/Season 01
   s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+  s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
   s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
     Video Tags:
       date: 2011-02-01
@@ -57,6 +58,7 @@ Files created:
         title: 2011-02-01 - Jesse's Minecraft Server [Trailer - Feb.1]
         year: 2011
   s01.e11022701 - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
+  s01.e11022701 - Jesse's Minecraft Server [Trailer - Feb.27].info.json
   s01.e11022701 - Jesse's Minecraft Server [Trailer - Feb.27].mp4
     Video Tags:
       date: 2011-02-27
@@ -135,6 +137,7 @@ Files created:
         title: 2011-02-27 - Jesse's Minecraft Server [Trailer - Feb.27]
         year: 2011
   s01.e11032101 - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
+  s01.e11032101 - Jesse's Minecraft Server [Trailer - Mar.21].info.json
   s01.e11032101 - Jesse's Minecraft Server [Trailer - Mar.21].mp4
     Video Tags:
       date: 2011-03-21

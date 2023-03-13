@@ -276,7 +276,7 @@ class OutputOptions(StrictDictValidator):
         """
         Optional. The file name for the media's thumbnail image. This can include directories such
         as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
-        directory.
+        directory. Can be set to empty string or `null` to disable thumbnail writes.
         """
         return self._thumbnail_name
 
@@ -285,7 +285,7 @@ class OutputOptions(StrictDictValidator):
         """
         Optional. The file name for the media's info json file. This can include directories such
         as ``"Season {upload_year}/{title}.{info_json_ext}"``, and will be placed in the output
-        directory.
+        directory. Can be set to empty string or `null` to disable info json writes.
         """
         return self._info_json_name
 

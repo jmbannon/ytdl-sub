@@ -7,6 +7,7 @@ presets:
       output_directory: "{tv_show_directory}/{tv_show_name_sanitized}"
       file_name: "{episode_file_path}.{ext}"
       thumbnail_name: "{episode_file_path}-thumb.jpg"
+      info_json_name: "{episode_file_path}.{info_json_ext}"
       maintain_download_archive: True
 
     ytdl_options:

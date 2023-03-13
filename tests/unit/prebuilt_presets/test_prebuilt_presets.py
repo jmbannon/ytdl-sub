@@ -131,7 +131,7 @@ class TestPrebuiltTVShowPresets:
             },
         )
 
-        reformatted_transaction_log = reformatted_subscription.reformat(dry_run=False)
+        reformatted_transaction_log = reformatted_subscription.update_with_info_json(dry_run=False)
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=reformatted_transaction_log,
