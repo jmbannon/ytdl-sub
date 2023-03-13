@@ -9,9 +9,9 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable
 from typing import Dict
-from typing import Generator
 from typing import Generic
 from typing import Iterable
+from typing import Iterator
 from typing import List
 from typing import Optional
 from typing import Set
@@ -118,7 +118,11 @@ class BaseDownloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         self._metadata_ytdl_options_builder = metadata_ytdl_options
 
     @abc.abstractmethod
-    def download(self) -> Iterable[Entry] | Iterable[Tuple[Entry, FileMetadata]]:
+    def download_metadata(self) -> Iterable[Entry]:
+        """Gathers metadata of all entries to download"""
+
+    @abc.abstractmethod
+    def download(self, entry: Entry) -> Entry:
         """The function to perform the download of all media entries"""
 
 
@@ -469,33 +473,9 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
         )
         return Entry(download_entry_dict, working_directory=self.working_directory)
 
-    def _download_entry(self, entry: Entry) -> Entry:
-        download_entry = self._extract_entry_info_with_retry(entry=entry)
-
-        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
-            upload_date_standardized=entry.upload_date_standardized
-        )
-        download_idx = self._enhanced_download_archive.num_entries
-
-        entry.add_kwargs(
-            {
-                # Subtitles are not downloaded in metadata run, only here, so move over
-                REQUESTED_SUBTITLES: download_entry.kwargs_get(REQUESTED_SUBTITLES),
-                # Same with sponsorblock chapters
-                SPONSORBLOCK_CHAPTERS: download_entry.kwargs_get(SPONSORBLOCK_CHAPTERS),
-                COMMENTS: download_entry.kwargs_get(COMMENTS),
-                # Tracks number of entries downloaded
-                DOWNLOAD_INDEX: download_idx,
-                # Tracks number of entries with the same upload date to make them unique
-                UPLOAD_DATE_INDEX: upload_date_idx,
-            }
-        )
-
-        return entry
-
-    def _download_entries(
+    def _iterate_child_entries(
         self, url_validator: UrlValidator, entries: List[Entry]
-    ) -> Generator[Entry, None, None]:
+    ) -> Iterator[Entry]:
         entries_to_iterate = entries
         if url_validator.download_reverse:
             entries_to_iterate = reversed(entries)
@@ -512,26 +492,20 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
                 )
                 continue
 
-            download_logger.info(
-                "Downloading entry %d/%d: %s",
-                self._url_state.entries_downloaded,
-                self._url_state.entries_total,
-                entry.title,
-            )
-            yield self._download_entry(entry)
+            yield entry
             self._mark_downloaded(entry)
 
-    def _download_parent_entry(
+    def _iterate_parent_entry(
         self, url_validator: UrlValidator, parent: EntryParent
-    ) -> Generator[Entry, None, None]:
-        for entry_child in self._download_entries(
+    ) -> Iterator[Entry]:
+        for entry_child in self._iterate_child_entries(
             url_validator=url_validator, entries=parent.entry_children()
         ):
             yield entry_child
 
         # Recursion the parent's parent entries
         for parent_child in reversed(parent.parent_children()):
-            for entry_child in self._download_parent_entry(
+            for entry_child in self._iterate_parent_entry(
                 url_validator=url_validator, parent=parent_child
             ):
                 yield entry_child
@@ -579,29 +553,27 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
 
         return parents, orphans
 
-    def _download(
+    def _iterate_entries(
         self,
         url_validator: UrlValidator,
         parents: List[EntryParent],
         orphans: List[Entry],
-    ) -> Generator[Entry, None, None]:
+    ) -> Iterator[Entry]:
         """
         Downloads the leaf entries from EntryParent trees
         """
         # Delete info json files afterwards so other collection URLs do not use them
         with self._separate_download_archives(clear_info_json_files=True):
             for parent in parents:
-                for entry_child in self._download_parent_entry(
+                for entry_child in self._iterate_parent_entry(
                     url_validator=url_validator, parent=parent
                 ):
                     yield entry_child
 
-            for orphan in self._download_entries(url_validator=url_validator, entries=orphans):
+            for orphan in self._iterate_child_entries(url_validator=url_validator, entries=orphans):
                 yield orphan
 
-    def download(
-        self,
-    ) -> Iterable[Entry] | Iterable[Tuple[Entry, FileMetadata]]:
+    def download_metadata(self) -> Iterable[Entry]:
         """The function to perform the download of all media entries"""
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.collection.urls.list):
@@ -615,12 +587,42 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
             download_logger.info(
                 "Beginning downloads for %s", self.overrides.apply_formatter(collection_url.url)
             )
-            for entry in self._download(
+            for entry in self._iterate_entries(
                 url_validator=collection_url, parents=parents, orphans=orphan_entries
             ):
                 # Update thumbnails in case of last_entry
                 self._download_url_thumbnails(collection_url=collection_url, entry=entry)
                 yield entry
+
+    def download(self, entry: Entry) -> Entry:
+        download_logger.info(
+            "Downloading entry %d/%d: %s",
+            self._url_state.entries_downloaded,
+            self._url_state.entries_total,
+            entry.title,
+        )
+        download_entry = self._extract_entry_info_with_retry(entry=entry)
+
+        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
+            upload_date_standardized=entry.upload_date_standardized
+        )
+        download_idx = self._enhanced_download_archive.num_entries
+
+        entry.add_kwargs(
+            {
+                # Subtitles are not downloaded in metadata run, only here, so move over
+                REQUESTED_SUBTITLES: download_entry.kwargs_get(REQUESTED_SUBTITLES),
+                # Same with sponsorblock chapters
+                SPONSORBLOCK_CHAPTERS: download_entry.kwargs_get(SPONSORBLOCK_CHAPTERS),
+                COMMENTS: download_entry.kwargs_get(COMMENTS),
+                # Tracks number of entries downloaded
+                DOWNLOAD_INDEX: download_idx,
+                # Tracks number of entries with the same upload date to make them unique
+                UPLOAD_DATE_INDEX: upload_date_idx,
+            }
+        )
+
+        return entry
 
     @classmethod
     def _download_thumbnail(

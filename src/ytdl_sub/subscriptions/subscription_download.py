@@ -285,10 +285,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 overrides=self.overrides,
             )
 
-            for entry in downloader.download():
+            for entry in downloader.download_metadata():
+                entry = downloader.download(entry)
                 entry_metadata = FileMetadata()
-                if isinstance(entry, tuple):
-                    entry, entry_metadata = entry
 
                 if split_plugin := _get_split_plugin(plugins):
                     self._process_split_entry(
