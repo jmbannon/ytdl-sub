@@ -82,10 +82,7 @@ class SubscriptionYTDLOptions:
     def _output_options(self) -> Dict:
         ytdl_options = {}
 
-        if (
-            self._downloader.supports_download_archive
-            and self._preset.output_options.maintain_download_archive
-        ):
+        if self._preset.output_options.maintain_download_archive:
             ytdl_options["download_archive"] = str(
                 Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
             )

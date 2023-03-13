@@ -130,10 +130,7 @@ class BaseSubscription(ABC):
         -------
         Whether to maintain a download archive
         """
-        return (
-            self.output_options.maintain_download_archive
-            and self.downloader_class.supports_download_archive
-        )
+        return self.output_options.maintain_download_archive
 
     @property
     def num_entries_added(self) -> int:

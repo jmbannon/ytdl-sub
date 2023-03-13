@@ -100,17 +100,33 @@ class URLDownloadState:
         self.thumbnails_downloaded: Set[str] = set()
 
 
-class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
+class BaseDownloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
+    downloader_options_type: Type[DownloaderValidator] = DownloaderValidator
+
+    def __init__(
+        self,
+        download_options: DownloaderOptionsT,
+        enhanced_download_archive: EnhancedDownloadArchive,
+        download_ytdl_options: YTDLOptionsBuilder,
+        metadata_ytdl_options: YTDLOptionsBuilder,
+        overrides: Overrides,
+    ):
+        super().__init__(enhanced_download_archive=enhanced_download_archive)
+        self.download_options = download_options
+        self.overrides = overrides
+        self._download_ytdl_options_builder = download_ytdl_options
+        self._metadata_ytdl_options_builder = metadata_ytdl_options
+
+    @abc.abstractmethod
+    def download(self) -> Iterable[Entry] | Iterable[Tuple[Entry, FileMetadata]]:
+        """The function to perform the download of all media entries"""
+
+
+class Downloader(BaseDownloader[DownloaderOptionsT], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
     """
-
-    downloader_options_type: Type[DownloaderValidator] = DownloaderValidator
-
-    supports_download_archive: bool = True
-    supports_subtitles: bool = True
-    supports_chapters: bool = True
 
     _extract_entry_num_retries: int = 5
     _extract_entry_retry_wait_sec: int = 5
@@ -147,13 +163,14 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         overrides
             Override variables
         """
-        DownloadArchiver.__init__(self=self, enhanced_download_archive=enhanced_download_archive)
-        self.download_options = download_options
-        self.overrides = overrides
-        self._download_ytdl_options_builder = download_ytdl_options
-        self._metadata_ytdl_options_builder = metadata_ytdl_options
+        super().__init__(
+            download_options=download_options,
+            enhanced_download_archive=enhanced_download_archive,
+            download_ytdl_options=download_ytdl_options,
+            metadata_ytdl_options=metadata_ytdl_options,
+            overrides=overrides,
+        )
         self._downloaded_entries: Set[str] = set()
-
         self._url_state: Optional[URLDownloadState] = None
 
     @property

@@ -2,6 +2,7 @@ from typing import Dict
 from typing import List
 from typing import Type
 
+from ytdl_sub.downloaders.downloader import BaseDownloader
 from ytdl_sub.downloaders.downloader import Downloader
 from ytdl_sub.downloaders.generic.multi_url import MultiUrlDownloader
 from ytdl_sub.downloaders.generic.url import UrlDownloader
@@ -26,7 +27,7 @@ class DownloadStrategyMapping:
     Maps downloader strategies defined in the preset to its respective downloader class
     """
 
-    _MAPPING: Dict[str, Dict[str, Type[Downloader]]] = {
+    _MAPPING: Dict[str, Dict[str, Type[BaseDownloader]]] = {
         "download": {
             "multi_url": MultiUrlDownloader,
             "url": UrlDownloader,
