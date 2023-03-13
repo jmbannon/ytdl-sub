@@ -5,7 +5,8 @@ import os
 import shutil
 from abc import ABC
 from pathlib import Path
-from typing import Iterable, Dict
+from typing import Dict
+from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Set
@@ -22,8 +23,8 @@ from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
-from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive, \
-    DownloadMappings
+from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMappings
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
 def _get_split_plugin(plugins: List[Plugin]) -> Optional[Plugin]:
@@ -405,6 +406,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
             return self._process_subscription(
                 plugins=plugins,
-                entries=self._get_entries_for_reformat(download_mappings=download_mappings, dry_run=dry_run),
+                entries=self._get_entries_for_reformat(
+                    download_mappings=download_mappings, dry_run=dry_run
+                ),
                 dry_run=dry_run,
             )
