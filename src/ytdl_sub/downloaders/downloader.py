@@ -642,6 +642,10 @@ class Downloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
         Downloads and moves channel avatar and banner images to the output directory.
         """
         for thumbnail_info in thumbnail_list_info.list:
+            # If thumbnail name was set to empty, do nothing
+            if thumbnail_info.name is None:
+                continue
+
             thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
             thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
 
