@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+  ytdl-sub:
+    image: ytdl-sub:local
+    container_name: ytdl-sub
+    environment:
+      - DOCKER_MODS=linuxserver/mods:universal-cron
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - '$PWD/config:/config'
+      - '$PWD/tv:/tv_shows'
+      - '$PWD/working:/working'
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
