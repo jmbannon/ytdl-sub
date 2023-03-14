@@ -32,7 +32,7 @@ docker_stage: wheel
 	cp dist/*.whl docker/root/
 	cp -R examples docker/root/defaults/
 docker: docker_stage
-	sudo docker build --no-cache -t ytdl-sub:local docker/
+	sudo docker build --progress=plain --no-cache -t ytdl-sub:local docker/
 executable: clean
 	pyinstaller ytdl-sub.spec
 	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}
