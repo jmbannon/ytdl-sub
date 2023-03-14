@@ -174,6 +174,15 @@ class SubscriptionDownload(BaseSubscription, ABC):
         FileHandler.delete(entry.get_download_thumbnail_path())
         FileHandler.delete(entry.get_download_info_json_path())
 
+    @classmethod
+    def _preprocess_entry(cls, plugins: List[Plugin], entry: Entry) -> Optional[Entry]:
+        maybe_entry: Optional[Entry] = entry
+        for plugin in plugins:
+            if (maybe_entry := plugin.modify_entry_metadata(maybe_entry)) is None:
+                return None
+
+        return maybe_entry
+
     def _post_process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
     ):
@@ -276,16 +285,21 @@ class SubscriptionDownload(BaseSubscription, ABC):
             dry_run=dry_run,
         )
 
-        with self._subscription_download_context_managers():
-            downloader = self.downloader_class(
-                download_options=self.downloader_options,
-                enhanced_download_archive=self._enhanced_download_archive,
-                download_ytdl_options=subscription_ytdl_options.download_builder(),
-                metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
-                overrides=self.overrides,
-            )
+        downloader = self.downloader_class(
+            download_options=self.downloader_options,
+            enhanced_download_archive=self._enhanced_download_archive,
+            download_ytdl_options=subscription_ytdl_options.download_builder(),
+            metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
+            overrides=self.overrides,
+        )
+        # This could be cleaned up....
+        plugins.extend(downloader.added_plugins())
 
+        with self._subscription_download_context_managers():
             for entry in downloader.download_metadata():
+                if (entry := self._preprocess_entry(plugins=plugins, entry=entry)) is None:
+                    continue
+
                 entry = downloader.download(entry)
                 entry_metadata = FileMetadata()
 

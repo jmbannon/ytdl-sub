@@ -23,6 +23,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
+from ytdl_sub.entries.variables.kwargs import COLLECTION_URL
 from ytdl_sub.entries.variables.kwargs import COMMENTS
 from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
@@ -30,6 +31,8 @@ from ytdl_sub.entries.variables.kwargs import REQUESTED_SUBTITLES
 from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
 from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
+from ytdl_sub.plugins.plugin import Plugin
+from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
@@ -85,7 +88,25 @@ class URLDownloadState:
     def __init__(self, entries_total: int):
         self.entries_total = entries_total
         self.entries_downloaded = 0
-        self.thumbnails_downloaded: Set[str] = set()
+
+
+class EmptyPluginOptions(PluginOptions):
+    _optional_keys = {"no-op"}
+
+
+class BaseDownloaderPlugin(Plugin[EmptyPluginOptions], ABC):
+    def __init__(
+        self,
+        overrides: Overrides,
+        enhanced_download_archive: EnhancedDownloadArchive,
+    ):
+        super().__init__(
+            # Downloader plugins do not have exposed YAML options, so keep it blank.
+            # Use init instead.
+            plugin_options=EmptyPluginOptions(name=self.__class__.__name__, value={}),
+            overrides=overrides,
+            enhanced_download_archive=enhanced_download_archive,
+        )
 
 
 class BaseDownloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
@@ -113,12 +134,166 @@ class BaseDownloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
     def download(self, entry: Entry) -> Entry:
         """The function to perform the download of all media entries"""
 
+    # pylint: disable=no-self-use
+    def added_plugins(self) -> List[BaseDownloaderPlugin]:
+        """Add these plugins from the Downloader to the subscription"""
+        return []
+
+    # pylint: enable=no-self-use
+
+
+class YtDlpThumbnailPlugin(BaseDownloaderPlugin):
+    def __init__(
+        self,
+        overrides: Overrides,
+        enhanced_download_archive: EnhancedDownloadArchive,
+        collection_urls: List[UrlValidator],
+    ):
+        super().__init__(
+            overrides=overrides,
+            enhanced_download_archive=enhanced_download_archive,
+        )
+        self._thumbnails_downloaded: Set[str] = set()
+        self._collection_url_mapping: Dict[str, UrlValidator] = {
+            self.overrides.apply_formatter(collection_url.url): collection_url
+            for collection_url in collection_urls
+        }
+
+    def _download_parent_thumbnails(
+        self,
+        thumbnail_list_info: UrlThumbnailListValidator,
+        entry: Entry,
+        parent: EntryParent,
+    ) -> None:
+        """
+        Downloads and moves channel avatar and banner images to the output directory.
+        """
+        for thumbnail_info in thumbnail_list_info.list:
+            thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
+            thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
+
+            # If latest entry, always update the thumbnail on each entry
+            if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
+                # Make sure the entry's thumbnail is converted to jpg
+                convert_download_thumbnail(entry, error_if_not_found=False)
+
+                # always save in dry-run even if it doesn't exist...
+                if self.is_dry_run or os.path.isfile(entry.get_download_thumbnail_path()):
+                    self.save_file(
+                        file_name=entry.get_download_thumbnail_name(),
+                        output_file_name=thumbnail_name,
+                        copy_file=True,
+                    )
+                    self._thumbnails_downloaded.add(thumbnail_name)
+                continue
+
+            # If not latest entry and the thumbnail has already been downloaded, then skip
+            if thumbnail_name in self._thumbnails_downloaded:
+                continue
+
+            if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is None:
+                download_logger.debug("Failed to find thumbnail id '%s'", thumbnail_id)
+                continue
+
+            if download_and_convert_url_thumbnail(
+                thumbnail_url=thumbnail_url,
+                output_thumbnail_path=str(Path(self.working_directory) / thumbnail_name),
+            ):
+                self.save_file(file_name=thumbnail_name)
+                self._thumbnails_downloaded.add(thumbnail_name)
+            else:
+                download_logger.debug("Failed to download thumbnail id '%s'", thumbnail_id)
+
+    def _download_url_thumbnails(self, collection_url: UrlValidator, entry: Entry):
+        """
+        After all media entries have been downloaded, post processed, and moved to the output
+        directory, run this function. This lets the downloader add any extra files directly to the
+        output directory, for things like YT channel image, banner.
+        """
+        if entry.kwargs_contains(PLAYLIST_ENTRY):
+            self._download_parent_thumbnails(
+                thumbnail_list_info=collection_url.playlist_thumbnails,
+                entry=entry,
+                parent=EntryParent(
+                    entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
+                ),
+            )
+
+        if entry.kwargs_contains(SOURCE_ENTRY):
+            self._download_parent_thumbnails(
+                thumbnail_list_info=collection_url.source_thumbnails,
+                entry=entry,
+                parent=EntryParent(
+                    entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
+                ),
+            )
+
+    def modify_entry(self, entry: Entry) -> Optional[Entry]:
+        """
+        Use the entry to download thumbnails (or move if LATEST_ENTRY)
+        """
+        if entry.kwargs(COLLECTION_URL) in self._collection_url_mapping:
+            self._download_url_thumbnails(
+                collection_url=self._collection_url_mapping[entry.kwargs(COLLECTION_URL)],
+                entry=entry,
+            )
+        return entry
+
+
+class YtDlpCollectionVariablePlugin(BaseDownloaderPlugin):
+    def __init__(
+        self,
+        overrides: Overrides,
+        enhanced_download_archive: EnhancedDownloadArchive,
+        collection_urls: List[UrlValidator],
+    ):
+        super().__init__(
+            overrides=overrides,
+            enhanced_download_archive=enhanced_download_archive,
+        )
+        self._thumbnails_downloaded: Set[str] = set()
+        self._collection_url_mapping: Dict[str, UrlValidator] = {
+            self.overrides.apply_formatter(collection_url.url): collection_url
+            for collection_url in collection_urls
+        }
+
+    def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
+        """
+        Add collection variables to the entry
+        """
+        collection_url: Optional[UrlValidator] = self._collection_url_mapping.get(
+            entry.kwargs(COLLECTION_URL)
+        )
+        if collection_url:
+            entry.add_variables(variables_to_add=collection_url.variables.dict_with_format_strings)
+
+        return entry
+
 
 class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
     """
+
+    def added_plugins(self) -> List[Plugin]:
+        """
+        Adds
+        1. URL thumbnail download plugin
+        2. Collection variable plugin to add to each entry
+        """
+        return [
+            YtDlpThumbnailPlugin(
+                overrides=self.overrides,
+                enhanced_download_archive=self._enhanced_download_archive,
+                collection_urls=self.collection.urls.list,
+            ),
+            YtDlpCollectionVariablePlugin(
+                overrides=self.overrides,
+                enhanced_download_archive=self._enhanced_download_archive,
+                collection_urls=self.collection.urls.list,
+            ),
+        ]
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
@@ -312,18 +487,6 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
             ):
                 yield entry_child
 
-    def _set_collection_variables(self, collection_url: UrlValidator, entry: Entry | EntryParent):
-        if isinstance(entry, EntryParent):
-            for child in entry.parent_children():
-                self._set_collection_variables(collection_url, child)
-            for child in entry.entry_children():
-                child.add_variables(
-                    variables_to_add=collection_url.variables.dict_with_format_strings
-                )
-
-        elif isinstance(entry, Entry):
-            entry.add_variables(variables_to_add=collection_url.variables.dict_with_format_strings)
-
     def _download_url_metadata(
         self, collection_url: UrlValidator
     ) -> Tuple[List[EntryParent], List[Entry]]:
@@ -348,11 +511,6 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
         orphans = EntryParent.from_entry_dicts_with_no_parents(
             parents=parents, entry_dicts=entry_dicts, working_directory=self.working_directory
         )
-
-        for parent_entry in parents:
-            self._set_collection_variables(collection_url, parent_entry)
-        for entry in orphans:
-            self._set_collection_variables(collection_url, entry)
 
         return parents, orphans
 
@@ -393,8 +551,10 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
             for entry in self._iterate_entries(
                 url_validator=collection_url, parents=parents, orphans=orphan_entries
             ):
-                # Update thumbnails in case of last_entry
-                self._download_url_thumbnails(collection_url=collection_url, entry=entry)
+                # Add the collection URL to the info_dict to trace where it came from
+                entry.add_kwargs(
+                    {COLLECTION_URL: self.overrides.apply_formatter(collection_url.url)}
+                )
                 yield entry
 
     def download(self, entry: Entry) -> Entry:
@@ -436,72 +596,3 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
         )
 
         return entry
-
-    def _download_parent_thumbnails(
-        self,
-        thumbnail_list_info: UrlThumbnailListValidator,
-        entry: Entry,
-        parent: EntryParent,
-    ) -> None:
-        """
-        Downloads and moves channel avatar and banner images to the output directory.
-        """
-        for thumbnail_info in thumbnail_list_info.list:
-            thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
-            thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
-
-            # If latest entry, always update the thumbnail on each entry
-            if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
-                # Make sure the entry's thumbnail is converted to jpg
-                convert_download_thumbnail(entry, error_if_not_found=False)
-
-                # always save in dry-run even if it doesn't exist...
-                if self.is_dry_run or os.path.isfile(entry.get_download_thumbnail_path()):
-                    self.save_file(
-                        file_name=entry.get_download_thumbnail_name(),
-                        output_file_name=thumbnail_name,
-                        copy_file=True,
-                    )
-                    self._url_state.thumbnails_downloaded.add(thumbnail_name)
-                continue
-
-            # If not latest entry and the thumbnail has already been downloaded, then skip
-            if thumbnail_name in self._url_state.thumbnails_downloaded:
-                continue
-
-            if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is None:
-                download_logger.debug("Failed to find thumbnail id '%s'", thumbnail_id)
-                continue
-
-            if download_and_convert_url_thumbnail(
-                thumbnail_url=thumbnail_url,
-                output_thumbnail_path=str(Path(self.working_directory) / thumbnail_name),
-            ):
-                self.save_file(file_name=thumbnail_name)
-                self._url_state.thumbnails_downloaded.add(thumbnail_name)
-            else:
-                download_logger.debug("Failed to download thumbnail id '%s'", thumbnail_id)
-
-    def _download_url_thumbnails(self, collection_url: UrlValidator, entry: Entry):
-        """
-        After all media entries have been downloaded, post processed, and moved to the output
-        directory, run this function. This lets the downloader add any extra files directly to the
-        output directory, for things like YT channel image, banner.
-        """
-        if entry.kwargs_contains(PLAYLIST_ENTRY):
-            self._download_parent_thumbnails(
-                thumbnail_list_info=collection_url.playlist_thumbnails,
-                entry=entry,
-                parent=EntryParent(
-                    entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
-                ),
-            )
-
-        if entry.kwargs_contains(SOURCE_ENTRY):
-            self._download_parent_thumbnails(
-                thumbnail_list_info=collection_url.source_thumbnails,
-                entry=entry,
-                parent=EntryParent(
-                    entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
-                ),
-            )
