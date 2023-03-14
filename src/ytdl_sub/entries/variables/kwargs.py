@@ -40,6 +40,7 @@ PLAYLIST_UPLOADER = _("playlist_uploader")
 PLAYLIST_UPLOADER_ID = _("playlist_uploader_id")
 PLAYLIST_UPLOADER_URL = _("playlist_uploader_url")
 
+COLLECTION_URL = _("collection_url", backend=True)
 DOWNLOAD_INDEX = _("download_index", backend=True)
 UPLOAD_DATE_INDEX = _("upload_date_index", backend=True)
 REQUESTED_SUBTITLES = _("requested_subtitles", backend=True)
