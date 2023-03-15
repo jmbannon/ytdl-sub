@@ -35,7 +35,7 @@ RUN mkdir -p /config && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       cd /usr/share && \
-      curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 | tar xj && \
+      curl -L https://github.com/Overbryd/docker-phantomjs-alpine/releases/download/2.11/phantomjs-alpine-x86_64.tar.bz2 | tar xj && \
       ln -s /usr/share/phantomjs/phantomjs /usr/bin/phantomjs && \
       echo "Phantom JS version:" && \
       phantomjs --version && \
