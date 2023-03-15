@@ -89,7 +89,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/build-cache/arm64
-          key: ${{github.sha}}
+          key: ${{github.sha}}-arm64
 
 
   # Build AMD64 container
@@ -133,7 +133,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/build-cache/amd64
-          key: ${{github.sha}}
+          key: ${{github.sha}}-amd64
 
 
   # On master branch, build the docker manifest file from the cached
@@ -141,6 +141,7 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
     needs: [
+      build,
       package-arm64,
       package-amd64
     ]
@@ -178,13 +179,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/build-cache/arm64
-          key: ${{github.sha}}
+          key: ${{github.sha}}-arm64
 
       - name: Restore AMD64 build cache
         uses: actions/cache@v3
         with:
           path: /tmp/build-cache/amd64
-          key: ${{github.sha}}
+          key: ${{github.sha}}-amd64
 
       - name: Format image_id
         id: formatted-image_id
