@@ -113,9 +113,24 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
         """
         return []
 
+    def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
+        """
+        After entry metadata has been gathered, perform preprocessing on the metadata
+
+        Parameters
+        ----------
+        entry
+            Entry metadata to modify
+
+        Returns
+        -------
+        The entry or None, indicating not to download it.
+        """
+        return entry
+
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
-        For each entry downloaded, modify the entry in some way before sending it to
+        After each entry is downloaded, modify the entry in some way before sending it to
         post-processing.
 
         Parameters

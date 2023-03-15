@@ -137,7 +137,7 @@ class TestPrebuiltTVShowPresets:
             transaction_log_summary_file_name=(
                 f"{expected_summary_name}_reformatted_to_{reformatted_expected_summary_name}.txt"
             ),
-            regenerate_transaction_log=True
+            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
@@ -251,7 +251,9 @@ class TestPrebuiltTvShowCollectionPresets:
             },
         )
 
-        with mock_download_collection_entries(is_youtube_channel=is_youtube_channel):
+        with mock_download_collection_entries(
+            is_youtube_channel=is_youtube_channel, num_urls=len(season_indices)
+        ):
             transaction_log = subscription.download(dry_run=False)
 
         assert_transaction_log_matches(
@@ -266,7 +268,9 @@ class TestPrebuiltTvShowCollectionPresets:
         )
 
         ###################################### Perform reformat
-        reformatted_tv_show_structure_preset = "season_by_collection__episode_by_playlist_index_reversed"
+        reformatted_tv_show_structure_preset = (
+            "season_by_collection__episode_by_playlist_index_reversed"
+        )
         reformatted_expected_summary_name = "unit/{}/{}/s_{}/is_yt_{}".format(
             media_player_preset,
             reformatted_tv_show_structure_preset,
@@ -296,7 +300,7 @@ class TestPrebuiltTvShowCollectionPresets:
             transaction_log_summary_file_name=(
                 f"{expected_summary_name}_reformatted_to_{reformatted_expected_summary_name}.txt"
             ),
-            regenerate_transaction_log=True
+            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,

@@ -11,6 +11,7 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
+from ytdl_sub.downloaders.downloader import BaseDownloader
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
@@ -156,7 +157,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
             yield
         finally:
             if not self._enhanced_download_archive.is_dry_run:
-                for root, dir_names, filenames in os.walk(Path(self.output_directory), topdown=False):
+                for root, dir_names, filenames in os.walk(
+                    Path(self.output_directory), topdown=False
+                ):
                     for dir_name in dir_names:
                         dir_path = Path(root) / dir_name
                         if len(os.listdir(dir_path)) == 0:
@@ -194,6 +197,15 @@ class SubscriptionDownload(BaseSubscription, ABC):
         FileHandler.delete(entry.get_download_file_path())
         FileHandler.delete(entry.get_download_thumbnail_path())
         FileHandler.delete(entry.get_download_info_json_path())
+
+    @classmethod
+    def _preprocess_entry(cls, plugins: List[Plugin], entry: Entry) -> Optional[Entry]:
+        maybe_entry: Optional[Entry] = entry
+        for plugin in plugins:
+            if (maybe_entry := plugin.modify_entry_metadata(maybe_entry)) is None:
+                return None
+
+        return maybe_entry
 
     def _post_process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
@@ -279,22 +291,27 @@ class SubscriptionDownload(BaseSubscription, ABC):
     def _process_subscription(
         self,
         plugins: List[Plugin],
-        entries: Iterable[Entry] | Iterable[Tuple[Entry, FileMetadata]],
+        downloader: BaseDownloader,
         dry_run: bool,
     ) -> FileHandlerTransactionLog:
-        for entry in entries:
-            entry_metadata = FileMetadata()
-            if isinstance(entry, tuple):
-                entry, entry_metadata = entry
+        with self._subscription_download_context_managers():
+            for entry in downloader.download_metadata():
+                if (entry := self._preprocess_entry(plugins=plugins, entry=entry)) is None:
+                    continue
 
-            if split_plugin := _get_split_plugin(plugins):
-                self._process_split_entry(
-                    split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
-                )
-            else:
-                self._process_entry(
-                    plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
-                )
+                entry = downloader.download(entry)
+                entry_metadata = FileMetadata()
+                if isinstance(entry, tuple):
+                    entry, entry_metadata = entry
+
+                if split_plugin := _get_split_plugin(plugins):
+                    self._process_split_entry(
+                        split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
+                    )
+                else:
+                    self._process_entry(
+                        plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+                    )
 
         for plugin in plugins:
             plugin.post_process_subscription()
@@ -322,20 +339,21 @@ class SubscriptionDownload(BaseSubscription, ABC):
             dry_run=dry_run,
         )
 
-        with self._subscription_download_context_managers():
-            downloader = self.downloader_class(
-                download_options=self.downloader_options,
-                enhanced_download_archive=self._enhanced_download_archive,
-                download_ytdl_options=subscription_ytdl_options.download_builder(),
-                metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
-                overrides=self.overrides,
-            )
+        downloader = self.downloader_class(
+            download_options=self.downloader_options,
+            enhanced_download_archive=self._enhanced_download_archive,
+            download_ytdl_options=subscription_ytdl_options.download_builder(),
+            metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
+            overrides=self.overrides,
+        )
+        # This could be cleaned up....
+        plugins.extend(downloader.added_plugins())
 
-            return self._process_subscription(
-                plugins=plugins,
-                entries=downloader.download(),
-                dry_run=dry_run,
-            )
+        return self._process_subscription(
+            plugins=plugins,
+            downloader=downloader,
+            dry_run=dry_run,
+        )
 
     def _get_entries_for_reformat(
         self, download_mappings: DownloadMappings, dry_run: bool
