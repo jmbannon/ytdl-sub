@@ -62,13 +62,13 @@ download strategy has its own set of parameters.
 
 url
 '''
-.. autoclass:: ytdl_sub.downloaders.generic.url.UrlDownloadOptions()
+.. autoclass:: ytdl_sub.downloaders.url.url.UrlDownloadOptions()
   :members: url, playlist_thumbnails, source_thumbnails, download_reverse
   :member-order: bysource
 
 multi_url
 '''''''''
-.. autoclass:: ytdl_sub.downloaders.generic.multi_url.MultiUrlDownloadOptions()
+.. autoclass:: ytdl_sub.downloaders.url.multi_url.MultiUrlDownloadOptions()
   :members: urls, variables
 
 -------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ output_options
 .. autoclass:: ytdl_sub.config.preset_options.OutputOptions()
   :members:
   :member-order: bysource
-  :exclude-members: get_upload_date_range_to_keep
+  :exclude-members: get_upload_date_range_to_keep, partial_validate
 
 -------------------------------------------------------------------------------
 
