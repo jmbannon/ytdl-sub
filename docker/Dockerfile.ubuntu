@@ -7,17 +7,19 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"
 
+# Needed for phantomjs
+ENV OPENSSL_CONF=/etc/ssl
+
 ###############################################################################
 # YTDL-SUB INSTALL
 
+SHELL ["/bin/bash", "-c"]
 COPY root/ /
 RUN mkdir -p /config && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install --no-install-recommends -y \
       software-properties-common && \
-    add-apt-repository ppa:savoury1/ffmpeg4 && \
-    add-apt-repository ppa:savoury1/ffmpeg5 && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install --no-install-recommends -y \
@@ -28,28 +30,48 @@ RUN mkdir -p /config && \
       python3.10-dev \
       python3-pip \
       fontconfig \
-      python3-venv \
-    # Ensure ffmpeg is properly installed
-      ffmpeg && \
-      ffmpeg -version && \
+      xz-utils \
+      bzip2 \
+      python3-venv && \
+    if [[ $(uname -m) == "x86_64" ]]; then \
+      curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz && \
+      tar -xf ffmpeg.tar.gz && \
+      chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg && \
+      chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe && \
+      mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg && \
+      mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe && \
+      rm ffmpeg.tar.gz && \
+      rm -rf ffmpeg-master-latest-linux64-gpl/ ; \
+    else \
+      curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz && \
+      tar -xf ffmpeg.tar.gz && \
+      chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg && \
+      chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe && \
+      mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg /usr/bin/ffmpeg && \
+      mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe /usr/bin/ffprobe && \
+      rm ffmpeg.tar.gz && \
+      rm -rf ffmpeg-master-latest-linuxarm64-gpl/ ; \
+    fi && \
+    # Ensure ffmpeg is installed
+    ffmpeg -version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
-      cd /usr/share && \
-      curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 | tar xj && \
-      ln -s /usr/share/phantomjs/phantomjs /usr/bin/phantomjs && \
+      curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar xj && \
+      mv phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs && \
+      rm -rf phantomjs-2.1.1-linux-x86_64/ && \
       echo "Phantom JS version:" && \
-      phantomjs --version && \
-      cd -; \
+      phantomjs --version ; \
     fi && \
     # Install ytdl-sub, ensure it is installed properly
     pip install --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
-      ldconfig && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
     apt-get remove -y \
       g++ \
       make \
+      xz-utils \
+      bzip2 \
       python3.10-dev \
       python3-venv && \
     apt-get autoremove -y && \
