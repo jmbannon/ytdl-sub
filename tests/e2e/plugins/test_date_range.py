@@ -6,7 +6,6 @@ from conftest import assert_logs
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
-import ytdl_sub.downloaders.downloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.subscriptions.subscription import Subscription
 

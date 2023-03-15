@@ -4,21 +4,21 @@ import os
 from abc import ABC
 from pathlib import Path
 from typing import Dict
-from typing import Generic
 from typing import Iterable
 from typing import Iterator
 from typing import List
 from typing import Optional
 from typing import Set
 from typing import Tuple
-from typing import Type
-from typing import TypeVar
 
-from ytdl_sub.config.preset_options import AddsVariablesMixin
 from ytdl_sub.config.preset_options import Overrides
-from ytdl_sub.downloaders.generic.validators import MultiUrlValidator
-from ytdl_sub.downloaders.generic.validators import UrlThumbnailListValidator
-from ytdl_sub.downloaders.generic.validators import UrlValidator
+from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.downloaders.base_downloader import BaseDownloaderOptionsT
+from ytdl_sub.downloaders.base_downloader import BaseDownloaderPlugin
+from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
+from ytdl_sub.downloaders.url.validators import MultiUrlValidator
+from ytdl_sub.downloaders.url.validators import UrlThumbnailListValidator
+from ytdl_sub.downloaders.url.validators import UrlValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
@@ -32,14 +32,11 @@ from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
 from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
-from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 # pylint: disable=too-many-instance-attributes
@@ -47,7 +44,7 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadAr
 download_logger = Logger.get(name="downloader")
 
 
-class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
+class DownloaderValidator(BaseDownloaderValidator, ABC):
     """
     Placeholder class to define downloader options
     """
@@ -81,68 +78,13 @@ class DownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
         )
 
 
-DownloaderOptionsT = TypeVar("DownloaderOptionsT", bound=DownloaderValidator)
-
-
 class URLDownloadState:
     def __init__(self, entries_total: int):
         self.entries_total = entries_total
         self.entries_downloaded = 0
 
 
-class EmptyPluginOptions(PluginOptions):
-    _optional_keys = {"no-op"}
-
-
-class BaseDownloaderPlugin(Plugin[EmptyPluginOptions], ABC):
-    def __init__(
-        self,
-        overrides: Overrides,
-        enhanced_download_archive: EnhancedDownloadArchive,
-    ):
-        super().__init__(
-            # Downloader plugins do not have exposed YAML options, so keep it blank.
-            # Use init instead.
-            plugin_options=EmptyPluginOptions(name=self.__class__.__name__, value={}),
-            overrides=overrides,
-            enhanced_download_archive=enhanced_download_archive,
-        )
-
-
-class BaseDownloader(DownloadArchiver, Generic[DownloaderOptionsT], ABC):
-    downloader_options_type: Type[DownloaderValidator] = DownloaderValidator
-
-    def __init__(
-        self,
-        download_options: DownloaderOptionsT,
-        enhanced_download_archive: EnhancedDownloadArchive,
-        download_ytdl_options: YTDLOptionsBuilder,
-        metadata_ytdl_options: YTDLOptionsBuilder,
-        overrides: Overrides,
-    ):
-        super().__init__(enhanced_download_archive=enhanced_download_archive)
-        self.download_options = download_options
-        self.overrides = overrides
-        self._download_ytdl_options_builder = download_ytdl_options
-        self._metadata_ytdl_options_builder = metadata_ytdl_options
-
-    @abc.abstractmethod
-    def download_metadata(self) -> Iterable[Entry]:
-        """Gathers metadata of all entries to download"""
-
-    @abc.abstractmethod
-    def download(self, entry: Entry) -> Entry:
-        """The function to perform the download of all media entries"""
-
-    # pylint: disable=no-self-use
-    def added_plugins(self) -> List[BaseDownloaderPlugin]:
-        """Add these plugins from the Downloader to the subscription"""
-        return []
-
-    # pylint: enable=no-self-use
-
-
-class YtDlpThumbnailPlugin(BaseDownloaderPlugin):
+class UrlDownloaderThumbnailPlugin(BaseDownloaderPlugin):
     def __init__(
         self,
         overrides: Overrides,
@@ -240,7 +182,7 @@ class YtDlpThumbnailPlugin(BaseDownloaderPlugin):
         return entry
 
 
-class YtDlpCollectionVariablePlugin(BaseDownloaderPlugin):
+class UrlDownloaderCollectionVariablePlugin(BaseDownloaderPlugin):
     def __init__(
         self,
         overrides: Overrides,
@@ -270,7 +212,7 @@ class YtDlpCollectionVariablePlugin(BaseDownloaderPlugin):
         return entry
 
 
-class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
+class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
@@ -283,12 +225,12 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
         2. Collection variable plugin to add to each entry
         """
         return [
-            YtDlpThumbnailPlugin(
+            UrlDownloaderThumbnailPlugin(
                 overrides=self.overrides,
                 enhanced_download_archive=self._enhanced_download_archive,
                 collection_urls=self.collection.urls.list,
             ),
-            YtDlpCollectionVariablePlugin(
+            UrlDownloaderCollectionVariablePlugin(
                 overrides=self.overrides,
                 enhanced_download_archive=self._enhanced_download_archive,
                 collection_urls=self.collection.urls.list,
@@ -307,7 +249,7 @@ class YtDlpDownloader(BaseDownloader[DownloaderOptionsT], ABC):
 
     def __init__(
         self,
-        download_options: DownloaderOptionsT,
+        download_options: BaseDownloaderOptionsT,
         enhanced_download_archive: EnhancedDownloadArchive,
         download_ytdl_options: YTDLOptionsBuilder,
         metadata_ytdl_options: YTDLOptionsBuilder,
