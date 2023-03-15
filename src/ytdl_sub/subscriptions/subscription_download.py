@@ -1,17 +1,15 @@
 import contextlib
-import json
 import os
 import shutil
 from abc import ABC
 from pathlib import Path
-from typing import Dict
-from typing import Iterable
 from typing import List
 from typing import Optional
-from typing import Set
-from typing import Tuple
 
-from ytdl_sub.downloaders.downloader import BaseDownloader
+from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
+from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
+from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
@@ -355,75 +353,22 @@ class SubscriptionDownload(BaseSubscription, ABC):
             dry_run=dry_run,
         )
 
-    def _get_entries_for_reformat(
-        self, download_mappings: DownloadMappings, dry_run: bool
-    ) -> Iterable[Entry]:
-        entry_mapping: List[Tuple[Entry, Set[str]]] = []
-        for download_mapping in download_mappings._entry_mappings.values():
-            maybe_entry: Optional[Entry] = None
-            for file_name in download_mapping.file_names:
-                if file_name.endswith(".info.json"):
-                    try:
-                        with open(
-                            Path(self.output_directory) / file_name, "r", encoding="utf-8"
-                        ) as maybe_info_json:
-                            maybe_entry = Entry(
-                                entry_dict=json.load(maybe_info_json),
-                                working_directory=self.working_directory,
-                            )
-                    except Exception as exc:
-                        raise ValidationException(
-                            "info.json file cannot be loaded - subscription cannot be reformatted"
-                        ) from exc
-
-            if not maybe_entry:
-                raise ValidationException(
-                    ".info.json file could not be found - subscription cannot be reformatted"
-                )
-
-            entry_mapping.append((maybe_entry, download_mapping.file_names))
-
-        for entry, file_names in entry_mapping:
-            file_names_mtime: Dict[str, float] = {}
-            for file_name in file_names:
-                ext = get_file_extension(file_name)
-
-                file_path = Path(self.output_directory) / file_name
-                working_directory_file_path = Path(self.working_directory) / f"{entry.uid}.{ext}"
-
-                file_names_mtime[file_name] = os.path.getmtime(file_path)
-
-                # NFO files will always get rewritten, so ignore
-                if ext == "nfo":
-                    continue
-
-                if not dry_run:
-                    FileHandler.copy(
-                        src_file_path=file_path,
-                        dst_file_path=working_directory_file_path,
-                    )
-
-            yield entry
-
-            for file_name, mtime in file_names_mtime.items():
-                # If the entry file_path is unchanged, then delete it since it was not part of the
-                # reformat output
-                if os.path.getmtime(Path(self.output_directory) / file_name) == mtime:
-                    self._enhanced_download_archive._file_handler.delete_file_from_output_directory(
-                        file_name
-                    )
-
     def update_with_info_json(self, dry_run: bool = False) -> FileHandlerTransactionLog:
+        self._enhanced_download_archive.reinitialize(dry_run=dry_run)
         plugins = self._initialize_plugins()
 
-        with self._subscription_download_context_managers():
-            download_mappings = self._enhanced_download_archive.mapping
-            self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+        downloader = InfoJsonDownloader(
+            download_options=InfoJsonDownloaderOptions(name="no-op", value={}),
+            enhanced_download_archive=self._enhanced_download_archive,
+            download_ytdl_options=YTDLOptionsBuilder(),
+            metadata_ytdl_options=YTDLOptionsBuilder(),
+            overrides=self.overrides,
+        )
+        # This could be cleaned up....
+        plugins.extend(downloader.added_plugins())
 
-            return self._process_subscription(
-                plugins=plugins,
-                entries=self._get_entries_for_reformat(
-                    download_mappings=download_mappings, dry_run=dry_run
-                ),
-                dry_run=dry_run,
-            )
+        return self._process_subscription(
+            plugins=plugins,
+            downloader=downloader,
+            dry_run=dry_run,
+        )
