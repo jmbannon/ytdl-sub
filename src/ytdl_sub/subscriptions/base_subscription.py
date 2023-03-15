@@ -8,8 +8,8 @@ from ytdl_sub.config.preset import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.downloaders.downloader import BaseDownloader
-from ytdl_sub.downloaders.downloader import DownloaderValidator
+from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
@@ -61,7 +61,7 @@ class BaseSubscription(ABC):
         return self._preset_options.downloader
 
     @property
-    def downloader_options(self) -> DownloaderValidator:
+    def downloader_options(self) -> BaseDownloaderValidator:
         """
         Returns
         -------
