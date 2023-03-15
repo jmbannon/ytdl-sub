@@ -114,7 +114,7 @@ def mock_download_collection_thumbnail(mock_downloaded_file_path):
         return False
 
     with patch(
-        "ytdl_sub.downloaders.downloader.download_and_convert_url_thumbnail",
+        "ytdl_sub.downloaders.url.downloader.download_and_convert_url_thumbnail",
         new=_mock_download_and_convert_url_thumbnail,
     ):
         yield  # TODO: create file here
