@@ -3,10 +3,6 @@ FROM ghcr.io/linuxserver/baseimage-ubuntu:jammy
 # https://askubuntu.com/questions/972516/debian-frontend-environment-variable
 ARG DEBIAN_FRONTEND=noninteractive
 
-# https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)
-ENV NVIDIA_VISIBLE_DEVICES=all
-ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"
-
 # Needed for phantomjs
 ENV OPENSSL_CONF=/etc/ssl
 
