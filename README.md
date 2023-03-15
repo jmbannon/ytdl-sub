@@ -238,6 +238,8 @@ player to recognize downloads as:
 `ytdl-sub` can be installed on the following platforms.
 
 - [Docker Compose](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker-compose_)
+  - [with CPU passthrough](https://ytdl-sub.readthedocs.io/en/latest/install.html#cpu-passthrough)
+  - [with GPU passthrough](https://ytdl-sub.readthedocs.io/en/latest/install.html#nvidia-gpu-passthrough)
 - [Docker CLI](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker)
 - [Windows](https://ytdl-sub.readthedocs.io/en/latest/install.html#windows)
 - [Linux](https://ytdl-sub.readthedocs.io/en/latest/install.html#linux)
