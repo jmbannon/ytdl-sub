@@ -1,41 +1,29 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:jammy
-
-# https://askubuntu.com/questions/972516/debian-frontend-environment-variable
-ARG DEBIAN_FRONTEND=noninteractive
-
-# https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)
-ENV NVIDIA_VISIBLE_DEVICES=all
-ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"
+FROM ghcr.io/linuxserver/baseimage-alpine:3.17
 
 ###############################################################################
 # YTDL-SUB INSTALL
 
 COPY root/ /
 RUN mkdir -p /config && \
-    apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y \
-      software-properties-common && \
-    add-apt-repository ppa:savoury1/ffmpeg4 && \
-    add-apt-repository ppa:savoury1/ffmpeg5 && \
-    apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y \
+    apk update --no-cache && \
+    apk upgrade --no-cache && \
+    apk add --no-cache --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
       vim \
       g++ \
       nano \
       make \
-      python3.10-dev \
-      python3-pip \
+      python3=~3.10 \
+      py3-pip \
       fontconfig \
-      python3-venv \
-    # Ensure ffmpeg is properly installed
-      ffmpeg && \
+      py3-setuptools && \
+    # Install edge ffmpeg, ensure it is properly installed
+    apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+      "ffmpeg>5.1" && \
       ffmpeg -version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       cd /usr/share && \
-      curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 | tar xj && \
+      curl -L https://github.com/Overbryd/docker-phantomjs-alpine/releases/download/2.11/phantomjs-alpine-x86_64.tar.bz2 | tar xj && \
       ln -s /usr/share/phantomjs/phantomjs /usr/bin/phantomjs && \
       echo "Phantom JS version:" && \
       phantomjs --version && \
@@ -44,17 +32,12 @@ RUN mkdir -p /config && \
     # Install ytdl-sub, ensure it is installed properly
     pip install --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
-      ldconfig && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
-    apt-get remove -y \
+    apk del \
       g++ \
       make \
-      python3.10-dev \
-      python3-venv && \
-    apt-get autoremove -y && \
-    apt-get purge -y --auto-remove && \
-    rm -rf /var/lib/apt/lists/*
+      py3-setuptools
 
 ###############################################################################
 # CONTAINER CONFIGS
