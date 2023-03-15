@@ -44,7 +44,6 @@ RUN mkdir -p /config && \
     # Install ytdl-sub, ensure it is installed properly
     pip install --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
-      ldconfig && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
     apt-get remove -y \
