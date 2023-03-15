@@ -57,7 +57,7 @@ jobs:
     permissions:
       contents: read
 
-    if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
+#    if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
     steps:
       - uses: actions/checkout@v3
 
@@ -149,7 +149,7 @@ jobs:
       packages: write
       contents: read
 
-#    if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
+    if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
     steps:
       - uses: actions/checkout@v3
 
