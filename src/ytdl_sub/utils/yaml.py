@@ -36,12 +36,17 @@ def load_yaml(file_path: str | Path) -> Dict:
 
     try:
         with open(file_path, "r", encoding="utf-8") as file:
-            return yaml.safe_load(file)
+            output = yaml.safe_load(file)
     except YAMLError as yaml_exception:
         logger.debug(yaml_exception)
         raise InvalidYamlException(
             f"'{file_path}' has invalid YAML, copy-paste it into a YAML checker to find the issue."
         ) from yaml_exception
+
+    if not isinstance(output, dict):
+        raise InvalidYamlException(f"'{file_path}' was specified but does not contain any YAML.")
+
+    return output
 
 
 def dump_yaml(to_dump: Dict) -> str:
