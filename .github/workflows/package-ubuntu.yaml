@@ -1,4 +1,4 @@
-name: ytld-sub Docker Build
+name: ytld-sub Docker Ubuntu Build
 
 on:
   push:
@@ -82,6 +82,7 @@ jobs:
           --cache-to=type=local,dest=/tmp/build-cache/arm64 \
           --tag $IMAGE_NAME \
           --label "runnumber=${GITHUB_RUN_ID}" \
+          --file docker/Dockerfile.ubuntu \
           docker/
 
       - name: Save ARM64 build cache
@@ -125,6 +126,7 @@ jobs:
           --cache-to=type=local,dest=/tmp/build-cache/amd64 \
           --tag $IMAGE_NAME \
           --label "runnumber=${GITHUB_RUN_ID}" \
+          --file docker/Dockerfile.ubuntu \
           docker/
 
       - name: Save AMD64 build cache
@@ -215,6 +217,7 @@ jobs:
           --platform=linux/amd64,linux/arm64 \
           --cache-from=type=local,src=/tmp/build-cache/amd64 \
           --cache-from=type=local,src=/tmp/build-cache/arm64 \
-          --tag ${{ steps.formatted-image_id.outputs.IMAGE_ID }}:${{ steps.formatted_version.outputs.VERSION }} \
-          --label "runnumber=${GITHUB_RUN_ID}" \
+          --tag ${{ steps.formatted-image_id.outputs.IMAGE_ID }}:ubuntu-${{ steps.formatted_version.outputs.VERSION }} \
+          --label "runnumber=ubuntu-${GITHUB_RUN_ID}" \
+          --file docker/Dockerfile.ubuntu \
           docker/

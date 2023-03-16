@@ -46,7 +46,3 @@ ENV EDITOR="nano" \
 HOME="/config"
 
 VOLUME /config
-
-
-
-

@@ -33,10 +33,65 @@ on how set up a cron job in the docker container.
          - DOCKER_MODS=linuxserver/mods:universal-cron
        volumes:
          - <path/to/ytdl-sub/config>:/config
-         - <path/to/tv_shows>:/tv_shows # optional
-         - <path/to/movies>:/movies # optional
-         - <path/to/music_videos>:/music_videos # optional
-         - <path/to/music>:/music # optional
+         - <path/to/tv_shows>:/tv_shows  # optional
+         - <path/to/movies>:/movies  # optional
+         - <path/to/music_videos>:/music_videos  # optional
+         - <path/to/music>:/music  # optional
+       restart: unless-stopped
+
+CPU Passthrough
+^^^^^^^^^^^^^^^^^^^^^^
+For CPU passthrough, you must use the ``ytdl-sub`` Ubuntu version with the following additions:
+
+.. code-block:: yaml
+
+   services:
+     ytdl-sub:
+       image: ghcr.io/jmbannon/ytdl-sub:ubuntu-latest
+       container_name: ytdl-sub
+       environment:
+         - PUID=1000
+         - PGID=1000
+         - TZ=America/Los_Angeles
+         - DOCKER_MODS=linuxserver/mods:universal-cron
+       volumes:
+         - <path/to/ytdl-sub/config>:/config
+         - <path/to/tv_shows>:/tv_shows  # optional
+         - <path/to/movies>:/movies  # optional
+         - <path/to/music_videos>:/music_videos  # optional
+         - <path/to/music>:/music  # optional
+       devices:
+         - /dev/dri:/dev/dri  # CPU passthrough
+       restart: unless-stopped
+
+Nvidia GPU Passthrough
+^^^^^^^^^^^^^^^^^^^^^^
+For GPU passthrough, you must use the ``ytdl-sub`` Ubuntu version with the following additions:
+
+.. code-block:: yaml
+
+   services:
+     ytdl-sub:
+       image: ghcr.io/jmbannon/ytdl-sub:ubuntu-latest
+       container_name: ytdl-sub
+       environment:
+         - PUID=1000
+         - PGID=1000
+         - TZ=America/Los_Angeles
+         - DOCKER_MODS=linuxserver/mods:universal-cron
+         - NVIDIA_DRIVER_CAPABILITIES=all  # Nvidia ENV args
+         - NVIDIA_VISIBLE_DEVICES=all
+       volumes:
+         - <path/to/ytdl-sub/config>:/config
+         - <path/to/tv_shows>:/tv_shows  # optional
+         - <path/to/movies>:/movies  # optional
+         - <path/to/music_videos>:/music_videos  # optional
+         - <path/to/music>:/music  # optional
+       deploy:
+         resources:
+           reservations:
+             devices:
+               - capabilities: [gpu]  # GPU passthrough
        restart: unless-stopped
 
 Docker
