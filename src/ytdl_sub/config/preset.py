@@ -6,7 +6,6 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Type
-from typing import TypeVar
 from typing import Union
 
 from mergedeep import mergedeep
@@ -22,6 +21,7 @@ from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.plugins.plugin import PluginOptionsT
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
 from ytdl_sub.utils.exceptions import ValidationException
@@ -65,8 +65,6 @@ def _parent_preset_error_message(
 
 
 class PresetPlugins:
-    _TPluginOptions = TypeVar("_TPluginOptions", bound=PluginOptions)
-
     def __init__(self):
         self.plugin_types: List[Type[Plugin]] = []
         self.plugin_options: List[PluginOptions] = []
@@ -87,7 +85,7 @@ class PresetPlugins:
         """
         return zip(self.plugin_types, self.plugin_options)
 
-    def get(self, plugin_type: Type[_TPluginOptions]) -> Optional[_TPluginOptions]:
+    def get(self, plugin_type: Type[PluginOptionsT]) -> Optional[PluginOptionsT]:
         """
         Parameters
         ----------

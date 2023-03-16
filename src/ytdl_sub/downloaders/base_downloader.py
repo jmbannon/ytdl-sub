@@ -6,21 +6,16 @@ from typing import List
 from typing import Type
 from typing import TypeVar
 
-from ytdl_sub.config.preset_options import AddsVariablesMixin
+from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
-from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-
-class BaseDownloaderValidator(StrictDictValidator, AddsVariablesMixin, ABC):
-    pass
-
-
+BaseDownloaderValidator = OptionsValidator
 BaseDownloaderOptionsT = TypeVar("BaseDownloaderOptionsT", bound=BaseDownloaderValidator)
 
 
@@ -28,7 +23,7 @@ class BaseDownloaderPluginOptions(PluginOptions):
     _optional_keys = {"no-op"}
 
 
-class BaseDownloaderPlugin(Plugin[BaseDownloaderPluginOptions], ABC):
+class BaseDownloaderPlugin(Plugin[BaseDownloaderOptionsT], Generic[BaseDownloaderOptionsT], ABC):
     def __init__(
         self,
         overrides: Overrides,
