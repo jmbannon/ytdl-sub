@@ -1,0 +1,1 @@
+No new, modified, or removed files in '{output_directory}'

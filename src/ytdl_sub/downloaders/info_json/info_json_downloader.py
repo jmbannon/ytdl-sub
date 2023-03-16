@@ -8,16 +8,16 @@ from typing import Iterable
 from typing import List
 
 from ytdl_sub.config.preset_options import Overrides
-from ytdl_sub.downloaders.base_downloader import BaseDownloader, BaseDownloaderOptionsT
+from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.downloaders.base_downloader import BaseDownloaderOptionsT
 from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import get_file_extension
-from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping, \
-    EnhancedDownloadArchive
-from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMappings
+from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
 class InfoJsonDownloaderOptions(BaseDownloaderValidator):
@@ -28,12 +28,12 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
     downloader_options_type = InfoJsonDownloaderOptions
 
     def __init__(
-            self,
-            download_options: BaseDownloaderOptionsT,
-            enhanced_download_archive: EnhancedDownloadArchive,
-            download_ytdl_options: YTDLOptionsBuilder,
-            metadata_ytdl_options: YTDLOptionsBuilder,
-            overrides: Overrides,
+        self,
+        download_options: BaseDownloaderOptionsT,
+        enhanced_download_archive: EnhancedDownloadArchive,
+        download_ytdl_options: YTDLOptionsBuilder,
+        metadata_ytdl_options: YTDLOptionsBuilder,
+        overrides: Overrides,
     ):
         super().__init__(
             download_options=download_options,
@@ -47,7 +47,12 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
 
     @property
     def output_directory(self) -> str:
-        return self._enhanced_download_archive._file_handler.output_directory
+        """
+        Returns
+        -------
+        The output directory
+        """
+        return self._enhanced_download_archive.output_directory
 
     def _get_entry_from_download_mapping(self, download_mapping: DownloadMapping):
         """
@@ -107,6 +112,10 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
                     )
 
     def download(self, entry: Entry) -> Entry:
+        """
+        Mock the download by copying the entry file from the output directory into
+        the working directory
+        """
         # Use original mapping since the live mapping gets wiped
         entry_file_names = self._original_mapping._entry_mappings[entry.uid].file_names
 

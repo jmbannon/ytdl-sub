@@ -15,6 +15,10 @@ from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
 
 
 def get_file_extension(file_name: Path | str) -> str:
+    """
+    Returns the file extension from a file name. Tries to return .info.json and .lang.subtitle
+    extensions if detected, otherwise splits on the last `.` and returns the latter part
+    """
     if file_name.endswith(".info.json"):
         return "info.json"
     if any(file_name.endswith(f".{subtitle_ext}") for subtitle_ext in SUBTITLE_EXTENSIONS):

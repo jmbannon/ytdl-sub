@@ -19,9 +19,7 @@ from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
-from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMappings
 
 
 def _get_split_plugin(plugins: List[Plugin]) -> Optional[Plugin]:
@@ -155,9 +153,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             yield
         finally:
             if not self._enhanced_download_archive.is_dry_run:
-                for root, dir_names, filenames in os.walk(
-                    Path(self.output_directory), topdown=False
-                ):
+                for root, dir_names, _ in os.walk(Path(self.output_directory), topdown=False):
                     for dir_name in dir_names:
                         dir_path = Path(root) / dir_name
                         if len(os.listdir(dir_path)) == 0:
@@ -358,6 +354,14 @@ class SubscriptionDownload(BaseSubscription, ABC):
         )
 
     def update_with_info_json(self, dry_run: bool = False) -> FileHandlerTransactionLog:
+        """
+        Performs the subscription update using local info json files.
+
+        Parameters
+        ----------
+        dry_run
+            If true, do not modify any video/audio files or move anything to the output directory.
+        """
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
         plugins = self._initialize_plugins()
 
