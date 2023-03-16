@@ -7,13 +7,11 @@ from typing import Tuple
 from typing import Type
 from typing import TypeVar
 
-from ytdl_sub.config.preset_options import AddsVariablesMixin
+from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -40,29 +38,7 @@ class PluginPriority:
         return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
 
 
-class PluginOptions(StrictDictValidator, AddsVariablesMixin, ABC):
-    """
-    Class that defines the parameters to a plugin
-    """
-
-    def validation_exception(
-        self,
-        error_message: str | Exception,
-    ) -> ValidationException:
-        """
-        Parameters
-        ----------
-        error_message
-            Error message to include in the validation exception
-
-        Returns
-        -------
-        Validation exception that points to the location in the config. To be used for plugins
-        to throw good validation exceptions at runtime.
-        """
-        return self._validation_exception(error_message=error_message)
-
-
+PluginOptions = OptionsValidator
 PluginOptionsT = TypeVar("PluginOptionsT", bound=PluginOptions)
 
 

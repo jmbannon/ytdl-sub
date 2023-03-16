@@ -87,18 +87,19 @@ class URLDownloadState:
 class UrlDownloaderThumbnailPlugin(BaseDownloaderPlugin):
     def __init__(
         self,
+        downloader_options: DownloaderValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
-        collection_urls: List[UrlValidator],
     ):
         super().__init__(
+            downloader_options=downloader_options,
             overrides=overrides,
             enhanced_download_archive=enhanced_download_archive,
         )
         self._thumbnails_downloaded: Set[str] = set()
         self._collection_url_mapping: Dict[str, UrlValidator] = {
             self.overrides.apply_formatter(collection_url.url): collection_url
-            for collection_url in collection_urls
+            for collection_url in downloader_options.collection_validator.urls.list
         }
 
     def _download_parent_thumbnails(
@@ -185,18 +186,19 @@ class UrlDownloaderThumbnailPlugin(BaseDownloaderPlugin):
 class UrlDownloaderCollectionVariablePlugin(BaseDownloaderPlugin):
     def __init__(
         self,
+        downloader_options: DownloaderValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
-        collection_urls: List[UrlValidator],
     ):
         super().__init__(
+            downloader_options=downloader_options,
             overrides=overrides,
             enhanced_download_archive=enhanced_download_archive,
         )
         self._thumbnails_downloaded: Set[str] = set()
         self._collection_url_mapping: Dict[str, UrlValidator] = {
             self.overrides.apply_formatter(collection_url.url): collection_url
-            for collection_url in collection_urls
+            for collection_url in downloader_options.collection_validator.urls.list
         }
 
     def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
@@ -218,7 +220,13 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
     and should translate that to list of Entry objects.
     """
 
-    def added_plugins(self) -> List[Plugin]:
+    @classmethod
+    def added_plugins(
+        cls,
+        downloader_options: BaseDownloaderOptionsT,
+        enhanced_download_archive: EnhancedDownloadArchive,
+        overrides: Overrides,
+    ) -> List[Plugin]:
         """
         Adds
         1. URL thumbnail download plugin
@@ -226,14 +234,14 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
         """
         return [
             UrlDownloaderThumbnailPlugin(
-                overrides=self.overrides,
-                enhanced_download_archive=self._enhanced_download_archive,
-                collection_urls=self.collection.urls.list,
+                downloader_options=downloader_options,
+                overrides=overrides,
+                enhanced_download_archive=enhanced_download_archive,
             ),
             UrlDownloaderCollectionVariablePlugin(
-                overrides=self.overrides,
-                enhanced_download_archive=self._enhanced_download_archive,
-                collection_urls=self.collection.urls.list,
+                downloader_options=downloader_options,
+                overrides=overrides,
+                enhanced_download_archive=enhanced_download_archive,
             ),
         ]
 

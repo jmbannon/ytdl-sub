@@ -156,7 +156,13 @@ class SubscriptionDownload(BaseSubscription, ABC):
         -------
         List of plugins defined in the subscription, initialized and ready to use.
         """
-        plugins: List[Plugin] = []
+        # Always add plugins provided by the downloader
+        plugins: List[Plugin] = self.downloader_class.added_plugins(
+            downloader_options=self.downloader_options,
+            enhanced_download_archive=self._enhanced_download_archive,
+            overrides=self.overrides,
+        )
+
         for plugin_type, plugin_options in self.plugins.zipped():
             plugin = plugin_type(
                 plugin_options=plugin_options,
@@ -292,8 +298,6 @@ class SubscriptionDownload(BaseSubscription, ABC):
             metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
             overrides=self.overrides,
         )
-        # This could be cleaned up....
-        plugins.extend(downloader.added_plugins())
 
         with self._subscription_download_context_managers():
             for entry in downloader.download_metadata():
