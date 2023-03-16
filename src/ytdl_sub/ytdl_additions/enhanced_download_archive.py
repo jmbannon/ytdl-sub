@@ -349,6 +349,16 @@ class EnhancedDownloadArchive:
     6. ( Delete the working directory )
     """
 
+    @classmethod
+    def _maybe_load_download_mappings(cls, mapping_file_path: str) -> DownloadMappings:
+        """
+        Tries to load download mappings if a file exists. Otherwise returns empty mappings.
+        """
+        # If a mapping file exists in the output directory, load it up.
+        if os.path.isfile(mapping_file_path):
+            return DownloadMappings.from_file(json_file_path=mapping_file_path)
+        return DownloadMappings()
+
     def __init__(
         self,
         subscription_name: str,
@@ -360,7 +370,9 @@ class EnhancedDownloadArchive:
         self._file_handler = FileHandler(
             working_directory=working_directory, output_directory=output_directory, dry_run=dry_run
         )
-        self._download_mapping = DownloadMappings()
+        self._download_mapping = self._maybe_load_download_mappings(
+            mapping_file_path=self._mapping_output_file_path
+        )
 
         self._logger = Logger.get(name=subscription_name)
 
@@ -396,7 +408,9 @@ class EnhancedDownloadArchive:
             output_directory=self.output_directory,
             dry_run=dry_run,
         )
-        self._download_mapping = DownloadMappings()
+        self._download_mapping = self._maybe_load_download_mappings(
+            mapping_file_path=self._mapping_output_file_path
+        )
         return self
 
     @property
@@ -488,22 +502,7 @@ class EnhancedDownloadArchive:
             raise ValueError("Tried to use download mapping before it was loaded")
         return self._download_mapping
 
-    def _load(self) -> "EnhancedDownloadArchive":
-        """
-        Tries to load download mappings if they are present in the output directory.
-
-        Returns
-        -------
-        self
-        """
-        # If a mapping file exists in the output directory, load it up.
-        if os.path.isfile(self._mapping_output_file_path):
-            self._download_mapping = DownloadMappings.from_file(
-                json_file_path=self._mapping_output_file_path
-            )
-        return self
-
-    def _copy_mapping_to_working_directory(self) -> "EnhancedDownloadArchive":
+    def prepare_download_archive(self) -> "EnhancedDownloadArchive":
         """
         If the mapping is not empty, create a download archive from it and save it into the
         working directory. This will tell YTDL to not redownload already downloaded entries.
@@ -520,19 +519,6 @@ class EnhancedDownloadArchive:
         # Otherwise, create a ytdl download archive file in the working directory.
         self.mapping.to_download_archive().to_file(self.archive_working_file_path)
 
-        return self
-
-    def prepare_download_archive(self) -> "EnhancedDownloadArchive":
-        """
-        Helper function to load mappings and create a YTDL download archive file in the
-        working directory if mappings exist.
-
-        Returns
-        -------
-        self
-        """
-        self._load()
-        self._copy_mapping_to_working_directory()
         return self
 
     def remove_stale_files(self, date_range: DateRange) -> "EnhancedDownloadArchive":
