@@ -23,6 +23,7 @@ class BaseDownloaderPlugin(Plugin[BaseDownloaderOptionsT], ABC):
     Plugins that get added automatically by using a downloader. Downloader options
     are the plugin options.
     """
+
     def __init__(
         self,
         downloader_options: BaseDownloaderOptionsT,
@@ -72,4 +73,5 @@ class BaseDownloader(DownloadArchiver, Generic[BaseDownloaderOptionsT], ABC):
     ) -> List[BaseDownloaderPlugin]:
         """Add these plugins from the Downloader to the subscription"""
         return []
+
     # pylint: enable=unused-argument
