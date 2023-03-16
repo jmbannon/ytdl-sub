@@ -368,8 +368,6 @@ class SubscriptionDownload(BaseSubscription, ABC):
             metadata_ytdl_options=YTDLOptionsBuilder(),
             overrides=self.overrides,
         )
-        # This could be cleaned up....
-        plugins.extend(downloader.added_plugins())
 
         return self._process_subscription(
             plugins=plugins,

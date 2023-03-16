@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 from collections import defaultdict
@@ -6,13 +7,16 @@ from typing import Dict
 from typing import Iterable
 from typing import List
 
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.downloaders.base_downloader import BaseDownloader, BaseDownloaderOptionsT
 from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
+from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import get_file_extension
-from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping
+from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping, \
+    EnhancedDownloadArchive
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMappings
 
 
@@ -23,13 +27,27 @@ class InfoJsonDownloaderOptions(BaseDownloaderValidator):
 class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
     downloader_options_type = InfoJsonDownloaderOptions
 
+    def __init__(
+            self,
+            download_options: BaseDownloaderOptionsT,
+            enhanced_download_archive: EnhancedDownloadArchive,
+            download_ytdl_options: YTDLOptionsBuilder,
+            metadata_ytdl_options: YTDLOptionsBuilder,
+            overrides: Overrides,
+    ):
+        super().__init__(
+            download_options=download_options,
+            enhanced_download_archive=enhanced_download_archive,
+            download_ytdl_options=download_ytdl_options,
+            metadata_ytdl_options=metadata_ytdl_options,
+            overrides=overrides,
+        )
+        # Keep track of original file mappings for the 'mock' download
+        self._original_mapping = copy.deepcopy(enhanced_download_archive.mapping)
+
     @property
     def output_directory(self) -> str:
         return self._enhanced_download_archive._file_handler.output_directory
-
-    @property
-    def download_mappings(self) -> DownloadMappings:
-        return self._enhanced_download_archive.mapping
 
     def _get_entry_from_download_mapping(self, download_mapping: DownloadMapping):
         """
@@ -65,7 +83,7 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
         file_names_mtime: Dict[str, Dict[str, float]] = defaultdict(dict)
         entries: List[Entry] = []
 
-        for download_mapping in self.download_mappings._entry_mappings.values():
+        for download_mapping in self._enhanced_download_archive.mapping._entry_mappings.values():
             entry = self._get_entry_from_download_mapping(download_mapping)
             entries.append(entry)
 
@@ -74,18 +92,24 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
                 file_names_mtime[entry.ytdl_uid()][file_name] = os.path.getmtime(file_path)
 
         for entry in entries:
+            # Remove the entry from the live download archive since it will get re-added
+            # unless it is filtered
+            self._enhanced_download_archive.mapping.remove_entry(entry.uid)
+
             yield entry
 
+            # If the entry file_path is unchanged, then delete it since it was not part of the
+            # reformat output
             for file_name, mtime in file_names_mtime[entry.ytdl_uid()].items():
-                # If the entry file_path is unchanged, then delete it since it was not part of the
-                # reformat output
                 if os.path.getmtime(Path(self.output_directory) / file_name) == mtime:
                     self._enhanced_download_archive._file_handler.delete_file_from_output_directory(
                         file_name
                     )
 
     def download(self, entry: Entry) -> Entry:
-        entry_file_names = self.download_mappings._entry_mappings.get(entry.uid).file_names
+        # Use original mapping since the live mapping gets wiped
+        entry_file_names = self._original_mapping._entry_mappings[entry.uid].file_names
+
         for file_name in entry_file_names:
             ext = get_file_extension(file_name)
             file_path = Path(self.output_directory) / file_name
