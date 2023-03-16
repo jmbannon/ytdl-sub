@@ -275,7 +275,11 @@ class SubscriptionDownload(BaseSubscription, ABC):
             directory.
         """
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
-        plugins = self._initialize_plugins()
+        plugins = self._initialize_plugins() + self.downloader_class.added_plugins(
+            downloader_options=self.downloader_options,
+            enhanced_download_archive=self._enhanced_download_archive,
+            overrides=self.overrides,
+        )
 
         subscription_ytdl_options = SubscriptionYTDLOptions(
             preset=self._preset_options,
@@ -292,8 +296,6 @@ class SubscriptionDownload(BaseSubscription, ABC):
             metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
             overrides=self.overrides,
         )
-        # This could be cleaned up....
-        plugins.extend(downloader.added_plugins())
 
         with self._subscription_download_context_managers():
             for entry in downloader.download_metadata():
