@@ -40,7 +40,6 @@ def single_tv_show_video_nulled_values_preset_dict(output_directory):
             "season_by_year__episode_by_download_index",
             "chunk_initial_download",
         ],
-        "download": {"url": "https://www.youtube.com/@ProjectZombie603"},
         # set file output fields to None
         "output_options": {
             "thumbnail_name": "",
@@ -51,6 +50,7 @@ def single_tv_show_video_nulled_values_preset_dict(output_directory):
             "max_downloads": 2,
         },
         "overrides": {
+            "url": "https://www.youtube.com/@ProjectZombie603",
             "tv_show_name": "Project Zombie",
             "tv_show_directory": output_directory,
         },
