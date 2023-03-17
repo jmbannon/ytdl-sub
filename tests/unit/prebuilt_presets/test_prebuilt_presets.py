@@ -86,7 +86,7 @@ class TestPrebuiltTVShowPresets:
                 )
 
     @pytest.mark.parametrize("is_youtube_channel", [True, False])
-    @pytest.mark.parametrize("is_many_urls", [True])
+    @pytest.mark.parametrize("is_many_urls", [True, False])
     def test_non_collection_presets_compile(
         self,
         config,
@@ -102,7 +102,7 @@ class TestPrebuiltTVShowPresets:
             media_player_preset,
             tv_show_structure_preset,
             int(is_youtube_channel),
-            "many_urls" if is_many_urls else "",
+            "_many_urls" if is_many_urls else "",
         )
         parent_presets = [media_player_preset, tv_show_structure_preset]
 
@@ -134,13 +134,11 @@ class TestPrebuiltTVShowPresets:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name=f"{expected_summary_name}.txt",
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=False,
             expected_download_summary_file_name=f"{expected_summary_name}.json",
-            regenerate_expected_download_summary=True,
         )
 
 
