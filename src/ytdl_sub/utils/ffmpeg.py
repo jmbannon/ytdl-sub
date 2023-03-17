@@ -73,7 +73,7 @@ class FFMPEG:
         return f"{relative_file_path}.out.{extension}"
 
     @classmethod
-    def run(cls, ffmpeg_args: List[str]) -> None:
+    def run(cls, ffmpeg_args: List[str], timeout: Optional[float] = None) -> None:
         """
         Runs an ffmpeg command. Should not include 'ffmpeg' as the beginning argument.
 
@@ -81,6 +81,8 @@ class FFMPEG:
         ----------
         ffmpeg_args:
             Arguments to pass to ffmpeg. Each one will be separated by a space.
+        timeout
+            Optional. timeout
         """
         cls._ensure_installed()
 
@@ -88,7 +90,7 @@ class FFMPEG:
         cmd.extend(ffmpeg_args)
         logger.debug("Running %s", " ".join(cmd))
         with Logger.handle_external_logs(name="ffmpeg"):
-            subprocess.run(cmd, check=True, capture_output=True)
+            subprocess.run(cmd, check=True, capture_output=True, timeout=timeout)
 
 
 def _create_metadata_chapter_entry(start_sec: int, end_sec: int, title: str) -> List[str]:

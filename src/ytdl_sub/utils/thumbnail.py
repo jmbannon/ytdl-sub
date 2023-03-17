@@ -78,7 +78,8 @@ def download_and_convert_url_thumbnail(
             tmp_output_path = FFMPEG.tmp_file_path(
                 relative_file_path=thumbnail.name, extension="jpg"
             )
-            FFMPEG.run(["-bitexact", "-i", thumbnail.name, tmp_output_path])
+            # Add timeout of 1 second in case ffmpeg hangs from a bad thumbnail
+            FFMPEG.run(["-bitexact", "-i", thumbnail.name, tmp_output_path], timeout=1)
 
             # Have FileHandler handle the move to a potential cross-device
             FileHandler.move(tmp_output_path, output_thumbnail_path)
