@@ -127,7 +127,7 @@ def mock_download_collection_entries(
     @contextlib.contextmanager
     def _mock_download_collection_entries_factory(is_youtube_channel: bool, num_urls: int = 1):
         def _write_entries_to_working_dir(*args, **kwargs) -> List[Dict]:
-            if num_urls == 1 or ("season.2" in kwargs["url"] and num_urls > 1):
+            if num_urls == 1 or ("2" in kwargs["url"] and num_urls > 1):
                 return [
                     mock_entry_dict_factory(
                         uid="21-1",
