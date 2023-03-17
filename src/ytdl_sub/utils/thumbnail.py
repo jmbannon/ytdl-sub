@@ -42,7 +42,9 @@ def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) ->
         return
 
     if not download_thumbnail_path == download_thumbnail_path_as_jpg:
-        FFMPEG.run(["-y", "-bitexact", "-i", download_thumbnail_path, download_thumbnail_path_as_jpg])
+        FFMPEG.run(
+            ["-y", "-bitexact", "-i", download_thumbnail_path, download_thumbnail_path_as_jpg]
+        )
         FileHandler.delete(download_thumbnail_path)
 
 
