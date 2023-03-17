@@ -32,7 +32,7 @@ presets:
 
 ####################################################################################################
 
-  # TV show from any single source. Uses latest entry's thumbnail as tv show poster
+  # TV show from any single source. Uses first entry's avatar and banner as poster and fanart
   _tv_show_by_date:
     download:
       download_strategy: "url"
@@ -42,6 +42,20 @@ presets:
           uid: "avatar_uncropped"
         - name: "{tv_show_fanart_file_name}"
           uid: "banner_uncropped"
+
+####################################################################################################
+
+  # TV show from any many sources. Uses first entry's avatar and banner as poster and fanart
+  _tv_show_by_date_many_urls:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{url}"
+          playlist_thumbnails:
+            - name: "{tv_show_poster_file_name}"
+              uid: "avatar_uncropped"
+            - name: "{tv_show_fanart_file_name}"
+              uid: "banner_uncropped"
 
 ####################################################################################################
 
