@@ -183,7 +183,7 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         """
         requested_subtitles = entry.kwargs("requested_subtitles")
         if not requested_subtitles:
-            logger.info("subtitles not found for %s", entry.title)
+            logger.debug("subtitles not found for %s", entry.title)
             return None
 
         file_metadata: Optional[FileMetadata] = None
