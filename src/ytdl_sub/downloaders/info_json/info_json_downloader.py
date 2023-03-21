@@ -1,7 +1,5 @@
 import copy
 import json
-import os
-from collections import defaultdict
 from pathlib import Path
 from typing import Dict
 from typing import Iterable
@@ -43,7 +41,9 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
             overrides=overrides,
         )
         # Keep track of original file mappings for the 'mock' download
-        self._original_mapping = copy.deepcopy(enhanced_download_archive.mapping)
+        self._original_entry_mappings = copy.deepcopy(
+            enhanced_download_archive.mapping.entry_mappings
+        )
 
     @property
     def output_directory(self) -> str:
@@ -53,6 +53,15 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
         The output directory
         """
         return self._enhanced_download_archive.output_directory
+
+    @property
+    def _entry_mappings(self) -> Dict[str, DownloadMapping]:
+        """
+        Returns
+        -------
+        The up-to-date entry mappings
+        """
+        return self._enhanced_download_archive.mapping.entry_mappings
 
     def _get_entry_from_download_mapping(self, download_mapping: DownloadMapping):
         """
@@ -84,29 +93,27 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
         Loads all entries via their info.json files first (to ensure they are all valid), then
         iterates them
         """
-        # Track to see if files were modified
-        file_names_mtime: Dict[str, Dict[str, float]] = defaultdict(dict)
         entries: List[Entry] = []
 
         for download_mapping in self._enhanced_download_archive.mapping.entry_mappings.values():
             entry = self._get_entry_from_download_mapping(download_mapping)
             entries.append(entry)
 
-            for file_name in download_mapping.file_names:
-                file_path = Path(self.output_directory) / file_name
-                file_names_mtime[entry.ytdl_uid()][file_name] = os.path.getmtime(file_path)
-
+        # Remove each entry from the live download archive since it will get re-added
+        # unless it is filtered
         for entry in entries:
-            # Remove the entry from the live download archive since it will get re-added
-            # unless it is filtered
             self._enhanced_download_archive.mapping.remove_entry(entry.uid)
 
+        for entry in sorted(entries, key=lambda ent: ent.download_index):
             yield entry
 
-            # If the entry file_path is unchanged, then delete it since it was not part of the
-            # reformat output
-            for file_name, mtime in file_names_mtime[entry.ytdl_uid()].items():
-                if os.path.getmtime(Path(self.output_directory) / file_name) == mtime:
+            # If the original entry file_path is no longer maintained in the new mapping, then
+            # delete it
+            for file_name in self._original_entry_mappings[entry.uid].file_names:
+                if (
+                    entry.uid not in self._entry_mappings
+                    or file_name not in self._entry_mappings[entry.uid].file_names
+                ):
                     self._enhanced_download_archive._file_handler.delete_file_from_output_directory(
                         file_name
                     )
@@ -117,7 +124,7 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
         the working directory
         """
         # Use original mapping since the live mapping gets wiped
-        entry_file_names = self._original_mapping.entry_mappings[entry.uid].file_names
+        entry_file_names = self._original_entry_mappings[entry.uid].file_names
 
         for file_name in entry_file_names:
             ext = get_file_extension(file_name)

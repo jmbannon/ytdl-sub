@@ -143,10 +143,11 @@ class TestPrebuiltTVShowPresets:
 
         ###################################### Perform reformat
         reformatted_tv_show_structure_preset = "season_by_year__episode_by_download_index"
-        reformatted_expected_summary_name = "unit/{}/{}/is_yt_{}".format(
+        reformatted_expected_summary_name = "unit/{}/{}/is_yt_{}{}".format(
             media_player_preset,
             reformatted_tv_show_structure_preset,
             int(is_youtube_channel),
+            "_many_urls" if is_many_urls else "",
         )
 
         reformatted_subscription = Subscription.from_dict(
@@ -169,6 +170,7 @@ class TestPrebuiltTVShowPresets:
             transaction_log_summary_file_name=(
                 f"{expected_summary_name}_reformatted_to_{reformatted_tv_show_structure_preset}.txt"
             ),
+            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,
