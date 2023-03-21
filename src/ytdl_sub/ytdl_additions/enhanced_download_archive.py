@@ -570,6 +570,17 @@ class EnhancedDownloadArchive:
             self.save_file_to_output_directory(file_name=self._mapping_file_name)
         return self
 
+    def delete_file_from_output_directory(self, file_name: str):
+        """
+        Deletes a file from the output directory
+
+        Parameters
+        ----------
+        file_name
+            Name of the file, relative to the output directory
+        """
+        return self._file_handler.delete_file_from_output_directory(file_name=file_name)
+
     def save_file_to_output_directory(
         self,
         file_name: str,

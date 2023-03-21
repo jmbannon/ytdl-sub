@@ -170,7 +170,6 @@ class TestPrebuiltTVShowPresets:
             transaction_log_summary_file_name=(
                 f"{expected_summary_name}_reformatted_to_{reformatted_tv_show_structure_preset}.txt"
             ),
-            regenerate_transaction_log=True,
         )
         assert_expected_downloads(
             output_directory=output_directory,

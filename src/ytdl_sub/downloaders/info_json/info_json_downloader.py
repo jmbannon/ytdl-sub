@@ -114,9 +114,7 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
                     entry.uid not in self._entry_mappings
                     or file_name not in self._entry_mappings[entry.uid].file_names
                 ):
-                    self._enhanced_download_archive._file_handler.delete_file_from_output_directory(
-                        file_name
-                    )
+                    self._enhanced_download_archive.delete_file_from_output_directory(file_name)
 
     def download(self, entry: Entry) -> Entry:
         """
