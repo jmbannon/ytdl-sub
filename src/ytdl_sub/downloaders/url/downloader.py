@@ -175,7 +175,7 @@ class UrlDownloaderThumbnailPlugin(BaseDownloaderPlugin):
         """
         Use the entry to download thumbnails (or move if LATEST_ENTRY)
         """
-        if entry.kwargs(COLLECTION_URL) in self._collection_url_mapping:
+        if entry.kwargs_get(COLLECTION_URL) in self._collection_url_mapping:
             self._download_url_thumbnails(
                 collection_url=self._collection_url_mapping[entry.kwargs(COLLECTION_URL)],
                 entry=entry,
@@ -205,11 +205,17 @@ class UrlDownloaderCollectionVariablePlugin(BaseDownloaderPlugin):
         """
         Add collection variables to the entry
         """
-        collection_url: Optional[UrlValidator] = self._collection_url_mapping.get(
-            entry.kwargs(COLLECTION_URL)
+        # COLLECTION_URL is a recent variable that may not exist for old entries when updating.
+        # Try to use source_webpage_url if it does not exist
+        entry_collection_url = entry.kwargs_get(COLLECTION_URL, entry.source_webpage_url)
+
+        # If the collection URL cannot find its mapping, use the last URL
+        collection_url = (
+            self._collection_url_mapping.get(entry_collection_url)
+            or list(self._collection_url_mapping.values())[-1]
         )
-        if collection_url:
-            entry.add_variables(variables_to_add=collection_url.variables.dict_with_format_strings)
+
+        entry.add_variables(variables_to_add=collection_url.variables.dict_with_format_strings)
 
         return entry
 
