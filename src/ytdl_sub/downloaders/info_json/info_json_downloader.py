@@ -88,7 +88,7 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
         file_names_mtime: Dict[str, Dict[str, float]] = defaultdict(dict)
         entries: List[Entry] = []
 
-        for download_mapping in self._enhanced_download_archive.mapping._entry_mappings.values():
+        for download_mapping in self._enhanced_download_archive.mapping.entry_mappings.values():
             entry = self._get_entry_from_download_mapping(download_mapping)
             entries.append(entry)
 
@@ -117,7 +117,7 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
         the working directory
         """
         # Use original mapping since the live mapping gets wiped
-        entry_file_names = self._original_mapping._entry_mappings[entry.uid].file_names
+        entry_file_names = self._original_mapping.entry_mappings[entry.uid].file_names
 
         for file_name in entry_file_names:
             ext = get_file_extension(file_name)

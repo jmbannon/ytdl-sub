@@ -14,6 +14,7 @@ from ytdl_sub.cli.download_args_parser import DownloadArgsParser
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
@@ -62,7 +63,7 @@ def _maybe_write_subscription_log_file(
 
 
 def _download_subscriptions_from_yaml_files(
-    config: ConfigFile, subscription_paths: List[str], dry_run: bool
+    config: ConfigFile, subscription_paths: List[str], update_with_info_json: bool, dry_run: bool
 ) -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     """
     Downloads all subscriptions from one or many subscription yaml files.
@@ -73,6 +74,8 @@ def _download_subscriptions_from_yaml_files(
         Configuration file
     subscription_paths
         Path to subscription files to download
+    update_with_info_json
+        Whether to actually download or update using existing info json
     dry_run
         Whether to dry run or not
 
@@ -101,7 +104,10 @@ def _download_subscriptions_from_yaml_files(
         logger.debug("Subscription full yaml:\n%s", subscription.as_yaml())
 
         try:
-            transaction_log = subscription.download(dry_run=dry_run)
+            if update_with_info_json:
+                transaction_log = subscription.update_with_info_json(dry_run=dry_run)
+            else:
+                transaction_log = subscription.download(dry_run=dry_run)
         except Exception as exc:  # pylint: disable=broad-except
             _maybe_write_subscription_log_file(
                 config=config, subscription=subscription, dry_run=dry_run, exception=exc
@@ -305,9 +311,21 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
 
     with working_directory_lock(config=config):
         if args.subparser == "sub":
+            if (
+                args.update_with_info_json
+                and not config.config_options.experimental.enable_update_with_info_json
+            ):
+                raise ExperimentalFeatureNotEnabled(
+                    "--update-with-info-json requires setting "
+                    "configuration.experimental.update_with_info_json to True. This feature is ",
+                    "still being tested and has the ability to destroy files. Ensure you have a ",
+                    "full backup before usage. You have been warned!",
+                )
+
             transaction_logs = _download_subscriptions_from_yaml_files(
                 config=config,
                 subscription_paths=args.subscription_paths,
+                update_with_info_json=args.update_with_info_json,
                 dry_run=args.dry_run,
             )
 

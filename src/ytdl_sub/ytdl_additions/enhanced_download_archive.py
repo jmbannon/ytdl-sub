@@ -176,6 +176,15 @@ class DownloadMappings:
         return download_mappings
 
     @property
+    def entry_mappings(self) -> Dict[str, DownloadMapping]:
+        """
+        Returns
+        -------
+        Mapping of entries to files
+        """
+        return self._entry_mappings
+
+    @property
     def entry_ids(self) -> List[str]:
         """
         Returns

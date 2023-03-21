@@ -24,6 +24,27 @@ else:
     _DEFAULT_FFPROBE_PATH = "/usr/bin/ffprobe"
 
 
+class ExperimentalValidator(StrictDictValidator):
+    _optional_keys = {"enable_update_with_info_json"}
+    _allow_extra_keys = True
+
+    def __init__(self, name: str, value: Any):
+        super().__init__(name, value)
+
+        self._enable_update_with_info_json = self._validate_key(
+            key="enable_update_with_info_json", validator=BoolValidator, default=False
+        )
+
+    @property
+    def enable_update_with_info_json(self) -> bool:
+        """
+        Enables modifying subscription files using info.json files using the argument
+        ``--update-with-info-json``. This feature is still being tested and has the ability to
+        destroy files. Ensure you have a full backup before usage. You have been warned!
+        """
+        return self._enable_update_with_info_json.value
+
+
 class PersistLogsValidator(StrictDictValidator):
     _required_keys = {"logs_directory"}
     _optional_keys = {"keep_logs_after", "keep_successful_logs"}
@@ -79,6 +100,7 @@ class PersistLogsValidator(StrictDictValidator):
         return self._keep_successful_logs.value
 
 
+# pylint: disable=too-many-instance-attributes
 class ConfigOptions(StrictDictValidator):
     _required_keys = {"working_directory"}
     _optional_keys = {
@@ -88,6 +110,7 @@ class ConfigOptions(StrictDictValidator):
         "lock_directory",
         "ffmpeg_path",
         "ffprobe_path",
+        "experimental",
     }
 
     def __init__(self, name: str, value: Any):
@@ -113,6 +136,9 @@ class ConfigOptions(StrictDictValidator):
         )
         self._ffprobe_path = self._validate_key(
             key="ffprobe_path", validator=FFprobeFileValidator, default=_DEFAULT_FFPROBE_PATH
+        )
+        self._experimental = self._validate_key(
+            key="experimental", validator=ExperimentalValidator, default={}
         )
 
     @property
@@ -166,6 +192,13 @@ class ConfigOptions(StrictDictValidator):
         Persist logs validator. readthedocs in the validator itself!
         """
         return self._persist_logs
+
+    @property
+    def experimental(self) -> ExperimentalValidator:
+        """
+        Experimental validator. readthedocs in the validator itself!
+        """
+        return self._experimental
 
     @property
     def lock_directory(self) -> str:

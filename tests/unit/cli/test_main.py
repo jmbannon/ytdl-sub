@@ -23,6 +23,7 @@ from ytdl_sub.cli.main import logger as main_logger
 from ytdl_sub.cli.main import main
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -127,7 +128,10 @@ def test_subscription_logs_write_to_file(
     ):
         try:
             _download_subscriptions_from_yaml_files(
-                config=config, subscription_paths=subscription_paths, dry_run=dry_run
+                config=config,
+                subscription_paths=subscription_paths,
+                update_with_info_json=False,
+                dry_run=dry_run,
             )
         except ValueError:
             assert not mock_success_output
@@ -275,3 +279,22 @@ def test_output_summary():
 
     _ = _output_summary(transaction_logs=mock_subscriptions)
     assert True  # Test used for manual inspection - too hard to test ansi color codes
+
+
+def test_update_with_info_json_requires_experimental_flag(
+    music_video_config_path: Path,
+    music_video_subscription_path: Path,
+) -> None:
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "ytdl-sub",
+            "--config",
+            str(music_video_config_path),
+            "sub",
+            str(music_video_subscription_path),
+            "--update-with-info-json",
+        ],
+    ), pytest.raises(ExperimentalFeatureNotEnabled):
+        _ = main()
