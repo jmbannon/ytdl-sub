@@ -40,6 +40,27 @@ class TestPrebuiltTVShowPresets:
             },
         )
 
+    def test_compilation_many_urls(
+        self,
+        config,
+        media_player_preset: str,
+        tv_show_structure_preset: str,
+    ):
+        parent_presets: List[str] = [media_player_preset, tv_show_structure_preset]
+        _ = Subscription.from_dict(
+            config=config,
+            preset_name="preset_test",
+            preset_dict={
+                "preset": parent_presets,
+                "download": {"urls": [{"url": "https://second.url"}]},
+                "overrides": {
+                    "url": "https://your.name.here",
+                    "tv_show_name": "test-compile",
+                    "tv_show_directory": "output_dir",
+                },
+            },
+        )
+
     def test_compilation_errors_missing_one(
         self,
         config,
@@ -65,6 +86,7 @@ class TestPrebuiltTVShowPresets:
                 )
 
     @pytest.mark.parametrize("is_youtube_channel", [True, False])
+    @pytest.mark.parametrize("is_many_urls", [True, False])
     def test_non_collection_presets_compile(
         self,
         config,
@@ -74,28 +96,38 @@ class TestPrebuiltTVShowPresets:
         media_player_preset: str,
         tv_show_structure_preset: str,
         is_youtube_channel: bool,
+        is_many_urls: bool,
     ):
-        expected_summary_name = "unit/{}/{}/is_yt_{}".format(
+        expected_summary_name = "unit/{}/{}/is_yt_{}{}".format(
             media_player_preset,
             tv_show_structure_preset,
             int(is_youtube_channel),
+            "_many_urls" if is_many_urls else "",
         )
         parent_presets = [media_player_preset, tv_show_structure_preset]
+
+        preset_dict = {
+            "preset": parent_presets,
+            "overrides": {
+                "url": "https://your.name.here",
+                "tv_show_name": "Best Prebuilt TV Show by Date",
+                "tv_show_directory": output_directory,
+            },
+        }
+        if is_many_urls:
+            preset_dict = dict(
+                preset_dict, **{"download": {"urls": [{"url": "https://url.number.2.here"}]}}
+            )
 
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
-            preset_dict={
-                "preset": parent_presets,
-                "overrides": {
-                    "url": "https://your.name.here",
-                    "tv_show_name": "Best Prebuilt TV Show by Date",
-                    "tv_show_directory": output_directory,
-                },
-            },
+            preset_dict=preset_dict,
         )
 
-        with mock_download_collection_entries(is_youtube_channel=is_youtube_channel):
+        with mock_download_collection_entries(
+            is_youtube_channel=is_youtube_channel, num_urls=2 if is_many_urls else 1
+        ):
             transaction_log = subscription.download(dry_run=False)
 
         assert_transaction_log_matches(
