@@ -109,12 +109,20 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
 
             # If the original entry file_path is no longer maintained in the new mapping, then
             # delete it
+            num_original_files_deleted: int = 0
             for file_name in self._original_entry_mappings[entry.uid].file_names:
                 if (
                     entry.uid not in self._entry_mappings
                     or file_name not in self._entry_mappings[entry.uid].file_names
                 ):
+                    num_original_files_deleted += 1
                     self._enhanced_download_archive.delete_file_from_output_directory(file_name)
+
+            # If all original entry files are deleted, mark it as deleted
+            if num_original_files_deleted == len(
+                self._original_entry_mappings[entry.uid].file_names
+            ):
+                self._enhanced_download_archive.num_entries_removed += 1
 
     def download(self, entry: Entry) -> Entry:
         """
