@@ -176,6 +176,15 @@ class DownloadMappings:
         return download_mappings
 
     @property
+    def entry_mappings(self) -> Dict[str, DownloadMapping]:
+        """
+        Returns
+        -------
+        Mapping of entries to files
+        """
+        return self._entry_mappings
+
+    @property
     def entry_ids(self) -> List[str]:
         """
         Returns
@@ -560,6 +569,17 @@ class EnhancedDownloadArchive:
             self._download_mapping.to_file(output_json_file=self.mapping_working_file_path)
             self.save_file_to_output_directory(file_name=self._mapping_file_name)
         return self
+
+    def delete_file_from_output_directory(self, file_name: str):
+        """
+        Deletes a file from the output directory
+
+        Parameters
+        ----------
+        file_name
+            Name of the file, relative to the output directory
+        """
+        return self._file_handler.delete_file_from_output_directory(file_name=file_name)
 
     def save_file_to_output_directory(
         self,

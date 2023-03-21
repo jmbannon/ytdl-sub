@@ -11,6 +11,27 @@ from typing import Optional
 from typing import Set
 from typing import Union
 
+from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
+
+
+def get_file_extension(file_name: Path | str) -> str:
+    """
+    Returns the file extension from a file name. Tries to return .info.json and .lang.subtitle
+    extensions if detected, otherwise splits on the last `.` and returns the latter part
+    """
+    if file_name.endswith(".info.json"):
+        return "info.json"
+    if any(file_name.endswith(f".{subtitle_ext}") for subtitle_ext in SUBTITLE_EXTENSIONS):
+        file_name_split = file_name.split(".")
+        ext = file_name_split[-1]
+
+        # Try to capture .lang.ext
+        if len(file_name_split) > 2 and len(file_name_split[-2]) < 6:
+            ext = f"{file_name_split[-2]}.{file_name_split[-1]}"
+
+        return ext
+    return file_name.rsplit(".", maxsplit=1)[-1]
+
 
 def get_file_md5_hash(full_file_path: Path | str) -> str:
     """

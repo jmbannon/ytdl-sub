@@ -2,9 +2,14 @@ import contextlib
 import os
 import shutil
 from abc import ABC
+from pathlib import Path
 from typing import List
 from typing import Optional
 
+from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
+from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
+from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
@@ -143,10 +148,23 @@ class SubscriptionDownload(BaseSubscription, ABC):
             FileHandler.delete(self._enhanced_download_archive.mapping_working_file_path)
 
     @contextlib.contextmanager
+    def _remove_empty_directories_in_output_directory(self):
+        try:
+            yield
+        finally:
+            if not self._enhanced_download_archive.is_dry_run:
+                for root, dir_names, _ in os.walk(Path(self.output_directory), topdown=False):
+                    for dir_name in dir_names:
+                        dir_path = Path(root) / dir_name
+                        if len(os.listdir(dir_path)) == 0:
+                            os.rmdir(dir_path)
+
+    @contextlib.contextmanager
     def _subscription_download_context_managers(self) -> None:
         with (
             self._prepare_working_directory(),
             self._maintain_archive_file(),
+            self._remove_empty_directories_in_output_directory(),
         ):
             yield
 
@@ -270,6 +288,36 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         self._cleanup_entry_files(entry)
 
+    def _process_subscription(
+        self,
+        plugins: List[Plugin],
+        downloader: BaseDownloader,
+        dry_run: bool,
+    ) -> FileHandlerTransactionLog:
+        with self._subscription_download_context_managers():
+            for entry in downloader.download_metadata():
+                if (entry := self._preprocess_entry(plugins=plugins, entry=entry)) is None:
+                    continue
+
+                entry = downloader.download(entry)
+                entry_metadata = FileMetadata()
+                if isinstance(entry, tuple):
+                    entry, entry_metadata = entry
+
+                if split_plugin := _get_split_plugin(plugins):
+                    self._process_split_entry(
+                        split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
+                    )
+                else:
+                    self._process_entry(
+                        plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
+                    )
+
+        for plugin in plugins:
+            plugin.post_process_subscription()
+
+        return self._enhanced_download_archive.get_file_handler_transaction_log()
+
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
         Performs the subscription download
@@ -299,24 +347,34 @@ class SubscriptionDownload(BaseSubscription, ABC):
             overrides=self.overrides,
         )
 
-        with self._subscription_download_context_managers():
-            for entry in downloader.download_metadata():
-                if (entry := self._preprocess_entry(plugins=plugins, entry=entry)) is None:
-                    continue
+        return self._process_subscription(
+            plugins=plugins,
+            downloader=downloader,
+            dry_run=dry_run,
+        )
 
-                entry = downloader.download(entry)
-                entry_metadata = FileMetadata()
+    def update_with_info_json(self, dry_run: bool = False) -> FileHandlerTransactionLog:
+        """
+        Performs the subscription update using local info json files.
 
-                if split_plugin := _get_split_plugin(plugins):
-                    self._process_split_entry(
-                        split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
-                    )
-                else:
-                    self._process_entry(
-                        plugins=plugins, dry_run=dry_run, entry=entry, entry_metadata=entry_metadata
-                    )
+        Parameters
+        ----------
+        dry_run
+            If true, do not modify any video/audio files or move anything to the output directory.
+        """
+        self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+        plugins = self._initialize_plugins()
 
-            for plugin in plugins:
-                plugin.post_process_subscription()
+        downloader = InfoJsonDownloader(
+            download_options=InfoJsonDownloaderOptions(name="no-op", value={}),
+            enhanced_download_archive=self._enhanced_download_archive,
+            download_ytdl_options=YTDLOptionsBuilder(),
+            metadata_ytdl_options=YTDLOptionsBuilder(),
+            overrides=self.overrides,
+        )
 
-        return self._enhanced_download_archive.get_file_handler_transaction_log()
+        return self._process_subscription(
+            plugins=plugins,
+            downloader=downloader,
+            dry_run=dry_run,
+        )

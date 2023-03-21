@@ -36,3 +36,7 @@ class InvalidDlArguments(ValidationException):
 
 class FileNotDownloadedException(ValueError):
     """ytdlp failed to download something"""
+
+
+class ExperimentalFeatureNotEnabled(ValidationException):
+    """Feature is not enabled for usage"""

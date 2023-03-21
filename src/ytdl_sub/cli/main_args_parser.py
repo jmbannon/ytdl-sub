@@ -135,6 +135,13 @@ _add_shared_arguments(parser, suppress_defaults=False)
 subparsers = parser.add_subparsers(dest="subparser")
 ###################################################################################################
 # SUBSCRIPTION PARSER
+class SubArguments:
+    UPDATE_WITH_INFO_JSON = CLIArgument(
+        short="-u",
+        long="--update-with-info-json",
+    )
+
+
 subscription_parser = subparsers.add_parser("sub")
 _add_shared_arguments(subscription_parser, suppress_defaults=True)
 subscription_parser.add_argument(
@@ -144,6 +151,14 @@ subscription_parser.add_argument(
     help="path to subscription files, uses subscriptions.yaml if not provided",
     default=["subscriptions.yaml"],
 )
+subscription_parser.add_argument(
+    SubArguments.UPDATE_WITH_INFO_JSON.short,
+    SubArguments.UPDATE_WITH_INFO_JSON.long,
+    action="store_true",
+    help="update all subscriptions with the current config using info.json files",
+    default=False,
+)
+
 ###################################################################################################
 # DOWNLOAD PARSER
 download_parser = subparsers.add_parser("dl")
