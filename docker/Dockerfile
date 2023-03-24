@@ -36,6 +36,8 @@ RUN mkdir -p /config && \
       rm ffmpeg.tar.gz && \
       rm -rf ffmpeg-master-latest-linuxarm64-gpl/ ; \
     fi && \
+    # Ensure ffmpeg is installed
+    ffmpeg -version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       cd /usr/share && \
