@@ -12,6 +12,7 @@ RUN mkdir -p /config && \
       g++ \
       nano \
       make \
+      libc6-compat \
       python3=~3.10 \
       py3-pip \
       fontconfig \
