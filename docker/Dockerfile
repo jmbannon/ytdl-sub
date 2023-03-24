@@ -12,7 +12,7 @@ RUN mkdir -p /config && \
       g++ \
       nano \
       make \
-      python3=~3.10 \
+      "python3>=3.10" \
       py3-pip \
       fontconfig \
       py3-setuptools && \
@@ -30,13 +30,14 @@ RUN mkdir -p /config && \
       cd -; \
     fi && \
     # Install ytdl-sub, ensure it is installed properly
-    pip install --no-cache-dir ytdl_sub-*.whl && \
+    python3 -m pip install --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
     apk del \
       g++ \
       make \
+      py3-pip \
       py3-setuptools
 
 ###############################################################################
