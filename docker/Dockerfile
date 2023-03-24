@@ -24,6 +24,7 @@ RUN mkdir -p /config && \
       chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe && \
       mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg && \
       mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe && \
+      ls -lh /usr/bin && \
       rm ffmpeg.tar.gz && \
       rm -rf ffmpeg-master-latest-linux64-gpl/ ; \
     else \
