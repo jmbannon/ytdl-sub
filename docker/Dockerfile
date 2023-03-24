@@ -16,10 +16,26 @@ RUN mkdir -p /config && \
       py3-pip \
       fontconfig \
       py3-setuptools && \
-    # Install edge ffmpeg, ensure it is properly installed
-    apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-      "ffmpeg>5.1" && \
-      ffmpeg -version && \
+    # Install ffmpeg, ensure it is properly installed
+    if [[ $(uname -m) == "x86_64" ]]; then \
+      curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz && \
+      tar -xf ffmpeg.tar.gz && \
+      chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg && \
+      chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe && \
+      mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg && \
+      mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe && \
+      rm ffmpeg.tar.gz && \
+      rm -rf ffmpeg-master-latest-linux64-gpl/ ; \
+    else \
+      curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz && \
+      tar -xf ffmpeg.tar.gz && \
+      chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg && \
+      chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe && \
+      mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg /usr/bin/ffmpeg && \
+      mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe /usr/bin/ffprobe && \
+      rm ffmpeg.tar.gz && \
+      rm -rf ffmpeg-master-latest-linuxarm64-gpl/ ; \
+    fi && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       cd /usr/share && \
