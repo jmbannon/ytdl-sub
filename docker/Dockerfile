@@ -1,4 +1,4 @@
-FROM ghcr.io/linuxserver/baseimage-alpine:3.17
+FROM ghcr.io/linuxserver/baseimage-alpine:edge
 
 ###############################################################################
 # YTDL-SUB INSTALL
@@ -12,36 +12,14 @@ RUN mkdir -p /config && \
       g++ \
       nano \
       make \
-      libc6-compat \
       python3=~3.10 \
       py3-pip \
       fontconfig \
       py3-setuptools && \
-    # Install ffmpeg, ensure it is properly installed
-    if [[ $(uname -m) == "x86_64" ]]; then \
-      curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz && \
-      tar -xf ffmpeg.tar.gz && \
-      chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg && \
-      chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe && \
-      chown root:root ffmpeg-master-latest-linux64-gpl/bin/ffmpeg && \
-      chown root:root ffmpeg-master-latest-linux64-gpl/bin/ffprobe && \
-      mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg && \
-      mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe && \
-      ls -lh /usr/bin && \
-      rm ffmpeg.tar.gz && \
-      rm -rf ffmpeg-master-latest-linux64-gpl/ ; \
-    else \
-      curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz && \
-      tar -xf ffmpeg.tar.gz && \
-      chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg && \
-      chmod +x ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe && \
-      mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffmpeg /usr/bin/ffmpeg && \
-      mv ffmpeg-master-latest-linuxarm64-gpl/bin/ffprobe /usr/bin/ffprobe && \
-      rm ffmpeg.tar.gz && \
-      rm -rf ffmpeg-master-latest-linuxarm64-gpl/ ; \
-    fi && \
-    # Ensure ffmpeg is installed
-    ffmpeg -version && \
+    # Install edge ffmpeg, ensure it is properly installed
+    apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+      "ffmpeg>5.1" && \
+      ffmpeg -version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       cd /usr/share && \
