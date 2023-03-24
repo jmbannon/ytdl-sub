@@ -16,6 +16,9 @@ if IS_WINDOWS:
 else:
     _MAX_FILE_NAME_BYTES = os.pathconf("/", "PC_NAME_MAX")
 
+# Save file-name bytes for the -thumb.jpg portion
+_MAX_BASE_FILE_NAME_BYTES = _MAX_FILE_NAME_BYTES - len("-thumb.jpg".encode("utf-8")) - 8
+
 
 class FFmpegFileValidator(StringValidator):
     _expected_value_type_name = "ffmpeg dependency"
@@ -90,17 +93,24 @@ class StringFormatterFileNameValidator(StringFormatterValidator, FilePathValidat
 
     @classmethod
     def _get_extension_split(cls, file_name: str) -> Tuple[str, str]:
+        """
+        Returns
+        -------
+        file_name, ext (including .)
+        """
         if file_name.endswith(".info.json"):
-            ext = "info.json"
+            ext = ".info.json"
+        elif file_name.endswith("-thumb.jpg"):
+            ext = "-thumb.jpg"
         elif any(file_name.endswith(f".{subtitle_ext}") for subtitle_ext in SUBTITLE_EXTENSIONS):
             file_name_split = file_name.split(".")
             ext = file_name_split[-1]
 
             # Try to capture .lang.ext
             if len(file_name_split) > 2 and len(file_name_split[-2]) < 6:
-                ext = f"{file_name_split[-2]}.{file_name_split[-1]}"
+                ext = f".{file_name_split[-2]}.{file_name_split[-1]}"
         else:
-            ext = file_name.rsplit(".", maxsplit=1)[-1]
+            ext = f".{file_name.rsplit('.', maxsplit=1)[-1]}"
 
         return file_name[: -len(ext)], ext
 
@@ -108,11 +118,10 @@ class StringFormatterFileNameValidator(StringFormatterValidator, FilePathValidat
     def _truncate_file_name(cls, file_name: str) -> str:
         file_sub_name, file_ext = cls._get_extension_split(file_name)
 
-        desired_size = _MAX_FILE_NAME_BYTES - len(file_ext.encode("utf-8")) - 1
-        while len(file_sub_name.encode("utf-8")) > desired_size:
+        while len(file_sub_name.encode("utf-8")) > _MAX_BASE_FILE_NAME_BYTES:
             file_sub_name = file_sub_name[:-1]
 
-        return f"{file_sub_name}.{file_ext}"
+        return f"{file_sub_name}{file_ext}"
 
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
         """Turn into a Path, then a string, to get correct directory separators"""
