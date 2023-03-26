@@ -124,6 +124,11 @@ class FloatValidator(ValueValidator[float]):
     _expected_value_type_name = "float"
 
 
+class IntValidator(ValueValidator[int]):
+    _expected_value_type = int
+    _expected_value_type_name = "int"
+
+
 class ListValidator(Validator, ABC, Generic[ValidatorT]):
     """
     Validates a list of objects to validate

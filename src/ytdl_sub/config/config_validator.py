@@ -5,23 +5,18 @@ from typing import Optional
 from mergedeep import mergedeep
 from yt_dlp.utils import datetime_from_str
 
+from ytdl_sub.config.defaults import DEFAULT_FFMPEG_PATH
+from ytdl_sub.config.defaults import DEFAULT_FFPROBE_PATH
+from ytdl_sub.config.defaults import DEFAULT_LOCK_DIRECTORY
+from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
-from ytdl_sub.utils.system import IS_WINDOWS
 from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
 from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.validators import BoolValidator
+from ytdl_sub.validators.validators import IntValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
-
-if IS_WINDOWS:
-    _DEFAULT_LOCK_DIRECTORY = ""  # Not supported in Windows
-    _DEFAULT_FFMPEG_PATH = ".\\ffmpeg.exe"
-    _DEFAULT_FFPROBE_PATH = ".\\ffprobe.exe"
-else:
-    _DEFAULT_LOCK_DIRECTORY = "/tmp"
-    _DEFAULT_FFMPEG_PATH = "/usr/bin/ffmpeg"
-    _DEFAULT_FFPROBE_PATH = "/usr/bin/ffprobe"
 
 
 class ExperimentalValidator(StrictDictValidator):
@@ -110,6 +105,7 @@ class ConfigOptions(StrictDictValidator):
         "lock_directory",
         "ffmpeg_path",
         "ffprobe_path",
+        "file_name_max_bytes",
         "experimental",
     }
 
@@ -129,16 +125,19 @@ class ConfigOptions(StrictDictValidator):
             key="persist_logs", validator=PersistLogsValidator
         )
         self._lock_directory = self._validate_key(
-            key="lock_directory", validator=StringValidator, default=_DEFAULT_LOCK_DIRECTORY
+            key="lock_directory", validator=StringValidator, default=DEFAULT_LOCK_DIRECTORY
         )
         self._ffmpeg_path = self._validate_key(
-            key="ffmpeg_path", validator=FFmpegFileValidator, default=_DEFAULT_FFMPEG_PATH
+            key="ffmpeg_path", validator=FFmpegFileValidator, default=DEFAULT_FFMPEG_PATH
         )
         self._ffprobe_path = self._validate_key(
-            key="ffprobe_path", validator=FFprobeFileValidator, default=_DEFAULT_FFPROBE_PATH
+            key="ffprobe_path", validator=FFprobeFileValidator, default=DEFAULT_FFPROBE_PATH
         )
         self._experimental = self._validate_key(
             key="experimental", validator=ExperimentalValidator, default={}
+        )
+        self._file_name_max_bytes = self._validate_key(
+            key="file_name_max_bytes", validator=IntValidator, default=MAX_FILE_NAME_BYTES
         )
 
     @property
@@ -192,6 +191,13 @@ class ConfigOptions(StrictDictValidator):
         Persist logs validator. readthedocs in the validator itself!
         """
         return self._persist_logs
+
+    @property
+    def file_name_max_bytes(self) -> int:
+        """
+        Optional. Max file name size in bytes. Most OS's typically default to 255 bytes.
+        """
+        return self._file_name_max_bytes.value
 
     @property
     def experimental(self) -> ExperimentalValidator:
