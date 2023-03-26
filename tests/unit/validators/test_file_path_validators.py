@@ -4,10 +4,10 @@ from pathlib import Path
 import pytest
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.config.config_validator import DEFAULT_MAX_FILE_NAME_BYTES
+from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
 from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
-from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator, \
-    FilePathValidatorMixin
+from ytdl_sub.validators.file_path_validators import FilePathValidatorMixin
+from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 
 
 class TestStringFormatterFilePathValidator:
@@ -71,17 +71,35 @@ class TestStringFormatterFilePathValidator:
                 assert len(dir_paths) == 1
                 assert Path(truncated_file_path) == dir_paths[0]
 
-    def test_config_changes_max_file_name_bytes(self):
+    @pytest.mark.parametrize(
+        "file_name_max_bytes, expected_max",
+        [
+            (50, 50 - FilePathValidatorMixin._EXTENSION_BYTES),
+            (0, 16),
+            (10000, MAX_FILE_NAME_BYTES - FilePathValidatorMixin._EXTENSION_BYTES),
+        ],
+    )
+    def test_config_changes_max_file_name_bytes(self, file_name_max_bytes: int, expected_max: int):
         # Ensure the default is set
-        assert FilePathValidatorMixin.MAX_FILE_NAME_BYTES == DEFAULT_MAX_FILE_NAME_BYTES
+        assert (
+            FilePathValidatorMixin._MAX_BASE_FILE_NAME_BYTES
+            == FilePathValidatorMixin._DEFAULT_MAX_BASE_FILE_NAME_BYTES
+        )
 
         try:
             # Initializes the config values, setting the max to 10 bytes
-            _ = ConfigFile.from_dict({
-                "working_directory": ".",
-                "file_name_max_bytes": 10,
-            })
+            _ = ConfigFile.from_dict(
+                {
+                    "configuration": {
+                        "working_directory": ".",
+                        "file_name_max_bytes": file_name_max_bytes,
+                    },
+                    "presets": {},
+                }
+            )
 
-            assert FilePathValidatorMixin.MAX_FILE_NAME_BYTES == 10
+            assert FilePathValidatorMixin._MAX_BASE_FILE_NAME_BYTES == expected_max
         finally:
-            FilePathValidatorMixin.MAX_FILE_NAME_BYTES = DEFAULT_MAX_FILE_NAME_BYTES
+            FilePathValidatorMixin._MAX_BASE_FILE_NAME_BYTES = (
+                FilePathValidatorMixin._DEFAULT_MAX_BASE_FILE_NAME_BYTES
+            )

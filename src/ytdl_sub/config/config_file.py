@@ -37,7 +37,9 @@ class ConfigFile(ConfigValidator):
             ffprobe_path=self.config_options.ffprobe_path,
         )
 
-        FilePathValidatorMixin.MAX_FILE_NAME_BYTES = self.config_options.file_name_max_bytes
+        FilePathValidatorMixin.set_max_file_name_bytes(
+            max_file_name_bytes=self.config_options.file_name_max_bytes
+        )
 
         return self
 

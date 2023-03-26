@@ -4,13 +4,12 @@ from typing import Any
 from typing import Dict
 from typing import Tuple
 
-from ytdl_sub.config.config_validator import DEFAULT_MAX_FILE_NAME_BYTES
+from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
 from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import StringValidator
-
 
 
 class FFmpegFileValidator(StringValidator):
@@ -37,11 +36,27 @@ class FFprobeFileValidator(FFmpegFileValidator):
 
 
 class FilePathValidatorMixin:
-    MAX_FILE_NAME_BYTES: int = DEFAULT_MAX_FILE_NAME_BYTES
+    _EXTENSION_BYTES = len("-thumb.jpg".encode("utf-8")) + 8
+    _DEFAULT_MAX_BASE_FILE_NAME_BYTES: int = MAX_FILE_NAME_BYTES - _EXTENSION_BYTES
+
+    _MAX_BASE_FILE_NAME_BYTES: int = _DEFAULT_MAX_BASE_FILE_NAME_BYTES
+
+    @classmethod
+    def set_max_file_name_bytes(cls, max_file_name_bytes: int) -> None:
+        """Actually sets the max _base_ file name in bytes (excludes extension)"""
+        max_base_file_name_bytes = max_file_name_bytes - cls._EXTENSION_BYTES
+
+        # bound between (extension_bytes + 20, MAX_FILE_NAME_BYTES)
+        max_base_file_name_bytes = max(max_base_file_name_bytes, 16)
+        max_base_file_name_bytes = min(
+            max_base_file_name_bytes, MAX_FILE_NAME_BYTES - cls._EXTENSION_BYTES
+        )
+
+        cls._MAX_BASE_FILE_NAME_BYTES = max_base_file_name_bytes
 
     @classmethod
     def _is_file_name_too_long(cls, file_name: str) -> bool:
-        return len(file_name.encode("utf-8")) > cls.MAX_FILE_NAME_BYTES
+        return len(file_name.encode("utf-8")) > cls._MAX_BASE_FILE_NAME_BYTES
 
     @classmethod
     def _get_extension_split(cls, file_name: str) -> Tuple[str, str]:
@@ -52,7 +67,7 @@ class FilePathValidatorMixin:
     def _truncate_file_name(cls, file_name: str) -> str:
         file_sub_name, file_ext = cls._get_extension_split(file_name)
 
-        desired_size = cls.MAX_FILE_NAME_BYTES - len(file_ext.encode("utf-8")) - 1
+        desired_size = cls._MAX_BASE_FILE_NAME_BYTES - len(file_ext.encode("utf-8")) - 1
         while len(file_sub_name.encode("utf-8")) > desired_size:
             file_sub_name = file_sub_name[:-1]
 
@@ -84,7 +99,7 @@ class StringFormatterFileNameValidator(StringFormatterValidator, FilePathValidat
 
     @classmethod
     def _is_file_name_too_long(cls, file_name: str) -> bool:
-        return len(file_name.encode("utf-8")) > cls.MAX_FILE_NAME_BYTES
+        return len(file_name.encode("utf-8")) > cls._MAX_BASE_FILE_NAME_BYTES
 
     @classmethod
     def _get_extension_split(cls, file_name: str) -> Tuple[str, str]:
@@ -113,7 +128,7 @@ class StringFormatterFileNameValidator(StringFormatterValidator, FilePathValidat
     def _truncate_file_name(cls, file_name: str) -> str:
         file_sub_name, file_ext = cls._get_extension_split(file_name)
 
-        while len(file_sub_name.encode("utf-8")) > cls.MAX_FILE_NAME_BYTES:
+        while len(file_sub_name.encode("utf-8")) > cls._MAX_BASE_FILE_NAME_BYTES:
             file_sub_name = file_sub_name[:-1]
 
         return f"{file_sub_name}{file_ext}"
