@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -10,7 +11,7 @@ from ytdl_sub.utils.system import IS_WINDOWS
 from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
 from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.validators import BoolValidator
+from ytdl_sub.validators.validators import BoolValidator, IntValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
 
@@ -18,10 +19,17 @@ if IS_WINDOWS:
     _DEFAULT_LOCK_DIRECTORY = ""  # Not supported in Windows
     _DEFAULT_FFMPEG_PATH = ".\\ffmpeg.exe"
     _DEFAULT_FFPROBE_PATH = ".\\ffprobe.exe"
+
+    _MAX_FILE_NAME_BYTES = 255
 else:
     _DEFAULT_LOCK_DIRECTORY = "/tmp"
     _DEFAULT_FFMPEG_PATH = "/usr/bin/ffmpeg"
     _DEFAULT_FFPROBE_PATH = "/usr/bin/ffprobe"
+
+    _MAX_FILE_NAME_BYTES = os.pathconf("/", "PC_NAME_MAX")
+
+# Save file-name bytes for the -thumb.jpg portion
+DEFAULT_MAX_FILE_NAME_BYTES = _MAX_FILE_NAME_BYTES - len("-thumb.jpg".encode("utf-8")) - 8
 
 
 class ExperimentalValidator(StrictDictValidator):
@@ -110,6 +118,7 @@ class ConfigOptions(StrictDictValidator):
         "lock_directory",
         "ffmpeg_path",
         "ffprobe_path",
+        "file_name_max_bytes",
         "experimental",
     }
 
@@ -139,6 +148,9 @@ class ConfigOptions(StrictDictValidator):
         )
         self._experimental = self._validate_key(
             key="experimental", validator=ExperimentalValidator, default={}
+        )
+        self._file_name_max_bytes = self._validate_key(
+            key="file_name_max_bytes", validator=IntValidator, default=DEFAULT_MAX_FILE_NAME_BYTES
         )
 
     @property
@@ -192,6 +204,13 @@ class ConfigOptions(StrictDictValidator):
         Persist logs validator. readthedocs in the validator itself!
         """
         return self._persist_logs
+
+    @property
+    def file_name_max_bytes(self) -> int:
+        """
+        Optional. Max file name size in bytes. Most OS's typically default to 255 bytes.
+        """
+        return self._file_name_max_bytes.value
 
     @property
     def experimental(self) -> ExperimentalValidator:

@@ -3,8 +3,11 @@ from pathlib import Path
 
 import pytest
 
+from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.config.config_validator import DEFAULT_MAX_FILE_NAME_BYTES
 from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
-from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
+from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator, \
+    FilePathValidatorMixin
 
 
 class TestStringFormatterFilePathValidator:
@@ -67,3 +70,18 @@ class TestStringFormatterFilePathValidator:
 
                 assert len(dir_paths) == 1
                 assert Path(truncated_file_path) == dir_paths[0]
+
+    def test_config_changes_max_file_name_bytes(self):
+        # Ensure the default is set
+        assert FilePathValidatorMixin.MAX_FILE_NAME_BYTES == DEFAULT_MAX_FILE_NAME_BYTES
+
+        try:
+            # Initializes the config values, setting the max to 10 bytes
+            _ = ConfigFile.from_dict({
+                "working_directory": ".",
+                "file_name_max_bytes": 10,
+            })
+
+            assert FilePathValidatorMixin.MAX_FILE_NAME_BYTES == 10
+        finally:
+            FilePathValidatorMixin.MAX_FILE_NAME_BYTES = DEFAULT_MAX_FILE_NAME_BYTES

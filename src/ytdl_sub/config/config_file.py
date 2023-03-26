@@ -6,6 +6,7 @@ from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.yaml import load_yaml
+from ytdl_sub.validators.file_path_validators import FilePathValidatorMixin
 
 
 class ConfigFile(ConfigValidator):
@@ -22,7 +23,7 @@ class ConfigFile(ConfigValidator):
 
     def _initialize(self):
         """
-        Configures things (umask, pgid) prior to any downloading
+        Configures things (umask, pgid, etc) prior to any downloading
 
         Returns
         -------
@@ -35,6 +36,8 @@ class ConfigFile(ConfigValidator):
             ffmpeg_path=self.config_options.ffmpeg_path,
             ffprobe_path=self.config_options.ffprobe_path,
         )
+
+        FilePathValidatorMixin.MAX_FILE_NAME_BYTES = self.config_options.file_name_max_bytes
 
         return self
 
