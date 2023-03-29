@@ -154,7 +154,9 @@ class _PresetShell(StrictDictValidator):
 
 class Preset(_PresetShell):
     @classmethod
-    def _validate_download_strategy(cls, name: str, value: Dict) -> None:
+    def _validate_download_strategy(
+        cls, config: ConfigValidator, name: str, value: Dict, parent_presets: StringListValidator
+    ) -> None:
         sources: List[str] = []
         for source_name in DownloadStrategyMapping.sources():
             if source_name in value:
@@ -170,8 +172,41 @@ class Preset(_PresetShell):
         if not sources:
             return
 
+        # Ensure all parent/child presets use the same download strategy
+        preset_strs = [preset.value for preset in parent_presets.list] + [name]
+        download_strategy: Optional[str] = None
+        download_strategy_preset: Optional[str] = None
+        for parent_preset in preset_strs:
+            # See if the parent has a download strategy
+            parent_download_strategy = (
+                config.presets.dict.get(parent_preset, {})
+                .get("download", {})
+                .get("download_strategy")
+            )
+
+            # If the parent download strategy is None, do nothing
+            if parent_download_strategy is None:
+                continue
+
+            # If download strategy is not set, then set it to parent download strategy
+            if download_strategy is None:
+                download_strategy = parent_download_strategy
+                download_strategy_preset = parent_preset
+
+            # If it's set and does not match the parent download strategy, error
+            if download_strategy is not None and download_strategy != parent_download_strategy:
+                raise ValidationException(
+                    f"Preset {download_strategy_preset} uses download strategy {download_strategy}"
+                    f", but is inherited by preset {parent_preset} which uses download strategy "
+                    f"{parent_download_strategy}."
+                )
+
         source_name = sources[0]
         source_dict = copy.deepcopy(value[source_name])
+
+        # Set the parent download strategy if present
+        if download_strategy:
+            source_dict["download_strategy"] = download_strategy
 
         downloader = DownloadStrategyValidator(name=f"{name}.{source_name}", value=source_dict).get(
             downloader_source=source_name
@@ -181,14 +216,6 @@ class Preset(_PresetShell):
         downloader.downloader_options_type.partial_validate(
             name=f"{name}.{source_name}", value=source_dict
         )
-
-        if source_name != "download":
-            logger.warning(
-                "WARNING: Download strategy '%s' is deprecated and will be removed in ytdl-sub"
-                "v0.6.0. See %s on how to update it",
-                source_name,
-                "https://ytdl-sub.readthedocs.io/en/latest/config.html#deprecation-updates",
-            )
 
     @classmethod
     def preset_partial_validate(cls, config: ConfigValidator, name: str, value: Any) -> None:
@@ -215,7 +242,18 @@ class Preset(_PresetShell):
         _ = _PresetShell(name=name, value=value)
         assert isinstance(value, dict)
 
-        cls._validate_download_strategy(name, value)
+        parent_presets = StringListValidator(name=f"{name}.preset", value=value.get("preset", []))
+        for parent_preset_name in parent_presets.list:
+            if parent_preset_name.value not in config.presets.keys:
+                raise _parent_preset_error_message(
+                    current_preset_name=name,
+                    parent_preset_name=parent_preset_name.value,
+                    presets=config.presets.keys,
+                )
+
+        cls._validate_download_strategy(
+            config=config, name=name, value=value, parent_presets=parent_presets
+        )
         cls._partial_validate_key(name, value, "output_options", OutputOptions)
         cls._partial_validate_key(name, value, "ytdl_options", YTDLOptions)
         cls._partial_validate_key(name, value, "overrides", Overrides)
@@ -227,15 +265,6 @@ class Preset(_PresetShell):
                 key=plugin_name,
                 validator=PluginMapping.get(plugin_name).plugin_options_type,
             )
-
-        parent_presets = StringListValidator(name=f"{name}.preset", value=value.get("preset", []))
-        for parent_preset_name in parent_presets.list:
-            if parent_preset_name.value not in config.presets.keys:
-                raise _parent_preset_error_message(
-                    current_preset_name=name,
-                    parent_preset_name=parent_preset_name.value,
-                    presets=config.presets.keys,
-                )
 
     @property
     def _source_variables(self) -> List[str]:

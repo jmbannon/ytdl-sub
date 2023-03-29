@@ -154,3 +154,52 @@ class TestConfigFilePartiallyValidatesPresets:
             expected_error_message="Validation error in partial_preset: "
             "preset 'DNE' does not exist in the provided config.",
         )
+
+    def test_partial_validate_partial_download_strategy(self):
+        _ = ConfigFile(
+            name="test_partial_validate",
+            value={
+                "configuration": {"working_directory": "."},
+                "presets": {
+                    "parent": {"download": {"download_strategy": "url"}},
+                    "child": {"preset": "parent", "download": {"url": "should work"}},
+                },
+            },
+        )
+
+    def test_partial_validate_partial_download_strategies(self):
+        _ = ConfigFile(
+            name="test_partial_validate",
+            value={
+                "configuration": {"working_directory": "."},
+                "presets": {
+                    "parent": {"download": {"download_strategy": "url"}},
+                    "child": {
+                        "preset": "parent",
+                        "download": {"download_strategy": "url", "url": "should work"},
+                    },
+                },
+            },
+        )
+
+    def test_partial_validate_partial_download_strategies_mismatch(self):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "Preset parent uses download strategy multi_url, but is inherited by preset child "
+                "which uses download strategy url."
+            ),
+        ):
+            _ = ConfigFile(
+                name="test_partial_validate",
+                value={
+                    "configuration": {"working_directory": "."},
+                    "presets": {
+                        "parent": {"download": {"download_strategy": "multi_url"}},
+                        "child": {
+                            "preset": "parent",
+                            "download": {"download_strategy": "url", "url": "should work"},
+                        },
+                    },
+                },
+            )
