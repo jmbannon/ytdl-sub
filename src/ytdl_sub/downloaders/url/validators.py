@@ -156,8 +156,8 @@ class UrlListValidator(ListValidator[UrlValidator]):
 
         added_variables: Dict[str, str] = self.list[0].variables.dict_with_format_strings
 
-        for idx, collection_url_validator in enumerate(self.list[1:]):
-            collection_variables = collection_url_validator.variables.dict_with_format_strings
+        for idx, url_validator in enumerate(self.list[1:]):
+            collection_variables = url_validator.variables.dict_with_format_strings
 
             # see if this collection contains new added vars (it should not)
             for var in collection_variables.keys():
