@@ -58,7 +58,7 @@ and overriding the following variables:
        # episode_title: "{upload_date_standardized} - {title}"
        # episode_description: "{webpage_url}"
 
-In addition, you can add multiple URLs to create a single TV by using the override variables
+In addition, you can add additional URLs to create a single TV by using the override variables
 ``url2``, ``url3``, ..., ``url20``:
 
 .. code-block:: yaml
