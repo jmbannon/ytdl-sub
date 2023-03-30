@@ -443,14 +443,10 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
             ):
                 yield entry_child
 
-    def _download_url_metadata(
-        self, collection_url: UrlValidator
-    ) -> Tuple[List[EntryParent], List[Entry]]:
+    def _download_url_metadata(self, url: str) -> Tuple[List[EntryParent], List[Entry]]:
         """
         Downloads only info.json files and forms EntryParent trees
         """
-        url = self.overrides.apply_formatter(collection_url.url)
-
         with self._separate_download_archives():
             entry_dicts = YTDLP.extract_info_via_info_json(
                 working_directory=self.working_directory,
@@ -494,7 +490,11 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
         """The function to perform the download of all media entries"""
         # download the bottom-most urls first since they are top-priority
         for collection_url in reversed(self.collection.urls.list):
-            parents, orphan_entries = self._download_url_metadata(collection_url=collection_url)
+            # URLs can be empty. If they are, then skip
+            if not (url := self.overrides.apply_formatter(collection_url.url)):
+                continue
+
+            parents, orphan_entries = self._download_url_metadata(url=url)
 
             # TODO: Encapsulate this logic into its own class
             self._url_state = URLDownloadState(

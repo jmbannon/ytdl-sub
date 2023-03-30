@@ -1,6 +1,9 @@
+import re
+
 import pytest
 
 from ytdl_sub.config.preset import Preset
+from ytdl_sub.downloaders.url.multi_url import MultiUrlDownloadOptions
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.exceptions import ValidationException
@@ -192,11 +195,47 @@ class TestPreset:
                 name="test",
                 value={
                     "download": youtube_video,
-                    "output_options": {"output_directory": "dir", "file_name": "file"},
+                    "output_options": output_options,
                     "output_directory_nfo_tags": {
                         "nfo_name": "the nfo name",
                         "nfo_root": "the root",
                         "tags": {"tag_a": "{dne_var}"},
                     },
+                },
+            )
+
+    def test_preset_with_multi_url__contains_empty_url(self, config_file, output_options):
+        _ = Preset(
+            config=config_file,
+            name="test",
+            value={
+                "download": {
+                    "download_strategy": "multi_url",
+                    "urls": [{"url": "non-empty url"}, {"url": ""}],  # empty url
+                },
+                "output_options": output_options,
+            },
+        )
+
+    def test_preset_with_multi_url__contains_all_empty_urls_errors(
+        self, config_file, output_options
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "Validation error in test.download: Must contain at least one "
+                "url that is non-empty"
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": {
+                        "download_strategy": "multi_url",
+                        "urls": [{"url": "{url}"}, {"url": "{url2}"}],
+                    },
+                    "output_options": output_options,
+                    "overrides": {"url": "", "url2": ""},
                 },
             )

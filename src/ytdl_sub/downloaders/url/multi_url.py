@@ -1,3 +1,6 @@
+from typing import Dict
+from typing import List
+
 from ytdl_sub.downloaders.url.downloader import BaseUrlDownloader
 from ytdl_sub.downloaders.url.downloader import DownloaderValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
@@ -42,6 +45,23 @@ class MultiUrlDownloadOptions(MultiUrlValidator, DownloaderValidator):
     def collection_validator(self) -> MultiUrlValidator:
         """Returns itself!"""
         return self
+
+    def validate_with_variables(
+        self, source_variables: List[str], override_variables: Dict[str, str]
+    ) -> None:
+        """
+        Validates any source variables added by the collection
+        """
+        super().validate_with_variables(
+            source_variables=source_variables, override_variables=override_variables
+        )
+
+        has_non_empty_url = False
+        for url_validator in self.urls.list:
+            has_non_empty_url |= bool(url_validator.url.apply_formatter(override_variables))
+
+        if not has_non_empty_url:
+            raise self._validation_exception("Must contain at least one url that is non-empty")
 
 
 class MultiUrlDownloader(BaseUrlDownloader[MultiUrlDownloadOptions]):
