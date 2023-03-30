@@ -115,9 +115,7 @@ class TestPrebuiltTVShowPresets:
             },
         }
         if is_many_urls:
-            preset_dict = dict(
-                preset_dict, **{"download": {"urls": [{"url": "https://url.number.2.here"}]}}
-            )
+            preset_dict["overrides"]["url2"] = "https://url.number.2.here"
 
         subscription = Subscription.from_dict(
             config=config,
