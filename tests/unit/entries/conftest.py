@@ -70,6 +70,7 @@ def mock_entry_to_dict(
         "ext": ext,
         "description": "",
         "creator": "abc123",
+        "creator_sanitized": "abc123",
         "channel": "abc123",
         "channel_sanitized": "abc123",
         "extractor": extractor,
