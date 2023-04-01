@@ -362,6 +362,16 @@ class EntryVariables(BaseEntryVariables):
         return self.kwargs_get(CREATOR, self.channel)
 
     @property
+    def creator_sanitized(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The creator name, sanitized
+        """
+        return sanitize_filename(self.creator)
+
+    @property
     def channel(self: Self) -> str:
         """
         Returns
