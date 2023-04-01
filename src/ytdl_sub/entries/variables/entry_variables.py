@@ -6,6 +6,7 @@ from yt_dlp.utils import sanitize_filename
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import BaseEntryVariables
 from ytdl_sub.entries.variables.kwargs import CHANNEL
+from ytdl_sub.entries.variables.kwargs import CHANNEL_ID
 from ytdl_sub.entries.variables.kwargs import CREATOR
 from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import EXT
@@ -380,6 +381,16 @@ class EntryVariables(BaseEntryVariables):
             The channel name, sanitized.
         """
         return sanitize_filename(self.channel)
+
+    @property
+    def channel_id(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The channel id if it exists, otherwise returns the entry uploader ID.
+        """
+        return self.kwargs_get(CHANNEL_ID, self.uploader_id)
 
     @property
     def ext(self: Self) -> str:
