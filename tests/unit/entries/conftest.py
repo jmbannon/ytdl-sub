@@ -73,6 +73,7 @@ def mock_entry_to_dict(
         "creator_sanitized": "abc123",
         "channel": "abc123",
         "channel_sanitized": "abc123",
+        "channel_id": uid,
         "extractor": extractor,
         "uploader": "abc123",
         "uploader_id": "abc123",
