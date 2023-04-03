@@ -16,10 +16,12 @@ RUN mkdir -p /config && \
       py3-pip \
       fontconfig \
       py3-setuptools && \
-    # Install edge ffmpeg, ensure it is properly installed
+    # Install edge ffmpeg and aria2 from community, ensure they are properly installed
     apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-      "ffmpeg>5.1" && \
-      ffmpeg -version && \
+      "ffmpeg>5.1" \
+      "aria2>=1.36.0" && \
+    ffmpeg -version && \
+    aria2c --version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       cd /usr/share && \

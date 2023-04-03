@@ -28,6 +28,7 @@ RUN mkdir -p /config && \
       fontconfig \
       xz-utils \
       bzip2 \
+      aria2 \
       python3-venv && \
     if [[ $(uname -m) == "x86_64" ]]; then \
       curl -L -o ffmpeg.tar.gz https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz && \
