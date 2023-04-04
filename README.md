@@ -178,7 +178,7 @@ example is equivalent to the subscription example above:
 ytdl-sub dl \
     --preset "tv_show" \
     --overrides.tv_show_name "Rick A" \
-    --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+    --overrides.url "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 ```
 
 #### Download Aliases
