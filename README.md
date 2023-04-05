@@ -242,6 +242,7 @@ player to recognize downloads as:
   - [with GPU passthrough](https://ytdl-sub.readthedocs.io/en/latest/install.html#nvidia-gpu-passthrough)
 - [Docker CLI](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker)
 - [Windows](https://ytdl-sub.readthedocs.io/en/latest/install.html#windows)
+- [Unraid](https://ytdl-sub.readthedocs.io/en/latest/install.html#unraid)
 - [Linux](https://ytdl-sub.readthedocs.io/en/latest/install.html#linux)
 - [Linux ARM](https://ytdl-sub.readthedocs.io/en/latest/install.html#linux-arm)
 - [PIP](https://ytdl-sub.readthedocs.io/en/latest/install.html#pip)
