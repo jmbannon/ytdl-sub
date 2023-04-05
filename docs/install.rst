@@ -128,6 +128,12 @@ From powershell, run:
    curl.exe -L -o ytdl-sub.exe https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub.exe
    ytdl-sub.exe -h
 
+Unraid
+--------------
+See the
+`community app <https://unraid.net/community/apps?q=ytdl-sub#r>`_
+``ytdl-sub``. Uses Docker under the hood.
+
 Linux
 --------------
 Requires ffmpeg as a dependency. Can typically be installed with any Linux package manager.
