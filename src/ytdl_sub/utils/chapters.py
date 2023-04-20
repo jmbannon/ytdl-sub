@@ -234,14 +234,14 @@ class Chapters:
         timestamps: List[Timestamp] = []
         titles: List[str] = []
 
-        # Try to get actual yt-dlp chapters first, then custom chapters, then default to empty list
-        chapters = entry.kwargs_get(
-            CHAPTERS, default=entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS, default=[])
-        )
-
-        for chapter in chapters:
-            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
-            titles.append(chapter["title"])
+        if entry.kwargs_contains(CHAPTERS):
+            for chapter in entry.kwargs_get(CHAPTERS, []):
+                timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
+                titles.append(chapter["title"])
+        elif entry.kwargs_contains(YTDL_SUB_CUSTOM_CHAPTERS):
+            for start_time, title in entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS, {}).items():
+                timestamps.append(Timestamp.from_str(start_time))
+                titles.append(title)
 
         return Chapters(timestamps=timestamps, titles=titles)
 
