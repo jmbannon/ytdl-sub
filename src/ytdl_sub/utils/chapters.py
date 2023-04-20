@@ -1,13 +1,12 @@
-import json
 import re
-import subprocess
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS, CHAPTERS
+from ytdl_sub.entries.variables.kwargs import CHAPTERS
+from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
@@ -237,7 +236,9 @@ class Chapters:
         titles: List[str] = []
 
         # Try to get actual yt-dlp chapters first, then custom chapters, then default to empty list
-        chapters = entry.kwargs_get(CHAPTERS, default=entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS, default=[]))
+        chapters = entry.kwargs_get(
+            CHAPTERS, default=entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS, default=[])
+        )
 
         for chapter in chapters:
             timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
