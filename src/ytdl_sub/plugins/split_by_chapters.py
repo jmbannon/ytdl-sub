@@ -164,14 +164,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         Tags the entry's audio file using values defined in the metadata options
         """
         split_videos_and_metadata: List[Tuple[Entry, FileMetadata]] = []
-
-        if self.is_dry_run:
-            chapters = Chapters.from_entry_chapters(entry=entry)
-        else:
-            chapters = Chapters.from_embedded_chapters(
-                ffprobe_path=FFMPEG.ffprobe_path(),
-                file_path=entry.get_download_file_path(),
-            )
+        chapters = Chapters.from_entry_chapters(entry=entry)
 
         # If no chapters, do not split anything
         if not chapters.contains_any_chapters():

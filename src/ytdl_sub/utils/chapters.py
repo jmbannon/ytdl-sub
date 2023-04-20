@@ -7,6 +7,7 @@ from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS, CHAPTERS
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
@@ -221,45 +222,6 @@ class Chapters:
         return Chapters(timestamps=timestamps, titles=titles)
 
     @classmethod
-    def from_embedded_chapters(cls, ffprobe_path: str, file_path: str) -> "Chapters":
-        """
-        Parameters
-        ----------
-        ffprobe_path
-            Path to ffprobe executable
-        file_path
-            File to read ffmpeg chapter metadata from
-
-        Returns
-        -------
-        Chapters object
-        """
-        proc = subprocess.run(
-            [
-                ffprobe_path,
-                "-loglevel",
-                "quiet",
-                "-print_format",
-                "json",
-                "-show_chapters",
-                "--",
-                file_path,
-            ],
-            check=True,
-            stdout=subprocess.PIPE,
-            encoding="utf-8",
-        )
-
-        embedded_chapters = json.loads(proc.stdout)
-        timestamps: List[Timestamp] = []
-        titles: List[str] = []
-        for chapter in embedded_chapters["chapters"]:
-            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
-            titles.append(chapter["tags"]["title"])
-
-        return Chapters(timestamps=timestamps, titles=titles)
-
-    @classmethod
     def from_entry_chapters(cls, entry: Entry) -> "Chapters":
         """
         Parameters
@@ -274,9 +236,8 @@ class Chapters:
         timestamps: List[Timestamp] = []
         titles: List[str] = []
 
-        chapters = {}
-        if entry.kwargs_contains("chapters"):
-            chapters = entry.kwargs("chapters") or []
+        # Try to get actual yt-dlp chapters first, then custom chapters, then default to empty list
+        chapters = entry.kwargs_get(CHAPTERS, default=entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS, default=[]))
 
         for chapter in chapters:
             timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
