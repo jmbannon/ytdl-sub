@@ -202,6 +202,7 @@ class Chapters:
         timestamps: List[Timestamp] = []
         titles: List[str] = []
 
+        # Try to accumulate chapters by parsing lines individually
         for line in input_str.split("\n"):
             # Timestamp captured, store it
             if match := Timestamp.TIMESTAMP_REGEX.search(line):
@@ -211,14 +212,12 @@ class Chapters:
                 # Remove timestamp and surrounding whitespace from it
                 title_str = re.sub(f"\\s*{re.escape(timestamp_str)}\\s*", " ", line).strip()
                 titles.append(title_str)
-            elif len(timestamps) >= 3:
-                return Chapters(timestamps=timestamps, titles=titles)
-            # Timestamp was not stored, if only contained 1, reset
-            else:
-                timestamps = []
-                titles = []
 
-        return Chapters(timestamps=timestamps, titles=titles)
+        # If more than 3 timestamps were parsed, return it
+        if len(timestamps) >= 3:
+            return Chapters(timestamps=timestamps, titles=titles)
+        # Otherwise return empty chapters
+        return Chapters(timestamps=[], titles=[])
 
     @classmethod
     def from_entry_chapters(cls, entry: Entry) -> "Chapters":
