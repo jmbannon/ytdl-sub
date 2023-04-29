@@ -181,6 +181,16 @@ class DictValidator(Validator):
 
     @final
     @property
+    def _root_name(self) -> str:
+        """
+        Returns
+        -------
+        "first" from the first.element.of.the.name
+        """
+        return self._name.split(".")[0]
+
+    @final
+    @property
     def _dict(self) -> dict:
         """
         Returns
