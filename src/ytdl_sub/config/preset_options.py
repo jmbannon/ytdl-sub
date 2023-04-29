@@ -133,7 +133,7 @@ class OverridesVariables(DictFormatterValidator):
             self._add_override_variable(
                 key_name="subscription_name",
                 format_string=self.subscription_name,
-                sanitize=sanitize
+                sanitize=sanitize,
             )
 
     @property
