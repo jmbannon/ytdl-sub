@@ -22,6 +22,13 @@ def single_video_preset_dict(output_directory):
         "ytdl_options": {
             "format": "worst[ext=mp4]",
         },
+        # test override variables added by ytdl-sub
+        "nfo_tags": {
+            "tags": {
+                "subscription_name": "{subscription_name}",
+                "subscription_name_sanitized": "{subscription_name_sanitized}",
+            }
+        },
         # also test video tags
         "video_tags": {
             "tags": {
