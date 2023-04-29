@@ -318,6 +318,12 @@ Source Variables
    :inherited-members:
    :undoc-members:
 
+Override Variables
+------------------
+
+.. autoclass:: ytdl_sub.config.preset_options.OverridesVariables()
+   :members:
+
 -------------------------------------------------------------------------------
 
 Config Types
