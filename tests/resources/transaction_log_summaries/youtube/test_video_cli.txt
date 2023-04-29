@@ -11,7 +11,5 @@ Files created:
       musicvideo:
         album: Music Videos
         artist: JMC
-        subscription_name: cli-dl-0302c976
-        subscription_name_sanitized: cli-dl-0302c976
         title: Oblivion Mod "Falcor" p.1
         year: 2010

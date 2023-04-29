@@ -11,7 +11,5 @@ Files created:
       musicvideo:
         album: Music Videos
         artist: JMC
-        subscription_name: music_video_single_video_test
-        subscription_name_sanitized: music_video_single_video_test
         title: Oblivion Mod "Falcor" p.1
         year: 2010

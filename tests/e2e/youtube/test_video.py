@@ -3,7 +3,6 @@ from conftest import preset_dict_to_dl_args
 from e2e.conftest import mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
-from mergedeep import mergedeep
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -21,13 +20,6 @@ def single_video_preset_dict(output_directory):
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
-        },
-        # test override variables added by ytdl-sub
-        "nfo_tags": {
-            "tags": {
-                "subscription_name": "{subscription_name}",
-                "subscription_name_sanitized": "{subscription_name_sanitized}",
-            }
         },
         # also test video tags
         "video_tags": {
@@ -55,6 +47,13 @@ def single_tv_show_video_nulled_values_preset_dict(output_directory):
         "ytdl_options": {
             "format": "worst[ext=mp4]",
             "max_downloads": 2,
+        },
+        # test override variables added by ytdl-sub
+        "nfo_tags": {
+            "tags": {
+                "subscription_name": "{subscription_name}",
+                "subscription_name_sanitized": "{subscription_name_sanitized}",
+            }
         },
         "overrides": {
             "url": "https://www.youtube.com/@ProjectZombie603",

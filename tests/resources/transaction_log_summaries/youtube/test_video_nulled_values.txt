@@ -43,6 +43,8 @@ Files created:
 
           This is the first time I've really used the editor, and the beginning of our first mod.  Hope you enjoy.
         season: 2010
+        subscription_name: tv_video_nulled_values
+        subscription_name_sanitized: tv_video_nulled_values
         title: 2010-08-13 - Oblivion Mod "Falcor" p.1
         year: 2010
   s2010.e000002 - Oblivion Mod ＂Falcor＂ p.2.mp4
@@ -78,5 +80,7 @@ Files created:
 
           Please keep in mind that the mod is not complete, so you'll see some blank areas during the video.  I haven't made LOD (Level of Distance) yet either, so areas far away will not appear.
         season: 2010
+        subscription_name: tv_video_nulled_values
+        subscription_name_sanitized: tv_video_nulled_values
         title: 2010-12-02 - Oblivion Mod "Falcor" p.2
         year: 2010
