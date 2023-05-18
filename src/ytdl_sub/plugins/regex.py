@@ -6,6 +6,7 @@ from typing import Optional
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.plugins.plugin import PluginPriority
@@ -245,12 +246,25 @@ class RegexPlugin(Plugin[RegexOptions]):
         modify_entry=PluginPriority.MODIFY_ENTRY_AFTER_SPLIT + 0,
     )
 
-    def modify_entry(self, entry: Entry) -> Optional[Entry]:
+    @classmethod
+    def _add_processed_regex_source_var(cls, entry: Entry, source_var: str) -> None:
+        if not entry.kwargs_contains(YTDL_SUB_REGEX_SOURCE_VARS):
+            entry.add_kwargs({YTDL_SUB_REGEX_SOURCE_VARS: []})
+
+        entry.kwargs(YTDL_SUB_REGEX_SOURCE_VARS).append(source_var)
+
+    @classmethod
+    def _contains_processed_regex_source_var(cls, entry: Entry, source_var: str) -> bool:
+        return source_var in entry.kwargs_get(YTDL_SUB_REGEX_SOURCE_VARS, [])
+
+    def _modify_entry_metadata(self, entry: Entry, is_metadata_stage: bool) -> Optional[Entry]:
         """
         Parameters
         ----------
         entry
             Entry to add source variables to
+        is_metadata_stage
+            Whether this is called at the metadata stage or modify stage
 
         Returns
         -------
@@ -265,6 +279,19 @@ class RegexPlugin(Plugin[RegexOptions]):
 
         # Iterate each source var to capture and add to the entry
         for source_var, regex_options in self.plugin_options.source_variable_capture_dict.items():
+
+            # Record which regex source variables are processed, to
+            # process as many variables as possible in the metadata stage, then the rest
+            # after the media file has been downloaded.
+            if self._contains_processed_regex_source_var(entry, source_var):
+                continue
+
+            # Continue if the source var isn't in the dict since entry variables could be added
+            # after the metadata stage
+            if is_metadata_stage and source_var not in entry_variable_dict:
+                continue
+
+            self._add_processed_regex_source_var(entry, source_var)
             maybe_capture = regex_options.match.match_any(input_str=entry_variable_dict[source_var])
 
             # If no capture
@@ -331,3 +358,15 @@ class RegexPlugin(Plugin[RegexOptions]):
                 )
 
         return entry
+
+    def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
+        """
+        Perform regex at the metadata stage
+        """
+        return self._modify_entry_metadata(entry, is_metadata_stage=True)
+
+    def modify_entry(self, entry: Entry) -> Optional[Entry]:
+        """
+        Perform regex at the metadata stage
+        """
+        return self._modify_entry_metadata(entry, is_metadata_stage=False)
