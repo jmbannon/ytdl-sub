@@ -1,4 +1,6 @@
 import pytest
+from expected_download import assert_expected_downloads
+from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -17,9 +19,23 @@ def preset_dict(output_directory):
     }
 
 
+@pytest.fixture
+def playlist_preset_dict(output_directory):
+    return {
+        "preset": "music_video",
+        "download": {"url": "https://www.youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
+        "output_options": {"output_directory": output_directory},
+        # download the worst format so it is fast
+        "ytdl_options": {
+            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
+        },
+        "match_filters": {"filters": ["view_count > 20000"]},
+    }
+
+
 class TestFileConvert:
     @pytest.mark.parametrize("dry_run", [True, False])
-    def test_match_filters(
+    def test_match_filters_empty(
         self,
         music_video_config,
         preset_dict,
@@ -34,3 +50,31 @@ class TestFileConvert:
 
         transaction_log = subscription.download(dry_run=dry_run)
         assert transaction_log.is_empty
+
+    @pytest.mark.parametrize("dry_run", [True, False])
+    def test_match_filters_partial(
+        self,
+        music_video_config,
+        playlist_preset_dict,
+        output_directory,
+        dry_run,
+    ):
+        subscription = Subscription.from_dict(
+            config=music_video_config,
+            preset_name="match_filter_test",
+            preset_dict=playlist_preset_dict,
+        )
+
+        transaction_log = subscription.download(dry_run=dry_run)
+
+        summary_path = "plugins/match_filters"
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"{summary_path}/test_match_filters_partial.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=dry_run,
+            expected_download_summary_file_name=f"{summary_path}/test_match_filters_partial.json",
+        )
