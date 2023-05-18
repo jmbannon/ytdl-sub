@@ -257,16 +257,6 @@ class RegexPlugin(Plugin[RegexOptions]):
     def _contains_processed_regex_source_var(cls, entry: Entry, source_var: str) -> bool:
         return source_var in entry.kwargs_get(YTDL_SUB_REGEX_SOURCE_VARS, [])
 
-    def _record_source_vars_to_process(self, entry: Entry) -> None:
-
-        entry.add_kwargs(
-            {
-                YTDL_SUB_REGEX_SOURCE_VARS: list(
-                    self.plugin_options.source_variable_capture_dict.keys()
-                )
-            }
-        )
-
     def _modify_entry_metadata(self, entry: Entry, is_metadata_stage: bool) -> Optional[Entry]:
         """
         Parameters
