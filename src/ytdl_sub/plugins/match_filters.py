@@ -84,6 +84,10 @@ class MatchFiltersPlugin(Plugin[MatchFiltersOptions]):
         }
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
+        """
+        If an entry is marked as not being downloaded due to a match_filter reject,
+        do not propagate the entry further (especially since there is no entry file!)
+        """
         if entry.kwargs_get(YTDL_SUB_MATCH_FILTER_REJECT, False):
             logger.info("Entry rejected by match-filter, skipping ..")
             return None
