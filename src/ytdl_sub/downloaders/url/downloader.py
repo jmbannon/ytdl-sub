@@ -11,6 +11,8 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
+from yt_dlp.utils import RejectedVideoReached
+
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
 from ytdl_sub.downloaders.base_downloader import BaseDownloaderOptionsT
@@ -23,7 +25,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
-from ytdl_sub.entries.variables.kwargs import COLLECTION_URL
+from ytdl_sub.entries.variables.kwargs import COLLECTION_URL, YTDL_SUB_MATCH_FILTER_REJECT
 from ytdl_sub.entries.variables.kwargs import COMMENTS
 from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
@@ -530,7 +532,17 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
             self._url_state.entries_total,
             entry.title,
         )
-        download_entry = self._extract_entry_info_with_retry(entry=entry)
+
+        # Match-filters are applied at the download stage (not metadata stage).
+        # If the download is rejected, and match_filter is present in the ytdl options,
+        # then filter downstream in the match_filter plugin
+        try:
+            download_entry = self._extract_entry_info_with_retry(entry=entry)
+        except RejectedVideoReached:
+            if 'match_filter' in self.download_ytdl_options:
+                entry.add_kwargs({YTDL_SUB_MATCH_FILTER_REJECT: True})
+                return entry
+            raise
 
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
             upload_date_standardized=entry.upload_date_standardized

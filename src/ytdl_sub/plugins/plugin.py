@@ -24,7 +24,9 @@ class PluginPriority:
     # If modify_entry priority is >= to this value, run after split
     MODIFY_ENTRY_AFTER_SPLIT = 10
 
-    def __init__(self, modify_entry: int = 0, post_process: int = 0):
+    MODIFY_ENTRY_FIRST = 0
+
+    def __init__(self, modify_entry: int = 5, post_process: int = 5):
         self.modify_entry = modify_entry
         self.post_process = post_process
 
