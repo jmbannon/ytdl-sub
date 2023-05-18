@@ -79,6 +79,10 @@ class SubscriptionYTDLOptions:
         }
 
     @property
+    def _download_only_options(self) -> Dict:
+        return {"break_on_reject": True}
+
+    @property
     def _output_options(self) -> Dict:
         ytdl_options = {}
 
@@ -110,7 +114,6 @@ class SubscriptionYTDLOptions:
             self._global_options,
             self._output_options,
             self._plugin_ytdl_options(DateRangePlugin),
-            self._plugin_ytdl_options(MatchFiltersPlugin),
             self._user_ytdl_options,  # user ytdl options...
             self._info_json_only_options,  # then info_json_only options
         )
@@ -125,12 +128,13 @@ class SubscriptionYTDLOptions:
         ytdl_options_builder = YTDLOptionsBuilder().add(
             self._global_options,
             self._output_options,
-            self._plugin_ytdl_options(DateRangePlugin),
+            self._plugin_ytdl_options(MatchFiltersPlugin),
             self._plugin_ytdl_options(FileConvertPlugin),
             self._plugin_ytdl_options(SubtitlesPlugin),
             self._plugin_ytdl_options(ChaptersPlugin),
             self._plugin_ytdl_options(AudioExtractPlugin),
             self._user_ytdl_options,  # user ytdl options...
+            self._download_only_options,  # then download_only options
         )
         # Add dry run options last if enabled
         if self._dry_run:
