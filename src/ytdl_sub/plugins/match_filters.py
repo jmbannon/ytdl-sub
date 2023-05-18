@@ -7,8 +7,9 @@ from yt_dlp import match_filter_func
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_MATCH_FILTER_REJECT
-from ytdl_sub.plugins.plugin import Plugin, PluginPriority
+from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
+from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.validators import StringListValidator
 
@@ -65,9 +66,7 @@ class MatchFiltersOptions(PluginOptions):
 
 class MatchFiltersPlugin(Plugin[MatchFiltersOptions]):
     plugin_options_type = MatchFiltersOptions
-    priority = PluginPriority(
-        modify_entry=PluginPriority.MODIFY_ENTRY_FIRST
-    )
+    priority = PluginPriority(modify_entry=PluginPriority.MODIFY_ENTRY_FIRST)
 
     def ytdl_options(self) -> Optional[Dict]:
         """
@@ -86,6 +85,7 @@ class MatchFiltersPlugin(Plugin[MatchFiltersOptions]):
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         if entry.kwargs_get(YTDL_SUB_MATCH_FILTER_REJECT, False):
+            logger.info("Entry rejected by match-filter, skipping ..")
             return None
 
         return entry

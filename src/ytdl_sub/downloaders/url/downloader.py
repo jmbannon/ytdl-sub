@@ -25,7 +25,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
-from ytdl_sub.entries.variables.kwargs import COLLECTION_URL, YTDL_SUB_MATCH_FILTER_REJECT
+from ytdl_sub.entries.variables.kwargs import COLLECTION_URL
 from ytdl_sub.entries.variables.kwargs import COMMENTS
 from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
@@ -33,6 +33,7 @@ from ytdl_sub.entries.variables.kwargs import REQUESTED_SUBTITLES
 from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
 from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
+from ytdl_sub.entries.variables.kwargs import YTDL_SUB_MATCH_FILTER_REJECT
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
@@ -525,6 +526,11 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
         Returns
         -------
         The entry that was downloaded successfully
+
+        Raises
+        ------
+        RejectedVideoReached
+          If a video was rejected and was not from match_filter
         """
         download_logger.info(
             "Downloading entry %d/%d: %s",
@@ -539,7 +545,7 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
         try:
             download_entry = self._extract_entry_info_with_retry(entry=entry)
         except RejectedVideoReached:
-            if 'match_filter' in self.download_ytdl_options:
+            if "match_filter" in self.download_ytdl_options:
                 entry.add_kwargs({YTDL_SUB_MATCH_FILTER_REJECT: True})
                 return entry
             raise
