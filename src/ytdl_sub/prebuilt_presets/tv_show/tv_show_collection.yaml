@@ -404,3 +404,383 @@ presets:
           - tag: "{collection_season_20_name}"
             attributes:
               number: "20"
+
+  collection_season_21:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_21_url}"
+          variables:
+            collection_season_number: "21"
+            collection_season_number_padded: "21"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_21_name}"
+            attributes:
+              number: "21"
+
+  collection_season_22:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_22_url}"
+          variables:
+            collection_season_number: "22"
+            collection_season_number_padded: "22"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_22_name}"
+            attributes:
+              number: "22"
+
+  collection_season_23:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_23_url}"
+          variables:
+            collection_season_number: "23"
+            collection_season_number_padded: "23"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_23_name}"
+            attributes:
+              number: "23"
+
+  collection_season_24:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_24_url}"
+          variables:
+            collection_season_number: "24"
+            collection_season_number_padded: "24"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_24_name}"
+            attributes:
+              number: "24"
+
+  collection_season_25:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_25_url}"
+          variables:
+            collection_season_number: "25"
+            collection_season_number_padded: "25"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_25_name}"
+            attributes:
+              number: "25"
+
+  collection_season_26:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_26_url}"
+          variables:
+            collection_season_number: "26"
+            collection_season_number_padded: "26"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_26_name}"
+            attributes:
+              number: "26"
+
+  collection_season_27:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_27_url}"
+          variables:
+            collection_season_number: "27"
+            collection_season_number_padded: "27"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_27_name}"
+            attributes:
+              number: "27"
+
+  collection_season_28:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_28_url}"
+          variables:
+            collection_season_number: "28"
+            collection_season_number_padded: "28"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_28_name}"
+            attributes:
+              number: "28"
+
+  collection_season_29:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_29_url}"
+          variables:
+            collection_season_number: "29"
+            collection_season_number_padded: "29"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_29_name}"
+            attributes:
+              number: "29"
+
+  collection_season_30:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_30_url}"
+          variables:
+            collection_season_number: "30"
+            collection_season_number_padded: "30"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_30_name}"
+            attributes:
+              number: "30"
+
+  collection_season_31:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_31_url}"
+          variables:
+            collection_season_number: "31"
+            collection_season_number_padded: "31"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_31_name}"
+            attributes:
+              number: "31"
+
+  collection_season_32:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_32_url}"
+          variables:
+            collection_season_number: "32"
+            collection_season_number_padded: "32"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_32_name}"
+            attributes:
+              number: "32"
+
+  collection_season_33:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_33_url}"
+          variables:
+            collection_season_number: "33"
+            collection_season_number_padded: "33"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_33_name}"
+            attributes:
+              number: "33"
+
+  collection_season_34:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_34_url}"
+          variables:
+            collection_season_number: "34"
+            collection_season_number_padded: "34"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_34_name}"
+            attributes:
+              number: "34"
+
+  collection_season_35:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_35_url}"
+          variables:
+            collection_season_number: "35"
+            collection_season_number_padded: "35"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_35_name}"
+            attributes:
+              number: "35"
+
+  collection_season_36:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_36_url}"
+          variables:
+            collection_season_number: "36"
+            collection_season_number_padded: "36"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_36_name}"
+            attributes:
+              number: "36"
+
+  collection_season_37:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_37_url}"
+          variables:
+            collection_season_number: "37"
+            collection_season_number_padded: "37"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_37_name}"
+            attributes:
+              number: "37"
+
+  collection_season_38:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_38_url}"
+          variables:
+            collection_season_number: "38"
+            collection_season_number_padded: "38"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_38_name}"
+            attributes:
+              number: "38"
+
+  collection_season_39:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_39_url}"
+          variables:
+            collection_season_number: "39"
+            collection_season_number_padded: "39"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_39_name}"
+            attributes:
+              number: "39"
+
+  collection_season_40:
+    download:
+      download_strategy: "multi_url"
+      urls:
+        - url: "{collection_season_40_url}"
+          variables:
+            collection_season_number: "40"
+            collection_season_number_padded: "40"
+          playlist_thumbnails:
+            - name: "{season_poster_file_name}"
+              uid: "latest_entry"
+
+    output_directory_nfo_tags:
+      tags:
+        namedseason:
+          - tag: "{collection_season_40_name}"
+            attributes:
+              number: "40"
