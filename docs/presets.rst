@@ -110,7 +110,7 @@ Season Presets
 * ``collection_season_3``
 * ``collection_season_4``
 * ``...``
-* ``collection_season_20``
+* ``collection_season_40``
 
 Example
 """""""
