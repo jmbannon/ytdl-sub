@@ -40,7 +40,7 @@ class SourceVariableRegex(StrictDictValidator):
         if self._match is None and self._exclude is None:
             raise self._validation_exception("must specify either `match` or `exclude`")
 
-        if self._match is None and (self._capture_group_defaults or self._capture_group_names):
+        if self._match is None and (self._capture_group_defaults or self._capture_group_names.list):
             raise self._validation_exception(
                 "capture group parameters requires at least one `match` to be specified"
             )
@@ -56,7 +56,7 @@ class SourceVariableRegex(StrictDictValidator):
             )
 
         # If there are capture groups, ensure there are capture group names
-        if len(self._capture_group_names.list) != self._match.num_capture_groups:
+        if self._match and (len(self._capture_group_names.list) != self._match.num_capture_groups):
             raise self._validation_exception(
                 f"number of capture group names must match number of capture groups, "
                 f"{len(self._capture_group_names.list)} != {self._match.num_capture_groups}"
@@ -66,7 +66,7 @@ class SourceVariableRegex(StrictDictValidator):
     def match(self) -> Optional[RegexListValidator]:
         """
         List of regex strings to try to match against a source variable. Each regex
-        string must have the same number of capture groups. Can not be used with ``match``
+        string must have the same number of capture groups.
         """
         return self._match
 
@@ -74,7 +74,8 @@ class SourceVariableRegex(StrictDictValidator):
     def exclude(self) -> Optional[RegexListValidator]:
         """
         List of regex strings to try to match against a source variable. If one of the regex strings
-        match, then the entry will be skipped.
+        match, then the entry will be skipped. If both ``exclude`` and ``match`` are specified,
+        entries will get skipped if the regex matches against both ``exclude`` and ``match``.
         """
         return self._exclude
 
@@ -332,62 +333,62 @@ class RegexPlugin(Plugin[RegexOptions]):
             ):
                 return self._try_skip_entry(entry=entry, source_var=source_var)
 
-            maybe_capture: Optional[List[str]] = None
+            # If match is present
             if regex_options.match is not None:
                 maybe_capture = regex_options.match.match_any(
                     input_str=entry_variable_dict[source_var]
                 )
 
-            # If no capture
-            if maybe_capture is None:
-                # and no defaults
-                if not regex_options.has_defaults:
-                    return self._try_skip_entry(entry=entry, source_var=source_var)
+                # And nothing matched
+                if maybe_capture is None:
+                    # and no defaults
+                    if not regex_options.has_defaults:
+                        return self._try_skip_entry(entry=entry, source_var=source_var)
 
-                # otherwise, use defaults (apply them using the original entry source dict)
-                source_variables_and_overrides_dict = dict(
-                    entry_variable_dict, **self.overrides.dict_with_format_strings
-                )
+                    # otherwise, use defaults (apply them using the original entry source dict)
+                    source_variables_and_overrides_dict = dict(
+                        entry_variable_dict, **self.overrides.dict_with_format_strings
+                    )
 
-                # add both the default...
-                entry.add_variables(
-                    variables_to_add={
-                        regex_options.capture_group_names[i]: default.apply_formatter(
-                            variable_dict=source_variables_and_overrides_dict
-                        )
-                        for i, default in enumerate(regex_options.capture_group_defaults)
-                    },
-                )
-                # and sanitized default
-                entry.add_variables(
-                    variables_to_add={
-                        f"{regex_options.capture_group_names[i]}_sanitized": sanitize_filename(
-                            default.apply_formatter(
+                    # add both the default...
+                    entry.add_variables(
+                        variables_to_add={
+                            regex_options.capture_group_names[i]: default.apply_formatter(
                                 variable_dict=source_variables_and_overrides_dict
                             )
-                        )
-                        for i, default in enumerate(regex_options.capture_group_defaults)
-                    },
-                )
-            # There is a capture, add the source variables to the entry as
-            # {source_var}_capture_1, {source_var}_capture_2, ...
-            else:
-                # Add the value...
-                entry.add_variables(
-                    variables_to_add={
-                        regex_options.capture_group_names[i]: capture
-                        for i, capture in enumerate(maybe_capture)
-                    },
-                )
-                # And the sanitized value
-                entry.add_variables(
-                    variables_to_add={
-                        f"{regex_options.capture_group_names[i]}_sanitized": sanitize_filename(
-                            capture
-                        )
-                        for i, capture in enumerate(maybe_capture)
-                    },
-                )
+                            for i, default in enumerate(regex_options.capture_group_defaults)
+                        },
+                    )
+                    # and sanitized default
+                    entry.add_variables(
+                        variables_to_add={
+                            f"{regex_options.capture_group_names[i]}_sanitized": sanitize_filename(
+                                default.apply_formatter(
+                                    variable_dict=source_variables_and_overrides_dict
+                                )
+                            )
+                            for i, default in enumerate(regex_options.capture_group_defaults)
+                        },
+                    )
+                # There is a capture, add the source variables to the entry as
+                # {source_var}_capture_1, {source_var}_capture_2, ...
+                else:
+                    # Add the value...
+                    entry.add_variables(
+                        variables_to_add={
+                            regex_options.capture_group_names[i]: capture
+                            for i, capture in enumerate(maybe_capture)
+                        },
+                    )
+                    # And the sanitized value
+                    entry.add_variables(
+                        variables_to_add={
+                            f"{regex_options.capture_group_names[i]}_sanitized": sanitize_filename(
+                                capture
+                            )
+                            for i, capture in enumerate(maybe_capture)
+                        },
+                    )
 
         return entry
 
