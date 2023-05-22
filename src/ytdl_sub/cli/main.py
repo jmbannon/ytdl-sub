@@ -316,8 +316,9 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
                 and not config.config_options.experimental.enable_update_with_info_json
             ):
                 raise ExperimentalFeatureNotEnabled(
-                    "--update-with-info-json requires setting "
-                    "configuration.experimental.enable_update_with_info_json to True. This feature is ",
+                    "--update-with-info-json requires setting"
+                    " configuration.experimental.enable_update_with_info_json to True. This"
+                    " feature is ",
                     "still being tested and has the ability to destroy files. Ensure you have a ",
                     "full backup before usage. You have been warned!",
                 )
