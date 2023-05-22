@@ -1,17 +1,20 @@
 import copy
 import re
+from typing import Any
+from typing import Dict
 
+import mergedeep
 import pytest
 from expected_transaction_log import assert_transaction_log_matches
 
-from ytdl_sub.config.preset import Preset
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.exceptions import ValidationException
 
 
 @pytest.fixture
-def regex_subscription_dict(output_directory):
+def regex_subscription_dict_base(output_directory):
     return {
         "preset": "music_video",
         "download": {"url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
@@ -24,13 +27,6 @@ def regex_subscription_dict(output_directory):
         "regex": {
             # tests that skip_if_match_fails defaults to True
             "from": {
-                "title": {
-                    "match": [
-                        "should not cap (.+) - (.+)",
-                        ".*\\[(.+) - (Feb.+)]",  # should filter out march video
-                    ],
-                    "capture_group_names": ["title_type", "title_date"],
-                },
                 "description": {
                     "match": [".*http:\\/\\/(.+).com.*"],
                     "capture_group_names": ["description_website"],
@@ -48,58 +44,149 @@ def regex_subscription_dict(output_directory):
                 },
             },
         },
-        "nfo_tags": {
-            "tags": {
-                "title_cap_1": "{title_type}",
-                "title_cap_1_sanitized": "{title_type_sanitized}",
-                "title_cap_2": "{title_date}",
-                "desc_cap": "{description_website}",
-                "upload_date_both_caps": "{upload_captured_year} and {upload_captured_month}",
-                "override_with_capture_variable": "{contains_regex_default}",
-                "override_with_capture_variable_sanitized": "{contains_regex_sanitized_default}",
-            }
-        },
         "overrides": {
             "in_regex_default": "in regex default",
-            "contains_regex_default": "contains {title_type}",
-            "contains_regex_sanitized_default": "contains {title_type_sanitized}",
         },
     }
 
 
 @pytest.fixture
-def regex_subscription_dict_no_match_fails(regex_subscription_dict):
-    regex_subscription_dict["regex"]["skip_if_match_fails"] = False
-    return regex_subscription_dict
+def regex_subscription_dict(regex_subscription_dict_base, output_directory):
+    return mergedeep.merge(
+        regex_subscription_dict_base,
+        {
+            "regex": {
+                # tests that skip_if_match_fails defaults to True
+                "from": {
+                    "title": {
+                        "match": [
+                            "should not cap (.+) - (.+)",
+                            ".*\\[(.+) - (Feb.+)]",  # should filter out march video
+                        ],
+                        "capture_group_names": ["title_type", "title_date"],
+                    },
+                },
+            },
+            "nfo_tags": {
+                "tags": {
+                    "title_cap_1": "{title_type}",
+                    "title_cap_1_sanitized": "{title_type_sanitized}",
+                    "title_cap_2": "{title_date}",
+                    "desc_cap": "{description_website}",
+                    "upload_date_both_caps": "{upload_captured_year} and {upload_captured_month}",
+                    "override_with_capture_variable": "{contains_regex_default}",
+                    "override_with_capture_variable_sanitized": "{contains_regex_sanitized_default}",
+                }
+            },
+            "overrides": {
+                "contains_regex_default": "contains {title_type}",
+                "contains_regex_sanitized_default": "contains {title_type_sanitized}",
+            },
+        },
+    )
+
+
+@pytest.fixture
+def regex_subscription_dict_exclude(regex_subscription_dict_base, output_directory):
+    return mergedeep.merge(
+        regex_subscription_dict_base,
+        {
+            "regex": {
+                # tests that skip_if_match_fails defaults to True
+                "from": {
+                    "title": {
+                        "exclude": [
+                            "should not cap",
+                            ".*Feb.*",  # should filter out march video
+                        ],
+                    },
+                },
+            },
+        },
+    )
+
+
+@pytest.fixture
+def regex_subscription_dict_match_and_exclude(regex_subscription_dict_base, output_directory):
+    return mergedeep.merge(
+        regex_subscription_dict_base,
+        {
+            "regex": {
+                # tests that skip_if_match_fails defaults to True
+                "from": {
+                    "title": {
+                        "match": [
+                            "should not cap (.+) - (.+)",
+                            ".*\\[(.+) - (Feb.+)]",  # should filter out march video
+                        ],
+                        "capture_group_names": ["title_type", "title_date"],
+                        "exclude": [
+                            "should not cap",
+                            ".*27.*",  # should filter out Feb 27th video
+                        ],
+                    },
+                },
+            },
+            "nfo_tags": {
+                "tags": {
+                    "title_cap_1": "{title_type}",
+                    "title_cap_1_sanitized": "{title_type_sanitized}",
+                    "title_cap_2": "{title_date}",
+                    "desc_cap": "{description_website}",
+                    "upload_date_both_caps": "{upload_captured_year} and {upload_captured_month}",
+                    "override_with_capture_variable": "{contains_regex_default}",
+                    "override_with_capture_variable_sanitized": "{contains_regex_sanitized_default}",
+                }
+            },
+            "overrides": {
+                "contains_regex_default": "contains {title_type}",
+                "contains_regex_sanitized_default": "contains {title_type_sanitized}",
+            },
+        },
+    )
 
 
 @pytest.fixture
 def playlist_subscription(music_video_config, regex_subscription_dict):
-    playlist_preset = Preset.from_dict(
+    return Subscription.from_dict(
         config=music_video_config,
         preset_name="regex_capture_playlist_test",
         preset_dict=regex_subscription_dict,
     )
 
-    return Subscription.from_preset(
-        preset=playlist_preset,
+
+@pytest.fixture
+def playlist_subscription_no_match_fails(
+    music_video_config: ConfigFile, regex_subscription_dict: Dict[str, Any]
+):
+    regex_subscription_dict["regex"]["skip_if_match_fails"] = False
+
+    return Subscription.from_dict(
         config=music_video_config,
+        preset_name="regex_capture_playlist_test",
+        preset_dict=regex_subscription_dict,
     )
 
 
 @pytest.fixture
-def playlist_subscription_no_match_fails(
-    music_video_config, regex_subscription_dict_no_match_fails
-):
-    playlist_preset = Preset.from_dict(
+def playlist_subscription_exclude(
+    music_video_config: ConfigFile, regex_subscription_dict_exclude: Dict[str, Any]
+) -> Subscription:
+    return Subscription.from_dict(
         config=music_video_config,
-        preset_name="regex_capture_playlist_test",
-        preset_dict=regex_subscription_dict_no_match_fails,
+        preset_name="regex_exclude_playlist_test",
+        preset_dict=regex_subscription_dict_exclude,
     )
 
-    return Subscription.from_preset(
-        preset=playlist_preset,
+
+@pytest.fixture
+def playlist_subscription_match_and_exclude(
+    music_video_config: ConfigFile, regex_subscription_dict_match_and_exclude: Dict[str, Any]
+) -> Subscription:
+    return Subscription.from_dict(
         config=music_video_config,
+        preset_name="regex_match_and_exclude_playlist_test",
+        preset_dict=regex_subscription_dict_match_and_exclude,
     )
 
 
@@ -113,6 +200,27 @@ class TestRegex:
             transaction_log_summary_file_name="plugins/test_regex.txt",
         )
 
+    def test_regex_excludes_success(self, playlist_subscription_exclude, output_directory):
+        # Should only contain the march video
+        transaction_log = playlist_subscription_exclude.download(dry_run=True)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="plugins/test_regex_exclude.txt",
+        )
+
+    def test_regex_match_and_excludes_success(
+        self, playlist_subscription_match_and_exclude, output_directory
+    ):
+        # Should only contain the Feb 1st video
+        transaction_log = playlist_subscription_match_and_exclude.download(dry_run=True)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="plugins/test_regex_match_and_exclude.txt",
+            regenerate_transaction_log=True,
+        )
+
     def test_regex_fails_no_match(self, playlist_subscription_no_match_fails, output_directory):
         with pytest.raises(
             RegexNoMatchException,
@@ -121,6 +229,34 @@ class TestRegex:
             ),
         ):
             _ = playlist_subscription_no_match_fails.download(dry_run=True)
+
+    def test_regex_fails_capture_group_with_only_excludes(
+        self, regex_subscription_dict_exclude, music_video_config
+    ):
+        regex_subscription_dict_exclude["regex"]["from"]["title"]["capture_group_names"] = ["uid"]
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "capture group parameters requires at least one `match` to be specified"
+            ),
+        ):
+            _ = Subscription.from_dict(
+                config=music_video_config,
+                preset_name="test_regex_fails_capture_group_is_source_variable",
+                preset_dict=regex_subscription_dict_exclude,
+            )
+
+    def test_regex_fails_no_match_or_exclude(self, regex_subscription_dict, music_video_config):
+        del regex_subscription_dict["regex"]["from"]["title"]["match"]
+        with pytest.raises(
+            ValidationException,
+            match=re.escape("must specify either `match` or `exclude`"),
+        ):
+            _ = Subscription.from_dict(
+                config=music_video_config,
+                preset_name="test_regex_fails_capture_group_is_source_variable",
+                preset_dict=regex_subscription_dict,
+            )
 
     def test_regex_fails_capture_group_is_source_variable(
         self, regex_subscription_dict, music_video_config

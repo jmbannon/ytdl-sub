@@ -214,7 +214,7 @@ regex
   :members: skip_if_match_fails
 
 .. autoclass:: ytdl_sub.plugins.regex.SourceVariableRegex()
-  :members: match, capture_group_names, capture_group_defaults
+  :members: match, capture_group_names, capture_group_defaults, exclude
   :member-order: bysource
   :exclude-members: partial_validate
 

@@ -1,0 +1,22 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-regex_match_and_exclude_playlist_test-download-archive.json
+{output_directory}/Project Zombie
+  Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+  Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].info.json
+  Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].mp4
+  Project Zombie - Jesse's Minecraft Server [Trailer - Feb.1].nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: Project Zombie
+        desc_cap: www.jesseminecraft.webs
+        override_with_capture_variable: contains Trailer
+        override_with_capture_variable_sanitized: contains Trailer
+        title: Jesse's Minecraft Server [Trailer - Feb.1]
+        title_cap_1: Trailer
+        title_cap_1_sanitized: Trailer
+        title_cap_2: Feb.1
+        upload_date_both_caps: First and Second containing in regex default
+        year: 2011
