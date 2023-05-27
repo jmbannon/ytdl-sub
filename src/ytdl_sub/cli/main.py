@@ -199,7 +199,7 @@ def _output_transaction_log(
     transaction_log_file_contents = ""
     for subscription, transaction_log in transaction_logs:
         if transaction_log.is_empty:
-            transaction_log_contents = f"No files changed for {subscription.name}\n"
+            transaction_log_contents = f"\nNo files changed for {subscription.name}"
         else:
             transaction_log_contents = (
                 f"Transaction log for {subscription.name}:\n"
