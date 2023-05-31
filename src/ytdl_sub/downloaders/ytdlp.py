@@ -102,6 +102,10 @@ class YTDLP:
             if is_downloaded and is_thumbnail_downloaded:
                 return entry_dict
 
+            # Always add check_formats
+            # See https://github.com/yt-dlp/yt-dlp/issues/502
+            copied_ytdl_options_overrides["check_formats"] = True
+
             # If the video file is downloaded but the thumbnail is not, then do not download
             # the video again
             if is_downloaded and not is_thumbnail_downloaded:
