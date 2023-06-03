@@ -8,6 +8,7 @@ Files created:
   s01.e80052699 - Mock Entry ２０-４.info.json
   s01.e80052699 - Mock Entry ２０-４.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-06
       episode_id: 80052699
       genre: ytdl-sub
@@ -22,6 +23,7 @@ Files created:
   s01.e80062698 - Mock Entry ２０-５.info.json
   s01.e80062698 - Mock Entry ２０-５.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-07-06
       episode_id: 80062698
       genre: ytdl-sub
@@ -36,6 +38,7 @@ Files created:
   s01.e80062699 - Mock Entry ２０-６.info.json
   s01.e80062699 - Mock Entry ２０-６.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-07-06
       episode_id: 80062699
       genre: ytdl-sub
@@ -50,6 +53,7 @@ Files created:
   s01.e80072599 - Mock Entry ２０-７.info.json
   s01.e80072599 - Mock Entry ２０-７.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-06-06
       episode_id: 80072599
       genre: ytdl-sub
@@ -66,6 +70,7 @@ Files created:
   s02.e79052499 - Mock Entry ２１-１.info.json
   s02.e79052499 - Mock Entry ２１-１.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2021-08-08
       episode_id: 79052499
       genre: ytdl-sub
@@ -80,6 +85,7 @@ Files created:
   s02.e80052498 - Mock Entry ２０-１.info.json
   s02.e80052498 - Mock Entry ２０-１.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-08
       episode_id: 80052498
       genre: ytdl-sub
@@ -94,6 +100,7 @@ Files created:
   s02.e80052499 - Mock Entry ２０-２.info.json
   s02.e80052499 - Mock Entry ２０-２.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-08
       episode_id: 80052499
       genre: ytdl-sub
@@ -108,6 +115,7 @@ Files created:
   s02.e80052599 - Mock Entry ２０-３.info.json
   s02.e80052599 - Mock Entry ２０-３.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-07
       episode_id: 80052599
       genre: ytdl-sub

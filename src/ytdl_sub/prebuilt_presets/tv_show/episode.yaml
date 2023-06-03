@@ -26,10 +26,12 @@ presets:
 #     episode_number
 #     episode_number_padded
       tv_show_genre: "ytdl-sub"
+      tv_show_content_rating: "TV-14"
       season_title: "{season_number_padded}"
       episode_title: "{upload_date_standardized} - {title}"
       episode_plot: "{webpage_url}\n\n{description}"
       episode_year: "{upload_year}"
+      episode_content_rating: "{tv_show_content_rating}"
       episode_date_standardized: "{upload_date_standardized}"
       episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {file_title}"
       episode_file_path: "Season {season_number_padded}/{episode_file_name}"
@@ -44,6 +46,7 @@ presets:
         synopsis: "{episode_plot}"
         year: "{episode_year}"
         date: "{episode_date_standardized}"
+        contentRating: "{episode_content_rating}"
 
   _episode_nfo_tags:
     nfo_tags:
@@ -58,6 +61,7 @@ presets:
         plot: "{episode_plot}"
         year: "{episode_year}"
         aired: "{episode_date_standardized}"
+        mpaa: "{episode_content_rating}"
 
     output_directory_nfo_tags:
       nfo_name: "tvshow.nfo"
@@ -66,6 +70,7 @@ presets:
         title: "{tv_show_name}"
         genre:
          - "{tv_show_genre}"
+        mpaa: "{tv_show_content_rating}"
 
 ####################################################################################################
 

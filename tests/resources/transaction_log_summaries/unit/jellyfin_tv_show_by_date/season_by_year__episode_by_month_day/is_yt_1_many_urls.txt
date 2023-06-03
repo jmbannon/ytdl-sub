@@ -8,12 +8,14 @@ Files created:
     NFO tags:
       tvshow:
         genre: ytdl-sub
+        mpaa: TV-14
         title: Best Prebuilt TV Show by Date
 {output_directory}/Season 2020
   s2020.e060601 - Mock Entry 20-7-thumb.jpg
   s2020.e060601 - Mock Entry 20-7.info.json
   s2020.e060601 - Mock Entry 20-7.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-06-06
       episode_id: 60601
       genre: ytdl-sub
@@ -30,6 +32,7 @@ Files created:
         aired: 2020-06-06
         episode: 60601
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-7.com
 
@@ -41,6 +44,7 @@ Files created:
   s2020.e070601 - Mock Entry 20-6.info.json
   s2020.e070601 - Mock Entry 20-6.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-07-06
       episode_id: 70601
       genre: ytdl-sub
@@ -57,6 +61,7 @@ Files created:
         aired: 2020-07-06
         episode: 70601
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-6.com
 
@@ -68,6 +73,7 @@ Files created:
   s2020.e070602 - Mock Entry 20-5.info.json
   s2020.e070602 - Mock Entry 20-5.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-07-06
       episode_id: 70602
       genre: ytdl-sub
@@ -84,6 +90,7 @@ Files created:
         aired: 2020-07-06
         episode: 70602
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-5.com
 
@@ -95,6 +102,7 @@ Files created:
   s2020.e080601 - Mock Entry 20-4.info.json
   s2020.e080601 - Mock Entry 20-4.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-06
       episode_id: 80601
       genre: ytdl-sub
@@ -111,6 +119,7 @@ Files created:
         aired: 2020-08-06
         episode: 80601
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-4.com
 
@@ -122,6 +131,7 @@ Files created:
   s2020.e080701 - Mock Entry 20-3.info.json
   s2020.e080701 - Mock Entry 20-3.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-07
       episode_id: 80701
       genre: ytdl-sub
@@ -138,6 +148,7 @@ Files created:
         aired: 2020-08-07
         episode: 80701
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-3.com
 
@@ -149,6 +160,7 @@ Files created:
   s2020.e080801 - Mock Entry 20-2.info.json
   s2020.e080801 - Mock Entry 20-2.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-08
       episode_id: 80801
       genre: ytdl-sub
@@ -165,6 +177,7 @@ Files created:
         aired: 2020-08-08
         episode: 80801
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-2.com
 
@@ -176,6 +189,7 @@ Files created:
   s2020.e080802 - Mock Entry 20-1.info.json
   s2020.e080802 - Mock Entry 20-1.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-08
       episode_id: 80802
       genre: ytdl-sub
@@ -192,6 +206,7 @@ Files created:
         aired: 2020-08-08
         episode: 80802
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-1.com
 
@@ -204,6 +219,7 @@ Files created:
   s2021.e080801 - Mock Entry 21-1.info.json
   s2021.e080801 - Mock Entry 21-1.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2021-08-08
       episode_id: 80801
       genre: ytdl-sub
@@ -220,6 +236,7 @@ Files created:
         aired: 2021-08-08
         episode: 80801
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://21-1.com
 
