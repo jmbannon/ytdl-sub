@@ -55,6 +55,7 @@ and overriding the following variables:
        url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
        # can be modified from their default value
        # tv_show_genre: "ytdl-sub"
+       # tv_show_content_rating: "TV-14"
        # episode_title: "{upload_date_standardized} - {title}"
        # episode_description: "{webpage_url}"
 
