@@ -5,6 +5,7 @@ Files created:
   s2020.e000001 - Mock Entry 20-3.info.json
   s2020.e000001 - Mock Entry 20-3.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-07
       episode_id: 1
       genre: ytdl-sub
@@ -21,6 +22,7 @@ Files created:
         aired: 2020-08-07
         episode: 1
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-3.com
 
@@ -32,6 +34,7 @@ Files created:
   s2020.e000002 - Mock Entry 20-2.info.json
   s2020.e000002 - Mock Entry 20-2.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-08
       episode_id: 2
       genre: ytdl-sub
@@ -48,6 +51,7 @@ Files created:
         aired: 2020-08-08
         episode: 2
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-2.com
 
@@ -59,6 +63,7 @@ Files created:
   s2020.e000003 - Mock Entry 20-1.info.json
   s2020.e000003 - Mock Entry 20-1.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-08
       episode_id: 3
       genre: ytdl-sub
@@ -75,6 +80,7 @@ Files created:
         aired: 2020-08-08
         episode: 3
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-1.com
 
@@ -86,6 +92,7 @@ Files created:
   s2020.e000005 - Mock Entry 20-7.info.json
   s2020.e000005 - Mock Entry 20-7.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-06-06
       episode_id: 5
       genre: ytdl-sub
@@ -102,6 +109,7 @@ Files created:
         aired: 2020-06-06
         episode: 5
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-7.com
 
@@ -113,6 +121,7 @@ Files created:
   s2020.e000006 - Mock Entry 20-6.info.json
   s2020.e000006 - Mock Entry 20-6.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-07-06
       episode_id: 6
       genre: ytdl-sub
@@ -129,6 +138,7 @@ Files created:
         aired: 2020-07-06
         episode: 6
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-6.com
 
@@ -140,6 +150,7 @@ Files created:
   s2020.e000007 - Mock Entry 20-5.info.json
   s2020.e000007 - Mock Entry 20-5.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-07-06
       episode_id: 7
       genre: ytdl-sub
@@ -156,6 +167,7 @@ Files created:
         aired: 2020-07-06
         episode: 7
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-5.com
 
@@ -167,6 +179,7 @@ Files created:
   s2020.e000008 - Mock Entry 20-4.info.json
   s2020.e000008 - Mock Entry 20-4.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2020-08-06
       episode_id: 8
       genre: ytdl-sub
@@ -183,6 +196,7 @@ Files created:
         aired: 2020-08-06
         episode: 8
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://20-4.com
 
@@ -195,6 +209,7 @@ Files created:
   s2021.e000004 - Mock Entry 21-1.info.json
   s2021.e000004 - Mock Entry 21-1.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2021-08-08
       episode_id: 4
       genre: ytdl-sub
@@ -211,6 +226,7 @@ Files created:
         aired: 2021-08-08
         episode: 4
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://21-1.com
 

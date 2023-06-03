@@ -8,10 +8,12 @@ Files created:
     NFO tags:
       tvshow:
         genre: ytdl-sub
+        mpaa: TV-14
         title: Project Zombie
 {output_directory}/Season 2010
   s2010.e000001 - Oblivion Mod ＂Falcor＂ p.1.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2010-08-13
       episode_id: 1
       genre: ytdl-sub
@@ -33,6 +35,7 @@ Files created:
         aired: 2010-08-13
         episode: 1
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://www.youtube.com/watch?v=HKTNxEqsN3Q
 
@@ -49,6 +52,7 @@ Files created:
         year: 2010
   s2010.e000002 - Oblivion Mod ＂Falcor＂ p.2.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2010-12-02
       episode_id: 2
       genre: ytdl-sub
@@ -70,6 +74,7 @@ Files created:
         aired: 2010-12-02
         episode: 2
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://www.youtube.com/watch?v=IV9Z4wcA-z8
 
