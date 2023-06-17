@@ -47,13 +47,16 @@ else:
         try:
             lock_file = open(lock_file_path, "w", encoding="utf-8")
         except FileNotFoundError as exc:
+            # pylint: disable=line-too-long
             raise ValidationException(
                 "Failed to create a file-lock to prevent multiple instances of ytdl-sub from "
                 "colliding with each other. If you get this error, it typically means it tried to "
                 "create the file in a directory that is not a part of the same filesystem that "
-                "ytdl-sub is running on. See https://ytdl-sub.readthedocs.io/en/latest/config.html#ytdl_sub.config.config_validator.ConfigOptions.lock_directory "
+                "ytdl-sub is running on. See "
+                "https://ytdl-sub.readthedocs.io/en/latest/config.html#ytdl_sub.config.config_validator.ConfigOptions.lock_directory "
                 "on how to change the directory that this lock gets written to."
             ) from exc
+            # pylint: enable=line-too-long
 
         try:
             fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
