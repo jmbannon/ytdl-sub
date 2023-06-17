@@ -147,6 +147,33 @@ def regex_subscription_dict_match_and_exclude(regex_subscription_dict_base, outp
 
 
 @pytest.fixture
+def regex_subscription_dict_match_and_exclude_override_variable(
+    regex_subscription_dict_base, output_directory
+):
+    return mergedeep.merge(
+        regex_subscription_dict_base,
+        {
+            "regex": {
+                # tests that skip_if_match_fails defaults to True
+                "from": {
+                    "override_title": {
+                        "exclude": [
+                            "should not cap",
+                            ".*Feb.*",  # should filter out march video
+                        ],
+                    },
+                    "override_description": {
+                        "match": [".*http:\\/\\/(.+).com.*"],
+                        "capture_group_names": ["override_description_website"],
+                    },
+                },
+            },
+            "overrides": {"override_title": "{title}", "override_description": "{description}"},
+        },
+    )
+
+
+@pytest.fixture
 def playlist_subscription(music_video_config, regex_subscription_dict):
     return Subscription.from_dict(
         config=music_video_config,
@@ -176,6 +203,18 @@ def playlist_subscription_exclude(
         config=music_video_config,
         preset_name="regex_exclude_playlist_test",
         preset_dict=regex_subscription_dict_exclude,
+    )
+
+
+@pytest.fixture
+def playlist_subscription_overrides(
+    music_video_config: ConfigFile,
+    regex_subscription_dict_match_and_exclude_override_variable: Dict[str, Any],
+) -> Subscription:
+    return Subscription.from_dict(
+        config=music_video_config,
+        preset_name="regex_using_overrides_test",
+        preset_dict=regex_subscription_dict_match_and_exclude_override_variable,
     )
 
 
@@ -218,6 +257,16 @@ class TestRegex:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_regex_match_and_exclude.txt",
+            regenerate_transaction_log=True,
+        )
+
+    def test_regex_using_overrides_success(self, playlist_subscription_overrides, output_directory):
+        # Should only contain the march video
+        transaction_log = playlist_subscription_overrides.download(dry_run=True)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="plugins/test_regex_overrides.txt",
             regenerate_transaction_log=True,
         )
 
@@ -300,7 +349,9 @@ class TestRegex:
         )
         with pytest.raises(
             ValidationException,
-            match=re.escape("cannot regex capture 'dne' because it is not a source variable"),
+            match=re.escape(
+                "cannot regex capture 'dne' because it is not a source or override variable"
+            ),
         ):
             _ = Subscription.from_dict(
                 config=music_video_config,
