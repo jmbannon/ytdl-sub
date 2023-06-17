@@ -148,7 +148,7 @@ def regex_subscription_dict_match_and_exclude(regex_subscription_dict_base, outp
 
 @pytest.fixture
 def regex_subscription_dict_match_and_exclude_override_variable(
-        regex_subscription_dict_base, output_directory
+    regex_subscription_dict_base, output_directory
 ):
     return mergedeep.merge(
         regex_subscription_dict_base,
@@ -168,12 +168,10 @@ def regex_subscription_dict_match_and_exclude_override_variable(
                     },
                 },
             },
-            "overrides": {
-                "override_title": "{title}",
-                "override_description": "{description}"
-            }
+            "overrides": {"override_title": "{title}", "override_description": "{description}"},
         },
     )
+
 
 @pytest.fixture
 def playlist_subscription(music_video_config, regex_subscription_dict):
@@ -210,13 +208,15 @@ def playlist_subscription_exclude(
 
 @pytest.fixture
 def playlist_subscription_overrides(
-    music_video_config: ConfigFile, regex_subscription_dict_match_and_exclude_override_variable: Dict[str, Any]
+    music_video_config: ConfigFile,
+    regex_subscription_dict_match_and_exclude_override_variable: Dict[str, Any],
 ) -> Subscription:
     return Subscription.from_dict(
         config=music_video_config,
         preset_name="regex_using_overrides_test",
         preset_dict=regex_subscription_dict_match_and_exclude_override_variable,
     )
+
 
 @pytest.fixture
 def playlist_subscription_match_and_exclude(
@@ -267,7 +267,7 @@ class TestRegex:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_regex_overrides.txt",
-            regenerate_transaction_log=True
+            regenerate_transaction_log=True,
         )
 
     def test_regex_fails_no_match(self, playlist_subscription_no_match_fails, output_directory):
