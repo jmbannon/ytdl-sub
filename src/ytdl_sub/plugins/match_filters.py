@@ -38,8 +38,12 @@ class MatchFiltersOptions(PluginOptions):
          my_example_preset:
            match_filters:
              filters:
-               - "original_url!*=/shorts/"
-               - "!is_live"
+               - "age_limit<?18"
+               - "like_count>?100"
+               # Other common match-filters
+               # - "original_url!*=/shorts/ & !is_live"
+               # - "age_limit<?18"
+               # - "availability=?public"
     """
 
     _required_keys = {"filters"}
@@ -59,7 +63,8 @@ class MatchFiltersOptions(PluginOptions):
     def filters(self) -> List[str]:
         """
         The filters themselves. If used multiple times, the filter matches if at least one of the
-        conditions are met.
+        conditions are met. For logical AND's between match filters, use the ``&`` operator in
+        a single match filter.
         """
         return [validator.value for validator in self._filters]
 
