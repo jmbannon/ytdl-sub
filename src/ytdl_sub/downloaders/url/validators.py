@@ -75,9 +75,7 @@ class UrlValidator(StrictDictValidator):
     @property
     def url(self) -> OverridesStringFormatterValidator:
         """
-        Required. URL to download from, listed in priority from lowest (top) to highest (bottom).
-        If a download exists in more than one URL, it will resolve to the bottom-most one and
-        inherit those variables.
+        Required. URL to download from.
         """
         return self._url
 
@@ -199,6 +197,10 @@ class MultiUrlValidator(OptionsValidator):
     def urls(self) -> UrlListValidator:
         """
         Required. A list of :ref:`url` with the addition of the ``variables`` attribute.
+        Multiple URLs should be listed in the order of priority, with the lowest priority being the
+        top-most, and highest priority being the bottom-most. If a download exists in more than
+        one URL, it will resolve to the bottom-most one (the highest priority) and
+        inherit those variables.
         """
         return self._urls
 
