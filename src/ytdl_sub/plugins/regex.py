@@ -11,6 +11,7 @@ from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.exceptions import RegexNoMatchException
+from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.regex_validator import RegexListValidator
 from ytdl_sub.validators.source_variable_validator import SourceVariableNameListValidator
@@ -22,7 +23,7 @@ from ytdl_sub.validators.validators import BoolValidator
 logger = Logger.get(name="regex")
 
 
-class SourceVariableRegex(StrictDictValidator):
+class VariableRegex(StrictDictValidator):
 
     _optional_keys = {"match", "exclude", "capture_group_defaults", "capture_group_names"}
 
@@ -65,7 +66,7 @@ class SourceVariableRegex(StrictDictValidator):
     @property
     def match(self) -> Optional[RegexListValidator]:
         """
-        List of regex strings to try to match against a source variable. Each regex
+        List of regex strings to try to match against a source or override variable. Each regex
         string must have the same number of capture groups.
         """
         return self._match
@@ -73,9 +74,10 @@ class SourceVariableRegex(StrictDictValidator):
     @property
     def exclude(self) -> Optional[RegexListValidator]:
         """
-        List of regex strings to try to match against a source variable. If one of the regex strings
-        match, then the entry will be skipped. If both ``exclude`` and ``match`` are specified,
-        entries will get skipped if the regex matches against both ``exclude`` and ``match``.
+        List of regex strings to try to match against a source or override variable. If one of the
+        regex strings match, then the entry will be skipped. If both ``exclude`` and ``match`` are
+        specified, entries will get skipped if the regex matches against both ``exclude`` and
+        ``match``.
         """
         return self._exclude
 
@@ -114,15 +116,15 @@ class FromSourceVariablesRegex(StrictDictValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self.source_variable_capture_dict: Dict[str, SourceVariableRegex] = {
-            key: self._validate_key(key=key, validator=SourceVariableRegex) for key in self._keys
+        self.variable_capture_dict: Dict[str, VariableRegex] = {
+            key: self._validate_key(key=key, validator=VariableRegex) for key in self._keys
         }
 
 
 class RegexOptions(PluginOptions):
     r"""
-    Performs regex matching on an entry's source variables. Regex can be used to filter entries
-    from proceeding with download or capture groups to create new source variables. NOTE to
+    Performs regex matching on an entry's source or override variables. Regex can be used to filter
+    entries from proceeding with download or capture groups to create new source variables. NOTE to
     use backslashes anywhere in your regex, i.e. ``\d``, you must add another backslash escape. This
     means ``\d`` should be written as ``\\d``. This is because YAML requires an escape for any
     backslash usage.
@@ -216,9 +218,9 @@ class RegexOptions(PluginOptions):
         """
         for key, regex_options in self.source_variable_capture_dict.items():
             # Ensure each variable getting captured is a source variable
-            if key not in source_variables:
+            if key not in source_variables and key not in override_variables:
                 raise self._validation_exception(
-                    f"cannot regex capture '{key}' because it is not a source variable"
+                    f"cannot regex capture '{key}' because it is not a source or override variable"
                 )
 
             # Ensure the capture group names are not existing source/override variables
@@ -235,13 +237,13 @@ class RegexOptions(PluginOptions):
                     )
 
     @property
-    def source_variable_capture_dict(self) -> Dict[str, SourceVariableRegex]:
+    def source_variable_capture_dict(self) -> Dict[str, VariableRegex]:
         """
         Returns
         -------
         Dict of { source variable: capture options }
         """
-        return self._from.source_variable_capture_dict
+        return self._from.variable_capture_dict
 
     def added_source_variables(self) -> List[str]:
         """
@@ -267,28 +269,56 @@ class RegexPlugin(Plugin[RegexOptions]):
     )
 
     @classmethod
-    def _add_processed_regex_source_var(cls, entry: Entry, source_var: str) -> None:
+    def _add_processed_regex_variable_name(cls, entry: Entry, source_var: str) -> None:
         if not entry.kwargs_contains(YTDL_SUB_REGEX_SOURCE_VARS):
             entry.add_kwargs({YTDL_SUB_REGEX_SOURCE_VARS: []})
 
         entry.kwargs(YTDL_SUB_REGEX_SOURCE_VARS).append(source_var)
 
     @classmethod
-    def _contains_processed_regex_source_var(cls, entry: Entry, source_var: str) -> bool:
-        return source_var in entry.kwargs_get(YTDL_SUB_REGEX_SOURCE_VARS, [])
+    def _contains_processed_regex_variable(cls, entry: Entry, variable_name: str) -> bool:
+        return variable_name in entry.kwargs_get(YTDL_SUB_REGEX_SOURCE_VARS, [])
 
-    def _try_skip_entry(self, entry: Entry, source_var: str) -> None:
+    def _try_skip_entry(self, entry: Entry, variable_name: str) -> None:
         # Skip the entry if toggled
         if self.plugin_options.skip_if_match_fails:
             logger.info(
                 "Regex failed to match '%s' from '%s', skipping.",
-                source_var,
+                variable_name,
                 entry.title,
             )
             return None
 
         # Otherwise, error
-        raise RegexNoMatchException(f"Regex failed to match '{source_var}' from '{entry.title}'")
+        raise RegexNoMatchException(f"Regex failed to match '{variable_name}' from '{entry.title}'")
+
+    def _can_process_at_metadata_stage(self, entry: Entry, variable_name: str) -> bool:
+        # If the variable is an override...
+        if variable_name in self.overrides.dict:
+            # Try to see if it can resolve
+            try:
+                self.overrides.apply_formatter(
+                    formatter=self.overrides.dict[variable_name],
+                    entry=entry,
+                )
+            # If it can not from missing variables (from post-metadata stage), return False
+            except StringFormattingVariableNotFoundException:
+                return False
+        # If it is a source variable and not present, return false
+        elif variable_name not in entry.to_dict():
+            return False
+
+        return True
+
+    def _get_regex_input_string(self, entry: Entry, variable_name: str) -> str:
+        # Apply override formatter if it's an override
+        if variable_name in self.overrides.dict:
+            return self.overrides.apply_formatter(
+                formatter=self.overrides.dict[variable_name],
+                entry=entry,
+            )
+        # Otherwise pluck from the entry's source variable
+        return entry.to_dict()[variable_name]
 
     def _modify_entry_metadata(self, entry: Entry, is_metadata_stage: bool) -> Optional[Entry]:
         """
@@ -308,46 +338,50 @@ class RegexPlugin(Plugin[RegexOptions]):
         ValidationException
             If no capture and no defaults
         """
-        entry_variable_dict = entry.to_dict()
-
         # Iterate each source var to capture and add to the entry
-        for source_var, regex_options in self.plugin_options.source_variable_capture_dict.items():
+        for (
+            variable_name,
+            regex_options,
+        ) in self.plugin_options.source_variable_capture_dict.items():
 
             # Record which regex source variables are processed, to
             # process as many variables as possible in the metadata stage, then the rest
             # after the media file has been downloaded.
-            if self._contains_processed_regex_source_var(entry, source_var):
+            if self._contains_processed_regex_variable(entry, variable_name):
                 continue
 
-            # Continue if the source var isn't in the dict since entry variables could be added
-            # after the metadata stage
-            if is_metadata_stage and source_var not in entry_variable_dict:
+            # If it's the metadata stage, and it can't be processed, skip until post-metadata
+            if is_metadata_stage and not self._can_process_at_metadata_stage(
+                entry=entry, variable_name=variable_name
+            ):
                 continue
 
-            self._add_processed_regex_source_var(entry, source_var)
+            self._add_processed_regex_variable_name(entry, variable_name)
+
+            regex_input_str = self._get_regex_input_string(
+                entry=entry,
+                variable_name=variable_name,
+            )
 
             if (
                 regex_options.exclude is not None
-                and regex_options.exclude.match_any(input_str=entry_variable_dict[source_var])
-                is not None
+                and regex_options.exclude.match_any(input_str=regex_input_str) is not None
             ):
-                return self._try_skip_entry(entry=entry, source_var=source_var)
+                return self._try_skip_entry(entry=entry, variable_name=variable_name)
 
             # If match is present
             if regex_options.match is not None:
-                maybe_capture = regex_options.match.match_any(
-                    input_str=entry_variable_dict[source_var]
-                )
+                maybe_capture = regex_options.match.match_any(input_str=regex_input_str)
 
                 # And nothing matched
                 if maybe_capture is None:
                     # and no defaults
                     if not regex_options.has_defaults:
-                        return self._try_skip_entry(entry=entry, source_var=source_var)
+                        return self._try_skip_entry(entry=entry, variable_name=variable_name)
 
                     # otherwise, use defaults (apply them using the original entry source dict)
                     source_variables_and_overrides_dict = dict(
-                        entry_variable_dict, **self.overrides.dict_with_format_strings
+                        entry.to_dict(), **self.overrides.dict_with_format_strings
                     )
 
                     # add both the default...
