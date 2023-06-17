@@ -129,6 +129,11 @@ class RegexOptions(PluginOptions):
     means ``\d`` should be written as ``\\d``. This is because YAML requires an escape for any
     backslash usage.
 
+    If you want to regex-search multiple source variables to create a logical OR effect, you can
+    create an override variable that contains the concatenation of them, and search that with regex.
+    For example, creating ``"title_and_description": "{title} {description}"`` then using
+    ``title_and_description`` to match/exclude from either ``title`` or ``description``.
+
     Usage:
 
     .. code-block:: yaml
