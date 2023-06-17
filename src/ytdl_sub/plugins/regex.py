@@ -131,8 +131,9 @@ class RegexOptions(PluginOptions):
 
     If you want to regex-search multiple source variables to create a logical OR effect, you can
     create an override variable that contains the concatenation of them, and search that with regex.
-    For example, creating ``"title_and_description": "{title} {description}"`` then using
-    ``title_and_description`` to match/exclude from either ``title`` or ``description``.
+    For example, creating the override variable ``"title_and_description": "{title} {description}"``
+    and using ``title_and_description`` can regex match/exclude from either ``title`` or
+    ``description``.
 
     Usage:
 
