@@ -349,7 +349,9 @@ class TestRegex:
         )
         with pytest.raises(
             ValidationException,
-            match=re.escape("cannot regex capture 'dne' because it is not a source variable"),
+            match=re.escape(
+                "cannot regex capture 'dne' because it is not a source or override variable"
+            ),
         ):
             _ = Subscription.from_dict(
                 config=music_video_config,
