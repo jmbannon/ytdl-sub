@@ -168,6 +168,7 @@ def set_ffmpeg_metadata_chapters(
                 metadata_file.name,
                 "-map",
                 "0",
+                "-dn",  # ignore data streams
                 "-map_chapters",
                 "1",
                 "-bitexact",  # for reproducibility
@@ -192,7 +193,13 @@ def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -
     """
     tmp_file_path = FFMPEG.tmp_file_path(file_path)
 
-    ffmpeg_args = ["-i", file_path, "-map", "0"]
+    ffmpeg_args = [
+        "-i",
+        file_path,
+        "-map",
+        "0",
+        "-dn",  # ignore data streams
+    ]
     for key, value in key_values.items():
         ffmpeg_args.extend(["-metadata", f"{key}={value}"])
     ffmpeg_args.extend(["-codec", "copy", tmp_file_path])
