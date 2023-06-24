@@ -5,7 +5,7 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import BaseEntryVariables
-from ytdl_sub.entries.variables.kwargs import CHANNEL, RELEASE_DATE
+from ytdl_sub.entries.variables.kwargs import CHANNEL
 from ytdl_sub.entries.variables.kwargs import CHANNEL_ID
 from ytdl_sub.entries.variables.kwargs import CREATOR
 from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
@@ -21,6 +21,7 @@ from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_WEBPAGE_URL
+from ytdl_sub.entries.variables.kwargs import RELEASE_DATE
 from ytdl_sub.entries.variables.kwargs import SOURCE_COUNT
 from ytdl_sub.entries.variables.kwargs import SOURCE_DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import SOURCE_INDEX
@@ -716,7 +717,8 @@ class EntryVariables(BaseEntryVariables):
         Returns
         -------
         int
-            The release month, but reversed using ``13 - {release_month}``, i.e. March returns ``10``
+            The release month, but reversed
+            using ``13 - {release_month}``, i.e. March returns ``10``
         """
         return 13 - self.release_month
 
