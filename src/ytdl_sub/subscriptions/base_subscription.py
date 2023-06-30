@@ -46,7 +46,7 @@ class BaseSubscription(ABC):
         self._preset_options = preset_options
 
         self._enhanced_download_archive = EnhancedDownloadArchive(
-            subscription_name=name,
+            file_name=self.overrides.apply_formatter(self.output_options.download_archive_name),
             working_directory=self.working_directory,
             output_directory=self.output_directory,
         )

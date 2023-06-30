@@ -42,8 +42,6 @@ from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-# pylint: disable=too-many-instance-attributes
-
 download_logger = Logger.get(name="downloader")
 
 
