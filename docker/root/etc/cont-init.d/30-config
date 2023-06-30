@@ -8,6 +8,8 @@
 [[ ! -d /config/examples ]] && \
     cp -R /defaults/examples /config/
 
+
+
 # permissions
-chown -R abc:abc \
+chown -R ${PUID:-abc}:${PGID:-abc} \
     /config
