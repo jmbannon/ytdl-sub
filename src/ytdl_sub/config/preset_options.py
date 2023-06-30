@@ -6,6 +6,7 @@ from typing import Optional
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
@@ -235,6 +236,7 @@ class OutputOptions(StrictDictValidator):
              # optional
              thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
              info_json_name: "{title_sanitized}.{info_json_ext}"
+             download_archive_name: ".ytdl-sub-{subscription_name}-download-archive.txt"
              maintain_download_archive: True
              keep_files_before: now
              keep_files_after: 19000101
@@ -244,7 +246,7 @@ class OutputOptions(StrictDictValidator):
     _optional_keys = {
         "thumbnail_name",
         "info_json_name",
-        "subtitles_name",
+        "download_archive_name",
         "maintain_download_archive",
         "keep_files_before",
         "keep_files_after",
@@ -280,6 +282,12 @@ class OutputOptions(StrictDictValidator):
         )
         self._info_json_name = self._validate_key_if_present(
             key="info_json_name", validator=StringFormatterFileNameValidator
+        )
+
+        self._download_archive_name = self._validate_key_if_present(
+            key="download_archive_name",
+            validator=OverridesStringFormatterValidator,
+            default=DEFAULT_DOWNLOAD_ARCHIVE_NAME,
         )
 
         self._maintain_download_archive = self._validate_key_if_present(
@@ -332,6 +340,14 @@ class OutputOptions(StrictDictValidator):
         directory. Can be set to empty string or `null` to disable info json writes.
         """
         return self._info_json_name
+
+    @property
+    def download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
+        """
+        Optional. The file name to store a subscriptions download archive placed relative to
+        the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.txt``
+        """
+        return self._download_archive_name
 
     @property
     def maintain_download_archive(self) -> bool:

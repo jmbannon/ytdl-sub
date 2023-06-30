@@ -87,9 +87,7 @@ class SubscriptionYTDLOptions:
         ytdl_options = {}
 
         if self._preset.output_options.maintain_download_archive:
-            ytdl_options["download_archive"] = str(
-                Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
-            )
+            ytdl_options["download_archive"] = self._enhanced_download_archive.working_file_path
 
         return ytdl_options
 
