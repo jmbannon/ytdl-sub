@@ -1,7 +1,4 @@
-
-
 class Functions:
-
     @staticmethod
     def lower(string: str) -> str:
         """
@@ -28,4 +25,3 @@ class Functions:
         Capitalized string
         """
         return string.capitalize()
-    
