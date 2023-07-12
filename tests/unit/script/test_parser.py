@@ -14,10 +14,13 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 
 class TestParser:
     def test_simple(self):
-        assert parse("hello world") == SyntaxTree([LiteralString(value="hello world")])
+        parsed = parse("hello world")
+        assert parsed == SyntaxTree([LiteralString(value="hello world")])
+        assert parsed.variables == set()
 
     def test_single_function_one_arg(self):
-        assert parse("hello {%capitalize('hi mom')}") == SyntaxTree(
+        parsed = parse("hello {%capitalize('hi mom')}")
+        assert parsed == SyntaxTree(
             [
                 LiteralString("hello "),
                 Function(name="capitalize", args=[String(value="hi mom")]),
@@ -27,10 +30,11 @@ class TestParser:
     @pytest.mark.parametrize("whitespace", ["", " ", "  ", "\n", " \n "])
     def test_single_function_multiple_args(self, whitespace: str):
         s = whitespace
-        assert parse(
+        parsed = parse(
             f"hello{s}{{{s}%concat({s}'string'{s},{s}1{s},{s}2.4{s},"
             f"{s}TRUE{s},{s}variable_name{s},{s}%capitalize({s}'hi'{s}){s}){s}}}"
-        ) == SyntaxTree(
+        )
+        assert parsed == SyntaxTree(
             [
                 LiteralString(value=f"hello{s}"),
                 Function(
@@ -47,6 +51,7 @@ class TestParser:
             ]
             + ([LiteralString(value=s)] if s else [])
         )
+        assert parsed.variables == {Variable(name="variable_name")}
 
 
 class TestParserBracketFailures:

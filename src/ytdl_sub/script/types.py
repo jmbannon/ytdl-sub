@@ -50,7 +50,7 @@ class Function:
             if isinstance(arg, Variable):
                 variables.add(arg)
             elif isinstance(arg, Function):
-                variables.union(arg.variables)
+                variables.update(arg.variables)
 
         return variables
 
@@ -71,6 +71,6 @@ class SyntaxTree:
             if isinstance(token, Variable):
                 variables.add(token)
             elif isinstance(token, Function):
-                variables.union(token.variables)
+                variables.update(token.variables)
 
         return variables
