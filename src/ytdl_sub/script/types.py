@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Dict, Optional
 from typing import Set
 from typing import Union
+
+from ytdl_sub.utils.exceptions import StringFormattingException
 
 
 @dataclass(frozen=True)
@@ -74,3 +76,25 @@ class SyntaxTree:
                 variables.update(token.variables)
 
         return variables
+
+    @classmethod
+    def detect_cycles(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> None:
+        variable_dependencies: Dict[Variable, Set[Variable]] = {
+            Variable(name): ast.variables for name, ast in parsed_overrides.items()
+        }
+
+        def _traverse(to_variable: Variable, visited_variables: Optional[List[Variable]] = None) -> None:
+            if visited_variables is None:
+                visited_variables = []
+
+            if to_variable in visited_variables:
+                raise StringFormattingException("Detected cycle in variables")
+            visited_variables.append(to_variable)
+
+            for dep in variable_dependencies[to_variable]:
+                _traverse(to_variable=dep, visited_variables=visited_variables)
+
+        for variable in variable_dependencies.keys():
+            _traverse(variable)
+
+
