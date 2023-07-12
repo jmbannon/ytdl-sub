@@ -75,7 +75,7 @@ def download_and_convert_url_thumbnail(
     # timeout after 8 seconds
     with urlopen(thumbnail_url, timeout=1.0) as file:
         with tempfile.NamedTemporaryFile(delete=False) as thumbnail:
-            thumbnail.write(file.read())
+            thumbnail.write(file._read())
 
         try:
             os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)

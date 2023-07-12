@@ -1,62 +1,40 @@
-from dataclasses import dataclass
-from queue import LifoQueue
 from typing import List
 from typing import Optional
-from typing import Union
 
+from ytdl_sub.script.types import ArgumentType
+from ytdl_sub.script.types import Boolean
+from ytdl_sub.script.types import Float
+from ytdl_sub.script.types import Function
+from ytdl_sub.script.types import Integer
+from ytdl_sub.script.types import LiteralString
+from ytdl_sub.script.types import NumericType
+from ytdl_sub.script.types import String
+from ytdl_sub.script.types import SyntaxTree
+from ytdl_sub.script.types import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 
 # pylint: disable=invalid-name
 
 
-@dataclass(frozen=True)
-class Integer:
-    value: int
-
-
-@dataclass(frozen=True)
-class Float:
-    value: float
-
-
-@dataclass(frozen=True)
-class Boolean:
-    value: bool
-
-
-@dataclass(frozen=True)
-class String:
-    value: str
-
-
-@dataclass(frozen=True)
-class Variable:
-    name: str
-
-
-NumericType = Union[Integer, Float]
-ArgumentType = Union[Integer, Float, String, Boolean, Variable, "Function"]
-
-
-@dataclass(frozen=True)
-class Function:
-    name: str
-    args: List[ArgumentType]
-
-
-@dataclass(frozen=True)
-class LiteralString:
-    value: str
-
-
-class Parser:
+class _Parser:
     def __init__(self, text: str):
         self._text = text
         self._pos = 0
-        self._stack: LifoQueue[LiteralString | Variable | Function] = LifoQueue()
+        self._ast: List[LiteralString | Variable | Function] = []
 
-    def read(self, increment_pos: bool = True, length: int = 1) -> Optional[str]:
+        self._syntax_tree = self._parse()
+
+    @property
+    def ast(self) -> SyntaxTree:
+        """
+        Returns
+        -------
+        Abstract syntax tree of the parsed text
+        """
+        return self._syntax_tree
+
+    def _read(self, increment_pos: bool = True, length: int = 1) -> Optional[str]:
         try:
             ch = self._text[self._pos : (self._pos + length)]
         except IndexError:
@@ -66,9 +44,9 @@ class Parser:
             self._pos += length
         return ch
 
-    def parse_variable(self) -> Variable:
+    def _parse_variable(self) -> Variable:
         var_name = ""
-        while ch := self.read(increment_pos=False):
+        while ch := self._read(increment_pos=False):
             if ch.isspace() and not var_name:
                 self._pos += 1
                 continue
@@ -85,12 +63,15 @@ class Parser:
             var_name += ch
             self._pos += 1
 
+        if not var_name:
+            raise StringFormattingException("invalid var name")
+
         assert is_valid_source_variable_name(var_name, raise_exception=False)
         return Variable(var_name)
 
-    def parse_numeric(self) -> NumericType:
+    def _parse_numeric(self) -> NumericType:
         numeric_string = ""
-        while ch := self.read(increment_pos=False):
+        while ch := self._read(increment_pos=False):
             if not (ch.isnumeric() or ch == "."):
                 break
 
@@ -107,43 +88,43 @@ class Parser:
 
         return Float(value=numeric_float)
 
-    def parse_string(self) -> String:
+    def _parse_string(self) -> String:
         """
         Begin parsing a string, including the quotation value
         """
         string_value = ""
-        open_quotation_char = self.read()
+        open_quotation_char = self._read()
         assert open_quotation_char in ["'", '"']
 
-        while ch := self.read():
+        while ch := self._read():
             if ch == open_quotation_char:
                 return String(value=string_value)
             string_value += ch
 
         raise StringFormattingException("String not closed")
 
-    def parse_function_arg(self) -> ArgumentType:
-        if self.read(increment_pos=False) == "%":
+    def _parse_function_arg(self) -> ArgumentType:
+        if self._read(increment_pos=False) == "%":
             self._pos += 1
-            return self.parse_function()
-        if self.read(increment_pos=False).isnumeric():
-            return self.parse_numeric()
-        if (self.read(increment_pos=False, length=4) or "").lower() == "true":
+            return self._parse_function()
+        if self._read(increment_pos=False).isnumeric():
+            return self._parse_numeric()
+        if (self._read(increment_pos=False, length=4) or "").lower() == "true":
             self._pos += 4
             return Boolean(value=True)
-        if (self.read(increment_pos=False, length=5) or "").lower() == "false":
+        if (self._read(increment_pos=False, length=5) or "").lower() == "false":
             self._pos += 5
             return Boolean(value=False)
-        if self.read(increment_pos=False) in ["'", '"']:
-            return self.parse_string()
-        if self.read(increment_pos=False).isascii() and self.read(increment_pos=False).islower():
-            return self.parse_variable()
+        if self._read(increment_pos=False) in ["'", '"']:
+            return self._parse_string()
+        if self._read(increment_pos=False).isascii() and self._read(increment_pos=False).islower():
+            return self._parse_variable()
         raise StringFormattingException(
             "Invalid function argument, should be either a function, int, float, "
             "string, boolean, or variable without brackets"
         )
 
-    def parse_function_args(self) -> List[ArgumentType]:
+    def _parse_function_args(self) -> List[ArgumentType]:
         """
         Begin parsing function args after the first ``(``, i.e. ``function_name(``
         """
@@ -151,7 +132,7 @@ class Parser:
         comma_count = 0
 
         arguments: List[ArgumentType] = []
-        while ch := self.read(increment_pos=False):
+        while ch := self._read(increment_pos=False):
             if ch == ")":
                 break
 
@@ -165,43 +146,43 @@ class Parser:
                 self._pos += 1
             else:
                 argument_index += 1
-                arguments.append(self.parse_function_arg())
+                arguments.append(self._parse_function_arg())
 
         return arguments
 
-    def parse_function(self) -> Function:
+    def _parse_function(self) -> Function:
         """
         Begin parsing a function after reading the first ``%``
         """
         function_name: str = ""
         function_args: List[String | Variable | "Function"] = []
 
-        while ch := self.read():
+        while ch := self._read():
             if ch == ")":
                 return Function(name=function_name, args=function_args)
 
             if ch != "(":
                 function_name += ch
             else:
-                function_args = self.parse_function_args()
+                function_args = self._parse_function_args()
 
         raise StringFormattingException("Invalid function")
 
-    def parse(self) -> "Parser":
+    def _parse(self) -> SyntaxTree:
         bracket_counter = 0
         literal_str = ""
-        while ch := self.read():
+        while ch := self._read():
             if ch == "}":
                 bracket_counter -= 1
                 break
             if ch == "{":
                 bracket_counter += 1
                 if literal_str:
-                    self._stack.put(LiteralString(literal_str))
+                    self._ast.append(LiteralString(literal_str))
                     literal_str = ""
 
                 # Allow whitespace after bracket opening
-                while ch1 := self.read(increment_pos=False):
+                while ch1 := self._read(increment_pos=False):
                     if not ch1.isspace():
                         break
                     self._pos += 1
@@ -213,9 +194,9 @@ class Parser:
 
                 if ch1 == "%":
                     self._pos += 1
-                    self._stack.put(self.parse_function())
+                    self._ast.append(self._parse_function())
                 else:
-                    self._stack.put(self.parse_variable())
+                    self._ast.append(self._parse_variable())
             else:
                 literal_str += ch
 
@@ -223,9 +204,13 @@ class Parser:
             raise StringFormattingException("Bracket count mismatch")
 
         if literal_str:
-            self._stack.put(LiteralString(literal_str))
+            self._ast.append(LiteralString(literal_str))
 
-        return self
+        return SyntaxTree(ast=self._ast)
+
+
+def parse(text: str) -> SyntaxTree:
+    return _Parser(text).ast
 
 
 # pylint: enable=invalid-name
