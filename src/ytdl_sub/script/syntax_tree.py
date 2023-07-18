@@ -1,14 +1,18 @@
+from abc import ABC
+from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Set
 from typing import Union
+from typing import final
 
 from ytdl_sub.script.functions import Boolean
 from ytdl_sub.script.functions import Float
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.functions import Integer
+from ytdl_sub.script.functions import Resolvable
 from ytdl_sub.script.functions import String
 from ytdl_sub.utils.exceptions import StringFormattingException
 
@@ -22,11 +26,33 @@ ArgumentType = Union[Integer, Float, String, Boolean, Variable, "Function"]
 
 
 @dataclass(frozen=True)
-class Function:
+class VariableDependency(ABC):
+    @property
+    @abstractmethod
+    def variables(self) -> Set[Variable]:
+        raise NotImplemented()
+
+    @abstractmethod
+    def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> str:
+        raise NotImplemented()
+
+    @final
+    def has_variable_dependency(self, resolved_variables: Dict[Variable, Resolvable]) -> bool:
+        """
+        Returns
+        -------
+        True if variable dependency. False otherwise.
+        """
+        return self.variables.issubset(set(resolved_variables.keys()))
+
+
+@dataclass(frozen=True)
+class Function(VariableDependency):
     name: str
     args: List[ArgumentType]
 
     def __post_init__(self):
+        # TODO: Figure out resolution via introspecting args and outputs of function
         try:
             getattr(Functions, self.name)
         except AttributeError:
@@ -48,9 +74,12 @@ class Function:
 
         return variables
 
+    def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
+        raise NotImplemented()
+
 
 @dataclass(frozen=True)
-class SyntaxTree:
+class SyntaxTree(VariableDependency):
     ast: List[String | Variable | Function]
 
     @property
@@ -68,6 +97,20 @@ class SyntaxTree:
                 variables.update(token.variables)
 
         return variables
+
+    def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
+        output: str = ""
+        for token in self.ast:
+            if isinstance(token, String):
+                output += token.resolve()
+            elif isinstance(token, Variable):
+                output += resolved_variables[token].resolve()
+            elif isinstance(token, Function):
+                output += token.resolve(resolved_variables=resolved_variables)
+            else:
+                assert False, "should never reach"
+
+        return String(output)
 
     @classmethod
     def detect_cycles(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> None:
@@ -98,5 +141,33 @@ class SyntaxTree:
             _traverse(variable)
 
     @classmethod
-    def resolve(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> Dict[str, str]:
-        raise NotImplemented()
+    def resolve_overrides(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> Dict[str, str]:
+        cls.detect_cycles(parsed_overrides=parsed_overrides)
+
+        overrides: Dict[Variable, "SyntaxTree"] = {
+            Variable(name): ast for name, ast in parsed_overrides.items()
+        }
+
+        unresolved_variables: List[Variable] = list(overrides.keys())
+        resolved_variables: Dict[Variable, Resolvable] = {}
+
+        while unresolved_variables:
+            unresolved_count: int = len(unresolved_variables)
+
+            for variable in unresolved_variables:
+                if not overrides[variable].has_variable_dependency(
+                    resolved_variables=resolved_variables
+                ):
+                    resolved_variables[variable] = overrides[variable].resolve(
+                        resolved_variables=resolved_variables
+                    )
+                    unresolved_variables.remove(variable)
+
+            assert (
+                len(unresolved_variables) != unresolved_count
+            ), "did not resolve any variables, cycle detected"
+
+        return {
+            variable.name: resolvable.resolve()
+            for variable, resolvable in resolved_variables.items()
+        }
