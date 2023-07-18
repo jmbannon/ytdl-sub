@@ -19,7 +19,6 @@ RUN mkdir -p /config && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install --no-install-recommends -y \
-      git \
       vim \
       g++ \
       nano \
@@ -68,7 +67,6 @@ RUN mkdir -p /config && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
     apt-get remove -y \
-      git \
       g++ \
       make \
       xz-utils \
