@@ -8,6 +8,7 @@ RUN mkdir -p /config && \
     apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add --no-cache --repository=http://dl-3.alpinelinux.org/alpine/edge/main/ \
+      git \
       vim \
       g++ \
       nano \
@@ -37,6 +38,7 @@ RUN mkdir -p /config && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
     apk del \
+      git \
       g++ \
       make \
       py3-pip \
