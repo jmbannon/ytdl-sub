@@ -1,29 +1,16 @@
 from dataclasses import dataclass
-from typing import List, Dict, Optional
+from typing import Dict
+from typing import List
+from typing import Optional
 from typing import Set
 from typing import Union
 
+from ytdl_sub.script.functions import Boolean
+from ytdl_sub.script.functions import Float
+from ytdl_sub.script.functions import Functions
+from ytdl_sub.script.functions import Integer
+from ytdl_sub.script.functions import String
 from ytdl_sub.utils.exceptions import StringFormattingException
-
-
-@dataclass(frozen=True)
-class Integer:
-    value: int
-
-
-@dataclass(frozen=True)
-class Float:
-    value: float
-
-
-@dataclass(frozen=True)
-class Boolean:
-    value: bool
-
-
-@dataclass(frozen=True)
-class String:
-    value: str
 
 
 @dataclass(frozen=True)
@@ -39,6 +26,12 @@ ArgumentType = Union[Integer, Float, String, Boolean, Variable, "Function"]
 class Function:
     name: str
     args: List[ArgumentType]
+
+    def __post_init__(self):
+        try:
+            getattr(Functions, self.name)
+        except AttributeError:
+            raise StringFormattingException(f"Function name {self.name} does not exist")
 
     @property
     def variables(self) -> Set[Variable]:
@@ -68,6 +61,11 @@ class SyntaxTree:
 
     @property
     def variables(self) -> Set[Variable]:
+        """
+        Returns
+        -------
+        All variables used within the SyntaxTree
+        """
         variables: Set[Variable] = set()
         for token in self.ast:
             if isinstance(token, Variable):
@@ -79,11 +77,19 @@ class SyntaxTree:
 
     @classmethod
     def detect_cycles(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> None:
+        """
+        Parameters
+        ----------
+        parsed_overrides
+            ``overrides`` in a subscription, parsed into a SyntaxTree
+        """
         variable_dependencies: Dict[Variable, Set[Variable]] = {
             Variable(name): ast.variables for name, ast in parsed_overrides.items()
         }
 
-        def _traverse(to_variable: Variable, visited_variables: Optional[List[Variable]] = None) -> None:
+        def _traverse(
+            to_variable: Variable, visited_variables: Optional[List[Variable]] = None
+        ) -> None:
             if visited_variables is None:
                 visited_variables = []
 
@@ -97,4 +103,6 @@ class SyntaxTree:
         for variable in variable_dependencies.keys():
             _traverse(variable)
 
-
+    @classmethod
+    def resolve(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> Dict[str, str]:
+        raise NotImplemented()
