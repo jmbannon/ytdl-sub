@@ -18,7 +18,6 @@ class Variable:
     name: str
 
 
-NumericType = Union[Integer, Float]
 ArgumentType = Union[Integer, Float, String, Boolean, Variable, "Function"]
 
 
@@ -51,13 +50,8 @@ class Function:
 
 
 @dataclass(frozen=True)
-class LiteralString:
-    value: str
-
-
-@dataclass(frozen=True)
 class SyntaxTree:
-    ast: List[LiteralString | Variable | Function]
+    ast: List[String | Variable | Function]
 
     @property
     def variables(self) -> Set[Variable]:

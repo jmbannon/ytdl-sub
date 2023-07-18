@@ -4,6 +4,7 @@ from typing import Generic
 from typing import TypeVar
 
 T = TypeVar("T")
+NumericT = TypeVar("NumericT", bound=int | float)
 
 
 @dataclass(frozen=True)
@@ -12,6 +13,11 @@ class Resolvable(ABC, Generic[T]):
 
     def resolve(self) -> str:
         return str(self.value)
+
+
+@dataclass(frozen=True)
+class Numeric(Resolvable[NumericT], ABC, Generic[NumericT]):
+    pass
 
 
 @dataclass(frozen=True)

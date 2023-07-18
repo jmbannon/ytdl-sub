@@ -6,7 +6,6 @@ from ytdl_sub.script.functions import Integer
 from ytdl_sub.script.functions import String
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types import Function
-from ytdl_sub.script.types import LiteralString
 from ytdl_sub.script.types import SyntaxTree
 from ytdl_sub.script.types import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -15,14 +14,14 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 class TestParser:
     def test_simple(self):
         parsed = parse("hello world")
-        assert parsed == SyntaxTree([LiteralString(value="hello world")])
+        assert parsed == SyntaxTree([String(value="hello world")])
         assert parsed.variables == set()
 
     def test_single_function_one_arg(self):
         parsed = parse("hello {%capitalize('hi mom')}")
         assert parsed == SyntaxTree(
             [
-                LiteralString("hello "),
+                String("hello "),
                 Function(name="capitalize", args=[String(value="hi mom")]),
             ]
         )
@@ -36,7 +35,7 @@ class TestParser:
         )
         assert parsed == SyntaxTree(
             [
-                LiteralString(value=f"hello{s}"),
+                String(value=f"hello{s}"),
                 Function(
                     name="concat",
                     args=[
@@ -49,7 +48,7 @@ class TestParser:
                     ],
                 ),
             ]
-            + ([LiteralString(value=s)] if s else [])
+            + ([String(value=s)] if s else [])
         )
         assert parsed.variables == {Variable(name="variable_name")}
 

@@ -7,8 +7,6 @@ from ytdl_sub.script.functions import Integer
 from ytdl_sub.script.functions import String
 from ytdl_sub.script.types import ArgumentType
 from ytdl_sub.script.types import Function
-from ytdl_sub.script.types import LiteralString
-from ytdl_sub.script.types import NumericType
 from ytdl_sub.script.types import SyntaxTree
 from ytdl_sub.script.types import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -21,7 +19,7 @@ class _Parser:
     def __init__(self, text: str):
         self._text = text
         self._pos = 0
-        self._ast: List[LiteralString | Variable | Function] = []
+        self._ast: List[String | Variable | Function] = []
 
         self._syntax_tree = self._parse()
 
@@ -69,7 +67,7 @@ class _Parser:
         assert is_valid_source_variable_name(var_name, raise_exception=False)
         return Variable(var_name)
 
-    def _parse_numeric(self) -> NumericType:
+    def _parse_numeric(self) -> Integer | Float:
         numeric_string = ""
         while ch := self._read(increment_pos=False):
             if not (ch.isnumeric() or ch == "."):
@@ -178,7 +176,7 @@ class _Parser:
             if ch == "{":
                 bracket_counter += 1
                 if literal_str:
-                    self._ast.append(LiteralString(literal_str))
+                    self._ast.append(String(value=literal_str))
                     literal_str = ""
 
                 # Allow whitespace after bracket opening
@@ -204,7 +202,7 @@ class _Parser:
             raise StringFormattingException("Bracket count mismatch")
 
         if literal_str:
-            self._ast.append(LiteralString(literal_str))
+            self._ast.append(String(value=literal_str))
 
         return SyntaxTree(ast=self._ast)
 
