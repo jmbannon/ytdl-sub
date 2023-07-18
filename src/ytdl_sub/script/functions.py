@@ -40,7 +40,7 @@ class String(Resolvable[str]):
     pass
 
 
-class Functions:
+class StringFunctions:
     @staticmethod
     def lower(string: String) -> String:
         """
@@ -71,3 +71,7 @@ class Functions:
     @staticmethod
     def concat(l_string: String, r_string: String) -> String:
         return String(f"{l_string}{r_string}")
+
+
+class Functions(StringFunctions):
+    pass
