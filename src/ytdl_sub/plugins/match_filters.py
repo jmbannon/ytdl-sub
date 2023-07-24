@@ -5,10 +5,10 @@ from typing import Optional
 
 from yt_dlp import match_filter_func
 
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_MATCH_FILTER_REJECT
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.validators import StringListValidator
@@ -16,7 +16,7 @@ from ytdl_sub.validators.validators import StringListValidator
 logger = Logger.get("match_filters")
 
 
-class MatchFiltersOptions(PluginOptions):
+class MatchFiltersOptions(OptionsDictValidator):
     """
     Set ``--match-filters``` to pass into yt-dlp to filter entries from being downloaded.
     Uses the same syntax as yt-dlp.

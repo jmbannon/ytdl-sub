@@ -5,9 +5,9 @@ from typing import List
 
 import mediafile
 
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
@@ -45,7 +45,7 @@ class MusicTagsValidator(StrictDictValidator):
         return self._tags
 
 
-class MusicTagsOptions(PluginOptions):
+class MusicTagsOptions(OptionsDictValidator):
     """
     Adds tags to every download audio file using
     `MediaFile <https://mediafile.readthedocs.io/en/latest/>`_,

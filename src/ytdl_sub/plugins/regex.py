@@ -5,10 +5,10 @@ from typing import Optional
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
@@ -121,7 +121,7 @@ class FromSourceVariablesRegex(StrictDictValidator):
         }
 
 
-class RegexOptions(PluginOptions):
+class RegexOptions(OptionsDictValidator):
     r"""
     Performs regex matching on an entry's source or override variables. Regex can be used to filter
     entries from proceeding with download or capture groups to create new source variables. NOTE to

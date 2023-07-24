@@ -5,12 +5,12 @@ from typing import List
 from typing import Optional
 from typing import Set
 
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import COMMENTS
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -58,7 +58,7 @@ class SponsorBlockCategoryListValidator(ListValidator[SponsorBlockCategoriesVali
     _inner_list_type = SponsorBlockCategoriesValidator
 
 
-class ChaptersOptions(PluginOptions):
+class ChaptersOptions(OptionsDictValidator):
     """
     Embeds chapters to video files if they are present. Additional options to add SponsorBlock
     chapters and remove specific ones. Can also remove chapters using regex.

@@ -7,7 +7,7 @@ from typing import Tuple
 from typing import Type
 from typing import TypeVar
 
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -40,8 +40,7 @@ class PluginPriority:
         return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
 
 
-PluginOptions = OptionsDictValidator
-PluginOptionsT = TypeVar("PluginOptionsT", bound=PluginOptions)
+PluginOptionsT = TypeVar("PluginOptionsT", bound=OptionsValidator)
 
 
 class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):

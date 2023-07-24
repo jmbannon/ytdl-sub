@@ -3,10 +3,10 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
@@ -25,7 +25,7 @@ class SubtitlesTypeValidator(StringSelectValidator):
     _select_values = SUBTITLE_EXTENSIONS
 
 
-class SubtitleOptions(PluginOptions):
+class SubtitleOptions(OptionsDictValidator):
     """
     Defines how to download and store subtitles. Using this plugin creates two new variables:
     ``lang`` and ``subtitles_ext``. ``lang`` is dynamic since you can download multiple subtitles.
