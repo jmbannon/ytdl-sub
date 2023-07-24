@@ -25,7 +25,7 @@ class PluginPriority:
     MODIFY_ENTRY_AFTER_SPLIT = 10
 
     # if post_process is >= to this value, run after file_convert
-    MODIFY_AFTER_FILE_CONVERT = 10
+    POST_PROCESS_AFTER_FILE_CONVERT = 10
 
     MODIFY_ENTRY_FIRST = 0
 
