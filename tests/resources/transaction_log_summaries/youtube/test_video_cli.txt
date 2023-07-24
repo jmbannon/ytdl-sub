@@ -4,6 +4,7 @@ Files created:
   JMC - Oblivion Mod ＂Falcor＂ p.1-thumb.jpg
   JMC - Oblivion Mod ＂Falcor＂ p.1.info.json
   JMC - Oblivion Mod ＂Falcor＂ p.1.mp4
+    Embedded thumbnail
     Video Tags:
       title: Oblivion Mod "Falcor" p.1
   JMC - Oblivion Mod ＂Falcor＂ p.1.nfo
