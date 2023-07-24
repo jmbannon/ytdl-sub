@@ -18,11 +18,12 @@ from ytdl_sub.validators.string_formatter_validators import OverridesStringForma
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
+from ytdl_sub.validators.validators import Validator
 
 
 # pylint: disable=no-self-use
 # pylint: disable=unused-argument
-class OptionsValidator(StrictDictValidator, ABC):
+class OptionsValidator(Validator, ABC):
     """
     Abstract class that validates options for preset sections (plugins, downloaders)
     """
@@ -68,6 +69,10 @@ class OptionsValidator(StrictDictValidator, ABC):
             Available override variables when running the plugin
         """
         return None
+
+
+class OptionsDictValidator(StrictDictValidator, OptionsValidator, ABC):
+    pass
 
 
 # pylint: enable=no-self-use
