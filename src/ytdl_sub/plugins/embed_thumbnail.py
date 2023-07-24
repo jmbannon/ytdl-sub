@@ -1,3 +1,4 @@
+from typing import List
 from typing import Optional
 
 import mediafile
@@ -43,7 +44,7 @@ class EmbedThumbnailPlugin(Plugin[EmbedThumbnailOptions]):
         thumbnail_path = entry.get_download_thumbnail_path()
         tmp_file_path = FFMPEG.tmp_file_path(file_path)
         try:
-            cmd = [
+            ffmpeg_args: List[str] = [
                 "-i",
                 file_path,
                 "-i",
@@ -60,7 +61,7 @@ class EmbedThumbnailPlugin(Plugin[EmbedThumbnailOptions]):
                 "attached_pic",
                 tmp_file_path,
             ]
-            FFMPEG.run(cmd)
+            FFMPEG.run(ffmpeg_args)
             FileHandler.move(tmp_file_path, file_path)
         finally:
             FileHandler.delete(tmp_file_path)

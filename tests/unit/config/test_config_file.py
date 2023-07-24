@@ -51,7 +51,11 @@ class TestConfigFilePartiallyValidatesPresets:
 
     @pytest.mark.parametrize("plugin", PluginMapping.plugins())
     def test_success__empty_plugins(self, plugin: str):
-        self._partial_validate({plugin: {}})
+        excluded_plugins = [
+            "embed_thumbnail",  # value is bool, not dict
+        ]
+        if plugin not in excluded_plugins:
+            self._partial_validate({plugin: {}})
 
     @pytest.mark.parametrize("source", DownloadStrategyMapping.sources())
     def test_success__empty_sources(self, source: str):
