@@ -26,3 +26,4 @@ Contents
    getting_started
    presets
    config
+   deprecation_notices

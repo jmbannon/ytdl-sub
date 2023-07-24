@@ -195,7 +195,7 @@ music_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()
   :members:
-  :exclude-members: partial_validate
+  :exclude-members: partial_validate, embed_thumbnail
 
 -------------------------------------------------------------------------------
 

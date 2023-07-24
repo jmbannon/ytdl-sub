@@ -70,8 +70,6 @@ class MusicTagsOptions(OptionsDictValidator):
                albumartists:
                  - "{artist}"
                  - "ytdl-sub"
-             # Optional
-             embed_thumbnail: False
     """
 
     _required_keys = {"tags"}
@@ -151,7 +149,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
             if self.plugin_options.embed_thumbnail:
                 logger.warning(
                     "music_tags.embed_thumbnail is now deprecated. Use the dedicated "
-                    "embed_thumbnail plugin instead"
+                    "embed_thumbnail plugin instead. This will be removed in October of 2023."
                 )
 
                 # convert the entry thumbnail so it is embedded as jpg
