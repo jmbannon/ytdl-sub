@@ -3,10 +3,10 @@ from typing import Any
 from typing import Dict
 from typing import Optional
 
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.exceptions import ValidationException
@@ -22,7 +22,7 @@ class FileConvertWithValidator(StringSelectValidator):
     _select_values = {"yt-dlp", "ffmpeg"}
 
 
-class FileConvertOptions(PluginOptions):
+class FileConvertOptions(OptionsDictValidator):
     """
     Converts video files from one extension to another.
 

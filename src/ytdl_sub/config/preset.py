@@ -13,6 +13,7 @@ from mergedeep import mergedeep
 from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
+from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
@@ -20,7 +21,6 @@ from ytdl_sub.downloaders.base_downloader import BaseDownloader
 from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.plugins.plugin import PluginOptionsT
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
@@ -67,9 +67,9 @@ def _parent_preset_error_message(
 class PresetPlugins:
     def __init__(self):
         self.plugin_types: List[Type[Plugin]] = []
-        self.plugin_options: List[PluginOptions] = []
+        self.plugin_options: List[OptionsValidator] = []
 
-    def add(self, plugin_type: Type[Plugin], plugin_options: PluginOptions) -> "PresetPlugins":
+    def add(self, plugin_type: Type[Plugin], plugin_options: OptionsValidator) -> "PresetPlugins":
         """
         Add a pair of plugin type and options to the list
         """
@@ -77,7 +77,7 @@ class PresetPlugins:
         self.plugin_options.append(plugin_options)
         return self
 
-    def zipped(self) -> Iterable[Tuple[Type[Plugin], PluginOptions]]:
+    def zipped(self) -> Iterable[Tuple[Type[Plugin], OptionsValidator]]:
         """
         Returns
         -------

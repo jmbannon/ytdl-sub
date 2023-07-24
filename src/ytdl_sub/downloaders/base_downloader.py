@@ -6,7 +6,7 @@ from typing import List
 from typing import Type
 from typing import TypeVar
 
-from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
@@ -14,7 +14,7 @@ from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-BaseDownloaderValidator = OptionsValidator
+BaseDownloaderValidator = OptionsDictValidator
 BaseDownloaderOptionsT = TypeVar("BaseDownloaderOptionsT", bound=BaseDownloaderValidator)
 
 

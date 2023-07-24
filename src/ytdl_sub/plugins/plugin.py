@@ -40,8 +40,7 @@ class PluginPriority:
         return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
 
 
-PluginOptions = OptionsValidator
-PluginOptionsT = TypeVar("PluginOptionsT", bound=PluginOptions)
+PluginOptionsT = TypeVar("PluginOptionsT", bound=OptionsValidator)
 
 
 class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):

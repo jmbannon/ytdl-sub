@@ -8,13 +8,13 @@ from typing import Tuple
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import CHAPTERS
 from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
 from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.exceptions import ValidationException
@@ -47,7 +47,7 @@ class WhenNoChaptersValidator(StringSelectValidator):
     _select_values = {"pass", "drop", "error"}
 
 
-class SplitByChaptersOptions(PluginOptions):
+class SplitByChaptersOptions(OptionsDictValidator):
     """
     Splits a file by chapters into multiple files. Each file becomes its own entry with the
     new source variables ``chapter_title``, ``chapter_title_sanitized``, ``chapter_index``,

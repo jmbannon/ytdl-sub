@@ -3,7 +3,7 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -172,7 +172,7 @@ class UrlListValidator(ListValidator[UrlValidator]):
                     collection_variables[var] = added_variables[var]
 
 
-class MultiUrlValidator(OptionsValidator):
+class MultiUrlValidator(OptionsDictValidator):
     """
     Downloads from multiple URLs. If an entry is returned from more than one URL, it will
     resolve to the bottom-most URL settings.
