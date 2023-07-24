@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any
+from typing import Any, Optional
 from typing import Dict
 from typing import List
 
@@ -72,25 +72,27 @@ class MusicTagsOptions(OptionsDictValidator):
                  - "ytdl-sub"
     """
 
-    _required_keys = {"tags"}
-    _optional_keys = {"embed_thumbnail"}
-
-    @classmethod
-    def partial_validate(cls, name: str, value: Any) -> None:
-        """
-        Partially validate music tags
-        """
-        if isinstance(value, dict):
-            value["tags"] = value.get("tags", {})
-        _ = cls(name, value)
+    _optional_keys = {"tags", "embed_thumbnail"}
+    _allow_extra_keys = True
 
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._tags = self._validate_key(key="tags", validator=MusicTagsValidator)
+        tags_validator: Optional[MusicTagsValidator] = self._validate_key_if_present(
+            key="tags", validator=MusicTagsValidator
+        )
         self._embed_thumbnail = self._validate_key_if_present(
-            key="embed_thumbnail", validator=BoolValidator, default=False
-        ).value
+            key="embed_thumbnail", validator=BoolValidator
+        )
+
+        # New format where tags are the keys, no "tags" or "embed_thumbnail" present
+        if tags_validator is None and self._embed_thumbnail is None:
+            self._tags = MusicTagsValidator(name=name, value=value)
+            self._is_old_format = False
+        else:
+            self._is_old_format = True
+            self._tags = tags_validator or MusicTagsValidator(name=name, value={})
+
 
     @property
     def tags(self) -> MusicTagsValidator:
@@ -105,7 +107,9 @@ class MusicTagsOptions(OptionsDictValidator):
         """
         Optional. Whether to embed the thumbnail into the audio file.
         """
-        return self._embed_thumbnail
+        if self._embed_thumbnail is None:
+            return False
+        return self._embed_thumbnail.value
 
 
 class MusicTagsPlugin(Plugin[MusicTagsOptions]):
@@ -120,6 +124,17 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                 f"music_tags plugin received a video with the extension '{entry.ext}'. Only audio "
                 f"files are supported for setting music tags. Ensure you are converting the video "
                 f"to audio using the audio_extract plugin."
+            )
+
+        if self.plugin_options._is_old_format:
+            logger.warning(
+                "music_tags.tags is now deprecated. Place your tags directly under music_tags "
+                "instead. The old format will be removed in October of 2023."
+            )
+        if self.plugin_options.embed_thumbnail:
+            logger.warning(
+                "music_tags.embed_thumbnail is also deprecated. Use the dedicated "
+                "embed_thumbnail plugin instead. This will be removed in October of 2023."
             )
 
         # Resolve the tags into this dict
@@ -147,10 +162,6 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                     setattr(audio_file, tag_name, tag_value[0])
 
             if self.plugin_options.embed_thumbnail:
-                logger.warning(
-                    "music_tags.embed_thumbnail is now deprecated. Use the dedicated "
-                    "embed_thumbnail plugin instead. This will be removed in October of 2023."
-                )
 
                 # convert the entry thumbnail so it is embedded as jpg
                 convert_download_thumbnail(entry=entry)
