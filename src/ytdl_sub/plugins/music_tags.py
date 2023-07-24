@@ -149,6 +149,11 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                     setattr(audio_file, tag_name, tag_value[0])
 
             if self.plugin_options.embed_thumbnail:
+                logger.warning(
+                    "music_tags.embed_thumbnail is now deprecated. Use the dedicated "
+                    "embed_thumbnail plugin instead"
+                )
+
                 # convert the entry thumbnail so it is embedded as jpg
                 convert_download_thumbnail(entry=entry)
 

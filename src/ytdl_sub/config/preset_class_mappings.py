@@ -8,6 +8,7 @@ from ytdl_sub.downloaders.url.url import UrlDownloader
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin
+from ytdl_sub.plugins.embed_thumbnail import EmbedThumbnailPlugin
 from ytdl_sub.plugins.file_convert import FileConvertPlugin
 from ytdl_sub.plugins.internal.view import ViewPlugin
 from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
@@ -107,6 +108,7 @@ class PluginMapping:
         "_view": ViewPlugin,
         "audio_extract": AudioExtractPlugin,
         "date_range": DateRangePlugin,
+        "embed_thumbnail": EmbedThumbnailPlugin,
         "file_convert": FileConvertPlugin,
         "match_filters": MatchFiltersPlugin,
         "music_tags": MusicTagsPlugin,
