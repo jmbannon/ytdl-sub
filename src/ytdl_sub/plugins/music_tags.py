@@ -1,7 +1,7 @@
 from collections import defaultdict
-from typing import Any, Optional
 from typing import Dict
 from typing import List
+from typing import Optional
 
 import mediafile
 
@@ -65,8 +65,10 @@ class MusicTagsOptions(OptionsDictValidator):
              tags:
                artist: "{artist}"
                album: "{album}"
-               genre: "ytdl-sub"
                # Supports id3v2.4 multi-tags
+               genres:
+                 - "{genre}"
+                 - "ytdl-sub"
                albumartists:
                  - "{artist}"
                  - "ytdl-sub"
@@ -92,7 +94,6 @@ class MusicTagsOptions(OptionsDictValidator):
         else:
             self._is_old_format = True
             self._tags = tags_validator or MusicTagsValidator(name=name, value={})
-
 
     @property
     def tags(self) -> MusicTagsValidator:
@@ -126,6 +127,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                 f"to audio using the audio_extract plugin."
             )
 
+        # pylint: disable=protected-access
         if self.plugin_options._is_old_format:
             logger.warning(
                 "music_tags.tags is now deprecated. Place your tags directly under music_tags "

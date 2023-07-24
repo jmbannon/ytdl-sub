@@ -24,6 +24,7 @@ def single_song_preset_dict_old_format(output_directory):
         },
     }
 
+
 @pytest.fixture
 def single_song_preset_dict(output_directory):
     return {
@@ -42,6 +43,7 @@ def single_song_preset_dict(output_directory):
             "music_directory": output_directory,
         },
     }
+
 
 @pytest.fixture
 def multiple_songs_preset_dict(output_directory):
