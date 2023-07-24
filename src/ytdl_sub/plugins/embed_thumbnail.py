@@ -5,7 +5,7 @@ import mediafile
 
 from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.plugin import Plugin
+from ytdl_sub.plugins.plugin import Plugin, PluginPriority
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -33,6 +33,7 @@ class EmbedThumbnailOptions(BoolValidator, OptionsValidator):
 
 class EmbedThumbnailPlugin(Plugin[EmbedThumbnailOptions]):
     plugin_options_type = EmbedThumbnailOptions
+    priority = PluginPriority(post_process=PluginPriority.MODIFY_AFTER_FILE_CONVERT)
 
     @property
     def _embed_thumbnail(self) -> bool:

@@ -24,6 +24,9 @@ class PluginPriority:
     # If modify_entry priority is >= to this value, run after split
     MODIFY_ENTRY_AFTER_SPLIT = 10
 
+    # if post_process is >= to this value, run after file_convert
+    MODIFY_AFTER_FILE_CONVERT = 10
+
     MODIFY_ENTRY_FIRST = 0
 
     def __init__(self, modify_entry: int = 5, post_process: int = 5):
