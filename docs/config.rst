@@ -165,6 +165,15 @@ date_range
   :member-order: bysource
   :exclude-members: partial_validate
 
+-------------------------------------------------------------------------------
+
+embed_thumbnail
+''''''''''''''''
+
+.. autoclass:: ytdl_sub.plugins.embed_thumbnail.EmbedThumbnailOptions()
+
+-------------------------------------------------------------------------------
+
 file_convert
 ''''''''''''
 .. autoclass:: ytdl_sub.plugins.file_convert.FileConvertOptions()
