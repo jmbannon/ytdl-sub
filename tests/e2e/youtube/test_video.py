@@ -17,6 +17,8 @@ def single_video_preset_dict(output_directory):
             "output_directory": output_directory,
             "maintain_download_archive": False,
         },
+        # embed thumb into the video
+        "embed_thumbnail": True,
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
