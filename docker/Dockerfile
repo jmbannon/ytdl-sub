@@ -3,6 +3,9 @@ FROM ghcr.io/linuxserver/baseimage-alpine:edge
 ###############################################################################
 # YTDL-SUB INSTALL
 
+# Needed for phantomjs
+ENV OPENSSL_CONF="/etc/ssl"
+
 COPY root/ /
 RUN mkdir -p /config && \
     apk update --no-cache && \
@@ -24,15 +27,19 @@ RUN mkdir -p /config && \
     aria2c --version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
+      apk add --no-cache gcompat && \
       cd /usr/share && \
-      curl -L https://github.com/Overbryd/docker-phantomjs-alpine/releases/download/2.11/phantomjs-alpine-x86_64.tar.bz2 | tar xj && \
-      ln -s /usr/share/phantomjs/phantomjs /usr/bin/phantomjs && \
+      curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar xj && \
+      mv /usr/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs phantomjs && \
+      rm -rf /usr/share/phantomjs-2.1.1-linux-x86_64 && \
+      ln -s /usr/share/phantomjs /usr/bin/phantomjs && \
       echo "Phantom JS version:" && \
       phantomjs --version && \
       cd -; \
     fi && \
+    echo "hi" && \
     # Install ytdl-sub, ensure it is installed properly
-    python3 -m pip install --no-cache-dir ytdl_sub-*.whl && \
+    python3 -m pip install --break-system-packages --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
