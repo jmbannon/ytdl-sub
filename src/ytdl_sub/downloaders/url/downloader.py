@@ -12,7 +12,6 @@ from typing import Tuple
 
 from yt_dlp.utils import RejectedVideoReached
 
-from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.source_plugin import SourcePluginExtension
@@ -196,30 +195,7 @@ class BaseUrlDownloader(SourcePlugin[TMultiURLSourceOptionsValidator], ABC):
     and should translate that to list of Entry objects.
     """
 
-    @classmethod
-    def added_plugins(
-        cls,
-        downloader_options: TMultiURLSourceOptionsValidator,
-        enhanced_download_archive: EnhancedDownloadArchive,
-        overrides: Overrides,
-    ) -> List[Plugin]:
-        """
-        Adds
-        1. URL thumbnail download plugin
-        2. Collection variable plugin to add to each entry
-        """
-        return [
-            UrlDownloaderThumbnailPlugin(
-                options=downloader_options,
-                overrides=overrides,
-                enhanced_download_archive=enhanced_download_archive,
-            ),
-            UrlDownloaderCollectionVariablePlugin(
-                downloader_options=downloader_options,
-                overrides=overrides,
-                enhanced_download_archive=enhanced_download_archive,
-            ),
-        ]
+    plugin_extensions = [UrlDownloaderThumbnailPlugin, UrlDownloaderCollectionVariablePlugin]
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:

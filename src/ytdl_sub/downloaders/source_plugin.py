@@ -1,8 +1,12 @@
 import abc
 from abc import ABC
+from typing import Dict
 from typing import Generic
 from typing import Iterable
 from typing import List
+from typing import Optional
+from typing import Type
+from typing import final
 
 from ytdl_sub.config.plugin import BasePlugin
 from ytdl_sub.config.plugin import Plugin
@@ -19,8 +23,18 @@ class SourcePluginExtension(Plugin[TOptionsValidator], ABC):
     are the plugin options.
     """
 
+    @final
+    def ytdl_options(self) -> Optional[Dict]:
+        """
+        SourcePluginExtensions are intended to run after downloading. ytdl_options at that point
+        are not needed.
+        """
+        return None
+
 
 class SourcePlugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
+    plugin_extensions: List[Type[SourcePluginExtension]] = []
+
     def __init__(
         self,
         options: TOptionsValidator,
@@ -45,15 +59,14 @@ class SourcePlugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], AB
     def download(self, entry: Entry) -> Entry:
         """The function to perform the download of all media entries"""
 
-    # pylint: disable=unused-argument
-    @classmethod
-    def added_plugins(
-        cls,
-        downloader_options: TOptionsValidator,
-        enhanced_download_archive: EnhancedDownloadArchive,
-        overrides: Overrides,
-    ) -> List[SourcePluginExtension]:
+    @final
+    def added_plugins(self) -> List[SourcePluginExtension]:
         """Add these plugins from the Downloader to the subscription"""
-        return []
-
-    # pylint: enable=unused-argument
+        return [
+            plugin_extension(
+                options=self.plugin_options,
+                overrides=self.overrides,
+                enhanced_download_archive=self._enhanced_download_archive,
+            )
+            for plugin_extension in self.plugin_extensions
+        ]
