@@ -5,10 +5,9 @@ from typing import Dict
 from typing import Iterable
 from typing import List
 
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderOptionsT
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import ValidationException
@@ -18,7 +17,7 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
-class InfoJsonDownloaderOptions(BaseDownloaderValidator):
+class InfoJsonDownloaderOptions(OptionsDictValidator):
     _optional_keys = {"no-op"}
 
 
@@ -27,7 +26,7 @@ class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
 
     def __init__(
         self,
-        download_options: BaseDownloaderOptionsT,
+        download_options: InfoJsonDownloaderOptions,
         enhanced_download_archive: EnhancedDownloadArchive,
         download_ytdl_options: YTDLOptionsBuilder,
         metadata_ytdl_options: YTDLOptionsBuilder,

@@ -16,12 +16,12 @@ from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
+from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptionsT
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
 from ytdl_sub.utils.exceptions import ValidationException
@@ -85,7 +85,7 @@ class PresetPlugins:
         """
         return zip(self.plugin_types, self.plugin_options)
 
-    def get(self, plugin_type: Type[PluginOptionsT]) -> Optional[PluginOptionsT]:
+    def get(self, plugin_type: Type[TOptionsValidator]) -> Optional[TOptionsValidator]:
         """
         Parameters
         ----------
@@ -277,7 +277,7 @@ class Preset(_PresetShell):
 
     def __validate_and_get_downloader_options(
         self, downloader_source: str, downloader: Type[BaseDownloader]
-    ) -> BaseDownloaderValidator:
+    ) -> DownloaderValidator:
         # Remove the download_strategy key before validating it against the downloader options
         # TODO: make this cleaner
         del self._dict[downloader_source]["download_strategy"]
@@ -287,9 +287,9 @@ class Preset(_PresetShell):
 
     def __validate_and_get_downloader_and_options(
         self,
-    ) -> Tuple[Type[BaseDownloader], BaseDownloaderValidator]:
+    ) -> Tuple[Type[BaseDownloader], DownloaderValidator]:
         downloader: Optional[Type[BaseDownloader]] = None
-        download_options: Optional[BaseDownloaderValidator] = None
+        download_options: Optional[DownloaderValidator] = None
         downloader_sources = DownloadStrategyMapping.sources()
 
         for key in self._keys:
