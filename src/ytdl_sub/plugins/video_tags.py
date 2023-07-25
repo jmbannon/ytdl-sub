@@ -1,3 +1,4 @@
+import copy
 from typing import Any
 from typing import Dict
 
@@ -26,7 +27,8 @@ class VideoTagsOptions(OptionsDictValidator):
                description: "{description}"
     """
 
-    _required_keys = {"tags"}
+    _optional_keys = {"tags"}
+    _allow_extra_keys = True
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
@@ -39,7 +41,12 @@ class VideoTagsOptions(OptionsDictValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._tags = self._validate_key(key="tags", validator=DictFormatterValidator)
+        old_tags = self._validate_key(key="tags", validator=DictFormatterValidator, default={})
+
+        new_tags_dict: Dict[str, Any] = copy.deepcopy(value)
+        new_tags_dict.pop("tags", None)
+
+        self._tags = DictFormatterValidator(name=name, value=dict(old_tags._dict, **new_tags_dict))
 
     @property
     def tags(self) -> DictFormatterValidator:
