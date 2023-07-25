@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Dict
 from typing import Generic
 from typing import List
@@ -127,11 +127,12 @@ class Plugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
         """
 
 
-class SplitPlugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
+class SplitPlugin(Plugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
     """
     Plugin that splits entries into zero or more entries
     """
 
+    @abstractmethod
     def split(self, entry: Entry) -> List[Tuple[Entry, FileMetadata]]:
         """
         Very specialized function that takes an entry and creates multiple entries from it.
@@ -146,4 +147,4 @@ class SplitPlugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC
         -------
         List of entries and metadata created from the source entry
         """
-        return []
+        raise NotImplemented
