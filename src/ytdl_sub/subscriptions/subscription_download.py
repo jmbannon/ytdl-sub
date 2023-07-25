@@ -192,7 +192,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
     @classmethod
     def _preprocess_entry(cls, plugins: List[Plugin], entry: Entry) -> Optional[Entry]:
         maybe_entry: Optional[Entry] = entry
-        for plugin in plugins:
+        for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.modify_entry_metadata):
             if (maybe_entry := plugin.modify_entry_metadata(maybe_entry)) is None:
                 return None
 

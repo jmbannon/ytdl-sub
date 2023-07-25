@@ -12,6 +12,7 @@ from typing import Tuple
 
 from yt_dlp.utils import RejectedVideoReached
 
+from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.source_plugin import SourcePluginExtension
@@ -54,6 +55,8 @@ class URLDownloadState:
 
 
 class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
+    priority = PluginPriority(modify_entry=0)
+
     def __init__(
         self,
         options: MultiUrlSourceOptionsValidator,
@@ -153,6 +156,8 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
 
 
 class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
+    priority = PluginPriority(modify_entry_metadata=0)
+
     def __init__(
         self,
         options: MultiUrlSourceOptionsValidator,

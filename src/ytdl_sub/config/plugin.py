@@ -28,7 +28,10 @@ class PluginPriority:
 
     MODIFY_ENTRY_FIRST = 0
 
-    def __init__(self, modify_entry: int = 5, post_process: int = 5):
+    def __init__(
+        self, modify_entry_metadata: int = 5, modify_entry: int = 5, post_process: int = 5
+    ):
+        self.modify_entry_metadata = modify_entry_metadata
         self.modify_entry = modify_entry
         self.post_process = post_process
 
