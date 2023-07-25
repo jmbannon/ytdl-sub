@@ -358,6 +358,25 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
         plugins = self._initialize_plugins()
 
+        subscription_ytdl_options = SubscriptionYTDLOptions(
+            preset=self._preset_options,
+            plugins=plugins,
+            enhanced_download_archive=self._enhanced_download_archive,
+            working_directory=self.working_directory,
+            dry_run=dry_run,
+        )
+
+        # Re-add the original downloader class' plugins
+        plugins.extend(
+            self.downloader_class(
+                options=self.downloader_options,
+                enhanced_download_archive=self._enhanced_download_archive,
+                download_ytdl_options=subscription_ytdl_options.download_builder(),
+                metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
+                overrides=self.overrides,
+            ).added_plugins()
+        )
+
         downloader = InfoJsonDownloader(
             options=InfoJsonDownloaderOptions(name="no-op", value={}),
             enhanced_download_archive=self._enhanced_download_archive,
