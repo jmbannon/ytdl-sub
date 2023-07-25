@@ -5,11 +5,11 @@ from typing import Optional
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
-from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.logger import Logger

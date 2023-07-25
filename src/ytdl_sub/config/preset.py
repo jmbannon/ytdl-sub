@@ -11,6 +11,7 @@ from typing import Union
 from mergedeep import mergedeep
 
 from ytdl_sub.config.config_validator import ConfigValidator
+from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.config.preset_options import OptionsValidator
@@ -21,7 +22,6 @@ from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
 from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
 from ytdl_sub.utils.exceptions import ValidationException

@@ -12,6 +12,7 @@ from typing import Tuple
 
 from yt_dlp.utils import RejectedVideoReached
 
+from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
 from ytdl_sub.downloaders.base_downloader import BaseDownloaderPlugin
@@ -33,7 +34,6 @@ from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
 from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_MATCH_FILTER_REJECT
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes

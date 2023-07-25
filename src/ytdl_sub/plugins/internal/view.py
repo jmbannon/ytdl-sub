@@ -1,12 +1,12 @@
 import copy
 from typing import Optional
 
+from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsOptions
-from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 

@@ -1,9 +1,9 @@
 from typing import Dict
 from typing import Optional
 
+from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.utils.datetime import to_date_range
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 
