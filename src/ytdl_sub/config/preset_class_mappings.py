@@ -2,6 +2,7 @@ from typing import Dict
 from typing import List
 from typing import Type
 
+from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
 from ytdl_sub.downloaders.url.multi_url import MultiUrlDownloader
 from ytdl_sub.downloaders.url.url import UrlDownloader
@@ -15,7 +16,6 @@ from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
 from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.regex import RegexPlugin
 from ytdl_sub.plugins.split_by_chapters import SplitByChaptersPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin

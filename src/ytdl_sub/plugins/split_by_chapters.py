@@ -8,13 +8,13 @@ from typing import Tuple
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.config.plugin import SplitPlugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import CHAPTERS
 from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
 from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UID
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.exceptions import ValidationException
@@ -101,9 +101,8 @@ class SplitByChaptersOptions(OptionsDictValidator):
         return self._when_no_chapters
 
 
-class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
+class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
     plugin_options_type = SplitByChaptersOptions
-    is_split_plugin = True
 
     def _create_split_entry(
         self, source_entry: Entry, title: str, idx: int, chapters: Chapters

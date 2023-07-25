@@ -5,12 +5,12 @@ from typing import Iterable
 from typing import List
 from typing import Type
 
+from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.downloaders.downloader_validator import TDownloaderValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -29,7 +29,7 @@ class BaseDownloaderPlugin(Plugin[TDownloaderValidator], ABC):
     ):
         super().__init__(
             # Downloader plugins use download options as their plugin options
-            plugin_options=downloader_options,
+            options=downloader_options,
             overrides=overrides,
             enhanced_download_archive=enhanced_download_archive,
         )

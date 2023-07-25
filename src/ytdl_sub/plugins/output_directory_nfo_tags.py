@@ -93,11 +93,11 @@ class OutputDirectoryNfoTagsPlugin(SharedNfoTagsPlugin):
 
     def __init__(
         self,
-        plugin_options: OutputDirectoryNfoTagsOptions,
+        options: OutputDirectoryNfoTagsOptions,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
-        super().__init__(plugin_options, overrides, enhanced_download_archive)
+        super().__init__(options, overrides, enhanced_download_archive)
         self._last_entry: Optional[Entry] = None
 
     def post_process_entry(self, entry: Entry) -> None:

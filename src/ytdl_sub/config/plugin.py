@@ -1,4 +1,5 @@
 from abc import ABC
+from abc import abstractmethod
 from typing import Dict
 from typing import Generic
 from typing import List
@@ -10,7 +11,6 @@ from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.logger import Logger
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -42,52 +42,39 @@ class PluginPriority:
         return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
 
 
-class Plugin(DownloadArchiver, Generic[TOptionsValidator], ABC):
+# pylint: disable=no-self-use,unused-argument
+
+
+class BasePlugin(DownloadArchiver, Generic[TOptionsValidator], ABC):
     """
-    Class to define the new plugin functionality
+    Shared code amongst all SourcePlugins (downloaders) and Plugins (post-download modification)
     """
 
-    plugin_options_type: Type[TOptionsValidator] = NotImplemented
     priority: PluginPriority = PluginPriority()
-
-    # If the plugin creates multiple entries from a single entry
-    is_split_plugin: bool = False
+    plugin_options_type: Type[TOptionsValidator]
 
     def __init__(
         self,
-        plugin_options: TOptionsValidator,
+        options: TOptionsValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
         DownloadArchiver.__init__(self=self, enhanced_download_archive=enhanced_download_archive)
-        self.plugin_options = plugin_options
+        self.plugin_options = options
         self.overrides = overrides
-        # TODO pass yaml snake case name in the class somewhere, and use it for the logger
-        self._logger = Logger.get(self.__class__.__name__)
 
-    # pylint: disable=no-self-use,unused-argument
+
+class Plugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
+    """
+    Class to define the new plugin functionality
+    """
+
     def ytdl_options(self) -> Optional[Dict]:
         """
         Returns
         -------
         ytdl options to enable/disable when downloading entries for this specific plugin
         """
-
-    def split(self, entry: Entry) -> List[Tuple[Entry, FileMetadata]]:
-        """
-        Very specialized function that takes an entry and creates multiple entries from it.
-        Should mark ``is_split_plugin`` on the plugin class.
-
-        Parameters
-        ----------
-        entry
-            Entry to create multiple entries from
-
-        Returns
-        -------
-        List of entries and metadata created from the source entry
-        """
-        return []
 
     def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
         """
@@ -135,9 +122,30 @@ class Plugin(DownloadArchiver, Generic[TOptionsValidator], ABC):
         """
         return None
 
-    # pylint: enable=no-self-use,unused-argument
-
     def post_process_subscription(self):
         """
         After all downloaded files have been post-processed, apply a subscription-wide post process
         """
+
+
+class SplitPlugin(Plugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
+    """
+    Plugin that splits entries into zero or more entries
+    """
+
+    @abstractmethod
+    def split(self, entry: Entry) -> List[Tuple[Entry, FileMetadata]]:
+        """
+        Very specialized function that takes an entry and creates multiple entries from it.
+        Should mark ``is_split_plugin`` on the plugin class.
+
+        Parameters
+        ----------
+        entry
+            Entry to create multiple entries from
+
+        Returns
+        -------
+        List of entries and metadata created from the source entry
+        """
+        return []

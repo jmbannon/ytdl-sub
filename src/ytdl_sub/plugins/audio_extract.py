@@ -3,10 +3,10 @@ from typing import Any
 from typing import Dict
 from typing import Optional
 
+from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_TYPES_EXTENSION_MAPPING
 from ytdl_sub.validators.audo_codec_validator import AudioTypeValidator

@@ -6,12 +6,13 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
+from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.plugin import SplitPlugin
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
@@ -22,8 +23,8 @@ from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 
 
-def _get_split_plugin(plugins: List[Plugin]) -> Optional[Plugin]:
-    split_plugins = [plugin for plugin in plugins if plugin.is_split_plugin]
+def _get_split_plugin(plugins: List[Plugin]) -> Optional[SplitPlugin]:
+    split_plugins = [plugin for plugin in plugins if isinstance(plugin, SplitPlugin)]
 
     if len(split_plugins) == 1:
         return split_plugins[0]
@@ -182,7 +183,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         for plugin_type, plugin_options in self.plugins.zipped():
             plugin = plugin_type(
-                plugin_options=plugin_options,
+                options=plugin_options,
                 overrides=self.overrides,
                 enhanced_download_archive=self._enhanced_download_archive,
             )
@@ -243,7 +244,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self._cleanup_entry_files(entry)
 
     def _process_split_entry(
-        self, split_plugin: Plugin, plugins: List[Plugin], dry_run: bool, entry: Entry
+        self, split_plugin: SplitPlugin, plugins: List[Plugin], dry_run: bool, entry: Entry
     ) -> None:
         entry_: Optional[Entry] = entry
 
