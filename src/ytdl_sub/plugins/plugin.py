@@ -5,10 +5,9 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Type
-from typing import TypeVar
 
-from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
@@ -43,15 +42,12 @@ class PluginPriority:
         return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
 
 
-PluginOptionsT = TypeVar("PluginOptionsT", bound=OptionsValidator)
-
-
-class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
+class Plugin(DownloadArchiver, Generic[TOptionsValidator], ABC):
     """
     Class to define the new plugin functionality
     """
 
-    plugin_options_type: Type[PluginOptionsT] = NotImplemented
+    plugin_options_type: Type[TOptionsValidator] = NotImplemented
     priority: PluginPriority = PluginPriority()
 
     # If the plugin creates multiple entries from a single entry
@@ -59,7 +55,7 @@ class Plugin(DownloadArchiver, Generic[PluginOptionsT], ABC):
 
     def __init__(
         self,
-        plugin_options: PluginOptionsT,
+        plugin_options: TOptionsValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
