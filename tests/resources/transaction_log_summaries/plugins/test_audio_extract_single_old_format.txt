@@ -5,8 +5,17 @@ Files created:
 {output_directory}/YouTube/[2019] YouTube Rewind 2019： For the Record ｜ #YouTubeRewind
   01 - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.mp3
     Embedded Thumbnail, Music Tags:
+      album: YouTube Rewind 2019: For the Record | #YouTubeRewind
+      albumartist: YouTube
+      albumartists: YouTube
+      artist: YouTube
+      artists: YouTube
+      genre: Unset
       genres:
         - multi_tag_1
         - multi_tag_2
-    Embedded thumbnail
+      title: YouTube Rewind 2019: For the Record | #YouTubeRewind
+      track: 1
+      tracktotal: 1
+      year: 2019
   folder.jpg

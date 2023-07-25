@@ -11,8 +11,6 @@ def single_song_preset_dict_old_format(output_directory):
         "preset": "single",
         # test multi-tags
         "music_tags": {"embed_thumbnail": True, "tags": {"genres": ["multi_tag_1", "multi_tag_2"]}},
-        # test the new embed_thumbnail plugin
-        "embed_thumbnail": True,
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",

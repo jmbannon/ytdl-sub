@@ -1,7 +1,8 @@
+import copy
 from collections import defaultdict
+from typing import Any
 from typing import Dict
 from typing import List
-from typing import Optional
 
 import mediafile
 
@@ -80,20 +81,21 @@ class MusicTagsOptions(OptionsDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        tags_validator: Optional[MusicTagsValidator] = self._validate_key_if_present(
-            key="tags", validator=MusicTagsValidator
+        old_tags_validator = self._validate_key(
+            key="tags", validator=MusicTagsValidator, default={}
         )
         self._embed_thumbnail = self._validate_key_if_present(
             key="embed_thumbnail", validator=BoolValidator
         )
+        self._is_old_format = old_tags_validator is not None or self._embed_thumbnail is not None
 
-        # New format where tags are the keys, no "tags" or "embed_thumbnail" present
-        if tags_validator is None and self._embed_thumbnail is None:
-            self._tags = MusicTagsValidator(name=name, value=value)
-            self._is_old_format = False
-        else:
-            self._is_old_format = True
-            self._tags = tags_validator or MusicTagsValidator(name=name, value={})
+        new_tags_dict: Dict[str, Any] = copy.deepcopy(value)
+        new_tags_dict.pop("tags", None)
+        new_tags_dict.pop("embed_thumbnail", None)
+
+        self._tags = MusicTagsValidator(
+            name=name, value=dict(old_tags_validator._dict, **new_tags_dict)
+        )
 
     @property
     def tags(self) -> MusicTagsValidator:
