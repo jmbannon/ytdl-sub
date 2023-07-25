@@ -179,6 +179,15 @@ class MultiUrlValidator(OptionsValidator):
     resolve to the bottom-most URL settings.
     """
 
+    @classmethod
+    def partial_validate(cls, name: str, value: Any) -> None:
+        """
+        Partially validate a collection
+        """
+        if isinstance(value, dict):
+            value["urls"] = value.get("urls", [{"url": "placeholder"}])
+        _ = cls(name, value)
+
     def __init__(self, name, value):
         super().__init__(name, value)
 
@@ -197,15 +206,6 @@ class MultiUrlValidator(OptionsValidator):
             self._urls = UrlListValidator(
                 name=name, value=UrlValidator(name=name, value=value_copy)
             )
-
-    @classmethod
-    def partial_validate(cls, name: str, value: Any) -> None:
-        """
-        Partially validate a collection
-        """
-        if isinstance(value, dict):
-            value["urls"] = value.get("urls", [{"url": "placeholder"}])
-        _ = cls(name, value)
 
     @property
     def urls(self) -> UrlListValidator:
