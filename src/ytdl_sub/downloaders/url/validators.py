@@ -1,9 +1,10 @@
+import copy
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
 
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -172,13 +173,30 @@ class UrlListValidator(ListValidator[UrlValidator]):
                     collection_variables[var] = added_variables[var]
 
 
-class MultiUrlValidator(OptionsDictValidator):
+class MultiUrlValidator(OptionsValidator):
     """
     Downloads from multiple URLs. If an entry is returned from more than one URL, it will
     resolve to the bottom-most URL settings.
     """
 
-    _required_keys = {"urls"}
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        # Copy since we're popping things
+        value_copy = copy.deepcopy(value)
+        if isinstance(value, dict):
+            # Pop old required field in case it's still there
+            value_copy.pop("download_strategy", None)
+
+            if "urls" in value:
+                self._urls = UrlListValidator(name=name, value=value["urls"])
+            else:
+                self._urls = UrlListValidator(name=name, value=[value_copy])
+        else:
+            # Should error here. TODO: Add simplifications download here (string, list)
+            self._urls = UrlListValidator(
+                name=name, value=UrlValidator(name=name, value=value_copy)
+            )
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
@@ -188,10 +206,6 @@ class MultiUrlValidator(OptionsDictValidator):
         if isinstance(value, dict):
             value["urls"] = value.get("urls", [{"url": "placeholder"}])
         _ = cls(name, value)
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-        self._urls = self._validate_key(key="urls", validator=UrlListValidator)
 
     @property
     def urls(self) -> UrlListValidator:
@@ -248,3 +262,11 @@ class MultiUrlValidator(OptionsDictValidator):
                 _ = StringFormatterValidator(
                     name=f"{self._name}.{source_var_name}", value=source_var_formatter_str
                 ).apply_formatter(base_variables)
+
+        # Ensure at least URL is non-empty
+        has_non_empty_url = False
+        for url_validator in self.urls.list:
+            has_non_empty_url |= bool(url_validator.url.apply_formatter(override_variables))
+
+        if not has_non_empty_url:
+            raise self._validation_exception("Must contain at least one url that is non-empty")

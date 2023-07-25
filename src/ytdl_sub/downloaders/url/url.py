@@ -1,12 +1,8 @@
-from ytdl_sub.downloaders.url.downloader import BaseUrlDownloader
-from ytdl_sub.downloaders.url.multi_url_source_options_validator import (
-    MultiUrlSourceOptionsValidator,
-)
-from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.downloaders.url.validators import UrlValidator
 
 
-class UrlDownloadOptions(UrlValidator, MultiUrlSourceOptionsValidator):
+# TODO: Remove later - keep for docstring
+class UrlDownloadOptions(UrlValidator):
     """
     Downloads from a single URL supported by yt-dlp.
 
@@ -28,15 +24,3 @@ class UrlDownloadOptions(UrlValidator, MultiUrlSourceOptionsValidator):
                 uid: "banner_uncropped"
             download_reverse: True
     """
-
-    @property
-    def collection_validator(self) -> MultiUrlValidator:
-        """Returns itself!"""
-        return MultiUrlValidator(
-            name=self._name,
-            value={"urls": [self._value]},
-        )
-
-
-class UrlDownloader(BaseUrlDownloader[UrlDownloadOptions]):
-    plugin_options_type = UrlDownloadOptions
