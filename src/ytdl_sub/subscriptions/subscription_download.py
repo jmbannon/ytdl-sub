@@ -174,23 +174,14 @@ class SubscriptionDownload(BaseSubscription, ABC):
         -------
         List of plugins defined in the subscription, initialized and ready to use.
         """
-        # Always add plugins provided by the downloader
-        plugins: List[Plugin] = self.downloader_class.added_plugins(
-            downloader_options=self.downloader_options,
-            enhanced_download_archive=self._enhanced_download_archive,
-            overrides=self.overrides,
-        )
-
-        for plugin_type, plugin_options in self.plugins.zipped():
-            plugin = plugin_type(
+        return [
+            plugin_type(
                 options=plugin_options,
                 overrides=self.overrides,
                 enhanced_download_archive=self._enhanced_download_archive,
             )
-
-            plugins.append(plugin)
-
-        return plugins
+            for plugin_type, plugin_options in self.plugins.zipped()
+        ]
 
     @classmethod
     def _cleanup_entry_files(cls, entry: Entry):
@@ -201,7 +192,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
     @classmethod
     def _preprocess_entry(cls, plugins: List[Plugin], entry: Entry) -> Optional[Entry]:
         maybe_entry: Optional[Entry] = entry
-        for plugin in plugins:
+        for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.modify_entry_metadata):
             if (maybe_entry := plugin.modify_entry_metadata(maybe_entry)) is None:
                 return None
 
@@ -347,6 +338,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
             overrides=self.overrides,
         )
 
+        plugins.extend(downloader.added_plugins())
+
         return self._process_subscription(
             plugins=plugins,
             downloader=downloader,
@@ -364,6 +357,25 @@ class SubscriptionDownload(BaseSubscription, ABC):
         """
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
         plugins = self._initialize_plugins()
+
+        subscription_ytdl_options = SubscriptionYTDLOptions(
+            preset=self._preset_options,
+            plugins=plugins,
+            enhanced_download_archive=self._enhanced_download_archive,
+            working_directory=self.working_directory,
+            dry_run=dry_run,
+        )
+
+        # Re-add the original downloader class' plugins
+        plugins.extend(
+            self.downloader_class(
+                options=self.downloader_options,
+                enhanced_download_archive=self._enhanced_download_archive,
+                download_ytdl_options=subscription_ytdl_options.download_builder(),
+                metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
+                overrides=self.overrides,
+            ).added_plugins()
+        )
 
         downloader = InfoJsonDownloader(
             options=InfoJsonDownloaderOptions(name="no-op", value={}),

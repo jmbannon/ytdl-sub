@@ -12,7 +12,7 @@ from typing import Tuple
 
 from yt_dlp.utils import RejectedVideoReached
 
-from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.source_plugin import SourcePluginExtension
@@ -55,6 +55,8 @@ class URLDownloadState:
 
 
 class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
+    priority = PluginPriority(modify_entry=0)
+
     def __init__(
         self,
         options: MultiUrlSourceOptionsValidator,
@@ -154,21 +156,23 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
 
 
 class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
+    priority = PluginPriority(modify_entry_metadata=0)
+
     def __init__(
         self,
-        downloader_options: MultiUrlSourceOptionsValidator,
+        options: MultiUrlSourceOptionsValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
         super().__init__(
-            options=downloader_options,
+            options=options,
             overrides=overrides,
             enhanced_download_archive=enhanced_download_archive,
         )
         self._thumbnails_downloaded: Set[str] = set()
         self._collection_url_mapping: Dict[str, UrlValidator] = {
             self.overrides.apply_formatter(collection_url.url): collection_url
-            for collection_url in downloader_options.collection_validator.urls.list
+            for collection_url in options.collection_validator.urls.list
         }
 
     def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
@@ -196,30 +200,7 @@ class BaseUrlDownloader(SourcePlugin[TMultiURLSourceOptionsValidator], ABC):
     and should translate that to list of Entry objects.
     """
 
-    @classmethod
-    def added_plugins(
-        cls,
-        downloader_options: TMultiURLSourceOptionsValidator,
-        enhanced_download_archive: EnhancedDownloadArchive,
-        overrides: Overrides,
-    ) -> List[Plugin]:
-        """
-        Adds
-        1. URL thumbnail download plugin
-        2. Collection variable plugin to add to each entry
-        """
-        return [
-            UrlDownloaderThumbnailPlugin(
-                options=downloader_options,
-                overrides=overrides,
-                enhanced_download_archive=enhanced_download_archive,
-            ),
-            UrlDownloaderCollectionVariablePlugin(
-                downloader_options=downloader_options,
-                overrides=overrides,
-                enhanced_download_archive=enhanced_download_archive,
-            ),
-        ]
+    plugin_extensions = [UrlDownloaderThumbnailPlugin, UrlDownloaderCollectionVariablePlugin]
 
     @classmethod
     def ytdl_option_defaults(cls) -> Dict:
