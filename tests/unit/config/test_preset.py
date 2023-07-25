@@ -3,7 +3,6 @@ import re
 import pytest
 
 from ytdl_sub.config.preset import Preset
-from ytdl_sub.downloaders.url.multi_url import MultiUrlDownloadOptions
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.exceptions import ValidationException

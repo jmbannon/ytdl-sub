@@ -4,8 +4,7 @@ from typing import Type
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
-from ytdl_sub.downloaders.url.multi_url import MultiUrlDownloader
-from ytdl_sub.downloaders.url.url import UrlDownloader
+from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin
@@ -30,7 +29,7 @@ class DownloadStrategyMapping:
     _MAPPING: Dict[str, Dict[str, Type[SourcePlugin]]] = {
         "download": {
             "multi_url": MultiUrlDownloader,
-            "url": UrlDownloader,
+            "url": MultiUrlDownloader,
         },
     }
 
