@@ -155,19 +155,19 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
 class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
     def __init__(
         self,
-        downloader_options: MultiUrlSourceOptionsValidator,
+        options: MultiUrlSourceOptionsValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
         super().__init__(
-            options=downloader_options,
+            options=options,
             overrides=overrides,
             enhanced_download_archive=enhanced_download_archive,
         )
         self._thumbnails_downloaded: Set[str] = set()
         self._collection_url_mapping: Dict[str, UrlValidator] = {
             self.overrides.apply_formatter(collection_url.url): collection_url
-            for collection_url in downloader_options.collection_validator.urls.list
+            for collection_url in options.collection_validator.urls.list
         }
 
     def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
