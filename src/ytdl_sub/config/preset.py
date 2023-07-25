@@ -19,8 +19,7 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
-from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
+from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
@@ -121,7 +120,7 @@ class DownloadStrategyValidator(StrictDictValidator):
             validator=StringValidator,
         ).value
 
-    def get(self, downloader_source: str) -> Type[BaseDownloader]:
+    def get(self, downloader_source: str) -> Type[SourcePlugin]:
         """
         Parameters
         ----------
@@ -213,7 +212,7 @@ class Preset(_PresetShell):
         )
         del source_dict["download_strategy"]
 
-        downloader.downloader_options_type.partial_validate(
+        downloader.plugin_options_type.partial_validate(
             name=f"{name}.{source_name}", value=source_dict
         )
 
@@ -270,26 +269,24 @@ class Preset(_PresetShell):
     def _source_variables(self) -> List[str]:
         return Entry.source_variables()
 
-    def __validate_and_get_downloader(self, downloader_source: str) -> Type[BaseDownloader]:
+    def __validate_and_get_downloader(self, downloader_source: str) -> Type[SourcePlugin]:
         return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(
             downloader_source=downloader_source
         )
 
     def __validate_and_get_downloader_options(
-        self, downloader_source: str, downloader: Type[BaseDownloader]
-    ) -> DownloaderValidator:
+        self, downloader_source: str, downloader: Type[SourcePlugin]
+    ) -> OptionsValidator:
         # Remove the download_strategy key before validating it against the downloader options
         # TODO: make this cleaner
         del self._dict[downloader_source]["download_strategy"]
-        return self._validate_key(
-            key=downloader_source, validator=downloader.downloader_options_type
-        )
+        return self._validate_key(key=downloader_source, validator=downloader.plugin_options_type)
 
     def __validate_and_get_downloader_and_options(
         self,
-    ) -> Tuple[Type[BaseDownloader], DownloaderValidator]:
-        downloader: Optional[Type[BaseDownloader]] = None
-        download_options: Optional[DownloaderValidator] = None
+    ) -> Tuple[Type[SourcePlugin], OptionsValidator]:
+        downloader: Optional[Type[SourcePlugin]] = None
+        download_options: Optional[OptionsValidator] = None
         downloader_sources = DownloadStrategyMapping.sources()
 
         for key in self._keys:

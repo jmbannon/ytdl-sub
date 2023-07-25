@@ -8,9 +8,9 @@ from typing import Optional
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin import SplitPlugin
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
+from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
@@ -291,7 +291,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
     def _process_subscription(
         self,
         plugins: List[Plugin],
-        downloader: BaseDownloader,
+        downloader: SourcePlugin,
         dry_run: bool,
     ) -> FileHandlerTransactionLog:
         with self._subscription_download_context_managers():
@@ -340,7 +340,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         )
 
         downloader = self.downloader_class(
-            download_options=self.downloader_options,
+            options=self.downloader_options,
             enhanced_download_archive=self._enhanced_download_archive,
             download_ytdl_options=subscription_ytdl_options.download_builder(),
             metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
@@ -366,7 +366,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         plugins = self._initialize_plugins()
 
         downloader = InfoJsonDownloader(
-            download_options=InfoJsonDownloaderOptions(name="no-op", value={}),
+            options=InfoJsonDownloaderOptions(name="no-op", value={}),
             enhanced_download_archive=self._enhanced_download_archive,
             download_ytdl_options=YTDLOptionsBuilder(),
             metadata_ytdl_options=YTDLOptionsBuilder(),
