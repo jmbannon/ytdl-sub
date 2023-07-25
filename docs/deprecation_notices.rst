@@ -7,7 +7,7 @@ July 2023
 music_tags
 ^^^^^^^^^^
 
-Music tags is getting simplified. ``tags`` will now reside directly under music_tags, and
+Music tags are getting simplified. ``tags`` will now reside directly under music_tags, and
 ``embed_thumbnail`` is getting moved to its own plugin (supports video files as well). Convert from:
 
 .. code-block:: yaml
@@ -28,3 +28,24 @@ To the following:
        artist: "Elvis Presley"
 
 The old format will be removed in October 2023.
+
+video_tags
+^^^^^^^^^^
+
+Video tags are getting simplified as well. ``tags`` will now reside directly under video_tags.
+Convert from:
+
+.. code-block:: yaml
+
+   my_example_preset:
+     video_tags:
+       tags:
+         title: "Elvis Presley Documentary"
+
+To the following:
+
+.. code-block:: yaml
+
+   my_example_preset:
+     video_tags:
+       title: "Elvis Presley Documentary"

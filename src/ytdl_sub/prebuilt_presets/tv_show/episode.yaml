@@ -38,15 +38,14 @@ presets:
 
   _episode_video_tags:
     video_tags:
-      tags:
-        show: "{tv_show_name}"
-        genre: "{tv_show_genre}"
-        episode_id: "{episode_number}"
-        title: "{episode_title}"
-        synopsis: "{episode_plot}"
-        year: "{episode_year}"
-        date: "{episode_date_standardized}"
-        contentRating: "{episode_content_rating}"
+      show: "{tv_show_name}"
+      genre: "{tv_show_genre}"
+      episode_id: "{episode_number}"
+      title: "{episode_title}"
+      synopsis: "{episode_plot}"
+      year: "{episode_year}"
+      date: "{episode_date_standardized}"
+      contentRating: "{episode_content_rating}"
 
   _episode_nfo_tags:
     nfo_tags:

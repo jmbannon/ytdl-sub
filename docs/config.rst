@@ -248,8 +248,6 @@ subtitles
 video_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.video_tags.VideoTagsOptions()
-  :members:
-  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 

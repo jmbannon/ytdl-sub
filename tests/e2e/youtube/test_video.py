@@ -8,7 +8,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def single_video_preset_dict(output_directory):
+def single_video_preset_dict_old_video_tags_format(output_directory):
     return {
         "preset": "music_video",
         "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
@@ -28,6 +28,30 @@ def single_video_preset_dict(output_directory):
             "tags": {
                 "title": "{title}",
             }
+        },
+        "overrides": {"artist": "JMC"},
+    }
+
+
+@pytest.fixture
+def single_video_preset_dict(output_directory):
+    return {
+        "preset": "music_video",
+        "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+        # override the output directory with our fixture-generated dir
+        "output_options": {
+            "output_directory": output_directory,
+            "maintain_download_archive": False,
+        },
+        # embed thumb into the video
+        "embed_thumbnail": True,
+        # download the worst format so it is fast
+        "ytdl_options": {
+            "format": "worst[ext=mp4]",
+        },
+        # also test video tags
+        "video_tags": {
+            "title": "{title}",
         },
         "overrides": {"artist": "JMC"},
     }
@@ -71,6 +95,25 @@ def single_video_preset_dict_dl_args(single_video_preset_dict):
 
 
 class TestYoutubeVideo:
+    def test_single_video_old_video_tags_format_download(
+        self,
+        music_video_config,
+        single_video_preset_dict_old_video_tags_format,
+        output_directory,
+    ):
+        single_video_subscription = Subscription.from_dict(
+            config=music_video_config,
+            preset_name="music_video_single_video_test",
+            preset_dict=single_video_preset_dict_old_video_tags_format,
+        )
+
+        transaction_log = single_video_subscription.download(dry_run=True)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_video.txt",
+        )
+
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download(
         self,
