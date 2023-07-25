@@ -87,7 +87,7 @@ class MusicTagsOptions(OptionsDictValidator):
         self._embed_thumbnail = self._validate_key_if_present(
             key="embed_thumbnail", validator=BoolValidator
         )
-        self._is_old_format = old_tags_validator is not None or self._embed_thumbnail is not None
+        self._is_old_format = old_tags_validator._dict or self._embed_thumbnail is not None
 
         new_tags_dict: Dict[str, Any] = copy.deepcopy(value)
         new_tags_dict.pop("tags", None)
