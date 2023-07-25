@@ -49,6 +49,7 @@ class BasePlugin(DownloadArchiver, Generic[TOptionsValidator], ABC):
     Shared code amongst all SourcePlugins (downloaders) and Plugins (post-download modification)
     """
 
+    priority: PluginPriority = PluginPriority()
     plugin_options_type: Type[TOptionsValidator]
 
     def __init__(
@@ -66,8 +67,6 @@ class Plugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
     """
     Class to define the new plugin functionality
     """
-
-    priority: PluginPriority = PluginPriority()
 
     def ytdl_options(self) -> Optional[Dict]:
         """
