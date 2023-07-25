@@ -1,15 +1,13 @@
 from abc import ABC
 from pathlib import Path
-from typing import Type
 
 from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.config.preset import PresetPlugins
-from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.downloaders.source_plugin import SourcePlugin
+from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
@@ -52,16 +50,7 @@ class BaseSubscription(ABC):
         )
 
     @property
-    def downloader_class(self) -> Type[SourcePlugin]:
-        """
-        Returns
-        -------
-        This subscription's downloader class
-        """
-        return self._preset_options.downloader
-
-    @property
-    def downloader_options(self) -> OptionsValidator:
+    def downloader_options(self) -> MultiUrlValidator:
         """
         Returns
         -------

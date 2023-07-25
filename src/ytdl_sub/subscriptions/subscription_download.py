@@ -11,6 +11,7 @@ from ytdl_sub.config.plugin import SplitPlugin
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
+from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
@@ -330,7 +331,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             dry_run=dry_run,
         )
 
-        downloader = self.downloader_class(
+        downloader = MultiUrlDownloader(
             options=self.downloader_options,
             enhanced_download_archive=self._enhanced_download_archive,
             download_ytdl_options=subscription_ytdl_options.download_builder(),
@@ -368,7 +369,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         # Re-add the original downloader class' plugins
         plugins.extend(
-            self.downloader_class(
+            MultiUrlDownloader(
                 options=self.downloader_options,
                 enhanced_download_archive=self._enhanced_download_archive,
                 download_ytdl_options=subscription_ytdl_options.download_builder(),
