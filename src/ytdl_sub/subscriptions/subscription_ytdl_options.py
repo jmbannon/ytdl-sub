@@ -7,7 +7,7 @@ from typing import TypeVar
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset import Preset
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
@@ -43,7 +43,7 @@ class SubscriptionYTDLOptions:
         return None
 
     @property
-    def _downloader(self) -> Type[BaseDownloader]:
+    def _downloader(self) -> Type[SourcePlugin]:
         return self._preset.downloader
 
     @property

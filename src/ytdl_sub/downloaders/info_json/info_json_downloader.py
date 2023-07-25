@@ -7,7 +7,7 @@ from typing import List
 
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import Overrides
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import ValidationException
@@ -21,19 +21,19 @@ class InfoJsonDownloaderOptions(OptionsDictValidator):
     _optional_keys = {"no-op"}
 
 
-class InfoJsonDownloader(BaseDownloader[InfoJsonDownloaderOptions]):
-    downloader_options_type = InfoJsonDownloaderOptions
+class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
+    plugin_options_type = InfoJsonDownloaderOptions
 
     def __init__(
         self,
-        download_options: InfoJsonDownloaderOptions,
+        options: InfoJsonDownloaderOptions,
         enhanced_download_archive: EnhancedDownloadArchive,
         download_ytdl_options: YTDLOptionsBuilder,
         metadata_ytdl_options: YTDLOptionsBuilder,
         overrides: Overrides,
     ):
         super().__init__(
-            download_options=download_options,
+            options=options,
             enhanced_download_archive=enhanced_download_archive,
             download_ytdl_options=download_ytdl_options,
             metadata_ytdl_options=metadata_ytdl_options,

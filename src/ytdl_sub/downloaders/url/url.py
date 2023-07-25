@@ -1,10 +1,12 @@
-from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
 from ytdl_sub.downloaders.url.downloader import BaseUrlDownloader
+from ytdl_sub.downloaders.url.multi_url_source_options_validator import (
+    MultiUrlSourceOptionsValidator,
+)
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.downloaders.url.validators import UrlValidator
 
 
-class UrlDownloadOptions(UrlValidator, DownloaderValidator):
+class UrlDownloadOptions(UrlValidator, MultiUrlSourceOptionsValidator):
     """
     Downloads from a single URL supported by yt-dlp.
 
@@ -37,4 +39,4 @@ class UrlDownloadOptions(UrlValidator, DownloaderValidator):
 
 
 class UrlDownloader(BaseUrlDownloader[UrlDownloadOptions]):
-    downloader_options_type = UrlDownloadOptions
+    plugin_options_type = UrlDownloadOptions

@@ -3,7 +3,7 @@ from typing import List
 from typing import Type
 
 from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.url.multi_url import MultiUrlDownloader
 from ytdl_sub.downloaders.url.url import UrlDownloader
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
@@ -27,7 +27,7 @@ class DownloadStrategyMapping:
     Maps downloader strategies defined in the preset to its respective downloader class
     """
 
-    _MAPPING: Dict[str, Dict[str, Type[BaseDownloader]]] = {
+    _MAPPING: Dict[str, Dict[str, Type[SourcePlugin]]] = {
         "download": {
             "multi_url": MultiUrlDownloader,
             "url": UrlDownloader,
@@ -82,7 +82,7 @@ class DownloadStrategyMapping:
             )
 
     @classmethod
-    def get(cls, source: str, download_strategy: str) -> Type[BaseDownloader]:
+    def get(cls, source: str, download_strategy: str) -> Type[SourcePlugin]:
         """
         Parameters
         ----------

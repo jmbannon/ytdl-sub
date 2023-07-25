@@ -1,12 +1,14 @@
 from typing import Dict
 from typing import List
 
-from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
 from ytdl_sub.downloaders.url.downloader import BaseUrlDownloader
+from ytdl_sub.downloaders.url.multi_url_source_options_validator import (
+    MultiUrlSourceOptionsValidator,
+)
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 
 
-class MultiUrlDownloadOptions(MultiUrlValidator, DownloaderValidator):
+class MultiUrlDownloadOptions(MultiUrlValidator, MultiUrlSourceOptionsValidator):
     """
     Downloads from multiple URLs. If an entry is returned from more than one URL, it will
     resolve to the bottom-most URL settings.
@@ -65,4 +67,4 @@ class MultiUrlDownloadOptions(MultiUrlValidator, DownloaderValidator):
 
 
 class MultiUrlDownloader(BaseUrlDownloader[MultiUrlDownloadOptions]):
-    downloader_options_type = MultiUrlDownloadOptions
+    plugin_options_type = MultiUrlDownloadOptions

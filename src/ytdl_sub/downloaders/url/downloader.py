@@ -14,10 +14,14 @@ from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import Overrides
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderPlugin
-from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
-from ytdl_sub.downloaders.downloader_validator import TDownloaderValidator
+from ytdl_sub.downloaders.source_plugin import SourcePlugin
+from ytdl_sub.downloaders.source_plugin import SourcePluginExtension
+from ytdl_sub.downloaders.url.multi_url_source_options_validator import (
+    MultiUrlSourceOptionsValidator,
+)
+from ytdl_sub.downloaders.url.multi_url_source_options_validator import (
+    TMultiURLSourceOptionsValidator,
+)
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.downloaders.url.validators import UrlThumbnailListValidator
 from ytdl_sub.downloaders.url.validators import UrlValidator
@@ -50,22 +54,22 @@ class URLDownloadState:
         self.entries_downloaded = 0
 
 
-class UrlDownloaderThumbnailPlugin(BaseDownloaderPlugin):
+class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
     def __init__(
         self,
-        downloader_options: DownloaderValidator,
+        options: MultiUrlSourceOptionsValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
         super().__init__(
-            downloader_options=downloader_options,
+            options=options,
             overrides=overrides,
             enhanced_download_archive=enhanced_download_archive,
         )
         self._thumbnails_downloaded: Set[str] = set()
         self._collection_url_mapping: Dict[str, UrlValidator] = {
             self.overrides.apply_formatter(collection_url.url): collection_url
-            for collection_url in downloader_options.collection_validator.urls.list
+            for collection_url in options.collection_validator.urls.list
         }
 
     def _download_parent_thumbnails(
@@ -149,15 +153,15 @@ class UrlDownloaderThumbnailPlugin(BaseDownloaderPlugin):
         return entry
 
 
-class UrlDownloaderCollectionVariablePlugin(BaseDownloaderPlugin):
+class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
     def __init__(
         self,
-        downloader_options: DownloaderValidator,
+        downloader_options: MultiUrlSourceOptionsValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
         super().__init__(
-            downloader_options=downloader_options,
+            options=downloader_options,
             overrides=overrides,
             enhanced_download_archive=enhanced_download_archive,
         )
@@ -186,7 +190,7 @@ class UrlDownloaderCollectionVariablePlugin(BaseDownloaderPlugin):
         return entry
 
 
-class BaseUrlDownloader(BaseDownloader[TDownloaderValidator], ABC):
+class BaseUrlDownloader(SourcePlugin[TMultiURLSourceOptionsValidator], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
@@ -195,7 +199,7 @@ class BaseUrlDownloader(BaseDownloader[TDownloaderValidator], ABC):
     @classmethod
     def added_plugins(
         cls,
-        downloader_options: TDownloaderValidator,
+        downloader_options: TMultiURLSourceOptionsValidator,
         enhanced_download_archive: EnhancedDownloadArchive,
         overrides: Overrides,
     ) -> List[Plugin]:
@@ -206,7 +210,7 @@ class BaseUrlDownloader(BaseDownloader[TDownloaderValidator], ABC):
         """
         return [
             UrlDownloaderThumbnailPlugin(
-                downloader_options=downloader_options,
+                options=downloader_options,
                 overrides=overrides,
                 enhanced_download_archive=enhanced_download_archive,
             ),
@@ -229,7 +233,7 @@ class BaseUrlDownloader(BaseDownloader[TDownloaderValidator], ABC):
 
     def __init__(
         self,
-        download_options: TDownloaderValidator,
+        options: TMultiURLSourceOptionsValidator,
         enhanced_download_archive: EnhancedDownloadArchive,
         download_ytdl_options: YTDLOptionsBuilder,
         metadata_ytdl_options: YTDLOptionsBuilder,
@@ -238,7 +242,7 @@ class BaseUrlDownloader(BaseDownloader[TDownloaderValidator], ABC):
         """
         Parameters
         ----------
-        download_options
+        options
             Options validator for this downloader
         enhanced_download_archive
             Download archive
@@ -250,7 +254,7 @@ class BaseUrlDownloader(BaseDownloader[TDownloaderValidator], ABC):
             Override variables
         """
         super().__init__(
-            download_options=download_options,
+            options=options,
             enhanced_download_archive=enhanced_download_archive,
             download_ytdl_options=download_ytdl_options,
             metadata_ytdl_options=metadata_ytdl_options,
@@ -315,7 +319,7 @@ class BaseUrlDownloader(BaseDownloader[TDownloaderValidator], ABC):
     @property
     def collection(self) -> MultiUrlValidator:
         """Return the download options collection"""
-        return self.download_options.collection_validator
+        return self.plugin_options.collection_validator
 
     @contextlib.contextmanager
     def _separate_download_archives(self, clear_info_json_files: bool = False):

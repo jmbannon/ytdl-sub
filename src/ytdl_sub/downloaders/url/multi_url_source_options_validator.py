@@ -8,7 +8,7 @@ from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 
 
-class DownloaderValidator(OptionsValidator, ABC):
+class MultiUrlSourceOptionsValidator(OptionsValidator, ABC):
     """
     Placeholder class to define downloader options
     """
@@ -42,4 +42,6 @@ class DownloaderValidator(OptionsValidator, ABC):
         )
 
 
-TDownloaderValidator = TypeVar("TDownloaderValidator", bound=DownloaderValidator)
+TMultiURLSourceOptionsValidator = TypeVar(
+    "TMultiURLSourceOptionsValidator", bound=MultiUrlSourceOptionsValidator
+)
