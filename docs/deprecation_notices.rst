@@ -4,17 +4,19 @@ Deprecation Notices
 July 2023
 ---------
 
-embed_thumbnail
-^^^^^^^^^^^^^^^
+music_tags
+^^^^^^^^^^
 
-Embedding thumbnails has its own dedicated plugin now, which supports both audio and video files.
-It will be removed from ``music_tags`` in October 2023. Convert from:
+Music tags is getting simplified. ``tags`` will now reside directly under music_tags, and
+``embed_thumbnail`` is getting moved to its own plugin (supports video files as well). Convert from:
 
 .. code-block:: yaml
 
    my_example_preset:
      music_tags:
        embed_thumbnail: True
+       tags:
+         artist: "Elvis Presley"
 
 To the following:
 
@@ -22,4 +24,7 @@ To the following:
 
    my_example_preset:
      embed_thumbnail: True
+     music_tags:
+       artist: "Elvis Presley"
 
+The old format will be removed in October 2023.

@@ -15,7 +15,7 @@ def single_song_video_dict(output_directory):
         },
         "output_options": {"output_directory": output_directory, "file_name": "will_error.mp4"},
         # test multi-tags
-        "music_tags": {"embed_thumbnail": True, "tags": {"genres": ["multi_tag_1", "multi_tag_2"]}},
+        "music_tags": {"genres": ["multi_tag_1", "multi_tag_2"]},
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
