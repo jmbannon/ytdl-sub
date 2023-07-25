@@ -81,21 +81,16 @@ class MusicTagsOptions(OptionsDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        old_tags_validator = self._validate_key(
-            key="tags", validator=MusicTagsValidator, default={}
-        )
         self._embed_thumbnail = self._validate_key_if_present(
             key="embed_thumbnail", validator=BoolValidator
         )
-        self._is_old_format = old_tags_validator._dict or self._embed_thumbnail is not None
 
         new_tags_dict: Dict[str, Any] = copy.deepcopy(value)
-        new_tags_dict.pop("tags", None)
+        old_tags_dict = new_tags_dict.pop("tags", {})
         new_tags_dict.pop("embed_thumbnail", None)
 
-        self._tags = MusicTagsValidator(
-            name=name, value=dict(old_tags_validator._dict, **new_tags_dict)
-        )
+        self._is_old_format = len(old_tags_dict) > 0 or self._embed_thumbnail is not None
+        self._tags = MusicTagsValidator(name=name, value=dict(old_tags_dict, **new_tags_dict))
 
     @property
     def tags(self) -> MusicTagsValidator:
