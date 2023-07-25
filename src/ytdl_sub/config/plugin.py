@@ -147,4 +147,4 @@ class SplitPlugin(Plugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
         -------
         List of entries and metadata created from the source entry
         """
-        raise NotImplemented
+        return []
