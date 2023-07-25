@@ -233,7 +233,7 @@ class BaseUrlDownloader(SourcePlugin[TMultiURLSourceOptionsValidator], ABC):
 
     def __init__(
         self,
-        download_options: TMultiURLSourceOptionsValidator,
+        options: TMultiURLSourceOptionsValidator,
         enhanced_download_archive: EnhancedDownloadArchive,
         download_ytdl_options: YTDLOptionsBuilder,
         metadata_ytdl_options: YTDLOptionsBuilder,
@@ -242,7 +242,7 @@ class BaseUrlDownloader(SourcePlugin[TMultiURLSourceOptionsValidator], ABC):
         """
         Parameters
         ----------
-        download_options
+        options
             Options validator for this downloader
         enhanced_download_archive
             Download archive
@@ -254,7 +254,7 @@ class BaseUrlDownloader(SourcePlugin[TMultiURLSourceOptionsValidator], ABC):
             Override variables
         """
         super().__init__(
-            options=download_options,
+            options=options,
             enhanced_download_archive=enhanced_download_archive,
             download_ytdl_options=download_ytdl_options,
             metadata_ytdl_options=metadata_ytdl_options,
