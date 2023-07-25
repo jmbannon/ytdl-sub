@@ -69,7 +69,9 @@ class VideoTagsPlugin(Plugin[VideoTagsOptions]):
         if self.plugin_options._is_old_format:
             logger.warning(
                 "video_tags.tags is now deprecated. Place your tags directly under video_tags "
-                "instead. The old format will be removed in October of 2023."
+                "instead. The old format will be removed in October of 2023. See "
+                "https://ytdl-sub.readthedocs.io/en/latest/deprecation_notices.html#video-tags "
+                "for more details."
             )
 
         tags_to_write: Dict[str, str] = {}

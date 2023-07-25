@@ -128,7 +128,9 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         if self.plugin_options._is_old_format:
             logger.warning(
                 "music_tags.tags is now deprecated. Place your tags directly under music_tags "
-                "instead. The old format will be removed in October of 2023."
+                "instead. The old format will be removed in October of 2023. See "
+                "https://ytdl-sub.readthedocs.io/en/latest/deprecation_notices.html#music-tags "
+                "for more details."
             )
         if self.plugin_options.embed_thumbnail:
             logger.warning(
