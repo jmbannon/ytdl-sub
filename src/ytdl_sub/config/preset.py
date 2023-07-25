@@ -18,7 +18,7 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
+from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.plugin import PluginOptionsT
@@ -277,7 +277,7 @@ class Preset(_PresetShell):
 
     def __validate_and_get_downloader_options(
         self, downloader_source: str, downloader: Type[BaseDownloader]
-    ) -> BaseDownloaderValidator:
+    ) -> DownloaderValidator:
         # Remove the download_strategy key before validating it against the downloader options
         # TODO: make this cleaner
         del self._dict[downloader_source]["download_strategy"]
@@ -287,9 +287,9 @@ class Preset(_PresetShell):
 
     def __validate_and_get_downloader_and_options(
         self,
-    ) -> Tuple[Type[BaseDownloader], BaseDownloaderValidator]:
+    ) -> Tuple[Type[BaseDownloader], DownloaderValidator]:
         downloader: Optional[Type[BaseDownloader]] = None
-        download_options: Optional[BaseDownloaderValidator] = None
+        download_options: Optional[DownloaderValidator] = None
         downloader_sources = DownloadStrategyMapping.sources()
 
         for key in self._keys:

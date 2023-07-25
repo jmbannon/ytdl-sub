@@ -3,6 +3,7 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import TypeVar
 
 from yt_dlp.utils import sanitize_filename
 
@@ -69,6 +70,9 @@ class OptionsValidator(Validator, ABC):
             Available override variables when running the plugin
         """
         return None
+
+
+TOptionsValidator = TypeVar("TOptionsValidator", bound=OptionsValidator)
 
 
 class OptionsDictValidator(StrictDictValidator, OptionsValidator, ABC):

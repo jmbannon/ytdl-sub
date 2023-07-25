@@ -1,4 +1,3 @@
-import abc
 import contextlib
 import os
 from abc import ABC
@@ -15,9 +14,9 @@ from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.base_downloader import BaseDownloader
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderOptionsT
 from ytdl_sub.downloaders.base_downloader import BaseDownloaderPlugin
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
+from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
+from ytdl_sub.downloaders.downloader_validator import TDownloaderValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.downloaders.url.validators import UrlThumbnailListValidator
 from ytdl_sub.downloaders.url.validators import UrlValidator
@@ -43,40 +42,6 @@ from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 download_logger = Logger.get(name="downloader")
-
-
-class DownloaderValidator(BaseDownloaderValidator, ABC):
-    """
-    Placeholder class to define downloader options
-    """
-
-    @property
-    @abc.abstractmethod
-    def collection_validator(self) -> MultiUrlValidator:
-        """
-        Returns
-        -------
-        MultiUrlValidator
-            To determine how the entries are downloaded
-        """
-
-    def added_source_variables(self) -> List[str]:
-        """
-        Returns
-        -------
-        Added source variables on the collection
-        """
-        return self.collection_validator.added_source_variables()
-
-    def validate_with_variables(
-        self, source_variables: List[str], override_variables: Dict[str, str]
-    ) -> None:
-        """
-        Validates any source variables added by the collection
-        """
-        self.collection_validator.validate_with_variables(
-            source_variables=source_variables, override_variables=override_variables
-        )
 
 
 class URLDownloadState:
@@ -221,7 +186,7 @@ class UrlDownloaderCollectionVariablePlugin(BaseDownloaderPlugin):
         return entry
 
 
-class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
+class BaseUrlDownloader(BaseDownloader[TDownloaderValidator], ABC):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.
@@ -230,7 +195,7 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
     @classmethod
     def added_plugins(
         cls,
-        downloader_options: BaseDownloaderOptionsT,
+        downloader_options: TDownloaderValidator,
         enhanced_download_archive: EnhancedDownloadArchive,
         overrides: Overrides,
     ) -> List[Plugin]:
@@ -264,7 +229,7 @@ class BaseUrlDownloader(BaseDownloader[BaseDownloaderOptionsT], ABC):
 
     def __init__(
         self,
-        download_options: BaseDownloaderOptionsT,
+        download_options: TDownloaderValidator,
         enhanced_download_archive: EnhancedDownloadArchive,
         download_ytdl_options: YTDLOptionsBuilder,
         metadata_ytdl_options: YTDLOptionsBuilder,

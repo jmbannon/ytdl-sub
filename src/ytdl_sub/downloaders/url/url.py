@@ -1,5 +1,5 @@
+from ytdl_sub.downloaders.downloader_validator import DownloaderValidator
 from ytdl_sub.downloaders.url.downloader import BaseUrlDownloader
-from ytdl_sub.downloaders.url.downloader import DownloaderValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.downloaders.url.validators import UrlValidator
 

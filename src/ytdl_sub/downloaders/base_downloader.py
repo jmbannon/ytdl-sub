@@ -4,21 +4,18 @@ from typing import Generic
 from typing import Iterable
 from typing import List
 from typing import Type
-from typing import TypeVar
 
-from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.preset_options import TOptionsValidator
+from ytdl_sub.downloaders.downloader_validator import TDownloaderValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-BaseDownloaderValidator = OptionsDictValidator
-BaseDownloaderOptionsT = TypeVar("BaseDownloaderOptionsT", bound=BaseDownloaderValidator)
 
-
-class BaseDownloaderPlugin(Plugin[BaseDownloaderOptionsT], ABC):
+class BaseDownloaderPlugin(Plugin[TDownloaderValidator], ABC):
     """
     Plugins that get added automatically by using a downloader. Downloader options
     are the plugin options.
@@ -26,7 +23,7 @@ class BaseDownloaderPlugin(Plugin[BaseDownloaderOptionsT], ABC):
 
     def __init__(
         self,
-        downloader_options: BaseDownloaderOptionsT,
+        downloader_options: TDownloaderValidator,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
@@ -38,12 +35,12 @@ class BaseDownloaderPlugin(Plugin[BaseDownloaderOptionsT], ABC):
         )
 
 
-class BaseDownloader(DownloadArchiver, Generic[BaseDownloaderOptionsT], ABC):
-    downloader_options_type: Type[BaseDownloaderOptionsT]
+class BaseDownloader(DownloadArchiver, Generic[TOptionsValidator], ABC):
+    downloader_options_type: Type[TOptionsValidator]
 
     def __init__(
         self,
-        download_options: BaseDownloaderOptionsT,
+        download_options: TOptionsValidator,
         enhanced_download_archive: EnhancedDownloadArchive,
         download_ytdl_options: YTDLOptionsBuilder,
         metadata_ytdl_options: YTDLOptionsBuilder,
@@ -67,7 +64,7 @@ class BaseDownloader(DownloadArchiver, Generic[BaseDownloaderOptionsT], ABC):
     @classmethod
     def added_plugins(
         cls,
-        downloader_options: BaseDownloaderOptionsT,
+        downloader_options: TOptionsValidator,
         enhanced_download_archive: EnhancedDownloadArchive,
         overrides: Overrides,
     ) -> List[BaseDownloaderPlugin]:
