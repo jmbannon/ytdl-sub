@@ -185,7 +185,7 @@ class MultiUrlValidator(OptionsValidator):
         Partially validate a collection
         """
         if isinstance(value, dict):
-            value["urls"] = value.get("urls", [{"url": "placeholder"}])
+            value["url"] = value.get("url", "sadfasdf")
         _ = cls(name, value)
 
     def __init__(self, name, value):
@@ -197,9 +197,11 @@ class MultiUrlValidator(OptionsValidator):
             # Pop old required field in case it's still there
             value_copy.pop("download_strategy", None)
 
-            if "urls" in value:
-                self._urls = UrlListValidator(name=name, value=value["urls"])
+            if "urls" in value_copy:
+                self._urls = UrlListValidator(name=name, value=value_copy["urls"])
             else:
+                # Validate using a single URL validator first
+                _ = UrlValidator(name=name, value=value_copy)
                 self._urls = UrlListValidator(name=name, value=[value_copy])
         else:
             # Should error here. TODO: Add simplifications download here (string, list)
