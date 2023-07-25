@@ -64,17 +64,19 @@ presets:
     # It is recommended to keep most of this as-is, and use override
     # variables to set them to be what you want.
     music_tags:
-      tags:
-        artist: "{track_artist}"
-        artists: "{track_artist}"
-        albumartist: "{track_artist}"
-        albumartists: "{track_artist}"
-        title: "{track_title}"
-        album: "{track_album}"
-        track: "{track_number}"
-        tracktotal: "{track_total}"
-        year: "{track_year}"
-        genre: "{track_genre}"
+      artist: "{track_artist}"
+      artists: "{track_artist}"
+      albumartist: "{track_artist}"
+      albumartists: "{track_artist}"
+      title: "{track_title}"
+      album: "{track_album}"
+      track: "{track_number}"
+      tracktotal: "{track_total}"
+      year: "{track_year}"
+      genre: "{track_genre}"
+
+    # Optionally embed the thumbnail into the track
+    embed_thumbnail: False
 
     # For every configurable field, make it an override variable,
     # so we can carefully tune different use-cases by only modifying override variables.
