@@ -9,7 +9,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def preset_dict(output_directory):
     return {
         "preset": "music_video",
-        "download": {"url": "https://www.youtube.com/watch?v=2zYF9JLHDmA"},
+        "download": "https://www.youtube.com/watch?v=2zYF9JLHDmA",
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
         "ytdl_options": {
@@ -23,7 +23,7 @@ def preset_dict(output_directory):
 def playlist_preset_dict(output_directory):
     return {
         "preset": "music_video",
-        "download": {"url": "https://www.youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
+        "download": "https://www.youtube.com/playlist?list=PL5BC0FC26BECA5A35",
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast
         "ytdl_options": {

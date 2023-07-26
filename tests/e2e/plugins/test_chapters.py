@@ -11,7 +11,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def sponsorblock_and_subs_preset_dict(output_directory) -> Dict:
     return {
         "preset": "music_video",
-        "download": {"url": "https://www.youtube.com/watch?v=-wJOUAuKZm8"},
+        "download": "https://www.youtube.com/watch?v=-wJOUAuKZm8",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         "subtitles": {

@@ -21,20 +21,19 @@ presets:
 
   collection_season_1:
     download:
-      urls:
-        - url: "{collection_season_1_url}"
-          variables:
-            collection_season_number: "1"
-            collection_season_number_padded: "01"
-          playlist_thumbnails:
-            # Use latest_entry first, then see if YT channel artwork exists
-            # ONLY FOR SEASON 1! The channel artwork will be the show's artwork.
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
-            - name: "{tv_show_poster_file_name}"
-              uid: "avatar_uncropped"
-            - name: "{tv_show_fanart_file_name}"
-              uid: "banner_uncropped"
+      - url: "{collection_season_1_url}"
+        variables:
+          collection_season_number: "1"
+          collection_season_number_padded: "01"
+        playlist_thumbnails:
+          # Use latest_entry first, then see if YT channel artwork exists
+          # ONLY FOR SEASON 1! The channel artwork will be the show's artwork.
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
+          - name: "{tv_show_poster_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{tv_show_fanart_file_name}"
+            uid: "banner_uncropped"
 
     output_directory_nfo_tags:
       tags:
@@ -45,14 +44,13 @@ presets:
 
   collection_season_2:
     download:
-      urls:
-        - url: "{collection_season_2_url}"
-          variables:
-            collection_season_number: "2"
-            collection_season_number_padded: "02"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_2_url}"
+        variables:
+          collection_season_number: "2"
+          collection_season_number_padded: "02"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -63,14 +61,13 @@ presets:
 
   collection_season_3:
     download:
-      urls:
-        - url: "{collection_season_3_url}"
-          variables:
-            collection_season_number: "3"
-            collection_season_number_padded: "03"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_3_url}"
+        variables:
+          collection_season_number: "3"
+          collection_season_number_padded: "03"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -81,14 +78,13 @@ presets:
 
   collection_season_4:
     download:
-      urls:
-        - url: "{collection_season_4_url}"
-          variables:
-            collection_season_number: "4"
-            collection_season_number_padded: "04"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_4_url}"
+        variables:
+          collection_season_number: "4"
+          collection_season_number_padded: "04"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -99,14 +95,13 @@ presets:
 
   collection_season_5:
     download:
-      urls:
-        - url: "{collection_season_5_url}"
-          variables:
-            collection_season_number: "5"
-            collection_season_number_padded: "05"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_5_url}"
+        variables:
+          collection_season_number: "5"
+          collection_season_number_padded: "05"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -117,14 +112,13 @@ presets:
 
   collection_season_6:
     download:
-      urls:
-        - url: "{collection_season_6_url}"
-          variables:
-            collection_season_number: "6"
-            collection_season_number_padded: "06"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_6_url}"
+        variables:
+          collection_season_number: "6"
+          collection_season_number_padded: "06"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -135,14 +129,13 @@ presets:
 
   collection_season_7:
     download:
-      urls:
-        - url: "{collection_season_7_url}"
-          variables:
-            collection_season_number: "7"
-            collection_season_number_padded: "07"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_7_url}"
+        variables:
+          collection_season_number: "7"
+          collection_season_number_padded: "07"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -153,14 +146,13 @@ presets:
 
   collection_season_8:
     download:
-      urls:
-        - url: "{collection_season_8_url}"
-          variables:
-            collection_season_number: "8"
-            collection_season_number_padded: "08"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_8_url}"
+        variables:
+          collection_season_number: "8"
+          collection_season_number_padded: "08"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -171,14 +163,13 @@ presets:
 
   collection_season_9:
     download:
-      urls:
-        - url: "{collection_season_9_url}"
-          variables:
-            collection_season_number: "9"
-            collection_season_number_padded: "09"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_9_url}"
+        variables:
+          collection_season_number: "9"
+          collection_season_number_padded: "09"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -189,14 +180,13 @@ presets:
 
   collection_season_10:
     download:
-      urls:
-        - url: "{collection_season_10_url}"
-          variables:
-            collection_season_number: "10"
-            collection_season_number_padded: "10"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_10_url}"
+        variables:
+          collection_season_number: "10"
+          collection_season_number_padded: "10"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -207,14 +197,13 @@ presets:
 
   collection_season_11:
     download:
-      urls:
-        - url: "{collection_season_11_url}"
-          variables:
-            collection_season_number: "11"
-            collection_season_number_padded: "11"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_11_url}"
+        variables:
+          collection_season_number: "11"
+          collection_season_number_padded: "11"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -225,14 +214,13 @@ presets:
 
   collection_season_12:
     download:
-      urls:
-        - url: "{collection_season_12_url}"
-          variables:
-            collection_season_number: "12"
-            collection_season_number_padded: "12"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_12_url}"
+        variables:
+          collection_season_number: "12"
+          collection_season_number_padded: "12"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -243,14 +231,13 @@ presets:
 
   collection_season_13:
     download:
-      urls:
-        - url: "{collection_season_13_url}"
-          variables:
-            collection_season_number: "13"
-            collection_season_number_padded: "13"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_13_url}"
+        variables:
+          collection_season_number: "13"
+          collection_season_number_padded: "13"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -261,14 +248,13 @@ presets:
 
   collection_season_14:
     download:
-      urls:
-        - url: "{collection_season_14_url}"
-          variables:
-            collection_season_number: "14"
-            collection_season_number_padded: "14"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_14_url}"
+        variables:
+          collection_season_number: "14"
+          collection_season_number_padded: "14"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -279,14 +265,13 @@ presets:
 
   collection_season_15:
     download:
-      urls:
-        - url: "{collection_season_15_url}"
-          variables:
-            collection_season_number: "15"
-            collection_season_number_padded: "15"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_15_url}"
+        variables:
+          collection_season_number: "15"
+          collection_season_number_padded: "15"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -297,14 +282,13 @@ presets:
 
   collection_season_16:
     download:
-      urls:
-        - url: "{collection_season_16_url}"
-          variables:
-            collection_season_number: "16"
-            collection_season_number_padded: "16"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_16_url}"
+        variables:
+          collection_season_number: "16"
+          collection_season_number_padded: "16"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -315,14 +299,13 @@ presets:
 
   collection_season_17:
     download:
-      urls:
-        - url: "{collection_season_17_url}"
-          variables:
-            collection_season_number: "17"
-            collection_season_number_padded: "17"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_17_url}"
+        variables:
+          collection_season_number: "17"
+          collection_season_number_padded: "17"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -333,14 +316,13 @@ presets:
 
   collection_season_18:
     download:
-      urls:
-        - url: "{collection_season_18_url}"
-          variables:
-            collection_season_number: "18"
-            collection_season_number_padded: "18"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_18_url}"
+        variables:
+          collection_season_number: "18"
+          collection_season_number_padded: "18"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -351,14 +333,13 @@ presets:
 
   collection_season_19:
     download:
-      urls:
-        - url: "{collection_season_19_url}"
-          variables:
-            collection_season_number: "19"
-            collection_season_number_padded: "19"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_19_url}"
+        variables:
+          collection_season_number: "19"
+          collection_season_number_padded: "19"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -369,14 +350,13 @@ presets:
 
   collection_season_20:
     download:
-      urls:
-        - url: "{collection_season_20_url}"
-          variables:
-            collection_season_number: "20"
-            collection_season_number_padded: "20"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_20_url}"
+        variables:
+          collection_season_number: "20"
+          collection_season_number_padded: "20"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -387,14 +367,13 @@ presets:
 
   collection_season_21:
     download:
-      urls:
-        - url: "{collection_season_21_url}"
-          variables:
-            collection_season_number: "21"
-            collection_season_number_padded: "21"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_21_url}"
+        variables:
+          collection_season_number: "21"
+          collection_season_number_padded: "21"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -405,14 +384,13 @@ presets:
 
   collection_season_22:
     download:
-      urls:
-        - url: "{collection_season_22_url}"
-          variables:
-            collection_season_number: "22"
-            collection_season_number_padded: "22"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_22_url}"
+        variables:
+          collection_season_number: "22"
+          collection_season_number_padded: "22"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -423,14 +401,13 @@ presets:
 
   collection_season_23:
     download:
-      urls:
-        - url: "{collection_season_23_url}"
-          variables:
-            collection_season_number: "23"
-            collection_season_number_padded: "23"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_23_url}"
+        variables:
+          collection_season_number: "23"
+          collection_season_number_padded: "23"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -441,14 +418,13 @@ presets:
 
   collection_season_24:
     download:
-      urls:
-        - url: "{collection_season_24_url}"
-          variables:
-            collection_season_number: "24"
-            collection_season_number_padded: "24"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_24_url}"
+        variables:
+          collection_season_number: "24"
+          collection_season_number_padded: "24"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -459,14 +435,13 @@ presets:
 
   collection_season_25:
     download:
-      urls:
-        - url: "{collection_season_25_url}"
-          variables:
-            collection_season_number: "25"
-            collection_season_number_padded: "25"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_25_url}"
+        variables:
+          collection_season_number: "25"
+          collection_season_number_padded: "25"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -477,14 +452,13 @@ presets:
 
   collection_season_26:
     download:
-      urls:
-        - url: "{collection_season_26_url}"
-          variables:
-            collection_season_number: "26"
-            collection_season_number_padded: "26"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_26_url}"
+        variables:
+          collection_season_number: "26"
+          collection_season_number_padded: "26"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -495,14 +469,13 @@ presets:
 
   collection_season_27:
     download:
-      urls:
-        - url: "{collection_season_27_url}"
-          variables:
-            collection_season_number: "27"
-            collection_season_number_padded: "27"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_27_url}"
+        variables:
+          collection_season_number: "27"
+          collection_season_number_padded: "27"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -513,14 +486,13 @@ presets:
 
   collection_season_28:
     download:
-      urls:
-        - url: "{collection_season_28_url}"
-          variables:
-            collection_season_number: "28"
-            collection_season_number_padded: "28"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_28_url}"
+        variables:
+          collection_season_number: "28"
+          collection_season_number_padded: "28"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -531,14 +503,13 @@ presets:
 
   collection_season_29:
     download:
-      urls:
-        - url: "{collection_season_29_url}"
-          variables:
-            collection_season_number: "29"
-            collection_season_number_padded: "29"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_29_url}"
+        variables:
+          collection_season_number: "29"
+          collection_season_number_padded: "29"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -549,14 +520,13 @@ presets:
 
   collection_season_30:
     download:
-      urls:
-        - url: "{collection_season_30_url}"
-          variables:
-            collection_season_number: "30"
-            collection_season_number_padded: "30"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_30_url}"
+        variables:
+          collection_season_number: "30"
+          collection_season_number_padded: "30"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -567,14 +537,13 @@ presets:
 
   collection_season_31:
     download:
-      urls:
-        - url: "{collection_season_31_url}"
-          variables:
-            collection_season_number: "31"
-            collection_season_number_padded: "31"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_31_url}"
+        variables:
+          collection_season_number: "31"
+          collection_season_number_padded: "31"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -585,14 +554,13 @@ presets:
 
   collection_season_32:
     download:
-      urls:
-        - url: "{collection_season_32_url}"
-          variables:
-            collection_season_number: "32"
-            collection_season_number_padded: "32"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_32_url}"
+        variables:
+          collection_season_number: "32"
+          collection_season_number_padded: "32"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -603,14 +571,13 @@ presets:
 
   collection_season_33:
     download:
-      urls:
-        - url: "{collection_season_33_url}"
-          variables:
-            collection_season_number: "33"
-            collection_season_number_padded: "33"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_33_url}"
+        variables:
+          collection_season_number: "33"
+          collection_season_number_padded: "33"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -621,14 +588,13 @@ presets:
 
   collection_season_34:
     download:
-      urls:
-        - url: "{collection_season_34_url}"
-          variables:
-            collection_season_number: "34"
-            collection_season_number_padded: "34"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_34_url}"
+        variables:
+          collection_season_number: "34"
+          collection_season_number_padded: "34"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -639,14 +605,13 @@ presets:
 
   collection_season_35:
     download:
-      urls:
-        - url: "{collection_season_35_url}"
-          variables:
-            collection_season_number: "35"
-            collection_season_number_padded: "35"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_35_url}"
+        variables:
+          collection_season_number: "35"
+          collection_season_number_padded: "35"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -657,14 +622,13 @@ presets:
 
   collection_season_36:
     download:
-      urls:
-        - url: "{collection_season_36_url}"
-          variables:
-            collection_season_number: "36"
-            collection_season_number_padded: "36"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_36_url}"
+        variables:
+          collection_season_number: "36"
+          collection_season_number_padded: "36"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -675,14 +639,13 @@ presets:
 
   collection_season_37:
     download:
-      urls:
-        - url: "{collection_season_37_url}"
-          variables:
-            collection_season_number: "37"
-            collection_season_number_padded: "37"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_37_url}"
+        variables:
+          collection_season_number: "37"
+          collection_season_number_padded: "37"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -693,14 +656,13 @@ presets:
 
   collection_season_38:
     download:
-      urls:
-        - url: "{collection_season_38_url}"
-          variables:
-            collection_season_number: "38"
-            collection_season_number_padded: "38"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_38_url}"
+        variables:
+          collection_season_number: "38"
+          collection_season_number_padded: "38"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -711,14 +673,13 @@ presets:
 
   collection_season_39:
     download:
-      urls:
-        - url: "{collection_season_39_url}"
-          variables:
-            collection_season_number: "39"
-            collection_season_number_padded: "39"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_39_url}"
+        variables:
+          collection_season_number: "39"
+          collection_season_number_padded: "39"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:
@@ -729,14 +690,13 @@ presets:
 
   collection_season_40:
     download:
-      urls:
-        - url: "{collection_season_40_url}"
-          variables:
-            collection_season_number: "40"
-            collection_season_number_padded: "40"
-          playlist_thumbnails:
-            - name: "{season_poster_file_name}"
-              uid: "latest_entry"
+      - url: "{collection_season_40_url}"
+        variables:
+          collection_season_number: "40"
+          collection_season_number_padded: "40"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
 
     output_directory_nfo_tags:
       tags:

@@ -17,7 +17,7 @@ from ytdl_sub.utils.exceptions import ValidationException
 def regex_subscription_dict_base(output_directory):
     return {
         "preset": "music_video",
-        "download": {"url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"},
+        "download": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         # download the worst format so it is fast

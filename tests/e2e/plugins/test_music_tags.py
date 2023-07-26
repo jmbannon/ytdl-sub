@@ -9,9 +9,7 @@ from ytdl_sub.utils.exceptions import ValidationException
 @pytest.fixture
 def single_song_video_dict(output_directory):
     return {
-        "download": {
-            "url": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
-        },
+        "download": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
         "output_options": {"output_directory": output_directory, "file_name": "will_error.mp4"},
         # test multi-tags
         "music_tags": {"genres": ["multi_tag_1", "multi_tag_2"]},
