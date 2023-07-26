@@ -17,8 +17,7 @@ class TestPreset:
             "youtube.com/watch?v=123abc",  # single string
             ["youtube.com/watch?v=123abc", "youtube.com/watch?v=123xyz"],  # list of strings
             [{"url": "youtube.com/watch?v=123abc"}, "youtube.com/watch?v=123abc"],  # dict and str
-            ###########################################################
-            ##### OLD download_strategy format
+            # OLD download_strategy format
             {"download_strategy": "url", "url": "youtube.com/watch?v=123abc"},
             {"download_strategy": "multi-url", "urls": [{"url": "youtube.com/watch?v=123abc"}]},
         ],
