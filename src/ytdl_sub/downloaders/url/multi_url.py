@@ -15,7 +15,6 @@ class MultiUrlDownloadOptions(MultiUrlValidator):
         my_example_preset:
           download:
             # required
-            download_strategy: "multi_url"
             urls:
               - url: "youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
                 variables:

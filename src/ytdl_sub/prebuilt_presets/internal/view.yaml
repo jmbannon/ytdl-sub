@@ -2,7 +2,6 @@ presets:
 
   _view:
     download:
-      download_strategy: "url"
       url: "{url}"
     output_options:
       output_directory: "/tmp/ytdl-sub-view"

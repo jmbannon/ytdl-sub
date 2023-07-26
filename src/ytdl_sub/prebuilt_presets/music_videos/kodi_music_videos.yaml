@@ -2,7 +2,6 @@ presets:
   # TODO: Update this
   kodi_music_video:
     download:
-      download_strategy: "url"
       url: "{music_video_url}"
 
     output_options:

@@ -14,7 +14,6 @@ class UrlDownloadOptions(UrlValidator):
         my_example_preset:
           download:
             # required
-            download_strategy: "url"
             url: "youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
             # optional
             playlist_thumbnails:

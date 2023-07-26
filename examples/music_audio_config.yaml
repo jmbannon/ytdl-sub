@@ -110,7 +110,6 @@ presets:
     preset: "base"
 
     download:
-      download_strategy: "url"
       url: "{url}"
 
 ####################################################################################################
@@ -166,7 +165,6 @@ presets:
 
     # Download using the multi_url strategy
     download:
-      download_strategy: "multi_url"
       urls:
         # The first URL will be all the artist's tracks.
         # Treat these as singles - an album with a single track

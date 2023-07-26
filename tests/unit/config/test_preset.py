@@ -10,28 +10,21 @@ from ytdl_sub.utils.exceptions import ValidationException
 
 class TestPreset:
     @pytest.mark.parametrize(
-        "source, download_strategy",
+        "download_value",
         [
-            ("download", {"download_strategy": "url", "url": "youtube.com/watch?v=123abc"}),
-            (
-                "download",
-                {
-                    "download_strategy": "url",
-                    "url": "youtube.com/playlist?list=123abc",
-                },
-            ),
-            ("download", {"download_strategy": "url", "url": "youtube.com/c/123abc"}),
-            (
-                "download",
-                {"download_strategy": "url", "url": "soundcloud.com/123abc"},
-            ),
+            {"url": "youtube.com/watch?v=123abc"},
+            {"urls": [{"url": "youtube.com/watch?v=123abc"}]},
+            ###########################################################
+            ##### OLD download_strategy format
+            {"download_strategy": "url", "url": "youtube.com/watch?v=123abc"},
+            {"download_strategy": "multi-url", "urls": [{"url": "youtube.com/watch?v=123abc"}]},
         ],
     )
-    def test_bare_minimum_preset(self, config_file, output_options, source, download_strategy):
+    def test_bare_minimum_preset(self, config_file, output_options, download_value):
         _ = Preset(
             config=config_file,
             name="test",
-            value={source: download_strategy, "output_options": output_options},
+            value={"download": download_value, "output_options": output_options},
         )
 
     def test_preset_with_override_variable(self, config_file, output_options, youtube_video):
@@ -209,7 +202,6 @@ class TestPreset:
             name="test",
             value={
                 "download": {
-                    "download_strategy": "multi_url",
                     "urls": [{"url": "non-empty url"}, {"url": ""}],  # empty url
                 },
                 "output_options": output_options,
@@ -231,7 +223,6 @@ class TestPreset:
                 name="test",
                 value={
                     "download": {
-                        "download_strategy": "multi_url",
                         "urls": [{"url": "{url}"}, {"url": "{url2}"}],
                     },
                     "output_options": output_options,
