@@ -3,8 +3,6 @@ from typing import List
 from typing import Type
 
 from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.downloaders.source_plugin import SourcePlugin
-from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin
@@ -19,83 +17,6 @@ from ytdl_sub.plugins.regex import RegexPlugin
 from ytdl_sub.plugins.split_by_chapters import SplitByChaptersPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.plugins.video_tags import VideoTagsPlugin
-
-
-class DownloadStrategyMapping:
-    """
-    Maps downloader strategies defined in the preset to its respective downloader class
-    """
-
-    _MAPPING: Dict[str, Dict[str, Type[SourcePlugin]]] = {
-        "download": {
-            "multi_url": MultiUrlDownloader,
-            "url": MultiUrlDownloader,
-        },
-    }
-
-    @classmethod
-    def sources(cls) -> List[str]:
-        """
-        Returns
-        -------
-        Available download sources
-        """
-        return sorted(list(cls._MAPPING.keys()))
-
-    @classmethod
-    def _validate_is_source(cls, source: str) -> None:
-        """
-        Ensure the source exists
-        """
-        if source not in cls.sources():
-            raise ValueError(
-                f"Tried to use source '{source}' which does not exist. Available sources: "
-                f"{', '.join(cls.sources())}"
-            )
-
-    @classmethod
-    def source_download_strategies(cls, source: str) -> List[str]:
-        """
-        Parameters
-        ----------
-        source
-            Name of the source
-
-        Returns
-        -------
-        Available download strategies for the given source
-        """
-        cls._validate_is_source(source)
-        return sorted(list(cls._MAPPING[source].keys()))
-
-    @classmethod
-    def _validate_is_download_strategy(cls, source: str, download_strategy: str) -> None:
-        """
-        Ensure the download strategy for the given source exists
-        """
-        if download_strategy not in cls.source_download_strategies(source):
-            raise ValueError(
-                f"Tried to use download strategy '{download_strategy}' with source '{source}', "
-                f"which does not exist. Available download strategies: "
-                f"{', '.join(cls.source_download_strategies(source))}"
-            )
-
-    @classmethod
-    def get(cls, source: str, download_strategy: str) -> Type[SourcePlugin]:
-        """
-        Parameters
-        ----------
-        source:
-            The source (i.e. 'youtube', 'soundcloud') of the downloader
-        download_strategy:
-            The download strategy name
-
-        Returns
-        -------
-        The downloader class
-        """
-        cls._validate_is_download_strategy(source, download_strategy)
-        return cls._MAPPING[source][download_strategy]
 
 
 class PluginMapping:

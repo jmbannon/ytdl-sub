@@ -6,7 +6,6 @@ import pytest
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import PRESET_KEYS
-from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.utils.exceptions import ValidationException
 
@@ -56,11 +55,6 @@ class TestConfigFilePartiallyValidatesPresets:
         ]
         if plugin not in excluded_plugins:
             self._partial_validate({plugin: {}})
-
-    @pytest.mark.parametrize("source", DownloadStrategyMapping.sources())
-    def test_success__empty_sources(self, source: str):
-        for download_strategy in DownloadStrategyMapping.source_download_strategies(source):
-            self._partial_validate({source: {"download_strategy": download_strategy}})
 
     def test_error__bad_preset_section(self):
         self._partial_validate(

@@ -12,7 +12,6 @@ from mergedeep import mergedeep
 
 from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import OutputOptions
@@ -39,10 +38,10 @@ from ytdl_sub.validators.validators import validation_exception
 
 PRESET_KEYS = {
     "preset",
+    "download",
     "output_options",
     "ytdl_options",
     "overrides",
-    *DownloadStrategyMapping.sources(),
     *PluginMapping.plugins(),
 }
 
