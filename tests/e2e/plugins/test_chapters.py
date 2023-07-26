@@ -46,9 +46,7 @@ def sponsorblock_and_subs_preset_dict(output_directory) -> Dict:
 
 @pytest.fixture
 def chapters_from_comments_preset_dict(sponsorblock_and_subs_preset_dict: Dict) -> Dict:
-    sponsorblock_and_subs_preset_dict["download"][
-        "url"
-    ] = "https://www.youtube.com/watch?v=MO5AWAqe01Y"
+    sponsorblock_and_subs_preset_dict["download"] = "https://www.youtube.com/watch?v=MO5AWAqe01Y"
     sponsorblock_and_subs_preset_dict["chapters"] = {
         "embed_chapters": True,
         "allow_chapters_from_comments": True,
