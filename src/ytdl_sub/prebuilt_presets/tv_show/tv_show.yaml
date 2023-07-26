@@ -34,7 +34,6 @@ presets:
   # TV show from one or more sources. Uses {url}'s avatar and banner as poster and fanart
   _tv_show_by_date:
     download:
-      download_strategy: "multi_url"
       urls:
         - url: "{url}"
           playlist_thumbnails:
@@ -87,9 +86,6 @@ presets:
   # TV show from a collection. Must specify additional `tv_show_collection_season` presets in
   # addition. Each season sets its own `collection_season_number/_padded`
   _tv_show_collection:
-    download:
-      download_strategy: "multi_url"
-
     overrides:
       season_number: "{collection_season_number}"
       season_number_padded: "{collection_season_number_padded}"

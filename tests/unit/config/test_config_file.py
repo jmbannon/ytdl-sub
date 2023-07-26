@@ -64,17 +64,9 @@ class TestConfigFilePartiallyValidatesPresets:
             f"Allowed fields: {', '.join(sorted(PRESET_KEYS))}",
         )
 
-    # TODO: Update with future source
-    # def test_error__multiple_sources(self):
-    #     self._partial_validate(
-    #         preset_dict={"youtube": {}, "download": {}},
-    #         expected_error_message="Validation error in partial_preset: "
-    #         "Contains the sources download, youtube but can only have one",
-    #     )
-
-    def test_error__bad_download_strategy_args(self):
+    def test_error__download_args(self):
         self._partial_validate(
-            preset_dict={"download": {"download_strategy": "multi_url", "bad_key": "nope"}},
+            preset_dict={"download": {"bad_key": "nope"}},
             expected_error_message="Validation error in partial_preset.download: "
             "'partial_preset.download' contains the field 'bad_key' which is not allowed. "
             "Allowed fields: download_reverse, playlist_thumbnails, source_thumbnails, url, "
@@ -137,31 +129,4 @@ class TestConfigFilePartiallyValidatesPresets:
             preset_dict=preset_dict,
             expected_error_message="Validation error in partial_preset: "
             "preset 'DNE' does not exist in the provided config.",
-        )
-
-    def test_partial_validate_partial_download_strategy(self):
-        _ = ConfigFile(
-            name="test_partial_validate",
-            value={
-                "configuration": {"working_directory": "."},
-                "presets": {
-                    "parent": {"download": {"download_strategy": "url"}},
-                    "child": {"preset": "parent", "download": {"url": "should work"}},
-                },
-            },
-        )
-
-    def test_partial_validate_partial_download_strategies(self):
-        _ = ConfigFile(
-            name="test_partial_validate",
-            value={
-                "configuration": {"working_directory": "."},
-                "presets": {
-                    "parent": {"download": {"download_strategy": "url"}},
-                    "child": {
-                        "preset": "parent",
-                        "download": {"download_strategy": "url", "url": "should work"},
-                    },
-                },
-            },
         )

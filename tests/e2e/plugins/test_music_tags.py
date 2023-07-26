@@ -10,7 +10,6 @@ from ytdl_sub.utils.exceptions import ValidationException
 def single_song_video_dict(output_directory):
     return {
         "download": {
-            "download_strategy": "url",
             "url": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
         },
         "output_options": {"output_directory": output_directory, "file_name": "will_error.mp4"},
