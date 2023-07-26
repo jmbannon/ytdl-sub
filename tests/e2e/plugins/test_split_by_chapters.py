@@ -136,7 +136,7 @@ class TestSplitByChapters:
         mergedeep.merge(
             yt_album_as_chapters_with_regex_preset_dict,
             {
-                "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+                "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
                 "split_by_chapters": {"when_no_chapters": when_no_chapters},
             },
         )

@@ -12,10 +12,12 @@ class TestPreset:
     @pytest.mark.parametrize(
         "download_value",
         [
-            {"url": "youtube.com/watch?v=123abc"},
-            {"urls": [{"url": "youtube.com/watch?v=123abc"}]},
-            ###########################################################
-            ##### OLD download_strategy format
+            {"url": "youtube.com/watch?v=123abc"},  # url download strategy
+            {"urls": [{"url": "youtube.com/watch?v=123abc"}]},  # multi-url download strategy
+            "youtube.com/watch?v=123abc",  # single string
+            ["youtube.com/watch?v=123abc", "youtube.com/watch?v=123xyz"],  # list of strings
+            [{"url": "youtube.com/watch?v=123abc"}, "youtube.com/watch?v=123abc"],  # dict and str
+            # OLD download_strategy format
             {"download_strategy": "url", "url": "youtube.com/watch?v=123abc"},
             {"download_strategy": "multi-url", "urls": [{"url": "youtube.com/watch?v=123abc"}]},
         ],
@@ -201,9 +203,7 @@ class TestPreset:
             config=config_file,
             name="test",
             value={
-                "download": {
-                    "urls": [{"url": "non-empty url"}, {"url": ""}],  # empty url
-                },
+                "download": [{"url": "non-empty url"}, {"url": ""}],  # empty url
                 "output_options": output_options,
             },
         )
@@ -222,9 +222,7 @@ class TestPreset:
                 config=config_file,
                 name="test",
                 value={
-                    "download": {
-                        "urls": [{"url": "{url}"}, {"url": "{url2}"}],
-                    },
+                    "download": [{"url": "{url}"}, {"url": "{url2}"}],
                     "output_options": output_options,
                     "overrides": {"url": "", "url2": ""},
                 },

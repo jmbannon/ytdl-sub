@@ -67,8 +67,8 @@ class TestConfigFilePartiallyValidatesPresets:
     def test_error__download_args(self):
         self._partial_validate(
             preset_dict={"download": {"bad_key": "nope"}},
-            expected_error_message="Validation error in partial_preset.download: "
-            "'partial_preset.download' contains the field 'bad_key' which is not allowed. "
+            expected_error_message="Validation error in partial_preset.download.1: "
+            "'partial_preset.download.1' contains the field 'bad_key' which is not allowed. "
             "Allowed fields: download_reverse, playlist_thumbnails, source_thumbnails, url, "
             "variables",
         )
@@ -77,7 +77,7 @@ class TestConfigFilePartiallyValidatesPresets:
         "preset_dict",
         [
             {"nfo_tags": {"tags": {"key-1": {"attributes": {"test": "2"}}}}},
-            {"download": {"urls": [{"variables_to_set": {"name": "value"}}]}},
+            {"download": [{"variables_to_set": {"name": "value"}}]},
         ],
     )
     def test_partial_validate__incomplete_list_item(self, preset_dict):

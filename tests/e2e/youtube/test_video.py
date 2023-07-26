@@ -11,7 +11,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def single_video_preset_dict_old_video_tags_format(output_directory):
     return {
         "preset": "music_video",
-        "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+        "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
         # override the output directory with our fixture-generated dir
         "output_options": {
             "output_directory": output_directory,
@@ -37,7 +37,7 @@ def single_video_preset_dict_old_video_tags_format(output_directory):
 def single_video_preset_dict(output_directory):
     return {
         "preset": "music_video",
-        "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+        "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
         # override the output directory with our fixture-generated dir
         "output_options": {
             "output_directory": output_directory,

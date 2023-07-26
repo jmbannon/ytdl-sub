@@ -146,8 +146,27 @@ class UrlValidator(StrictDictValidator):
         return self._download_reverse.value
 
 
-class UrlListValidator(ListValidator[UrlValidator]):
-    _inner_list_type = UrlValidator
+class UrlStringOrDictValidator(UrlValidator):
+    """
+    URL validator that supports a single string like:
+
+    download:
+      - "https://"
+
+    or
+
+    download:
+      - url: "https://"
+    """
+
+    _expected_value_type = (dict, str)
+
+    def __init__(self, name, value):
+        super().__init__(name, {"url": value} if isinstance(value, str) else value)
+
+
+class UrlListValidator(ListValidator[UrlStringOrDictValidator]):
+    _inner_list_type = UrlStringOrDictValidator
     _expected_value_type_name = "collection url list"
 
     def __init__(self, name, value):
@@ -197,17 +216,11 @@ class MultiUrlValidator(OptionsValidator):
             # Pop old required field in case it's still there
             value_copy.pop("download_strategy", None)
 
-            if "urls" in value_copy:
-                self._urls = UrlListValidator(name=name, value=value_copy["urls"])
-            else:
-                # Validate using a single URL validator first
-                _ = UrlValidator(name=name, value=value_copy)
-                self._urls = UrlListValidator(name=name, value=[value_copy])
+        # Deal with old multi-url download strategy
+        if isinstance(value, dict) and "urls" in value_copy:
+            self._urls = UrlListValidator(name=name, value=value_copy["urls"])
         else:
-            # Should error here. TODO: Add simplifications download here (string, list)
-            self._urls = UrlListValidator(
-                name=name, value=UrlValidator(name=name, value=value_copy)
-            )
+            self._urls = UrlListValidator(name=name, value=value_copy)
 
     @property
     def urls(self) -> UrlListValidator:

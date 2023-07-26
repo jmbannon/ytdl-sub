@@ -1,8 +1,7 @@
 presets:
 
   _view:
-    download:
-      url: "{url}"
+    download: "{url}"
     output_options:
       output_directory: "/tmp/ytdl-sub-view"
       file_name: "{uid}.{ext}"
