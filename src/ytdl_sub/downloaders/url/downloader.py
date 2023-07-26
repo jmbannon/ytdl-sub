@@ -1,6 +1,5 @@
 import contextlib
 import os
-from abc import ABC
 from pathlib import Path
 from typing import Dict
 from typing import Iterable
@@ -188,7 +187,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
         return entry
 
 
-class MultiUrlDownloader(SourcePlugin[MultiUrlValidator], ABC):
+class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
     """
     Class that interacts with ytdl to perform the download of metadata and content,
     and should translate that to list of Entry objects.

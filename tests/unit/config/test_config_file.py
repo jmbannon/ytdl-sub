@@ -6,7 +6,6 @@ import pytest
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import PRESET_KEYS
-from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
 from ytdl_sub.config.preset_class_mappings import PluginMapping
 from ytdl_sub.utils.exceptions import ValidationException
 
@@ -57,11 +56,6 @@ class TestConfigFilePartiallyValidatesPresets:
         if plugin not in excluded_plugins:
             self._partial_validate({plugin: {}})
 
-    @pytest.mark.parametrize("source", DownloadStrategyMapping.sources())
-    def test_success__empty_sources(self, source: str):
-        for download_strategy in DownloadStrategyMapping.source_download_strategies(source):
-            self._partial_validate({source: {"download_strategy": download_strategy}})
-
     def test_error__bad_preset_section(self):
         self._partial_validate(
             preset_dict={"does_not_exist": "lol"},
@@ -77,21 +71,6 @@ class TestConfigFilePartiallyValidatesPresets:
     #         expected_error_message="Validation error in partial_preset: "
     #         "Contains the sources download, youtube but can only have one",
     #     )
-
-    def test_error__no_download_strategy(self):
-        self._partial_validate(
-            preset_dict={"download": {}},
-            expected_error_message="Validation error in partial_preset.download: "
-            "missing the required field 'download_strategy'",
-        )
-
-    def test_error__bad_download_strategy(self):
-        self._partial_validate(
-            preset_dict={"download": {"download_strategy": "fail"}},
-            expected_error_message="Validation error in partial_preset.download: "
-            "Tried to use download strategy 'fail' with source 'download', "
-            "which does not exist. Available download strategies: multi_url, url",
-        )
 
     def test_error__bad_download_strategy_args(self):
         self._partial_validate(
@@ -186,25 +165,3 @@ class TestConfigFilePartiallyValidatesPresets:
                 },
             },
         )
-
-    def test_partial_validate_partial_download_strategies_mismatch(self):
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Preset parent uses download strategy multi_url, but is inherited by preset child "
-                "which uses download strategy url."
-            ),
-        ):
-            _ = ConfigFile(
-                name="test_partial_validate",
-                value={
-                    "configuration": {"working_directory": "."},
-                    "presets": {
-                        "parent": {"download": {"download_strategy": "multi_url"}},
-                        "child": {
-                            "preset": "parent",
-                            "download": {"download_strategy": "url", "url": "should work"},
-                        },
-                    },
-                },
-            )
