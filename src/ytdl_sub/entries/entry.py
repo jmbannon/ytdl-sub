@@ -54,7 +54,7 @@ class Entry(EntryVariables, BaseEntry):
         """Returns the entry's thumbnail's file path to where it was downloaded"""
         return str(Path(self.working_directory()) / self.get_download_thumbnail_name())
 
-    def get_ytdlp_download_thumbnail_path(self) -> Optional[str]:
+    def try_get_ytdlp_download_thumbnail_path(self) -> Optional[str]:
         """
         The source `thumbnail` value and the actual downloaded thumbnail extension sometimes do
         not match. Return the actual downloaded thumbnail path.
@@ -90,7 +90,7 @@ class Entry(EntryVariables, BaseEntry):
         -------
         True if ANY thumbnail file exist locally. False otherwise.
         """
-        return self.get_ytdlp_download_thumbnail_path() is not None
+        return self.try_get_ytdlp_download_thumbnail_path() is not None
 
     @final
     def is_thumbnail_downloaded(self) -> bool:

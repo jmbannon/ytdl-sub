@@ -29,7 +29,7 @@ def try_convert_download_thumbnail(entry: Entry) -> None:
     entry
         Entry with the thumbnail
     """
-    download_thumbnail_path = entry.get_ytdlp_download_thumbnail_path()
+    download_thumbnail_path: Optional[str] = entry.try_get_ytdlp_download_thumbnail_path()
     download_thumbnail_path_as_jpg = entry.get_download_thumbnail_path()
 
     # If it was already converted, do not convert again
@@ -38,6 +38,7 @@ def try_convert_download_thumbnail(entry: Entry) -> None:
 
     if not download_thumbnail_path:
         logger.warning("Thumbnail for '%s' was not downloaded", entry.title)
+        return
 
     if not download_thumbnail_path == download_thumbnail_path_as_jpg:
         try:
