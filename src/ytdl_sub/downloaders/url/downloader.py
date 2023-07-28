@@ -34,8 +34,8 @@ from ytdl_sub.entries.variables.kwargs import YTDL_SUB_MATCH_FILTER_REJECT
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
+from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 download_logger = Logger.get(name="downloader")
@@ -82,8 +82,6 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
 
             # If latest entry, always update the thumbnail on each entry
             if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
-                # Make sure the entry's thumbnail is converted to jpg
-                convert_download_thumbnail(entry, error_if_not_found=False)
 
                 # always save in dry-run even if it doesn't exist...
                 if self.is_dry_run or os.path.isfile(entry.get_download_thumbnail_path()):
@@ -138,8 +136,14 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """
-        Use the entry to download thumbnails (or move if LATEST_ENTRY)
+        Use the entry to download thumbnails (or move if LATEST_ENTRY).
+        In addition, convert the entry thumbnail to jpg
         """
+        # We always convert entry thumbnails to jpgs, and is performed here to be done
+        # as early as possible in the plugin pipeline (downstream plugins depend on it being jpg)
+        if not self.is_dry_run:
+            try_convert_download_thumbnail(entry=entry)
+
         if entry.kwargs_get(COLLECTION_URL) in self._collection_url_mapping:
             self._download_url_thumbnails(
                 collection_url=self._collection_url_mapping[entry.kwargs(COLLECTION_URL)],

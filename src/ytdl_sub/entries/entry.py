@@ -93,6 +93,15 @@ class Entry(EntryVariables, BaseEntry):
         return self.get_ytdlp_download_thumbnail_path() is not None
 
     @final
+    def is_thumbnail_available(self) -> bool:
+        """
+        Returns
+        -------
+        True if the thumbnail file exists and is its proper format. False otherwise.
+        """
+        return os.path.isfile(self.get_download_thumbnail_path())
+
+    @final
     def is_downloaded(self) -> bool:
         """
         Returns

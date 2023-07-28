@@ -1,5 +1,4 @@
 import copy
-import os.path
 from pathlib import Path
 from typing import Any
 from typing import List
@@ -21,7 +20,6 @@ from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 
 
@@ -184,11 +182,6 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
                 f"Tried to split '{entry.title}' by chapters but it has no chapters"
             )
 
-        # convert the entry thumbnail early so we do not have to guess the thumbnail extension
-        # when copying it. Do not error if it's not found, in case thumbnail_name is not set
-        if not self.is_dry_run:
-            convert_download_thumbnail(entry=entry, error_if_not_found=False)
-
         for idx, title in enumerate(chapters.titles):
             new_uid = _split_video_uid(source_uid=entry.uid, idx=idx)
 
@@ -209,7 +202,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
 
                 # Copy the original vid thumbnail to the working directory with the new uid. This so
                 # downstream logic thinks this split video has its own thumbnail
-                if os.path.isfile(entry.get_download_thumbnail_path()):
+                if entry.is_thumbnail_available():
                     FileHandler.copy(
                         src_file_path=entry.get_download_thumbnail_path(),
                         dst_file_path=Path(self.working_directory)

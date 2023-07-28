@@ -21,7 +21,6 @@ from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 
 
 def _get_split_plugin(plugins: List[Plugin]) -> Optional[SplitPlugin]:
@@ -69,15 +68,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
             entry=entry,
         )
 
-        # TODO: see if entry even has a thumbnail
-        if self.output_options.thumbnail_name:
+        if self.output_options.thumbnail_name and entry.is_thumbnail_available():
             output_thumbnail_name = self.overrides.apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry
             )
-
-            # We always convert entry thumbnails to jpgs, and is performed here
-            if not dry_run:
-                convert_download_thumbnail(entry=entry)
 
             # Copy the thumbnails since they could be used later for other things
             self._enhanced_download_archive.save_file_to_output_directory(

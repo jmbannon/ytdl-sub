@@ -11,7 +11,6 @@ from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
@@ -162,11 +161,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                         )
                     setattr(audio_file, tag_name, tag_value[0])
 
-            if self.plugin_options.embed_thumbnail:
-
-                # convert the entry thumbnail so it is embedded as jpg
-                convert_download_thumbnail(entry=entry)
-
+            if self.plugin_options.embed_thumbnail and entry.is_thumbnail_available():
                 with open(entry.get_download_thumbnail_path(), "rb") as thumb:
                     mediafile_img = mediafile.Image(
                         data=thumb.read(), desc="cover", type=mediafile.ImageType.front
