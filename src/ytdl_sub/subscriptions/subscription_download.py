@@ -1,4 +1,5 @@
 import contextlib
+import logging
 import os
 import shutil
 from abc import ABC
@@ -21,7 +22,9 @@ from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
+from ytdl_sub.utils.logger import Logger
+
+logger: logging.Logger = Logger.get()
 
 
 def _get_split_plugin(plugins: List[Plugin]) -> Optional[SplitPlugin]:
@@ -69,15 +72,11 @@ class SubscriptionDownload(BaseSubscription, ABC):
             entry=entry,
         )
 
-        # TODO: see if entry even has a thumbnail
-        if self.output_options.thumbnail_name:
+        # Always pretend to include the thumbnail in a dry-run
+        if self.output_options.thumbnail_name and (dry_run or entry.is_thumbnail_downloaded()):
             output_thumbnail_name = self.overrides.apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry
             )
-
-            # We always convert entry thumbnails to jpgs, and is performed here
-            if not dry_run:
-                convert_download_thumbnail(entry=entry)
 
             # Copy the thumbnails since they could be used later for other things
             self._enhanced_download_archive.save_file_to_output_directory(
@@ -85,6 +84,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 output_file_name=output_thumbnail_name,
                 entry=entry,
                 copy_file=True,
+            )
+        elif not entry.is_thumbnail_downloaded():
+            logger.warning(
+                "Cannot save thumbnail for '%s' because it is not available", entry.title
             )
 
         if self.output_options.info_json_name:

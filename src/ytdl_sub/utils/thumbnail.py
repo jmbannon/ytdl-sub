@@ -1,11 +1,14 @@
+import logging
 import os
 import tempfile
+from subprocess import CalledProcessError
 from typing import Optional
 from urllib.request import urlopen
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.retry import retry
 
 
@@ -13,39 +16,39 @@ class ThumbnailTypes:
     LATEST_ENTRY = "latest_entry"
 
 
-def convert_download_thumbnail(entry: Entry, error_if_not_found: bool = True) -> None:
+logger: logging.Logger = Logger.get("thumbnail")
+
+
+def try_convert_download_thumbnail(entry: Entry) -> None:
     """
-    Converts an entry's downloaded thumbnail into jpg format
+    Converts an entry's downloaded thumbnail into jpg format.
+    Log with a warning if the thumbnail is not found or fails to convert
 
     Parameters
     ----------
     entry
         Entry with the thumbnail
-    error_if_not_found
-        If the thumbnail is not found, error if True.
-
-    Raises
-    ------
-    ValueError
-        Entry thumbnail file not found
     """
-    download_thumbnail_path = entry.get_ytdlp_download_thumbnail_path()
+    download_thumbnail_path: Optional[str] = entry.try_get_ytdlp_download_thumbnail_path()
     download_thumbnail_path_as_jpg = entry.get_download_thumbnail_path()
 
     # If it was already converted, do not convert again
-    if os.path.isfile(download_thumbnail_path_as_jpg):
+    if entry.is_thumbnail_downloaded():
         return
 
     if not download_thumbnail_path:
-        if error_if_not_found:
-            raise ValueError("Thumbnail not found")
+        logger.warning("Thumbnail for '%s' was not downloaded", entry.title)
         return
 
     if not download_thumbnail_path == download_thumbnail_path_as_jpg:
-        FFMPEG.run(
-            ["-y", "-bitexact", "-i", download_thumbnail_path, download_thumbnail_path_as_jpg]
-        )
-        FileHandler.delete(download_thumbnail_path)
+        try:
+            FFMPEG.run(
+                ["-y", "-bitexact", "-i", download_thumbnail_path, download_thumbnail_path_as_jpg]
+            )
+        except CalledProcessError:
+            logger.warning("Failed to convert thumbnail for '%s' to jpg", entry.title)
+        finally:
+            FileHandler.delete(download_thumbnail_path)
 
 
 @retry(times=3, exceptions=(Exception,))

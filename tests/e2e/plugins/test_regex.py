@@ -257,7 +257,6 @@ class TestRegex:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_regex_match_and_exclude.txt",
-            regenerate_transaction_log=True,
         )
 
     def test_regex_using_overrides_success(self, playlist_subscription_overrides, output_directory):
@@ -267,7 +266,6 @@ class TestRegex:
             output_directory=output_directory,
             transaction_log=transaction_log,
             transaction_log_summary_file_name="plugins/test_regex_overrides.txt",
-            regenerate_transaction_log=True,
         )
 
     def test_regex_fails_no_match(self, playlist_subscription_no_match_fails, output_directory):

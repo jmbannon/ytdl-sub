@@ -124,7 +124,6 @@ def assert_expected_downloads(
     dry_run: bool,
     expected_download_summary_file_name: str,
     ignore_md5_hashes_for: Optional[List[str]] = None,
-    regenerate_expected_download_summary: bool = REGENERATE_FIXTURES,
 ):
     if dry_run:
         output_directory_contents = list(Path(output_directory).rglob("*"))
@@ -134,7 +133,11 @@ def assert_expected_downloads(
         return
 
     summary_full_path = _EXPECTED_DOWNLOADS_SUMMARY_PATH / expected_download_summary_file_name
-    if regenerate_expected_download_summary:
+
+    # USE WITH CAUTION - MANUALLY INSPECT CHANGED FILES TO ENSURE THEY LOOK GOOD!
+    # Updates the file with the input transaction log. Should only be used to update
+    # tests after an expected change is made.
+    if REGENERATE_FIXTURES:
         os.makedirs(os.path.dirname(summary_full_path), exist_ok=True)
         ExpectedDownloads.from_directory(directory_path=output_directory).to_summary_file(
             summary_file_path=summary_full_path

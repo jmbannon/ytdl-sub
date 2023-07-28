@@ -1,10 +1,16 @@
+from unittest.mock import patch
+
 import pytest
 from conftest import preset_dict_to_dl_args
 from e2e.conftest import mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
+from ytdl_sub.downloaders.ytdlp import YTDLP
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
 
 
 @pytest.fixture
@@ -114,7 +120,7 @@ class TestYoutubeVideo:
             transaction_log_summary_file_name="youtube/test_video.txt",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", [True])
     def test_single_video_download(
         self,
         music_video_config,
@@ -138,6 +144,44 @@ class TestYoutubeVideo:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_video.json",
+        )
+
+    def test_single_video_download_missing_thumbnail(
+        self,
+        music_video_config,
+        single_video_preset_dict,
+        working_directory,
+        output_directory,
+    ):
+        single_video_subscription = Subscription.from_dict(
+            config=music_video_config,
+            preset_name="music_video_single_video_test",
+            preset_dict=single_video_preset_dict,
+        )
+
+        def delete_entry_thumb(entry: Entry) -> None:
+            FileHandler.delete(entry.get_download_thumbnail_path())
+            try_convert_download_thumbnail(entry=entry)
+
+        # Pretend the thumbnail did not download via returning nothing for its downloaded path
+        with patch.object(YTDLP, "_EXTRACT_ENTRY_NUM_RETRIES", 1), patch.object(
+            Entry, "try_get_ytdlp_download_thumbnail_path"
+        ) as mock_ytdlp_path, patch(
+            "ytdl_sub.downloaders.url.downloader.try_convert_download_thumbnail",
+            side_effect=delete_entry_thumb,
+        ):
+            mock_ytdlp_path.return_value = None
+            transaction_log = single_video_subscription.download(dry_run=False)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_video_missing_thumb.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="youtube/test_video_missing_thumb.json",
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])

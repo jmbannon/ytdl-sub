@@ -11,7 +11,6 @@ from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.validators import BoolValidator
 
@@ -91,8 +90,11 @@ class EmbedThumbnailPlugin(Plugin[EmbedThumbnailOptions]):
             return None
 
         if not self.is_dry_run:
-            # convert the entry thumbnail so it is embedded as jpg
-            convert_download_thumbnail(entry=entry)
+            if not entry.is_thumbnail_downloaded():
+                logger.warning(
+                    "Cannot embed thumbnail for '%s' because it is not available", entry.title
+                )
+                return None
 
             if entry.ext in AUDIO_CODEC_EXTS:
                 self._embed_audio_file(entry)
