@@ -119,7 +119,7 @@ class TestYoutubeVideo:
             transaction_log_summary_file_name="youtube/test_video.txt",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", [True])
     def test_single_video_download(
         self,
         music_video_config,

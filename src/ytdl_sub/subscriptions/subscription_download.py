@@ -72,7 +72,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
             entry=entry,
         )
 
-        if self.output_options.thumbnail_name and entry.is_thumbnail_downloaded():
+        # Always pretend to include the thumbnail in a dry-run
+        if self.output_options.thumbnail_name and (dry_run or entry.is_thumbnail_downloaded()):
             output_thumbnail_name = self.overrides.apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry
             )
