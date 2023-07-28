@@ -33,7 +33,7 @@ def try_convert_download_thumbnail(entry: Entry) -> None:
     download_thumbnail_path_as_jpg = entry.get_download_thumbnail_path()
 
     # If it was already converted, do not convert again
-    if os.path.isfile(download_thumbnail_path_as_jpg):
+    if entry.is_thumbnail_downloaded():
         return
 
     if not download_thumbnail_path:

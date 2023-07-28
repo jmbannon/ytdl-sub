@@ -161,7 +161,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                         )
                     setattr(audio_file, tag_name, tag_value[0])
 
-            if self.plugin_options.embed_thumbnail and entry.is_thumbnail_available():
+            if self.plugin_options.embed_thumbnail and entry.is_thumbnail_downloaded():
                 with open(entry.get_download_thumbnail_path(), "rb") as thumb:
                     mediafile_img = mediafile.Image(
                         data=thumb.read(), desc="cover", type=mediafile.ImageType.front

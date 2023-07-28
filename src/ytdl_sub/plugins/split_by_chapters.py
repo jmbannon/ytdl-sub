@@ -202,7 +202,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
 
                 # Copy the original vid thumbnail to the working directory with the new uid. This so
                 # downstream logic thinks this split video has its own thumbnail
-                if entry.is_thumbnail_available():
+                if entry.is_thumbnail_downloaded():
                     FileHandler.copy(
                         src_file_path=entry.get_download_thumbnail_path(),
                         dst_file_path=Path(self.working_directory)

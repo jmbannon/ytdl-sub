@@ -89,12 +89,13 @@ class EmbedThumbnailPlugin(Plugin[EmbedThumbnailOptions]):
             logger.warning("webm does not support embedded thumbnails, skipping")
             return None
 
-        if not entry.is_thumbnail_downloaded():
-            logger.warning(
-                "Cannot embed thumbnail for '%s' because it is not available", entry.title
-            )
-
         if not self.is_dry_run:
+            if not entry.is_thumbnail_downloaded():
+                logger.warning(
+                    "Cannot embed thumbnail for '%s' because it is not available", entry.title
+                )
+                return None
+
             if entry.ext in AUDIO_CODEC_EXTS:
                 self._embed_audio_file(entry)
             else:

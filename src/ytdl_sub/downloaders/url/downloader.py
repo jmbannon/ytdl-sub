@@ -84,7 +84,7 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
             if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
 
                 # always save in dry-run even if it doesn't exist...
-                if self.is_dry_run or entry.is_thumbnail_available():
+                if self.is_dry_run or entry.is_thumbnail_downloaded():
                     self.save_file(
                         file_name=entry.get_download_thumbnail_name(),
                         output_file_name=thumbnail_name,
@@ -350,7 +350,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             is_downloaded_fn=None if self.is_dry_run else entry.is_downloaded,
             is_thumbnail_downloaded_fn=None
             if (self.is_dry_run or not self.is_entry_thumbnails_enabled)
-            else entry.is_thumbnail_downloaded,
+            else entry.is_thumbnail_downloaded_via_ytdlp,
             url=entry.webpage_url,
         )
         return Entry(download_entry_dict, working_directory=self.working_directory)
