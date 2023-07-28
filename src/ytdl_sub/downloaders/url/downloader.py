@@ -84,7 +84,7 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
             if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
 
                 # always save in dry-run even if it doesn't exist...
-                if self.is_dry_run or os.path.isfile(entry.get_download_thumbnail_path()):
+                if self.is_dry_run or entry.is_thumbnail_available():
                     self.save_file(
                         file_name=entry.get_download_thumbnail_name(),
                         output_file_name=thumbnail_name,
