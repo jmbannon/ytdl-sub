@@ -159,17 +159,18 @@ class TestYoutubeVideo:
             preset_dict=single_video_preset_dict,
         )
 
-        def delete_entry_thumbnail(entry: Entry) -> None:
-            if ytdlp_thumb_path := entry.try_get_ytdlp_download_thumbnail_path():
-                FileHandler.delete(ytdlp_thumb_path)
+        def delete_entry_thumb(entry: Entry) -> None:
             FileHandler.delete(entry.get_download_thumbnail_path())
             try_convert_download_thumbnail(entry=entry)
 
         # Pretend the thumbnail did not download via returning nothing for its downloaded path
-        with patch.object(YTDLP, "_EXTRACT_ENTRY_NUM_RETRIES", 1), patch(
+        with patch.object(YTDLP, "_EXTRACT_ENTRY_NUM_RETRIES", 1), patch.object(
+            Entry, "try_get_ytdlp_download_thumbnail_path"
+        ) as mock_ytdlp_path, patch(
             "ytdl_sub.downloaders.url.downloader.try_convert_download_thumbnail",
-            side_effect=delete_entry_thumbnail,
+            side_effect=delete_entry_thumb,
         ):
+            mock_ytdlp_path.return_value = None
             transaction_log = single_video_subscription.download(dry_run=False)
 
         assert_transaction_log_matches(
