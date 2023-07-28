@@ -245,7 +245,7 @@ class OutputOptions(StrictDictValidator):
              # optional
              thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
              info_json_name: "{title_sanitized}.{info_json_ext}"
-             download_archive_name: ".ytdl-sub-{subscription_name}-download-archive.txt"
+             download_archive_name: ".ytdl-sub-{subscription_name}-download-archive.json"
              maintain_download_archive: True
              keep_files_before: now
              keep_files_after: 19000101
@@ -354,7 +354,7 @@ class OutputOptions(StrictDictValidator):
     def download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
         """
         Optional. The file name to store a subscriptions download archive placed relative to
-        the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.txt``
+        the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
         """
         return self._download_archive_name
 
