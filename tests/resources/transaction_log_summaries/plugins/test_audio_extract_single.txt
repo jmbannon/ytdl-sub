@@ -4,7 +4,7 @@ Files created:
   .ytdl-sub-single_song_test-download-archive.json
 {output_directory}/YouTube/[2019] YouTube Rewind 2019： For the Record ｜ #YouTubeRewind
   01 - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.mp3
-    Embedded Thumbnail, Music Tags:
+    Music Tags:
       album: YouTube Rewind 2019: For the Record | #YouTubeRewind
       albumartist: YouTube
       albumartists: YouTube
@@ -18,4 +18,5 @@ Files created:
       track: 1
       tracktotal: 1
       year: 2019
+    Embedded thumbnail
   folder.jpg

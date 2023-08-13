@@ -10,7 +10,7 @@ import pytest
 from resources import copy_file_fixture
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.downloaders.url.downloader import BaseUrlDownloader
+from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
@@ -201,7 +201,7 @@ def mock_download_collection_entries(
         with patch.object(
             YTDLP, "extract_info_via_info_json", new=_write_entries_to_working_dir
         ), patch.object(
-            BaseUrlDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
+            MultiUrlDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
         ):
             # Stub out metadata. TODO: update this if we do metadata plugins
             yield

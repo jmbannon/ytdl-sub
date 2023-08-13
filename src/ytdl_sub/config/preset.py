@@ -11,17 +11,15 @@ from typing import Union
 from mergedeep import mergedeep
 
 from ytdl_sub.config.config_validator import ConfigValidator
-from ytdl_sub.config.preset_class_mappings import DownloadStrategyMapping
+from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_class_mappings import PluginMapping
+from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
+from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
-from ytdl_sub.plugins.plugin import PluginOptionsT
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
 from ytdl_sub.utils.exceptions import ValidationException
@@ -35,16 +33,15 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringListValidator
-from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
 from ytdl_sub.validators.validators import validation_exception
 
 PRESET_KEYS = {
     "preset",
+    "download",
     "output_options",
     "ytdl_options",
     "overrides",
-    *DownloadStrategyMapping.sources(),
     *PluginMapping.plugins(),
 }
 
@@ -67,9 +64,9 @@ def _parent_preset_error_message(
 class PresetPlugins:
     def __init__(self):
         self.plugin_types: List[Type[Plugin]] = []
-        self.plugin_options: List[PluginOptions] = []
+        self.plugin_options: List[OptionsValidator] = []
 
-    def add(self, plugin_type: Type[Plugin], plugin_options: PluginOptions) -> "PresetPlugins":
+    def add(self, plugin_type: Type[Plugin], plugin_options: OptionsValidator) -> "PresetPlugins":
         """
         Add a pair of plugin type and options to the list
         """
@@ -77,7 +74,7 @@ class PresetPlugins:
         self.plugin_options.append(plugin_options)
         return self
 
-    def zipped(self) -> Iterable[Tuple[Type[Plugin], PluginOptions]]:
+    def zipped(self) -> Iterable[Tuple[Type[Plugin], OptionsValidator]]:
         """
         Returns
         -------
@@ -85,7 +82,7 @@ class PresetPlugins:
         """
         return zip(self.plugin_types, self.plugin_options)
 
-    def get(self, plugin_type: Type[PluginOptionsT]) -> Optional[PluginOptionsT]:
+    def get(self, plugin_type: Type[TOptionsValidator]) -> Optional[TOptionsValidator]:
         """
         Parameters
         ----------
@@ -102,49 +99,6 @@ class PresetPlugins:
         return None
 
 
-class DownloadStrategyValidator(StrictDictValidator):
-    """
-    Ensures a download strategy exists for a source. Does not validate any more than that.
-    The respective Downloader's option validator will do that.
-    """
-
-    # All media sources must define a download strategy
-    _required_keys = {"download_strategy"}
-
-    # Extra fields will be strict-validated using other StictDictValidators
-    _allow_extra_keys = True
-
-    def __init__(self, name: str, value: Any):
-        super().__init__(name=name, value=value)
-        self.download_strategy_name = self._validate_key(
-            key="download_strategy",
-            validator=StringValidator,
-        ).value
-
-    def get(self, downloader_source: str) -> Type[BaseDownloader]:
-        """
-        Parameters
-        ----------
-        downloader_source:
-            Name of the download source
-
-        Returns
-        -------
-        The downloader class
-
-        Raises
-        ------
-        ValidationException
-            If the download strategy is invalid
-        """
-        try:
-            return DownloadStrategyMapping.get(
-                source=downloader_source, download_strategy=self.download_strategy_name
-            )
-        except ValueError as value_exc:
-            raise self._validation_exception(error_message=value_exc)
-
-
 class _PresetShell(StrictDictValidator):
     # Have all present keys optional since parent presets could not have all the
     # required keys. They will get validated in the init after the mergedeep of dicts
@@ -153,70 +107,6 @@ class _PresetShell(StrictDictValidator):
 
 
 class Preset(_PresetShell):
-    @classmethod
-    def _validate_download_strategy(
-        cls, config: ConfigValidator, name: str, value: Dict, parent_presets: StringListValidator
-    ) -> None:
-        sources: List[str] = []
-        for source_name in DownloadStrategyMapping.sources():
-            if source_name in value:
-                sources.append(source_name)
-
-        if len(sources) > 1:
-            raise validation_exception(
-                name=name,
-                error_message=f"Contains the sources {', '.join(sources)} but can only have one",
-            )
-
-        # If no sources, nothing more to validate
-        if not sources:
-            return
-
-        # Ensure all parent/child presets use the same download strategy
-        preset_strs = [preset.value for preset in parent_presets.list] + [name]
-        download_strategy: Optional[str] = None
-        download_strategy_preset: Optional[str] = None
-        for parent_preset in preset_strs:
-            # See if the parent has a download strategy
-            parent_download_strategy = (
-                config.presets.dict.get(parent_preset, {})
-                .get("download", {})
-                .get("download_strategy")
-            )
-
-            # If the parent download strategy is None, do nothing
-            if parent_download_strategy is None:
-                continue
-
-            # If download strategy is not set, then set it to parent download strategy
-            if download_strategy is None:
-                download_strategy = parent_download_strategy
-                download_strategy_preset = parent_preset
-
-            # If it's set and does not match the parent download strategy, error
-            if download_strategy is not None and download_strategy != parent_download_strategy:
-                raise ValidationException(
-                    f"Preset {download_strategy_preset} uses download strategy {download_strategy}"
-                    f", but is inherited by preset {parent_preset} which uses download strategy "
-                    f"{parent_download_strategy}."
-                )
-
-        source_name = sources[0]
-        source_dict = copy.deepcopy(value[source_name])
-
-        # Set the parent download strategy if present
-        if download_strategy:
-            source_dict["download_strategy"] = download_strategy
-
-        downloader = DownloadStrategyValidator(name=f"{name}.{source_name}", value=source_dict).get(
-            downloader_source=source_name
-        )
-        del source_dict["download_strategy"]
-
-        downloader.downloader_options_type.partial_validate(
-            name=f"{name}.{source_name}", value=source_dict
-        )
-
     @classmethod
     def preset_partial_validate(cls, config: ConfigValidator, name: str, value: Any) -> None:
         """
@@ -251,9 +141,7 @@ class Preset(_PresetShell):
                     presets=config.presets.keys,
                 )
 
-        cls._validate_download_strategy(
-            config=config, name=name, value=value, parent_presets=parent_presets
-        )
+        cls._partial_validate_key(name, value, "download", MultiUrlValidator)
         cls._partial_validate_key(name, value, "output_options", OutputOptions)
         cls._partial_validate_key(name, value, "ytdl_options", YTDLOptions)
         cls._partial_validate_key(name, value, "overrides", Overrides)
@@ -269,55 +157,6 @@ class Preset(_PresetShell):
     @property
     def _source_variables(self) -> List[str]:
         return Entry.source_variables()
-
-    def __validate_and_get_downloader(self, downloader_source: str) -> Type[BaseDownloader]:
-        return self._validate_key(key=downloader_source, validator=DownloadStrategyValidator).get(
-            downloader_source=downloader_source
-        )
-
-    def __validate_and_get_downloader_options(
-        self, downloader_source: str, downloader: Type[BaseDownloader]
-    ) -> BaseDownloaderValidator:
-        # Remove the download_strategy key before validating it against the downloader options
-        # TODO: make this cleaner
-        del self._dict[downloader_source]["download_strategy"]
-        return self._validate_key(
-            key=downloader_source, validator=downloader.downloader_options_type
-        )
-
-    def __validate_and_get_downloader_and_options(
-        self,
-    ) -> Tuple[Type[BaseDownloader], BaseDownloaderValidator]:
-        downloader: Optional[Type[BaseDownloader]] = None
-        download_options: Optional[BaseDownloaderValidator] = None
-        downloader_sources = DownloadStrategyMapping.sources()
-
-        for key in self._keys:
-            # skip if the key is not a download source
-            if key not in downloader_sources:
-                continue
-
-            # Ensure there are not multiple sources, i.e. youtube and soundcloud
-            if downloader:
-                raise self._validation_exception(
-                    f"'{self._name}' can only have one of the following sources: "
-                    f"{', '.join(downloader_sources)}"
-                )
-
-            downloader = self.__validate_and_get_downloader(downloader_source=key)
-            download_options = self.__validate_and_get_downloader_options(
-                downloader_source=key, downloader=downloader
-            )
-
-        # If downloader was not set, error since it is required
-        if not downloader:
-
-            raise self._validation_exception(
-                f"'{self._name} must have one of the following sources: "
-                f"{', '.join(downloader_sources)}"
-            )
-
-        return downloader, download_options
 
     def __validate_and_get_plugins(self) -> PresetPlugins:
         preset_plugins = PresetPlugins()
@@ -477,7 +316,9 @@ class Preset(_PresetShell):
         # Perform the merge of parent presets before validating any keys
         self.__merge_parent_preset_dicts_if_present(config=config)
 
-        self.downloader, self.downloader_options = self.__validate_and_get_downloader_and_options()
+        self.downloader_options: MultiUrlValidator = self._validate_key(
+            key="download", validator=MultiUrlValidator
+        )
 
         self.output_options = self._validate_key(
             key="output_options",

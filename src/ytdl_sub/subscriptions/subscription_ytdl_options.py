@@ -5,15 +5,14 @@ from typing import Optional
 from typing import Type
 from typing import TypeVar
 
+from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset import Preset
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin
 from ytdl_sub.plugins.file_convert import FileConvertPlugin
 from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -41,10 +40,6 @@ class SubscriptionYTDLOptions:
             if isinstance(plugin, plugin_type):
                 return plugin
         return None
-
-    @property
-    def _downloader(self) -> Type[BaseDownloader]:
-        return self._preset.downloader
 
     @property
     def _global_options(self) -> Dict:
@@ -79,13 +74,15 @@ class SubscriptionYTDLOptions:
         }
 
     @property
+    def _download_only_options(self) -> Dict:
+        return {"break_on_reject": True}
+
+    @property
     def _output_options(self) -> Dict:
         ytdl_options = {}
 
         if self._preset.output_options.maintain_download_archive:
-            ytdl_options["download_archive"] = str(
-                Path(self._working_directory) / self._enhanced_download_archive.archive_file_name
-            )
+            ytdl_options["download_archive"] = self._enhanced_download_archive.working_file_path
 
         return ytdl_options
 
@@ -110,7 +107,6 @@ class SubscriptionYTDLOptions:
             self._global_options,
             self._output_options,
             self._plugin_ytdl_options(DateRangePlugin),
-            self._plugin_ytdl_options(MatchFiltersPlugin),
             self._user_ytdl_options,  # user ytdl options...
             self._info_json_only_options,  # then info_json_only options
         )
@@ -125,12 +121,13 @@ class SubscriptionYTDLOptions:
         ytdl_options_builder = YTDLOptionsBuilder().add(
             self._global_options,
             self._output_options,
-            self._plugin_ytdl_options(DateRangePlugin),
+            self._plugin_ytdl_options(MatchFiltersPlugin),
             self._plugin_ytdl_options(FileConvertPlugin),
             self._plugin_ytdl_options(SubtitlesPlugin),
             self._plugin_ytdl_options(ChaptersPlugin),
             self._plugin_ytdl_options(AudioExtractPlugin),
             self._user_ytdl_options,  # user ytdl options...
+            self._download_only_options,  # then download_only options
         )
         # Add dry run options last if enabled
         if self._dry_run:

@@ -3,9 +3,11 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import TypeVar
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
@@ -17,11 +19,12 @@ from ytdl_sub.validators.string_formatter_validators import OverridesStringForma
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
+from ytdl_sub.validators.validators import Validator
 
 
 # pylint: disable=no-self-use
 # pylint: disable=unused-argument
-class OptionsValidator(StrictDictValidator, ABC):
+class OptionsValidator(Validator, ABC):
     """
     Abstract class that validates options for preset sections (plugins, downloaders)
     """
@@ -69,6 +72,13 @@ class OptionsValidator(StrictDictValidator, ABC):
         return None
 
 
+TOptionsValidator = TypeVar("TOptionsValidator", bound=OptionsValidator)
+
+
+class OptionsDictValidator(StrictDictValidator, OptionsValidator, ABC):
+    pass
+
+
 # pylint: enable=no-self-use
 # pylint: enable=unused-argument
 
@@ -110,9 +120,45 @@ class YTDLOptions(LiteralDictValidator):
     """
 
 
+class OverridesVariables(DictFormatterValidator):
+    """
+    Override variables that are automatically added to every subscription.
+    """
+
+    def _add_override_variable(self, key_name: str, format_string: str, sanitize: bool = False):
+        if sanitize:
+            key_name = f"{key_name}_sanitized"
+            format_string = sanitize_filename(format_string)
+
+        self._value[key_name] = StringFormatterValidator(
+            name="__should_never_fail__",
+            value=format_string,
+        )
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+
+        # Add sanitized and non-sanitized override variables
+        for sanitize in [True, False]:
+            self._add_override_variable(
+                key_name="subscription_name",
+                format_string=self.subscription_name,
+                sanitize=sanitize,
+            )
+
+    @property
+    def subscription_name(self) -> str:
+        """
+        Returns
+        -------
+        Name of the subscription
+        """
+        return self._root_name
+
+
 # Disable for proper docstring formatting
 # pylint: disable=line-too-long
-class Overrides(DictFormatterValidator):
+class Overrides(OverridesVariables):
     """
     Optional. This section allows you to define variables that can be used in any string formatter.
     For example, if you want your file and thumbnail files to match without copy-pasting a large
@@ -141,16 +187,6 @@ class Overrides(DictFormatterValidator):
     """
 
     # pylint: enable=line-too-long
-
-    def _add_override_variable(self, key_name: str, format_string: str, sanitize: bool = False):
-        if sanitize:
-            key_name = f"{key_name}_sanitized"
-            format_string = sanitize_filename(format_string)
-
-        self._value[key_name] = StringFormatterValidator(
-            name="__should_never_fail__",
-            value=format_string,
-        )
 
     def __init__(self, name, value):
         super().__init__(name, value)
@@ -209,6 +245,7 @@ class OutputOptions(StrictDictValidator):
              # optional
              thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
              info_json_name: "{title_sanitized}.{info_json_ext}"
+             download_archive_name: ".ytdl-sub-{subscription_name}-download-archive.json"
              maintain_download_archive: True
              keep_files_before: now
              keep_files_after: 19000101
@@ -218,7 +255,7 @@ class OutputOptions(StrictDictValidator):
     _optional_keys = {
         "thumbnail_name",
         "info_json_name",
-        "subtitles_name",
+        "download_archive_name",
         "maintain_download_archive",
         "keep_files_before",
         "keep_files_after",
@@ -254,6 +291,12 @@ class OutputOptions(StrictDictValidator):
         )
         self._info_json_name = self._validate_key_if_present(
             key="info_json_name", validator=StringFormatterFileNameValidator
+        )
+
+        self._download_archive_name = self._validate_key_if_present(
+            key="download_archive_name",
+            validator=OverridesStringFormatterValidator,
+            default=DEFAULT_DOWNLOAD_ARCHIVE_NAME,
         )
 
         self._maintain_download_archive = self._validate_key_if_present(
@@ -306,6 +349,14 @@ class OutputOptions(StrictDictValidator):
         directory. Can be set to empty string or `null` to disable info json writes.
         """
         return self._info_json_name
+
+    @property
+    def download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
+        """
+        Optional. The file name to store a subscriptions download archive placed relative to
+        the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
+        """
+        return self._download_archive_name
 
     @property
     def maintain_download_archive(self) -> bool:

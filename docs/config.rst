@@ -165,6 +165,15 @@ date_range
   :member-order: bysource
   :exclude-members: partial_validate
 
+-------------------------------------------------------------------------------
+
+embed_thumbnail
+''''''''''''''''
+
+.. autoclass:: ytdl_sub.plugins.embed_thumbnail.EmbedThumbnailOptions()
+
+-------------------------------------------------------------------------------
+
 file_convert
 ''''''''''''
 .. autoclass:: ytdl_sub.plugins.file_convert.FileConvertOptions()
@@ -185,8 +194,6 @@ match_filters
 music_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.music_tags.MusicTagsOptions()
-  :members:
-  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -213,8 +220,8 @@ regex
 .. autoclass:: ytdl_sub.plugins.regex.RegexOptions()
   :members: skip_if_match_fails
 
-.. autoclass:: ytdl_sub.plugins.regex.SourceVariableRegex()
-  :members: match, capture_group_names, capture_group_defaults
+.. autoclass:: ytdl_sub.plugins.regex.VariableRegex()
+  :members: match, capture_group_names, capture_group_defaults, exclude
   :member-order: bysource
   :exclude-members: partial_validate
 
@@ -241,8 +248,6 @@ subtitles
 video_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.video_tags.VideoTagsOptions()
-  :members:
-  :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
 
@@ -306,6 +311,32 @@ by using the file-wide ``__preset__``:
 This ``subscription.yaml`` is equivalent to the one above it because all
 subscriptions automatically set ``__preset__`` as a `parent preset`_.
 
+File Subscription Value
+^^^^^^^^^^^^^^^^^^^^^^^
+With a clever config and use of ``__preset__``, your subscriptions can typically boil
+down to a name and url. You can set ``__value__`` to the name of an override variable,
+and use the override variable ``subscription_name`` to achieve one-liner subscriptions.
+Using the example above, we can do:
+
+.. code-block:: yaml
+  :caption: subscription.yaml
+
+   __preset__:
+     preset: "playlist_preset_ex"
+     overrides:
+       playlist_name: "{subscription_name}"
+
+   __value__: "url"
+
+   # single-line subscription
+   "diy-playlist": "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+
+``"diy-playlist"`` gets assigned to the ``playlist_name`` override variable by setting
+it with ``subscription_name`` , and the url gets assigned to ``url`` by setting ``__value__``
+to write values to it.
+
+Traditional subscriptions that can override presets will still work when using ``__value__``.
+
 -------------------------------------------------------------------------------
 
 .. _source-variables:
@@ -317,6 +348,12 @@ Source Variables
    :members:
    :inherited-members:
    :undoc-members:
+
+Override Variables
+------------------
+
+.. autoclass:: ytdl_sub.config.preset_options.OverridesVariables()
+   :members:
 
 -------------------------------------------------------------------------------
 

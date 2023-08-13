@@ -8,6 +8,7 @@ Files created:
     NFO tags:
       tvshow:
         genre: ytdl-sub
+        mpaa: TV-14
         source_uploader: Project Zombie
         title: Project / Zombie
 {output_directory}/Season 2010
@@ -15,6 +16,7 @@ Files created:
   s2010.e081301 - Oblivion Mod ＂Falcor＂ p.1.info.json
   s2010.e081301 - Oblivion Mod ＂Falcor＂ p.1.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2010-08-13
       episode_id: 81301
       genre: ytdl-sub
@@ -36,6 +38,7 @@ Files created:
         aired: 2010-08-13
         episode: 81301
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 13
         plot:
@@ -54,6 +57,7 @@ Files created:
   s2010.e120201 - Oblivion Mod ＂Falcor＂ p.2.info.json
   s2010.e120201 - Oblivion Mod ＂Falcor＂ p.2.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2010-12-02
       episode_id: 120201
       genre: ytdl-sub
@@ -75,6 +79,7 @@ Files created:
         aired: 2010-12-02
         episode: 120201
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 12
         plot:
@@ -94,6 +99,7 @@ Files created:
   s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
   s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-02-01
       episode_id: 20101
       genre: ytdl-sub
@@ -116,6 +122,7 @@ Files created:
         aired: 2011-02-01
         episode: 20101
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 11
         plot:
@@ -135,6 +142,7 @@ Files created:
   s2011.e022701 - Jesse's Minecraft Server [Trailer - Feb.27].info.json
   s2011.e022701 - Jesse's Minecraft Server [Trailer - Feb.27].mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-02-27
       episode_id: 22701
       genre: ytdl-sub
@@ -176,6 +184,7 @@ Files created:
         aired: 2011-02-27
         episode: 22701
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 10
         plot:
@@ -214,6 +223,7 @@ Files created:
   s2011.e032101 - Jesse's Minecraft Server [Trailer - Mar.21].info.json
   s2011.e032101 - Jesse's Minecraft Server [Trailer - Mar.21].mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-03-21
       episode_id: 32101
       genre: ytdl-sub
@@ -255,6 +265,7 @@ Files created:
         aired: 2011-03-21
         episode: 32101
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 9
         plot:
@@ -293,6 +304,7 @@ Files created:
   s2011.e052901 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).info.json
   s2011.e052901 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-05-29
       episode_id: 52901
       genre: ytdl-sub
@@ -324,6 +336,7 @@ Files created:
         aired: 2011-05-29
         episode: 52901
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 8
         plot:
@@ -352,6 +365,7 @@ Files created:
   s2011.e063001 - Project Zombie ｜Fin｜.info.json
   s2011.e063001 - Project Zombie ｜Fin｜.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-06-30
       episode_id: 63001
       genre: ytdl-sub
@@ -369,6 +383,7 @@ Files created:
         aired: 2011-06-30
         episode: 63001
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 7
         plot:
@@ -383,6 +398,7 @@ Files created:
   s2011.e112101 - Skyrim 'Ultra HD w⧸Mods' [PC].info.json
   s2011.e112101 - Skyrim 'Ultra HD w⧸Mods' [PC].mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-11-21
       episode_id: 112101
       genre: ytdl-sub
@@ -407,6 +423,7 @@ Files created:
         aired: 2011-11-21
         episode: 112101
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 6
         plot:
@@ -429,6 +446,7 @@ Files created:
   s2012.e012301 - Project Zombie ｜Map Trailer｜.info.json
   s2012.e012301 - Project Zombie ｜Map Trailer｜.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2012-01-23
       episode_id: 12301
       genre: ytdl-sub
@@ -453,6 +471,7 @@ Files created:
         aired: 2012-01-23
         episode: 12301
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 4
         plot:
@@ -475,6 +494,7 @@ Files created:
   s2013.e071901 - Project Zombie Rewind ｜Trailer｜.info.json
   s2013.e071901 - Project Zombie Rewind ｜Trailer｜.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2013-07-19
       episode_id: 71901
       genre: ytdl-sub
@@ -494,6 +514,7 @@ Files created:
         aired: 2013-07-19
         episode: 71901
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 3
         plot:
@@ -511,6 +532,7 @@ Files created:
   s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.info.json
   s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2018-10-29
       episode_id: 102901
       genre: ytdl-sub
@@ -535,6 +557,7 @@ Files created:
         aired: 2018-10-29
         episode: 102901
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 2
         plot:
@@ -557,6 +580,7 @@ Files created:
   s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id.info.json
   s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2018-11-02
       episode_id: 110201
       genre: ytdl-sub
@@ -584,6 +608,7 @@ Files created:
         aired: 2018-11-02
         episode: 110201
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 13
         playlist_index: 1
         plot:

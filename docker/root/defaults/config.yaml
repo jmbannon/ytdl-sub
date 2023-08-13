@@ -17,9 +17,6 @@ configuration:
 presets:
 
   video:
-    download:
-      download_strategy: "url"
-
     output_options:
       output_directory: "/tmp/ytdl-sub-output"
       file_name: "{uid}.{ext}"

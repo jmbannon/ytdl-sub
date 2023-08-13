@@ -54,7 +54,7 @@ class Entry(EntryVariables, BaseEntry):
         """Returns the entry's thumbnail's file path to where it was downloaded"""
         return str(Path(self.working_directory()) / self.get_download_thumbnail_name())
 
-    def get_ytdlp_download_thumbnail_path(self) -> Optional[str]:
+    def try_get_ytdlp_download_thumbnail_path(self) -> Optional[str]:
         """
         The source `thumbnail` value and the actual downloaded thumbnail extension sometimes do
         not match. Return the actual downloaded thumbnail path.
@@ -84,13 +84,22 @@ class Entry(EntryVariables, BaseEntry):
             file.write(kwargs_json)
 
     @final
+    def is_thumbnail_downloaded_via_ytdlp(self) -> bool:
+        """
+        Returns
+        -------
+        True if ANY thumbnail file exist locally. False otherwise.
+        """
+        return self.try_get_ytdlp_download_thumbnail_path() is not None
+
+    @final
     def is_thumbnail_downloaded(self) -> bool:
         """
         Returns
         -------
-        True if the thumbnail file exist locally. False otherwise.
+        True if the thumbnail file exists and is its proper format. False otherwise.
         """
-        return self.get_ytdlp_download_thumbnail_path() is not None
+        return os.path.isfile(self.get_download_thumbnail_path())
 
     @final
     def is_downloaded(self) -> bool:

@@ -14,3 +14,7 @@ else:
     DEFAULT_FFPROBE_PATH = "/usr/bin/ffprobe"
 
     MAX_FILE_NAME_BYTES = os.pathconf("/", "PC_NAME_MAX")
+
+# Historically was hardcoded to this value. Use this as the default
+# if download_archive_path is not specified
+DEFAULT_DOWNLOAD_ARCHIVE_NAME = ".ytdl-sub-{subscription_name}-download-archive.json"

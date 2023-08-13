@@ -13,6 +13,5 @@
 #
 rammstein_music_videos:
   preset: "video"
-  download:
-    url: "https://youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
+  download: "https://youtube.com/playlist?list=PLVTLbc6i-h_iuhdwUfuPDLFLXG2QQnz-x"
 

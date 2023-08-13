@@ -1,10 +1,8 @@
-from ytdl_sub.downloaders.url.downloader import BaseUrlDownloader
-from ytdl_sub.downloaders.url.downloader import DownloaderValidator
-from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.downloaders.url.validators import UrlValidator
 
 
-class UrlDownloadOptions(UrlValidator, DownloaderValidator):
+# TODO: Remove later - keep for docstring
+class UrlDownloadOptions(UrlValidator):
     """
     Downloads from a single URL supported by yt-dlp.
 
@@ -16,7 +14,6 @@ class UrlDownloadOptions(UrlValidator, DownloaderValidator):
         my_example_preset:
           download:
             # required
-            download_strategy: "url"
             url: "youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
             # optional
             playlist_thumbnails:
@@ -26,15 +23,3 @@ class UrlDownloadOptions(UrlValidator, DownloaderValidator):
                 uid: "banner_uncropped"
             download_reverse: True
     """
-
-    @property
-    def collection_validator(self) -> MultiUrlValidator:
-        """Returns itself!"""
-        return MultiUrlValidator(
-            name=self._name,
-            value={"urls": [self._value]},
-        )
-
-
-class UrlDownloader(BaseUrlDownloader[UrlDownloadOptions]):
-    downloader_options_type = UrlDownloadOptions

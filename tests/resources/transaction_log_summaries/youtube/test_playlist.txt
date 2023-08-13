@@ -7,6 +7,7 @@ Files created:
     NFO tags:
       test:
         genre: ytdl-sub
+        mpaa: TV-14
         namedseason:
           attributes:
             number: 1
@@ -20,6 +21,7 @@ Files created:
   s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
   s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-02-01
       episode_id: 11020101
       genre: ytdl-sub
@@ -42,6 +44,7 @@ Files created:
         aired: 2011-02-01
         episode: 11020101
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 3
         playlist_index: 3
         plot:
@@ -61,6 +64,7 @@ Files created:
   s01.e11022701 - Jesse's Minecraft Server [Trailer - Feb.27].info.json
   s01.e11022701 - Jesse's Minecraft Server [Trailer - Feb.27].mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-02-27
       episode_id: 11022701
       genre: ytdl-sub
@@ -102,6 +106,7 @@ Files created:
         aired: 2011-02-27
         episode: 11022701
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 3
         playlist_index: 2
         plot:
@@ -140,6 +145,7 @@ Files created:
   s01.e11032101 - Jesse's Minecraft Server [Trailer - Mar.21].info.json
   s01.e11032101 - Jesse's Minecraft Server [Trailer - Mar.21].mp4
     Video Tags:
+      contentRating: TV-14
       date: 2011-03-21
       episode_id: 11032101
       genre: ytdl-sub
@@ -181,6 +187,7 @@ Files created:
         aired: 2011-03-21
         episode: 11032101
         genre: ytdl-sub
+        mpaa: TV-14
         playlist_count: 3
         playlist_index: 1
         plot:

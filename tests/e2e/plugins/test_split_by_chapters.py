@@ -32,7 +32,9 @@ def yt_album_as_chapters_with_regex_preset_dict(yt_album_as_chapters_preset_dict
         {
             "regex": {
                 "from": {
-                    "chapter_title": {
+                    # Ensure regex can handle override variables that come from the
+                    # post-metadata stage
+                    "override_chapter_title": {
                         "match": r"\d+\. (.+)",
                         "capture_group_names": "captured_track_title",
                         "capture_group_defaults": "{chapter_title}",
@@ -54,6 +56,7 @@ def yt_album_as_chapters_with_regex_preset_dict(yt_album_as_chapters_preset_dict
                 }
             },
             "overrides": {
+                "override_chapter_title": "{chapter_title}",
                 "track_title": "{captured_track_title}",
                 "track_album": "{captured_track_album}",
                 "track_artist": "{captured_track_artist}",
@@ -133,7 +136,7 @@ class TestSplitByChapters:
         mergedeep.merge(
             yt_album_as_chapters_with_regex_preset_dict,
             {
-                "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+                "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
                 "split_by_chapters": {"when_no_chapters": when_no_chapters},
             },
         )

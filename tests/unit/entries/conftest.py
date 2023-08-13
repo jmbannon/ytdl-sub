@@ -135,6 +135,23 @@ def mock_entry_to_dict(
         "source_uploader_url": "https://yourname.here",
         "uid_sanitized_plex": "abc１２３",
         "title_sanitized_plex": "entry ｛title｝",
+        "release_date": upload_date,
+        "release_date_standardized": "2021-01-12",
+        "release_year": 2021,
+        "release_year_truncated": 21,
+        "release_year_truncated_reversed": 79,
+        "release_month": 1,
+        "release_month_padded": "01",
+        "release_month_reversed": 12,
+        "release_month_reversed_padded": "12",
+        "release_day": 12,
+        "release_day_padded": "12",
+        "release_day_reversed": 20,
+        "release_day_reversed_padded": "20",
+        "release_day_of_year": 12,
+        "release_day_of_year_padded": "012",
+        "release_day_of_year_reversed": 354,
+        "release_day_of_year_reversed_padded": "354",
     }
 
 
