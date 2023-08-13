@@ -18,7 +18,6 @@ from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.logger import Logger
 
 
 @dataclass
@@ -370,20 +369,18 @@ class EnhancedDownloadArchive:
 
     def __init__(
         self,
-        subscription_name: str,
+        file_name: str,
         working_directory: str,
         output_directory: str,
         dry_run: bool = False,
     ):
-        self.subscription_name = subscription_name
+        self._file_name = file_name
         self._file_handler = FileHandler(
             working_directory=working_directory, output_directory=output_directory, dry_run=dry_run
         )
         self._download_mapping = self._maybe_load_download_mappings(
-            mapping_file_path=self._mapping_output_file_path
+            mapping_file_path=self.output_file_path
         )
-
-        self._logger = Logger.get(name=subscription_name)
 
         self.num_entries_added: int = 0
         self.num_entries_modified: int = 0
@@ -418,7 +415,7 @@ class EnhancedDownloadArchive:
             dry_run=dry_run,
         )
         self._download_mapping = self._maybe_load_download_mappings(
-            mapping_file_path=self._mapping_output_file_path
+            mapping_file_path=self.output_file_path
         )
         return self
 
@@ -430,16 +427,6 @@ class EnhancedDownloadArchive:
         True if this session is a dry-run. False otherwise.
         """
         return self._file_handler.dry_run
-
-    @property
-    def archive_file_name(self) -> str:
-        """
-        Returns
-        -------
-        The download archive's file name (no path)
-        Used to recreate yt-dlp's download archive in the working directory
-        """
-        return f".ytdl-sub-{self.subscription_name}-download-archive.txt"
 
     @property
     def working_directory(self) -> str:
@@ -460,40 +447,31 @@ class EnhancedDownloadArchive:
         return self._file_handler.output_directory
 
     @property
-    def _mapping_file_name(self) -> str:
+    def file_name(self) -> str:
         """
         Returns
         -------
         The download mapping's file name (no path)
         """
-        return f".ytdl-sub-{self.subscription_name}-download-archive.json"
+        return self._file_name
 
     @property
-    def _mapping_output_file_path(self) -> str:
+    def output_file_path(self) -> str:
         """
         Returns
         -------
         The download mapping's file path in the output directory.
         """
-        return str(Path(self.output_directory) / self._mapping_file_name)
+        return str(Path(self.output_directory) / self.file_name)
 
     @property
-    def mapping_working_file_path(self) -> str:
+    def working_file_path(self) -> str:
         """
         Returns
         -------
         The download mapping's file path in the working directory.
         """
-        return str(Path(self.working_directory) / self._mapping_file_name)
-
-    @property
-    def archive_working_file_path(self) -> str:
-        """
-        Returns
-        -------
-        The download archive's file path in the working directory.
-        """
-        return str(Path(self.working_directory) / self.archive_file_name)
+        return str(Path(self.working_directory) / self.file_name)
 
     @property
     def mapping(self) -> DownloadMappings:
@@ -526,7 +504,7 @@ class EnhancedDownloadArchive:
             return self
 
         # Otherwise, create a ytdl download archive file in the working directory.
-        self.mapping.to_download_archive().to_file(self.archive_working_file_path)
+        self.mapping.to_download_archive().to_file(self.working_file_path)
 
         return self
 
@@ -566,8 +544,8 @@ class EnhancedDownloadArchive:
         self
         """
         if not self.get_file_handler_transaction_log().is_empty:
-            self._download_mapping.to_file(output_json_file=self.mapping_working_file_path)
-            self.save_file_to_output_directory(file_name=self._mapping_file_name)
+            self._download_mapping.to_file(output_json_file=self.working_file_path)
+            self.save_file_to_output_directory(file_name=self.file_name)
         return self
 
     def delete_file_from_output_directory(self, file_name: str):

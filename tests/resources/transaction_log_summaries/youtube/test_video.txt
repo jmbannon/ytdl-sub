@@ -6,6 +6,7 @@ Files created:
   JMC - Oblivion Mod ＂Falcor＂ p.1.mp4
     Video Tags:
       title: Oblivion Mod "Falcor" p.1
+    Embedded thumbnail
   JMC - Oblivion Mod ＂Falcor＂ p.1.nfo
     NFO tags:
       musicvideo:

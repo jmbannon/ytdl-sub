@@ -1,5 +1,4 @@
 import copy
-import os.path
 from pathlib import Path
 from typing import Any
 from typing import List
@@ -8,20 +7,19 @@ from typing import Tuple
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.config.plugin import SplitPlugin
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import CHAPTERS
 from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
 from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UID
-from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 
 
@@ -47,7 +45,7 @@ class WhenNoChaptersValidator(StringSelectValidator):
     _select_values = {"pass", "drop", "error"}
 
 
-class SplitByChaptersOptions(PluginOptions):
+class SplitByChaptersOptions(OptionsDictValidator):
     """
     Splits a file by chapters into multiple files. Each file becomes its own entry with the
     new source variables ``chapter_title``, ``chapter_title_sanitized``, ``chapter_index``,
@@ -101,9 +99,8 @@ class SplitByChaptersOptions(PluginOptions):
         return self._when_no_chapters
 
 
-class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
+class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
     plugin_options_type = SplitByChaptersOptions
-    is_split_plugin = True
 
     def _create_split_entry(
         self, source_entry: Entry, title: str, idx: int, chapters: Chapters
@@ -164,14 +161,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
         Tags the entry's audio file using values defined in the metadata options
         """
         split_videos_and_metadata: List[Tuple[Entry, FileMetadata]] = []
-
-        if self.is_dry_run:
-            chapters = Chapters.from_entry_chapters(entry=entry)
-        else:
-            chapters = Chapters.from_embedded_chapters(
-                ffprobe_path=FFMPEG.ffprobe_path(),
-                file_path=entry.get_download_file_path(),
-            )
+        chapters = Chapters.from_entry_chapters(entry=entry)
 
         # If no chapters, do not split anything
         if not chapters.contains_any_chapters():
@@ -191,11 +181,6 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
             raise ValidationException(
                 f"Tried to split '{entry.title}' by chapters but it has no chapters"
             )
-
-        # convert the entry thumbnail early so we do not have to guess the thumbnail extension
-        # when copying it. Do not error if it's not found, in case thumbnail_name is not set
-        if not self.is_dry_run:
-            convert_download_thumbnail(entry=entry, error_if_not_found=False)
 
         for idx, title in enumerate(chapters.titles):
             new_uid = _split_video_uid(source_uid=entry.uid, idx=idx)
@@ -217,7 +202,7 @@ class SplitByChaptersPlugin(Plugin[SplitByChaptersOptions]):
 
                 # Copy the original vid thumbnail to the working directory with the new uid. This so
                 # downstream logic thinks this split video has its own thumbnail
-                if os.path.isfile(entry.get_download_thumbnail_path()):
+                if entry.is_thumbnail_downloaded():
                     FileHandler.copy(
                         src_file_path=entry.get_download_thumbnail_path(),
                         dst_file_path=Path(self.working_directory)

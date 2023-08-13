@@ -52,7 +52,7 @@ class TestPrebuiltTVShowPresets:
             preset_name="preset_test",
             preset_dict={
                 "preset": parent_presets,
-                "download": {"urls": [{"url": "https://second.url"}]},
+                "download": "https://second.url",
                 "overrides": {
                     "url": "https://your.name.here",
                     "tv_show_name": "test-compile",

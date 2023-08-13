@@ -34,33 +34,31 @@ presets:
   # TV show from one or more sources. Uses {url}'s avatar and banner as poster and fanart
   _tv_show_by_date:
     download:
-      download_strategy: "multi_url"
-      urls:
-        - url: "{url}"
-          playlist_thumbnails:
-            - name: "{tv_show_poster_file_name}"
-              uid: "avatar_uncropped"
-            - name: "{tv_show_fanart_file_name}"
-              uid: "banner_uncropped"
-        - url: "{url2}"
-        - url: "{url3}"
-        - url: "{url4}"
-        - url: "{url5}"
-        - url: "{url6}"
-        - url: "{url7}"
-        - url: "{url8}"
-        - url: "{url9}"
-        - url: "{url10}"
-        - url: "{url11}"
-        - url: "{url12}"
-        - url: "{url13}"
-        - url: "{url14}"
-        - url: "{url15}"
-        - url: "{url16}"
-        - url: "{url17}"
-        - url: "{url18}"
-        - url: "{url19}"
-        - url: "{url20}"
+      - url: "{url}"
+        playlist_thumbnails:
+          - name: "{tv_show_poster_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{tv_show_fanart_file_name}"
+            uid: "banner_uncropped"
+      - url: "{url2}"
+      - url: "{url3}"
+      - url: "{url4}"
+      - url: "{url5}"
+      - url: "{url6}"
+      - url: "{url7}"
+      - url: "{url8}"
+      - url: "{url9}"
+      - url: "{url10}"
+      - url: "{url11}"
+      - url: "{url12}"
+      - url: "{url13}"
+      - url: "{url14}"
+      - url: "{url15}"
+      - url: "{url16}"
+      - url: "{url17}"
+      - url: "{url18}"
+      - url: "{url19}"
+      - url: "{url20}"
     overrides:
       url2: ""
       url3: ""
@@ -87,9 +85,6 @@ presets:
   # TV show from a collection. Must specify additional `tv_show_collection_season` presets in
   # addition. Each season sets its own `collection_season_number/_padded`
   _tv_show_collection:
-    download:
-      download_strategy: "multi_url"
-
     overrides:
       season_number: "{collection_season_number}"
       season_number_padded: "{collection_season_number_padded}"

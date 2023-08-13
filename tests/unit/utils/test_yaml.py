@@ -69,10 +69,7 @@ def test_load_yaml_file_not_found():
 def test_load_yaml_invalid_syntax(bad_yaml_file_path: str):
     with pytest.raises(
         InvalidYamlException,
-        match=re.escape(
-            f"'{bad_yaml_file_path}' has invalid YAML, "
-            f"copy-paste it into a YAML checker to find the issue."
-        ),
+        match=re.escape(f"'{bad_yaml_file_path}' has invalid YAML"),
     ):
         load_yaml(file_path=bad_yaml_file_path)
 

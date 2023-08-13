@@ -86,10 +86,12 @@ class YTDLP:
             If the entry fails to download
         """
         num_tries = 0
-        entry_files_exist = False
         copied_ytdl_options_overrides = copy.deepcopy(ytdl_options_overrides)
 
-        while not entry_files_exist and num_tries < cls._EXTRACT_ENTRY_NUM_RETRIES:
+        is_downloaded = False
+        entry_dict: Optional[Dict] = None
+
+        while num_tries < cls._EXTRACT_ENTRY_NUM_RETRIES:
             entry_dict = cls.extract_info(
                 ytdl_options_overrides=copied_ytdl_options_overrides, **kwargs
             )
@@ -102,6 +104,10 @@ class YTDLP:
             if is_downloaded and is_thumbnail_downloaded:
                 return entry_dict
 
+            # Always add check_formats
+            # See https://github.com/yt-dlp/yt-dlp/issues/502
+            copied_ytdl_options_overrides["check_formats"] = True
+
             # If the video file is downloaded but the thumbnail is not, then do not download
             # the video again
             if is_downloaded and not is_thumbnail_downloaded:
@@ -111,7 +117,7 @@ class YTDLP:
             time.sleep(cls._EXTRACT_ENTRY_RETRY_WAIT_SEC)
             num_tries += 1
 
-            # Remove the download archive so it can retry without thinking its already downloaded,
+            # Remove the download archive to retry without thinking its already downloaded,
             # even though it is not
             if "download_archive" in copied_ytdl_options_overrides:
                 del copied_ytdl_options_overrides["download_archive"]
@@ -122,6 +128,10 @@ class YTDLP:
                     num_tries,
                     cls._EXTRACT_ENTRY_NUM_RETRIES,
                 )
+
+        # Still return if the media file downloaded (thumbnail could be missing)
+        if is_downloaded and entry_dict is not None:
+            return entry_dict
 
         error_dict = {"ytdl_options": ytdl_options_overrides, "kwargs": kwargs}
         raise FileNotDownloadedException(

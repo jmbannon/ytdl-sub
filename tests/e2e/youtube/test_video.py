@@ -1,23 +1,30 @@
+from unittest.mock import patch
+
 import pytest
 from conftest import preset_dict_to_dl_args
 from e2e.conftest import mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
-from mergedeep import mergedeep
 
+from ytdl_sub.downloaders.ytdlp import YTDLP
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
 
 
 @pytest.fixture
-def single_video_preset_dict(output_directory):
+def single_video_preset_dict_old_video_tags_format(output_directory):
     return {
         "preset": "music_video",
-        "download": {"url": "https://youtube.com/watch?v=HKTNxEqsN3Q"},
+        "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
         # override the output directory with our fixture-generated dir
         "output_options": {
             "output_directory": output_directory,
             "maintain_download_archive": False,
         },
+        # embed thumb into the video
+        "embed_thumbnail": True,
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",
@@ -27,6 +34,30 @@ def single_video_preset_dict(output_directory):
             "tags": {
                 "title": "{title}",
             }
+        },
+        "overrides": {"artist": "JMC"},
+    }
+
+
+@pytest.fixture
+def single_video_preset_dict(output_directory):
+    return {
+        "preset": "music_video",
+        "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
+        # override the output directory with our fixture-generated dir
+        "output_options": {
+            "output_directory": output_directory,
+            "maintain_download_archive": False,
+        },
+        # embed thumb into the video
+        "embed_thumbnail": True,
+        # download the worst format so it is fast
+        "ytdl_options": {
+            "format": "worst[ext=mp4]",
+        },
+        # also test video tags
+        "video_tags": {
+            "title": "{title}",
         },
         "overrides": {"artist": "JMC"},
     }
@@ -49,6 +80,13 @@ def single_tv_show_video_nulled_values_preset_dict(output_directory):
             "format": "worst[ext=mp4]",
             "max_downloads": 2,
         },
+        # test override variables added by ytdl-sub
+        "nfo_tags": {
+            "tags": {
+                "subscription_name": "{subscription_name}",
+                "subscription_name_sanitized": "{subscription_name_sanitized}",
+            }
+        },
         "overrides": {
             "url": "https://www.youtube.com/@ProjectZombie603",
             "tv_show_name": "Project Zombie",
@@ -63,7 +101,26 @@ def single_video_preset_dict_dl_args(single_video_preset_dict):
 
 
 class TestYoutubeVideo:
-    @pytest.mark.parametrize("dry_run", [True, False])
+    def test_single_video_old_video_tags_format_download(
+        self,
+        music_video_config,
+        single_video_preset_dict_old_video_tags_format,
+        output_directory,
+    ):
+        single_video_subscription = Subscription.from_dict(
+            config=music_video_config,
+            preset_name="music_video_single_video_test",
+            preset_dict=single_video_preset_dict_old_video_tags_format,
+        )
+
+        transaction_log = single_video_subscription.download(dry_run=True)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_video.txt",
+        )
+
+    @pytest.mark.parametrize("dry_run", [True])
     def test_single_video_download(
         self,
         music_video_config,
@@ -87,6 +144,44 @@ class TestYoutubeVideo:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_video.json",
+        )
+
+    def test_single_video_download_missing_thumbnail(
+        self,
+        music_video_config,
+        single_video_preset_dict,
+        working_directory,
+        output_directory,
+    ):
+        single_video_subscription = Subscription.from_dict(
+            config=music_video_config,
+            preset_name="music_video_single_video_test",
+            preset_dict=single_video_preset_dict,
+        )
+
+        def delete_entry_thumb(entry: Entry) -> None:
+            FileHandler.delete(entry.get_download_thumbnail_path())
+            try_convert_download_thumbnail(entry=entry)
+
+        # Pretend the thumbnail did not download via returning nothing for its downloaded path
+        with patch.object(YTDLP, "_EXTRACT_ENTRY_NUM_RETRIES", 1), patch.object(
+            Entry, "try_get_ytdlp_download_thumbnail_path"
+        ) as mock_ytdlp_path, patch(
+            "ytdl_sub.downloaders.url.downloader.try_convert_download_thumbnail",
+            side_effect=delete_entry_thumb,
+        ):
+            mock_ytdlp_path.return_value = None
+            transaction_log = single_video_subscription.download(dry_run=False)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_video_missing_thumb.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="youtube/test_video_missing_thumb.json",
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])

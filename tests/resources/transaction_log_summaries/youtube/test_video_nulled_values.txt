@@ -8,10 +8,12 @@ Files created:
     NFO tags:
       tvshow:
         genre: ytdl-sub
+        mpaa: TV-14
         title: Project Zombie
 {output_directory}/Season 2010
   s2010.e000001 - Oblivion Mod ＂Falcor＂ p.1.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2010-08-13
       episode_id: 1
       genre: ytdl-sub
@@ -33,6 +35,7 @@ Files created:
         aired: 2010-08-13
         episode: 1
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://www.youtube.com/watch?v=HKTNxEqsN3Q
 
@@ -43,10 +46,13 @@ Files created:
 
           This is the first time I've really used the editor, and the beginning of our first mod.  Hope you enjoy.
         season: 2010
+        subscription_name: tv_video_nulled_values
+        subscription_name_sanitized: tv_video_nulled_values
         title: 2010-08-13 - Oblivion Mod "Falcor" p.1
         year: 2010
   s2010.e000002 - Oblivion Mod ＂Falcor＂ p.2.mp4
     Video Tags:
+      contentRating: TV-14
       date: 2010-12-02
       episode_id: 2
       genre: ytdl-sub
@@ -68,6 +74,7 @@ Files created:
         aired: 2010-12-02
         episode: 2
         genre: ytdl-sub
+        mpaa: TV-14
         plot:
           https://www.youtube.com/watch?v=IV9Z4wcA-z8
 
@@ -78,5 +85,7 @@ Files created:
 
           Please keep in mind that the mod is not complete, so you'll see some blank areas during the video.  I haven't made LOD (Level of Distance) yet either, so areas far away will not appear.
         season: 2010
+        subscription_name: tv_video_nulled_values
+        subscription_name_sanitized: tv_video_nulled_values
         title: 2010-12-02 - Oblivion Mod "Falcor" p.2
         year: 2010

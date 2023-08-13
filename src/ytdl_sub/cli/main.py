@@ -199,7 +199,7 @@ def _output_transaction_log(
     transaction_log_file_contents = ""
     for subscription, transaction_log in transaction_logs:
         if transaction_log.is_empty:
-            transaction_log_contents = f"No files changed for {subscription.name}"
+            transaction_log_contents = f"\nNo files changed for {subscription.name}"
         else:
             transaction_log_contents = (
                 f"Transaction log for {subscription.name}:\n"
@@ -316,8 +316,9 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
                 and not config.config_options.experimental.enable_update_with_info_json
             ):
                 raise ExperimentalFeatureNotEnabled(
-                    "--update-with-info-json requires setting "
-                    "configuration.experimental.update_with_info_json to True. This feature is ",
+                    "--update-with-info-json requires setting"
+                    " configuration.experimental.enable_update_with_info_json to True. This"
+                    " feature is ",
                     "still being tested and has the ability to destroy files. Ensure you have a ",
                     "full backup before usage. You have been warned!",
                 )

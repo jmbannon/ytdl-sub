@@ -95,7 +95,6 @@ class PersistLogsValidator(StrictDictValidator):
         return self._keep_successful_logs.value
 
 
-# pylint: disable=too-many-instance-attributes
 class ConfigOptions(StrictDictValidator):
     _required_keys = {"working_directory"}
     _optional_keys = {

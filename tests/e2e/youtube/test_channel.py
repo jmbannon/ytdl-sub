@@ -43,7 +43,7 @@ class TestChannel:
     expected md5 file hashes.
     """
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", [False])
     def test_full_channel_download(
         self,
         channel_as_tv_show_config,

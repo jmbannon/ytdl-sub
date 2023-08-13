@@ -5,12 +5,12 @@ from typing import List
 from typing import Optional
 from typing import Set
 
+from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import COMMENTS
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
-from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -58,7 +58,7 @@ class SponsorBlockCategoryListValidator(ListValidator[SponsorBlockCategoriesVali
     _inner_list_type = SponsorBlockCategoriesValidator
 
 
-class ChaptersOptions(PluginOptions):
+class ChaptersOptions(OptionsDictValidator):
     """
     Embeds chapters to video files if they are present. Additional options to add SponsorBlock
     chapters and remove specific ones. Can also remove chapters using regex.
@@ -302,21 +302,24 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         """
         chapters = Chapters.from_empty()
 
+        # If there are no embedded chapters, and comment chapters are allowed...
         if not _contains_any_chapters(entry) and self.plugin_options.allow_chapters_from_comments:
+            # Try to get chapters from comments
             for comment in entry.kwargs_get(COMMENTS, []):
                 chapters = Chapters.from_string(comment.get("text", ""))
-                if not chapters.is_empty():
+                if chapters.contains_any_chapters():
                     break
 
-        if not chapters.is_empty():
-            entry.add_kwargs({YTDL_SUB_CUSTOM_CHAPTERS: chapters.to_file_metadata_dict()})
+            # If some are actually found, add a special kwarg and embed them
+            if chapters.contains_any_chapters():
+                entry.add_kwargs({YTDL_SUB_CUSTOM_CHAPTERS: chapters.to_file_metadata_dict()})
 
-            if not self.is_dry_run:
-                set_ffmpeg_metadata_chapters(
-                    file_path=entry.get_download_file_path(),
-                    chapters=chapters,
-                    file_duration_sec=entry.kwargs("duration"),
-                )
+                if not self.is_dry_run:
+                    set_ffmpeg_metadata_chapters(
+                        file_path=entry.get_download_file_path(),
+                        chapters=chapters,
+                        file_duration_sec=entry.kwargs("duration"),
+                    )
 
         return entry
 

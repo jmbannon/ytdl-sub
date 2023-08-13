@@ -64,17 +64,19 @@ presets:
     # It is recommended to keep most of this as-is, and use override
     # variables to set them to be what you want.
     music_tags:
-      tags:
-        artist: "{track_artist}"
-        artists: "{track_artist}"
-        albumartist: "{track_artist}"
-        albumartists: "{track_artist}"
-        title: "{track_title}"
-        album: "{track_album}"
-        track: "{track_number}"
-        tracktotal: "{track_total}"
-        year: "{track_year}"
-        genre: "{track_genre}"
+      artist: "{track_artist}"
+      artists: "{track_artist}"
+      albumartist: "{track_artist}"
+      albumartists: "{track_artist}"
+      title: "{track_title}"
+      album: "{track_album}"
+      track: "{track_number}"
+      tracktotal: "{track_total}"
+      year: "{track_year}"
+      genre: "{track_genre}"
+
+    # Optionally embed the thumbnail into the track
+    embed_thumbnail: False
 
     # For every configurable field, make it an override variable,
     # so we can carefully tune different use-cases by only modifying override variables.
@@ -108,7 +110,6 @@ presets:
     preset: "base"
 
     download:
-      download_strategy: "url"
       url: "{url}"
 
 ####################################################################################################
@@ -164,27 +165,25 @@ presets:
 
     # Download using the multi_url strategy
     download:
-      download_strategy: "multi_url"
-      urls:
-        # The first URL will be all the artist's tracks.
-        # Treat these as singles - an album with a single track
-        - url: "{sc_artist_url}/tracks"
-          variables:
-            sc_track_album: "{title}"
-            sc_track_number: "1"
-            sc_track_number_padded: "01"
-            sc_track_total: "1"
-            sc_track_year: "{upload_year}"
-        # Set the second URL to the artist's albums. If a track belongs to both
-        # to an album and tracks (in the URL above), it will resolve to this
-        # URL and include the album metadata we set below.
-        - url: "{sc_artist_url}/albums"
-          variables:
-            sc_track_album: "{playlist_title}"
-            sc_track_number: "{playlist_index}"
-            sc_track_number_padded: "{playlist_index_padded}"
-            sc_track_total: "{playlist_count}"
-            sc_track_year: "{playlist_max_upload_year}"
+      # The first URL will be all the artist's tracks.
+      # Treat these as singles - an album with a single track
+      - url: "{sc_artist_url}/tracks"
+        variables:
+          sc_track_album: "{title}"
+          sc_track_number: "1"
+          sc_track_number_padded: "01"
+          sc_track_total: "1"
+          sc_track_year: "{upload_year}"
+      # Set the second URL to the artist's albums. If a track belongs to both
+      # to an album and tracks (in the URL above), it will resolve to this
+      # URL and include the album metadata we set below.
+      - url: "{sc_artist_url}/albums"
+        variables:
+          sc_track_album: "{playlist_title}"
+          sc_track_number: "{playlist_index}"
+          sc_track_number_padded: "{playlist_index_padded}"
+          sc_track_total: "{playlist_count}"
+          sc_track_year: "{playlist_max_upload_year}"
 
     # Override various track properties using playlist variables.
     overrides:

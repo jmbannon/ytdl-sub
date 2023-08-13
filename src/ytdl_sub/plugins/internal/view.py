@@ -1,17 +1,16 @@
 import copy
 from typing import Optional
 
+from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.plugin import PluginPriority
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsOptions
-from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
-from ytdl_sub.plugins.plugin import PluginPriority
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
-class ViewOptions(PluginOptions):
+class ViewOptions(OptionsDictValidator):
     """
     INTERNAL PLUGIN. Do not expose in documentation
     """
@@ -27,11 +26,15 @@ class ViewPlugin(Plugin[ViewOptions]):
 
     def __init__(
         self,
-        plugin_options: OutputDirectoryNfoTagsOptions,
+        options: ViewOptions,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
-        super().__init__(plugin_options, overrides, enhanced_download_archive)
+        super().__init__(
+            options=options,
+            overrides=overrides,
+            enhanced_download_archive=enhanced_download_archive,
+        )
         self._first_entry: Optional[Entry] = None
 
     @classmethod

@@ -1,6 +1,5 @@
 from abc import ABC
 from pathlib import Path
-from typing import Type
 
 from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.config.preset import Preset
@@ -8,8 +7,7 @@ from ytdl_sub.config.preset import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
-from ytdl_sub.downloaders.base_downloader import BaseDownloaderValidator
+from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
@@ -46,22 +44,13 @@ class BaseSubscription(ABC):
         self._preset_options = preset_options
 
         self._enhanced_download_archive = EnhancedDownloadArchive(
-            subscription_name=name,
+            file_name=self.overrides.apply_formatter(self.output_options.download_archive_name),
             working_directory=self.working_directory,
             output_directory=self.output_directory,
         )
 
     @property
-    def downloader_class(self) -> Type[BaseDownloader]:
-        """
-        Returns
-        -------
-        This subscription's downloader class
-        """
-        return self._preset_options.downloader
-
-    @property
-    def downloader_options(self) -> BaseDownloaderValidator:
+    def downloader_options(self) -> MultiUrlValidator:
         """
         Returns
         -------

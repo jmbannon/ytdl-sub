@@ -1,4 +1,5 @@
 import contextlib
+import logging
 import os
 import shutil
 from abc import ABC
@@ -6,12 +7,14 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
-from ytdl_sub.downloaders.base_downloader import BaseDownloader
+from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.plugin import SplitPlugin
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
+from ytdl_sub.downloaders.source_plugin import SourcePlugin
+from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.plugin import Plugin
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
@@ -19,11 +22,13 @@ from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.thumbnail import convert_download_thumbnail
+from ytdl_sub.utils.logger import Logger
+
+logger: logging.Logger = Logger.get()
 
 
-def _get_split_plugin(plugins: List[Plugin]) -> Optional[Plugin]:
-    split_plugins = [plugin for plugin in plugins if plugin.is_split_plugin]
+def _get_split_plugin(plugins: List[Plugin]) -> Optional[SplitPlugin]:
+    split_plugins = [plugin for plugin in plugins if isinstance(plugin, SplitPlugin)]
 
     if len(split_plugins) == 1:
         return split_plugins[0]
@@ -67,15 +72,11 @@ class SubscriptionDownload(BaseSubscription, ABC):
             entry=entry,
         )
 
-        # TODO: see if entry even has a thumbnail
-        if self.output_options.thumbnail_name:
+        # Always pretend to include the thumbnail in a dry-run
+        if self.output_options.thumbnail_name and (dry_run or entry.is_thumbnail_downloaded()):
             output_thumbnail_name = self.overrides.apply_formatter(
                 formatter=self.output_options.thumbnail_name, entry=entry
             )
-
-            # We always convert entry thumbnails to jpgs, and is performed here
-            if not dry_run:
-                convert_download_thumbnail(entry=entry)
 
             # Copy the thumbnails since they could be used later for other things
             self._enhanced_download_archive.save_file_to_output_directory(
@@ -83,6 +84,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 output_file_name=output_thumbnail_name,
                 entry=entry,
                 copy_file=True,
+            )
+        elif not entry.is_thumbnail_downloaded():
+            logger.warning(
+                "Cannot save thumbnail for '%s' because it is not available", entry.title
             )
 
         if self.output_options.info_json_name:
@@ -144,8 +149,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 self._enhanced_download_archive.remove_stale_files(date_range=date_range_to_keep)
 
             self._enhanced_download_archive.save_download_mappings()
-            FileHandler.delete(self._enhanced_download_archive.archive_working_file_path)
-            FileHandler.delete(self._enhanced_download_archive.mapping_working_file_path)
+            FileHandler.delete(self._enhanced_download_archive.working_file_path)
 
     @contextlib.contextmanager
     def _remove_empty_directories_in_output_directory(self):
@@ -174,23 +178,14 @@ class SubscriptionDownload(BaseSubscription, ABC):
         -------
         List of plugins defined in the subscription, initialized and ready to use.
         """
-        # Always add plugins provided by the downloader
-        plugins: List[Plugin] = self.downloader_class.added_plugins(
-            downloader_options=self.downloader_options,
-            enhanced_download_archive=self._enhanced_download_archive,
-            overrides=self.overrides,
-        )
-
-        for plugin_type, plugin_options in self.plugins.zipped():
-            plugin = plugin_type(
-                plugin_options=plugin_options,
+        return [
+            plugin_type(
+                options=plugin_options,
                 overrides=self.overrides,
                 enhanced_download_archive=self._enhanced_download_archive,
             )
-
-            plugins.append(plugin)
-
-        return plugins
+            for plugin_type, plugin_options in self.plugins.zipped()
+        ]
 
     @classmethod
     def _cleanup_entry_files(cls, entry: Entry):
@@ -201,7 +196,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
     @classmethod
     def _preprocess_entry(cls, plugins: List[Plugin], entry: Entry) -> Optional[Entry]:
         maybe_entry: Optional[Entry] = entry
-        for plugin in plugins:
+        for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.modify_entry_metadata):
             if (maybe_entry := plugin.modify_entry_metadata(maybe_entry)) is None:
                 return None
 
@@ -244,7 +239,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self._cleanup_entry_files(entry)
 
     def _process_split_entry(
-        self, split_plugin: Plugin, plugins: List[Plugin], dry_run: bool, entry: Entry
+        self, split_plugin: SplitPlugin, plugins: List[Plugin], dry_run: bool, entry: Entry
     ) -> None:
         entry_: Optional[Entry] = entry
 
@@ -291,7 +286,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
     def _process_subscription(
         self,
         plugins: List[Plugin],
-        downloader: BaseDownloader,
+        downloader: SourcePlugin,
         dry_run: bool,
     ) -> FileHandlerTransactionLog:
         with self._subscription_download_context_managers():
@@ -339,13 +334,15 @@ class SubscriptionDownload(BaseSubscription, ABC):
             dry_run=dry_run,
         )
 
-        downloader = self.downloader_class(
-            download_options=self.downloader_options,
+        downloader = MultiUrlDownloader(
+            options=self.downloader_options,
             enhanced_download_archive=self._enhanced_download_archive,
             download_ytdl_options=subscription_ytdl_options.download_builder(),
             metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
             overrides=self.overrides,
         )
+
+        plugins.extend(downloader.added_plugins())
 
         return self._process_subscription(
             plugins=plugins,
@@ -365,8 +362,27 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
         plugins = self._initialize_plugins()
 
+        subscription_ytdl_options = SubscriptionYTDLOptions(
+            preset=self._preset_options,
+            plugins=plugins,
+            enhanced_download_archive=self._enhanced_download_archive,
+            working_directory=self.working_directory,
+            dry_run=dry_run,
+        )
+
+        # Re-add the original downloader class' plugins
+        plugins.extend(
+            MultiUrlDownloader(
+                options=self.downloader_options,
+                enhanced_download_archive=self._enhanced_download_archive,
+                download_ytdl_options=subscription_ytdl_options.download_builder(),
+                metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
+                overrides=self.overrides,
+            ).added_plugins()
+        )
+
         downloader = InfoJsonDownloader(
-            download_options=InfoJsonDownloaderOptions(name="no-op", value={}),
+            options=InfoJsonDownloaderOptions(name="no-op", value={}),
             enhanced_download_archive=self._enhanced_download_archive,
             download_ytdl_options=YTDLOptionsBuilder(),
             metadata_ytdl_options=YTDLOptionsBuilder(),

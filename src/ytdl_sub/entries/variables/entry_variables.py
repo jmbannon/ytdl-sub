@@ -21,6 +21,7 @@ from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_ID
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_URL
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_WEBPAGE_URL
+from ytdl_sub.entries.variables.kwargs import RELEASE_DATE
 from ytdl_sub.entries.variables.kwargs import SOURCE_COUNT
 from ytdl_sub.entries.variables.kwargs import SOURCE_DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import SOURCE_INDEX
@@ -668,3 +669,189 @@ class EntryVariables(BaseEntryVariables):
             The uploaded date formatted as YYYY-MM-DD
         """
         return f"{self.upload_year}-{self.upload_month_padded}-{self.upload_day_padded}"
+
+    @property
+    def release_date(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The entry's release date, in YYYYMMDD format. If not present, return the upload date.
+        """
+        return self.kwargs_get(RELEASE_DATE, self.upload_date)
+
+    @property
+    def release_year(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The entry's release year
+        """
+        return int(self.release_date[:4])
+
+    @property
+    def release_year_truncated(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The last two digits of the release year, i.e. 22 in 2022
+        """
+        return int(str(self.release_year)[-2:])
+
+    @property
+    def release_year_truncated_reversed(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The release year truncated, but reversed using ``100 - {release_year_truncated}``, i.e.
+            2022 returns ``100 - 22`` = ``78``
+        """
+        return 100 - self.release_year_truncated
+
+    @property
+    def release_month_reversed(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The release month, but reversed
+            using ``13 - {release_month}``, i.e. March returns ``10``
+        """
+        return 13 - self.release_month
+
+    @property
+    def release_month_reversed_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The reversed release month, but padded. i.e. November returns "02"
+        """
+        return pad(self.release_month_reversed)
+
+    @property
+    def release_month_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The entry's release month padded to two digits, i.e. March returns "03"
+        """
+        return self.release_date[4:6]
+
+    @property
+    def release_day_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The entry's release day padded to two digits, i.e. the fifth returns "05"
+        """
+        return self.release_date[6:8]
+
+    @property
+    def release_month(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The release month as an integer (no padding).
+        """
+        return int(self.release_month_padded.lstrip("0"))
+
+    @property
+    def release_day(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The release day as an integer (no padding).
+        """
+        return int(self.release_day_padded.lstrip("0"))
+
+    @property
+    def release_day_reversed(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The release day, but reversed using ``{total_days_in_month} + 1 - {release_day}``,
+            i.e. August 8th would have release_day_reversed of ``31 + 1 - 8`` = ``24``
+        """
+        total_days_in_month = _days_in_month[self.release_month]
+        if self.release_month == 2 and self.release_year % 4 == 0:  # leap year
+            total_days_in_month += 1
+
+        return total_days_in_month + 1 - self.release_day
+
+    @property
+    def release_day_reversed_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The reversed release day, but padded. i.e. August 30th returns "02".
+        """
+        return pad(self.release_day_reversed)
+
+    @property
+    def release_day_of_year(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The day of the year, i.e. February 1st returns ``32``
+        """
+        output = sum(_days_in_month[: self.release_month]) + self.release_day
+        if self.release_month > 2 and self.release_year % 4 == 0:
+            output += 1
+
+        return output
+
+    @property
+    def release_day_of_year_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The release day of year, but padded i.e. February 1st returns "032"
+        """
+        return pad(self.release_day_of_year, width=3)
+
+    @property
+    def release_day_of_year_reversed(self: Self) -> int:
+        """
+        Returns
+        -------
+        int
+            The release day, but reversed using ``{total_days_in_year} + 1 - {release_day}``,
+            i.e. February 2nd would have release_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
+        """
+        total_days_in_year = 365
+        if self.release_year % 4 == 0:
+            total_days_in_year += 1
+
+        return total_days_in_year + 1 - self.release_day_of_year
+
+    @property
+    def release_day_of_year_reversed_padded(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The reversed release day of year, but padded i.e. December 31st returns "001"
+        """
+        return pad(self.release_day_of_year_reversed, width=3)
+
+    @property
+    def release_date_standardized(self: Self) -> str:
+        """
+        Returns
+        -------
+        str
+            The release date formatted as YYYY-MM-DD
+        """
+        return f"{self.release_year}-{self.release_month_padded}-{self.release_day_padded}"

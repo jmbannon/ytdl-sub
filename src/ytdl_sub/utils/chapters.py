@@ -1,12 +1,12 @@
-import json
 import re
-import subprocess
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.kwargs import CHAPTERS
+from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
@@ -202,6 +202,7 @@ class Chapters:
         timestamps: List[Timestamp] = []
         titles: List[str] = []
 
+        # Try to accumulate chapters by parsing lines individually
         for line in input_str.split("\n"):
             # Timestamp captured, store it
             if match := Timestamp.TIMESTAMP_REGEX.search(line):
@@ -211,53 +212,12 @@ class Chapters:
                 # Remove timestamp and surrounding whitespace from it
                 title_str = re.sub(f"\\s*{re.escape(timestamp_str)}\\s*", " ", line).strip()
                 titles.append(title_str)
-            elif len(timestamps) >= 3:
-                return Chapters(timestamps=timestamps, titles=titles)
-            # Timestamp was not stored, if only contained 1, reset
-            else:
-                timestamps = []
-                titles = []
 
-        return Chapters(timestamps=timestamps, titles=titles)
-
-    @classmethod
-    def from_embedded_chapters(cls, ffprobe_path: str, file_path: str) -> "Chapters":
-        """
-        Parameters
-        ----------
-        ffprobe_path
-            Path to ffprobe executable
-        file_path
-            File to read ffmpeg chapter metadata from
-
-        Returns
-        -------
-        Chapters object
-        """
-        proc = subprocess.run(
-            [
-                ffprobe_path,
-                "-loglevel",
-                "quiet",
-                "-print_format",
-                "json",
-                "-show_chapters",
-                "--",
-                file_path,
-            ],
-            check=True,
-            stdout=subprocess.PIPE,
-            encoding="utf-8",
-        )
-
-        embedded_chapters = json.loads(proc.stdout)
-        timestamps: List[Timestamp] = []
-        titles: List[str] = []
-        for chapter in embedded_chapters["chapters"]:
-            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
-            titles.append(chapter["tags"]["title"])
-
-        return Chapters(timestamps=timestamps, titles=titles)
+        # If more than 3 timestamps were parsed, return it
+        if len(timestamps) >= 3:
+            return Chapters(timestamps=timestamps, titles=titles)
+        # Otherwise return empty chapters
+        return Chapters(timestamps=[], titles=[])
 
     @classmethod
     def from_entry_chapters(cls, entry: Entry) -> "Chapters":
@@ -274,13 +234,14 @@ class Chapters:
         timestamps: List[Timestamp] = []
         titles: List[str] = []
 
-        chapters = {}
-        if entry.kwargs_contains("chapters"):
-            chapters = entry.kwargs("chapters") or []
-
-        for chapter in chapters:
-            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
-            titles.append(chapter["title"])
+        if entry.kwargs_contains(CHAPTERS):
+            for chapter in entry.kwargs_get(CHAPTERS, []):
+                timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
+                titles.append(chapter["title"])
+        elif entry.kwargs_contains(YTDL_SUB_CUSTOM_CHAPTERS):
+            for start_time, title in entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS, {}).items():
+                timestamps.append(Timestamp.from_str(start_time))
+                titles.append(title)
 
         return Chapters(timestamps=timestamps, titles=titles)
 

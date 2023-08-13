@@ -7,9 +7,9 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
+from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.plugin import Plugin
-from ytdl_sub.plugins.plugin import PluginOptions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.xml import XmlElement
@@ -23,7 +23,7 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.validators import BoolValidator
 
 
-class SharedNfoTagsOptions(PluginOptions):
+class SharedNfoTagsOptions(OptionsDictValidator):
     """
     Shared code between NFO tags and Ouptut Directory NFO Tags
     """

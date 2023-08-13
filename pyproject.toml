@@ -14,6 +14,7 @@ disable = [
     "R0801", # similar lines
     "R0913", # Too many arguments
     "R0901", # too-many-ancestors
+    "R0902", # too-many-instance-attributes
     "W0511", # TODO
 ]
 

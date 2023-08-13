@@ -18,12 +18,10 @@ configuration:
 
 presets:
   music_video:
-    # Set the download details
+    # We will only use a single URL to download music video(s).
+    # Make {url} an override variable to set later.
     download:
-      # We will only use a single URL to download music video(s).
-      # Make {url} an override variable to set later.
-      download_strategy: "url"
-      url: "{url}"
+      - "{url}"
 
     # For advanced YTDL users only; any YTDL parameter can be set here.
     # To download age-restricted videos, you will need to set your cookie

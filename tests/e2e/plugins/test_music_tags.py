@@ -1,8 +1,6 @@
 import re
 
 import pytest
-from expected_download import assert_expected_downloads
-from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
@@ -11,13 +9,10 @@ from ytdl_sub.utils.exceptions import ValidationException
 @pytest.fixture
 def single_song_video_dict(output_directory):
     return {
-        "download": {
-            "download_strategy": "url",
-            "url": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
-        },
+        "download": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
         "output_options": {"output_directory": output_directory, "file_name": "will_error.mp4"},
         # test multi-tags
-        "music_tags": {"embed_thumbnail": True, "tags": {"genres": ["multi_tag_1", "multi_tag_2"]}},
+        "music_tags": {"genres": ["multi_tag_1", "multi_tag_2"]},
         # download the worst format so it is fast
         "ytdl_options": {
             "format": "worst[ext=mp4]",

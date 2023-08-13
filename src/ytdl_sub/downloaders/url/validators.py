@@ -1,3 +1,4 @@
+import copy
 from typing import Any
 from typing import Dict
 from typing import List
@@ -75,9 +76,7 @@ class UrlValidator(StrictDictValidator):
     @property
     def url(self) -> OverridesStringFormatterValidator:
         """
-        Required. URL to download from, listed in priority from lowest (top) to highest (bottom).
-        If a download exists in more than one URL, it will resolve to the bottom-most one and
-        inherit those variables.
+        Required. URL to download from.
         """
         return self._url
 
@@ -147,8 +146,27 @@ class UrlValidator(StrictDictValidator):
         return self._download_reverse.value
 
 
-class UrlListValidator(ListValidator[UrlValidator]):
-    _inner_list_type = UrlValidator
+class UrlStringOrDictValidator(UrlValidator):
+    """
+    URL validator that supports a single string like:
+
+    download:
+      - "https://"
+
+    or
+
+    download:
+      - url: "https://"
+    """
+
+    _expected_value_type = (dict, str)
+
+    def __init__(self, name, value):
+        super().__init__(name, {"url": value} if isinstance(value, str) else value)
+
+
+class UrlListValidator(ListValidator[UrlStringOrDictValidator]):
+    _inner_list_type = UrlStringOrDictValidator
     _expected_value_type_name = "collection url list"
 
     def __init__(self, name, value):
@@ -180,25 +198,38 @@ class MultiUrlValidator(OptionsValidator):
     resolve to the bottom-most URL settings.
     """
 
-    _required_keys = {"urls"}
-
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
         """
         Partially validate a collection
         """
         if isinstance(value, dict):
-            value["urls"] = value.get("urls", [{"url": "placeholder"}])
+            value["url"] = value.get("url", "sadfasdf")
         _ = cls(name, value)
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._urls = self._validate_key(key="urls", validator=UrlListValidator)
+
+        # Copy since we're popping things
+        value_copy = copy.deepcopy(value)
+        if isinstance(value, dict):
+            # Pop old required field in case it's still there
+            value_copy.pop("download_strategy", None)
+
+        # Deal with old multi-url download strategy
+        if isinstance(value, dict) and "urls" in value_copy:
+            self._urls = UrlListValidator(name=name, value=value_copy["urls"])
+        else:
+            self._urls = UrlListValidator(name=name, value=value_copy)
 
     @property
     def urls(self) -> UrlListValidator:
         """
         Required. A list of :ref:`url` with the addition of the ``variables`` attribute.
+        Multiple URLs should be listed in the order of priority, with the lowest priority being the
+        top-most, and highest priority being the bottom-most. If a download exists in more than
+        one URL, it will resolve to the bottom-most one (the highest priority) and
+        inherit those variables.
         """
         return self._urls
 
@@ -246,3 +277,11 @@ class MultiUrlValidator(OptionsValidator):
                 _ = StringFormatterValidator(
                     name=f"{self._name}.{source_var_name}", value=source_var_formatter_str
                 ).apply_formatter(base_variables)
+
+        # Ensure at least URL is non-empty
+        has_non_empty_url = False
+        for url_validator in self.urls.list:
+            has_non_empty_url |= bool(url_validator.url.apply_formatter(override_variables))
+
+        if not has_non_empty_url:
+            raise self._validation_exception("Must contain at least one url that is non-empty")
