@@ -8,6 +8,12 @@ presets:
       merge_output_format: "mp4"
       remux_video: "mp4"
 
+  max_1080_video_quality:
+    ytdl_options:
+      format: "(bv*[height<=1080]+bestaudio/best[height<=1080])"
+      merge_output_format: "mp4"
+      remux_video: "mp4"
+
   chunk_initial_download:
     ytdl_options:
       max_downloads: 20
