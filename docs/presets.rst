@@ -154,7 +154,7 @@ it into an MP4 container:
 * ``best_video_quality``
 
 
-Limit maximum quality to 1080P (No 4K)
+Max 1080p
 ^^^^^^^^^^^^^^^^^^
 
 Add the following preset to download the best available (but not greater then 1080P video) and audio quality
