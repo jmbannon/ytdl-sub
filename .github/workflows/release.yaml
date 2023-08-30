@@ -178,7 +178,7 @@ jobs:
           name: ytdl-sub ${{ needs.version.outputs.pypi_version }}
           tag_name: ${{ needs.version.outputs.pypi_version }}
           body: |
-            See https://github.com/jmbannon/ytdl-sub#installation for installation steps
+            ${{ github.event.head_commit.message }}
           draft: false
           prerelease: false
           files: |
