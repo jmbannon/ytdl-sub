@@ -153,6 +153,14 @@ it into an MP4 container:
 
 * ``best_video_quality``
 
+
+Max 1080p
+^^^^^^^^^^^^^^^^^^
+
+Add the following preset to download the best available audio and video quality, with the video not greater than 1080p, and remux it into an MP4 container:
+
+* ``max_1080p``
+
 Chunk Initial Download
 ^^^^^^^^^^^^^^^^^^^^^^
 
