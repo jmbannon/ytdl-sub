@@ -157,8 +157,7 @@ it into an MP4 container:
 Max 1080p
 ^^^^^^^^^^^^^^^^^^
 
-Add the following preset to download the best available (but not greater then 1080P video) and audio quality
-The output container MP4:
+Add the following preset to download the best available audio and video quality, with the video not greater than 1080p, and remux it into an MP4 container:
 
 * ``max_1080p``
 
