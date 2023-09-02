@@ -21,7 +21,7 @@ VIDEO_CODEC_EXTS: Set[str] = {"avi", "flv", "mkv", "mov", "mp4", "webm"}
 
 class AudioTypeValidator(StringSelectValidator):
     _expected_value_type_name = "codec"
-    _select_values = AUDIO_CODEC_TYPES
+    _select_values = AUDIO_CODEC_TYPES.union({"best"})  # support 'best' in the audio extract plugin
 
 
 class FileTypeValidator(StringSelectValidator):

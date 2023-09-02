@@ -44,6 +44,11 @@ def single_song_preset_dict(output_directory):
 
 
 @pytest.fixture
+def single_song_best_format_preset_dict(single_song_preset_dict):
+    return dict(single_song_preset_dict, **{"audio_extract": {"codec": "best"}})
+
+
+@pytest.fixture
 def multiple_songs_preset_dict(output_directory):
     return {
         "preset": "albums_from_playlists",
@@ -88,7 +93,7 @@ class TestAudioExtract:
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])
-    def test_audio_extract_single_song_new_format(
+    def test_audio_extract_single_song(
         self,
         music_audio_config,
         single_song_preset_dict,
@@ -111,6 +116,32 @@ class TestAudioExtract:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_audio_extract_single.json",
+        )
+
+    @pytest.mark.parametrize("dry_run", [True, False])
+    def test_audio_extract_single_song_best_format(
+        self,
+        music_audio_config,
+        single_song_best_format_preset_dict,
+        output_directory,
+        dry_run,
+    ):
+        subscription = Subscription.from_dict(
+            config=music_audio_config,
+            preset_name="single_song_best_test",
+            preset_dict=single_song_best_format_preset_dict,
+        )
+
+        transaction_log = subscription.download(dry_run=dry_run)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"plugins/test_audio_extract_single_best{'_dry_run' if dry_run else ''}.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=dry_run,
+            expected_download_summary_file_name=f"plugins/test_audio_extract_single_best{'_dry_run' if dry_run else ''}.json",
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])
