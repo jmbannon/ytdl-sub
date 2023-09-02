@@ -8,6 +8,8 @@ from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
+from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_TYPES_EXTENSION_MAPPING
 from ytdl_sub.validators.audo_codec_validator import AudioTypeValidator
 from ytdl_sub.validators.validators import FloatValidator
@@ -105,12 +107,39 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
         FileNotDownloadedException
             If the audio file is not found
         """
-        new_ext = AUDIO_CODEC_TYPES_EXTENSION_MAPPING[self.plugin_options.codec]
-        extracted_audio_file = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
+        extracted_audio_file = entry.get_download_file_path()
+
+        # yt-dlp doesn't record which ext is used, so try to find it
+        if self.plugin_options.codec == "best":
+            new_ext = "m4a"
+
+            for possible_ext in AUDIO_CODEC_EXTS:
+                extracted_audio_file = (
+                    entry.get_download_file_path().removesuffix(entry.ext) + possible_ext
+                )
+
+                if os.path.isfile(extracted_audio_file):
+                    new_ext = possible_ext
+                    break
+        else:
+            new_ext = AUDIO_CODEC_TYPES_EXTENSION_MAPPING[self.plugin_options.codec]
+            extracted_audio_file = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
+
+        entry.add_kwargs({"ext": new_ext})
+
         if not self.is_dry_run:
             if not os.path.isfile(extracted_audio_file):
                 raise FileNotDownloadedException("Failed to find the extracted audio file")
 
-        entry.add_kwargs({"ext": new_ext})
-
         return entry
+
+    def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
+        """
+        Warn the user that best cannot infer the format that will be used at run-time.
+        """
+        if self.plugin_options.codec == "best" and self.is_dry_run:
+            return FileMetadata(
+                "Caution: extracted audio with 'best' format is not known during dry-run. "
+                "Defaulting to m4a."
+            )
+        return None
