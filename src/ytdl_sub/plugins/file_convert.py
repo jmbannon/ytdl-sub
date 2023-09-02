@@ -138,7 +138,7 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
                         "when": "post_process",
                         "preferedformat": self.plugin_options.convert_to,
                     }
-                ]
+                ],
             }
         return None
 
