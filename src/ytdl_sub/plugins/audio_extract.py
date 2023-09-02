@@ -51,7 +51,7 @@ class AudioExtractOptions(OptionsDictValidator):
     def codec(self) -> str:
         """
         The codec to output after extracting the audio. Supported codecs are aac, flac, mp3, m4a,
-        opus, vorbis, wav.
+        opus, vorbis, wav, and best to grab the best possible format at runtime.
         """
         return self._codec
 
