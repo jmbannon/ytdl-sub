@@ -171,7 +171,9 @@ jobs:
           ls -lh /opt/builds
 
       - name: Create Release
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: |
+          ${{ github.ref == 'refs/heads/master' }}
+          && !contains(github.event.head_commit.message, [DEV])
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
@@ -207,7 +209,9 @@ jobs:
           python3 -m build
 
       - name: Publish distribution 📦 to PyPI
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: |
+          ${{ github.ref == 'refs/heads/master' }}
+          && !contains(github.event.head_commit.message, [DEV])
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
