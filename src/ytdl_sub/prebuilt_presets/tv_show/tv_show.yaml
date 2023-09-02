@@ -12,6 +12,8 @@ presets:
       tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
       season_poster_file_name: "Season {season_number_padded}/Season{season_number_padded}.jpg"
+    file_convert:
+      convert_to: "mp4"  # webm doesn't play in many plex clients, so use mp4 instead
 
   _jellyfin_tv_show:
     preset:
