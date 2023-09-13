@@ -15,9 +15,8 @@ def recent_preset_dict(output_directory):
     return {
         "preset": "tv_show",
         "date_range": {"after": "20150101"},
-        # download the worst format so it is fast
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
-            "format": "worst[ext=mp4]",
             "max_views": 100000,  # do not download the popular PJ concert
         },
         "overrides": {

@@ -38,6 +38,7 @@ class TestConfigFilePartiallyValidatesPresets:
             {"output_options": {"file_name": "test"}},
             {"output_options": {"keep_files_after": "today"}},
             {"ytdl_options": {"format": "best"}},
+            {"format": "best"},
             {"overrides": {"a": "b"}},
         ],
     )
@@ -52,6 +53,7 @@ class TestConfigFilePartiallyValidatesPresets:
     def test_success__empty_plugins(self, plugin: str):
         excluded_plugins = [
             "embed_thumbnail",  # value is bool, not dict
+            "format",  # value is string, not dict
         ]
         if plugin not in excluded_plugins:
             self._partial_validate({plugin: {}})

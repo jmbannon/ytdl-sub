@@ -3,13 +3,13 @@
 presets:
 
   best_video_quality:
+    format: "bestvideo+bestaudio/best"
     ytdl_options:
-      format: "bestvideo+bestaudio/best"
       merge_output_format: "mp4"
 
   max_1080p:
+    format: "(bv*[height<=1080]+bestaudio/best[height<=1080])"
     ytdl_options:
-      format: "(bv*[height<=1080]+bestaudio/best[height<=1080])"
       merge_output_format: "mp4"
 
   chunk_initial_download:

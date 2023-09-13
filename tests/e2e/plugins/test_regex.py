@@ -20,10 +20,7 @@ def regex_subscription_dict_base(output_directory):
         "download": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
-        # download the worst format so it is fast
-        "ytdl_options": {
-            "format": "best[height<=480]",
-        },
+        "format": "best[height<=480]",  # download the worst format so it is fast
         "regex": {
             # tests that skip_if_match_fails defaults to True
             "from": {

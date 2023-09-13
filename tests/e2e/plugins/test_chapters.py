@@ -35,9 +35,8 @@ def sponsorblock_and_subs_preset_dict(output_directory) -> Dict:
                 "Outro",
             ],
         },
-        # download the worst format so it is fast
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
-            "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
         "overrides": {"artist": "JMC"},

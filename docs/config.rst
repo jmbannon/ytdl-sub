@@ -183,6 +183,12 @@ file_convert
 
 -------------------------------------------------------------------------------
 
+format
+''''''
+.. autoclass:: ytdl_sub.plugins.format.FormatOptions()
+
+-------------------------------------------------------------------------------
+
 match_filters
 '''''''''''''
 .. autoclass:: ytdl_sub.plugins.match_filters.MatchFiltersOptions()

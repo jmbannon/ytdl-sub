@@ -16,10 +16,7 @@ def playlist_preset_dict(output_directory):
             "season_by_collection__episode_by_year_month_day",
             "collection_season_1",
         ],
-        # download the worst format so it is fast
-        "ytdl_options": {
-            "format": "worst[ext=mp4]",
-        },
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "output_directory_nfo_tags": {
             "nfo_name": "tvshow.nfo",
             "nfo_root": "test",

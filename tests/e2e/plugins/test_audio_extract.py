@@ -11,9 +11,8 @@ def single_song_preset_dict_old_format(output_directory):
         "preset": "single",
         # test multi-tags
         "music_tags": {"embed_thumbnail": True, "tags": {"genres": ["multi_tag_1", "multi_tag_2"]}},
-        # download the worst format so it is fast
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
-            "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
         "overrides": {
@@ -31,9 +30,8 @@ def single_song_preset_dict(output_directory):
         "music_tags": {"genres": ["multi_tag_1", "multi_tag_2"]},
         # test the new embed_thumbnail plugin
         "embed_thumbnail": True,
-        # download the worst format so it is fast
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
-            "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
         "overrides": {
@@ -53,9 +51,8 @@ def multiple_songs_preset_dict(output_directory):
     return {
         "preset": "albums_from_playlists",
         "audio_extract": {"codec": "vorbis", "quality": 140},
-        # download the worst format so it is fast
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
-            "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
         "overrides": {
