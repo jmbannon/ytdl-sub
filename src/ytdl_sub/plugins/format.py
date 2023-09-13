@@ -8,7 +8,7 @@ from ytdl_sub.validators.validators import StringValidator
 
 class FormatOptions(OptionsValidator):
     """
-    Set ``--format``` to pass into yt-dlp to download a specific format quality.
+    Set ``--format`` to pass into yt-dlp to download a specific format quality.
     Uses the same syntax as yt-dlp.
 
     Usage:
