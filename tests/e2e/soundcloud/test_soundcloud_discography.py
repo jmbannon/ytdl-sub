@@ -9,10 +9,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def subscription_dict(output_directory):
     return {
         "preset": "soundcloud_discography",
-        # download the worst format so it is fast
-        "ytdl_options": {
-            "format": "worst[ext=mp3]",
-        },
+        "format": "worst[ext=mp3]",  # download the worst format so it is fast
         "overrides": {
             "track_artist": "j_b",
             "sc_artist_url": "https://soundcloud.com/jessebannon",

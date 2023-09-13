@@ -6,8 +6,7 @@ presets:
       - "_plex_base"
       - "_episode_base"
       - "_episode_video_tags"
-    ytdl_options:
-      format: "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)"
+    format: "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)"
     overrides:
       tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"

@@ -13,9 +13,8 @@ def single_song_video_dict(output_directory):
         "output_options": {"output_directory": output_directory, "file_name": "will_error.mp4"},
         # test multi-tags
         "music_tags": {"genres": ["multi_tag_1", "multi_tag_2"]},
-        # download the worst format so it is fast
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
-            "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
     }

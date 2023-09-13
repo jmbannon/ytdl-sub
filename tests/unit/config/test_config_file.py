@@ -38,6 +38,7 @@ class TestConfigFilePartiallyValidatesPresets:
             {"output_options": {"file_name": "test"}},
             {"output_options": {"keep_files_after": "today"}},
             {"ytdl_options": {"format": "best"}},
+            {"format": "best"},
             {"overrides": {"a": "b"}},
         ],
     )

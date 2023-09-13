@@ -13,9 +13,8 @@ from ytdl_sub.utils.exceptions import ValidationException
 def yt_album_as_chapters_preset_dict(output_directory):
     return {
         "preset": "albums_from_chapters",
-        # download the worst format so it is fast
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
-            "format": "worst[ext=mp4]",
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
         "overrides": {
