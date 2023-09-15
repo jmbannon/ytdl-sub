@@ -124,10 +124,13 @@ class FromSourceVariablesRegex(StrictDictValidator):
 class RegexOptions(OptionsDictValidator):
     r"""
     Performs regex matching on an entry's source or override variables. Regex can be used to filter
-    entries from proceeding with download or capture groups to create new source variables. NOTE to
-    use backslashes anywhere in your regex, i.e. ``\d``, you must add another backslash escape. This
-    means ``\d`` should be written as ``\\d``. This is because YAML requires an escape for any
-    backslash usage.
+    entries from proceeding with download or capture groups to create new source variables.
+
+    NOTE that YAML differentiates between single-quote (``'``) and double-quote (``"``), which can
+    affect regex. Double-quote implies string literals, i.e. ``"\n"`` is the literal chars ``\n``,
+    whereas single-quote, ``'\n'`` gets evaluated to a new line. To escape ``\`` when using
+    single-quote, use ``\\``. This is necessary if you want your regex to be something like
+    ``\d\n`` to match a number and adjacent new-line. It must be written as ``\\d\n``.
 
     If you want to regex-search multiple source variables to create a logical OR effect, you can
     create an override variable that contains the concatenation of them, and search that with regex.
@@ -162,10 +165,10 @@ class RegexOptions(OptionsDictValidator):
                  # This tries to scrape a date from the description and produce new
                  # source variables
                  match:
-                   - "([0-9]{4})-([0-9]{2})-([0-9]{2})"
+                   - '([0-9]{4})-([0-9]{2})-([0-9]{2})'
                  # Exclude any entry where the description contains #short
                  exclude:
-                   - "#short"
+                   - '#short'
 
                  # Each capture group creates these new source variables, respectively,
                  # as well a sanitized version, i.e. `captured_upload_year_sanitized`
