@@ -341,6 +341,8 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
             transaction_logs.append(
                 _view_url_from_cli(config=config, url=args.url, split_chapters=args.split_chapters)
             )
+        else:
+            raise ValidationException("Must provide one of the commands: sub, dl, view")
 
     if not args.suppress_transaction_log:
         _output_transaction_log(

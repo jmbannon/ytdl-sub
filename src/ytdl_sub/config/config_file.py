@@ -4,6 +4,7 @@ from typing import Dict
 
 from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.preset import Preset
+from ytdl_sub.utils.exceptions import FileNotFoundException
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.file_path_validators import FilePathValidatorMixin
@@ -68,8 +69,20 @@ class ConfigFile(ConfigValidator):
         Returns
         -------
         Config file validator
+
+        Raises
+        ------
+        FileNotFoundException
+            Not found
         """
-        config_dict = load_yaml(file_path=config_path)
+        try:
+            config_dict = load_yaml(file_path=config_path)
+        except FileNotFoundException as exc:
+            raise FileNotFoundException(
+                f"The config file '{config_path}' could not be found. "
+                f"Did you set --config correctly?"
+            ) from exc
+
         return ConfigFile.from_dict(config_dict)
 
     def as_dict(self) -> Dict[str, Any]:

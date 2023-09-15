@@ -1,5 +1,6 @@
 import contextlib
 import logging
+import re
 import sys
 from unittest.mock import patch
 
@@ -80,3 +81,15 @@ def test_args_after_sub_work(mock_sys_exit):
         assert mock_sub.call_count == 1
         assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
         assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
+
+
+def test_no_positional_arg_command(mock_sys_exit):
+    with mock_sys_exit(expected_exit_code=1), patch.object(
+        sys,
+        "argv",
+        ["ytdl-sub", "-c", "examples/tv_show_config.yaml", "--log-level", "verbose"],
+    ), patch.object(logging.Logger, "error") as mock_error:
+        main()
+
+        assert mock_error.call_count == 1
+        assert mock_error.call_args.args[0] == "Must provide one of the commands: sub, dl, view"
