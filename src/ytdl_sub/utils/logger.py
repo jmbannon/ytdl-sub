@@ -220,7 +220,7 @@ class Logger:
 
             # Log validation exceptions as-is
             if isinstance(exception, ValidationException):
-                logger.error(exception)
+                logger.error(str(exception))
             # For other uncaught errors, log as bug:
             else:
                 logger.exception("An uncaught error occurred:")
