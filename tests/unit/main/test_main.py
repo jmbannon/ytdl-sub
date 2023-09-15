@@ -1,6 +1,5 @@
 import contextlib
 import logging
-import re
 import sys
 from unittest.mock import patch
 
@@ -93,3 +92,18 @@ def test_no_positional_arg_command(mock_sys_exit):
 
         assert mock_error.call_count == 1
         assert mock_error.call_args.args[0] == "Must provide one of the commands: sub, dl, view"
+
+
+def test_bad_config_path(mock_sys_exit):
+    with mock_sys_exit(expected_exit_code=1), patch.object(
+        sys,
+        "argv",
+        ["ytdl-sub", "-c", "does_not_exist.yaml", "sub", "--log-level", "verbose"],
+    ), patch.object(logging.Logger, "error") as mock_error:
+        main()
+
+        assert mock_error.call_count == 1
+        assert mock_error.call_args.args[0] == (
+            "The config file 'does_not_exist.yaml' could not be found. "
+            "Did you set --config correctly?"
+        )
