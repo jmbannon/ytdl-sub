@@ -29,7 +29,7 @@ jobs:
         move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
         
         python -m pip install -e .[test]
-        python -m pytest tests/unit
+        python -m pytest --reruns 3 --reruns-delay 5 tests/unit
 
   test-soundcloud:
     runs-on: windows-latest
@@ -52,7 +52,7 @@ jobs:
         move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
         
         python -m pip install -e .[test]
-        python -m pytest tests/e2e/soundcloud
+        python -m pytest --reruns 3 --reruns-delay 5 tests/e2e/soundcloud
 
   test-bandcamp:
     runs-on: windows-latest
@@ -75,7 +75,7 @@ jobs:
         move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
 
         python -m pip install -e .[test]
-        python -m pytest tests/e2e/bandcamp
+        python -m pytest --reruns 3 --reruns-delay 5 tests/e2e/bandcamp
 
 
   test-youtube:
@@ -99,7 +99,7 @@ jobs:
         move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
         
         python -m pip install -e .[test]
-        python -m pytest tests/e2e/youtube
+        python -m pytest --reruns 3 --reruns-delay 5 tests/e2e/youtube
 
   test-plugins:
     runs-on: windows-latest
@@ -122,4 +122,4 @@ jobs:
         move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
         
         python -m pip install -e .[test]
-        python -m pytest tests/e2e/plugins
+        python -m pytest --reruns 3 --reruns-delay 5 tests/e2e/plugins

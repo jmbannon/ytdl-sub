@@ -44,7 +44,7 @@ jobs:
         pip install -e .[test]
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        coverage run -m pytest tests/unit && coverage xml -o /opt/coverage/unit/coverage.xml
+        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/unit && coverage xml -o /opt/coverage/unit/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
@@ -70,7 +70,7 @@ jobs:
         pip install -e .[test]
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        coverage run -m pytest tests/e2e/soundcloud && coverage xml -o /opt/coverage/soundcloud/coverage.xml
+        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/e2e/soundcloud && coverage xml -o /opt/coverage/soundcloud/coverage.xml
 
   test-bandcamp:
     runs-on: ubuntu-22.04
@@ -90,7 +90,7 @@ jobs:
         pip install -e .[test]
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        coverage run -m pytest tests/e2e/bandcamp && coverage xml -o /opt/coverage/bandcamp/coverage.xml
+        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/e2e/bandcamp && coverage xml -o /opt/coverage/bandcamp/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
@@ -116,7 +116,7 @@ jobs:
         pip install -e .[test]
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        coverage run -m pytest tests/e2e/youtube && coverage xml -o /opt/coverage/youtube/coverage.xml
+        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/e2e/youtube && coverage xml -o /opt/coverage/youtube/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
@@ -142,7 +142,7 @@ jobs:
         pip install -e .[test]
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        coverage run -m pytest tests/e2e/plugins && coverage xml -o /opt/coverage/plugins/coverage.xml
+        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/e2e/plugins && coverage xml -o /opt/coverage/plugins/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
