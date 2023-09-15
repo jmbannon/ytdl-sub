@@ -42,14 +42,14 @@ def test_main_success(mock_sys_exit):
 
 
 def test_main_validation_error(capsys, mock_sys_exit):
-    validation_exception = ValidationException("test")
+    validation_exception = ValidationException("test exc")
     with mock_sys_exit(expected_exit_code=1), patch(
         "src.ytdl_sub.main._main", side_effect=validation_exception
     ), patch.object(logging.Logger, "error") as mock_logger:
         main()
 
     assert mock_logger.call_count == 1
-    assert mock_logger.call_args.args[0] == validation_exception
+    assert mock_logger.call_args.args[0] == "test exc"
 
 
 def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_message):
