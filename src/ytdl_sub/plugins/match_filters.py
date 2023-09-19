@@ -1,15 +1,9 @@
 from typing import Any
-from typing import Dict
 from typing import List
-from typing import Optional
-
-from yt_dlp import match_filter_func
+from typing import Tuple
 
 from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
-from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import YTDL_SUB_MATCH_FILTER_REJECT
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.validators import StringListValidator
 
@@ -71,9 +65,8 @@ class MatchFiltersOptions(OptionsDictValidator):
 
 class MatchFiltersPlugin(Plugin[MatchFiltersOptions]):
     plugin_options_type = MatchFiltersOptions
-    priority = PluginPriority(modify_entry=PluginPriority.MODIFY_ENTRY_FIRST)
 
-    def ytdl_options(self) -> Optional[Dict]:
+    def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
         """
         Returns
         -------
@@ -81,20 +74,6 @@ class MatchFiltersPlugin(Plugin[MatchFiltersOptions]):
         """
         match_filters: List[str] = []
         for filter_str in self.plugin_options.filters:
-            logger.debug("Adding match-filter %s", filter_str)
             match_filters.append(filter_str)
 
-        return {
-            "match_filter": match_filter_func(match_filters),
-        }
-
-    def modify_entry(self, entry: Entry) -> Optional[Entry]:
-        """
-        If an entry is marked as not being downloaded due to a match_filter reject,
-        do not propagate the entry further (especially since there is no entry file!)
-        """
-        if entry.kwargs_get(YTDL_SUB_MATCH_FILTER_REJECT, False):
-            logger.info("Entry rejected by match-filter, skipping ..")
-            return None
-
-        return entry
+        return match_filters, []

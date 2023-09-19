@@ -72,6 +72,14 @@ class Plugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
     Class to define the new plugin functionality
     """
 
+    def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
+        """
+        Returns
+        -------
+        Tuple of match-filters to apply, first one being non-breaking, second breaking
+        """
+        return [], []
+
     def ytdl_options(self) -> Optional[Dict]:
         """
         Returns
