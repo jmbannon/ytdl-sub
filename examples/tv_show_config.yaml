@@ -69,10 +69,6 @@ presets:
     date_range:
       after: "today-{download_range}"
 
-    # Stops fetching metadata if the video is out of range (saves time + bandwidth)
-    ytdl_options:
-      break_on_reject: True
-
     # Deletes any videos older than download_range. WARNING: do not use
     # "season_by_year__episode_by_download_index" if you plan to delete older videos
     output_options:
