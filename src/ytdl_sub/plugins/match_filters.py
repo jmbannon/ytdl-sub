@@ -1,9 +1,7 @@
 from typing import Any
-from typing import Dict
 from typing import List
 from typing import Optional
-
-from yt_dlp import match_filter_func
+from typing import Tuple
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin import PluginPriority
@@ -73,7 +71,7 @@ class MatchFiltersPlugin(Plugin[MatchFiltersOptions]):
     plugin_options_type = MatchFiltersOptions
     priority = PluginPriority(modify_entry=PluginPriority.MODIFY_ENTRY_FIRST)
 
-    def ytdl_options(self) -> Optional[Dict]:
+    def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
         """
         Returns
         -------
@@ -81,12 +79,9 @@ class MatchFiltersPlugin(Plugin[MatchFiltersOptions]):
         """
         match_filters: List[str] = []
         for filter_str in self.plugin_options.filters:
-            logger.debug("Adding match-filter %s", filter_str)
             match_filters.append(filter_str)
 
-        return {
-            "match_filter": match_filter_func(match_filters),
-        }
+        return match_filters, []
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
         """

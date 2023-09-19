@@ -5,15 +5,15 @@ from typing import Optional
 from typing import Type
 from typing import TypeVar
 
+from yt_dlp import match_filter_func
+
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
-from ytdl_sub.plugins.date_range import DateRangePlugin
 from ytdl_sub.plugins.file_convert import FileConvertPlugin
 from ytdl_sub.plugins.format import FormatPlugin
-from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -97,6 +97,22 @@ class SubscriptionYTDLOptions:
     def _user_ytdl_options(self) -> Dict:
         return self._preset.ytdl_options.dict
 
+    @property
+    def _plugin_match_filters(self) -> Dict:
+        match_filters: List[str] = []
+        breaking_match_filters: List[str] = []
+        for plugin in self._plugins:
+            pl_match_filters, pl_breaking_match_filters = plugin.ytdl_options_match_filters()
+
+            match_filters.extend(pl_match_filters)
+            breaking_match_filters.extend(pl_breaking_match_filters)
+
+        return {
+            "match_filter": match_filter_func(
+                filters=match_filters, breaking_filters=breaking_match_filters
+            )
+        }
+
     def metadata_builder(self) -> YTDLOptionsBuilder:
         """
         Returns
@@ -107,7 +123,7 @@ class SubscriptionYTDLOptions:
         return YTDLOptionsBuilder().add(
             self._global_options,
             self._output_options,
-            self._plugin_ytdl_options(DateRangePlugin),
+            self._plugin_match_filters,
             self._plugin_ytdl_options(FormatPlugin),
             self._user_ytdl_options,  # user ytdl options...
             self._info_json_only_options,  # then info_json_only options
@@ -123,7 +139,6 @@ class SubscriptionYTDLOptions:
         ytdl_options_builder = YTDLOptionsBuilder().add(
             self._global_options,
             self._output_options,
-            self._plugin_ytdl_options(MatchFiltersPlugin),
             self._plugin_ytdl_options(FileConvertPlugin),
             self._plugin_ytdl_options(SubtitlesPlugin),
             self._plugin_ytdl_options(ChaptersPlugin),
