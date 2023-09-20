@@ -4,6 +4,7 @@ from typing import Tuple
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.utils.datetime import to_date_str
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 
 
@@ -57,11 +58,15 @@ class DateRangePlugin(Plugin[DateRangeOptions]):
         breaking_match_filters: List[str] = []
 
         if self.plugin_options.before:
-            before_str = self.overrides.apply_formatter(formatter=self.plugin_options.before)
+            before_str = to_date_str(
+                date_validator=self.plugin_options.before, overrides=self.overrides
+            )
             match_filters.append(f"upload_date < {before_str}")
 
         if self.plugin_options.after:
-            after_str = self.overrides.apply_formatter(formatter=self.plugin_options.after)
+            after_str = to_date_str(
+                date_validator=self.plugin_options.after, overrides=self.overrides
+            )
             breaking_match_filters.append(f"upload_date >= {after_str}")
 
         return match_filters, breaking_match_filters
