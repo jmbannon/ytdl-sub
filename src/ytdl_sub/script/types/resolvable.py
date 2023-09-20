@@ -30,12 +30,12 @@ class Numeric(ResolvableT[NumericT], ABC, Generic[NumericT]):
 
 
 @dataclass(frozen=True)
-class Integer(ResolvableT[int]):
+class Integer(Numeric[int]):
     pass
 
 
 @dataclass(frozen=True)
-class Float(ResolvableT[float]):
+class Float(Numeric[float]):
     pass
 
 

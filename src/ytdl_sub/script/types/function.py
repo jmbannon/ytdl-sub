@@ -133,13 +133,13 @@ class Function(VariableDependency):
         received_type_names: List[str] = []
         for arg in self.args:
             if isinstance(arg, Function):
-                received_type_names.append(f"{arg.name}(...)->{arg.output_type.__name__}")
+                received_type_names.append(f"%{arg.name}(...)->{arg.output_type.__name__}")
             else:
                 received_type_names.append(arg.__class__.__name__)
 
         received_args_str = f"({', '.join([name for name in received_type_names])})"
 
-        return f"Expected {self.input_spec.expected_args_str()}.\nReceived ({received_args_str})"
+        return f"Expected {self.input_spec.expected_args_str()}.\nReceived {received_args_str}"
 
     @property
     def callable(self) -> Callable[..., Resolvable]:
