@@ -1,14 +1,14 @@
 from typing import List
 from typing import Optional
 
-from ytdl_sub.script.functions import Boolean
-from ytdl_sub.script.functions import Float
-from ytdl_sub.script.functions import Integer
-from ytdl_sub.script.functions import String
 from ytdl_sub.script.syntax_tree import ArgumentType
 from ytdl_sub.script.syntax_tree import Function
 from ytdl_sub.script.syntax_tree import SyntaxTree
 from ytdl_sub.script.syntax_tree import Variable
+from ytdl_sub.script.types import Boolean
+from ytdl_sub.script.types import Float
+from ytdl_sub.script.types import Integer
+from ytdl_sub.script.types import String
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 

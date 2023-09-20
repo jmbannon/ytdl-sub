@@ -8,12 +8,12 @@ from typing import Set
 from typing import Union
 from typing import final
 
-from ytdl_sub.script.functions import Boolean
-from ytdl_sub.script.functions import Float
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.functions import Integer
-from ytdl_sub.script.functions import Resolvable
-from ytdl_sub.script.functions import String
+from ytdl_sub.script.types import Boolean
+from ytdl_sub.script.types import Float
+from ytdl_sub.script.types import Integer
+from ytdl_sub.script.types import Resolvable
+from ytdl_sub.script.types import String
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
