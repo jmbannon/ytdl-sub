@@ -2,6 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Generic
+from typing import List
 from typing import TypeVar
 
 T = TypeVar("T")
@@ -16,7 +17,7 @@ class Resolvable(ABC):
 
 
 @dataclass(frozen=True)
-class ResolvableT(Resolvable, Generic[T]):
+class ResolvableT(Resolvable, ABC, Generic[T]):
     value: T
 
     def resolve(self) -> str:
@@ -45,4 +46,17 @@ class Boolean(ResolvableT[bool]):
 
 @dataclass(frozen=True)
 class String(ResolvableT[str]):
+    pass
+
+
+@dataclass(frozen=True)
+class _List(Resolvable, Generic[T], ABC):
+    value: List[T]
+
+    def resolve(self) -> str:
+        return f"[{', '.join([str(val) for val in self.value])}]"
+
+
+@dataclass(frozen=True)
+class StringList(_List[String]):
     pass

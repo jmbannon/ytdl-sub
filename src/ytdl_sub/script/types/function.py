@@ -7,10 +7,12 @@ from inspect import FullArgSpec
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Set
 from typing import Type
 from typing import Union
 from typing import final
+from typing import get_origin
 
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.resolvable import Boolean
@@ -46,41 +48,98 @@ class VariableDependency(ABC):
 
 
 @dataclass(frozen=True)
+class FunctionInputSpec:
+    args: Optional[List[Type[Resolvable | Optional[Resolvable]]]] = None
+    varargs: Optional[Type[Resolvable]] = None
+
+    def __post_init__(self):
+        assert (self.args is None) ^ (self.varargs is None)
+
+    @classmethod
+    def _is_type_compatible(
+        cls,
+        input_arg: Optional[Resolvable],
+        expected_arg_type: Type[Resolvable | Optional[Resolvable]],
+    ) -> bool:
+        input_arg_type = input_arg.__class__
+
+        if get_origin(expected_arg_type) is Union:
+            if input_arg_type not in expected_arg_type.__args__:
+                return False
+        elif input_arg_type != expected_arg_type:
+            return False
+
+        return True
+
+    def _is_args_compatible(self, input_args: List[Resolvable | Optional[Resolvable]]) -> bool:
+        assert self.args is not None
+
+        if len(input_args) > len(self.args):
+            return False
+
+        for idx in range(len(self.args)):
+            input_arg = input_args[idx] if idx < len(input_args) else None
+            if not self._is_type_compatible(input_arg=input_arg, expected_arg_type=self.args[idx]):
+                return False
+
+        return True
+
+    def _is_varargs_compatible(self, input_args: List[Resolvable | Optional[Resolvable]]) -> bool:
+        assert self.varargs is not None
+
+        for input_arg in input_args:
+            if not self._is_type_compatible(input_arg=input_arg, expected_arg_type=self.varargs):
+                return False
+
+        return True
+
+    def is_compatible(self, input_args: List[Resolvable | Optional[Resolvable]]) -> bool:
+        if self.args is not None:
+            return self._is_args_compatible(input_args=input_args)
+        elif self.varargs is not None:
+            return self._is_varargs_compatible(input_args=input_args)
+        else:
+            assert False, "should never reach here"
+
+    def expected_args_str(self) -> str:
+        if self.args is not None:
+            return f"({', '.join([type_.__name__ for type_ in self.args])})"
+        elif self.varargs is not None:
+            return f"({self.varargs.__name__}, ...)"
+
+    @classmethod
+    def from_function(cls, func: "Function") -> "FunctionInputSpec":
+        if func.arg_spec.varargs:
+            return FunctionInputSpec(varargs=func.arg_spec.annotations[func.arg_spec.varargs])
+
+        return FunctionInputSpec(
+            args=[func.arg_spec.annotations[arg_name] for arg_name in func.arg_spec.args]
+        )
+
+
+@dataclass(frozen=True)
 class Function(VariableDependency):
     name: str
     args: List[ArgumentType]
 
     def __post_init__(self):
-        # TODO: Figure out resolution via introspecting args and outputs of function
-        if len(self.args) != len(self.input_types):
+        if not self.input_spec.is_compatible(input_args=self.args):
             raise StringFormattingException(
-                f"Unequal amount of arguments passed to function {self.name}.\n"
+                f"Invalid arguments passed to function {self.name}.\n"
                 f"{self._expected_received_error_msg()}"
             )
 
-        for input_arg, input_arg_type in zip(self.args, self.input_types):
-            if isinstance(input_arg, Function):
-                input_arg = input_arg.output_type
-            elif isinstance(input_arg, Variable):
-                pass  # cannot evaluate the variable yet, so pass
-            if not issubclass(input_arg.__class__, input_arg_type):
-                raise StringFormattingException(
-                    f"Invalid arguments passed to function {self.name}.\n"
-                    f"{self._expected_received_error_msg()}"
-                )
-
     def _expected_received_error_msg(self) -> str:
-        output_type_names: List[str] = []
+        received_type_names: List[str] = []
         for arg in self.args:
             if isinstance(arg, Function):
-                output_type_names.append(f"{arg.name}(...)->{arg.output_type.__name__}")
+                received_type_names.append(f"{arg.name}(...)->{arg.output_type.__name__}")
             else:
-                output_type_names.append(arg.__class__.__name__)
+                received_type_names.append(arg.__class__.__name__)
 
-        return (
-            f"Expected ({', '.join([type_.__name__ for type_ in self.input_types])}).\n"
-            f"Received ({', '.join([output_type_name for output_type_name in output_type_names])})"
-        )
+        received_args_str = f"({', '.join([name for name in received_type_names])})"
+
+        return f"Expected {self.input_spec.expected_args_str()}.\nReceived ({received_args_str})"
 
     @property
     def callable(self) -> Callable[..., Resolvable]:
@@ -94,8 +153,8 @@ class Function(VariableDependency):
         return inspect.getfullargspec(self.callable)
 
     @property
-    def input_types(self) -> List[Type[Resolvable]]:
-        return [self.arg_spec.annotations[arg_name] for arg_name in self.arg_spec.args]
+    def input_spec(self) -> FunctionInputSpec:
+        return FunctionInputSpec.from_function(self)
 
     @property
     def output_type(self) -> Type[Resolvable]:

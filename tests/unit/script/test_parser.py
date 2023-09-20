@@ -26,6 +26,53 @@ class TestParser:
             ]
         )
 
+    def test_single_function_one_vararg(self):
+        parsed = parse("hello {%concat('hi mom')}")
+        assert parsed == SyntaxTree(
+            [
+                String("hello "),
+                Function(name="concat", args=[String(value="hi mom")]),
+            ]
+        )
+
+    def test_single_function_many_vararg(self):
+        parsed = parse("hello {%concat('hi', 'mom')}")
+        assert parsed == SyntaxTree(
+            [
+                String("hello "),
+                Function(name="concat", args=[String(value="hi"), String(value="mom")]),
+            ]
+        )
+
+    def test_single_function_many_args_with_optional_none(self):
+        parsed = parse("hello {%replace('hi mom', 'hi', '')}")
+        assert parsed == SyntaxTree(
+            [
+                String("hello "),
+                Function(
+                    name="replace",
+                    args=[String(value="hi mom"), String(value="hi"), String(value="")],
+                ),
+            ]
+        )
+
+    def test_single_function_many_args_with_optional_provided(self):
+        parsed = parse("hello {%replace('hi mom', 'hi', '', 1)}")
+        assert parsed == SyntaxTree(
+            [
+                String("hello "),
+                Function(
+                    name="replace",
+                    args=[
+                        String(value="hi mom"),
+                        String(value="hi"),
+                        String(value=""),
+                        Integer(value=1),
+                    ],
+                ),
+            ]
+        )
+
     @pytest.mark.parametrize("whitespace", ["", " ", "  ", "\n", " \n "])
     def test_single_function_multiple_args(self, whitespace: str):
         s = whitespace

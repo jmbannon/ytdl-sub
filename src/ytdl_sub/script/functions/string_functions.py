@@ -1,3 +1,6 @@
+from typing import Optional
+
+from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 
 
@@ -30,5 +33,14 @@ class StringFunctions:
         return String(string.value.capitalize())
 
     @staticmethod
-    def concat(l_string: String, r_string: String) -> String:
-        return String(f"{l_string}{r_string}")
+    def replace(
+        string: String, old: String, new: String, count: Optional[Integer] = None
+    ) -> String:
+        if count:
+            return String(string.value.replace(old.value, new.value, count.value))
+
+        return String(string.value.replace(old.value, new.value))
+
+    @staticmethod
+    def concat(*args: String) -> String:
+        return String("".join(*args))
