@@ -1,13 +1,13 @@
 import pytest
 
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.syntax_tree import Function
 from ytdl_sub.script.syntax_tree import SyntaxTree
-from ytdl_sub.script.syntax_tree import Variable
-from ytdl_sub.script.types import Boolean
-from ytdl_sub.script.types import Float
-from ytdl_sub.script.types import Integer
-from ytdl_sub.script.types import String
+from ytdl_sub.script.types.function import Function
+from ytdl_sub.script.types.resolvable import Boolean
+from ytdl_sub.script.types.resolvable import Float
+from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 

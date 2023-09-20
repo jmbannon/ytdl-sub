@@ -1,4 +1,4 @@
-from ytdl_sub.script.types import String
+from ytdl_sub.script.types.resolvable import String
 
 
 class StringFunctions:

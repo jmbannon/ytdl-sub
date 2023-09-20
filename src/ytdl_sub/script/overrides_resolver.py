@@ -6,7 +6,7 @@ from typing import Set
 from ytdl_sub.script.functions import Resolvable
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.syntax_tree import SyntaxTree
-from ytdl_sub.script.syntax_tree import Variable
+from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
