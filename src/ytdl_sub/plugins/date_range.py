@@ -2,10 +2,9 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-from yt_dlp.utils import datetime_from_str
-
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.utils.datetime import to_date_str
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 
 
@@ -49,10 +48,6 @@ class DateRangeOptions(OptionsDictValidator):
 class DateRangePlugin(Plugin[DateRangeOptions]):
     plugin_options_type = DateRangeOptions
 
-    def _to_date(self, date_validator: StringDatetimeValidator) -> str:
-        date_str = self.overrides.apply_formatter(formatter=date_validator)
-        return str(datetime_from_str(date_str).date())
-
     def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
         """
         Returns
@@ -63,11 +58,15 @@ class DateRangePlugin(Plugin[DateRangeOptions]):
         breaking_match_filters: List[str] = []
 
         if self.plugin_options.before:
-            match_filters.append(f"upload_date < {self._to_date(self.plugin_options.before)}")
+            before_str = to_date_str(
+                date_validator=self.plugin_options.before, overrides=self.overrides
+            )
+            match_filters.append(f"upload_date < {before_str}")
 
         if self.plugin_options.after:
-            breaking_match_filters.append(
-                f"upload_date >= {self._to_date(self.plugin_options.after)}"
+            after_str = to_date_str(
+                date_validator=self.plugin_options.after, overrides=self.overrides
             )
+            breaking_match_filters.append(f"upload_date >= {after_str}")
 
         return match_filters, breaking_match_filters
