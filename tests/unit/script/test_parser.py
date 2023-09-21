@@ -26,6 +26,18 @@ class TestParser:
             ]
         )
 
+    def test_conditional(self):
+        parsed = parse("hello {%iff(True, 'hi', 3.4)}")
+        assert parsed == SyntaxTree(
+            [
+                String("hello "),
+                Function(
+                    name="iff", args=[Boolean(value=True), String(value="hi"), Float(value=3.4)]
+                ),
+            ]
+        )
+        assert parsed.ast[1].output_type
+
     def test_single_function_one_vararg(self):
         parsed = parse("hello {%concat('hi mom')}")
         assert parsed == SyntaxTree(

@@ -10,6 +10,7 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Type
+from typing import TypeVar
 from typing import Union
 from typing import final
 from typing import get_origin
@@ -47,6 +48,14 @@ class VariableDependency(ABC):
         return self.variables.issubset(set(resolved_variables.keys()))
 
 
+def is_union(type: Type) -> bool:
+    return get_origin(type) is Union
+
+
+def is_generic(type: Type) -> bool:
+    return type.__class__ is TypeVar
+
+
 @dataclass(frozen=True)
 class FunctionInputSpec:
     args: Optional[List[Type[Resolvable | Optional[Resolvable]]]] = None
@@ -63,10 +72,20 @@ class FunctionInputSpec:
     ) -> bool:
         input_arg_type = input_arg.__class__
 
-        if get_origin(expected_arg_type) is Union:
-            if input_arg_type not in expected_arg_type.__args__:
+        if is_union(expected_arg_type):
+            # See if the arg is a valid against the union
+            valid_type = False
+            for union_type in expected_arg_type.__args__:
+                if issubclass(input_arg_type, union_type):
+                    valid_type = True
+                    break
+
+            if not valid_type:
                 return False
-        elif input_arg_type != expected_arg_type:
+        elif is_generic(expected_arg_type):
+            # TypeVars (generics) support any type of input
+            return True
+        elif not issubclass(input_arg_type, expected_arg_type):
             return False
 
         return True
@@ -158,7 +177,9 @@ class Function(VariableDependency):
 
     @property
     def output_type(self) -> Type[Resolvable]:
-        return self.arg_spec.annotations["return"]
+        output_type = self.arg_spec.annotations["return"]
+        # TODO: Handle generics here
+        return output_type
 
     @property
     def variables(self) -> Set[Variable]:
