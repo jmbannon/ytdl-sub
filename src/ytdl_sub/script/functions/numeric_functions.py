@@ -38,3 +38,11 @@ class NumericFunctions:
     @staticmethod
     def mod(value: Integer, modulo: Integer) -> Integer:
         return Integer(value=value.value % modulo.value)
+
+    @staticmethod
+    def max(left: Numeric, right: Numeric) -> Numeric:
+        return _to_numeric(max(left.value, right.value))
+
+    @staticmethod
+    def min(left: Numeric, right: Numeric) -> Numeric:
+        return _to_numeric(min(left.value, right.value))
