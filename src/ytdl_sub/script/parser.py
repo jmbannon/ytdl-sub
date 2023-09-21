@@ -49,7 +49,7 @@ class _Parser:
             if ch.isspace() and not var_name:
                 self._pos += 1
                 continue
-            if ch in ["}", ","] or ch.isspace():
+            if ch in ["}", ",", ")"] or ch.isspace():
                 break
 
             is_lower = ch.isascii() and ch.islower()

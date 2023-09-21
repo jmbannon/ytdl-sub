@@ -123,8 +123,8 @@ class TestParser:
     def test_single_function_multiple_args(self, whitespace: str):
         s = whitespace
         parsed = parse(
-            f"hello{s}{{{s}%concat({s}'string'{s},{s}1{s},{s}2.4{s},"
-            f"{s}TRUE{s},{s}variable_name{s},{s}%capitalize({s}'hi'{s}){s}){s}}}"
+            f"hello{s}{{{s}%concat({s}'string'{s},{s}%string(1){s},{s}%string(2.4){s},"
+            f"{s}%string(TRUE){s},{s}%string(variable_name){s},{s}%capitalize({s}'hi'{s}){s}){s}}}"
         )
         assert parsed == SyntaxTree(
             [
@@ -133,10 +133,10 @@ class TestParser:
                     name="concat",
                     args=[
                         String(value="string"),
-                        Integer(value=1),
-                        Float(value=2.4),
-                        Boolean(value=True),
-                        Variable(name="variable_name"),
+                        Function(name="string", args=[Integer(value=1)]),
+                        Function(name="string", args=[Float(value=2.4)]),
+                        Function(name="string", args=[Boolean(value=True)]),
+                        Function(name="string", args=[Variable(name="variable_name")]),
                         Function(name="capitalize", args=[String(value="hi")]),
                     ],
                 ),

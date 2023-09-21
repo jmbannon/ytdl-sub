@@ -188,9 +188,7 @@ class Function(VariableDependency):
 
     @property
     def output_type(self) -> Type[Resolvable]:
-        output_type = self.arg_spec.annotations["return"]
-        # TODO: Handle generics here
-        return output_type
+        return self.arg_spec.annotations["return"]
 
     @property
     def variables(self) -> Set[Variable]:
