@@ -37,7 +37,7 @@ class OverridesResolver:
         for variable in variable_dependencies.keys():
             _traverse(variable)
 
-    def resolve_overrides(self) -> Dict[str, str]:
+    def resolve_overrides(self) -> Dict[str, Resolvable]:
         self._ensure_no_cycles()
 
         unresolved_variables: List[Variable] = list(self.overrides.keys())
@@ -59,7 +59,4 @@ class OverridesResolver:
                 len(unresolved_variables) != unresolved_count
             ), "did not resolve any variables, cycle detected"
 
-        return {
-            variable.name: resolvable.resolve()
-            for variable, resolvable in resolved_variables.items()
-        }
+        return {variable.name: resolvable for variable, resolvable in resolved_variables.items()}

@@ -14,17 +14,13 @@ NumericT = TypeVar("NumericT", bound=int | float)
 class Resolvable(ABC):
     value: Any
 
-    @abstractmethod
-    def resolve(self) -> str:
-        ...
+    def __str__(self) -> str:
+        return str(self.value)
 
 
 @dataclass(frozen=True)
 class ResolvableT(Resolvable, ABC, Generic[T]):
     value: T
-
-    def resolve(self) -> str:
-        return str(self.value)
 
 
 @dataclass(frozen=True)
@@ -56,7 +52,7 @@ class String(ResolvableT[str]):
 class _List(Resolvable, Generic[T], ABC):
     value: List[T]
 
-    def resolve(self) -> str:
+    def __str__(self) -> str:
         return f"[{', '.join([str(val) for val in self.value])}]"
 
 

@@ -45,7 +45,7 @@ class VariableDependency(ABC):
         -------
         True if variable dependency. False otherwise.
         """
-        return self.variables.issubset(set(resolved_variables.keys()))
+        return not self.variables.issubset(set(resolved_variables.keys()))
 
 
 def is_union(arg_type: Type) -> bool:

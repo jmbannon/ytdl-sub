@@ -33,51 +33,26 @@ class SyntaxTree(VariableDependency):
         return variables
 
     def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
-        output: str = ""
+        resolved: List[Resolvable] = []
         for token in self.ast:
-            if isinstance(token, String):
-                output += token.resolve()
+            if isinstance(token, Resolvable):
+                resolved.append(token)
             elif isinstance(token, Variable):
-                output += resolved_variables[token].resolve()
+                resolved.append(resolved_variables[token])
             elif isinstance(token, Function):
-                output += token.resolve(resolved_variables=resolved_variables)
+                resolved.append(token.resolve(resolved_variables=resolved_variables))
             else:
                 assert False, "should never reach"
 
-        return String(output)
+        # If only one resolvable resides in the AST, return as that
+        if len(resolved) == 1:
+            return resolved[0]
+
+        # Otherwise, to concat multiple resolved outputs, we must concat as strings
+        return String("".join([str(res) for res in resolved]))
 
     @classmethod
-    def detect_cycles(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> None:
-        """
-        Parameters
-        ----------
-        parsed_overrides
-            ``overrides`` in a subscription, parsed into a SyntaxTree
-        """
-        variable_dependencies: Dict[Variable, Set[Variable]] = {
-            Variable(name): ast.variables for name, ast in parsed_overrides.items()
-        }
-
-        def _traverse(
-            to_variable: Variable, visited_variables: Optional[List[Variable]] = None
-        ) -> None:
-            if visited_variables is None:
-                visited_variables = []
-
-            if to_variable in visited_variables:
-                raise StringFormattingException("Detected cycle in variables")
-            visited_variables.append(to_variable)
-
-            for dep in variable_dependencies[to_variable]:
-                _traverse(to_variable=dep, visited_variables=visited_variables)
-
-        for variable in variable_dependencies.keys():
-            _traverse(variable)
-
-    @classmethod
-    def resolve_overrides(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> Dict[str, str]:
-        cls.detect_cycles(parsed_overrides=parsed_overrides)
-
+    def resolve_overrides(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> Dict[str, Resolvable]:
         overrides: Dict[Variable, "SyntaxTree"] = {
             Variable(name): ast for name, ast in parsed_overrides.items()
         }
@@ -97,11 +72,7 @@ class SyntaxTree(VariableDependency):
                     )
                     unresolved_variables.remove(variable)
 
-            assert (
-                len(unresolved_variables) != unresolved_count
-            ), "did not resolve any variables, cycle detected"
+            if len(unresolved_variables) == unresolved_count:
+                raise StringFormattingException("did not resolve any variables, cycle detected")
 
-        return {
-            variable.name: resolvable.resolve()
-            for variable, resolvable in resolved_variables.items()
-        }
+        return {variable.name: resolvable for variable, resolvable in resolved_variables.items()}
