@@ -1,6 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
+from typing import Any
 from typing import Generic
 from typing import List
 from typing import TypeVar
@@ -11,6 +12,8 @@ NumericT = TypeVar("NumericT", bound=int | float)
 
 @dataclass(frozen=True)
 class Resolvable(ABC):
+    value: Any
+
     @abstractmethod
     def resolve(self) -> str:
         ...

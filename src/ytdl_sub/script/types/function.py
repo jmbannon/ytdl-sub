@@ -10,12 +10,12 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Type
-from typing import TypeVar
 from typing import Union
 from typing import final
 from typing import get_origin
 
 from ytdl_sub.script.functions import Functions
+from ytdl_sub.script.functions.special_functions import SpecialFunctions
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -48,12 +48,8 @@ class VariableDependency(ABC):
         return self.variables.issubset(set(resolved_variables.keys()))
 
 
-def is_union(type: Type) -> bool:
-    return get_origin(type) is Union
-
-
-def is_generic(type: Type) -> bool:
-    return type.__class__ is TypeVar
+def is_union(arg_type: Type) -> bool:
+    return get_origin(arg_type) is Union
 
 
 @dataclass(frozen=True)
@@ -67,10 +63,15 @@ class FunctionInputSpec:
     @classmethod
     def _is_type_compatible(
         cls,
-        input_arg: Optional[Resolvable],
+        input_arg: ArgumentType,
         expected_arg_type: Type[Resolvable | Optional[Resolvable]],
     ) -> bool:
-        input_arg_type = input_arg.__class__
+        if isinstance(input_arg, Function):
+            input_arg_type = input_arg.output_type
+        elif isinstance(input_arg, Variable):
+            return True  # unresolved variables can be anything, so pass for now
+        else:
+            input_arg_type = input_arg.__class__
 
         if is_union(expected_arg_type):
             # See if the arg is a valid against the union
@@ -82,15 +83,12 @@ class FunctionInputSpec:
 
             if not valid_type:
                 return False
-        elif is_generic(expected_arg_type):
-            # TypeVars (generics) support any type of input
-            return True
         elif not issubclass(input_arg_type, expected_arg_type):
             return False
 
         return True
 
-    def _is_args_compatible(self, input_args: List[Resolvable | Optional[Resolvable]]) -> bool:
+    def _is_args_compatible(self, input_args: List[ArgumentType]) -> bool:
         assert self.args is not None
 
         if len(input_args) > len(self.args):
@@ -103,7 +101,7 @@ class FunctionInputSpec:
 
         return True
 
-    def _is_varargs_compatible(self, input_args: List[Resolvable | Optional[Resolvable]]) -> bool:
+    def _is_varargs_compatible(self, input_args: List[ArgumentType]) -> bool:
         assert self.varargs is not None
 
         for input_arg in input_args:
@@ -112,7 +110,7 @@ class FunctionInputSpec:
 
         return True
 
-    def is_compatible(self, input_args: List[Resolvable | Optional[Resolvable]]) -> bool:
+    def is_compatible(self, input_args: List[ArgumentType]) -> bool:
         if self.args is not None:
             return self._is_args_compatible(input_args=input_args)
         elif self.varargs is not None:
@@ -199,3 +197,18 @@ class Function(VariableDependency):
 
     def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
         raise NotImplemented()
+
+
+@dataclass(frozen=True)
+class IfFunction(Function):
+    def __post_init__(self):
+        super().__post_init__()
+        assert len(self.args) == 3  # bool, true, false
+
+    @property
+    def callable(self) -> Callable[..., Resolvable]:
+        return SpecialFunctions.if_
+
+    @property
+    def output_type(self) -> Type[Resolvable]:
+        return Union[self.args[1].__class__, self.args[2].__class__]

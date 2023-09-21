@@ -1,8 +1,11 @@
+from typing import Union
+
 import pytest
 
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.function import Function
+from ytdl_sub.script.types.function import IfFunction
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -27,16 +30,33 @@ class TestParser:
         )
 
     def test_conditional(self):
-        parsed = parse("hello {%iff(True, 'hi', 3.4)}")
+        parsed = parse("hello {%if(True, 'hi', 3.4)}")
+        assert parsed == SyntaxTree(
+            [
+                String("hello "),
+                IfFunction(
+                    name="if", args=[Boolean(value=True), String(value="hi"), Float(value=3.4)]
+                ),
+            ]
+        )
+        assert parsed.ast[1].output_type == Union[String, Float]
+
+    def test_conditional_as_input(self):
+        parsed = parse("hello {%concat(%if(True, 'hi', 'mom'), 'and dad')}")
         assert parsed == SyntaxTree(
             [
                 String("hello "),
                 Function(
-                    name="iff", args=[Boolean(value=True), String(value="hi"), Float(value=3.4)]
+                    name="concat",
+                    args=[
+                        IfFunction(
+                            name="if", args=[Boolean(value=True), String("hi"), String("mom")]
+                        ),
+                        String(value="and dad"),
+                    ],
                 ),
             ]
         )
-        assert parsed.ast[1].output_type
 
     def test_single_function_one_vararg(self):
         parsed = parse("hello {%concat('hi mom')}")
