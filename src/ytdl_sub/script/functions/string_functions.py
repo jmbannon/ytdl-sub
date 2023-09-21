@@ -1,10 +1,15 @@
 from typing import Optional
 
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
 
 
 class StringFunctions:
+    @staticmethod
+    def string(value: Resolvable) -> String:
+        return String(value=str(value.value))
+
     @staticmethod
     def lower(string: String) -> String:
         """

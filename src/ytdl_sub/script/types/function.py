@@ -76,13 +76,26 @@ class FunctionInputSpec:
         if is_union(expected_arg_type):
             # See if the arg is a valid against the union
             valid_type = False
-            for union_type in expected_arg_type.__args__:
-                if issubclass(input_arg_type, union_type):
-                    valid_type = True
-                    break
+
+            # if the input arg is a union, do a direct comparison
+            if is_union(input_arg_type):
+                valid_type = input_arg_type == expected_arg_type
+            # otherwise, iterate the union to see if it's compatible
+            else:
+                for union_type in expected_arg_type.__args__:
+                    if issubclass(input_arg_type, union_type):
+                        valid_type = True
+                        break
 
             if not valid_type:
                 return False
+        # If the input is a union and the expected type is not, see if
+        # each possible union input is compatible with the expected type
+        elif is_union(input_arg_type):
+            for union_type in input_arg_type.__args__:
+                if not issubclass(union_type, expected_arg_type):
+                    return False
+
         elif not issubclass(input_arg_type, expected_arg_type):
             return False
 

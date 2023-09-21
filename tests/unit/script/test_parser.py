@@ -41,7 +41,7 @@ class TestParser:
         )
         assert parsed.ast[1].output_type == Union[String, Float]
 
-    def test_conditional_as_input(self):
+    def test_conditional_as_input_same_outputs(self):
         parsed = parse("hello {%concat(%if(True, 'hi', 'mom'), 'and dad')}")
         assert parsed == SyntaxTree(
             [
@@ -53,6 +53,20 @@ class TestParser:
                             name="if", args=[Boolean(value=True), String("hi"), String("mom")]
                         ),
                         String(value="and dad"),
+                    ],
+                ),
+            ]
+        )
+
+    def test_conditional_as_input_different_outputs(self):
+        parsed = parse("hello {%string(%if(True, 'hi', 4))}")
+        assert parsed == SyntaxTree(
+            [
+                String("hello "),
+                Function(
+                    name="string",
+                    args=[
+                        IfFunction(name="if", args=[Boolean(True), String("hi"), Integer(4)]),
                     ],
                 ),
             ]
