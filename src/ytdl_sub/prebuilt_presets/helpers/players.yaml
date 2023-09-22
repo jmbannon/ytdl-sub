@@ -3,7 +3,7 @@ presets:
   _base:
     match_filters:
       filters:
-        - "!is_live"
+        - "!is_live & !is_upcoming & !post_live"
     overrides:
       file_uid: "{uid_sanitized}"
       file_title: "{title_sanitized}"
