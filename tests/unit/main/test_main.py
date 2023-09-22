@@ -69,6 +69,21 @@ def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_mess
     assert mock_error.call_args.args[2] == Logger.debug_log_filename()
 
 
+def test_main_permission_error(capsys, mock_sys_exit, expected_uncaught_error_message):
+    permission_error = PermissionError("test")
+    with mock_sys_exit(expected_exit_code=1), patch(
+        "src.ytdl_sub.main._main", side_effect=permission_error
+    ), patch.object(logging.Logger, "error") as mock_error:
+        main()
+
+    assert mock_error.call_count == 1
+    assert mock_error.call_args.args[0] == (
+        "A permission error occurred:\n%s\n"
+        "The user running ytdl-sub must have permission to this file/directory."
+    )
+    assert mock_error.call_args.args[1] == "test"
+
+
 def test_args_after_sub_work(mock_sys_exit):
     with mock_sys_exit(expected_exit_code=0), patch.object(
         sys,
