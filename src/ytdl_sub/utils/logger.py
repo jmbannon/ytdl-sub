@@ -223,9 +223,10 @@ class Logger:
                 logger.error(str(exception))
             # Log permission errors explicitly
             elif isinstance(exception, PermissionError):
-                logger.error("A permission error occurred:\n%s", str(exception))
                 logger.error(
-                    "The user running ytdl-sub must have permission to this file/directory."
+                    "A permission error occurred:\n%s\n"
+                    "The user running ytdl-sub must have permission to this file/directory.",
+                    str(exception),
                 )
             # For other uncaught errors, log as bug:
             else:
