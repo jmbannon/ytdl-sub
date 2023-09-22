@@ -19,6 +19,49 @@ env:
 jobs:
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
+  version:
+    name: version
+    runs-on: ubuntu-latest
+    outputs:
+      pypi_version: ${{ steps.set_outputs.outputs.pypi_version }}
+      local_version: ${{ steps.set_outputs.outputs.local_version }}
+      init_contents: ${{ steps.set_outputs.outputs.init_contents }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: master
+
+      - name: Set date and commit hash variables
+        run: |
+          echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Count number of commits on master on day, minus 1 to account for post-push
+        run: |
+          echo "DATE_COMMIT_COUNT=$(($(git rev-list --count master --since='${{ env.DATE }} 00:00:00')-1))" >> $GITHUB_ENV
+      - name: Set pypi and local version values
+        run: |
+          echo "LOCAL_VERSION=${{ env.DATE }}+${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
+          if [ ${{ env.DATE_COMMIT_COUNT }} -le "0" ]
+          then
+            echo "PYPI_VERSION=${{ env.DATE }}" >> $GITHUB_ENV
+          else
+            echo "PYPI_VERSION=${{ env.DATE }}.post${{ env.DATE_COMMIT_COUNT }}" >> $GITHUB_ENV
+          fi
+
+      - name: Test versions
+        run: |
+          echo "${{ env.PYPI_VERSION }}"
+          echo "${{ env.LOCAL_VERSION }}"
+
+      - id: set_outputs
+        run: |
+          echo "pypi_version=${{ env.PYPI_VERSION }}" >> "$GITHUB_OUTPUT"
+          echo "local_version=${{ env.LOCAL_VERSION }}" >> "$GITHUB_OUTPUT"
+          echo 'init_contents=__pypi_version__ = "${{ env.PYPI_VERSION }}";__local_version__ = "${{ env.LOCAL_VERSION }}"' >> "$GITHUB_OUTPUT"
+
   build:
     runs-on: ubuntu-22.04
     strategy:
@@ -141,6 +184,7 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
     needs: [
+      version,
       build,
       package-arm64,
       package-amd64
@@ -218,6 +262,7 @@ jobs:
           --cache-from=type=local,src=/tmp/build-cache/amd64 \
           --cache-from=type=local,src=/tmp/build-cache/arm64 \
           --tag ${{ steps.formatted-image_id.outputs.IMAGE_ID }}:ubuntu-${{ steps.formatted_version.outputs.VERSION }} \
+          --tag ${{ steps.formatted-image_id.outputs.IMAGE_ID }}:${{ needs.version.outputs.pypi_version }} \
           --label "runnumber=ubuntu-${GITHUB_RUN_ID}" \
           --file docker/Dockerfile.ubuntu \
           docker/
