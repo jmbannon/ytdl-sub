@@ -56,7 +56,7 @@ class SourcePlugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], AB
         """Gathers metadata of all entries to download"""
 
     @abc.abstractmethod
-    def download(self, entry: Entry) -> Entry:
+    def download(self, entry: Entry) -> Optional[Entry]:
         """The function to perform the download of all media entries"""
 
     @final

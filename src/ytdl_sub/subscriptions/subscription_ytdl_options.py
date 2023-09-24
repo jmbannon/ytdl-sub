@@ -14,6 +14,7 @@ from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.file_convert import FileConvertPlugin
 from ytdl_sub.plugins.format import FormatPlugin
+from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -88,10 +89,10 @@ class SubscriptionYTDLOptions:
         return ytdl_options
 
     def _plugin_ytdl_options(self, plugin: Type[PluginT]) -> Dict:
-        if not (audio_extract_plugin := self._get_plugin(plugin)):
-            return {}
+        if not (plugin_obj := self._get_plugin(plugin)):
+            return plugin.default_ytdl_options()
 
-        return audio_extract_plugin.ytdl_options()
+        return plugin_obj.ytdl_options()
 
     @property
     def _user_ytdl_options(self) -> Dict:
@@ -144,6 +145,7 @@ class SubscriptionYTDLOptions:
             self._plugin_ytdl_options(ChaptersPlugin),
             self._plugin_ytdl_options(AudioExtractPlugin),
             self._plugin_ytdl_options(FormatPlugin),
+            self._plugin_ytdl_options(MatchFiltersPlugin),
             self._user_ytdl_options,  # user ytdl options...
             self._download_only_options,  # then download_only options
         )
