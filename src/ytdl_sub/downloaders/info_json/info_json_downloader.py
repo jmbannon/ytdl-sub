@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Dict
 from typing import Iterable
 from typing import List
+from typing import Optional
 
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import Overrides
@@ -123,7 +124,7 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
             ):
                 self._enhanced_download_archive.num_entries_removed += 1
 
-    def download(self, entry: Entry) -> Entry:
+    def download(self, entry: Entry) -> Optional[Entry]:
         """
         Mock the download by copying the entry file from the output directory into
         the working directory

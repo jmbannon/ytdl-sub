@@ -193,6 +193,7 @@ match_filters
 '''''''''''''
 .. autoclass:: ytdl_sub.plugins.match_filters.MatchFiltersOptions()
   :members:
+  :member-order: bysource
   :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------

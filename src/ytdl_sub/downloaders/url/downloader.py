@@ -9,6 +9,8 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
+from yt_dlp.utils import RejectedVideoReached
+
 from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
@@ -459,7 +461,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 )
                 yield entry
 
-    def download(self, entry: Entry) -> Entry:
+    def download(self, entry: Entry) -> Optional[Entry]:
         """
         Parameters
         ----------
@@ -482,7 +484,13 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             entry.title,
         )
 
-        download_entry = self._extract_entry_info_with_retry(entry=entry)
+        # Match-filters can be applied at the download stage. If the download is rejected,
+        # then return None
+        try:
+            download_entry = self._extract_entry_info_with_retry(entry=entry)
+        except RejectedVideoReached:
+            download_logger.info("Entry rejected by download match-filter, skipping ..")
+            return None
 
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
             upload_date_standardized=entry.upload_date_standardized
