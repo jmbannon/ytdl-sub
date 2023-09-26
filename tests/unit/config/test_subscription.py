@@ -124,7 +124,7 @@ def test_subscription_file_using_value_when_not_defined(config_file: ConfigFile)
         ValidationException,
         match=re.escape(
             f"Subscription sub_name is a string, but "
-            f"{FILE_SUBSCRIPTION_VALUE_KEY} is not set to an override variable"
+            f"the subscription value is not set to an override variable"
         ),
     ):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")

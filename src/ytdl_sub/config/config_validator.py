@@ -106,6 +106,7 @@ class ConfigOptions(StrictDictValidator):
         "ffprobe_path",
         "file_name_max_bytes",
         "experimental",
+        "subscription_value",
     }
 
     def __init__(self, name: str, value: Any):
@@ -137,6 +138,9 @@ class ConfigOptions(StrictDictValidator):
         )
         self._file_name_max_bytes = self._validate_key(
             key="file_name_max_bytes", validator=IntValidator, default=MAX_FILE_NAME_BYTES
+        )
+        self._subscription_value = self._validate_key_if_present(
+            key="subscription_value", validator=StringValidator
         )
 
     @property
@@ -229,6 +233,14 @@ class ConfigOptions(StrictDictValidator):
         ``ffprobe.exe`` for Windows (in the same directory as ytdl-sub).
         """
         return self._ffprobe_path.value
+
+    @property
+    def subscription_value(self) -> Optional[str]:
+        """
+        Optional. Sets the (TODO: LINK)
+        subscription value key for subscription files that use this config.
+        """
+        return self._subscription_value.value if self._subscription_value else None
 
 
 class ConfigValidator(StrictDictValidator):
