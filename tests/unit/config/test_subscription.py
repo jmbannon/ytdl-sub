@@ -147,7 +147,7 @@ def test_subscription_file_value_applies_from_config(
         )
     assert len(subs) == 2
 
-    # Test __value__ worked correctly
+    # Test __value__ worked correctly from the config
     value_sub = subs[1]
     assert value_sub.name == "test_value"
     assert (
