@@ -65,7 +65,9 @@ class Subscription(SubscriptionDownload):
         )
 
     @classmethod
-    def _maybe_get_subscription_value(cls, config: ConfigFile, subscription_dict: Dict) -> Optional[str]:
+    def _maybe_get_subscription_value(
+        cls, config: ConfigFile, subscription_dict: Dict
+    ) -> Optional[str]:
         if FILE_SUBSCRIPTION_VALUE_KEY in subscription_dict:
             if not isinstance(subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY], str):
                 raise ValidationException(
