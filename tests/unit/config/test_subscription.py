@@ -30,28 +30,26 @@ def mock_load_yaml(preset_dict: Dict) -> None:
 
 
 @pytest.fixture
-def preset_file(youtube_video: Dict, output_options: Dict):
-    with patch("ytdl_sub.subscriptions.subscription.load_yaml") as mock_load_yaml:
-        mock_load_yaml.return_value = {
-            "__preset__": {
-                "download": youtube_video,
-                "output_options": output_options,
-                "nfo_tags": {
-                    "tags": {"key-3": "file_preset"},
-                },
-                "overrides": {
-                    "test_file_subscription_value": "original",
-                    "test_config_subscription_value": "original",
-                },
+def preset_with_file_preset(youtube_video: Dict, output_options: Dict):
+    return {
+        "__preset__": {
+            "download": youtube_video,
+            "output_options": output_options,
+            "nfo_tags": {
+                "tags": {"key-3": "file_preset"},
             },
-            "test_preset": {
-                "preset": "parent_preset_3",
-                "nfo_tags": {
-                    "tags": {"key-4": "test_preset"},
-                },
+            "overrides": {
+                "test_file_subscription_value": "original",
+                "test_config_subscription_value": "original",
             },
-        }
-        yield
+        },
+        "test_preset": {
+            "preset": "parent_preset_3",
+            "nfo_tags": {
+                "tags": {"key-4": "test_preset"},
+            },
+        },
+    }
 
 
 @pytest.fixture
@@ -98,9 +96,9 @@ def preset_file_with_value(youtube_video: Dict, output_options: Dict):
         yield
 
 
-@pytest.mark.usefixtures(preset_file.__name__)
-def test_subscription_file_preset_applies(config_file: ConfigFile):
-    subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
+def test_subscription_file_preset_applies(config_file: ConfigFile, preset_with_file_preset: Dict):
+    with mock_load_yaml(preset_dict=preset_with_file_preset):
+        subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
     assert len(subs) == 1
 
     # Test __preset__ worked correctly
