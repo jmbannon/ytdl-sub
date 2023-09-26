@@ -36,6 +36,8 @@ def preset_with_file_preset(youtube_video: Dict, output_options: Dict):
             "download": youtube_video,
             "output_options": output_options,
             "nfo_tags": {
+                "nfo_name": "eh",
+                "nfo_root": "eh",
                 "tags": {"key-3": "file_preset"},
             },
             "overrides": {
@@ -53,47 +55,24 @@ def preset_with_file_preset(youtube_video: Dict, output_options: Dict):
 
 
 @pytest.fixture
-def preset_with_subscription_value(youtube_video: Dict, output_options: Dict):
-    with patch("ytdl_sub.subscriptions.subscription.load_yaml") as mock_load_yaml:
-        mock_load_yaml.return_value = {
-            "__preset__": {
-                "preset": "parent_preset_3",
-                "download": youtube_video,
-                "output_options": output_options,
-                "nfo_tags": {
-                    "tags": {"key-3": "file_preset"},
-                },
-                "overrides": {
-                    "test_file_subscription_value": "original",
-                    "test_config_subscription_value": "original",
-                },
-            },
-            "__value__": "test_file_subscription_value",
+def preset_with_subscription_value(preset_with_file_preset: Dict):
+    return dict(
+        preset_with_file_preset,
+        **{
             "test_value": "is_overwritten",
-        }
-        yield
+        },
+    )
 
 
 @pytest.fixture
-def preset_file_with_value(youtube_video: Dict, output_options: Dict):
-    with patch("ytdl_sub.subscriptions.subscription.load_yaml") as mock_load_yaml:
-        mock_load_yaml.return_value = {
-            "__preset__": {
-                "preset": "parent_preset_3",
-                "download": youtube_video,
-                "output_options": output_options,
-                "nfo_tags": {
-                    "tags": {"key-3": "file_preset"},
-                },
-                "overrides": {
-                    "test_file_subscription_value": "original",
-                    "test_config_subscription_value": "original",
-                },
-            },
+def preset_with_subscription_file_value(preset_with_subscription_value: Dict):
+    return dict(
+        preset_with_subscription_value,
+        **{
             "__value__": "test_file_subscription_value",
             "test_value": "is_overwritten",
-        }
-        yield
+        },
+    )
 
 
 def test_subscription_file_preset_applies(config_file: ConfigFile, preset_with_file_preset: Dict):
@@ -116,13 +95,16 @@ def test_subscription_file_preset_applies(config_file: ConfigFile, preset_with_f
     }
 
 
-@pytest.mark.usefixtures(preset_file_with_value.__name__)
-def test_subscription_file_value_applies(config_file: ConfigFile):
-    subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
-    assert len(subs) == 1
+def test_subscription_file_value_applies(
+    config_file: ConfigFile, preset_with_subscription_file_value: Dict
+):
+    with mock_load_yaml(preset_dict=preset_with_subscription_file_value):
+        subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
+    assert len(subs) == 2
 
     # Test __value__ worked correctly
-    value_sub = subs[0]
+    value_sub = subs[1]
+    assert value_sub.name == "test_value"
     assert (
         value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value")
         == "is_overwritten"
@@ -133,17 +115,19 @@ def test_subscription_file_value_applies(config_file: ConfigFile):
     )
 
 
-@pytest.mark.usefixtures(preset_file_with_value.__name__)
 def test_subscription_file_value_applies_sub_file_takes_precedence(
     config_file_with_subscription_value: ConfigFile,
+    preset_with_subscription_file_value: Dict,
 ):
-    subs = Subscription.from_file_path(
-        config=config_file_with_subscription_value, subscription_path="mocked"
-    )
-    assert len(subs) == 1
+    with mock_load_yaml(preset_dict=preset_with_subscription_file_value):
+        subs = Subscription.from_file_path(
+            config=config_file_with_subscription_value, subscription_path="mocked"
+        )
+    assert len(subs) == 2
 
     # Test __value__ worked correctly
-    value_sub = subs[0]
+    value_sub = subs[1]
+    assert value_sub.name == "test_value"
     assert (
         value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value")
         == "is_overwritten"
@@ -154,16 +138,26 @@ def test_subscription_file_value_applies_sub_file_takes_precedence(
     )
 
 
-# @pytest.mark.usefixtures(preset_file.__name__)
-# def test_subscription_file_value_applies_from_config(config_file: ConfigFile):
-#     subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
-#     assert len(subs) == 1
-#
-#     # Test __value__ worked correctly
-#     value_sub = subs[0]
-#     assert value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value") == "original"
-#     assert value_sub.overrides.dict_with_format_strings.get(
-#         "test_config_subscription_value") == "is_overwritten"
+def test_subscription_file_value_applies_from_config(
+    config_file_with_subscription_value: ConfigFile, preset_with_subscription_value: Dict
+):
+    with mock_load_yaml(preset_dict=preset_with_subscription_value):
+        subs = Subscription.from_file_path(
+            config=config_file_with_subscription_value, subscription_path="mocked"
+        )
+    assert len(subs) == 2
+
+    # Test __value__ worked correctly
+    value_sub = subs[1]
+    assert value_sub.name == "test_value"
+    assert (
+        value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value")
+        == "original"
+    )
+    assert (
+        value_sub.overrides.dict_with_format_strings.get("test_config_subscription_value")
+        == "is_overwritten"
+    )
 
 
 def test_subscription_file_bad_value(config_file: ConfigFile):
