@@ -74,6 +74,19 @@ def preset_with_subscription_file_value(preset_with_subscription_value: Dict):
         },
     )
 
+@pytest.fixture
+def preset_with_subscription_file_value_nested_presets(preset_with_subscription_value: Dict):
+    return dict(
+        preset_with_subscription_value,
+        **{
+            "parent_preset_2": {
+                "parent_preset_1": {
+                    "test_2_1": "is_2_1_overwritten"
+                },
+                "test_1": "is_1_overwritten"
+            }
+        }
+    )
 
 def test_subscription_file_preset_applies(config_file: ConfigFile, preset_with_file_preset: Dict):
     with mock_load_yaml(preset_dict=preset_with_file_preset):
@@ -160,6 +173,27 @@ def test_subscription_file_value_applies_from_config(
     )
 
 
+def test_subscription_file_value_applies_from_config_and_nested(
+    config_file_with_subscription_value: ConfigFile, preset_with_subscription_file_value_nested_presets: Dict
+):
+    with mock_load_yaml(preset_dict=preset_with_subscription_file_value_nested_presets):
+        subs = Subscription.from_file_path(
+            config=config_file_with_subscription_value, subscription_path="mocked"
+        )
+    assert len(subs) == 2
+
+    # Test __value__ worked correctly from the config
+    value_sub = subs[1]
+    assert value_sub.name == "test_value"
+    assert (
+        value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value")
+        == "original"
+    )
+    assert (
+        value_sub.overrides.dict_with_format_strings.get("test_config_subscription_value")
+        == "is_overwritten"
+    )
+
 def test_subscription_file_bad_value(config_file: ConfigFile):
     with mock_load_yaml(preset_dict={"__value__": {"should be": "string"}}), pytest.raises(
         ValidationException,
@@ -187,6 +221,6 @@ def test_subscription_file_using_value_when_not_defined(config_file: ConfigFile)
 def test_subscription_file_invalid_form(config_file: ConfigFile):
     with mock_load_yaml(preset_dict={"sub_name": 4332}), pytest.raises(
         ValidationException,
-        match=re.escape(f"Subscription sub_name should be in the form of a preset"),
+        match=re.escape(f"Validation error in sub_name: should be of type object."),
     ):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")

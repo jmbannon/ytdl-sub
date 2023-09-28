@@ -1,4 +1,5 @@
 import copy
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -6,6 +7,7 @@ from typing import Optional
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
+from ytdl_sub.subscriptions.subscription_validators import SubscriptionValidator
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.validators import LiteralDictValidator
@@ -121,39 +123,21 @@ class Subscription(SubscriptionDownload):
             config = copy.deepcopy(config)
             config.presets.dict[FILE_PRESET_APPLY_KEY] = file_preset.dict
 
-        for subscription_key, subscription_object in subscription_dict.items():
+        subscriptions_dict: Dict[str, Any] = {
+            key: obj
+            for key, obj in subscription_dict.items()
+            if key not in [FILE_PRESET_APPLY_KEY, FILE_SUBSCRIPTION_VALUE_KEY]
+        }
 
-            # Skip file preset or value
-            if subscription_key in [FILE_PRESET_APPLY_KEY, FILE_SUBSCRIPTION_VALUE_KEY]:
-                continue
+        subscriptions_dicts = SubscriptionValidator(
+            name="",
+            value=subscriptions_dict,
+            config=config,
+            presets=[FILE_PRESET_APPLY_KEY] if has_file_preset else [],
+            subscription_value=file_subscription_value,
+        ).subscription_dicts()
 
-            # If the subscription obj is just a string, set it to the override variable
-            # defined in FILE_SUBSCRIPTION_VALUE_KEY
-            if isinstance(subscription_object, str) and file_subscription_value:
-                subscription_object = {"overrides": {file_subscription_value: subscription_object}}
-            elif isinstance(subscription_object, dict):
-                pass
-            elif isinstance(subscription_object, str) and not file_subscription_value:
-                raise ValidationException(
-                    f"Subscription {subscription_key} is a string, but the subscription value "
-                    f"is not set to an override variable"
-                )
-            else:
-                raise ValidationException(
-                    f"Subscription {subscription_key} should be in the form of a preset"
-                )
-
-            # If it has file_preset, inject it as a parent preset
-            if has_file_preset:
-                parent_preset = subscription_object.get("preset", [])
-                # Preset can be a single string
-                if isinstance(parent_preset, str):
-                    parent_preset = [parent_preset]
-
-                # If it's not a string or list, it will fail downstream
-                if isinstance(parent_preset, list):
-                    subscription_object["preset"] = parent_preset + [FILE_PRESET_APPLY_KEY]
-
+        for subscription_key, subscription_object in subscriptions_dicts.items():
             subscriptions.append(
                 cls.from_dict(
                     config=config,
