@@ -13,7 +13,7 @@ ytdl-sub configs, check out the
 
 
 For navigating config docs, use the left-side bar on the
-:ref:`config_yaml` page to find every available ytdl-sub field.
+:ref:`config` page to find every available ytdl-sub field.
 
 Contents
 ========
