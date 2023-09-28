@@ -2,7 +2,7 @@ Config
 ======
 ytdl-sub is configured using a ``config.yaml`` file.
 
-.. _config_yaml:
+.. _config:
 
 config.yaml
 -----------
@@ -318,8 +318,10 @@ by using the file-wide ``__preset__``:
 This ``subscription.yaml`` is equivalent to the one above it because all
 subscriptions automatically set ``__preset__`` as a `parent preset`_.
 
-File Subscription Value
-^^^^^^^^^^^^^^^^^^^^^^^
+.. _subscription value:
+
+Subscription Value
+^^^^^^^^^^^^^^^^^^^
 With a clever config and use of ``__preset__``, your subscriptions can typically boil
 down to a name and url. You can set ``__value__`` to the name of an override variable,
 and use the override variable ``subscription_name`` to achieve one-liner subscriptions.
@@ -329,20 +331,19 @@ Using the example above, we can do:
   :caption: subscription.yaml
 
    __preset__:
-     preset: "playlist_preset_ex"
+     preset:
+       - "tv_show"
      overrides:
-       playlist_name: "{subscription_name}"
+       tv_show_name: "{subscription_name}"
 
    __value__: "url"
 
-   # single-line subscription
-   "diy-playlist": "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
-
-``"diy-playlist"`` gets assigned to the ``playlist_name`` override variable by setting
-it with ``subscription_name`` , and the url gets assigned to ``url`` by setting ``__value__``
-to write values to it.
+   # single-line subscription, sets "Brandon Acker" and the subscription value
+   # to the override variables tv_show_name and url
+   "Brandon Acker": "https://www.youtube.com/@brandonacker"
 
 Traditional subscriptions that can override presets will still work when using ``__value__``.
+``__value__`` can also be set within a :ref:`config`.
 
 -------------------------------------------------------------------------------
 

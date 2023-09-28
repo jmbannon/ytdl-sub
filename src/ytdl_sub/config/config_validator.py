@@ -237,8 +237,8 @@ class ConfigOptions(StrictDictValidator):
     @property
     def subscription_value(self) -> Optional[str]:
         """
-        Optional. Sets the (TODO: LINK)
-        subscription value key for subscription files that use this config.
+        Optional. Sets the :ref:`subscription value` for subscription
+        files that use this config.
         """
         return self._subscription_value.value if self._subscription_value else None
 
