@@ -134,6 +134,7 @@ class Subscription(SubscriptionDownload):
             value=subscriptions_dict,
             config=config,
             presets=[FILE_PRESET_APPLY_KEY] if has_file_preset else [],
+            indent_overrides=[],
             subscription_value=file_subscription_value,
         ).subscription_dicts()
 
