@@ -272,12 +272,30 @@ def test_subscription_file_bad_value(config_file: ConfigFile):
 
 def test_subscription_file_using_value_when_not_defined(config_file: ConfigFile):
     with mock_load_yaml(
-        preset_dict={"sub_name": "single value, __value__ not defined"}
+        preset_dict={"[INDENTS_IN_ERR_MSG]": {"sub_name": "single value, __value__ not defined"}}
     ), pytest.raises(
         ValidationException,
         match=re.escape(
-            f"Subscription sub_name is a string, but "
-            f"the subscription value is not set to an override variable"
+            "Validation error in [INDENTS_IN_ERR_MSG].sub_name: Subscription "
+            "sub_name is a string, but the subscription value is not set to an override variable"
+        ),
+    ):
+        _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")
+
+
+def test_subscription_file_using_conflicting_preset_name(config_file: ConfigFile):
+    with mock_load_yaml(
+        preset_dict={
+            "[INDENTS_IN_ERR_MSG]": {
+                "[ANOTHER]": {"jellyfin_tv_show_by_date": "single value, __value__ not defined"}
+            }
+        }
+    ), pytest.raises(
+        ValidationException,
+        match=re.escape(
+            "Validation error in [INDENTS_IN_ERR_MSG].[ANOTHER].jellyfin_tv_show_by_date: "
+            "jellyfin_tv_show_by_date conflicts with an existing preset name and cannot be used "
+            "as a subscription name"
         ),
     ):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")

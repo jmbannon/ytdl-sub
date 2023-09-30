@@ -91,14 +91,22 @@ class SubscriptionValueValidator(SubscriptionOutput, StringValidator):
         self,
         name,
         value,
+        config: ConfigFile,
         presets: List[str],
         indent_overrides: List[str],
         subscription_value: Optional[str],
     ):
         super().__init__(name=name, value=value, presets=presets, indent_overrides=indent_overrides)
+
+        if self._leaf_name in config.presets.keys:
+            raise self._validation_exception(
+                f"{self._leaf_name} conflicts with an existing preset name and cannot be "
+                f"used as a subscription name"
+            )
+
         if subscription_value is None:
             raise self._validation_exception(
-                f"Subscription {name} is a string, but the subscription value "
+                f"Subscription {self._leaf_name} is a string, but the subscription value "
                 f"is not set to an override variable"
             )
 
@@ -136,15 +144,11 @@ class SubscriptionValidator(SubscriptionOutput):
             obj_name = f"{name}.{key}" if name else key
 
             if isinstance(obj, str):
-                if key in config.presets.keys:
-                    raise self._validation_exception(
-                        f"{key} conflicts with an existing preset name and cannot be "
-                        f"used as a subscription name"
-                    )
                 self._children.append(
                     SubscriptionValueValidator(
                         name=obj_name,
                         value=obj,
+                        config=config,
                         presets=presets,
                         indent_overrides=indent_overrides,
                         subscription_value=subscription_value,
