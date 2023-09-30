@@ -74,19 +74,19 @@ def preset_with_subscription_file_value(preset_with_subscription_value: Dict):
         },
     )
 
+
 @pytest.fixture
-def preset_with_subscription_file_value_nested_presets(preset_with_subscription_value: Dict):
+def preset_with_subscription_value_nested_presets(preset_with_subscription_value: Dict):
     return dict(
         preset_with_subscription_value,
         **{
             "parent_preset_2": {
-                "parent_preset_1": {
-                    "test_2_1": "is_2_1_overwritten"
-                },
-                "test_1": "is_1_overwritten"
+                "parent_preset_1": {"test_2_1": "is_2_1_overwritten"},
+                "test_1": "is_1_overwritten",
             }
-        }
+        },
     )
+
 
 def test_subscription_file_preset_applies(config_file: ConfigFile, preset_with_file_preset: Dict):
     with mock_load_yaml(preset_dict=preset_with_file_preset):
@@ -174,25 +174,28 @@ def test_subscription_file_value_applies_from_config(
 
 
 def test_subscription_file_value_applies_from_config_and_nested(
-    config_file_with_subscription_value: ConfigFile, preset_with_subscription_file_value_nested_presets: Dict
+    config_file_with_subscription_value: ConfigFile,
+    preset_with_subscription_value_nested_presets: Dict,
 ):
-    with mock_load_yaml(preset_dict=preset_with_subscription_file_value_nested_presets):
+    with mock_load_yaml(preset_dict=preset_with_subscription_value_nested_presets):
         subs = Subscription.from_file_path(
             config=config_file_with_subscription_value, subscription_path="mocked"
         )
-    assert len(subs) == 2
+    assert len(subs) == 4
 
     # Test __value__ worked correctly from the config
-    value_sub = subs[1]
-    assert value_sub.name == "test_value"
+    sub_1 = [sub for sub in subs if sub.name == "test_1"][0]
+    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0]
+
     assert (
-        value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value")
-        == "original"
+        sub_1.overrides.dict_with_format_strings.get("test_config_subscription_value")
+        == "is_1_overwritten"
     )
     assert (
-        value_sub.overrides.dict_with_format_strings.get("test_config_subscription_value")
-        == "is_overwritten"
+        sub_2_1.overrides.dict_with_format_strings.get("test_config_subscription_value")
+        == "is_2_1_overwritten"
     )
+
 
 def test_subscription_file_bad_value(config_file: ConfigFile):
     with mock_load_yaml(preset_dict={"__value__": {"should be": "string"}}), pytest.raises(
