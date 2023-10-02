@@ -138,15 +138,12 @@ def test_subscription_file_value_applies(
 
     # Test __value__ worked correctly
     value_sub = subs[1]
+    overrides = value_sub.overrides.dict_with_format_strings
     assert value_sub.name == "test_value"
-    assert (
-        value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value")
-        == "is_overwritten"
-    )
-    assert (
-        value_sub.overrides.dict_with_format_strings.get("test_config_subscription_value")
-        == "original"
-    )
+
+    assert overrides.get("test_file_subscription_value") == "is_overwritten"
+    assert overrides.get("test_file_subscription_value")
+    assert overrides.get("subscription_value") == "is_overwritten"
 
 
 def test_subscription_file_value_applies_sub_file_takes_precedence(
@@ -161,15 +158,10 @@ def test_subscription_file_value_applies_sub_file_takes_precedence(
 
     # Test __value__ worked correctly
     value_sub = subs[1]
+    overrides = value_sub.overrides.dict_with_format_strings
     assert value_sub.name == "test_value"
-    assert (
-        value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value")
-        == "is_overwritten"
-    )
-    assert (
-        value_sub.overrides.dict_with_format_strings.get("test_config_subscription_value")
-        == "original"
-    )
+    assert overrides.get("test_file_subscription_value") == "is_overwritten"
+    assert overrides.get("test_config_subscription_value") == "original"
 
 
 def test_subscription_file_value_applies_from_config(
@@ -183,15 +175,10 @@ def test_subscription_file_value_applies_from_config(
 
     # Test __value__ worked correctly from the config
     value_sub = subs[1]
+    overrides = value_sub.overrides.dict_with_format_strings
     assert value_sub.name == "test_value"
-    assert (
-        value_sub.overrides.dict_with_format_strings.get("test_file_subscription_value")
-        == "original"
-    )
-    assert (
-        value_sub.overrides.dict_with_format_strings.get("test_config_subscription_value")
-        == "is_overwritten"
-    )
+    assert overrides.get("test_file_subscription_value") == "original"
+    assert overrides.get("test_config_subscription_value") == "is_overwritten"
 
 
 def test_subscription_file_value_applies_from_config_and_nested(

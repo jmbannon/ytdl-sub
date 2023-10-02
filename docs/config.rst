@@ -299,8 +299,66 @@ custom variables: ``{output_directory}``, ``{playlist_name}``, and ``{url}``. Th
 the `parent preset`_ to ``playlist_preset_ex``, and must define the variables ``{playlist_name}``
 and ``{url}`` since the preset did not.
 
+.. _beautifying subscriptions:
+
+Beautifying Subscriptions
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Subscriptions support using presets as keys, and using keys to set override variables as values.
+For example:
+
+.. code-block:: yaml
+  :caption: subscription.yaml
+
+   tv_show:
+     only_recent:
+       [News]:
+         "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
+
+     [Tech]:
+       "Two Minute Papers": "https://www.youtube.com/@TwoMinutePapers"
+
+Will create two subscriptions named "Breaking News" and "Two Minute Papers", equivalent to:
+
+.. code-block:: yaml
+
+  "Breaking News":
+    preset:
+      - "tv_show"
+      - "only_recent"
+
+    overrides:
+      subscription_indent_1: "News"
+      subscription_name: "Breaking News"
+      subscription_value: "https://www.youtube.com/@SomeBreakingNews"
+
+  "Two Minute Papers":
+    preset:
+      - "tv_show"
+
+    overrides:
+      subscription_indent_1: "Tech"
+      subscription_name: "Two Minute Papers"
+      subscription_value: "https://www.youtube.com/@TwoMinutePapers"
+
+You can provide as many parent presets in the form of keys, and subscription indents as ``[keys]``.
+This can drastically simplify subscription definitions by setting things like so in your
+parent preset:
+
+.. code-block:: yaml
+
+  presets:
+    tv_show_name:
+      overrides:
+        tv_show_name: "{subscription_name}"
+        url: "{subscription_value}"
+        genre: "{subscription_indent_1}"
+
+.. _subscription value:
+
 File Preset
 ^^^^^^^^^^^
+NOTE: This is deprecated in favor of using the method in :ref:`beautifying subscriptions`.
+
 You can apply a preset to all subscriptions in the ``subscription.yaml`` file
 by using the file-wide ``__preset__``:
 
@@ -318,10 +376,11 @@ by using the file-wide ``__preset__``:
 This ``subscription.yaml`` is equivalent to the one above it because all
 subscriptions automatically set ``__preset__`` as a `parent preset`_.
 
-.. _subscription value:
 
 Subscription Value
 ^^^^^^^^^^^^^^^^^^^
+NOTE: This is deprecated in favor of using the method in :ref:`beautifying subscriptions`.
+
 With a clever config and use of ``__preset__``, your subscriptions can typically boil
 down to a name and url. You can set ``__value__`` to the name of an override variable,
 and use the override variable ``subscription_name`` to achieve one-liner subscriptions.

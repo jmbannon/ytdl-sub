@@ -27,6 +27,15 @@ def subscription_indent_variable_name(index: int) -> str:
     return f"subscription_indent_{index + 1}"
 
 
+def subscription_value_variable_name() -> str:
+    """
+    Returns
+    -------
+    The override variable name containing the subscription value if present
+    """
+    return "subscription_value"
+
+
 def maybe_indent_override_value(value: str) -> Optional[str]:
     """
     Returns
@@ -117,7 +126,11 @@ class SubscriptionValueValidator(SubscriptionOutput, StringValidator):
             self._leaf_name: {
                 "preset": self._presets,
                 "overrides": dict(
-                    {self._subscription_value: self.value}, **self._indent_overrides_dict()
+                    {
+                        self._subscription_value: self.value,
+                        "subscription_value": self.value,
+                    },
+                    **self._indent_overrides_dict(),
                 ),
             }
         }

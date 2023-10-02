@@ -9,11 +9,14 @@ from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
 from ytdl_sub.subscriptions.subscription_validators import SubscriptionValidator
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.validators import LiteralDictValidator
 
 FILE_PRESET_APPLY_KEY = "__preset__"
 FILE_SUBSCRIPTION_VALUE_KEY = "__value__"
+
+logger = Logger.get("subscription")
 
 
 class Subscription(SubscriptionDownload):
@@ -70,15 +73,23 @@ class Subscription(SubscriptionDownload):
     def _maybe_get_subscription_value(
         cls, config: ConfigFile, subscription_dict: Dict
     ) -> Optional[str]:
+        subscription_value_key: Optional[str] = config.config_options.subscription_value
         if FILE_SUBSCRIPTION_VALUE_KEY in subscription_dict:
             if not isinstance(subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY], str):
                 raise ValidationException(
                     f"Using {FILE_SUBSCRIPTION_VALUE_KEY} in a subscription"
                     f"must be a string that corresponds to an override variable"
                 )
-            return subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY]
 
-        return config.config_options.subscription_value  # can be None
+            subscription_value_key = subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY]
+
+        if subscription_value_key is not None:
+            logger.warning(
+                "Using %s in a subscription will eventually be deprecated in favor of writing "
+                "to the override variable `subscription_value`. Please update by Dec 2023.",
+                FILE_SUBSCRIPTION_VALUE_KEY,
+            )
+        return subscription_value_key
 
     @classmethod
     def from_file_path(cls, config: ConfigFile, subscription_path: str) -> List["Subscription"]:
