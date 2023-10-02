@@ -1,4 +1,5 @@
 import copy
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -6,12 +7,16 @@ from typing import Optional
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
+from ytdl_sub.subscriptions.subscription_validators import SubscriptionValidator
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.validators import LiteralDictValidator
 
 FILE_PRESET_APPLY_KEY = "__preset__"
 FILE_SUBSCRIPTION_VALUE_KEY = "__value__"
+
+logger = Logger.get("subscription")
 
 
 class Subscription(SubscriptionDownload):
@@ -68,15 +73,23 @@ class Subscription(SubscriptionDownload):
     def _maybe_get_subscription_value(
         cls, config: ConfigFile, subscription_dict: Dict
     ) -> Optional[str]:
+        subscription_value_key: Optional[str] = config.config_options.subscription_value
         if FILE_SUBSCRIPTION_VALUE_KEY in subscription_dict:
             if not isinstance(subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY], str):
                 raise ValidationException(
                     f"Using {FILE_SUBSCRIPTION_VALUE_KEY} in a subscription"
                     f"must be a string that corresponds to an override variable"
                 )
-            return subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY]
 
-        return config.config_options.subscription_value  # can be None
+            subscription_value_key = subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY]
+
+        if subscription_value_key is not None:
+            logger.warning(
+                "Using %s in a subscription will eventually be deprecated in favor of writing "
+                "to the override variable `subscription_value`. Please update by Dec 2023.",
+                FILE_SUBSCRIPTION_VALUE_KEY,
+            )
+        return subscription_value_key
 
     @classmethod
     def from_file_path(cls, config: ConfigFile, subscription_path: str) -> List["Subscription"]:
@@ -121,39 +134,22 @@ class Subscription(SubscriptionDownload):
             config = copy.deepcopy(config)
             config.presets.dict[FILE_PRESET_APPLY_KEY] = file_preset.dict
 
-        for subscription_key, subscription_object in subscription_dict.items():
+        subscriptions_dict: Dict[str, Any] = {
+            key: obj
+            for key, obj in subscription_dict.items()
+            if key not in [FILE_PRESET_APPLY_KEY, FILE_SUBSCRIPTION_VALUE_KEY]
+        }
 
-            # Skip file preset or value
-            if subscription_key in [FILE_PRESET_APPLY_KEY, FILE_SUBSCRIPTION_VALUE_KEY]:
-                continue
+        subscriptions_dicts = SubscriptionValidator(
+            name="",
+            value=subscriptions_dict,
+            config=config,
+            presets=[FILE_PRESET_APPLY_KEY] if has_file_preset else [],
+            indent_overrides=[],
+            subscription_value=file_subscription_value,
+        ).subscription_dicts()
 
-            # If the subscription obj is just a string, set it to the override variable
-            # defined in FILE_SUBSCRIPTION_VALUE_KEY
-            if isinstance(subscription_object, str) and file_subscription_value:
-                subscription_object = {"overrides": {file_subscription_value: subscription_object}}
-            elif isinstance(subscription_object, dict):
-                pass
-            elif isinstance(subscription_object, str) and not file_subscription_value:
-                raise ValidationException(
-                    f"Subscription {subscription_key} is a string, but the subscription value "
-                    f"is not set to an override variable"
-                )
-            else:
-                raise ValidationException(
-                    f"Subscription {subscription_key} should be in the form of a preset"
-                )
-
-            # If it has file_preset, inject it as a parent preset
-            if has_file_preset:
-                parent_preset = subscription_object.get("preset", [])
-                # Preset can be a single string
-                if isinstance(parent_preset, str):
-                    parent_preset = [parent_preset]
-
-                # If it's not a string or list, it will fail downstream
-                if isinstance(parent_preset, list):
-                    subscription_object["preset"] = parent_preset + [FILE_PRESET_APPLY_KEY]
-
+        for subscription_key, subscription_object in subscriptions_dicts.items():
             subscriptions.append(
                 cls.from_dict(
                     config=config,
