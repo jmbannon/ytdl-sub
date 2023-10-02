@@ -29,7 +29,7 @@ and subscriptions.
 .. autoclass:: ytdl_sub.config.config_validator.ConfigOptions()
   :members:
   :member-order: bysource
-  :exclude-members: persist_logs, experimental
+  :exclude-members: subscription_value, persist_logs, experimental
 
 persist_logs
 """"""""""""
