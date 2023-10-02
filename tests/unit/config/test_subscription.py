@@ -157,11 +157,11 @@ def test_subscription_file_value_applies_sub_file_takes_precedence(
     assert len(subs) == 2
 
     # Test __value__ worked correctly
-    value_sub = subs[1]
-    overrides = value_sub.overrides.dict_with_format_strings
-    assert value_sub.name == "test_value"
-    assert overrides.get("test_file_subscription_value") == "is_overwritten"
-    assert overrides.get("test_config_subscription_value") == "original"
+    value_sub = subs[1].overrides.dict_with_format_strings
+    assert value_sub.get("test_file_subscription_value") == "is_overwritten"
+    assert value_sub.get("test_config_subscription_value") == "original"
+    assert value_sub.get("subscription_name") == "test_value"
+    assert value_sub.get("subscription_value") == "is_overwritten"
 
 
 def test_subscription_file_value_applies_from_config(
@@ -174,11 +174,11 @@ def test_subscription_file_value_applies_from_config(
     assert len(subs) == 2
 
     # Test __value__ worked correctly from the config
-    value_sub = subs[1]
-    overrides = value_sub.overrides.dict_with_format_strings
-    assert value_sub.name == "test_value"
-    assert overrides.get("test_file_subscription_value") == "original"
-    assert overrides.get("test_config_subscription_value") == "is_overwritten"
+    value_sub = subs[1].overrides.dict_with_format_strings
+    assert value_sub.get("test_file_subscription_value") == "original"
+    assert value_sub.get("test_config_subscription_value") == "is_overwritten"
+    assert value_sub.get("subscription_name") == "test_value"
+    assert value_sub.get("subscription_value") == "is_overwritten"
 
 
 def test_subscription_file_value_applies_from_config_and_nested(
@@ -192,17 +192,16 @@ def test_subscription_file_value_applies_from_config_and_nested(
     assert len(subs) == 4
 
     # Test __value__ worked correctly from the config
-    sub_1 = [sub for sub in subs if sub.name == "test_1"][0]
-    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0]
+    sub_1 = [sub for sub in subs if sub.name == "test_1"][0].overrides.dict_with_format_strings
+    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.dict_with_format_strings
 
-    assert (
-        sub_1.overrides.dict_with_format_strings.get("test_config_subscription_value")
-        == "is_1_overwritten"
-    )
-    assert (
-        sub_2_1.overrides.dict_with_format_strings.get("test_config_subscription_value")
-        == "is_2_1_overwritten"
-    )
+    assert sub_1.get("test_config_subscription_value") == "is_1_overwritten"
+    assert sub_1.get("subscription_name") == "test_1"
+    assert sub_1.get("subscription_value") == "is_1_overwritten"
+
+    assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
+    assert sub_2_1.get("subscription_name") == "test_2_1"
+    assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
 
 
 def test_subscription_file_value_applies_from_config_and_nested_and_indent_variables(
@@ -218,32 +217,26 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
     assert len(subs) == 4
 
     # Test __value__ worked correctly from the config
-    sub_test_value = [sub for sub in subs if sub.name == "test_value"][0]
-    sub_1 = [sub for sub in subs if sub.name == "test_1"][0]
-    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0]
+    sub_test_value = [sub for sub in subs if sub.name == "test_value"][
+        0
+    ].overrides.dict_with_format_strings
+    sub_1 = [sub for sub in subs if sub.name == "test_1"][0].overrides.dict_with_format_strings
+    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.dict_with_format_strings
 
-    assert (
-        sub_test_value.overrides.dict_with_format_strings.get("subscription_indent_1")
-        == "original_1"
-    )
-    assert (
-        sub_test_value.overrides.dict_with_format_strings.get("subscription_indent_2")
-        == "original_2"
-    )
+    assert sub_test_value.get("subscription_indent_1") == "original_1"
+    assert sub_test_value.get("subscription_indent_2") == "original_2"
 
-    assert (
-        sub_1.overrides.dict_with_format_strings.get("test_config_subscription_value")
-        == "is_1_overwritten"
-    )
-    assert sub_1.overrides.dict_with_format_strings.get("subscription_indent_1") == "INDENT_1"
-    assert sub_1.overrides.dict_with_format_strings.get("subscription_indent_2") == "INDENT_2"
+    assert sub_1.get("test_config_subscription_value") == "is_1_overwritten"
+    assert sub_1.get("subscription_name") == "test_1"
+    assert sub_1.get("subscription_value") == "is_1_overwritten"
+    assert sub_1.get("subscription_indent_1") == "INDENT_1"
+    assert sub_1.get("subscription_indent_2") == "INDENT_2"
 
-    assert (
-        sub_2_1.overrides.dict_with_format_strings.get("test_config_subscription_value")
-        == "is_2_1_overwritten"
-    )
-    assert sub_2_1.overrides.dict_with_format_strings.get("subscription_indent_1") == "INDENT_1"
-    assert sub_2_1.overrides.dict_with_format_strings.get("subscription_indent_2") == "original_2"
+    assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
+    assert sub_2_1.get("subscription_name") == "test_2_1"
+    assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
+    assert sub_2_1.get("subscription_indent_1") == "INDENT_1"
+    assert sub_2_1.get("subscription_indent_2") == "original_2"
 
 
 def test_subscription_file_bad_value(config_file: ConfigFile):
