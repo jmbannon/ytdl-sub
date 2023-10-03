@@ -153,6 +153,9 @@ class TestPrebuiltTVShowPresets:
             preset_name=subscription_name,
             preset_dict={
                 "preset": parent_presets + [reformatted_tv_show_structure_preset],
+                "output_options": {
+                    "migrated_download_archive_name": ".ytdl-sub-{tv_show_name_sanitized}-download-archive.json"
+                },
                 "overrides": {
                     "url": "https://your.name.here",
                     "tv_show_name": "Best Prebuilt TV Show by Date",
@@ -172,7 +175,7 @@ class TestPrebuiltTVShowPresets:
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=False,
-            expected_download_summary_file_name=f"{reformatted_expected_summary_name}.json",
+            expected_download_summary_file_name=f"{reformatted_expected_summary_name}_migrated.json",
         )
 
 
@@ -313,6 +316,9 @@ class TestPrebuiltTvShowCollectionPresets:
             preset_name=subscription_name,
             preset_dict={
                 "preset": parent_presets + [reformatted_tv_show_structure_preset],
+                "output_options": {
+                    "migrated_download_archive_name": ".ytdl-sub-{tv_show_name_sanitized}-download-archive.json"
+                },
                 "overrides": dict(
                     overrides,
                     **{
@@ -334,5 +340,5 @@ class TestPrebuiltTvShowCollectionPresets:
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=False,
-            expected_download_summary_file_name=f"{reformatted_expected_summary_name}.json",
+            expected_download_summary_file_name=f"{reformatted_expected_summary_name}_migrated.json",
         )
