@@ -15,11 +15,16 @@ from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.file_convert import FileConvertPlugin
 from ytdl_sub.plugins.format import FormatPlugin
 from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
+from ytdl_sub.plugins.match_filters import combine_filters
+from ytdl_sub.plugins.match_filters import default_filters
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.utils.ffmpeg import FFMPEG
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 PluginT = TypeVar("PluginT", bound=Plugin)
+
+logger = Logger.get("ytdl-options")
 
 
 class SubscriptionYTDLOptions:
@@ -89,10 +94,10 @@ class SubscriptionYTDLOptions:
         return ytdl_options
 
     def _plugin_ytdl_options(self, plugin: Type[PluginT]) -> Dict:
-        if not (plugin_obj := self._get_plugin(plugin)):
-            return plugin.default_ytdl_options()
+        if plugin_obj := self._get_plugin(plugin):
+            return plugin_obj.ytdl_options()
 
-        return plugin_obj.ytdl_options()
+        return {}
 
     @property
     def _user_ytdl_options(self) -> Dict:
@@ -100,14 +105,50 @@ class SubscriptionYTDLOptions:
 
     @property
     def _plugin_match_filters(self) -> Dict:
-        match_filters: List[str] = []
-        breaking_match_filters: List[str] = []
+        """
+        All match-filters from every plugin to fetch metadata.
+        In order for other plugins to not collide with user-defined match-filters, do
+
+        match_filters = user_match_filters or {}
+        for plugin in plugins:
+          for filter in match_filters:
+            AND plugin's match filters onto the existing filters
+
+        Otherwise, the filters separately act as an OR
+        """
+        match_filters, breaking_match_filters = default_filters()
+
+        match_filters_plugin = self._get_plugin(MatchFiltersPlugin)
+        if match_filters_plugin:
+            (
+                user_match_filters,
+                user_breaking_match_filters,
+            ) = match_filters_plugin.ytdl_options_match_filters()
+            match_filters = combine_filters(filters=user_match_filters, to_combine=match_filters)
+            breaking_match_filters = combine_filters(
+                filters=user_breaking_match_filters, to_combine=breaking_match_filters
+            )
+
         for plugin in self._plugins:
+            # Do not re-add original match-filters plugin
+            if isinstance(plugin, MatchFiltersPlugin):
+                continue
+
             pl_match_filters, pl_breaking_match_filters = plugin.ytdl_options_match_filters()
 
-            match_filters.extend(pl_match_filters)
-            breaking_match_filters.extend(pl_breaking_match_filters)
+            match_filters = combine_filters(filters=match_filters, to_combine=pl_match_filters)
+            breaking_match_filters = combine_filters(
+                filters=breaking_match_filters, to_combine=pl_breaking_match_filters
+            )
 
+        logger.debug(
+            "Setting match-filters: %s",
+            "\n - ".join([""] + match_filters) if match_filters else "[]",
+        )
+        logger.debug(
+            "Setting breaking-match-filters: %s",
+            "\n - ".join([""] + breaking_match_filters) if breaking_match_filters else "[]",
+        )
         return {
             "match_filter": match_filter_func(
                 filters=match_filters, breaking_filters=breaking_match_filters
@@ -145,7 +186,6 @@ class SubscriptionYTDLOptions:
             self._plugin_ytdl_options(ChaptersPlugin),
             self._plugin_ytdl_options(AudioExtractPlugin),
             self._plugin_ytdl_options(FormatPlugin),
-            self._plugin_ytdl_options(MatchFiltersPlugin),
             self._user_ytdl_options,  # user ytdl options...
             self._download_only_options,  # then download_only options
         )
