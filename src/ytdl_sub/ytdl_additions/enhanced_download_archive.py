@@ -371,7 +371,7 @@ class EnhancedDownloadArchive:
             if os.path.isfile(migrated_mapping_file_path):
                 logger.warning(
                     "Loading migrated archive file, can now replace "
-                    "`output_options.download_archive` value with the contents of "
+                    "`output_options.download_archive` with the contents of "
                     "`output_options.migrated_download_archive`"
                 )
                 return DownloadMappings.from_file(migrated_mapping_file_path)
@@ -578,8 +578,9 @@ class EnhancedDownloadArchive:
             self.save_file_to_output_directory(
                 file_name=self.file_name, output_file_name=self._migrated_file_name
             )
-            # and delete the old one
-            self.delete_file_from_output_directory(file_name=self.file_name)
+            # and delete the old one if the name differs
+            if self._file_name != self._migrated_file_name:
+                self.delete_file_from_output_directory(file_name=self.file_name)
         # Otherwise, only save if there are changes to the transaction log
         elif not self.get_file_handler_transaction_log().is_empty:
             self._download_mapping.to_file(output_json_file=self.working_file_path)

@@ -368,8 +368,9 @@ class OutputOptions(StrictDictValidator):
     def migrated_download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
         """
         Optional. Intended to be used if you are migrating a subscription with either a new
-        subscription name or output directory. If ``download_archive_name`` cannot be found,
-        it will try to find the
+        subscription name or output directory. It will try to load the archive file using this name
+        first, and fallback to ``download_archive_name``. It will always save to this file
+        and remove the original ``download_archive_name``.
         """
         return self._migrated_download_archive_name
 
