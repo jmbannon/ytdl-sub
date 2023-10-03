@@ -1,1 +1,9 @@
-No new, modified, or removed files in '{output_directory}'
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-Best Prebuilt TV Show by Date-download-archive.json
+
+Files removed:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
