@@ -153,6 +153,9 @@ class TestPrebuiltTVShowPresets:
             preset_name=subscription_name,
             preset_dict={
                 "preset": parent_presets + [reformatted_tv_show_structure_preset],
+                "output_options": {
+                    "migrated_download_archive_name": ".ytdl-sub-{tv_show_name_sanitized}-download-archive.json"
+                },
                 "overrides": {
                     "url": "https://your.name.here",
                     "tv_show_name": "Best Prebuilt TV Show by Date",

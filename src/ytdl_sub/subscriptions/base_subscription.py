@@ -1,3 +1,4 @@
+import os
 from abc import ABC
 from pathlib import Path
 
@@ -8,7 +9,10 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+
+logger = Logger.get("subscription")
 
 
 class BaseSubscription(ABC):
@@ -48,6 +52,31 @@ class BaseSubscription(ABC):
             working_directory=self.working_directory,
             output_directory=self.output_directory,
         )
+
+        if self.output_options.migrated_download_archive_name:
+            migrated_download_archive = EnhancedDownloadArchive(
+                file_name=self.overrides.apply_formatter(self.output_options.migrated_download_archive_name),
+                working_directory=self.working_directory,
+                output_directory=self.output_directory,
+            )
+
+            # If the migrated archive file does not exist, but the original does, then inject the
+            # migrated file name into the original one. That makes it save to the migrated one
+            if not os.path.isfile(migrated_download_archive.output_file_path) and os.path.isfile(
+                self._enhanced_download_archive.output_file_path
+            ):
+                logger.warning(
+                    "ARCHIVE MIGRATION DETECTED, will write download archive file to %s",
+                    self._enhanced_download_archive.output_file_path
+                )
+                self._enhanced_download_archive._file_name = migrated_download_archive.file_name
+            else:
+                logger.warning(
+                    "Loading migrated archive file, can now replace "
+                    "`output_options.download_archive` value with the contents of "
+                    "`output_options.migrated_download_archive`"
+                )
+                self._enhanced_download_archive = migrated_download_archive
 
     @property
     def downloader_options(self) -> MultiUrlValidator:
