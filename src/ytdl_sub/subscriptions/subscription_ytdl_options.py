@@ -142,7 +142,8 @@ class SubscriptionYTDLOptions:
             )
 
         logger.debug(
-            "Setting match-filters: %s", "\n - ".join([""] + match_filters) if match_filters else "[]"
+            "Setting match-filters: %s",
+            "\n - ".join([""] + match_filters) if match_filters else "[]",
         )
         logger.debug(
             "Setting breaking-match-filters: %s",
