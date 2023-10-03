@@ -72,15 +72,6 @@ class Plugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
     Class to define the new plugin functionality
     """
 
-    @classmethod
-    def default_ytdl_options(cls) -> Dict:
-        """
-        Returns
-        -------
-        ytdl options to enable if the plugin is not specified in the download
-        """
-        return {}
-
     def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
         """
         Returns
