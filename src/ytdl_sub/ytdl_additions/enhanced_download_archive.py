@@ -370,9 +370,9 @@ class EnhancedDownloadArchive:
         if migrated_mapping_file_path is not None:
             if os.path.isfile(migrated_mapping_file_path):
                 logger.warning(
-                    "Loading migrated archive file, can now replace "
-                    "`output_options.download_archive` with the contents of "
-                    "`output_options.migrated_download_archive`"
+                    "MIGRATION SUCCESSFUL, loading migrated archive file. Can now set "
+                    "`output_options.migrated_download_archive` to "
+                    "`output_options.download_archive`"
                 )
                 return DownloadMappings.from_file(migrated_mapping_file_path)
 
