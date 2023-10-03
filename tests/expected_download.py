@@ -33,6 +33,7 @@ def _get_file_md5_hash(full_file_path: str | Path) -> str:
         return "INFO_JSON"
     return get_file_md5_hash(full_file_path=full_file_path)
 
+
 @dataclass
 class ExpectedDownloadFile:
     path: Path
