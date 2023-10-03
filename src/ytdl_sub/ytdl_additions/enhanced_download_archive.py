@@ -18,6 +18,9 @@ from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.logger import Logger
+
+logger = Logger.get("archive")
 
 
 @dataclass
@@ -358,14 +361,29 @@ class EnhancedDownloadArchive:
     """
 
     @classmethod
-    def _maybe_load_download_mappings(cls, mapping_file_path: str) -> DownloadMappings:
+    def _maybe_load_download_mappings(
+        cls, mapping_file_path: str, migrated_mapping_file_path: Optional[str]
+    ) -> DownloadMappings:
         """
         Tries to load download mappings if a file exists. Otherwise returns empty mappings.
         """
-        # If a mapping file exists in the output directory, load it up.
+        if migrated_mapping_file_path is not None:
+            if os.path.isfile(migrated_mapping_file_path):
+                logger.warning(
+                    "Loading migrated archive file, can now replace "
+                    "`output_options.download_archive` value with the contents of "
+                    "`output_options.migrated_download_archive`"
+                )
+                return DownloadMappings.from_file(migrated_mapping_file_path)
+            else:
+                logger.warning(
+                    "MIGRATION DETECTED, will write archive file to %s", migrated_mapping_file_path
+                )
+
         if os.path.isfile(mapping_file_path):
             return DownloadMappings.from_file(json_file_path=mapping_file_path)
-        return DownloadMappings()
+        else:
+            return DownloadMappings()
 
     def __init__(
         self,
@@ -373,14 +391,16 @@ class EnhancedDownloadArchive:
         working_directory: str,
         output_directory: str,
         dry_run: bool = False,
+        migrated_file_name: Optional[str] = None,
     ):
         self._file_name = file_name
         self._file_handler = FileHandler(
             working_directory=working_directory, output_directory=output_directory, dry_run=dry_run
         )
         self._download_mapping = self._maybe_load_download_mappings(
-            mapping_file_path=self.output_file_path
+            mapping_file_path=self.output_file_path, migrated_mapping_file_path=migrated_file_name
         )
+        self._migrated_file_name = migrated_file_name
 
         self.num_entries_added: int = 0
         self.num_entries_modified: int = 0
@@ -415,7 +435,8 @@ class EnhancedDownloadArchive:
             dry_run=dry_run,
         )
         self._download_mapping = self._maybe_load_download_mappings(
-            mapping_file_path=self.output_file_path
+            mapping_file_path=self.output_file_path,
+            migrated_mapping_file_path=self._migrated_file_name,
         )
         return self
 
@@ -543,7 +564,14 @@ class EnhancedDownloadArchive:
         -------
         self
         """
-        if not self.get_file_handler_transaction_log().is_empty:
+        # If a migrated file name is present, always save to that file
+        if self._migrated_file_name:
+            self._download_mapping.to_file(output_json_file=self.working_file_path)
+            self.save_file_to_output_directory(
+                file_name=self.file_name, output_file_name=self._migrated_file_name
+            )
+        # Otherwise, only save if there are changes to the transaction log
+        elif not self.get_file_handler_transaction_log().is_empty:
             self._download_mapping.to_file(output_json_file=self.working_file_path)
             self.save_file_to_output_directory(file_name=self.file_name)
         return self

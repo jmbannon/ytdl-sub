@@ -55,7 +55,9 @@ class BaseSubscription(ABC):
 
         if self.output_options.migrated_download_archive_name:
             migrated_download_archive = EnhancedDownloadArchive(
-                file_name=self.overrides.apply_formatter(self.output_options.migrated_download_archive_name),
+                file_name=self.overrides.apply_formatter(
+                    self.output_options.migrated_download_archive_name
+                ),
                 working_directory=self.working_directory,
                 output_directory=self.output_directory,
             )
@@ -67,7 +69,7 @@ class BaseSubscription(ABC):
             ):
                 logger.warning(
                     "ARCHIVE MIGRATION DETECTED, will write download archive file to %s",
-                    self._enhanced_download_archive.output_file_path
+                    self._enhanced_download_archive.output_file_path,
                 )
                 self._enhanced_download_archive._file_name = migrated_download_archive.file_name
             else:
