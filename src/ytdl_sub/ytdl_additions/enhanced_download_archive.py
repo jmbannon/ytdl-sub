@@ -396,9 +396,7 @@ class EnhancedDownloadArchive:
         self._file_handler = FileHandler(
             working_directory=working_directory, output_directory=output_directory, dry_run=dry_run
         )
-        self._download_mapping = self._maybe_load_download_mappings(
-            mapping_file_path=self.output_file_path, migrated_mapping_file_path=migrated_file_name
-        )
+        self._download_mapping = DownloadMappings()  # gets reinitialized
         self._migrated_file_name = migrated_file_name
 
         self.num_entries_added: int = 0
@@ -434,8 +432,8 @@ class EnhancedDownloadArchive:
             dry_run=dry_run,
         )
         self._download_mapping = self._maybe_load_download_mappings(
-            mapping_file_path=self.output_file_path,
-            migrated_mapping_file_path=self._migrated_file_name,
+            mapping_file_path=self._output_file_path,
+            migrated_mapping_file_path=self._migrated_file_path,
         )
         return self
 
@@ -476,13 +474,24 @@ class EnhancedDownloadArchive:
         return self._file_name
 
     @property
-    def output_file_path(self) -> str:
+    def _output_file_path(self) -> str:
         """
         Returns
         -------
         The download mapping's file path in the output directory.
         """
         return str(Path(self.output_directory) / self.file_name)
+
+    @property
+    def _migrated_file_path(self) -> Optional[str]:
+        """
+        Returns
+        -------
+        The migrated download mapping's file path in the output directory.
+        """
+        if self._migrated_file_name:
+            return str(Path(self.output_directory) / self._migrated_file_name)
+        return None
 
     @property
     def working_file_path(self) -> str:
@@ -568,6 +577,10 @@ class EnhancedDownloadArchive:
             self._download_mapping.to_file(output_json_file=self.working_file_path)
             self.save_file_to_output_directory(
                 file_name=self.file_name, output_file_name=self._migrated_file_name
+            )
+            # and delete the old one
+            self.delete_file_from_output_directory(
+                file_name=self.file_name
             )
         # Otherwise, only save if there are changes to the transaction log
         elif not self.get_file_handler_transaction_log().is_empty:

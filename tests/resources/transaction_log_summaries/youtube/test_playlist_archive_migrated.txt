@@ -1,9 +1,9 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-Best Prebuilt TV Show by Date-download-archive.json
+  .ytdl-sub-JMC-download-archive.json
 
 Files removed:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-subscription_test-download-archive.json
+  .ytdl-sub-music_video_playlist_test-download-archive.json

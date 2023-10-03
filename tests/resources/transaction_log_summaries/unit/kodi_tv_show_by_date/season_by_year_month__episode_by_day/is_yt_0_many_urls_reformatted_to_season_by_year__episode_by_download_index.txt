@@ -239,6 +239,8 @@ Files created:
 
 Files removed:
 ----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
 {output_directory}/Season 202006
   s202006.e0601 - Mock Entry 20-7-thumb.jpg
   s202006.e0601 - Mock Entry 20-7.info.json

@@ -127,6 +127,8 @@ Files created:
 
 Files removed:
 ----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
 {output_directory}/Season 2020
   s2020.e14698 - Mock Entry ２０-１-thumb.jpg
   s2020.e14698 - Mock Entry ２０-１.info.json

@@ -2,3 +2,8 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-Best Prebuilt TV Show Collection-download-archive.json
+
+Files removed:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json

@@ -51,6 +51,7 @@ class BaseSubscription(ABC):
         if migrated_file_name_option := self.output_options.migrated_download_archive_name:
             migrated_file_name = self.overrides.apply_formatter(migrated_file_name_option)
 
+        # TODO: Do not include this as part of the subscription
         self._enhanced_download_archive = EnhancedDownloadArchive(
             file_name=self.overrides.apply_formatter(self.output_options.download_archive_name),
             working_directory=self.working_directory,

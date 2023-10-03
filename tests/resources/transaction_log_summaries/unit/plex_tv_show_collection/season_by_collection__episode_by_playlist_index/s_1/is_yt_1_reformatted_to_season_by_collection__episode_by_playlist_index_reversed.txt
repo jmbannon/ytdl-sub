@@ -66,6 +66,8 @@ Files created:
 
 Files removed:
 ----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
 {output_directory}/Season 01
   s01.e000001 - Mock Entry ２１-１-thumb.jpg
   s01.e000001 - Mock Entry ２１-１.info.json
