@@ -375,15 +375,14 @@ class EnhancedDownloadArchive:
                     "`output_options.migrated_download_archive`"
                 )
                 return DownloadMappings.from_file(migrated_mapping_file_path)
-            else:
-                logger.warning(
-                    "MIGRATION DETECTED, will write archive file to %s", migrated_mapping_file_path
-                )
+
+            logger.warning(
+                "MIGRATION DETECTED, will write archive file to %s", migrated_mapping_file_path
+            )
 
         if os.path.isfile(mapping_file_path):
             return DownloadMappings.from_file(json_file_path=mapping_file_path)
-        else:
-            return DownloadMappings()
+        return DownloadMappings()
 
     def __init__(
         self,
