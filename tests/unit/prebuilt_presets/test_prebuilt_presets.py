@@ -175,7 +175,7 @@ class TestPrebuiltTVShowPresets:
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=False,
-            expected_download_summary_file_name=f"{reformatted_expected_summary_name}.json",
+            expected_download_summary_file_name=f"{reformatted_expected_summary_name}_migrated.json",
         )
 
 
@@ -340,5 +340,5 @@ class TestPrebuiltTvShowCollectionPresets:
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=False,
-            expected_download_summary_file_name=f"{reformatted_expected_summary_name}.json",
+            expected_download_summary_file_name=f"{reformatted_expected_summary_name}_migrated.json",
         )
