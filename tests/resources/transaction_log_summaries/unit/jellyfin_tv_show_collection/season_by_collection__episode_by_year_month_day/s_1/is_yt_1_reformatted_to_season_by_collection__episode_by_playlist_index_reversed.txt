@@ -1,5 +1,7 @@
 Files created:
 ----------------------------------------
+{output_directory}
+  .ytdl-sub-Best Prebuilt TV Show Collection-download-archive.json
 {output_directory}/Season 01
   s01.e000001 - Mock Entry 20-3-thumb.jpg
   s01.e000001 - Mock Entry 20-3.info.json
@@ -117,11 +119,6 @@ Files created:
         season: 1
         title: 2021-08-08 - Mock Entry 21-1
         year: 2021
-
-Files modified:
-----------------------------------------
-{output_directory}
-  .ytdl-sub-subscription_test-download-archive.json
 
 Files removed:
 ----------------------------------------
