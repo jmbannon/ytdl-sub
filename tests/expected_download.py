@@ -28,6 +28,11 @@ def _get_files_in_directory(relative_directory: Path | str) -> List[Path]:
     return relative_file_paths
 
 
+def _get_file_md5_hash(full_file_path: str | Path) -> str:
+    if str(full_file_path).endswith(".info.json"):
+        return "INFO_JSON"
+    return get_file_md5_hash(full_file_path=full_file_path)
+
 @dataclass
 class ExpectedDownloadFile:
     path: Path
@@ -79,9 +84,9 @@ class ExpectedDownloads:
             if IS_WINDOWS or path in ignore_md5_hashes_for or path.endswith(".info.json"):
                 continue
 
-            md5_hash = get_file_md5_hash(full_file_path=full_path)
+            md5_hash = _get_file_md5_hash(full_file_path=full_path)
             assert md5_hash in expected_download.md5, (
-                f"MD5  hash for {str(expected_download.path)} does not match: "
+                f"MD5 hash for {str(expected_download.path)} does not match: "
                 f"{md5_hash} != {expected_download.md5}"
             )
 
@@ -103,7 +108,7 @@ class ExpectedDownloads:
     def from_directory(cls, directory_path: str | Path) -> "ExpectedDownloads":
         relative_file_paths = _get_files_in_directory(relative_directory=directory_path)
         expected_downloads_dict = {
-            str(file_path): get_file_md5_hash(full_file_path=Path(directory_path) / file_path)
+            str(file_path): _get_file_md5_hash(full_file_path=Path(directory_path) / file_path)
             for file_path in relative_file_paths
         }
         return cls.from_dict(expected_downloads_dict)
