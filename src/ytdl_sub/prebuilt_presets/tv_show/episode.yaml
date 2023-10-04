@@ -25,8 +25,11 @@ presets:
 #     season_number_padded
 #     episode_number
 #     episode_number_padded
-      tv_show_genre: "ytdl-sub"
-      tv_show_content_rating: "TV-14"
+      subscription_indent_1: "ytdl-sub"  # genre
+      subscription_indent_2: "TV-14"  # content rating
+      tv_show_name: "{subscription_name}"
+      tv_show_genre: "{subscription_indent_1}"
+      tv_show_content_rating: "{subscription_indent_2}"
       season_title: "{season_number_padded}"
       episode_title: "{upload_date_standardized} - {title}"
       episode_plot: "{webpage_url}\n\n{description}"
