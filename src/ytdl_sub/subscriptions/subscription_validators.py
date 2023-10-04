@@ -36,15 +36,15 @@ def subscription_value_variable_name() -> str:
     return "subscription_value"
 
 
-def maybe_indent_override_value(value: str) -> Optional[str]:
+def maybe_indent_override_values(value: str) -> List[str]:
     """
     Returns
     -------
     Value if it is an overide [Value]. None otherwise.
     """
     if value.startswith("[") and value.endswith("]"):
-        return value[1:-1]
-    return None
+        return value[1:-1].split("][")
+    return []
 
 
 class SubscriptionOutput(Validator, ABC):
@@ -179,14 +179,14 @@ class SubscriptionValidator(SubscriptionOutput):
                             subscription_value=subscription_value,
                         )
                     )
-                elif override_value := maybe_indent_override_value(key):
+                elif override_values := maybe_indent_override_values(key):
                     self._children.append(
                         SubscriptionValidator(
                             name=obj_name,
                             value=obj,
                             config=config,
                             presets=presets,
-                            indent_overrides=indent_overrides + [override_value],
+                            indent_overrides=indent_overrides + override_values,
                             subscription_value=subscription_value,
                         )
                     )

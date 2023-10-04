@@ -109,6 +109,25 @@ def preset_with_subscription_value_nested_presets_and_indent_variables(
     )
 
 
+@pytest.fixture
+def preset_with_subscription_value_nested_presets_and_indent_variables_same_line(
+    preset_with_subscription_value: Dict,
+):
+    return dict(
+        preset_with_subscription_value,
+        **{
+            "parent_preset_2": {
+                "[INDENT_1]": {
+                    "parent_preset_1": {"test_2_1": "is_2_1_overwritten"},
+                    "[INDENT_2][INDENT_3]": {
+                        "test_1": "is_1_overwritten",
+                    },
+                }
+            }
+        },
+    )
+
+
 def test_subscription_file_preset_applies(config_file: ConfigFile, preset_with_file_preset: Dict):
     with mock_load_yaml(preset_dict=preset_with_file_preset):
         subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
@@ -237,6 +256,43 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
     assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_2_1.get("subscription_indent_2") == "original_2"
+
+
+def test_subscription_file_value_applies_from_config_and_nested_and_indent_variables_same_line(
+    config_file_with_subscription_value: ConfigFile,
+    preset_with_subscription_value_nested_presets_and_indent_variables_same_line: Dict,
+):
+    with mock_load_yaml(
+        preset_dict=preset_with_subscription_value_nested_presets_and_indent_variables_same_line
+    ):
+        subs = Subscription.from_file_path(
+            config=config_file_with_subscription_value, subscription_path="mocked"
+        )
+    assert len(subs) == 4
+
+    # Test __value__ worked correctly from the config
+    sub_test_value = [sub for sub in subs if sub.name == "test_value"][
+        0
+    ].overrides.dict_with_format_strings
+    sub_1 = [sub for sub in subs if sub.name == "test_1"][0].overrides.dict_with_format_strings
+    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.dict_with_format_strings
+
+    assert sub_test_value.get("subscription_indent_1") == "original_1"
+    assert sub_test_value.get("subscription_indent_2") == "original_2"
+
+    assert sub_1.get("test_config_subscription_value") == "is_1_overwritten"
+    assert sub_1.get("subscription_name") == "test_1"
+    assert sub_1.get("subscription_value") == "is_1_overwritten"
+    assert sub_1.get("subscription_indent_1") == "INDENT_1"
+    assert sub_1.get("subscription_indent_2") == "INDENT_2"
+    assert sub_1.get("subscription_indent_3") == "INDENT_3"
+
+    assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
+    assert sub_2_1.get("subscription_name") == "test_2_1"
+    assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
+    assert sub_2_1.get("subscription_indent_1") == "INDENT_1"
+    assert sub_2_1.get("subscription_indent_2") == "original_2"
+    assert "subscription_indent_3" not in sub_2_1
 
 
 def test_subscription_file_bad_value(config_file: ConfigFile):
