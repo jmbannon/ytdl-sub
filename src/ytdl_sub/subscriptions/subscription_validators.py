@@ -42,8 +42,8 @@ def maybe_indent_override_values(value: str) -> List[str]:
     -------
     Value if it is an overide [Value]. None otherwise.
     """
-    if value.startswith("[") and value.endswith("]"):
-        return value[1:-1].split("][")
+    if value.startswith("=[") and value.endswith("]"):
+        return value[2:-1].split("|")
     return []
 
 
