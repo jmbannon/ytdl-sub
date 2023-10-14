@@ -1,16 +1,32 @@
-# Define any number subscriptions in a single file, or use multiple
-# files to organize (i.e by genre)
 
-rick_a:
-  # Mix and match any number of presets to use. You can either lump all settings into
-  # a single preset to save some lines, or modularize them and use many.
+# All subscriptions under this will use the `tv_show` preset
+tv_show:
+  # Sets override variable `subscription_indent_1` to "Music", which is used as genre
+  =[Music]:
+    "Rick A": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+    "Opeth": "https://www.youtube.com/channel/UCmQSJTFZaXN85gYk6W3XbdQ"
+
+  # Sets override variables `subscription_indent_1` and `subscription_indent_2`.
+  # Second is used as MPAA rating
+  =[Kids|TV-Y]:
+    "Jake Trains": "https://www.youtube.com/@JakeTrains"
+    "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
+
+  # All subscriptions under this will use both `tv_show` and `only_recent_videos` preset
+  only_recent_videos:
+    =[News]:
+      "BBC": "https://www.youtube.com/@BBCNews"
+
+
+# If a key is not a preset, it is then treated as a subscription.
+# Subscriptions can use the same format as a preset, or a single string
+# like above which gets set to the override variable `subscription_value`
+"Equivalent to BBC":
   preset:
     - "tv_show"
     - "only_recent_videos"
 
   overrides:
-    # Required to specify for every subscription
-    tv_show_name: "Rick A"
-    url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-    # Optional
-    tv_show_genre: "Music"
+    tv_show_name: "BBC"
+    url: "https://www.youtube.com/@BBCNews"
+    tv_show_genre: "News"
