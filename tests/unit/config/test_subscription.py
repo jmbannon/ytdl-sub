@@ -1,5 +1,6 @@
 import re
 from contextlib import contextmanager
+from pathlib import Path
 from typing import Dict
 from unittest.mock import patch
 
@@ -11,6 +12,7 @@ from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
 from ytdl_sub.subscriptions.subscription import FILE_SUBSCRIPTION_VALUE_KEY
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.yaml import load_yaml
 
 
 @pytest.fixture
@@ -306,19 +308,6 @@ def test_subscription_file_bad_value(config_file: ConfigFile):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")
 
 
-def test_subscription_file_using_value_when_not_defined(config_file: ConfigFile):
-    with mock_load_yaml(
-        preset_dict={"=[INDENTS_IN_ERR_MSG]": {"sub_name": "single value, __value__ not defined"}}
-    ), pytest.raises(
-        ValidationException,
-        match=re.escape(
-            "Validation error in =[INDENTS_IN_ERR_MSG].sub_name: Subscription "
-            "sub_name is a string, but the subscription value is not set to an override variable"
-        ),
-    ):
-        _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")
-
-
 def test_subscription_file_using_conflicting_preset_name(config_file: ConfigFile):
     with mock_load_yaml(
         preset_dict={
@@ -343,3 +332,20 @@ def test_subscription_file_invalid_form(config_file: ConfigFile):
         match=re.escape(f"Validation error in sub_name: should be of type object."),
     ):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")
+
+
+def test_tv_show_subscriptions(
+    channel_as_tv_show_config: ConfigFile, tv_show_subscriptions_path: Path
+):
+    subs = Subscription.from_file_path(
+        config=channel_as_tv_show_config, subscription_path=tv_show_subscriptions_path
+    )
+
+    assert len(subs) == 6
+    assert subs[2].name == "Jake Trains"
+    jake_train_overrides = subs[2].overrides.dict_with_format_strings
+
+    assert jake_train_overrides["subscription_name"] == "Jake Trains"
+    assert jake_train_overrides["subscription_value"] == "https://www.youtube.com/@JakeTrains"
+    assert jake_train_overrides["subscription_indent_1"] == "Kids"
+    assert jake_train_overrides["subscription_indent_2"] == "TV-Y"

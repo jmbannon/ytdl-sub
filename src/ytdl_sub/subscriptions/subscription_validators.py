@@ -112,24 +112,19 @@ class SubscriptionValueValidator(SubscriptionOutput, StringValidator):
                 f"{self._leaf_name} conflicts with an existing preset name and cannot be "
                 f"used as a subscription name"
             )
-
-        if subscription_value is None:
-            raise self._validation_exception(
-                f"Subscription {self._leaf_name} is a string, but the subscription value "
-                f"is not set to an override variable"
-            )
-
-        self._subscription_value: str = subscription_value
+        self._subscription_value: Optional[str] = subscription_value
 
     def subscription_dicts(self) -> Dict[str, Dict]:
+        subscription_value_dict: Dict[str, str] = {"subscription_value": self.value}
+        # TODO: Eventually delete in favor of {subscription_value}
+        if self._subscription_value:
+            subscription_value_dict[self._subscription_value] = self.value
+
         return {
             self._leaf_name: {
                 "preset": self._presets,
                 "overrides": dict(
-                    {
-                        self._subscription_value: self.value,
-                        "subscription_value": self.value,
-                    },
+                    subscription_value_dict,
                     **self._indent_overrides_dict(),
                 ),
             }
