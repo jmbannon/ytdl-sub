@@ -295,6 +295,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
                     continue
 
                 entry = downloader.download(entry)
+                if entry is None:
+                    continue
+
                 entry_metadata = FileMetadata()
                 if isinstance(entry, tuple):
                     entry, entry_metadata = entry

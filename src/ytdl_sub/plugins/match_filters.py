@@ -1,19 +1,59 @@
+import copy
 from typing import Any
-from typing import Dict
 from typing import List
-from typing import Optional
-
-from yt_dlp import match_filter_func
+from typing import Tuple
 
 from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
-from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import YTDL_SUB_MATCH_FILTER_REJECT
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.validators import StringListValidator
 
 logger = Logger.get("match_filters")
+
+
+def default_filters() -> Tuple[List[str], List[str]]:
+    """
+    Returns
+    -------
+    Default filters and breaking filters to always use
+    """
+    return ["!is_live & !is_upcoming & !post_live"], []
+
+
+def combine_filters(filters: List[str], to_combine: List[str]) -> List[str]:
+    """
+    Parameters
+    ----------
+    filters
+        User-defined match-filters
+    to_combine
+        Filters that need to be combined via AND to the original filters.
+        These are derived from plugins
+
+    Returns
+    -------
+    merged filters
+
+    Raises
+    ------
+    ValueError
+        Only supports combining 1 filter at this time. Should never be hit by users
+    """
+    if len(to_combine) == 0:
+        return filters
+    if not filters:
+        return copy.deepcopy(to_combine)
+
+    if len(to_combine) > 1:
+        raise ValueError("Match-filters to combine only supports 1 at this time")
+
+    output_filters: List[str] = []
+    filter_to_combine: str = to_combine[0]
+
+    for match_filter in filters:
+        output_filters.append(f"{match_filter} & {filter_to_combine}")
+
+    return output_filters
 
 
 class MatchFiltersOptions(OptionsDictValidator):
@@ -46,7 +86,7 @@ class MatchFiltersOptions(OptionsDictValidator):
                # - "availability=?public"
     """
 
-    _required_keys = {"filters"}
+    _optional_keys = {"filters"}
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
@@ -57,44 +97,25 @@ class MatchFiltersOptions(OptionsDictValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        self._filters = self._validate_key(key="filters", validator=StringListValidator).list
+        self._filters = self._validate_key_if_present(key="filters", validator=StringListValidator)
 
     @property
     def filters(self) -> List[str]:
         """
         The filters themselves. If used multiple times, the filter matches if at least one of the
         conditions are met. For logical AND's between match filters, use the ``&`` operator in
-        a single match filter.
+        a single match filter. These are applied when gathering metadata.
         """
-        return [validator.value for validator in self._filters]
+        return [validator.value for validator in self._filters.list] if self._filters else []
 
 
 class MatchFiltersPlugin(Plugin[MatchFiltersOptions]):
     plugin_options_type = MatchFiltersOptions
-    priority = PluginPriority(modify_entry=PluginPriority.MODIFY_ENTRY_FIRST)
 
-    def ytdl_options(self) -> Optional[Dict]:
+    def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
         """
         Returns
         -------
-        match_filter after calling the utility function for it
+        match_filters to apply at the metadata stage
         """
-        match_filters: List[str] = []
-        for filter_str in self.plugin_options.filters:
-            logger.debug("Adding match-filter %s", filter_str)
-            match_filters.append(filter_str)
-
-        return {
-            "match_filter": match_filter_func(match_filters),
-        }
-
-    def modify_entry(self, entry: Entry) -> Optional[Entry]:
-        """
-        If an entry is marked as not being downloaded due to a match_filter reject,
-        do not propagate the entry further (especially since there is no entry file!)
-        """
-        if entry.kwargs_get(YTDL_SUB_MATCH_FILTER_REJECT, False):
-            logger.info("Entry rejected by match-filter, skipping ..")
-            return None
-
-        return entry
+        return self.plugin_options.filters, []

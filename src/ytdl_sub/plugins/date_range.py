@@ -1,10 +1,10 @@
-from typing import Dict
+from typing import List
 from typing import Optional
+from typing import Tuple
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
-from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
-from ytdl_sub.utils.datetime import to_date_range
+from ytdl_sub.utils.datetime import to_date_str
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 
 
@@ -48,25 +48,25 @@ class DateRangeOptions(OptionsDictValidator):
 class DateRangePlugin(Plugin[DateRangeOptions]):
     plugin_options_type = DateRangeOptions
 
-    def ytdl_options(self) -> Optional[Dict]:
+    def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
         """
         Returns
         -------
-        YTDL options for setting a date range
+        match filters for before (non-breaking) and after (breaking)
         """
-        ytdl_options_builder = YTDLOptionsBuilder()
+        match_filters: List[str] = []
+        breaking_match_filters: List[str] = []
 
-        source_date_range = to_date_range(
-            before=self.plugin_options.before,
-            after=self.plugin_options.after,
-            overrides=self.overrides,
-        )
-        if source_date_range:
-            ytdl_options_builder.add({"daterange": source_date_range})
+        if self.plugin_options.before:
+            before_str = to_date_str(
+                date_validator=self.plugin_options.before, overrides=self.overrides
+            )
+            match_filters.append(f"upload_date < {before_str}")
 
-            # Only add break_on_reject if after is specified, but not before.
-            # Otherwise, it can break on first metadata pull if it's after the 'before'
-            if self.plugin_options.after and not self.plugin_options.before:
-                ytdl_options_builder.add({"break_on_reject": True})
+        if self.plugin_options.after:
+            after_str = to_date_str(
+                date_validator=self.plugin_options.after, overrides=self.overrides
+            )
+            breaking_match_filters.append(f"upload_date >= {after_str}")
 
-        return ytdl_options_builder.to_dict()
+        return match_filters, breaking_match_filters

@@ -23,12 +23,8 @@ def single_video_preset_dict_old_video_tags_format(output_directory):
             "output_directory": output_directory,
             "maintain_download_archive": False,
         },
-        # embed thumb into the video
-        "embed_thumbnail": True,
-        # download the worst format so it is fast
-        "ytdl_options": {
-            "format": "worst[ext=mp4]",
-        },
+        "embed_thumbnail": True,  # embed thumb into the video
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         # also test video tags
         "video_tags": {
             "tags": {
@@ -49,12 +45,8 @@ def single_video_preset_dict(output_directory):
             "output_directory": output_directory,
             "maintain_download_archive": False,
         },
-        # embed thumb into the video
-        "embed_thumbnail": True,
-        # download the worst format so it is fast
-        "ytdl_options": {
-            "format": "worst[ext=mp4]",
-        },
+        "embed_thumbnail": True,  # embed thumb into the video
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         # also test video tags
         "video_tags": {
             "title": "{title}",
@@ -76,8 +68,8 @@ def single_tv_show_video_nulled_values_preset_dict(output_directory):
             "thumbnail_name": "",
             "info_json_name": "",
         },
+        "format": "worst[ext=mp4]",
         "ytdl_options": {
-            "format": "worst[ext=mp4]",
             "max_downloads": 2,
         },
         # test override variables added by ytdl-sub

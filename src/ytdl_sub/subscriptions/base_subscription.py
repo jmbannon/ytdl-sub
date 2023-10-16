@@ -1,5 +1,6 @@
 from abc import ABC
 from pathlib import Path
+from typing import Optional
 
 from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.config.preset import Preset
@@ -8,7 +9,10 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
+from ytdl_sub.utils.logger import Logger
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+
+logger = Logger.get("subscription")
 
 
 class BaseSubscription(ABC):
@@ -43,10 +47,16 @@ class BaseSubscription(ABC):
         self._config_options = config_options
         self._preset_options = preset_options
 
+        migrated_file_name: Optional[str] = None
+        if migrated_file_name_option := self.output_options.migrated_download_archive_name:
+            migrated_file_name = self.overrides.apply_formatter(migrated_file_name_option)
+
+        # TODO: Do not include this as part of the subscription
         self._enhanced_download_archive = EnhancedDownloadArchive(
             file_name=self.overrides.apply_formatter(self.output_options.download_archive_name),
             working_directory=self.working_directory,
             output_directory=self.output_directory,
+            migrated_file_name=migrated_file_name,
         )
 
     @property

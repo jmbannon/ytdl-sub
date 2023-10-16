@@ -93,6 +93,26 @@ class Validator(ABC):
         """
         return validation_exception(self._name, error_message, exception_class)
 
+    @final
+    @property
+    def _root_name(self) -> str:
+        """
+        Returns
+        -------
+        "first" from the first.element.of.the.name
+        """
+        return self._name.split(".")[0]
+
+    @final
+    @property
+    def _leaf_name(self) -> str:
+        """
+        Returns
+        -------
+        "first" from the first.element.of.the.name
+        """
+        return self._name.split(".")[-1]
+
 
 class ValueValidator(Validator, ABC, Generic[ValueT]):
     """
@@ -178,16 +198,6 @@ class DictValidator(Validator):
     def __init__(self, name, value):
         super().__init__(name, value)
         self.__validator_dict: Dict[str, Validator] = {}
-
-    @final
-    @property
-    def _root_name(self) -> str:
-        """
-        Returns
-        -------
-        "first" from the first.element.of.the.name
-        """
-        return self._name.split(".")[0]
 
     @final
     @property

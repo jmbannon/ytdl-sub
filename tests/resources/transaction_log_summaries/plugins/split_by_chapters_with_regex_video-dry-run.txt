@@ -3,7 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-split_by_chapters_with_regex_video-download-archive.json
 {output_directory}/Alfa Mist/[2017] Nocturne
-  01 - Intro (Feat. Racheal Ofori & Barney Artist).mp3
+  01 - Intro (Feat. Racheal Ofori & Barney Artist.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -15,11 +15,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Intro (Feat. Racheal Ofori & Barney Artist)
+      title: Intro (Feat. Racheal Ofori & Barney Artist
       track: 1
       tracktotal: 11
       year: 2017
-  02 - Answers (Feat. Rick David & Kaya Thomas - Dyke).mp3
+  02 - Answers (Feat. Rick David & Kaya Thomas - Dyke.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -31,11 +31,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Answers (Feat. Rick David & Kaya Thomas - Dyke)
+      title: Answers (Feat. Rick David & Kaya Thomas - Dyke
       track: 2
       tracktotal: 11
       year: 2017
-  03 - Blaze (Feat. Kaya Thomas - Dyke).mp3
+  03 - Blaze (Feat. Kaya Thomas - Dyke.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -47,11 +47,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Blaze (Feat. Kaya Thomas - Dyke)
+      title: Blaze (Feat. Kaya Thomas - Dyke
       track: 3
       tracktotal: 11
       year: 2017
-  04 - What If (Interlude).mp3
+  04 - What If (Interlude.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -63,11 +63,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: What If (Interlude)
+      title: What If (Interlude
       track: 4
       tracktotal: 11
       year: 2017
-  05 - No Peace (Feat. Tom Misch).mp3
+  05 - No Peace (Feat. Tom Misch.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -79,11 +79,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: No Peace (Feat. Tom Misch)
+      title: No Peace (Feat. Tom Misch
       track: 5
       tracktotal: 11
       year: 2017
-  06 - Closer (Feat. Lester Duval).mp3
+  06 - Closer (Feat. Lester Duval.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -95,11 +95,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Closer (Feat. Lester Duval)
+      title: Closer (Feat. Lester Duval
       track: 6
       tracktotal: 11
       year: 2017
-  07 - Delusions： Rumination (Interlude) (Feat. Racheal Ofori).mp3
+  07 - Delusions： Rumination (Interlude) (Feat. Racheal Ofori.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -111,11 +111,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Delusions: Rumination (Interlude) (Feat. Racheal Ofori)
+      title: Delusions: Rumination (Interlude) (Feat. Racheal Ofori
       track: 7
       tracktotal: 11
       year: 2017
-  08 - Dreams (Feat. Carmody).mp3
+  08 - Dreams (Feat. Carmody.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -127,11 +127,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Dreams (Feat. Carmody)
+      title: Dreams (Feat. Carmody
       track: 8
       tracktotal: 11
       year: 2017
-  09 - Dreaming (Interlude) (Feat. Racheal Ofori).mp3
+  09 - Dreaming (Interlude) (Feat. Racheal Ofori.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -143,11 +143,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Dreaming (Interlude) (Feat. Racheal Ofori)
+      title: Dreaming (Interlude) (Feat. Racheal Ofori
       track: 9
       tracktotal: 11
       year: 2017
-  10 - Hopeful (Feat. Jordan Rakei).mp3
+  10 - Hopeful (Feat. Jordan Rakei.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -159,11 +159,11 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Hopeful (Feat. Jordan Rakei)
+      title: Hopeful (Feat. Jordan Rakei
       track: 10
       tracktotal: 11
       year: 2017
-  11 - Sunrise (Pillows) (Feat. Emmavie).mp3
+  11 - Sunrise (Pillows) (Feat. Emmavie.mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
@@ -175,7 +175,7 @@ Files created:
       artist: Alfa Mist
       artists: Alfa Mist
       genre: Unset
-      title: Sunrise (Pillows) (Feat. Emmavie)
+      title: Sunrise (Pillows) (Feat. Emmavie
       track: 11
       tracktotal: 11
       year: 2017

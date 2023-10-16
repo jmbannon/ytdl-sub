@@ -1,9 +1,14 @@
+from pathlib import Path
+from typing import Dict
+
 import pytest
 from conftest import assert_logs
 from e2e.conftest import mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from mergedeep import mergedeep
 
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -16,10 +21,7 @@ def playlist_preset_dict(output_directory):
             "season_by_collection__episode_by_year_month_day",
             "collection_season_1",
         ],
-        # download the worst format so it is fast
-        "ytdl_options": {
-            "format": "worst[ext=mp4]",
-        },
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "output_directory_nfo_tags": {
             "nfo_name": "tvshow.nfo",
             "nfo_root": "test",
@@ -54,6 +56,50 @@ class TestPlaylist:
     files exist and have the expected md5 file hashes.
     """
 
+    @classmethod
+    def _ensure_subscription_migrates(
+        cls,
+        config: ConfigFile,
+        subscription_name: str,
+        subscription_dict: Dict,
+        output_directory: Path,
+    ):
+        # Ensure download archive migrates
+        mergedeep.merge(
+            subscription_dict,
+            {
+                "output_options": {
+                    "migrated_download_archive_name": ".ytdl-sub-{tv_show_name_sanitized}-download-archive.json"
+                }
+            },
+        )
+        migrated_subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=subscription_dict,
+        )
+        transaction_log = migrated_subscription.download()
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_playlist_archive_migrated.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="youtube/test_playlist_archive_migrated.json",
+        )
+
+        # Ensure no changes after migration
+        transaction_log = migrated_subscription.download()
+        assert transaction_log.is_empty
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="youtube/test_playlist_archive_migrated.json",
+        )
+
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_playlist_download(
         self,
@@ -87,14 +133,20 @@ class TestPlaylist:
                 expected_message="ExistingVideoReached, stopping additional downloads",
                 log_level="debug",
             ):
-                _ = playlist_subscription.download()
+                transaction_log = playlist_subscription.download()
 
-            # TODO: output_directory_nfo is always rewritten, fix!
-            # assert transaction_log.is_empty
+            assert transaction_log.is_empty
             assert_expected_downloads(
                 output_directory=output_directory,
                 dry_run=dry_run,
                 expected_download_summary_file_name="youtube/test_playlist.json",
+            )
+
+            self._ensure_subscription_migrates(
+                config=music_video_config,
+                subscription_name="music_video_playlist_test",
+                subscription_dict=playlist_preset_dict,
+                output_directory=output_directory,
             )
 
     @pytest.mark.parametrize("dry_run", [True, False])
@@ -135,10 +187,9 @@ class TestPlaylist:
                     expected_message="ExistingVideoReached, stopping additional downloads",
                     log_level="debug",
                 ):
-                    _ = mock_run_from_cli(args=args)[0][1]
+                    transaction_log = mock_run_from_cli(args=args)[0][1]
 
-                # TODO: output_directory_nfo is always rewritten, fix!
-                # assert transaction_log.is_empty
+                assert transaction_log.is_empty
                 assert_expected_downloads(
                     output_directory=output_directory,
                     dry_run=dry_run,

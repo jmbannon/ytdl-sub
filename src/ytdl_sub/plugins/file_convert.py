@@ -131,13 +131,14 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
         """
         if self.plugin_options.convert_with == "yt-dlp":
             return {
+                "merge_output_format": self.plugin_options.convert_to,
                 "postprocessors": [
                     {
                         "key": "FFmpegVideoRemuxer",
                         "when": "post_process",
                         "preferedformat": self.plugin_options.convert_to,
                     }
-                ]
+                ],
             }
         return None
 

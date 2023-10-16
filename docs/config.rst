@@ -2,7 +2,7 @@ Config
 ======
 ytdl-sub is configured using a ``config.yaml`` file.
 
-.. _config_yaml:
+.. _config:
 
 config.yaml
 -----------
@@ -29,7 +29,7 @@ and subscriptions.
 .. autoclass:: ytdl_sub.config.config_validator.ConfigOptions()
   :members:
   :member-order: bysource
-  :exclude-members: persist_logs, experimental
+  :exclude-members: subscription_value, persist_logs, experimental
 
 persist_logs
 """"""""""""
@@ -183,10 +183,17 @@ file_convert
 
 -------------------------------------------------------------------------------
 
+format
+''''''
+.. autoclass:: ytdl_sub.plugins.format.FormatOptions()
+
+-------------------------------------------------------------------------------
+
 match_filters
 '''''''''''''
 .. autoclass:: ytdl_sub.plugins.match_filters.MatchFiltersOptions()
   :members:
+  :member-order: bysource
   :exclude-members: partial_validate
 
 -------------------------------------------------------------------------------
@@ -292,8 +299,66 @@ custom variables: ``{output_directory}``, ``{playlist_name}``, and ``{url}``. Th
 the `parent preset`_ to ``playlist_preset_ex``, and must define the variables ``{playlist_name}``
 and ``{url}`` since the preset did not.
 
+.. _beautifying subscriptions:
+
+Beautifying Subscriptions
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Subscriptions support using presets as keys, and using keys to set override variables as values.
+For example:
+
+.. code-block:: yaml
+  :caption: subscription.yaml
+
+   tv_show:
+     only_recent:
+       [News]:
+         "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
+
+     [Tech]:
+       "Two Minute Papers": "https://www.youtube.com/@TwoMinutePapers"
+
+Will create two subscriptions named "Breaking News" and "Two Minute Papers", equivalent to:
+
+.. code-block:: yaml
+
+  "Breaking News":
+    preset:
+      - "tv_show"
+      - "only_recent"
+
+    overrides:
+      subscription_indent_1: "News"
+      subscription_name: "Breaking News"
+      subscription_value: "https://www.youtube.com/@SomeBreakingNews"
+
+  "Two Minute Papers":
+    preset:
+      - "tv_show"
+
+    overrides:
+      subscription_indent_1: "Tech"
+      subscription_name: "Two Minute Papers"
+      subscription_value: "https://www.youtube.com/@TwoMinutePapers"
+
+You can provide as many parent presets in the form of keys, and subscription indents as ``[keys]``.
+This can drastically simplify subscription definitions by setting things like so in your
+parent preset:
+
+.. code-block:: yaml
+
+  presets:
+    tv_show_name:
+      overrides:
+        tv_show_name: "{subscription_name}"
+        url: "{subscription_value}"
+        genre: "{subscription_indent_1}"
+
+.. _subscription value:
+
 File Preset
 ^^^^^^^^^^^
+NOTE: This is deprecated in favor of using the method in :ref:`beautifying subscriptions`.
+
 You can apply a preset to all subscriptions in the ``subscription.yaml`` file
 by using the file-wide ``__preset__``:
 
@@ -311,8 +376,11 @@ by using the file-wide ``__preset__``:
 This ``subscription.yaml`` is equivalent to the one above it because all
 subscriptions automatically set ``__preset__`` as a `parent preset`_.
 
-File Subscription Value
-^^^^^^^^^^^^^^^^^^^^^^^
+
+Subscription Value
+^^^^^^^^^^^^^^^^^^^
+NOTE: This is deprecated in favor of using the method in :ref:`beautifying subscriptions`.
+
 With a clever config and use of ``__preset__``, your subscriptions can typically boil
 down to a name and url. You can set ``__value__`` to the name of an override variable,
 and use the override variable ``subscription_name`` to achieve one-liner subscriptions.
@@ -322,20 +390,19 @@ Using the example above, we can do:
   :caption: subscription.yaml
 
    __preset__:
-     preset: "playlist_preset_ex"
+     preset:
+       - "tv_show"
      overrides:
-       playlist_name: "{subscription_name}"
+       tv_show_name: "{subscription_name}"
 
    __value__: "url"
 
-   # single-line subscription
-   "diy-playlist": "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
-
-``"diy-playlist"`` gets assigned to the ``playlist_name`` override variable by setting
-it with ``subscription_name`` , and the url gets assigned to ``url`` by setting ``__value__``
-to write values to it.
+   # single-line subscription, sets "Brandon Acker" and the subscription value
+   # to the override variables tv_show_name and url
+   "Brandon Acker": "https://www.youtube.com/@brandonacker"
 
 Traditional subscriptions that can override presets will still work when using ``__value__``.
+``__value__`` can also be set within a :ref:`config`.
 
 -------------------------------------------------------------------------------
 
