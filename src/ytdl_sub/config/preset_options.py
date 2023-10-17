@@ -246,6 +246,7 @@ class OutputOptions(StrictDictValidator):
              thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
              info_json_name: "{title_sanitized}.{info_json_ext}"
              download_archive_name: ".ytdl-sub-{subscription_name}-download-archive.json"
+             migrated_download_archive_name: ".ytdl-sub-{subscription_name_sanitized}-download-archive.json"
              maintain_download_archive: True
              keep_files_before: now
              keep_files_after: 19000101
@@ -256,6 +257,7 @@ class OutputOptions(StrictDictValidator):
         "thumbnail_name",
         "info_json_name",
         "download_archive_name",
+        "migrated_download_archive_name",
         "maintain_download_archive",
         "keep_files_before",
         "keep_files_after",
@@ -297,6 +299,10 @@ class OutputOptions(StrictDictValidator):
             key="download_archive_name",
             validator=OverridesStringFormatterValidator,
             default=DEFAULT_DOWNLOAD_ARCHIVE_NAME,
+        )
+        self._migrated_download_archive_name = self._validate_key_if_present(
+            key="migrated_download_archive_name",
+            validator=OverridesStringFormatterValidator,
         )
 
         self._maintain_download_archive = self._validate_key_if_present(
@@ -357,6 +363,16 @@ class OutputOptions(StrictDictValidator):
         the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
         """
         return self._download_archive_name
+
+    @property
+    def migrated_download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
+        """
+        Optional. Intended to be used if you are migrating a subscription with either a new
+        subscription name or output directory. It will try to load the archive file using this name
+        first, and fallback to ``download_archive_name``. It will always save to this file
+        and remove the original ``download_archive_name``.
+        """
+        return self._migrated_download_archive_name
 
     @property
     def maintain_download_archive(self) -> bool:

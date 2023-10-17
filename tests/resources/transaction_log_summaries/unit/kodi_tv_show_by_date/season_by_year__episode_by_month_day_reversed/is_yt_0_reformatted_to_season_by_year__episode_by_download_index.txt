@@ -1,5 +1,7 @@
 Files created:
 ----------------------------------------
+{output_directory}
+  .ytdl-sub-Best Prebuilt TV Show by Date-download-archive.json
 {output_directory}/Season 2020
   s2020.e000001 - Mock Entry 20-3-thumb.jpg
   s2020.e000001 - Mock Entry 20-3.info.json
@@ -119,13 +121,10 @@ Files created:
         title: 2021-08-08 - Mock Entry 21-1
         year: 2021
 
-Files modified:
+Files removed:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
-
-Files removed:
-----------------------------------------
 {output_directory}/Season 2020
   s2020.e14698 - Mock Entry 20-1-thumb.jpg
   s2020.e14698 - Mock Entry 20-1.info.json
