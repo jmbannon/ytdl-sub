@@ -309,12 +309,12 @@ For example:
 .. code-block:: yaml
   :caption: subscription.yaml
 
-   tv_show:
-     only_recent:
-       [News]:
+   TV Show Full Archive:
+     = News:
          "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
 
-     [Tech]:
+   TV Show Only Recent:
+     = Tech | TV-Y:
        "Two Minute Papers": "https://www.youtube.com/@TwoMinutePapers"
 
 Will create two subscriptions named "Breaking News" and "Two Minute Papers", equivalent to:
@@ -323,8 +323,7 @@ Will create two subscriptions named "Breaking News" and "Two Minute Papers", equ
 
   "Breaking News":
     preset:
-      - "tv_show"
-      - "only_recent"
+      - "TV Show Full Archive"
 
     overrides:
       subscription_indent_1: "News"
@@ -333,25 +332,30 @@ Will create two subscriptions named "Breaking News" and "Two Minute Papers", equ
 
   "Two Minute Papers":
     preset:
-      - "tv_show"
+      - "TV Show Only Recent"
 
     overrides:
       subscription_indent_1: "Tech"
+      subscription_indent_2: "TV-Y"
       subscription_name: "Two Minute Papers"
       subscription_value: "https://www.youtube.com/@TwoMinutePapers"
 
-You can provide as many parent presets in the form of keys, and subscription indents as ``[keys]``.
+You can provide as many parent presets in the form of keys, and subscription indents as ``=keys``.
 This can drastically simplify subscription definitions by setting things like so in your
 parent preset:
 
 .. code-block:: yaml
 
   presets:
-    tv_show_name:
+    "TV Show Preset":
       overrides:
+        subscription_indent_1: "default-genre"
+        subscription_indent_2: "default-content-rating"
+
         tv_show_name: "{subscription_name}"
         url: "{subscription_value}"
         genre: "{subscription_indent_1}"
+        content_rating: "{subscription_indent_2}"
 
 .. _subscription value:
 

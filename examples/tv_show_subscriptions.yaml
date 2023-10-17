@@ -1,20 +1,18 @@
 # Global overrides for all subscriptions. Can either be set here or in your config.yaml
 __preset__:
   overrides:
-    tv_show_directory: "/tv_shows"
-    episode_title: "{upload_date_standardized} - {title}"
-    episode_plot: "{webpage_url}"
-    download_range: "2months"
+    tv_show_directory: "/tv_shows"  # Root folder of ytdl-sub TV Shows
+    download_range: "2months"       # Range to keep for only recent
 
 
 # All subscriptions under this will use the `TV Show Full Archive` preset
 TV Show Full Archive:
-  # Sets "Music" as the TV show genre
+  # Sets "Music" for genre
   = Music:
     "Rick A": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
     "Opeth": "https://www.youtube.com/channel/UCmQSJTFZaXN85gYk6W3XbdQ"
 
-  # Sets "Kids" as the TV show genre, and "TV-Y" as the content rating
+  # Sets "Kids" for genre, "TV-Y" for content rating
   = Kids | TV-Y:
     "Jake Trains": "https://www.youtube.com/@JakeTrains"
     "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
@@ -27,7 +25,6 @@ TV Show Only Recent:
 
 
 # ADVANCED USAGE:
-# If a key is not a preset, it is treated as a subscription.
 # Subscriptions can use the same format as a preset found within a config.
 "Equivalent to BBC":
   preset:

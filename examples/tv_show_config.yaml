@@ -43,7 +43,6 @@ presets:
       # it applied to every TV show. Or, use them on the individual subscriptions.
       # - "add_subtitles"
       # - "sponsorblock"
-      # - "include_info_json"
 
     # To download age-restricted videos, you will need to uncomment and set your cookie
     # file here as a ytdl parameter. For more info, see
@@ -92,7 +91,8 @@ presets:
       # subtitles_name: "{episode_file_path}.{lang}.{subtitles_ext}"
       # subtitles_type: "srt"
 
-      languages: "en"  # supports list of multiple languages
+      languages:
+        - "en"
       allow_auto_generated_subtitles: True  # allow auto subtitles
 
 ####################################################################################################
