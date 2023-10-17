@@ -1,32 +1,39 @@
+# Global overrides for all subscriptions. Can either be set here or in your config.yaml
+__preset__:
+  overrides:
+    tv_show_directory: "/tv_shows"
+    episode_title: "{upload_date_standardized} - {title}"
+    episode_plot: "{webpage_url}"
+    download_range: "2months"
 
-# All subscriptions under this will use the `tv_show` preset
-tv_show:
-  # Sets override variable `subscription_indent_1` to "Music", which is used as genre
-  =[Music]:
+
+# All subscriptions under this will use the `TV Show Full Archive` preset
+TV Show Full Archive:
+  # Sets "Music" as the TV show genre
+  = Music:
     "Rick A": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
     "Opeth": "https://www.youtube.com/channel/UCmQSJTFZaXN85gYk6W3XbdQ"
 
-  # Sets override variables `subscription_indent_1` and `subscription_indent_2`.
-  # Second is used as MPAA rating
-  =[Kids|TV-Y]:
+  # Sets "Kids" as the TV show genre, and "TV-Y" as the content rating
+  = Kids | TV-Y:
     "Jake Trains": "https://www.youtube.com/@JakeTrains"
     "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
 
-  # All subscriptions under this will use both `tv_show` and `only_recent_videos` preset
-  only_recent_videos:
-    =[News]:
-      "BBC": "https://www.youtube.com/@BBCNews"
+
+# All subscriptions under this will use the `TV Show Only Recent` preset
+TV Show Only Recent:
+  = News | TV-14:
+    "BBC": "https://www.youtube.com/@BBCNews"
 
 
-# If a key is not a preset, it is then treated as a subscription.
-# Subscriptions can use the same format as a preset, or a single string
-# like above which gets set to the override variable `subscription_value`
+# ADVANCED USAGE:
+# If a key is not a preset, it is treated as a subscription.
+# Subscriptions can use the same format as a preset found within a config.
 "Equivalent to BBC":
   preset:
-    - "tv_show"
-    - "only_recent_videos"
-
+    - "TV Show Only Recent"
   overrides:
     tv_show_name: "BBC"
     url: "https://www.youtube.com/@BBCNews"
     tv_show_genre: "News"
+    tv_show_content_rating: "TV-14"

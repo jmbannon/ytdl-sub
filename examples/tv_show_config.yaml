@@ -22,7 +22,7 @@ configuration:
 presets:
 
   # Your main TV show preset - all your tv show subscriptions will use this.
-  tv_show:
+  "TV Show Full Archive":
     preset:
       # Choose one of the following player types:
       # - "kodi_tv_show_by_date"
@@ -41,7 +41,6 @@ presets:
 
       # Include any of the presets listed below in your 'main preset' if you want
       # it applied to every TV show. Or, use them on the individual subscriptions.
-      # - "only_recent_videos"
       # - "add_subtitles"
       # - "sponsorblock"
       # - "include_info_json"
@@ -62,8 +61,12 @@ presets:
 
 ####################################################################################################
 
-  # Preset to only download and keep recent videos
-  only_recent_videos:
+  # A secondary TV Show preset that only keeps recent videos
+  "TV Show Only Recent":
+
+    # Inherit the `TV Show Full Archive` preset
+    preset:
+      - "TV Show Full Archive"
 
     # Only download videos within the download_range
     date_range:
@@ -113,11 +116,3 @@ presets:
         - "music_offtopic"
       remove_sponsorblock_categories: "all"
       force_key_frames: False
-
-####################################################################################################
-
-  # Preset for the hoarders who want to also save the info.json file
-  include_info_json:
-    output_options:
-      info_json_name: "{episode_file_path}.{info_json_ext}"
-

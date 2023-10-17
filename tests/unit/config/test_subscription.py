@@ -100,9 +100,9 @@ def preset_with_subscription_value_nested_presets_and_indent_variables(
         preset_with_subscription_value,
         **{
             "parent_preset_2": {
-                "=[INDENT_1]": {
+                "= INDENT_1   ": {
                     "parent_preset_1": {"test_2_1": "is_2_1_overwritten"},
-                    "=[INDENT_2]": {
+                    "=INDENT_2": {
                         "test_1": "is_1_overwritten",
                     },
                 }
@@ -119,9 +119,9 @@ def preset_with_subscription_value_nested_presets_and_indent_variables_same_line
         preset_with_subscription_value,
         **{
             "parent_preset_2": {
-                "=[INDENT_1]": {
+                "=INDENT_1": {
                     "parent_preset_1": {"test_2_1": "is_2_1_overwritten"},
-                    "=[INDENT_2|INDENT_3]": {
+                    "= INDENT_2  | INDENT_3   ": {
                         "test_1": "is_1_overwritten",
                     },
                 }
@@ -311,14 +311,14 @@ def test_subscription_file_bad_value(config_file: ConfigFile):
 def test_subscription_file_using_conflicting_preset_name(config_file: ConfigFile):
     with mock_load_yaml(
         preset_dict={
-            "=[INDENTS_IN_ERR_MSG]": {
-                "=[ANOTHER]": {"jellyfin_tv_show_by_date": "single value, __value__ not defined"}
+            "= INDENTS_IN_ERR_MSG ": {
+                "=ANOTHER": {"jellyfin_tv_show_by_date": "single value, __value__ not defined"}
             }
         }
     ), pytest.raises(
         ValidationException,
         match=re.escape(
-            "Validation error in =[INDENTS_IN_ERR_MSG].=[ANOTHER].jellyfin_tv_show_by_date: "
+            "Validation error in = INDENTS_IN_ERR_MSG .=ANOTHER.jellyfin_tv_show_by_date: "
             "jellyfin_tv_show_by_date conflicts with an existing preset name and cannot be used "
             "as a subscription name"
         ),

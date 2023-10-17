@@ -42,8 +42,9 @@ def maybe_indent_override_values(value: str) -> List[str]:
     -------
     Value if it is an overide [Value]. None otherwise.
     """
-    if value.startswith("=[") and value.endswith("]"):
-        return value[2:-1].split("|")
+    if value.startswith("="):
+        # Drop the =, split on |, and strip each indent_value (both left + right)
+        return [indent_value.strip() for indent_value in value[1:].split("|")]
     return []
 
 
