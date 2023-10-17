@@ -8,7 +8,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def channel_preset_dict(output_directory):
     return {
-        "preset": "tv_show",
+        "preset": "TV Show Full Archive",
         "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
             "max_views": 100000,  # do not download the popular PJ concert

@@ -180,6 +180,11 @@ def channel_as_tv_show_config(working_directory) -> ConfigFile:
 
 
 @pytest.fixture()
+def tv_show_subscriptions_path() -> Path:
+    return Path("examples/tv_show_subscriptions.yaml")
+
+
+@pytest.fixture()
 def music_audio_config(working_directory) -> ConfigFile:
     return _load_config(
         config_path=Path("examples/music_audio_config.yaml"), working_directory=working_directory

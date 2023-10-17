@@ -36,15 +36,16 @@ def subscription_value_variable_name() -> str:
     return "subscription_value"
 
 
-def maybe_indent_override_value(value: str) -> Optional[str]:
+def maybe_indent_override_values(value: str) -> List[str]:
     """
     Returns
     -------
     Value if it is an overide [Value]. None otherwise.
     """
-    if value.startswith("[") and value.endswith("]"):
-        return value[1:-1]
-    return None
+    if value.startswith("="):
+        # Drop the =, split on |, and strip each indent_value (both left + right)
+        return [indent_value.strip() for indent_value in value[1:].split("|")]
+    return []
 
 
 class SubscriptionOutput(Validator, ABC):
@@ -112,24 +113,19 @@ class SubscriptionValueValidator(SubscriptionOutput, StringValidator):
                 f"{self._leaf_name} conflicts with an existing preset name and cannot be "
                 f"used as a subscription name"
             )
-
-        if subscription_value is None:
-            raise self._validation_exception(
-                f"Subscription {self._leaf_name} is a string, but the subscription value "
-                f"is not set to an override variable"
-            )
-
-        self._subscription_value: str = subscription_value
+        self._subscription_value: Optional[str] = subscription_value
 
     def subscription_dicts(self) -> Dict[str, Dict]:
+        subscription_value_dict: Dict[str, str] = {"subscription_value": self.value}
+        # TODO: Eventually delete in favor of {subscription_value}
+        if self._subscription_value:
+            subscription_value_dict[self._subscription_value] = self.value
+
         return {
             self._leaf_name: {
                 "preset": self._presets,
                 "overrides": dict(
-                    {
-                        self._subscription_value: self.value,
-                        "subscription_value": self.value,
-                    },
+                    subscription_value_dict,
                     **self._indent_overrides_dict(),
                 ),
             }
@@ -179,14 +175,14 @@ class SubscriptionValidator(SubscriptionOutput):
                             subscription_value=subscription_value,
                         )
                     )
-                elif override_value := maybe_indent_override_value(key):
+                elif override_values := maybe_indent_override_values(key):
                     self._children.append(
                         SubscriptionValidator(
                             name=obj_name,
                             value=obj,
                             config=config,
                             presets=presets,
-                            indent_overrides=indent_overrides + [override_value],
+                            indent_overrides=indent_overrides + override_values,
                             subscription_value=subscription_value,
                         )
                     )

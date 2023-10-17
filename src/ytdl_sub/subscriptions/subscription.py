@@ -1,4 +1,5 @@
 import copy
+from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import List
@@ -92,7 +93,9 @@ class Subscription(SubscriptionDownload):
         return subscription_value_key
 
     @classmethod
-    def from_file_path(cls, config: ConfigFile, subscription_path: str) -> List["Subscription"]:
+    def from_file_path(
+        cls, config: ConfigFile, subscription_path: str | Path
+    ) -> List["Subscription"]:
         """
         Loads subscriptions from a file and applies ``__preset__`` to all of them if present.
         If a subscription is in the form of key: value, it will set value to the override
