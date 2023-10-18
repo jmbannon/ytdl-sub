@@ -1,16 +1,36 @@
-# Define any number subscriptions in a single file, or use multiple
-# files to organize (i.e by genre)
-
-rick_a:
-  # Mix and match any number of presets to use. You can either lump all settings into
-  # a single preset to save some lines, or modularize them and use many.
-  preset:
-    - "tv_show"
-    - "only_recent_videos"
-
+# Global overrides for all subscriptions. Can either be set here or in your config.yaml
+__preset__:
   overrides:
-    # Required to specify for every subscription
-    tv_show_name: "Rick A"
-    url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-    # Optional
-    tv_show_genre: "Music"
+    tv_show_directory: "/tv_shows"  # Root folder of ytdl-sub TV Shows
+    download_range: "2months"       # Range to keep for only recent
+
+
+# All subscriptions under this will use the `TV Show Full Archive` preset
+TV Show Full Archive:
+  # Sets "Music" for genre
+  = Music:
+    "Rick A": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+    "Opeth": "https://www.youtube.com/channel/UCmQSJTFZaXN85gYk6W3XbdQ"
+
+  # Sets "Kids" for genre, "TV-Y" for content rating
+  = Kids | TV-Y:
+    "Jake Trains": "https://www.youtube.com/@JakeTrains"
+    "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
+
+
+# All subscriptions under this will use the `TV Show Only Recent` preset
+TV Show Only Recent:
+  = News | TV-14:
+    "BBC": "https://www.youtube.com/@BBCNews"
+
+
+# ADVANCED USAGE:
+# Subscriptions can use the same format as a preset found within a config.
+"Equivalent to BBC":
+  preset:
+    - "TV Show Only Recent"
+  overrides:
+    tv_show_name: "BBC"
+    url: "https://www.youtube.com/@BBCNews"
+    tv_show_genre: "News"
+    tv_show_content_rating: "TV-14"

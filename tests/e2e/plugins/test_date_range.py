@@ -13,7 +13,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def recent_preset_dict(output_directory):
     return {
-        "preset": "tv_show",
+        "preset": "TV Show Full Archive",
         "date_range": {"after": "20150101"},
         "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
