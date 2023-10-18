@@ -19,8 +19,6 @@ presets:
     overrides:
 #   MUST DEFINE:
 #     tv_show_directory
-#     tv_show_name
-#     tv_show_genre
 #     season_number
 #     season_number_padded
 #     episode_number
@@ -31,13 +29,14 @@ presets:
       tv_show_genre: "{subscription_indent_1}"
       tv_show_content_rating: "{subscription_indent_2}"
       season_title: "{season_number_padded}"
+      season_directory_name: "Season {season_number_padded}"
       episode_title: "{upload_date_standardized} - {title}"
       episode_plot: "{webpage_url}\n\n{description}"
       episode_year: "{upload_year}"
       episode_content_rating: "{tv_show_content_rating}"
       episode_date_standardized: "{upload_date_standardized}"
       episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {file_title}"
-      episode_file_path: "Season {season_number_padded}/{episode_file_name}"
+      episode_file_path: "{season_directory_name}/{episode_file_name}"
 
   _episode_video_tags:
     video_tags:
