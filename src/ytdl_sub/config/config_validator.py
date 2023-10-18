@@ -96,8 +96,8 @@ class PersistLogsValidator(StrictDictValidator):
 
 
 class ConfigOptions(StrictDictValidator):
-    _required_keys = {"working_directory"}
     _optional_keys = {
+        "working_directory",
         "umask",
         "dl_aliases",
         "persist_logs",
@@ -112,8 +112,8 @@ class ConfigOptions(StrictDictValidator):
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
 
-        self._working_directory = self._validate_key(
-            key="working_directory", validator=StringValidator
+        self._working_directory = self._validate_key_if_present(
+            key="working_directory", validator=StringValidator, default=".ytdl-sub-temp-directory"
         )
         self._umask = self._validate_key_if_present(
             key="umask", validator=StringValidator, default="022"
@@ -244,14 +244,16 @@ class ConfigOptions(StrictDictValidator):
 
 
 class ConfigValidator(StrictDictValidator):
-    _required_keys = {"configuration", "presets"}
+    _optional_keys = {"configuration", "presets"}
 
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
-        self.config_options = self._validate_key("configuration", ConfigOptions)
+        self.config_options = self._validate_key_if_present(
+            "configuration", ConfigOptions, default={}
+        )
 
         # Make sure presets is a dictionary. Will be validated in `PresetValidator`
-        self.presets = self._validate_key("presets", LiteralDictValidator)
+        self.presets = self._validate_key_if_present("presets", LiteralDictValidator, default={})
 
         # Ensure custom presets do not collide with prebuilt presets
         for preset_name in self.presets.keys:

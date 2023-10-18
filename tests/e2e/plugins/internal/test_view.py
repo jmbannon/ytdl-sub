@@ -10,12 +10,11 @@ class TestView:
     @pytest.mark.parametrize("split_chapters", [True, False])
     def test_view_from_cli(
         self,
-        music_video_config_path,
         output_directory,
         split_chapters,
     ):
 
-        args = f"--config {music_video_config_path} view "
+        args = f"view "
         args += "--split-chapters " if split_chapters else ""
         args += f"https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
         subscription_transaction_log = mock_run_from_cli(args=args)
