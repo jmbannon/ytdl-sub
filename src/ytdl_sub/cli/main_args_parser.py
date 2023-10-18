@@ -5,6 +5,8 @@ from typing import List
 from ytdl_sub import __local_version__
 from ytdl_sub.utils.logger import LoggerLevels
 
+DEFAULT_CONFIG_FILE_NAME: str = "config.yaml"
+
 
 @dataclasses.dataclass
 class CLIArgument:
@@ -86,8 +88,8 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         MainArguments.CONFIG.long,
         metavar="CONFIGPATH",
         type=str,
-        help="path to the config yaml, uses config.yaml if not provided",
-        default=argparse.SUPPRESS if suppress_defaults else "config.yaml",
+        help=f"path to the config yaml, uses {DEFAULT_CONFIG_FILE_NAME} if not provided",
+        default=argparse.SUPPRESS if suppress_defaults else None,  # Default is set downstream
     )
     arg_parser.add_argument(
         MainArguments.DRY_RUN.short,

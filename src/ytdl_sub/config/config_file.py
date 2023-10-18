@@ -11,8 +11,6 @@ from ytdl_sub.validators.file_path_validators import FilePathValidatorMixin
 
 
 class ConfigFile(ConfigValidator):
-    _required_keys = {"configuration", "presets"}
-
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
 
@@ -45,18 +43,19 @@ class ConfigFile(ConfigValidator):
         return self
 
     @classmethod
-    def from_dict(cls, config_dict: dict) -> "ConfigFile":
+    def from_dict(cls, config_dict: dict, name: str = "") -> "ConfigFile":
         """
         Parameters
         ----------
         config_dict:
             The config in dictionary format
-
+        name:
+            Name of the config
         Returns
         -------
         Config file validator
         """
-        return ConfigFile(name="", value=config_dict)
+        return ConfigFile(name=name, value=config_dict)
 
     @classmethod
     def from_file_path(cls, config_path: str) -> "ConfigFile":
@@ -83,7 +82,7 @@ class ConfigFile(ConfigValidator):
                 f"Did you set --config correctly?"
             ) from exc
 
-        return ConfigFile.from_dict(config_dict)
+        return ConfigFile.from_dict(name=config_path, config_dict=config_dict)
 
     def as_dict(self) -> Dict[str, Any]:
         """

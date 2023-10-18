@@ -11,6 +11,7 @@ from colorama import Fore
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.cli.download_args_parser import DownloadArgsParser
+from ytdl_sub.cli.main_args_parser import DEFAULT_CONFIG_FILE_NAME
 from ytdl_sub.cli.main_args_parser import parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -303,7 +304,14 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     args, extra_args = parser.parse_known_args()
 
     # Load the config
-    config: ConfigFile = ConfigFile.from_file_path(args.config)
+    config: ConfigFile = ConfigFile(name="default_config", value={})
+    if args.config:
+        config = ConfigFile.from_file_path(args.config)
+    elif os.path.isfile(DEFAULT_CONFIG_FILE_NAME):
+        config = ConfigFile.from_file_path(DEFAULT_CONFIG_FILE_NAME)
+    else:
+        logger.info("No config specified, using defaults.")
+
     transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
 
     # If transaction log file is specified, make sure we can open it
