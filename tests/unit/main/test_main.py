@@ -97,6 +97,19 @@ def test_args_after_sub_work(mock_sys_exit):
         assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
 
 
+def test_no_config_works(mock_sys_exit):
+    with mock_sys_exit(expected_exit_code=0), patch.object(
+        sys,
+        "argv",
+        ["ytdl-sub", "sub", "--log-level", "verbose"],
+    ), patch("ytdl_sub.cli.main._download_subscriptions_from_yaml_files") as mock_sub:
+        main()
+
+        assert mock_sub.call_count == 1
+        assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
+        assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
+
+
 def test_no_positional_arg_command(mock_sys_exit):
     with mock_sys_exit(expected_exit_code=1), patch.object(
         sys,

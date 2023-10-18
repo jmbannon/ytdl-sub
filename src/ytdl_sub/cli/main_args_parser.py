@@ -88,8 +88,8 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         MainArguments.CONFIG.long,
         metavar="CONFIGPATH",
         type=str,
-        # Default is set downstream
         help=f"path to the config yaml, uses {DEFAULT_CONFIG_FILE_NAME} if not provided",
+        default=argparse.SUPPRESS if suppress_defaults else None,  # Default is set downstream
     )
     arg_parser.add_argument(
         MainArguments.DRY_RUN.short,

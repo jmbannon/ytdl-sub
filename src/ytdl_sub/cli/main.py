@@ -310,7 +310,7 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     elif os.path.isfile(DEFAULT_CONFIG_FILE_NAME):
         config = ConfigFile.from_file_path(DEFAULT_CONFIG_FILE_NAME)
     else:
-        logger.info("No config specified, using defaults")
+        logger.info("No config specified, using defaults.")
 
     transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
 
