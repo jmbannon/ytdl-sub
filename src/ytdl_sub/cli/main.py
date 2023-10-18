@@ -304,7 +304,7 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     args, extra_args = parser.parse_known_args()
 
     # Load the config
-    config: ConfigFile = ConfigFile(name="config", value={})
+    config: ConfigFile = ConfigFile(name="default_config", value={})
     if args.config:
         config = ConfigFile.from_file_path(args.config)
     elif os.path.isfile(DEFAULT_CONFIG_FILE_NAME):

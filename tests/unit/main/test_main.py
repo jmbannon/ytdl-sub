@@ -1,5 +1,6 @@
 import contextlib
 import logging
+import os.path
 import sys
 from unittest.mock import patch
 
@@ -7,7 +8,10 @@ import pytest
 
 from src.ytdl_sub import __local_version__
 from src.ytdl_sub.main import main
+from ytdl_sub.cli.main_args_parser import DEFAULT_CONFIG_FILE_NAME
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.logger import LoggerLevels
 
@@ -94,6 +98,7 @@ def test_args_after_sub_work(mock_sys_exit):
 
         assert mock_sub.call_count == 1
         assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
+        assert mock_sub.call_args.kwargs["config"]._name == "examples/tv_show_config.yaml"
         assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
 
 
@@ -107,7 +112,35 @@ def test_no_config_works(mock_sys_exit):
 
         assert mock_sub.call_count == 1
         assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
+        assert mock_sub.call_args.kwargs["config"]._name == "default_config"
         assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
+
+
+def test_uses_default_config_if_present(mock_sys_exit):
+    # If a config exists in the ytdl-sub root dir, just use that and do not delete it
+    preexisting_default_config = os.path.isfile(DEFAULT_CONFIG_FILE_NAME)
+    if not preexisting_default_config:
+        open(DEFAULT_CONFIG_FILE_NAME, "a").close()
+
+    try:
+        with mock_sys_exit(expected_exit_code=0), patch.object(
+            sys,
+            "argv",
+            ["ytdl-sub", "sub", "--log-level", "verbose"],
+        ), patch(
+            "ytdl_sub.cli.main._download_subscriptions_from_yaml_files"
+        ) as mock_sub, patch.object(
+            ConfigFile, "from_file_path", new=lambda _: ConfigFile(name="test default", value={})
+        ):
+            main()
+
+            assert mock_sub.call_count == 1
+            assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
+            assert mock_sub.call_args.kwargs["config"]._name == "test default"
+            assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
+    finally:
+        if not preexisting_default_config:
+            FileHandler.delete(DEFAULT_CONFIG_FILE_NAME)
 
 
 def test_no_positional_arg_command(mock_sys_exit):
