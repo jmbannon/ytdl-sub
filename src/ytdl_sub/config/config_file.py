@@ -11,7 +11,6 @@ from ytdl_sub.validators.file_path_validators import FilePathValidatorMixin
 
 
 class ConfigFile(ConfigValidator):
-
     def __init__(self, name: str, value: Any):
         super().__init__(name, value)
 
