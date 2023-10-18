@@ -113,7 +113,9 @@ class ConfigOptions(StrictDictValidator):
         super().__init__(name, value)
 
         self._working_directory = self._validate_key_if_present(
-            key="working_directory", validator=StringValidator, default=".ytdl-sub-temp-directory"
+            key="working_directory",
+            validator=StringValidator,
+            default=".ytdl-sub-working-directory",
         )
         self._umask = self._validate_key_if_present(
             key="umask", validator=StringValidator, default="022"
