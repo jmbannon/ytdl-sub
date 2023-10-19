@@ -149,14 +149,14 @@ class ConfigOptions(StrictDictValidator):
     def working_directory(self) -> str:
         """
         The directory to temporarily store downloaded files before moving them into their final
-        directory.
+        directory. Defaults to .ytdl-sub-working-directory
         """
         return self._working_directory.value
 
     @property
     def umask(self) -> Optional[str]:
         """
-        Optional. Umask (octal format) to apply to every created file. Defaults to "022".
+        Umask (octal format) to apply to every created file. Defaults to "022".
         """
         return self._umask.value
 
@@ -165,7 +165,7 @@ class ConfigOptions(StrictDictValidator):
         """
         .. _dl_aliases:
 
-        Optional. Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
+        Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
 
         .. code-block:: yaml
 
@@ -200,7 +200,7 @@ class ConfigOptions(StrictDictValidator):
     @property
     def file_name_max_bytes(self) -> int:
         """
-        Optional. Max file name size in bytes. Most OS's typically default to 255 bytes.
+        Max file name size in bytes. Most OS's typically default to 255 bytes.
         """
         return self._file_name_max_bytes.value
 
@@ -214,7 +214,7 @@ class ConfigOptions(StrictDictValidator):
     @property
     def lock_directory(self) -> str:
         """
-        Optional. The directory to temporarily store file locks, which prevents multiple instances
+        The directory to temporarily store file locks, which prevents multiple instances
         of ``ytdl-sub`` from running. Note that file locks do not work on network-mounted
         directories. Ensure that this directory resides on the host machine. Defaults to ``/tmp``.
         """
@@ -223,7 +223,7 @@ class ConfigOptions(StrictDictValidator):
     @property
     def ffmpeg_path(self) -> str:
         """
-        Optional. Path to ffmpeg executable. Defaults to ``/usr/bin/ffmpeg`` for Linux, and
+        Path to ffmpeg executable. Defaults to ``/usr/bin/ffmpeg`` for Linux, and
         ``ffmpeg.exe`` for Windows (in the same directory as ytdl-sub).
         """
         return self._ffmpeg_path.value
@@ -231,7 +231,7 @@ class ConfigOptions(StrictDictValidator):
     @property
     def ffprobe_path(self) -> str:
         """
-        Optional. Path to ffprobe executable. Defaults to ``/usr/bin/ffprobe`` for Linux, and
+        Path to ffprobe executable. Defaults to ``/usr/bin/ffprobe`` for Linux, and
         ``ffprobe.exe`` for Windows (in the same directory as ytdl-sub).
         """
         return self._ffprobe_path.value
@@ -239,7 +239,7 @@ class ConfigOptions(StrictDictValidator):
     @property
     def subscription_value(self) -> Optional[str]:
         """
-        Optional. Sets the :ref:`subscription value` for subscription
+        Sets the :ref:`subscription value` for subscription
         files that use this config.
         """
         return self._subscription_value.value if self._subscription_value else None
