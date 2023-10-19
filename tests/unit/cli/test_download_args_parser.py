@@ -6,9 +6,9 @@ from typing import Optional
 
 import pytest
 
-from ytdl_sub.cli.download_args_parser import DownloadArgsParser
-from ytdl_sub.cli.main_args_parser import MainArguments
-from ytdl_sub.cli.main_args_parser import parser
+from ytdl_sub.cli.parsers.dl import DownloadArgsParser
+from ytdl_sub.cli.parsers.main import MainArguments
+from ytdl_sub.cli.parsers.main import parser
 from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.utils.exceptions import InvalidDlArguments
 

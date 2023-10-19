@@ -8,7 +8,7 @@ import pytest
 
 from src.ytdl_sub import __local_version__
 from src.ytdl_sub.main import main
-from ytdl_sub.cli.main_args_parser import DEFAULT_CONFIG_FILE_NAME
+from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
@@ -93,7 +93,7 @@ def test_args_after_sub_work(mock_sys_exit):
         sys,
         "argv",
         ["ytdl-sub", "-c", "examples/tv_show_config.yaml", "sub", "--log-level", "verbose"],
-    ), patch("ytdl_sub.cli.main._download_subscriptions_from_yaml_files") as mock_sub:
+    ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
         main()
 
         assert mock_sub.call_count == 1
@@ -107,7 +107,7 @@ def test_no_config_works(mock_sys_exit):
         sys,
         "argv",
         ["ytdl-sub", "sub", "--log-level", "verbose"],
-    ), patch("ytdl_sub.cli.main._download_subscriptions_from_yaml_files") as mock_sub:
+    ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
         main()
 
         assert mock_sub.call_count == 1
@@ -128,7 +128,7 @@ def test_uses_default_config_if_present(mock_sys_exit):
             "argv",
             ["ytdl-sub", "sub", "--log-level", "verbose"],
         ), patch(
-            "ytdl_sub.cli.main._download_subscriptions_from_yaml_files"
+            "ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files"
         ) as mock_sub, patch.object(
             ConfigFile, "from_file_path", new=lambda _: ConfigFile(name="test default", value={})
         ):

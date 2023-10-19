@@ -1,6 +1,6 @@
 import sys
 
-from ytdl_sub.cli.main_args_parser import parser
+from ytdl_sub.cli.parsers.main import parser
 from ytdl_sub.utils.logger import Logger
 
 
@@ -11,11 +11,11 @@ def _main():
     Logger.set_log_level(log_level_name=args.ytdl_sub_log_level)
 
     # pylint: disable=import-outside-toplevel
-    import ytdl_sub.cli.main
+    import ytdl_sub.cli.entrypoint
 
     # pylint: enable=import-outside-toplevel
 
-    ytdl_sub.cli.main.main()
+    ytdl_sub.cli.entrypoint.main()
 
 
 def main():
