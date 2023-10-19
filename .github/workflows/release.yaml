@@ -207,7 +207,11 @@ jobs:
           python3 -m build
 
       - name: Publish distribution 📦 to PyPI
-        if: ${{ github.ref == 'refs/heads/master' && !contains(github.event.head_commit.message, '[DEV]') }}
+        if: ${{
+          github.ref == 'refs/heads/master'
+          && !contains(github.event.head_commit.message, '[DEV]')
+          && !contains(github.event.head_commit.message, '[DOCS]')
+          }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
