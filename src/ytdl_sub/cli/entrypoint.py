@@ -195,13 +195,13 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
     args, extra_args = parser.parse_known_args()
 
     # Load the config
-    config: ConfigFile = ConfigFile(name="default_config", value={})
     if args.config:
         config = ConfigFile.from_file_path(args.config)
     elif os.path.isfile(DEFAULT_CONFIG_FILE_NAME):
         config = ConfigFile.from_file_path(DEFAULT_CONFIG_FILE_NAME)
     else:
         logger.info("No config specified, using defaults.")
+        config = ConfigFile(name="default_config", value={})
 
     transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
 
