@@ -17,10 +17,10 @@ import mergedeep
 import pytest
 from conftest import assert_logs
 
-from ytdl_sub.cli.main import _download_subscriptions_from_yaml_files
-from ytdl_sub.cli.main import _output_summary
-from ytdl_sub.cli.main import logger as main_logger
-from ytdl_sub.cli.main import main
+from ytdl_sub.cli.entrypoint import _download_subscriptions_from_yaml_files
+from ytdl_sub.cli.entrypoint import main
+from ytdl_sub.cli.output_summary import output_summary
+from ytdl_sub.cli.output_transaction_log import logger as transaction_logger
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
@@ -202,7 +202,7 @@ def test_suppress_transaction_log(
             "--suppress-transaction-log",
         ]
         + (["--transaction-log", file_transaction_log] if file_transaction_log else []),
-    ), patch("ytdl_sub.cli.main._output_transaction_log") as mock_transaction_log:
+    ), patch("ytdl_sub.cli.output_transaction_log.output_transaction_log") as mock_transaction_log:
         transaction_logs = main()
 
         assert transaction_logs
@@ -251,7 +251,9 @@ def test_transaction_log_to_logger(
             str(music_video_subscription_path),
         ],
     ), assert_logs(
-        logger=main_logger, expected_message="Transaction log for john_smith:\n", log_level="info"
+        logger=transaction_logger,
+        expected_message="Transaction log for john_smith:\n",
+        log_level="info",
     ):
         transaction_logs = main()
         assert transaction_logs
@@ -277,7 +279,7 @@ def test_output_summary():
 
         mock_subscriptions.append((sub, FileHandlerTransactionLog()))
 
-    _ = _output_summary(transaction_logs=mock_subscriptions)
+    _ = output_summary(transaction_logs=mock_subscriptions)
     assert True  # Test used for manual inspection - too hard to test ansi color codes
 
 

@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 import pytest
 
-from ytdl_sub.cli.main import main
+from ytdl_sub.cli.entrypoint import main
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
