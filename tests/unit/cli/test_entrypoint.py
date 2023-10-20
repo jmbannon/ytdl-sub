@@ -260,11 +260,11 @@ def test_transaction_log_to_logger(
 
 
 def test_output_summary():
-    subscription_values: List[Tuple[str, int, int, int, int, bool]] = [
-        ("long_name_but_lil_values", 0, 0, 0, 6, False),
-        ("john_smith", 1, 0, 0, 52, False),
-        ("david_gore", 0, 0, 0, 4, False),
-        ("christopher_snoop", 50, 0, 3, 518, False),
+    subscription_values: List[Tuple[str, int, int, int, int, Optional[bool]]] = [
+        ("long_name_but_lil_values", 0, 0, 0, 6, None),
+        ("john_smith", 1, 0, 0, 52, None),
+        ("david_gore", 0, 0, 0, 4, None),
+        ("christopher_snoop", 50, 0, 3, 518, None),
         ("beyond funk", 0, 0, 0, 176, True),
     ]
 

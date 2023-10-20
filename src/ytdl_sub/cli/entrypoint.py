@@ -97,14 +97,14 @@ def _download_subscriptions_from_yaml_files(
         subscriptions += Subscription.from_file_path(config=config, subscription_path=path)
 
     for subscription in subscriptions:
-        logger.info(
-            "Beginning subscription %s for %s",
-            ("dry run" if dry_run else "download"),
-            subscription.name,
-        )
-        logger.debug("Subscription full yaml:\n%s", subscription.as_yaml())
-
         with subscription.exception_handling():
+            logger.info(
+                "Beginning subscription %s for %s",
+                ("dry run" if dry_run else "download"),
+                subscription.name,
+            )
+            logger.debug("Subscription full yaml:\n%s", subscription.as_yaml())
+
             if update_with_info_json:
                 subscription.update_with_info_json(dry_run=dry_run)
             else:
