@@ -5,7 +5,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import List
 from typing import Optional
-from typing import Tuple
 
 from yt_dlp.utils import sanitize_filename
 
@@ -20,7 +19,6 @@ from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_lock import working_directory_lock
 from ytdl_sub.utils.logger import Logger
 
@@ -67,7 +65,7 @@ def _maybe_write_subscription_log_file(
 
 def _download_subscriptions_from_yaml_files(
     config: ConfigFile, subscription_paths: List[str], update_with_info_json: bool, dry_run: bool
-) -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
+) -> List[Subscription]:
     """
     Downloads all subscriptions from one or many subscription yaml files.
 
@@ -84,7 +82,7 @@ def _download_subscriptions_from_yaml_files(
 
     Returns
     -------
-    List of (subscription, transaction_log)
+    List of subscriptions processed
 
     Raises
     ------
@@ -92,7 +90,7 @@ def _download_subscriptions_from_yaml_files(
         Any exception during download
     """
     subscriptions: List[Subscription] = []
-    output: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
+    has_exception = False
 
     # Load all the subscriptions first to perform all validation before downloading
     for path in subscription_paths:
@@ -106,31 +104,31 @@ def _download_subscriptions_from_yaml_files(
         )
         logger.debug("Subscription full yaml:\n%s", subscription.as_yaml())
 
-        try:
+        with subscription.exception_handling():
             if update_with_info_json:
-                transaction_log = subscription.update_with_info_json(dry_run=dry_run)
+                subscription.update_with_info_json(dry_run=dry_run)
             else:
-                transaction_log = subscription.download(dry_run=dry_run)
-        except Exception as exc:  # pylint: disable=broad-except
-            _maybe_write_subscription_log_file(
-                config=config, subscription=subscription, dry_run=dry_run, exception=exc
-            )
-            raise
-        else:
-            output.append((subscription, transaction_log))
-            _maybe_write_subscription_log_file(
-                config=config, subscription=subscription, dry_run=dry_run
-            )
-            Logger.cleanup()  # Cleanup logger after each successful subscription download
-        finally:
-            gc.collect()  # Garbage collect after each subscription download
+                subscription.download(dry_run=dry_run)
 
-    return output
+        has_exception = has_exception or subscription.exception is not None
+        _maybe_write_subscription_log_file(
+            config=config,
+            subscription=subscription,
+            dry_run=dry_run,
+            exception=subscription.exception,
+        )
+
+        if not has_exception:
+            Logger.cleanup()  # Cleanup logger if no exceptions occurred
+
+        gc.collect()  # Garbage collect after each subscription download
+
+    return subscriptions
 
 
 def _download_subscription_from_cli(
     config: ConfigFile, dry_run: bool, extra_args: List[str]
-) -> Tuple[Subscription, FileHandlerTransactionLog]:
+) -> Subscription:
     """
     Downloads a one-off subscription using the CLI
 
@@ -158,12 +156,12 @@ def _download_subscription_from_cli(
     )
 
     logger.info("Beginning CLI %s", ("dry run" if dry_run else "download"))
-    return subscription, subscription.download(dry_run=dry_run)
+    subscription.download(dry_run=dry_run)
+
+    return subscription
 
 
-def _view_url_from_cli(
-    config: ConfigFile, url: str, split_chapters: bool
-) -> Tuple[Subscription, FileHandlerTransactionLog]:
+def _view_url_from_cli(config: ConfigFile, url: str, split_chapters: bool) -> Subscription:
     """
     `ytdl-sub view` dry-runs a URL to print its source variables. Use the pre-built `_view` preset,
     inject the URL argument, and dry-run.
@@ -180,10 +178,12 @@ def _view_url_from_cli(
         url,
         " with split chapters" if split_chapters else "",
     )
-    return subscription, subscription.download(dry_run=True)
+    subscription.download(dry_run=True)
+
+    return subscription
 
 
-def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
+def main() -> List[Subscription]:
     """
     Entrypoint for ytdl-sub, without the error handling
     """
@@ -203,7 +203,7 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
         logger.info("No config specified, using defaults.")
         config = ConfigFile(name="default_config", value={})
 
-    transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]] = []
+    subscriptions: List[Subscription] = []
 
     # If transaction log file is specified, make sure we can open it
     _maybe_validate_transaction_log_file(transaction_log_file_path=args.transaction_log)
@@ -222,7 +222,7 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
                     "full backup before usage. You have been warned!",
                 )
 
-            transaction_logs = _download_subscriptions_from_yaml_files(
+            subscriptions = _download_subscriptions_from_yaml_files(
                 config=config,
                 subscription_paths=args.subscription_paths,
                 update_with_info_json=args.update_with_info_json,
@@ -231,13 +231,13 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
 
         # One-off download
         elif args.subparser == "dl":
-            transaction_logs.append(
+            subscriptions.append(
                 _download_subscription_from_cli(
                     config=config, dry_run=args.dry_run, extra_args=extra_args
                 )
             )
         elif args.subparser == "view":
-            transaction_logs.append(
+            subscriptions.append(
                 _view_url_from_cli(config=config, url=args.url, split_chapters=args.split_chapters)
             )
         else:
@@ -245,10 +245,10 @@ def main() -> List[Tuple[Subscription, FileHandlerTransactionLog]]:
 
     if not args.suppress_transaction_log:
         output_transaction_log(
-            transaction_logs=transaction_logs,
+            subscriptions=subscriptions,
             transaction_log_file_path=args.transaction_log,
         )
 
-    output_summary(transaction_logs)
+    output_summary(subscriptions)
 
-    return transaction_logs
+    return subscriptions

@@ -9,6 +9,7 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -58,6 +59,8 @@ class BaseSubscription(ABC):
             output_directory=self.output_directory,
             migrated_file_name=migrated_file_name,
         )
+
+        self._exception: Optional[Exception] = None
 
     @property
     def downloader_options(self) -> MultiUrlValidator:
@@ -166,6 +169,24 @@ class BaseSubscription(ABC):
         The number of entries
         """
         return self._enhanced_download_archive.num_entries
+
+    @property
+    def transaction_log(self) -> FileHandlerTransactionLog:
+        """
+        Returns
+        -------
+        Transaction log from the subscription
+        """
+        return self._enhanced_download_archive.get_file_handler_transaction_log()
+
+    @property
+    def exception(self) -> Optional[Exception]:
+        """
+        Returns
+        -------
+        An exception if one occurred while processing the subscription
+        """
+        return self._exception
 
     def as_yaml(self) -> str:
         """

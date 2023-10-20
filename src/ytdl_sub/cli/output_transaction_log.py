@@ -1,10 +1,8 @@
 from typing import List
 from typing import Optional
-from typing import Tuple
 
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get()
@@ -23,7 +21,7 @@ def _maybe_validate_transaction_log_file(transaction_log_file_path: Optional[str
 
 
 def output_transaction_log(
-    transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]],
+    subscriptions: List[Subscription],
     transaction_log_file_path: Optional[str],
 ) -> None:
     """
@@ -31,19 +29,19 @@ def output_transaction_log(
 
     Parameters
     ----------
-    transaction_logs
-        The transaction logs from downloaded subscriptions
+    subscriptions
+        Processed subscriptions
     transaction_log_file_path
         Optional file path to write to
     """
     transaction_log_file_contents = ""
-    for subscription, transaction_log in transaction_logs:
-        if transaction_log.is_empty:
+    for subscription in subscriptions:
+        if subscription.transaction_log.is_empty:
             transaction_log_contents = f"\nNo files changed for {subscription.name}"
         else:
             transaction_log_contents = (
                 f"Transaction log for {subscription.name}:\n"
-                f"{transaction_log.to_output_message(subscription.output_directory)}"
+                f"{subscription.transaction_log.to_output_message(subscription.output_directory)}"
             )
 
         if transaction_log_file_path:

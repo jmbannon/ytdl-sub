@@ -1,10 +1,8 @@
 from typing import List
-from typing import Tuple
 
 from colorama import Fore
 
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get()
@@ -37,12 +35,12 @@ def _color_int(value: int) -> str:
     return _no_color(str_int)
 
 
-def output_summary(transaction_logs: List[Tuple[Subscription, FileHandlerTransactionLog]]) -> str:
+def output_summary(subscriptions: List[Subscription]) -> str:
     """
     Parameters
     ----------
-    transaction_logs
-        Transaction logs from downloaded subscriptions
+    subscriptions
+        Processed subscriptions
 
     Returns
     -------
@@ -58,7 +56,7 @@ def output_summary(transaction_logs: List[Tuple[Subscription, FileHandlerTransac
     width_num_entries: int = 0
 
     # Calculate min width needed
-    for subscription, _ in transaction_logs:
+    for subscription in subscriptions:
         width_sub_name = max(width_sub_name, len(subscription.name))
         width_num_entries_added = max(
             width_num_entries_added, len(_color_int(subscription.num_entries_added))
@@ -76,12 +74,12 @@ def output_summary(transaction_logs: List[Tuple[Subscription, FileHandlerTransac
     width_num_entries += 4
 
     # Build the summary
-    for subscription, _ in transaction_logs:
+    for subscription in subscriptions:
         num_entries_added = _color_int(subscription.num_entries_added)
         num_entries_modified = _color_int(subscription.num_entries_modified)
         num_entries_removed = _color_int(subscription.num_entries_removed * -1)
         num_entries = str(subscription.num_entries)
-        status = _green("success")
+        status = _red("error") if subscription.exception else _green("success")
 
         summary.append(
             f"{subscription.name:<{width_sub_name}} "
