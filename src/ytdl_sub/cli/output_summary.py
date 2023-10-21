@@ -49,7 +49,8 @@ def output_summary(subscriptions: List[Subscription]) -> None:
     summary: List[str] = []
 
     # Initialize totals to 0
-    total_subs: int = 0
+    total_subs: int = len(subscriptions)
+    total_subs_str = f"Total: {total_subs}"
     total_added: int = 0
     total_modified: int = 0
     total_removed: int = 0
@@ -57,7 +58,7 @@ def output_summary(subscriptions: List[Subscription]) -> None:
     total_errors: int = 0
 
     # Initialize widths to 0
-    width_sub_name: int = 0
+    width_sub_name: int = len(total_subs_str)
     width_num_entries_added: int = 0
     width_num_entries_modified: int = 0
     width_num_entries_removed: int = 0
@@ -99,21 +100,18 @@ def output_summary(subscriptions: List[Subscription]) -> None:
         )
 
         # Add total
-        total_subs += 1
         total_added += subscription.num_entries_added
         total_modified += subscription.num_entries_modified
         total_removed -= subscription.num_entries_removed
         total_entries += subscription.num_entries
         total_errors += int(subscription.exception is not None)
 
-    total_subs_str = f"Total: {total_subs} Subscriptions"
     total_errors_str = (
-        _green("All Successful")
+        _green("success!")
         if total_errors == 0
-        else _red(f"{total_errors} Error{'s' if total_errors > 1 else ''}")
+        else _red(f"{total_errors} error{'s' if total_errors > 1 else ''}")
     )
 
-    summary.append("")  # new line
     summary.append(
         f"{total_subs_str:<{width_sub_name}} "
         f"{_color_int(total_added):>{width_num_entries_added}} "
@@ -125,7 +123,7 @@ def output_summary(subscriptions: List[Subscription]) -> None:
 
     if total_errors > 0:
         summary.append("")
-        summary.append(f"See `{Logger.debug_log_filename()}` for details on errors.")
+        summary.append(f"See `{Logger.error_log_filename()}` for details on errors.")
         summary.append("Consider making a GitHub issue including the uploaded log file.")
 
     # Hack to always show download summary, even if logs are set to quiet

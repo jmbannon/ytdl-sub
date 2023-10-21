@@ -24,9 +24,9 @@ def main():
     """
     try:
         _main()
-        Logger.cleanup()  # Ran successfully, so we can delete the debug file
+        Logger.cleanup(cleanup_error_log=True)  # Ran successfully, so we can delete the debug file
     except Exception as exc:  # pylint: disable=broad-except
-        Logger.log_exit_exception(exception=exc)
+        Logger.log_exception(exception=exc)
         sys.exit(1)
 
     sys.exit(0)

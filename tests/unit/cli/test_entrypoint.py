@@ -142,17 +142,17 @@ def test_subscription_logs_write_to_file(
     if dry_run or (mock_success_output and not keep_successful_logs):
         assert len(log_directory_files) == 0
         return
-    # If not success, expect 1 log file
+    # If not success, expect 2 log files for both sub errors
     elif not mock_success_output:
-        assert len(log_directory_files) == 1
-        log_path = log_directory_files[0]
-        assert bool(re.match(r"\d{4}-\d{2}-\d{2}-\d{6}\.john_smith\.error\.log", log_path.name))
-        with open(log_path, "r", encoding="utf-8") as log_file:
-            assert log_file.readlines()[-1] == (
-                f"Please upload the error log file '{str(log_path)}' and make a Github issue "
-                f"at https://github.com/jmbannon/ytdl-sub/issues with your config and "
-                f"command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!\n"
-            )
+        assert len(log_directory_files) == 2
+        for log_path in log_directory_files:
+            assert bool(re.match(r"\d{4}-\d{2}-\d{2}-\d{6}\.john_smith\.error\.log", log_path.name))
+            with open(log_path, "r", encoding="utf-8") as log_file:
+                assert log_file.readlines()[-1] == (
+                    f"Please upload the error log file '{str(log_path)}' and make a Github issue "
+                    f"at https://github.com/jmbannon/ytdl-sub/issues with your config and "
+                    f"command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!\n"
+                )
     # If success and success logging, expect 3 log files
     else:
         assert len(log_directory_files) == num_subscriptions

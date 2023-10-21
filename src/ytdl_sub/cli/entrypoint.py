@@ -57,7 +57,7 @@ def _maybe_write_subscription_log_file(
     persist_log_path = Path(config.config_options.persist_logs.logs_directory) / log_filename
 
     if not success:
-        Logger.log_exit_exception(exception=exception, log_filepath=persist_log_path)
+        Logger.log_exception(exception=exception, log_filepath=persist_log_path)
 
     os.makedirs(os.path.dirname(persist_log_path), exist_ok=True)
     FileHandler.copy(Logger.debug_log_filename(), persist_log_path)
@@ -90,7 +90,6 @@ def _download_subscriptions_from_yaml_files(
         Any exception during download
     """
     subscriptions: List[Subscription] = []
-    has_exception = False
 
     # Load all the subscriptions first to perform all validation before downloading
     for path in subscription_paths:
@@ -110,7 +109,6 @@ def _download_subscriptions_from_yaml_files(
             else:
                 subscription.download(dry_run=dry_run)
 
-        has_exception = has_exception or subscription.exception is not None
         _maybe_write_subscription_log_file(
             config=config,
             subscription=subscription,
@@ -118,9 +116,7 @@ def _download_subscriptions_from_yaml_files(
             exception=subscription.exception,
         )
 
-        if not has_exception:
-            Logger.cleanup()  # Cleanup logger if no exceptions occurred
-
+        Logger.cleanup(cleanup_error_log=False)
         gc.collect()  # Garbage collect after each subscription download
 
     return subscriptions
