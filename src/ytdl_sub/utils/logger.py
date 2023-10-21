@@ -108,6 +108,11 @@ class Logger:
 
     @classmethod
     def error_log_filename(cls) -> str:
+        """
+        Returns
+        -------
+        File name of the error log file
+        """
         return cls._ERROR_LOG_FILE.name
 
     @classmethod
@@ -208,7 +213,10 @@ class Logger:
     @classmethod
     def log_exception(cls, exception: Exception, log_filepath: Optional[Path] = None):
         """
-        Performs the final log before exiting from an error
+        Logs an exception based on the exception type. Will transfer all
+        debug logs into the error log file. This allows for subscriptions to only write to the
+        error log if an error occurred - successful subscriptions will clean the debug log file
+        w/out any write to the error log.
 
         Parameters
         ----------

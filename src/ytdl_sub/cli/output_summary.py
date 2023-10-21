@@ -46,6 +46,8 @@ def output_summary(subscriptions: List[Subscription]) -> None:
     -------
     Output summary to print
     """
+    # many locals for proper output printing
+    # pylint: disable=too-many-locals
     if len(subscriptions) == 0:
         logger.info("No subscriptions ran")
         return
