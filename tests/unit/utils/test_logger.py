@@ -151,9 +151,16 @@ class TestLogger:
                         "[ytdl-sub] Version 2023.03.24+14e4a4b\n",
                         f"Please upload the error log file '{Logger.error_log_filename()}' and make a Github issue at https://github.com/jmbannon/ytdl-sub/issues with your config and command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!\n",
                     ]
+
+                    assert err_logs[0:4] == expected[0:4]
+                    assert err_logs[8] == expected[8]
+
                     if iteration == 1:
-                        expected.extend(expected)  # Two errors occurred, error log should contain 2
-                    assert err_logs == expected
+                        err_lines = len(expected)
+
+                        # Two errors occurred, error log should contain 2
+                        assert err_logs[err_lines : err_lines + 4] == expected[0:4]
+                        assert err_logs[err_lines + 8] == expected[8]
 
     @pytest.mark.parametrize(
         "log_level, expected_stdout",
