@@ -163,10 +163,10 @@ class TestPlaylist:
         ) as subscription_path:
             args = "--dry-run " if dry_run else ""
             args += f"sub {subscription_path}"
-            subscription_transaction_log = mock_run_from_cli(args=args)
+            subscriptions = mock_run_from_cli(args=args)
 
-            assert len(subscription_transaction_log) == 1
-            transaction_log = subscription_transaction_log[0][1]
+            assert len(subscriptions) == 1
+            transaction_log = subscriptions[0].transaction_log
 
             assert_transaction_log_matches(
                 output_directory=output_directory,
@@ -186,7 +186,7 @@ class TestPlaylist:
                     expected_message="ExistingVideoReached, stopping additional downloads",
                     log_level="debug",
                 ):
-                    transaction_log = mock_run_from_cli(args=args)[0][1]
+                    transaction_log = mock_run_from_cli(args=args)[0].transaction_log
 
                 assert transaction_log.is_empty
                 assert_expected_downloads(
