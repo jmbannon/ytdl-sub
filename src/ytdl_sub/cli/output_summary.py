@@ -46,6 +46,10 @@ def output_summary(subscriptions: List[Subscription]) -> None:
     -------
     Output summary to print
     """
+    if len(subscriptions) == 0:
+        logger.info("No subscriptions ran")
+        return
+
     summary: List[str] = []
 
     # Initialize totals to 0
