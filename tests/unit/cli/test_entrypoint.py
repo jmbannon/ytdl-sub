@@ -43,12 +43,15 @@ def mock_subscription_download_factory():
             time.sleep(1)
             if not mock_success_output:
                 raise ValueError("error")
-            return (
-                FileHandlerTransactionLog()
+
+            (
+                self._enhanced_download_archive.get_file_handler_transaction_log()
                 .log_created_file("created_file.txt", FileMetadata())
                 .log_modified_file("modified_file.txt", FileMetadata())
                 .log_removed_file("deleted_file.txt")
             )
+
+            return self._enhanced_download_archive.get_file_handler_transaction_log()
 
         return _mock_download
 
@@ -228,8 +231,8 @@ def test_transaction_log_to_file(
             str(transaction_log_file_path),
         ],
     ):
-        transaction_logs = main()
-        assert transaction_logs
+        subscriptions = main()
+        assert subscriptions
 
     with open(transaction_log_file_path, "r", encoding="utf-8") as transaction_log_file:
         assert transaction_log_file.readlines()[0] == "Transaction log for john_smith:\n"
