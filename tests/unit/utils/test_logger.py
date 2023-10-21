@@ -111,11 +111,12 @@ class TestLogger:
         Logger.cleanup()
         assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
 
-    def test_logger_can_be_cleaned_during_execution(self):
+    @pytest.mark.parametrize("clean_error_log", [True, False])
+    def test_logger_can_be_cleaned_during_execution(self, clean_error_log: bool):
         Logger._LOGGER_LEVEL = LoggerLevels.INFO
         logger = Logger.get(name="name_test")
 
-        for _ in range(2):
+        for iteration in range(2):
             logger.info("info test")
             logger.debug("debug test")
 
@@ -127,8 +128,39 @@ class TestLogger:
                 "[ytdl-sub:name_test] debug test\n",
             ]
 
-            Logger.cleanup()
-            assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
+            try:
+                raise ValueError("some error")
+            except ValueError as exc:
+                Logger.log_exception(exception=exc)
+
+            Logger.cleanup(cleanup_error_log=clean_error_log)
+            assert not os.path.isfile(Logger.debug_log_filename())
+
+            assert clean_error_log == (not os.path.isfile(Logger.error_log_filename()))
+            if not clean_error_log:
+                with open(Logger.error_log_filename(), mode="r", encoding="utf-8") as err_file:
+                    err_logs = err_file.readlines()
+                    expected = [
+                        "[ytdl-sub:name_test] info test\n",
+                        "[ytdl-sub:name_test] debug test\n",
+                        "[ytdl-sub] An uncaught error occurred:\n",
+                        "Traceback (most recent call last):\n",
+                        '  File "/home/j/workspace/ytdl-sub/tests/unit/utils/test_logger.py", line 132, in test_logger_can_be_cleaned_during_execution\n',
+                        '    raise ValueError("some error")\n',
+                        "ValueError: some error\n",
+                        "[ytdl-sub] Version 2023.03.24+14e4a4b\n",
+                        f"Please upload the error log file '{Logger.error_log_filename()}' and make a Github issue at https://github.com/jmbannon/ytdl-sub/issues with your config and command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!\n",
+                    ]
+
+                    assert err_logs[0:4] == expected[0:4]
+                    assert err_logs[8] == expected[8]
+
+                    if iteration == 1:
+                        err_lines = len(expected)
+
+                        # Two errors occurred, error log should contain 2
+                        assert err_logs[err_lines : err_lines + 4] == expected[0:4]
+                        assert err_logs[err_lines + 8] == expected[8]
 
     @pytest.mark.parametrize(
         "log_level, expected_stdout",

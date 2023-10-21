@@ -91,10 +91,8 @@ class Logger:
     # Ignore 'using with' warning since this will be cleaned up later
     # pylint: disable=R1732
     _DEBUG_LOGGER_FILE = tempfile.NamedTemporaryFile(prefix="ytdl-sub.", delete=False)
+    _ERROR_LOG_FILE = tempfile.NamedTemporaryFile(prefix="ytdl-sub.errors", delete=False)
     # pylint: enable=R1732
-
-    # Whether the final exception lines were added to the debug log
-    _LOGGED_EXIT_EXCEPTION: bool = False
 
     # Keep track of all Loggers created
     _LOGGERS: List[logging.Logger] = []
@@ -107,6 +105,15 @@ class Logger:
         File name of the debug log file
         """
         return cls._DEBUG_LOGGER_FILE.name
+
+    @classmethod
+    def error_log_filename(cls) -> str:
+        """
+        Returns
+        -------
+        File name of the error log file
+        """
+        return cls._ERROR_LOG_FILE.name
 
     @classmethod
     def set_log_level(cls, log_level_name: str):
@@ -204,9 +211,12 @@ class Logger:
                 redirect_stream.flush()
 
     @classmethod
-    def log_exit_exception(cls, exception: Exception, log_filepath: Optional[Path] = None):
+    def log_exception(cls, exception: Exception, log_filepath: Optional[Path] = None):
         """
-        Performs the final log before exiting from an error
+        Logs an exception based on the exception type. Will transfer all
+        debug logs into the error log file. This allows for subscriptions to only write to the
+        error log if an error occurred - successful subscriptions will clean the debug log file
+        w/out any write to the error log.
 
         Parameters
         ----------
@@ -215,34 +225,37 @@ class Logger:
         log_filepath
             Optional. The filepath to the debug logs
         """
-        if not cls._LOGGED_EXIT_EXCEPTION:
-            logger = cls.get()
+        logger = cls.get()
 
-            # Log validation exceptions as-is
-            if isinstance(exception, ValidationException):
-                logger.error(str(exception))
-            # Log permission errors explicitly
-            elif isinstance(exception, PermissionError):
-                logger.error(
-                    "A permission error occurred:\n%s\n"
-                    "The user running ytdl-sub must have permission to this file/directory.",
-                    str(exception),
-                )
-            # For other uncaught errors, log as bug:
-            else:
-                logger.exception("An uncaught error occurred:")
-                logger.error(
-                    "Version %s\nPlease upload the error log file '%s' and make a Github "
-                    "issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
-                    "command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!",
-                    __local_version__,
-                    log_filepath if log_filepath else Logger.debug_log_filename(),
-                )
+        # Log validation exceptions as-is
+        if isinstance(exception, ValidationException):
+            logger.error(str(exception))
+        # Log permission errors explicitly
+        elif isinstance(exception, PermissionError):
+            logger.error(
+                "A permission error occurred:\n%s\n"
+                "The user running ytdl-sub must have permission to this file/directory.",
+                str(exception),
+            )
+        # For other uncaught errors, log as bug:
+        else:
+            logger.exception("An uncaught error occurred:")
+            logger.error(
+                "Version %s\nPlease upload the error log file '%s' and make a Github "
+                "issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
+                "command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!",
+                __local_version__,
+                log_filepath if log_filepath else Logger.error_log_filename(),
+            )
 
-            cls._LOGGED_EXIT_EXCEPTION = True
+        # Any time an exception occurs, dump all debug logs into the error log
+        with open(cls.debug_log_filename(), mode="r", encoding="utf-8") as debug_logs, open(
+            cls.error_log_filename(), mode="a", encoding="utf-8"
+        ) as error_logs:
+            error_logs.writelines(debug_logs.readlines())
 
     @classmethod
-    def cleanup(cls):
+    def cleanup(cls, cleanup_error_log: bool = False):
         """
         Cleans up debug log file left behind
         """
@@ -251,6 +264,8 @@ class Logger:
                 handler.close()
 
         cls._DEBUG_LOGGER_FILE.close()
-
         FileHandler.delete(cls.debug_log_filename())
-        cls._LOGGED_EXIT_EXCEPTION = False
+
+        if cleanup_error_log:
+            cls._ERROR_LOG_FILE.close()
+            FileHandler.delete(cls.error_log_filename())

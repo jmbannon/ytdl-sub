@@ -187,14 +187,12 @@ class TestYoutubeVideo:
         args = "--dry-run " if dry_run else ""
         args += f"--config {music_video_config_path} "
         args += f"dl {single_video_preset_dict_dl_args}"
-        subscription_transaction_log = mock_run_from_cli(args=args)
+        subscriptions = mock_run_from_cli(args=args)
 
-        assert len(subscription_transaction_log) == 1
-        transaction_log = subscription_transaction_log[0][1]
-
+        assert len(subscriptions) == 1
         assert_transaction_log_matches(
             output_directory=output_directory,
-            transaction_log=transaction_log,
+            transaction_log=subscriptions[0].transaction_log,
             transaction_log_summary_file_name="youtube/test_video_cli.txt",
         )
         assert_expected_downloads(

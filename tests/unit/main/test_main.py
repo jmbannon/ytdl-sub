@@ -38,10 +38,18 @@ def mock_sys_exit():
     return _mock_sys_exit
 
 
-def test_main_success(mock_sys_exit):
-    with mock_sys_exit(expected_exit_code=0):
-        with patch("src.ytdl_sub.main._main"):
-            main()
+@pytest.mark.parametrize("return_code", [0, 1])
+def test_main_exit_code(mock_sys_exit, return_code: int):
+    with mock_sys_exit(expected_exit_code=return_code), patch(
+        "src.ytdl_sub.main._main"
+    ) as mock_inner_main, patch.object(Logger, "cleanup") as mock_logger_cleanup:
+        mock_inner_main.return_value = return_code
+        main()
+
+        assert mock_logger_cleanup.call_count == 1
+        assert mock_logger_cleanup.call_args.kwargs["cleanup_error_log"] == (
+            True if return_code == 0 else False
+        )
 
 
 def test_main_validation_error(capsys, mock_sys_exit):
@@ -70,7 +78,7 @@ def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_mess
     assert mock_error.call_count == 1
     assert mock_error.call_args.args[0] == expected_uncaught_error_message
     assert mock_error.call_args.args[1] == __local_version__
-    assert mock_error.call_args.args[2] == Logger.debug_log_filename()
+    assert mock_error.call_args.args[2] == Logger.error_log_filename()
 
 
 def test_main_permission_error(capsys, mock_sys_exit, expected_uncaught_error_message):

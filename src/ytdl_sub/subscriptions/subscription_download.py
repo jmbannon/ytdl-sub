@@ -326,7 +326,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
             If true, do not download any video/audio files or move anything to the output
             directory.
         """
+        self._exception = None
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+
         plugins = self._initialize_plugins()
 
         subscription_ytdl_options = SubscriptionYTDLOptions(
@@ -353,6 +355,19 @@ class SubscriptionDownload(BaseSubscription, ABC):
             dry_run=dry_run,
         )
 
+    @contextlib.contextmanager
+    def exception_handling(self) -> None:
+        """
+        Try to perform something on the subscription.
+        Store the error if one occurs.
+        """
+        try:
+            yield
+        except Exception as exc:  # pylint: disable=broad-except
+            self._exception = exc
+
+        return self.transaction_log
+
     def update_with_info_json(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
         Performs the subscription update using local info json files.
@@ -362,7 +377,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
         dry_run
             If true, do not modify any video/audio files or move anything to the output directory.
         """
+        self._exception = None
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+
         plugins = self._initialize_plugins()
 
         subscription_ytdl_options = SubscriptionYTDLOptions(

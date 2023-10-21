@@ -17,10 +17,10 @@ class TestView:
         args = f"view "
         args += "--split-chapters " if split_chapters else ""
         args += f"https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
-        subscription_transaction_log = mock_run_from_cli(args=args)
+        subscriptions = mock_run_from_cli(args=args)
 
-        assert len(subscription_transaction_log) == 1
-        transaction_log = subscription_transaction_log[0][1]
+        assert len(subscriptions) == 1
+        transaction_log = subscriptions[0].transaction_log
 
         # Ensure the video and thumbnail are recognized
         assert len(transaction_log.files_created) == 2
