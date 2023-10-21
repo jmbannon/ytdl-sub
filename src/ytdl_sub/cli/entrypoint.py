@@ -29,6 +29,10 @@ logger = Logger.get()
 _VIEW_EXTRA_ARGS_FORMATTER = "--preset _view --overrides.url {}"
 
 
+def _log_time() -> str:
+    return datetime.now().strftime("%Y-%m-%d-%H%M%S")
+
+
 def _maybe_write_subscription_log_file(
     config: ConfigFile,
     subscription: Subscription,
@@ -49,11 +53,10 @@ def _maybe_write_subscription_log_file(
     if success and not config.config_options.persist_logs.keep_successful_logs:
         return
 
-    log_time = datetime.now().strftime("%Y-%m-%d-%H%M%S")
     log_subscription_name = sanitize_filename(subscription.name).lower().replace(" ", "_")
     log_success = "success" if success else "error"
 
-    log_filename = f"{log_time}.{log_subscription_name}.{log_success}.log"
+    log_filename = f"{_log_time()}.{log_subscription_name}.{log_success}.log"
     persist_log_path = Path(config.config_options.persist_logs.logs_directory) / log_filename
 
     if not success:
