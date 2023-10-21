@@ -70,7 +70,7 @@ def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_mess
     assert mock_error.call_count == 1
     assert mock_error.call_args.args[0] == expected_uncaught_error_message
     assert mock_error.call_args.args[1] == __local_version__
-    assert mock_error.call_args.args[2] == Logger.debug_log_filename()
+    assert mock_error.call_args.args[2] == Logger.error_log_filename()
 
 
 def test_main_permission_error(capsys, mock_sys_exit, expected_uncaught_error_message):

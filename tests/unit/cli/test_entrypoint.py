@@ -263,12 +263,12 @@ def test_transaction_log_to_logger(
 
 
 def test_output_summary():
-    subscription_values: List[Tuple[str, int, int, int, int, Optional[bool]]] = [
+    subscription_values: List[Tuple[str, int, int, int, int, Optional[Exception]]] = [
         ("long_name_but_lil_values", 0, 0, 0, 6, None),
         ("john_smith", 1, 0, 0, 52, None),
         ("david_gore", 0, 0, 0, 4, None),
         ("christopher_snoop", 50, 0, 3, 518, None),
-        ("beyond funk", 0, 0, 0, 176, True),
+        ("beyond funk", 0, 0, 0, 176, ValueError("lol")),
     ]
 
     mock_subscriptions: List[MagicMock] = []

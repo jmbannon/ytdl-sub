@@ -51,36 +51,18 @@ def output_summary(subscriptions: List[Subscription]) -> None:
     # Initialize totals to 0
     total_subs: int = len(subscriptions)
     total_subs_str = f"Total: {total_subs}"
-    total_added: int = 0
-    total_modified: int = 0
-    total_removed: int = 0
-    total_entries: int = 0
-    total_errors: int = 0
+    total_added: int = sum(sub.num_entries_added for sub in subscriptions)
+    total_modified: int = sum(sub.num_entries_modified for sub in subscriptions)
+    total_removed: int = sum(sub.num_entries_removed for sub in subscriptions)
+    total_entries: int = sum(sub.num_entries for sub in subscriptions)
+    total_errors: int = sum(sub.exception is not None for sub in subscriptions)
 
     # Initialize widths to 0
-    width_sub_name: int = len(total_subs_str)
-    width_num_entries_added: int = 0
-    width_num_entries_modified: int = 0
-    width_num_entries_removed: int = 0
-    width_num_entries: int = 0
-
-    # Calculate min width needed
-    for subscription in subscriptions:
-        width_sub_name = max(width_sub_name, len(subscription.name))
-        width_num_entries_added = max(
-            width_num_entries_added, len(_color_int(subscription.num_entries_added))
-        )
-        width_num_entries_modified = max(
-            width_num_entries_modified, len(_color_int(subscription.num_entries_modified))
-        )
-        width_num_entries_removed = max(
-            width_num_entries_removed, len(_color_int(subscription.num_entries_removed * -1))
-        )
-        width_num_entries = max(width_num_entries, len(str(subscription.num_entries)))
-
-    # Add spacing for aesthetics
-    width_sub_name += 4
-    width_num_entries += 4
+    width_sub_name: int = max(len(sub.name) for sub in subscriptions) + 4  # aesthetics
+    width_num_entries_added: int = len(_color_int(total_added))
+    width_num_entries_modified: int = len(_color_int(total_modified))
+    width_num_entries_removed: int = len(_color_int(total_removed))
+    width_num_entries: int = len(str(total_entries)) + 4  # aesthetics
 
     # Build the summary
     for subscription in subscriptions:
@@ -88,7 +70,11 @@ def output_summary(subscriptions: List[Subscription]) -> None:
         num_entries_modified = _color_int(subscription.num_entries_modified)
         num_entries_removed = _color_int(subscription.num_entries_removed * -1)
         num_entries = str(subscription.num_entries)
-        status = _red("error") if subscription.exception else _green("success")
+        status = (
+            _red(subscription.exception.__class__.__name__)
+            if subscription.exception
+            else _green("✔")
+        )
 
         summary.append(
             f"{subscription.name:<{width_sub_name}} "
@@ -99,17 +85,8 @@ def output_summary(subscriptions: List[Subscription]) -> None:
             f"{status}"
         )
 
-        # Add total
-        total_added += subscription.num_entries_added
-        total_modified += subscription.num_entries_modified
-        total_removed -= subscription.num_entries_removed
-        total_entries += subscription.num_entries
-        total_errors += int(subscription.exception is not None)
-
     total_errors_str = (
-        _green("success!")
-        if total_errors == 0
-        else _red(f"{total_errors} error{'s' if total_errors > 1 else ''}")
+        _green("Success") if total_errors == 0 else _red(f"Error{'s' if total_errors > 1 else ''}")
     )
 
     summary.append(
@@ -117,7 +94,7 @@ def output_summary(subscriptions: List[Subscription]) -> None:
         f"{_color_int(total_added):>{width_num_entries_added}} "
         f"{_color_int(total_modified):>{width_num_entries_modified}} "
         f"{_color_int(total_removed):>{width_num_entries_removed}} "
-        f"{str(total_entries):>{width_num_entries}} "
+        f"{total_entries:>{width_num_entries}} "
         f"{total_errors_str}"
     )
 
