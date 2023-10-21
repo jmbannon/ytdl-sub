@@ -7,15 +7,9 @@ from unittest.mock import Mock
 from ytdl_sub.cli.output_summary import output_summary
 
 
-def test_output_summary_one_error():
-    subscription_values: List[Tuple[str, int, int, int, int, Optional[Exception]]] = [
-        ("long_name_but_lil_values", 0, 0, 0, 6, None),
-        ("john_smith", 1, 0, 0, 52, None),
-        ("david_gore", 0, 0, 0, 4, None),
-        ("christopher_snoop", 50, 0, 3, 518, None),
-        ("beyond funk", 0, 0, 0, 176, ValueError("lol")),
-    ]
-
+def _to_mock_subscriptions(
+    subscription_values: List[Tuple[str, int, int, int, int, Optional[Exception]]]
+) -> List[MagicMock]:
     mock_subscriptions: List[MagicMock] = []
     for values in subscription_values:
         sub = Mock()
@@ -28,5 +22,46 @@ def test_output_summary_one_error():
 
         mock_subscriptions.append(sub)
 
-    _ = output_summary(subscriptions=mock_subscriptions)
-    assert True  # Test used for manual inspection - too hard to test ansi color codes
+    return mock_subscriptions
+
+
+def test_output_summary_no_errors():
+    mock_subscriptions = _to_mock_subscriptions(
+        [
+            ("long_name_but_lil_values", 0, 0, 0, 6, None),
+            ("john_smith", 1, 0, 0, 52, None),
+            ("david_gore", 0, 0, 0, 4, None),
+            ("christopher_snoop", 50, 0, 3, 518, None),
+            ("beyond funk", 352, 0, 0, 2342, None),
+        ]
+    )
+
+    output_summary(subscriptions=mock_subscriptions)
+
+
+def test_output_summary_one_error():
+    mock_subscriptions = _to_mock_subscriptions(
+        [
+            ("long_name_but_lil_values", 0, 0, 0, 6, None),
+            ("john_smith", 1, 0, 0, 52, None),
+            ("david_gore", 0, 0, 0, 4, None),
+            ("christopher_snoop", 50, 0, 3, 518, None),
+            ("beyond funk", 0, 0, 0, 176, ValueError("lol")),
+        ]
+    )
+
+    output_summary(subscriptions=mock_subscriptions)
+
+
+def test_output_summary_multiple_errors():
+    mock_subscriptions = _to_mock_subscriptions(
+        [
+            ("long_name_but_lil_values", 0, 0, 0, 6, None),
+            ("john_smith", 1, 0, 0, 52, None),
+            ("david_gore", 0, 0, 0, 4, PermissionError("ack")),
+            ("christopher_snoop", 50, 0, 3, 518, None),
+            ("beyond funk", 0, 0, 0, 176, ValueError("lol")),
+        ]
+    )
+
+    output_summary(subscriptions=mock_subscriptions)

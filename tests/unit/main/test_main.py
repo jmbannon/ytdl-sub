@@ -38,10 +38,18 @@ def mock_sys_exit():
     return _mock_sys_exit
 
 
-def test_main_success(mock_sys_exit):
-    with mock_sys_exit(expected_exit_code=0):
-        with patch("src.ytdl_sub.main._main"):
-            main()
+@pytest.mark.parametrize("return_code", [0, 1])
+def test_main_exit_code(mock_sys_exit, return_code: int):
+    with mock_sys_exit(expected_exit_code=return_code), patch(
+        "src.ytdl_sub.main._main"
+    ) as mock_inner_main, patch.object(Logger, "cleanup") as mock_logger_cleanup:
+        mock_inner_main.return_value = return_code
+        main()
+
+        assert mock_logger_cleanup.call_count == 1
+        assert mock_logger_cleanup.call_args.kwargs["cleanup_error_log"] == (
+            True if return_code == 0 else False
+        )
 
 
 def test_main_validation_error(capsys, mock_sys_exit):

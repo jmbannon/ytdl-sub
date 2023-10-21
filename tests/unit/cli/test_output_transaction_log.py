@@ -45,9 +45,9 @@ def test_suppress_transaction_log(
         ]
         + (["--transaction-log", file_transaction_log] if file_transaction_log else []),
     ), patch("ytdl_sub.cli.output_transaction_log.output_transaction_log") as mock_transaction_log:
-        transaction_logs = main()
+        subscriptions = main()
 
-        assert transaction_logs
+        assert subscriptions
         assert mock_transaction_log.call_count == 0
 
 
@@ -97,5 +97,5 @@ def test_transaction_log_to_logger(
         expected_message="Transaction log for john_smith:\n",
         log_level="info",
     ):
-        transaction_logs = main()
-        assert transaction_logs
+        subscriptions = main()
+        assert subscriptions

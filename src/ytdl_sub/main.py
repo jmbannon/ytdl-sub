@@ -4,7 +4,7 @@ from ytdl_sub.cli.parsers.main import parser
 from ytdl_sub.utils.logger import Logger
 
 
-def _main():
+def _main() -> int:
     # Set log level before any other ytdl-sub files are imported. That way, when loggers
     # get initialized, they will see the set log level
     args, _ = parser.parse_known_args()
@@ -15,7 +15,10 @@ def _main():
 
     # pylint: enable=import-outside-toplevel
 
-    ytdl_sub.cli.entrypoint.main()
+    subs = ytdl_sub.cli.entrypoint.main()
+    if any(sub.exception for sub in subs):
+        return 1  # Return error-code if any exceptions occurred
+    return 0
 
 
 def main():
@@ -23,13 +26,12 @@ def main():
     Entrypoint for ytdl-sub
     """
     try:
-        _main()
-        Logger.cleanup(cleanup_error_log=True)  # Ran successfully, so we can delete the debug file
+        return_code = _main()
+        Logger.cleanup(cleanup_error_log=return_code == 0)
+        sys.exit(return_code)
     except Exception as exc:  # pylint: disable=broad-except
         Logger.log_exception(exception=exc)
         sys.exit(1)
-
-    sys.exit(0)
 
 
 if __name__ == "__main__":
