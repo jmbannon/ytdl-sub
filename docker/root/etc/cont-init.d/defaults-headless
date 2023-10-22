@@ -1,5 +1,12 @@
 #!/usr/bin/with-contenv bash
 
+# Exit if gui
+if [ "$YTDL_SUB_TYPE" == "gui" ] ; then
+    exit 0
+fi
+
+echo "Checking ytdl-sub defaults..."
+
 # copy config
 [[ ! -e /config/config.yaml ]] && \
     cp /defaults/config.yaml /config/config.yaml
