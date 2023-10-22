@@ -34,7 +34,9 @@ docker_stage: wheel
 docker: docker_stage
 	sudo docker build --progress=plain --no-cache -t ytdl-sub:local docker/
 docker_ubuntu: docker_stage
-	sudo docker build --progress=plain --no-cache -t ytdl-sub:local_ubuntu -f docker/Dockerfile.ubuntu docker/
+	sudo docker build --progress=plain --no-cache -t ytdl-sub-ubuntu:local -f docker/Dockerfile.ubuntu docker/
+docker_gui: docker_stage
+	sudo docker build --progress=plain --no-cache -t ytdl-sub-gui:local -f docker/Dockerfile.gui docker/
 executable: clean
 	pyinstaller ytdl-sub.spec
 	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}

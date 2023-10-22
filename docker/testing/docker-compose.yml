@@ -1,0 +1,13 @@
+services:
+  ytdl-sub-gui:
+    image: ytdl-sub-gui:local
+    container_name: ytdl-sub-gui
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./volumes/ytdl-sub-gui:/config
+    ports:
+      - 8443:8443
+    restart: unless-stopped
