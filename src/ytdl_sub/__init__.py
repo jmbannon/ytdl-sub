@@ -1,2 +1,2 @@
-__pypi_version__ = "2023.10.22"
-__local_version__ = "2023.10.22+8a02a40"
+__pypi_version__ = "2023.10.22.post3"
+__local_version__ = "2023.10.22+bfba4f0"

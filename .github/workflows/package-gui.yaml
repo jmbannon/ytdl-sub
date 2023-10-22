@@ -1,4 +1,4 @@
-name: ytld-sub Docker Gui Build
+name: ytld-sub Docker GUI Build
 
 on:
   push:

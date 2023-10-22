@@ -1,5 +1,12 @@
 #!/usr/bin/with-contenv bash
 
+# Exit if not gui
+if [ "$YTDL_SUB_TYPE" != "gui" ] ; then
+    exit 0
+fi
+
+echo "Checking ytdl-sub-gui defaults..."
+
 # copy config
 [[ ! -e /config/ytdl-sub-configs/config.yaml ]] && \
     mkdir -p /config/ytdl-sub-configs && \
@@ -10,6 +17,13 @@
 [[ ! -d /config/ytdl-sub-configs/examples ]] && \
     mkdir -p /config/ytdl-sub-configs/examples && \
     cp /defaults/examples/* /config/ytdl-sub-configs/examples
+[[ ! -e /config/data/ytdl-sub-applied ]] && \
+    echo "First run, placing default vs-code data directory..." && \
+    cp /defaults/vs-code-data.tar.gz /config && \
+    cd /config && \
+    tar -xzf vs-code-data.tar.gz && \
+    rm vs-code-data.tar.gz && \
+    touch /config/data/ytdl-sub-applied
 
 # permissions
 chown -R ${PUID:-abc}:${PGID:-abc} \
