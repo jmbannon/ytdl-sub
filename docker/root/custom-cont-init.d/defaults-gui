@@ -17,14 +17,6 @@ echo "Checking ytdl-sub-gui defaults..."
 [[ ! -d /config/ytdl-sub-configs/examples ]] && \
     mkdir -p /config/ytdl-sub-configs/examples && \
     cp /defaults/examples/* /config/ytdl-sub-configs/examples
-[[ ! -e /config/data/ytdl-sub-applied ]] && \
-    echo "First run, placing default vs-code data directory..." && \
-    cp /defaults/vs-code-data.tar.gz /config && \
-    cd /config && \
-    rm -rf data/ && \
-    tar -xzf vs-code-data.tar.gz && \
-    rm vs-code-data.tar.gz && \
-    touch /config/data/ytdl-sub-applied
 
 # permissions
 chown -R ${PUID:-abc}:${PGID:-abc} \
