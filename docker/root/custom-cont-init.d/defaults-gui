@@ -21,6 +21,7 @@ echo "Checking ytdl-sub-gui defaults..."
     echo "First run, placing default vs-code data directory..." && \
     cp /defaults/vs-code-data.tar.gz /config && \
     cd /config && \
+    rm -rf data/ && \
     tar -xzf vs-code-data.tar.gz && \
     rm vs-code-data.tar.gz && \
     touch /config/data/ytdl-sub-applied
