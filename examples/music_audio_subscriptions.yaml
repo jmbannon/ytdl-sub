@@ -24,6 +24,12 @@ YouTube Releases:
     "Stan Getz": "https://www.youtube.com/@stangetzofficial/releases"
     "Art Blakey": "https://www.youtube.com/channel/UCMki-b0zfAQiMQ0nbsrIuBQ/playlists"
 
+# Supports downloading playlists or individual videos where a single video is a full album.
+# ytdl-sub will split the album based on video chapters, and make each chapter a track.
+YouTube Full Albums:
+  = Lofi:
+    "Game Chops": "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
+
 # Supports downloading a SoundCloud's artists albums + singles. Be sure to not include
 # any extension after the SoundCloud artist's name in the URL.
 SoundCloud Discography:

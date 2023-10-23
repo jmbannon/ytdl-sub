@@ -131,6 +131,10 @@ presets:
     preset:
       - "_albums_from_playlists"
 
+  "YouTube Full Albums":
+    preset:
+      - "_albums_from_chapters"
+
   "Bandcamp":
     preset:
       - "_albums_from_playlists"
