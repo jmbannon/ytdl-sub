@@ -22,15 +22,3 @@ TV Show Full Archive:
 TV Show Only Recent:
   = News | TV-14:
     "BBC": "https://www.youtube.com/@BBCNews"
-
-
-# ADVANCED USAGE:
-# Subscriptions can use the same format as a preset found within a config.
-"Equivalent to BBC":
-  preset:
-    - "TV Show Only Recent"
-  overrides:
-    tv_show_name: "BBC"
-    url: "https://www.youtube.com/@BBCNews"
-    tv_show_genre: "News"
-    tv_show_content_rating: "TV-14"
