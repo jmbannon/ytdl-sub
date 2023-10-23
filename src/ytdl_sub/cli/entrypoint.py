@@ -200,7 +200,7 @@ def main() -> List[Subscription]:
         config = ConfigFile.from_file_path(DEFAULT_CONFIG_FILE_NAME)
     else:
         logger.info("No config specified, using defaults.")
-        config = ConfigFile(name="default_config", value={})
+        config = ConfigFile.default()
 
     subscriptions: List[Subscription] = []
 

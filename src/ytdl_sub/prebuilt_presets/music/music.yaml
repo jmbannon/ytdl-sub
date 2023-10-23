@@ -49,7 +49,7 @@ presets:
       track_genre: "{subscription_indent_1}"
 
       # Directory Overrides
-      music_directory: "/music/tagged_manual"
+      music_directory: "/music"
       artist_dir: "{track_artist_sanitized}"
       album_dir: "[{track_year}] {track_album_sanitized}"
       track_file_name: "{track_number_padded} - {track_title_sanitized}.{ext}"
