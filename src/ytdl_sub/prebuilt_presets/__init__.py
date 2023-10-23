@@ -5,8 +5,6 @@ from typing import Set
 
 import mergedeep
 
-from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
-from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionPresets
 from ytdl_sub.utils.yaml import load_yaml
 
 
@@ -27,3 +25,7 @@ PREBUILT_PRESET_NAMES: Set[str] = set(PREBUILT_PRESETS.keys())
 PUBLISHED_PRESET_NAMES: Set[str] = {
     name for name in PREBUILT_PRESET_NAMES if not name.startswith("_")
 }
+
+
+class PrebuiltPresets:
+    preset_names: Set[str]
