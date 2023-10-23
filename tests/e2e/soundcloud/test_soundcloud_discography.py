@@ -8,11 +8,10 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def subscription_dict(output_directory):
     return {
-        "preset": "soundcloud_discography",
-        "format": "worst[ext=mp3]",  # download the worst format so it is fast
+        "preset": "SoundCloud Discography",
         "overrides": {
-            "track_artist": "j_b",
-            "sc_artist_url": "https://soundcloud.com/jessebannon",
+            "subscription_value": "https://soundcloud.com/jessebannon",
+            "subscription_indent_1": "Acoustic",
             "music_directory": output_directory,
         },
     }
@@ -34,7 +33,7 @@ class TestSoundcloudDiscography:
     ):
         discography_subscription = Subscription.from_dict(
             preset_dict=subscription_dict,
-            preset_name="jb",
+            preset_name="j_b",
             config=music_audio_config,
         )
         transaction_log = discography_subscription.download(dry_run=dry_run)
