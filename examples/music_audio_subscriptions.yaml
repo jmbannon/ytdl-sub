@@ -18,7 +18,7 @@ __preset__:
 # Supports downloading YouTube /releases tab. Also works for any playlist (or playlist of playlists)
 # where each video is a single track.
 YouTube Releases:
-  = Jazz:  # Sets genre to "Jazz"
+  = Jazz:  # Sets genre tag to "Jazz"
     "Lester Young": "https://www.youtube.com/channel/UCsItMF6_fP754ihIsSRLk5A/playlists"
     "Thelonious Monk": "https://www.youtube.com/@theloniousmonk3870/releases"
     "Stan Getz": "https://www.youtube.com/@stangetzofficial/releases"
