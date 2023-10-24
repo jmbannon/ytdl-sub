@@ -1,7 +1,7 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .Sithu Aye-download-archive.json
+  .ytdl-sub-Sithu Aye-download-archive.json
 {output_directory}/Sithu Aye/[2021] 10 Years： Remixes and Reimaginings
   01 - Double Helix Reimagined.mp3
     Music Tags:

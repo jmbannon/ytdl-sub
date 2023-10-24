@@ -1,43 +1,43 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .j_b-download-archive.json
-{output_directory}/jessebannon/[2021] Baby Santana's Dorian Groove
+  .ytdl-sub-j_b-download-archive.json
+{output_directory}/j_b/[2021] Baby Santana's Dorian Groove
   01 - Baby Santana's Dorian Groove.mp3
     Music Tags:
       album: Baby Santana's Dorian Groove
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: Baby Santana's Dorian Groove
       track: 1
       tracktotal: 1
       year: 2021
   folder.jpg
-{output_directory}/jessebannon/[2021] Purple Clouds
+{output_directory}/j_b/[2021] Purple Clouds
   01 - Purple Clouds.mp3
     Music Tags:
       album: Purple Clouds
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: Purple Clouds
       track: 1
       tracktotal: 1
       year: 2021
   folder.jpg
-{output_directory}/jessebannon/[2022] Acoustic Treats
+{output_directory}/j_b/[2022] Acoustic Treats
   01 - 20160426 184214.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: 20160426 184214
       track: 1
@@ -46,10 +46,10 @@ Files created:
   02 - 20160502 123150.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: 20160502 123150
       track: 2
@@ -58,10 +58,10 @@ Files created:
   03 - 20160504 143832.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: 20160504 143832
       track: 3
@@ -70,10 +70,10 @@ Files created:
   04 - 20160601 221234.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: 20160601 221234
       track: 4
@@ -82,10 +82,10 @@ Files created:
   05 - 20160601 222440.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: 20160601 222440
       track: 5
@@ -94,10 +94,10 @@ Files created:
   06 - 20170604 190236.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: 20170604 190236
       track: 6
@@ -106,10 +106,10 @@ Files created:
   07 - 20170612 193646.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: 20170612 193646
       track: 7
@@ -118,10 +118,10 @@ Files created:
   08 - 20170628 215206.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: 20170628 215206
       track: 8
@@ -130,10 +130,10 @@ Files created:
   09 - Finding Home.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: Finding Home
       track: 9
@@ -142,10 +142,10 @@ Files created:
   10 - Shallow Water WIP.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: Shallow Water WIP
       track: 10
@@ -154,10 +154,10 @@ Files created:
   11 - Untold History.mp3
     Music Tags:
       album: Acoustic Treats
-      albumartist: jessebannon
-      albumartists: jessebannon
-      artist: jessebannon
-      artists: jessebannon
+      albumartist: j_b
+      albumartists: j_b
+      artist: j_b
+      artists: j_b
       genre: Acoustic
       title: Untold History
       track: 11
