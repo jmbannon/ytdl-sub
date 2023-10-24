@@ -3,12 +3,11 @@ Files created:
 {output_directory}
   .ytdl-sub-Proved Records-download-archive.json
 {output_directory}/Proved Records/[2017] Alfa Mist - Nocturne [Full Album]
-  01 - 01. Intro (Feat. Racheal Ofori & Barney Artist).m4a
+  01 - 01. Intro (Feat. Racheal Ofori & Barney Artist).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 0:00 - 2:06
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -20,12 +19,11 @@ Files created:
       track: 1
       tracktotal: 11
       year: 2017
-  02 - 02. Answers (Feat. Rick David & Kaya Thomas - Dyke).m4a
+  02 - 02. Answers (Feat. Rick David & Kaya Thomas - Dyke).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 2:06 - 5:40
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -37,12 +35,11 @@ Files created:
       track: 2
       tracktotal: 11
       year: 2017
-  03 - 03. Blaze (Feat. Kaya Thomas - Dyke).m4a
+  03 - 03. Blaze (Feat. Kaya Thomas - Dyke).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 5:40 - 8:11
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -54,12 +51,11 @@ Files created:
       track: 3
       tracktotal: 11
       year: 2017
-  04 - 04. What If (Interlude).m4a
+  04 - 04. What If (Interlude).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 8:11 - 9:35
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -71,12 +67,11 @@ Files created:
       track: 4
       tracktotal: 11
       year: 2017
-  05 - 05. No Peace (Feat. Tom Misch).m4a
+  05 - 05. No Peace (Feat. Tom Misch).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 9:35 - 13:19
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -88,12 +83,11 @@ Files created:
       track: 5
       tracktotal: 11
       year: 2017
-  06 - 06. Closer (Feat. Lester Duval).m4a
+  06 - 06. Closer (Feat. Lester Duval).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 13:19 - 17:57
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -105,12 +99,11 @@ Files created:
       track: 6
       tracktotal: 11
       year: 2017
-  07 - 07. Delusions： Rumination (Interlude) (Feat. Racheal Ofori).m4a
+  07 - 07. Delusions： Rumination (Interlude) (Feat. Racheal Ofori).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 17:57 - 20:05
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -122,12 +115,11 @@ Files created:
       track: 7
       tracktotal: 11
       year: 2017
-  08 - 08. Dreams (Feat. Carmody).m4a
+  08 - 08. Dreams (Feat. Carmody).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 20:05 - 23:58
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -139,12 +131,11 @@ Files created:
       track: 8
       tracktotal: 11
       year: 2017
-  09 - 09. Dreaming (Interlude) (Feat. Racheal Ofori).m4a
+  09 - 09. Dreaming (Interlude) (Feat. Racheal Ofori).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 23:58 - 24:45
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -156,12 +147,11 @@ Files created:
       track: 9
       tracktotal: 11
       year: 2017
-  10 - 10. Hopeful (Feat. Jordan Rakei).m4a
+  10 - 10. Hopeful (Feat. Jordan Rakei).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 24:45 - 28:53
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records
@@ -173,12 +163,11 @@ Files created:
       track: 10
       tracktotal: 11
       year: 2017
-  11 - 11. Sunrise (Pillows) (Feat. Emmavie).m4a
+  11 - 11. Sunrise (Pillows) (Feat. Emmavie).mp3
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 28:53 - 31:43
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Alfa Mist - Nocturne [Full Album]
       albumartist: Proved Records

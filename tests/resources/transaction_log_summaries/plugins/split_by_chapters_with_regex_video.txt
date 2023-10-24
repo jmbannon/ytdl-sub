@@ -3,7 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-split_by_chapters_with_regex_video_preset-download-archive.json
 {output_directory}/Alfa Mist/[2017] Nocturne
-  01 - Intro (Feat. Racheal Ofori & Barney Artist).m4a
+  01 - Intro (Feat. Racheal Ofori & Barney Artist).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 0:00 - 2:06
@@ -18,7 +18,7 @@ Files created:
       track: 1
       tracktotal: 11
       year: 2017
-  02 - Answers (Feat. Rick David & Kaya Thomas - Dyke).m4a
+  02 - Answers (Feat. Rick David & Kaya Thomas - Dyke).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 2:06 - 5:40
@@ -33,7 +33,7 @@ Files created:
       track: 2
       tracktotal: 11
       year: 2017
-  03 - Blaze (Feat. Kaya Thomas - Dyke).m4a
+  03 - Blaze (Feat. Kaya Thomas - Dyke).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 5:40 - 8:11
@@ -48,7 +48,7 @@ Files created:
       track: 3
       tracktotal: 11
       year: 2017
-  04 - What If (Interlude).m4a
+  04 - What If (Interlude).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 8:11 - 9:35
@@ -63,7 +63,7 @@ Files created:
       track: 4
       tracktotal: 11
       year: 2017
-  05 - No Peace (Feat. Tom Misch).m4a
+  05 - No Peace (Feat. Tom Misch).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 9:35 - 13:19
@@ -78,7 +78,7 @@ Files created:
       track: 5
       tracktotal: 11
       year: 2017
-  06 - Closer (Feat. Lester Duval).m4a
+  06 - Closer (Feat. Lester Duval).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 13:19 - 17:57
@@ -93,7 +93,7 @@ Files created:
       track: 6
       tracktotal: 11
       year: 2017
-  07 - Delusions： Rumination (Interlude) (Feat. Racheal Ofori).m4a
+  07 - Delusions： Rumination (Interlude) (Feat. Racheal Ofori).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 17:57 - 20:05
@@ -108,7 +108,7 @@ Files created:
       track: 7
       tracktotal: 11
       year: 2017
-  08 - Dreams (Feat. Carmody).m4a
+  08 - Dreams (Feat. Carmody).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 20:05 - 23:58
@@ -123,7 +123,7 @@ Files created:
       track: 8
       tracktotal: 11
       year: 2017
-  09 - Dreaming (Interlude) (Feat. Racheal Ofori).m4a
+  09 - Dreaming (Interlude) (Feat. Racheal Ofori).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 23:58 - 24:45
@@ -138,7 +138,7 @@ Files created:
       track: 9
       tracktotal: 11
       year: 2017
-  10 - Hopeful (Feat. Jordan Rakei).m4a
+  10 - Hopeful (Feat. Jordan Rakei).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 24:45 - 28:53
@@ -153,7 +153,7 @@ Files created:
       track: 10
       tracktotal: 11
       year: 2017
-  11 - Sunrise (Pillows) (Feat. Emmavie).m4a
+  11 - Sunrise (Pillows) (Feat. Emmavie).mp3
     From Chapter Split:
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 28:53 - 31:43

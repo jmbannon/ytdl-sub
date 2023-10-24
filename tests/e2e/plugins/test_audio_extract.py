@@ -11,7 +11,8 @@ def single_preset_dict_old_format(output_directory):
         "preset": "Single",
         # test multi-tags
         "music_tags": {"embed_thumbnail": True, "tags": {"genres": ["multi_tag_1", "multi_tag_2"]}},
-        "format": "worst[ext=mp4]",  # download the worst format so it is fast
+        "format": "worst[ext=mp4]",
+        "audio_extract": {"codec": "mp3", "quality": 320},
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
@@ -31,7 +32,8 @@ def single_preset_dict(output_directory):
         "music_tags": {"genres": ["multi_tag_1", "multi_tag_2"]},
         # test the new embed_thumbnail plugin
         "embed_thumbnail": True,
-        "format": "worst[ext=mp4]",  # download the worst format so it is fast
+        "format": "worst[ext=mp4]",
+        "audio_extract": {"codec": "mp3", "quality": 320},
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },

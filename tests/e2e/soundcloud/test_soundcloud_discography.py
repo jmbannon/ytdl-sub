@@ -9,6 +9,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def subscription_dict(output_directory):
     return {
         "preset": "SoundCloud Discography",
+        "audio_extract": {"codec": "mp3", "quality": 320},
         "overrides": {
             "subscription_value": "https://soundcloud.com/jessebannon",
             "subscription_indent_1": "Acoustic",

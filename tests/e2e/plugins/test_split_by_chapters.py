@@ -13,7 +13,8 @@ from ytdl_sub.utils.exceptions import ValidationException
 def yt_album_as_chapters_preset_dict(output_directory):
     return {
         "preset": "YouTube Full Albums",
-        "format": "worst[ext=mp4]",  # download the worst format so it is fast
+        "format": "worst[ext=mp4]",
+        "audio_extract": {"codec": "mp3", "quality": 320},
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },

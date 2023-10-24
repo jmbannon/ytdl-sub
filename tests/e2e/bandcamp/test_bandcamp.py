@@ -14,6 +14,7 @@ def subscription_dict(output_directory):
         "ytdl_options": {
             "max_downloads": 15,
         },
+        "audio_extract": {"codec": "mp3", "quality": 320},
         "date_range": {"after": "20210110"},
         "overrides": {
             "subscription_value": "https://sithuayemusic.bandcamp.com/",
