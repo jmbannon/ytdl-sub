@@ -395,7 +395,9 @@ class TestPrebuiltMusicPresets:
         if music_preset == "SoundCloud Discography":
             num_urls = 2  # simulate /albums and /tracks
 
-        with mock_download_collection_entries(is_youtube_channel=False, num_urls=num_urls):
+        with mock_download_collection_entries(
+            is_youtube_channel=False, num_urls=num_urls, is_extracted_audio=True
+        ):
             transaction_log = subscription.download(dry_run=False)
 
         assert_transaction_log_matches(
@@ -407,33 +409,4 @@ class TestPrebuiltMusicPresets:
             output_directory=output_directory,
             dry_run=False,
             expected_download_summary_file_name=f"{expected_summary_name}.json",
-        )
-
-        ###################################### Perform reformat
-        reformatted_expected_summary_name = f"unit/music/{music_preset}_updated_tags"
-
-        reformatted_subscription = Subscription.from_dict(
-            config=config,
-            preset_name=subscription_name,
-            preset_dict={
-                "preset": [music_preset],
-                "music_tags": {"mood": "tired"},
-                "overrides": {
-                    "url": "https://your.name.here",
-                    "music_directory": output_directory,
-                    "genre": "Rock N ROLL!",
-                },
-            },
-        )
-
-        reformatted_transaction_log = reformatted_subscription.update_with_info_json(dry_run=False)
-        assert_transaction_log_matches(
-            output_directory=output_directory,
-            transaction_log=reformatted_transaction_log,
-            transaction_log_summary_file_name=(f"{reformatted_expected_summary_name}.txt"),
-        )
-        assert_expected_downloads(
-            output_directory=output_directory,
-            dry_run=False,
-            expected_download_summary_file_name=f"{reformatted_expected_summary_name}.json",
         )

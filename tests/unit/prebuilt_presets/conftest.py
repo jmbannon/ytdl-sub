@@ -57,6 +57,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         playlist_count: int = 1,
         is_youtube_channel: bool = False,
         mock_download_to_working_dir: bool = True,
+        is_extracted_audio: bool = False,
     ) -> Dict:
         entry_dict = {
             UID: uid,
@@ -86,10 +87,16 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
 
         # Create mock video file
         if mock_download_to_working_dir:
-            copy_file_fixture(
-                fixture_name="sample_vid.mp4",
-                output_file_path=mock_downloaded_file_path(f"{uid}.mp4"),
-            )
+            if is_extracted_audio:
+                copy_file_fixture(
+                    fixture_name="sample_audio.mp3",
+                    output_file_path=mock_downloaded_file_path(f"{uid}.mp3"),
+                )
+            else:
+                copy_file_fixture(
+                    fixture_name="sample_vid.mp4",
+                    output_file_path=mock_downloaded_file_path(f"{uid}.mp4"),
+                )
             copy_file_fixture(
                 fixture_name="thumb.jpg", output_file_path=mock_downloaded_file_path(f"{uid}.jpg")
             )
@@ -106,10 +113,14 @@ def mock_download_collection_thumbnail(mock_downloaded_file_path):
         _ = thumbnail_url
         output_name = os.path.basename(output_thumbnail_path)
         if "poster" in output_name or "show" in output_name:
-            copy_file_fixture(fixture_name="poster.jpg", output_file_path=output_thumbnail_path)
+            copy_file_fixture(
+                fixture_name="poster.jpg", output_file_path=Path(output_thumbnail_path)
+            )
             return True
         elif "fanart" in output_name:
-            copy_file_fixture(fixture_name="fanart.jpeg", output_file_path=output_thumbnail_path)
+            copy_file_fixture(
+                fixture_name="fanart.jpeg", output_file_path=Path(output_thumbnail_path)
+            )
             return True
         return False
 
@@ -125,9 +136,14 @@ def mock_download_collection_entries(
     mock_download_collection_thumbnail, mock_entry_dict_factory: Callable, working_directory: str
 ):
     @contextlib.contextmanager
-    def _mock_download_collection_entries_factory(is_youtube_channel: bool, num_urls: int = 1):
+    def _mock_download_collection_entries_factory(
+        is_youtube_channel: bool, num_urls: int = 1, is_extracted_audio: bool = False
+    ):
         def _write_entries_to_working_dir(*args, **kwargs) -> List[Dict]:
-            if num_urls == 1 or ("2" in kwargs["url"] and num_urls > 1):
+            # Second TV URL or second soundcloud URL, which downloads first
+            is_second_url = "2" in kwargs["url"] or kwargs["url"].endswith("/albums")
+
+            if num_urls == 1 or (is_second_url and num_urls > 1):
                 return [
                     mock_entry_dict_factory(
                         uid="21-1",
@@ -135,6 +151,7 @@ def mock_download_collection_entries(
                         playlist_index=1,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
+                        is_extracted_audio=is_extracted_audio,
                     ),  # 1
                     mock_entry_dict_factory(
                         uid="20-1",
@@ -142,6 +159,7 @@ def mock_download_collection_entries(
                         playlist_index=2,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
+                        is_extracted_audio=is_extracted_audio,
                     ),  # 2  98
                     mock_entry_dict_factory(
                         uid="20-2",
@@ -149,6 +167,7 @@ def mock_download_collection_entries(
                         playlist_index=3,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
+                        is_extracted_audio=is_extracted_audio,
                     ),  # 1  99
                     mock_entry_dict_factory(
                         uid="20-3",
@@ -156,6 +175,7 @@ def mock_download_collection_entries(
                         playlist_index=4,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
+                        is_extracted_audio=is_extracted_audio,
                     ),
                 ]
             return [
@@ -167,6 +187,7 @@ def mock_download_collection_entries(
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     mock_download_to_working_dir=False,
+                    is_extracted_audio=is_extracted_audio,
                 ),
                 mock_entry_dict_factory(
                     uid="20-4",
@@ -174,6 +195,7 @@ def mock_download_collection_entries(
                     playlist_index=2,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
+                    is_extracted_audio=is_extracted_audio,
                 ),
                 mock_entry_dict_factory(
                     uid="20-5",
@@ -181,6 +203,7 @@ def mock_download_collection_entries(
                     playlist_index=3,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
+                    is_extracted_audio=is_extracted_audio,
                 ),
                 mock_entry_dict_factory(
                     uid="20-6",
@@ -188,6 +211,7 @@ def mock_download_collection_entries(
                     playlist_index=4,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
+                    is_extracted_audio=is_extracted_audio,
                 ),
                 mock_entry_dict_factory(
                     uid="20-7",
@@ -195,6 +219,7 @@ def mock_download_collection_entries(
                     playlist_index=5,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
+                    is_extracted_audio=is_extracted_audio,
                 ),
             ]
 
