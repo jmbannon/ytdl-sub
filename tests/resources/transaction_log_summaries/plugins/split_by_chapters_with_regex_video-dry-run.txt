@@ -3,11 +3,12 @@ Files created:
 {output_directory}
   .ytdl-sub-split_by_chapters_with_regex_video-download-archive.json
 {output_directory}/Alfa Mist/[2017] Nocturne
-  01 - Intro (Feat. Racheal Ofori & Barney Artist).mp3
+  01 - Intro (Feat. Racheal Ofori & Barney Artist).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 0:00 - 2:06
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -19,11 +20,12 @@ Files created:
       track: 1
       tracktotal: 11
       year: 2017
-  02 - Answers (Feat. Rick David & Kaya Thomas - Dyke).mp3
+  02 - Answers (Feat. Rick David & Kaya Thomas - Dyke).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 2:06 - 5:40
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -35,11 +37,12 @@ Files created:
       track: 2
       tracktotal: 11
       year: 2017
-  03 - Blaze (Feat. Kaya Thomas - Dyke).mp3
+  03 - Blaze (Feat. Kaya Thomas - Dyke).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 5:40 - 8:11
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -51,11 +54,12 @@ Files created:
       track: 3
       tracktotal: 11
       year: 2017
-  04 - What If (Interlude).mp3
+  04 - What If (Interlude).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 8:11 - 9:35
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -67,11 +71,12 @@ Files created:
       track: 4
       tracktotal: 11
       year: 2017
-  05 - No Peace (Feat. Tom Misch).mp3
+  05 - No Peace (Feat. Tom Misch).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 9:35 - 13:19
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -83,11 +88,12 @@ Files created:
       track: 5
       tracktotal: 11
       year: 2017
-  06 - Closer (Feat. Lester Duval).mp3
+  06 - Closer (Feat. Lester Duval).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 13:19 - 17:57
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -99,11 +105,12 @@ Files created:
       track: 6
       tracktotal: 11
       year: 2017
-  07 - Delusions： Rumination (Interlude) (Feat. Racheal Ofori).mp3
+  07 - Delusions： Rumination (Interlude) (Feat. Racheal Ofori).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 17:57 - 20:05
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -115,11 +122,12 @@ Files created:
       track: 7
       tracktotal: 11
       year: 2017
-  08 - Dreams (Feat. Carmody).mp3
+  08 - Dreams (Feat. Carmody).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 20:05 - 23:58
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -131,11 +139,12 @@ Files created:
       track: 8
       tracktotal: 11
       year: 2017
-  09 - Dreaming (Interlude) (Feat. Racheal Ofori).mp3
+  09 - Dreaming (Interlude) (Feat. Racheal Ofori).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 23:58 - 24:45
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -147,11 +156,12 @@ Files created:
       track: 9
       tracktotal: 11
       year: 2017
-  10 - Hopeful (Feat. Jordan Rakei).mp3
+  10 - Hopeful (Feat. Jordan Rakei).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 24:45 - 28:53
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -163,11 +173,12 @@ Files created:
       track: 10
       tracktotal: 11
       year: 2017
-  11 - Sunrise (Pillows) (Feat. Emmavie).mp3
+  11 - Sunrise (Pillows) (Feat. Emmavie).m4a
     From Chapter Split:
       Warning: Dry-run assumes embedded chapters with no modifications
       Source Title: Alfa Mist - Nocturne [Full Album]
       Segment: 28:53 - 31:43
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
     Music Tags:
       album: Nocturne
       albumartist: Alfa Mist
@@ -179,4 +190,19 @@ Files created:
       track: 11
       tracktotal: 11
       year: 2017
+  folder.jpg
+{output_directory}/Project Zombie/[2010] Oblivion Mod ＂Falcor＂ p.1
+  01 - Oblivion Mod ＂Falcor＂ p.1.m4a
+    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
+    Music Tags:
+      album: Oblivion Mod "Falcor" p.1
+      albumartist: Project Zombie
+      albumartists: Project Zombie
+      artist: Project Zombie
+      artists: Project Zombie
+      genre: Unset
+      title: Oblivion Mod "Falcor" p.1
+      track: 1
+      tracktotal: 1
+      year: 2010
   folder.jpg

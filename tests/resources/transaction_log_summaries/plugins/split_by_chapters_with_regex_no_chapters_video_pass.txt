@@ -3,7 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-split_by_chapters_with_regex_video-download-archive.json
 {output_directory}/Project Zombie/[2010] Oblivion Mod ＂Falcor＂ p.1
-  01 - Oblivion Mod ＂Falcor＂ p.1.mp3
+  01 - Oblivion Mod ＂Falcor＂ p.1.m4a
     Music Tags:
       album: Oblivion Mod "Falcor" p.1
       albumartist: Project Zombie
