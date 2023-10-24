@@ -1,11 +1,9 @@
 {
-  ".ytdl-sub-subscription_test-download-archive.json": "3d12578ca04adf67117b8aa2b32634f9",
-  "subscription_test/[2020] Mock Entry 20-1/02 - Mock Entry 20-1.mp3": "ba28f3597c223ca59c781c862de65ecc",
-  "subscription_test/[2020] Mock Entry 20-1/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
-  "subscription_test/[2020] Mock Entry 20-2/03 - Mock Entry 20-2.mp3": "dbfc73ad4fab626793f8430ba60dfe32",
-  "subscription_test/[2020] Mock Entry 20-2/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
-  "subscription_test/[2020] Mock Entry 20-3/04 - Mock Entry 20-3.mp3": "2efa8690b7462c1ed075a7804df36247",
-  "subscription_test/[2020] Mock Entry 20-3/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
-  "subscription_test/[2021] Mock Entry 21-1/01 - Mock Entry 21-1.mp3": "d27a7a267742f5d7a155995484795f9c",
-  "subscription_test/[2021] Mock Entry 21-1/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7"
+  ".ytdl-sub-subscription_test-download-archive.json": "36b3c7143ac4257489791309d802af82",
+  "subscription_test/[2020] Download First/02 - Mock Entry 20-1.mp3": "7b0ff394bc1fbb8419735914692cb2e4",
+  "subscription_test/[2020] Download First/03 - Mock Entry 20-2.mp3": "e3b5de70c625eb55d0eb7cacf0429fa5",
+  "subscription_test/[2020] Download First/04 - Mock Entry 20-3.mp3": "31fd8d0d38139aafb74ec94ba34a53dc",
+  "subscription_test/[2020] Download First/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "subscription_test/[2021] Download First/01 - Mock Entry 21-1.mp3": "3459b2735afa7e41a32c34198e780a5e",
+  "subscription_test/[2021] Download First/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7"
 }

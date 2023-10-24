@@ -2,10 +2,10 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
-{output_directory}/subscription_test/[2020] Mock Entry 20-1
+{output_directory}/subscription_test/[2020] Download First
   02 - Mock Entry 20-1.mp3
     Music Tags:
-      album: Mock Entry 20-1
+      album: Download First
       albumartist: subscription_test
       albumartists: subscription_test
       artist: subscription_test
@@ -15,11 +15,9 @@ Files created:
       track: 2
       tracktotal: 4
       year: 2020
-  folder.jpg
-{output_directory}/subscription_test/[2020] Mock Entry 20-2
   03 - Mock Entry 20-2.mp3
     Music Tags:
-      album: Mock Entry 20-2
+      album: Download First
       albumartist: subscription_test
       albumartists: subscription_test
       artist: subscription_test
@@ -29,11 +27,9 @@ Files created:
       track: 3
       tracktotal: 4
       year: 2020
-  folder.jpg
-{output_directory}/subscription_test/[2020] Mock Entry 20-3
   04 - Mock Entry 20-3.mp3
     Music Tags:
-      album: Mock Entry 20-3
+      album: Download First
       albumartist: subscription_test
       albumartists: subscription_test
       artist: subscription_test
@@ -44,10 +40,10 @@ Files created:
       tracktotal: 4
       year: 2020
   folder.jpg
-{output_directory}/subscription_test/[2021] Mock Entry 21-1
+{output_directory}/subscription_test/[2021] Download First
   01 - Mock Entry 21-1.mp3
     Music Tags:
-      album: Mock Entry 21-1
+      album: Download First
       albumartist: subscription_test
       albumartists: subscription_test
       artist: subscription_test

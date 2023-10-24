@@ -12,7 +12,7 @@ from resources import copy_file_fixture
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
-from ytdl_sub.entries.variables.kwargs import DESCRIPTION
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION, PLAYLIST_TITLE
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
@@ -53,6 +53,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
     def _mock_entry_dict_factory(
         uid: int,
         upload_date: str,
+        playlist_title: str = "playlist title",
         playlist_index: int = 1,
         playlist_count: int = 1,
         is_youtube_channel: bool = False,
@@ -62,6 +63,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         entry_dict = {
             UID: uid,
             EPOCH: 1596878400,
+            PLAYLIST_TITLE: playlist_title,
             PLAYLIST_INDEX: playlist_index,
             PLAYLIST_COUNT: playlist_count,
             EXTRACTOR: "mock-entry-dict",
@@ -148,6 +150,7 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="21-1",
                         upload_date="20210808",
+                        playlist_title="Download First",
                         playlist_index=1,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
@@ -156,6 +159,7 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="20-1",
                         upload_date="20200808",
+                        playlist_title="Download First",
                         playlist_index=2,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
@@ -164,6 +168,7 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="20-2",
                         upload_date="20200808",
+                        playlist_title="Download First",
                         playlist_index=3,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
@@ -172,6 +177,7 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="20-3",
                         upload_date="20200807",
+                        playlist_title="Download First",
                         playlist_index=4,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
@@ -183,6 +189,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-3",
                     upload_date="20200807",
+                    playlist_title="Download Second",
                     playlist_index=1,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
@@ -192,6 +199,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-4",
                     upload_date="20200806",
+                    playlist_title="Download Second",
                     playlist_index=2,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
@@ -200,6 +208,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-5",
                     upload_date="20200706",
+                    playlist_title="Download Second",
                     playlist_index=3,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
@@ -208,6 +217,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-6",
                     upload_date="20200706",
+                    playlist_title="Download Second",
                     playlist_index=4,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
@@ -216,6 +226,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-7",
                     upload_date="20200606",
+                    playlist_title="Download Second",
                     playlist_index=5,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
