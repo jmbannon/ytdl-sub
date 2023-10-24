@@ -187,3 +187,8 @@ def tv_show_subscriptions_path() -> Path:
 @pytest.fixture()
 def music_audio_config(working_directory) -> ConfigFile:
     return ConfigFile.from_dict({"configuration": {"working_directory": working_directory}})
+
+
+@pytest.fixture()
+def music_subscriptions_path() -> Path:
+    return Path("examples/music_subscriptions.yaml")

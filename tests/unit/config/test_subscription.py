@@ -341,7 +341,7 @@ def test_tv_show_subscriptions(
         config=channel_as_tv_show_config, subscription_path=tv_show_subscriptions_path
     )
 
-    assert len(subs) == 6
+    assert len(subs) == 5
     assert subs[2].name == "Jake Trains"
     jake_train_overrides = subs[2].overrides.dict_with_format_strings
 
@@ -349,3 +349,17 @@ def test_tv_show_subscriptions(
     assert jake_train_overrides["subscription_value"] == "https://www.youtube.com/@JakeTrains"
     assert jake_train_overrides["subscription_indent_1"] == "Kids"
     assert jake_train_overrides["subscription_indent_2"] == "TV-Y"
+
+
+def test_music_subscriptions(music_audio_config: ConfigFile, music_subscriptions_path: Path):
+    subs = Subscription.from_file_path(
+        config=music_audio_config, subscription_path=music_subscriptions_path
+    )
+
+    assert len(subs) == 14
+    assert subs[2].name == "Stan Getz"
+    monk = subs[2].overrides.dict_with_format_strings
+
+    assert monk["subscription_name"] == "Stan Getz"
+    assert monk["subscription_value"] == "https://www.youtube.com/@stangetzofficial/releases"
+    assert monk["subscription_indent_1"] == "Jazz"
