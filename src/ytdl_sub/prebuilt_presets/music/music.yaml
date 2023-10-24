@@ -5,7 +5,6 @@ presets:
       output_directory: "{music_directory}"
       file_name: "{track_full_path}"
       thumbnail_name: "{album_cover_path}"
-      download_archive_name: ".{subscription_name_sanitized}-download-archive.json"
       maintain_download_archive: True
 
     ytdl_options:
@@ -39,8 +38,8 @@ presets:
 
       # Track Overrides
       track_title: "{title}"
-      track_album: "Singles"
-      track_artist: "{channel}"
+      track_album: "{title}"
+      track_artist: "{subscription_name}"
       track_album_artist: "{track_artist}"
       track_number: "1"
       track_number_padded: "01"
