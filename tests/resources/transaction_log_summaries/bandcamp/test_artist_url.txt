@@ -1,186 +1,188 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-jb-download-archive.json
-{output_directory}/El Jazzy Chavo/[2022] S950 Funk
-  01 - Spark it.mp3
+  .ytdl-sub-Sithu Aye-download-archive.json
+{output_directory}/Sithu Aye/[2021] 10 Years： Remixes and Reimaginings
+  01 - Double Helix Reimagined.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Spark it
+      album: 10 Years: Remixes and Reimaginings
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Double Helix Reimagined
       track: 1
-      tracktotal: 15
-      year: 2022
-  02 - Astronomikal Funk.mp3
+      tracktotal: 10
+      year: 2021
+  02 - Skye Reimagined.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Astronomikal Funk
+      album: 10 Years: Remixes and Reimaginings
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Skye Reimagined
       track: 2
-      tracktotal: 15
-      year: 2022
-  03 - Impulse.mp3
+      tracktotal: 10
+      year: 2021
+  03 - Baryofusion.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Impulse
+      album: 10 Years: Remixes and Reimaginings
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Baryofusion
       track: 3
-      tracktotal: 15
-      year: 2022
-  04 - September.mp3
+      tracktotal: 10
+      year: 2021
+  04 - Mandalay Reimagined.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: September
+      album: 10 Years: Remixes and Reimaginings
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Mandalay Reimagined
       track: 4
-      tracktotal: 15
-      year: 2022
-  05 - Interlune.mp3
+      tracktotal: 10
+      year: 2021
+  05 - Messenger EDM Remix.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Interlune
+      album: 10 Years: Remixes and Reimaginings
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Messenger EDM Remix
       track: 5
-      tracktotal: 15
-      year: 2022
-  06 - Ninjutsu Techniques.mp3
+      tracktotal: 10
+      year: 2021
+  folder.jpg
+{output_directory}/Sithu Aye/[2022] Re：Invent the Universe (10th Anniversary Remaster)
+  01 - Invent the Universe.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Ninjutsu Techniques
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Invent the Universe
+      track: 1
+      tracktotal: 10
+      year: 2022
+  02 - Grand Unification (feat. David Maxim Micic).mp3
+    Music Tags:
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Grand Unification (feat. David Maxim Micic)
+      track: 2
+      tracktotal: 10
+      year: 2022
+  03 - Expansion.mp3
+    Music Tags:
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Expansion
+      track: 3
+      tracktotal: 10
+      year: 2022
+  04 - Baryogenesis.mp3
+    Music Tags:
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Baryogenesis
+      track: 4
+      tracktotal: 10
+      year: 2022
+  05 - Particles Collide (feat. Plini).mp3
+    Music Tags:
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Particles Collide (feat. Plini)
+      track: 5
+      tracktotal: 10
+      year: 2022
+  06 - Nucleosynthesis.mp3
+    Music Tags:
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Nucleosynthesis
       track: 6
-      tracktotal: 15
+      tracktotal: 10
       year: 2022
-  07 - Space Funk Flow.mp3
+  07 - Recombination.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Space Funk Flow
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Recombination
       track: 7
-      tracktotal: 15
+      tracktotal: 10
       year: 2022
-  08 - Cellar Groove.mp3
+  08 - Dark Ages.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Cellar Groove
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Dark Ages
       track: 8
-      tracktotal: 15
+      tracktotal: 10
       year: 2022
-  09 - Solar Wind.mp3
+  09 - Formation.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Solar Wind
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Formation
       track: 9
-      tracktotal: 15
+      tracktotal: 10
       year: 2022
-  10 - Interlune II.mp3
+  10 - Pale Blue Dot.mp3
     Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Interlune II
+      album: Re:Invent the Universe (10th Anniversary Remaster)
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      genre: Progressive Metal
+      title: Pale Blue Dot
       track: 10
-      tracktotal: 15
-      year: 2022
-  11 - Ghetto Anthem.mp3
-    Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Ghetto Anthem
-      track: 11
-      tracktotal: 15
-      year: 2022
-  12 - Street Degree.mp3
-    Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Street Degree
-      track: 12
-      tracktotal: 15
-      year: 2022
-  13 - Trouble World.mp3
-    Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Trouble World
-      track: 13
-      tracktotal: 15
-      year: 2022
-  14 - Relaxation.mp3
-    Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Relaxation
-      track: 14
-      tracktotal: 15
-      year: 2022
-  15 - Journey From Within.mp3
-    Music Tags:
-      album: S950 Funk
-      albumartist: El Jazzy Chavo
-      albumartists: El Jazzy Chavo
-      artist: El Jazzy Chavo
-      artists: El Jazzy Chavo
-      genre: Unset
-      title: Journey From Within
-      track: 15
-      tracktotal: 15
+      tracktotal: 10
       year: 2022
   folder.jpg

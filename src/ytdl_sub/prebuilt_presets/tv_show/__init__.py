@@ -1,26 +1,4 @@
-from typing import Set
-
-
-class PrebuiltPreset:
-    """placeholder"""
-
-
-_ = PrebuiltPreset()
-
-
-class PrebuiltPresets:
-    @classmethod
-    def get_preset_names(cls) -> Set[str]:
-        """
-        Returns
-        -------
-        Preset names in the set
-        """
-        return set(
-            preset_name
-            for preset_name in dir(cls)
-            if isinstance(getattr(cls, preset_name), PrebuiltPreset)
-        )
+from ytdl_sub.prebuilt_presets import PrebuiltPresets
 
 
 class TvShowByDatePresets(PrebuiltPresets):
@@ -29,38 +7,44 @@ class TvShowByDatePresets(PrebuiltPresets):
     numbers.
     """
 
-    kodi_tv_show_by_date = _
-    jellyfin_tv_show_by_date = _
-    plex_tv_show_by_date = _
+    preset_names = {
+        "kodi_tv_show_by_date",
+        "jellyfin_tv_show_by_date",
+        "plex_tv_show_by_date",
+    }
 
 
 class TvShowByDateEpisodeFormattingPresets(PrebuiltPresets):
-    season_by_year__episode_by_month_day = _
-    season_by_year__episode_by_month_day_reversed = _
-    season_by_year_month__episode_by_day = _
-    season_by_year__episode_by_download_index = _
+    preset_names = {
+        "season_by_year__episode_by_month_day",
+        "season_by_year__episode_by_month_day_reversed",
+        "season_by_year_month__episode_by_day",
+        "season_by_year__episode_by_download_index",
+    }
 
 
 class TvShowCollectionPresets(PrebuiltPresets):
-    """
-    Docstring for all TV SHOW URL presets
-    """
-
-    kodi_tv_show_collection = _
-    jellyfin_tv_show_collection = _
-    plex_tv_show_collection = _
+    preset_names = {
+        "kodi_tv_show_collection",
+        "jellyfin_tv_show_collection",
+        "plex_tv_show_collection",
+    }
 
 
 class TvShowCollectionEpisodeFormattingPresets(PrebuiltPresets):
-    season_by_collection__episode_by_year_month_day = _
-    season_by_collection__episode_by_year_month_day_reversed = _
-    season_by_collection__episode_by_playlist_index = _
-    season_by_collection__episode_by_playlist_index_reversed = _
+    preset_names = {
+        "season_by_collection__episode_by_year_month_day",
+        "season_by_collection__episode_by_year_month_day_reversed",
+        "season_by_collection__episode_by_playlist_index",
+        "season_by_collection__episode_by_playlist_index_reversed",
+    }
 
 
 class TvShowCollectionSeasonPresets(PrebuiltPresets):
-    collection_season_1 = _
-    collection_season_2 = _
-    collection_season_3 = _
-    collection_season_4 = _
-    collection_season_5 = _
+    preset_names = {
+        "collection_season_1",
+        "collection_season_2",
+        "collection_season_3",
+        "collection_season_4",
+        "collection_season_5",
+    }

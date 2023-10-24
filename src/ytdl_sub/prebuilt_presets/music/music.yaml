@@ -1,0 +1,150 @@
+presets:
+
+  _music_base:
+    output_options:
+      output_directory: "{music_directory}"
+      file_name: "{track_full_path}"
+      thumbnail_name: "{album_cover_path}"
+      maintain_download_archive: True
+
+    ytdl_options:
+      break_on_existing: True
+
+    format: "ba[ext=webm]/ba"
+
+    audio_extract:
+      codec: "best"
+
+    music_tags:
+      artist: "{track_artist}"
+      albumartist: "{track_album_artist}"
+      title: "{track_title}"
+      album: "{track_album}"
+      track: "{track_number}"
+      tracktotal: "{track_total}"
+      year: "{track_year}"
+      # multi-tags
+      artists:
+        - "{track_artist}"
+      albumartists:
+        - "{track_album_artist}"
+      genre:
+        - "{track_genre}"
+
+    overrides:
+      # Subscription overrides
+      subscription_indent_1: "Unset"  # genre
+      url: "{subscription_value}"
+
+      # Track Overrides
+      track_title: "{title}"
+      track_album: "{title}"
+      track_artist: "{subscription_name}"
+      track_album_artist: "{track_artist}"
+      track_number: "1"
+      track_number_padded: "01"
+      track_total: "1"
+      track_year: "{upload_year}"
+      track_genre: "{subscription_indent_1}"
+
+      # Directory Overrides
+      music_directory: "/music"
+      artist_dir: "{track_artist_sanitized}"
+      album_dir: "[{track_year}] {track_album_sanitized}"
+      track_file_name: "{track_number_padded} - {track_title_sanitized}.{ext}"
+      track_full_path: "{artist_dir}/{album_dir}/{track_file_name}"
+      album_cover_path: "{artist_dir}/{album_dir}/folder.{thumbnail_ext}"
+
+
+  "Single":
+    preset:
+      - "_music_base"
+
+    download:
+      - "{url}"
+
+
+  _albums_from_playlists:
+    preset:
+      - "Single"
+
+    overrides:
+      track_album: "{playlist_title}"
+      track_number: "{playlist_index}"
+      track_number_padded: "{playlist_index_padded}"
+      track_total: "{playlist_count}"
+      track_year: "{playlist_max_upload_year}"
+
+
+  _albums_from_chapters:
+    preset: "Single"
+
+    chapters:
+      embed_chapters: True
+    split_by_chapters:
+      when_no_chapters: "pass"
+
+    overrides:
+      track_title: "{chapter_title}"  # Chapter title is the track title
+      track_album: "{title}"  # Video's title is the album title
+      track_number: "{chapter_index}"
+      track_number_padded: "{chapter_index_padded}"
+      track_total: "{chapter_count}"
+
+  "SoundCloud Discography":
+    preset: "_music_base"
+
+    # Download using the multi_url strategy
+    download:
+      download_strategy: "multi_url"
+      urls:
+        # The first URL will be all the artist's tracks.
+        # Treat these as singles - an album with a single track
+        - url: "{url}/tracks"
+          variables:
+            sc_track_album: "{title}"
+            sc_track_number: "1"
+            sc_track_number_padded: "01"
+            sc_track_total: "1"
+            sc_track_year: "{upload_year}"
+        # Set the second URL to the artist's albums. If a track belongs to both
+        # to an album and tracks (in the URL above), it will resolve to this
+        # URL and include the album metadata we set below.
+        - url: "{url}/albums"
+          variables:
+            sc_track_album: "{playlist_title}"
+            sc_track_number: "{playlist_index}"
+            sc_track_number_padded: "{playlist_index_padded}"
+            sc_track_total: "{playlist_count}"
+            sc_track_year: "{playlist_max_upload_year}"
+
+    # Override various track properties using playlist variables.
+    overrides:
+      track_album: "{sc_track_album}"
+      track_number: "{sc_track_number}"
+      track_number_padded: "{sc_track_number_padded}"
+      track_total: "{sc_track_total}"
+      track_year: "{sc_track_year}"
+
+  "YouTube Releases":
+    preset:
+      - "_albums_from_playlists"
+
+  "YouTube Full Albums":
+    preset:
+      - "_albums_from_chapters"
+
+  "Bandcamp":
+    preset:
+      - "_albums_from_playlists"
+    regex:
+      from:
+        title:
+          match:
+            - ".*? - (.*)"  # Captures 'Some - Song' from 'Emily Hopkins - Some - Song'
+          capture_group_names:
+            - "captured_track_title"
+          capture_group_defaults:
+            - "{title}"
+    overrides:
+      track_title: "{captured_track_title}"

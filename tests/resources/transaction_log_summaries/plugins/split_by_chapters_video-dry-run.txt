@@ -1,7 +1,7 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-split_by_chapters_video-download-archive.json
+  .ytdl-sub-Proved Records-download-archive.json
 {output_directory}/Proved Records/[2017] Alfa Mist - Nocturne [Full Album]
   01 - 01. Intro (Feat. Racheal Ofori & Barney Artist).mp3
     From Chapter Split:

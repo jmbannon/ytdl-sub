@@ -10,27 +10,15 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def subscription_dict(output_directory):
     return {
-        "preset": "albums_from_playlists",
-        "regex": {
-            "skip_if_match_fails": False,  # Error if regex match fails
-            "from": {
-                "title": {
-                    "match": ["^(.*) - (.*)"],  # Captures 'title' from 'Emily Hopkins - title'
-                    "capture_group_names": [
-                        "captured_track_artist",
-                        "captured_track_title",
-                    ],
-                }
-            },
-        },
+        "preset": "Bandcamp",
         "ytdl_options": {
             "max_downloads": 15,
         },
-        "date_range": {"before": "20230101"},
+        "audio_extract": {"codec": "mp3", "quality": 320},
+        "date_range": {"after": "20210110"},
         "overrides": {
-            "url": "https://funkypselicave.bandcamp.com/",
-            "track_title": "{captured_track_title}",
-            "track_artist": "{captured_track_artist}",
+            "subscription_value": "https://sithuayemusic.bandcamp.com/",
+            "subscription_indent_1": "Progressive Metal",
             "music_directory": output_directory,
         },
     }
@@ -38,7 +26,7 @@ def subscription_dict(output_directory):
 
 class TestBandcamp:
     @pytest.mark.parametrize("dry_run", [True, False])
-    def test_download_artist_url(
+    def test_prebuilt_preset_download(
         self,
         subscription_dict,
         music_audio_config,
@@ -47,7 +35,7 @@ class TestBandcamp:
     ):
         discography_subscription = Subscription.from_dict(
             preset_dict=subscription_dict,
-            preset_name="jb",
+            preset_name="Sithu Aye",
             config=music_audio_config,
         )
         transaction_log = discography_subscription.download(dry_run=dry_run)

@@ -6,18 +6,19 @@ import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
-from ytdl_sub.prebuilt_presets import TvShowByDatePresets
-from ytdl_sub.prebuilt_presets import TvShowCollectionPresets
+from ytdl_sub.prebuilt_presets.music import MusicPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateEpisodeFormattingPresets
+from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionEpisodeFormattingPresets
+from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionSeasonPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 
 
-@pytest.mark.parametrize("media_player_preset", TvShowByDatePresets.get_preset_names())
+@pytest.mark.parametrize("media_player_preset", TvShowByDatePresets.preset_names)
 @pytest.mark.parametrize(
-    "tv_show_structure_preset", TvShowByDateEpisodeFormattingPresets.get_preset_names()
+    "tv_show_structure_preset", TvShowByDateEpisodeFormattingPresets.preset_names
 )
 class TestPrebuiltTVShowPresets:
     def test_compilation(
@@ -179,12 +180,12 @@ class TestPrebuiltTVShowPresets:
         )
 
 
-@pytest.mark.parametrize("media_player_preset", TvShowCollectionPresets.get_preset_names())
+@pytest.mark.parametrize("media_player_preset", TvShowCollectionPresets.preset_names)
 @pytest.mark.parametrize(
-    "tv_show_structure_preset", TvShowCollectionEpisodeFormattingPresets.get_preset_names()
+    "tv_show_structure_preset", TvShowCollectionEpisodeFormattingPresets.preset_names
 )
 class TestPrebuiltTvShowCollectionPresets:
-    @pytest.mark.parametrize("season_preset", TvShowCollectionSeasonPresets.get_preset_names())
+    @pytest.mark.parametrize("season_preset", TvShowCollectionSeasonPresets.preset_names)
     def test_compilation(
         self,
         config,
@@ -208,7 +209,7 @@ class TestPrebuiltTvShowCollectionPresets:
             },
         )
 
-    @pytest.mark.parametrize("season_preset", TvShowCollectionSeasonPresets.get_preset_names())
+    @pytest.mark.parametrize("season_preset", TvShowCollectionSeasonPresets.preset_names)
     def test_compilation_errors_missing_one(
         self,
         config,
@@ -341,4 +342,71 @@ class TestPrebuiltTvShowCollectionPresets:
             output_directory=output_directory,
             dry_run=False,
             expected_download_summary_file_name=f"{reformatted_expected_summary_name}_migrated.json",
+        )
+
+
+@pytest.mark.parametrize("music_preset", MusicPresets.preset_names)
+class TestPrebuiltMusicPresets:
+    def test_compilation(
+        self,
+        config,
+        music_preset: str,
+    ):
+        _ = Subscription.from_dict(
+            config=config,
+            preset_name="preset_test",
+            preset_dict={
+                "preset": [
+                    music_preset,
+                ],
+                "overrides": {
+                    "subscription_value": "https://your.name.here",
+                },
+            },
+        )
+
+    def test_presets_run(
+        self,
+        config,
+        subscription_name,
+        output_directory,
+        mock_download_collection_entries,
+        music_preset: str,
+    ):
+        expected_summary_name = f"unit/music/{music_preset}"
+
+        preset_dict = {
+            "preset": [
+                music_preset,
+            ],
+            "overrides": {
+                "url": "https://your.name.here",
+                "music_directory": output_directory,
+            },
+        }
+
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=preset_dict,
+        )
+
+        num_urls = 1
+        if music_preset == "SoundCloud Discography":
+            num_urls = 2  # simulate /albums and /tracks
+
+        with mock_download_collection_entries(
+            is_youtube_channel=False, num_urls=num_urls, is_extracted_audio=True
+        ):
+            transaction_log = subscription.download(dry_run=False)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"{expected_summary_name}.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name=f"{expected_summary_name}.json",
         )

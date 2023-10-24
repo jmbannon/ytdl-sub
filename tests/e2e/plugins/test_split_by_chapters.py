@@ -12,13 +12,14 @@ from ytdl_sub.utils.exceptions import ValidationException
 @pytest.fixture
 def yt_album_as_chapters_preset_dict(output_directory):
     return {
-        "preset": "albums_from_chapters",
-        "format": "worst[ext=mp4]",  # download the worst format so it is fast
+        "preset": "YouTube Full Albums",
+        "format": "worst[ext=mp4]",
+        "audio_extract": {"codec": "mp3", "quality": 320},
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
         "overrides": {
-            "url": "https://www.youtube.com/watch?v=zeR2_YjlXWA",
+            "subscription_value": "https://www.youtube.com/watch?v=zeR2_YjlXWA",
             "music_directory": output_directory,
         },
     }
@@ -76,7 +77,7 @@ class TestSplitByChapters:
     ):
         subscription = Subscription.from_dict(
             config=music_audio_config,
-            preset_name="split_by_chapters_video",
+            preset_name="Proved Records",
             preset_dict=yt_album_as_chapters_preset_dict,
         )
 
@@ -106,7 +107,7 @@ class TestSplitByChapters:
     ):
         subscription = Subscription.from_dict(
             config=music_audio_config,
-            preset_name="split_by_chapters_with_regex_video",
+            preset_name="split_by_chapters_with_regex_video_preset",
             preset_dict=yt_album_as_chapters_with_regex_preset_dict,
         )
 
@@ -142,7 +143,7 @@ class TestSplitByChapters:
 
         subscription = Subscription.from_dict(
             config=music_audio_config,
-            preset_name="split_by_chapters_with_regex_video",
+            preset_name="split_by_chapters_with_regex_video_no_chapters",
             preset_dict=yt_album_as_chapters_with_regex_preset_dict,
         )
 

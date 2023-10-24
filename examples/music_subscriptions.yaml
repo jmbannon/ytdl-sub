@@ -1,0 +1,52 @@
+# Files will be stored in the form of:
+#
+#   music_directory/
+#     Artist/
+#       [2022] Some Single/
+#         01 - Some Single.mp3
+#         folder.jpg
+#       [2023] Latest Album/
+#         01 - Track Title.mp3
+#         02 - Another Track.mp3
+#         folder.jpg
+
+# Overrides to the prebuilt presets
+__preset__:
+  overrides:
+    music_directory: "/music"
+
+# Supports downloading YouTube /releases tab. Also works for any playlist (or playlist of playlists)
+# where each video is a single track.
+YouTube Releases:
+  = Jazz:  # Sets genre tag to "Jazz"
+    "Lester Young": "https://www.youtube.com/channel/UCsItMF6_fP754ihIsSRLk5A/playlists"
+    "Thelonious Monk": "https://www.youtube.com/@theloniousmonk3870/releases"
+    "Stan Getz": "https://www.youtube.com/@stangetzofficial/releases"
+    "Art Blakey": "https://www.youtube.com/channel/UCMki-b0zfAQiMQ0nbsrIuBQ/playlists"
+
+# Supports downloading playlists or individual videos where a single video is a full album.
+# ytdl-sub will split the album based on video chapters, and make each chapter a track.
+YouTube Full Albums:
+  = Lofi:
+    "Game Chops": "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
+
+# Supports downloading a SoundCloud's artists albums + singles. Be sure to not include
+# any extension after the SoundCloud artist's name in the URL.
+SoundCloud Discography:
+  = Chill Hop:
+    "UKNOWY": "https://soundcloud.com/uknowymunich"
+  = Electronic:
+    "Italo Brutalo": "https://soundcloud.com/italobrutalo"
+    "SURVIVE": "https://soundcloud.com/s-u-r-v-i-v-e"
+    "French79": "https://soundcloud.com/french79music"
+    "VHS Dreams": "https://soundcloud.com/vhsdreamsofficial"
+  = Synthwave:
+    "Lazerdiscs Records": "https://soundcloud.com/lazerdiscsrecords"
+    "Earmake": "https://soundcloud.com/earmake"
+    "Poly Poly": "https://soundcloud.com/poly_poly"
+
+# Supports downloading a Bandcamp artist
+Bandcamp:
+  = Lofi:
+    "Emily Hopkins": "https://emilyharpist.bandcamp.com/"
+
