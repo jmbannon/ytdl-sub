@@ -86,6 +86,11 @@ class ConfigFile(ConfigValidator):
 
     @classmethod
     def default(cls) -> "ConfigFile":
+        """
+        Returns
+        -------
+        Config initialized with all defaults
+        """
         return ConfigFile(name="default_config", value={})
 
     def as_dict(self) -> Dict[str, Any]:

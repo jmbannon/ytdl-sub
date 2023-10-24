@@ -6,10 +6,11 @@ import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
-from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
-from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionPresets
+from ytdl_sub.prebuilt_presets.music import MusicPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateEpisodeFormattingPresets
+from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionEpisodeFormattingPresets
+from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionSeasonPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
@@ -341,4 +342,98 @@ class TestPrebuiltTvShowCollectionPresets:
             output_directory=output_directory,
             dry_run=False,
             expected_download_summary_file_name=f"{reformatted_expected_summary_name}_migrated.json",
+        )
+
+
+@pytest.mark.parametrize("music_preset", MusicPresets.preset_names)
+class TestPrebuiltMusicPresets:
+    def test_compilation(
+        self,
+        config,
+        music_preset: str,
+    ):
+        _ = Subscription.from_dict(
+            config=config,
+            preset_name="preset_test",
+            preset_dict={
+                "preset": [
+                    music_preset,
+                ],
+                "overrides": {
+                    "subscription_value": "https://your.name.here",
+                },
+            },
+        )
+
+    def test_presets_run(
+        self,
+        config,
+        subscription_name,
+        output_directory,
+        mock_download_collection_entries,
+        music_preset: str,
+    ):
+        expected_summary_name = f"unit/music/{music_preset}"
+
+        preset_dict = {
+            "preset": [
+                music_preset,
+            ],
+            "overrides": {
+                "url": "https://your.name.here",
+                "music_directory": output_directory,
+            },
+        }
+
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=preset_dict,
+        )
+
+        num_urls = 1
+        if music_preset == "SoundCloud Discography":
+            num_urls = 2  # simulate /albums and /tracks
+
+        with mock_download_collection_entries(is_youtube_channel=False, num_urls=num_urls):
+            transaction_log = subscription.download(dry_run=False)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"{expected_summary_name}.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name=f"{expected_summary_name}.json",
+        )
+
+        ###################################### Perform reformat
+        reformatted_expected_summary_name = f"unit/music/{music_preset}_updated_tags"
+
+        reformatted_subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict={
+                "preset": [music_preset],
+                "music_tags": {"mood": "tired"},
+                "overrides": {
+                    "url": "https://your.name.here",
+                    "music_directory": output_directory,
+                    "genre": "Rock N ROLL!",
+                },
+            },
+        )
+
+        reformatted_transaction_log = reformatted_subscription.update_with_info_json(dry_run=False)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=reformatted_transaction_log,
+            transaction_log_summary_file_name=(f"{reformatted_expected_summary_name}.txt"),
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name=f"{reformatted_expected_summary_name}.json",
         )

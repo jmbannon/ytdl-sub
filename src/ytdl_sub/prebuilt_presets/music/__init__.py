@@ -1,9 +1,11 @@
-from ytdl_sub.prebuilt_presets import _, PrebuiltPresets
-
+from ytdl_sub.prebuilt_presets import PrebuiltPresets
 
 
 class MusicPresets(PrebuiltPresets):
-
-    kodi_tv_show_by_date = _
-    jellyfin_tv_show_by_date = _
-    plex_tv_show_by_date = _
+    preset_names = {
+        "Single",
+        "SoundCloud Discography",
+        "YouTube Releases",
+        "YouTube Full Albums",
+        "Bandcamp",
+    }

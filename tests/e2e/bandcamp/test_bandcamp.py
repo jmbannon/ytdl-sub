@@ -6,6 +6,7 @@ from expected_transaction_log import assert_transaction_log_matches
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.subscriptions.subscription import Subscription
 
+
 @pytest.fixture
 def subscription_dict(output_directory):
     return {

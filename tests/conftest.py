@@ -186,6 +186,4 @@ def tv_show_subscriptions_path() -> Path:
 
 @pytest.fixture()
 def music_audio_config(working_directory) -> ConfigFile:
-    return ConfigFile.from_dict(
-        {"configuration": {"working_directory": working_directory}}
-    )
+    return ConfigFile.from_dict({"configuration": {"working_directory": working_directory}})
