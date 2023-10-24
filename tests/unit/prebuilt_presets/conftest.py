@@ -12,13 +12,14 @@ from resources import copy_file_fixture
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
-from ytdl_sub.entries.variables.kwargs import DESCRIPTION, PLAYLIST_TITLE
+from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX
+from ytdl_sub.entries.variables.kwargs import PLAYLIST_TITLE
 from ytdl_sub.entries.variables.kwargs import TITLE
 from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE
