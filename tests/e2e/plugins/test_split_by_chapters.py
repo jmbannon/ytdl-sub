@@ -106,7 +106,7 @@ class TestSplitByChapters:
     ):
         subscription = Subscription.from_dict(
             config=music_audio_config,
-            preset_name="split_by_chapters_with_regex_video",
+            preset_name="split_by_chapters_with_regex_video_preset",
             preset_dict=yt_album_as_chapters_with_regex_preset_dict,
         )
 
@@ -142,7 +142,7 @@ class TestSplitByChapters:
 
         subscription = Subscription.from_dict(
             config=music_audio_config,
-            preset_name="split_by_chapters_with_regex_video",
+            preset_name="split_by_chapters_with_regex_video_no_chapters",
             preset_dict=yt_album_as_chapters_with_regex_preset_dict,
         )
 

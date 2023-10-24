@@ -1,7 +1,7 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-split_by_chapters_with_regex_video-download-archive.json
+  .ytdl-sub-split_by_chapters_with_regex_video_preset-download-archive.json
 {output_directory}/Alfa Mist/[2017] Nocturne
   01 - Intro (Feat. Racheal Ofori & Barney Artist).m4a
     From Chapter Split:
@@ -190,19 +190,4 @@ Files created:
       track: 11
       tracktotal: 11
       year: 2017
-  folder.jpg
-{output_directory}/Project Zombie/[2010] Oblivion Mod ＂Falcor＂ p.1
-  01 - Oblivion Mod ＂Falcor＂ p.1.m4a
-    Caution: extracted audio with 'best' format is not known during dry-run. Defaulting to m4a.
-    Music Tags:
-      album: Oblivion Mod "Falcor" p.1
-      albumartist: Project Zombie
-      albumartists: Project Zombie
-      artist: Project Zombie
-      artists: Project Zombie
-      genre: Unset
-      title: Oblivion Mod "Falcor" p.1
-      track: 1
-      tracktotal: 1
-      year: 2010
   folder.jpg

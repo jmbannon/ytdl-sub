@@ -1,7 +1,7 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-split_by_chapters_with_regex_video-download-archive.json
+  .ytdl-sub-split_by_chapters_with_regex_video_no_chapters-download-archive.json
 {output_directory}/Project Zombie/[2010] Oblivion Mod ＂Falcor＂ p.1
   01 - Oblivion Mod ＂Falcor＂ p.1.m4a
     Music Tags:

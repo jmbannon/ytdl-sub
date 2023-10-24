@@ -1,7 +1,7 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-split_by_chapters_with_regex_video-download-archive.json
+  .ytdl-sub-split_by_chapters_with_regex_video_preset-download-archive.json
 {output_directory}/Alfa Mist/[2017] Nocturne
   01 - Intro (Feat. Racheal Ofori & Barney Artist).m4a
     From Chapter Split:
