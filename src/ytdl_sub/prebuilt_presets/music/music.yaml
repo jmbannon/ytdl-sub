@@ -28,15 +28,18 @@ presets:
         - "{track_artist}"
       albumartists:
         - "{track_album_artist}"
-      genre:
+      genres:
         - "{track_genre}"
 
     overrides:
 #   MUST DEFINE:
 #     music_directory
 
+      # Defaults
+      track_genre_default: "Unset"
+
       # Subscription overrides
-      subscription_indent_1: "Unset"  # genre
+      subscription_indent_1: "{track_genre_default}"
       url: "{subscription_value}"
 
       # Track Overrides
