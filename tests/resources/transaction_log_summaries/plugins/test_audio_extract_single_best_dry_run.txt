@@ -11,8 +11,8 @@ Files created:
       albumartists: YouTube
       artist: YouTube
       artists: YouTube
-      genre: Unset
       genres:
+        - Unset
         - multi_tag_1
         - multi_tag_2
       title: YouTube Rewind 2019: For the Record | #YouTubeRewind

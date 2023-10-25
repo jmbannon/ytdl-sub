@@ -13,7 +13,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 01. Intro (Feat. Racheal Ofori & Barney Artist)
       track: 1
       tracktotal: 11
@@ -28,7 +28,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 02. Answers (Feat. Rick David & Kaya Thomas - Dyke)
       track: 2
       tracktotal: 11
@@ -43,7 +43,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 03. Blaze (Feat. Kaya Thomas - Dyke)
       track: 3
       tracktotal: 11
@@ -58,7 +58,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 04. What If (Interlude)
       track: 4
       tracktotal: 11
@@ -73,7 +73,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 05. No Peace (Feat. Tom Misch)
       track: 5
       tracktotal: 11
@@ -88,7 +88,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 06. Closer (Feat. Lester Duval)
       track: 6
       tracktotal: 11
@@ -103,7 +103,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 07. Delusions: Rumination (Interlude) (Feat. Racheal Ofori)
       track: 7
       tracktotal: 11
@@ -118,7 +118,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 08. Dreams (Feat. Carmody)
       track: 8
       tracktotal: 11
@@ -133,7 +133,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 09. Dreaming (Interlude) (Feat. Racheal Ofori)
       track: 9
       tracktotal: 11
@@ -148,7 +148,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 10. Hopeful (Feat. Jordan Rakei)
       track: 10
       tracktotal: 11
@@ -163,7 +163,7 @@ Files created:
       albumartists: Proved Records
       artist: Proved Records
       artists: Proved Records
-      genre: Unset
+      genres: Unset
       title: 11. Sunrise (Pillows) (Feat. Emmavie)
       track: 11
       tracktotal: 11

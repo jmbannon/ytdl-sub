@@ -10,7 +10,7 @@ Files created:
       albumartists: subscription_test
       artist: subscription_test
       artists: subscription_test
-      genre: Unset
+      genres: Unset
       title: Mock Entry 20-1
       track: 2
       tracktotal: 4
@@ -22,7 +22,7 @@ Files created:
       albumartists: subscription_test
       artist: subscription_test
       artists: subscription_test
-      genre: Unset
+      genres: Unset
       title: Mock Entry 20-2
       track: 3
       tracktotal: 4
@@ -34,7 +34,7 @@ Files created:
       albumartists: subscription_test
       artist: subscription_test
       artists: subscription_test
-      genre: Unset
+      genres: Unset
       title: Mock Entry 20-3
       track: 4
       tracktotal: 4
@@ -48,7 +48,7 @@ Files created:
       albumartists: subscription_test
       artist: subscription_test
       artists: subscription_test
-      genre: Unset
+      genres: Unset
       title: Mock Entry 21-1
       track: 1
       tracktotal: 4

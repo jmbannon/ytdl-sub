@@ -10,7 +10,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Double Helix Reimagined
       track: 1
       tracktotal: 10
@@ -22,7 +22,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Skye Reimagined
       track: 2
       tracktotal: 10
@@ -34,7 +34,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Baryofusion
       track: 3
       tracktotal: 10
@@ -46,7 +46,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Mandalay Reimagined
       track: 4
       tracktotal: 10
@@ -58,7 +58,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Messenger EDM Remix
       track: 5
       tracktotal: 10
@@ -72,7 +72,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Invent the Universe
       track: 1
       tracktotal: 10
@@ -84,7 +84,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Grand Unification (feat. David Maxim Micic)
       track: 2
       tracktotal: 10
@@ -96,7 +96,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Expansion
       track: 3
       tracktotal: 10
@@ -108,7 +108,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Baryogenesis
       track: 4
       tracktotal: 10
@@ -120,7 +120,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Particles Collide (feat. Plini)
       track: 5
       tracktotal: 10
@@ -132,7 +132,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Nucleosynthesis
       track: 6
       tracktotal: 10
@@ -144,7 +144,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Recombination
       track: 7
       tracktotal: 10
@@ -156,7 +156,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Dark Ages
       track: 8
       tracktotal: 10
@@ -168,7 +168,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Formation
       track: 9
       tracktotal: 10
@@ -180,7 +180,7 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
-      genre: Progressive Metal
+      genres: Progressive Metal
       title: Pale Blue Dot
       track: 10
       tracktotal: 10
