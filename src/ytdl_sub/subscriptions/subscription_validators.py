@@ -66,8 +66,10 @@ class SubscriptionOutput(Validator, ABC):
         }
 
     @abstractmethod
-    def subscription_dicts(self) -> Dict[str, Dict]:
+    def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
         """
+        Parameters
+
         Returns
         -------
         Subscriptions in the form of ``{ subscription_name: preset_dict }``
@@ -81,7 +83,7 @@ class SubscriptionPresetDictValidator(SubscriptionOutput, DictValidator):
         _ = self._validate_key_if_present(key="preset", validator=StringListValidator, default=[])
         _ = self._validate_key_if_present(key="overrides", validator=Overrides, default={})
 
-    def subscription_dicts(self) -> Dict[str, Dict]:
+    def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
         output_dict = copy.deepcopy(self._dict)
         parent_presets = output_dict.get("preset", [])
 
@@ -89,7 +91,7 @@ class SubscriptionPresetDictValidator(SubscriptionOutput, DictValidator):
         if isinstance(parent_presets, str):
             parent_presets = [parent_presets]
 
-        output_dict["preset"] = parent_presets + self._presets
+        output_dict["preset"] = parent_presets + self._presets + global_presets_to_apply
         output_dict["overrides"] = dict(
             output_dict.get("overrides", {}), **self._indent_overrides_dict()
         )
@@ -115,7 +117,7 @@ class SubscriptionValueValidator(SubscriptionOutput, StringValidator):
             )
         self._subscription_value: Optional[str] = subscription_value
 
-    def subscription_dicts(self) -> Dict[str, Dict]:
+    def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
         subscription_value_dict: Dict[str, str] = {"subscription_value": self.value}
         # TODO: Eventually delete in favor of {subscription_value}
         if self._subscription_value:
@@ -123,7 +125,7 @@ class SubscriptionValueValidator(SubscriptionOutput, StringValidator):
 
         return {
             self._leaf_name: {
-                "preset": self._presets,
+                "preset": self._presets + global_presets_to_apply,
                 "overrides": dict(
                     subscription_value_dict,
                     **self._indent_overrides_dict(),
@@ -196,9 +198,12 @@ class SubscriptionValidator(SubscriptionOutput):
                         )
                     )
 
-    def subscription_dicts(self) -> Dict[str, Dict]:
+    def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
         subscription_dicts: Dict[str, Dict] = {}
         for child in self._children:
-            subscription_dicts = dict(subscription_dicts, **child.subscription_dicts())
+            subscription_dicts = dict(
+                subscription_dicts,
+                **child.subscription_dicts(global_presets_to_apply=global_presets_to_apply),
+            )
 
         return subscription_dicts

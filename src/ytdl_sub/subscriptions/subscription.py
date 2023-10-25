@@ -147,10 +147,12 @@ class Subscription(SubscriptionDownload):
             name="",
             value=subscriptions_dict,
             config=config,
-            presets=[FILE_PRESET_APPLY_KEY] if has_file_preset else [],
+            presets=[],
             indent_overrides=[],
             subscription_value=file_subscription_value,
-        ).subscription_dicts()
+        ).subscription_dicts(
+            global_presets_to_apply=[FILE_PRESET_APPLY_KEY] if has_file_preset else []
+        )
 
         for subscription_key, subscription_object in subscriptions_dicts.items():
             subscriptions.append(

@@ -47,6 +47,7 @@ def preset_with_file_preset(youtube_video: Dict, output_options: Dict):
                 "test_config_subscription_value": "original",
                 "subscription_indent_1": "original_1",
                 "subscription_indent_2": "original_2",
+                "current_override": "__preset__",
             },
         },
         "test_preset": {
@@ -54,6 +55,7 @@ def preset_with_file_preset(youtube_video: Dict, output_options: Dict):
             "nfo_tags": {
                 "tags": {"key-4": "test_preset"},
             },
+            "overrides": {"current_override": "test_preset"},
         },
     }
 
@@ -137,6 +139,8 @@ def test_subscription_file_preset_applies(config_file: ConfigFile, preset_with_f
 
     # Test __preset__ worked correctly
     preset_sub = subs[0]
+    assert preset_sub.name == "test_preset"
+
     nfo_options: NfoTagsOptions = preset_sub.plugins.get(NfoTagsOptions)
     tags_string_dict = {
         key: formatter[0].format_string for key, formatter in nfo_options.tags.string_tags.items()
@@ -148,6 +152,10 @@ def test_subscription_file_preset_applies(config_file: ConfigFile, preset_with_f
         "key-3": "file_preset",
         "key-4": "test_preset",
     }
+
+    overrides = preset_sub.overrides.dict_with_format_strings
+    # preset overrides take precedence over __preset__
+    assert overrides.get("current_override") == "test_preset"
 
 
 def test_subscription_file_value_applies(
@@ -165,6 +173,7 @@ def test_subscription_file_value_applies(
     assert overrides.get("test_file_subscription_value") == "is_overwritten"
     assert overrides.get("test_file_subscription_value")
     assert overrides.get("subscription_value") == "is_overwritten"
+    assert overrides.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
 
 def test_subscription_file_value_applies_sub_file_takes_precedence(
@@ -183,6 +192,7 @@ def test_subscription_file_value_applies_sub_file_takes_precedence(
     assert value_sub.get("test_config_subscription_value") == "original"
     assert value_sub.get("subscription_name") == "test_value"
     assert value_sub.get("subscription_value") == "is_overwritten"
+    assert value_sub.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
 
 def test_subscription_file_value_applies_from_config(
@@ -200,6 +210,7 @@ def test_subscription_file_value_applies_from_config(
     assert value_sub.get("test_config_subscription_value") == "is_overwritten"
     assert value_sub.get("subscription_name") == "test_value"
     assert value_sub.get("subscription_value") == "is_overwritten"
+    assert value_sub.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
 
 def test_subscription_file_value_applies_from_config_and_nested(
@@ -219,10 +230,12 @@ def test_subscription_file_value_applies_from_config_and_nested(
     assert sub_1.get("test_config_subscription_value") == "is_1_overwritten"
     assert sub_1.get("subscription_name") == "test_1"
     assert sub_1.get("subscription_value") == "is_1_overwritten"
+    assert sub_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
     assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_name") == "test_2_1"
     assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
+    assert sub_2_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
 
 def test_subscription_file_value_applies_from_config_and_nested_and_indent_variables(
@@ -252,12 +265,14 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
     assert sub_1.get("subscription_value") == "is_1_overwritten"
     assert sub_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_1.get("subscription_indent_2") == "INDENT_2"
+    assert sub_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
     assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_name") == "test_2_1"
     assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_2_1.get("subscription_indent_2") == "original_2"
+    assert sub_2_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
 
 def test_subscription_file_value_applies_from_config_and_nested_and_indent_variables_same_line(
@@ -288,12 +303,14 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
     assert sub_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_1.get("subscription_indent_2") == "INDENT_2"
     assert sub_1.get("subscription_indent_3") == "INDENT_3"
+    assert sub_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
     assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_name") == "test_2_1"
     assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_2_1.get("subscription_indent_2") == "original_2"
+    assert sub_2_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
     assert "subscription_indent_3" not in sub_2_1
 
 
