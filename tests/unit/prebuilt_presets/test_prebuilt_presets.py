@@ -360,6 +360,7 @@ class TestPrebuiltMusicPresets:
                     music_preset,
                 ],
                 "overrides": {
+                    "music_directory": "/music",
                     "subscription_value": "https://your.name.here",
                 },
             },
