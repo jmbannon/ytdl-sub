@@ -32,6 +32,9 @@ presets:
         - "{track_genre}"
 
     overrides:
+#   MUST DEFINE:
+#     music_directory
+
       # Subscription overrides
       subscription_indent_1: "Unset"  # genre
       url: "{subscription_value}"
@@ -48,7 +51,6 @@ presets:
       track_genre: "{subscription_indent_1}"
 
       # Directory Overrides
-      music_directory: "/music"
       artist_dir: "{track_artist_sanitized}"
       album_dir: "[{track_year}] {track_album_sanitized}"
       track_file_name: "{track_number_padded} - {track_title_sanitized}.{ext}"
