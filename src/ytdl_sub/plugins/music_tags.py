@@ -20,6 +20,22 @@ from ytdl_sub.validators.validators import BoolValidator
 logger = Logger.get("music_tags")
 
 
+def _is_multi_field(tag_name: str) -> bool:
+    return tag_name in {
+        "artists",
+        "genres",
+        "albumartists",
+        "albumtypes",
+        "catalognums",
+        "languages",
+        "artists_credit",
+        "artists_sort",
+        "albumartists_credit",
+        "albumartists_sort",
+        "mb_albumartistids",
+    }
+
+
 class MusicTagsValidator(StrictDictValidator):
     """
     Validator for the music_tag's `tags` field. Treat each value as a list.
@@ -148,8 +164,8 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         if not self.is_dry_run:
             audio_file = mediafile.MediaFile(entry.get_download_file_path())
             for tag_name, tag_value in tags_to_write.items():
-                # If the attribute is a List-type, set it as the list type
-                if isinstance(getattr(audio_file, tag_name), list):
+                # If the attribute is a multi-type, set it as the list type
+                if _is_multi_field(tag_name):
                     setattr(audio_file, tag_name, tag_value)
                 # Otherwise, set as single value
                 else:

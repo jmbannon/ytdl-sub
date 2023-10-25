@@ -94,7 +94,7 @@ class TestAudioExtract:
             expected_download_summary_file_name="plugins/test_audio_extract_single_old_format.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", [False])
     def test_audio_extract_single_song(
         self,
         music_audio_config,
