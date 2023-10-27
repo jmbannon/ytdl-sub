@@ -19,7 +19,7 @@ def single_video_subs_embed_preset_dict(output_directory):
             "allow_auto_generated_subtitles": True,
         },
         "format": "worst[ext=mp4]",  # download the worst format so it is fast
-        "overrides": {"artist": "JMC"},
+        "overrides": {"music_video_artist": "JMC"},
     }
 
 
@@ -27,19 +27,23 @@ def single_video_subs_embed_preset_dict(output_directory):
 def test_single_video_subs_embed_and_file_preset_dict(single_video_subs_embed_preset_dict):
     single_video_subs_embed_preset_dict["subtitles"][
         "subtitles_name"
-    ] = "{music_video_name}.{lang}.{subtitles_ext}"
+    ] = "{music_video_file_name}.{lang}.{subtitles_ext}"
     return single_video_subs_embed_preset_dict
 
 
 class TestSubtitles:
     def test_subtitle_lang_variable_partial_validates(self, default_config):
         default_config_dict = default_config.as_dict()
-        default_config_dict["presets"]["Jellyfin Music Videos"]["subtitles"] = {
-            "embed_subtitles": False,
-            "languages": ["en", "de"],
-            "allow_auto_generated_subtitles": True,
-            "subtitles_name": "{episode_file_path}.{lang}.{subtitles_ext}",
-            "subtitles_type": "srt",
+        default_config_dict["presets"] = {
+            "test_lang_validates": {
+                "subtitles": {
+                    "embed_subtitles": False,
+                    "languages": ["en", "de"],
+                    "allow_auto_generated_subtitles": True,
+                    "subtitles_name": "{episode_file_path}.{lang}.{subtitles_ext}",
+                    "subtitles_type": "srt",
+                }
+            }
         }
 
         _ = ConfigFile.from_dict(default_config_dict)

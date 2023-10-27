@@ -110,6 +110,11 @@ def preset_dict_to_dl_args(preset_dict: Dict) -> str:
     Preset dict converted to CLI parameters
     """
 
+    def _maybe_quote_value(value: Any):
+        if isinstance(value, str) and " " in value:
+            return f'"{value}"'
+        return value
+
     def _recursive_preset_args(cli_key: str, current_value: Dict | Any) -> List[str]:
         if isinstance(current_value, dict):
             preset_args: List[str] = []
@@ -122,10 +127,11 @@ def preset_dict_to_dl_args(preset_dict: Dict) -> str:
             return preset_args
         elif isinstance(current_value, list):
             return [
-                f"--{cli_key}[{idx + 1}] {current_value[idx]}" for idx in range(len(current_value))
+                f"--{cli_key}[{idx + 1}] {_maybe_quote_value(current_value[idx])}"
+                for idx in range(len(current_value))
             ]
         else:
-            return [f"--{cli_key} {current_value}"]
+            return [f"--{cli_key} {_maybe_quote_value(current_value)}"]
 
     return " ".join(_recursive_preset_args(cli_key="", current_value=preset_dict))
 

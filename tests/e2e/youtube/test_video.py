@@ -31,7 +31,7 @@ def single_video_preset_dict_old_video_tags_format(output_directory):
                 "title": "{title}",
             }
         },
-        "overrides": {"artist": "JMC"},
+        "overrides": {"music_video_artist": "JMC"},
     }
 
 
@@ -51,7 +51,7 @@ def single_video_preset_dict(output_directory):
         "video_tags": {
             "title": "{title}",
         },
-        "overrides": {"artist": "JMC"},
+        "overrides": {"music_video_artist": "JMC"},
     }
 
 

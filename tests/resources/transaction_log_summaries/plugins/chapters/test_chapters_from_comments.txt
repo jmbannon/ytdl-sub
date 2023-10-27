@@ -2,10 +2,9 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-chapters_from_comments-download-archive.json
-{output_directory}/JMC
-  JMC - Move 78 - Automated Improvisation [Full Album]-thumb.jpg
-  JMC - Move 78 - Automated Improvisation [Full Album].info.json
-  JMC - Move 78 - Automated Improvisation [Full Album].mp4
+{output_directory}/chapters_from_comments
+  Move 78 - Automated Improvisation [Full Album].jpg
+  Move 78 - Automated Improvisation [Full Album].mp4
     Chapters from comments:
       0:00: 01. The Lonely Tears of Lee Seedol
       4:30: 02. But What If We're Wrong
@@ -17,10 +16,18 @@ Files created:
       29:58: 08. Schnitzel Whisperer
       32:16: 09. Teilo
     Embedded subtitles with lang(s) en, de
-  JMC - Move 78 - Automated Improvisation [Full Album].nfo
+    Video Tags:
+      album: Music Videos
+      artist: chapters_from_comments
+      genre: ytdl-sub
+      premiered: 2022-11-21
+      title: Move 78 - Automated Improvisation [Full Album]
+      year: 2022
+  Move 78 - Automated Improvisation [Full Album].nfo
     NFO tags:
       musicvideo:
         album: Music Videos
-        artist: JMC
+        artist: chapters_from_comments
+        genre: ytdl-sub
+        premiered: 2022-11-21
         title: Move 78 - Automated Improvisation [Full Album]
-        year: 2022

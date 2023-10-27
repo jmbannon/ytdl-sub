@@ -1,4 +1,4 @@
-import json
+import shlex
 import sys
 import tempfile
 from typing import List
@@ -34,6 +34,6 @@ def timestamps_file_path():
 
 
 def mock_run_from_cli(args: str) -> List[Subscription]:
-    args_list = ["ytdl-sub"] + args.split()
+    args_list = ["ytdl-sub"] + shlex.split(args)
     with patch.object(sys, "argv", args_list):
         return main()
