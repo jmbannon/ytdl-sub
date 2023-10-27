@@ -31,9 +31,11 @@ def test_subscription_logs_write_to_file(
     mock_success_output: bool,
     keep_successful_logs: bool,
 ):
-    num_subscriptions = 2
+    num_subscriptions = 3
+    num_runs = 2
+
     config = persist_logs_config_factory(keep_successful_logs=keep_successful_logs)
-    subscription_paths = [str(music_video_subscription_path)] * num_subscriptions
+    subscription_paths = [str(music_video_subscription_path)] * num_runs
 
     with patch.object(
         Subscription,
@@ -59,7 +61,7 @@ def test_subscription_logs_write_to_file(
         return
     # If not success, expect 2 log files for both sub errors
     elif not mock_success_output:
-        assert len(log_directory_files) == 2
+        assert len(log_directory_files) == num_subscriptions
         for log_path in log_directory_files:
             assert bool(re.match(r"\d\.john_smith\.error\.log", log_path.name))
             with open(log_path, "r", encoding="utf-8") as log_file:
@@ -70,7 +72,7 @@ def test_subscription_logs_write_to_file(
                 )
     # If success and success logging, expect 3 log files
     else:
-        assert len(log_directory_files) == num_subscriptions
+        assert len(log_directory_files) == (num_runs * num_subscriptions)
         for log_file_path in log_directory_files:
             assert bool(re.match(r"\d\.john_smith\.success\.log", log_file_path.name))
             with open(log_file_path, "r", encoding="utf-8") as log_file:

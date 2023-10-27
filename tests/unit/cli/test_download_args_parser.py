@@ -44,7 +44,7 @@ class TestDownloadArgsParser:
         "aliases, cmd, expected_sub_dict",
         [
             (
-                {"mv": "--preset music_video", "v": "--download.url"},
+                {"mv": "--preset 'Jellyfin Music Videos'", "v": "--download.url"},
                 "dl --mv --v 123abc",
                 {"preset": "Jellyfin Music Videos", "download": {"url": "123abc"}},
             ),
