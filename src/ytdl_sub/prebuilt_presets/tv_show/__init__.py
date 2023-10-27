@@ -2,6 +2,14 @@ from ytdl_sub.prebuilt_presets import PrebuiltPresets
 
 
 class TvShowByDatePresets(PrebuiltPresets):
+    preset_names = {
+        "Kodi TV Show by Date",
+        "Jellyfin TV Show by Date",
+        "Plex TV Show by Date",
+    }
+
+
+class TvShowByDateOldPresets(PrebuiltPresets):
     """
     TV Show by Date presets create a TV show from a single URL using upload dates as season/episode
     numbers.

@@ -8,7 +8,7 @@ from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.prebuilt_presets.music import MusicPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateEpisodeFormattingPresets
-from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
+from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateOldPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionEpisodeFormattingPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionSeasonPresets
@@ -16,7 +16,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 
 
-@pytest.mark.parametrize("media_player_preset", TvShowByDatePresets.preset_names)
+@pytest.mark.parametrize("media_player_preset", TvShowByDateOldPresets.preset_names)
 @pytest.mark.parametrize(
     "tv_show_structure_preset", TvShowByDateEpisodeFormattingPresets.preset_names
 )

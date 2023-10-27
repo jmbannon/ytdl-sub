@@ -14,3 +14,19 @@ presets:
     preset:
       - "_plex_tv_show"
       - "_tv_show_by_date"
+
+  # All-in-one presets that require no config
+  "Kodi TV Show by Date":
+    preset:
+      - "kodi_tv_show_by_date"
+      - "season_by_year__episode_by_month_day"
+
+  "Jellyfin TV Show by Date":
+    preset:
+      - "jellyfin_tv_show_by_date"
+      - "season_by_year__episode_by_month_day"
+
+  "Plex TV Show by Date":
+    preset:
+      - "plex_tv_show_by_date"
+      - "season_by_year__episode_by_month_day"
