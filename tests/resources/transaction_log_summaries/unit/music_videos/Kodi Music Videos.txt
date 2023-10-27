@@ -6,6 +6,7 @@ Files created:
     Video Tags:
       album: Music Videos
       artist: subscription_test
+      genre: ytdl-sub
       premiered: 2020-08-08
       title: Mock Entry 20-1
       year: 2020
@@ -14,6 +15,7 @@ Files created:
       musicvideo:
         album: Music Videos
         artist: subscription_test
+        genre: ytdl-sub
         premiered: 2020-08-08
         title: Mock Entry 20-1
   Mock Entry 20-2.jpg
@@ -21,6 +23,7 @@ Files created:
     Video Tags:
       album: Music Videos
       artist: subscription_test
+      genre: ytdl-sub
       premiered: 2020-08-08
       title: Mock Entry 20-2
       year: 2020
@@ -29,6 +32,7 @@ Files created:
       musicvideo:
         album: Music Videos
         artist: subscription_test
+        genre: ytdl-sub
         premiered: 2020-08-08
         title: Mock Entry 20-2
   Mock Entry 20-3.jpg
@@ -36,6 +40,7 @@ Files created:
     Video Tags:
       album: Music Videos
       artist: subscription_test
+      genre: ytdl-sub
       premiered: 2020-08-07
       title: Mock Entry 20-3
       year: 2020
@@ -44,6 +49,7 @@ Files created:
       musicvideo:
         album: Music Videos
         artist: subscription_test
+        genre: ytdl-sub
         premiered: 2020-08-07
         title: Mock Entry 20-3
   Mock Entry 21-1.jpg
@@ -51,6 +57,7 @@ Files created:
     Video Tags:
       album: Music Videos
       artist: subscription_test
+      genre: ytdl-sub
       premiered: 2021-08-08
       title: Mock Entry 21-1
       year: 2021
@@ -59,5 +66,6 @@ Files created:
       musicvideo:
         album: Music Videos
         artist: subscription_test
+        genre: ytdl-sub
         premiered: 2021-08-08
         title: Mock Entry 21-1
