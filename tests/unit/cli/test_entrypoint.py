@@ -31,7 +31,7 @@ def test_subscription_logs_write_to_file(
     mock_success_output: bool,
     keep_successful_logs: bool,
 ):
-    num_subscriptions = 3
+    subscripton_names = ["Rick Astley", "Michael Jackson", "Eric Clapton"]
     num_runs = 2
 
     config = persist_logs_config_factory(keep_successful_logs=keep_successful_logs)
@@ -53,7 +53,7 @@ def test_subscription_logs_write_to_file(
         except ValueError:
             assert not mock_success_output
 
-    log_directory_files = list(Path(persist_logs_directory).rglob("*"))
+    log_directory_files = sorted(list(Path(persist_logs_directory).rglob("*")))
 
     # If dry run or success but success logging disabled, expect 0 log files
     if dry_run or (mock_success_output and not keep_successful_logs):
@@ -61,9 +61,11 @@ def test_subscription_logs_write_to_file(
         return
     # If not success, expect 2 log files for both sub errors
     elif not mock_success_output:
-        assert len(log_directory_files) == num_subscriptions
-        for log_path in log_directory_files:
-            assert bool(re.match(r"\d\.john_smith\.error\.log", log_path.name))
+        assert len(log_directory_files) == (num_runs * len(subscripton_names))
+        for log_path, subscription_name in zip(log_directory_files, subscripton_names):
+            subscription_log_file_name = subscription_name.lower().replace(" ", "_")
+
+            assert bool(re.match(rf"\d\.{subscription_log_file_name}\.error\.log", log_path.name))
             with open(log_path, "r", encoding="utf-8") as log_file:
                 assert log_file.readlines()[-1] == (
                     f"Please upload the error log file '{str(log_path)}' and make a Github issue "
@@ -72,13 +74,19 @@ def test_subscription_logs_write_to_file(
                 )
     # If success and success logging, expect 3 log files
     else:
-        assert len(log_directory_files) == (num_runs * num_subscriptions)
-        for log_file_path in log_directory_files:
-            assert bool(re.match(r"\d\.john_smith\.success\.log", log_file_path.name))
+        assert len(log_directory_files) == (num_runs * len(subscripton_names))
+        for log_file_path, subscription_name in zip(
+            log_directory_files, subscripton_names * num_runs
+        ):
+            subscription_log_file_name = subscription_name.lower().replace(" ", "_")
+
+            assert bool(
+                re.match(rf"\d\.{subscription_log_file_name}\.success\.log", log_file_path.name)
+            )
             with open(log_file_path, "r", encoding="utf-8") as log_file:
                 assert (
                     log_file.readlines()[-1]
-                    == "[ytdl-sub] name=john_smith success=True dry_run=False\n"
+                    == f"[ytdl-sub] name={subscription_name} success=True dry_run=False\n"
                 )
 
 

@@ -180,5 +180,16 @@ def default_config(working_directory) -> ConfigFile:
 
 
 @pytest.fixture()
+def default_config_path(default_config) -> str:
+    with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
+        tmp_file.write(json.dumps(default_config._value).encode("utf-8"))
+
+    try:
+        yield tmp_file.name
+    finally:
+        FileHandler.delete(tmp_file.name)
+
+
+@pytest.fixture()
 def music_subscriptions_path() -> Path:
     return Path("examples/music_subscriptions.yaml")
