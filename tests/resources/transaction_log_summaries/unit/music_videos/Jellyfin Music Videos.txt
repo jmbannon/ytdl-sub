@@ -1,5 +1,7 @@
 Files created:
 ----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
 {output_directory}/subscription_test
   Mock Entry 20-1.jpg
   Mock Entry 20-1.mp4
