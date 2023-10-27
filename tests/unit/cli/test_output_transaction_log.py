@@ -74,7 +74,7 @@ def test_transaction_log_to_file(
         assert subscriptions
 
     with open(transaction_log_file_path, "r", encoding="utf-8") as transaction_log_file:
-        assert transaction_log_file.readlines()[0] == "Transaction log for john_smith:\n"
+        assert transaction_log_file.readlines()[0] == "Transaction log for Rick Astley:\n"
 
 
 def test_transaction_log_to_logger(
@@ -94,7 +94,7 @@ def test_transaction_log_to_logger(
         ],
     ), assert_logs(
         logger=transaction_logger,
-        expected_message="Transaction log for john_smith:\n",
+        expected_message="Transaction log for Rick Astley:\n",
         log_level="info",
     ):
         subscriptions = main()
