@@ -10,7 +10,7 @@
 #         02 - Another Track.mp3
 #         folder.jpg
 
-# Overrides to the prebuilt presets
+# Override variables globally for all subscriptions
 __preset__:
   overrides:
     music_directory: "/music"

@@ -1,0 +1,25 @@
+# Files will be stored in the form of:
+#
+#   music_videos/
+#     Elton John/
+#       Elton John - Rocketman.jpg
+#       Elton John - Rocketman.mp4
+#    System of a Down/
+#       System of a Down - Chop Suey.jpg
+#       System of a Down - Chop Suey.mp4
+#       ...
+
+# Override variables globally for all subscriptions
+__preset__:
+  overrides:
+    music_video_directory: "/music_videos"
+
+# Choose between Jellyfin/Kodi/Plex Music Videos
+# "Jellyfin Music Videos":
+# "Kodi Music Videos":
+"Plex Music Videos":
+  = Pop:  # Sets genre tag to "Pop"
+    "Rick Astley": "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
+    "Michael Jackson": "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
+  = Blues:
+    "Eric Clapton": "https://www.youtube.com/playlist?list=PLABGggHhsbEeaRtdzqnxYoEINsJE_4GF4"

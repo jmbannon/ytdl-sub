@@ -158,18 +158,8 @@ def _load_config(config_path: Path, working_directory: str) -> ConfigFile:
 
 
 @pytest.fixture()
-def music_video_config_path() -> Path:
-    return Path("examples/music_videos_config.yaml")
-
-
-@pytest.fixture()
-def music_video_config(music_video_config_path, working_directory) -> ConfigFile:
-    return _load_config(music_video_config_path, working_directory)
-
-
-@pytest.fixture()
 def music_video_subscription_path() -> Path:
-    return Path("examples/music_videos_subscriptions.yaml")
+    return Path("examples/music_video_subscriptions.yaml")
 
 
 @pytest.fixture()
@@ -185,7 +175,7 @@ def tv_show_subscriptions_path() -> Path:
 
 
 @pytest.fixture()
-def music_audio_config(working_directory) -> ConfigFile:
+def default_config(working_directory) -> ConfigFile:
     return ConfigFile.from_dict({"configuration": {"working_directory": working_directory}})
 
 
