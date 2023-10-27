@@ -12,9 +12,9 @@ from ytdl_sub.utils.file_handler import FileHandler
 
 
 @pytest.fixture()
-def music_video_config_for_cli(music_video_config) -> str:
+def default_config_for_cli(default_config) -> str:
     with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
-        tmp_file.write(json.dumps(music_video_config._value).encode("utf-8"))
+        tmp_file.write(json.dumps(default_config._value).encode("utf-8"))
 
     try:
         yield tmp_file.name

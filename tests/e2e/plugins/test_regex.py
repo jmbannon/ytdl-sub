@@ -16,7 +16,7 @@ from ytdl_sub.utils.exceptions import ValidationException
 @pytest.fixture
 def regex_subscription_dict_base(output_directory):
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
@@ -171,9 +171,9 @@ def regex_subscription_dict_match_and_exclude_override_variable(
 
 
 @pytest.fixture
-def playlist_subscription(music_video_config, regex_subscription_dict):
+def playlist_subscription(default_config, regex_subscription_dict):
     return Subscription.from_dict(
-        config=music_video_config,
+        config=default_config,
         preset_name="regex_capture_playlist_test",
         preset_dict=regex_subscription_dict,
     )
@@ -181,12 +181,12 @@ def playlist_subscription(music_video_config, regex_subscription_dict):
 
 @pytest.fixture
 def playlist_subscription_no_match_fails(
-    music_video_config: ConfigFile, regex_subscription_dict: Dict[str, Any]
+    default_config: ConfigFile, regex_subscription_dict: Dict[str, Any]
 ):
     regex_subscription_dict["regex"]["skip_if_match_fails"] = False
 
     return Subscription.from_dict(
-        config=music_video_config,
+        config=default_config,
         preset_name="regex_capture_playlist_test",
         preset_dict=regex_subscription_dict,
     )
@@ -194,10 +194,10 @@ def playlist_subscription_no_match_fails(
 
 @pytest.fixture
 def playlist_subscription_exclude(
-    music_video_config: ConfigFile, regex_subscription_dict_exclude: Dict[str, Any]
+    default_config: ConfigFile, regex_subscription_dict_exclude: Dict[str, Any]
 ) -> Subscription:
     return Subscription.from_dict(
-        config=music_video_config,
+        config=default_config,
         preset_name="regex_exclude_playlist_test",
         preset_dict=regex_subscription_dict_exclude,
     )
@@ -205,11 +205,11 @@ def playlist_subscription_exclude(
 
 @pytest.fixture
 def playlist_subscription_overrides(
-    music_video_config: ConfigFile,
+    default_config: ConfigFile,
     regex_subscription_dict_match_and_exclude_override_variable: Dict[str, Any],
 ) -> Subscription:
     return Subscription.from_dict(
-        config=music_video_config,
+        config=default_config,
         preset_name="regex_using_overrides_test",
         preset_dict=regex_subscription_dict_match_and_exclude_override_variable,
     )
@@ -217,10 +217,10 @@ def playlist_subscription_overrides(
 
 @pytest.fixture
 def playlist_subscription_match_and_exclude(
-    music_video_config: ConfigFile, regex_subscription_dict_match_and_exclude: Dict[str, Any]
+    default_config: ConfigFile, regex_subscription_dict_match_and_exclude: Dict[str, Any]
 ) -> Subscription:
     return Subscription.from_dict(
-        config=music_video_config,
+        config=default_config,
         preset_name="regex_match_and_exclude_playlist_test",
         preset_dict=regex_subscription_dict_match_and_exclude,
     )
@@ -275,7 +275,7 @@ class TestRegex:
             _ = playlist_subscription_no_match_fails.download(dry_run=True)
 
     def test_regex_fails_capture_group_with_only_excludes(
-        self, regex_subscription_dict_exclude, music_video_config
+        self, regex_subscription_dict_exclude, default_config
     ):
         regex_subscription_dict_exclude["regex"]["from"]["title"]["capture_group_names"] = ["uid"]
         with pytest.raises(
@@ -285,25 +285,25 @@ class TestRegex:
             ),
         ):
             _ = Subscription.from_dict(
-                config=music_video_config,
+                config=default_config,
                 preset_name="test_regex_fails_capture_group_is_source_variable",
                 preset_dict=regex_subscription_dict_exclude,
             )
 
-    def test_regex_fails_no_match_or_exclude(self, regex_subscription_dict, music_video_config):
+    def test_regex_fails_no_match_or_exclude(self, regex_subscription_dict, default_config):
         del regex_subscription_dict["regex"]["from"]["title"]["match"]
         with pytest.raises(
             ValidationException,
             match=re.escape("must specify either `match` or `exclude`"),
         ):
             _ = Subscription.from_dict(
-                config=music_video_config,
+                config=default_config,
                 preset_name="test_regex_fails_capture_group_is_source_variable",
                 preset_dict=regex_subscription_dict,
             )
 
     def test_regex_fails_capture_group_is_source_variable(
-        self, regex_subscription_dict, music_video_config
+        self, regex_subscription_dict, default_config
     ):
         regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"][0] = "uid"
         with pytest.raises(
@@ -313,13 +313,13 @@ class TestRegex:
             ),
         ):
             _ = Subscription.from_dict(
-                config=music_video_config,
+                config=default_config,
                 preset_name="test_regex_fails_capture_group_is_source_variable",
                 preset_dict=regex_subscription_dict,
             )
 
     def test_regex_fails_capture_group_is_override_variable(
-        self, regex_subscription_dict, music_video_config
+        self, regex_subscription_dict, default_config
     ):
         regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"][
             0
@@ -331,13 +331,13 @@ class TestRegex:
             ),
         ):
             _ = Subscription.from_dict(
-                config=music_video_config,
+                config=default_config,
                 preset_name="test_regex_fails_capture_group_is_override_variable",
                 preset_dict=regex_subscription_dict,
             )
 
     def test_regex_fails_source_variable_does_not_exist(
-        self, regex_subscription_dict, music_video_config
+        self, regex_subscription_dict, default_config
     ):
         regex_subscription_dict["regex"]["from"]["dne"] = copy.deepcopy(
             regex_subscription_dict["regex"]["from"]["title"]
@@ -349,26 +349,24 @@ class TestRegex:
             ),
         ):
             _ = Subscription.from_dict(
-                config=music_video_config,
+                config=default_config,
                 preset_name="test_regex_fails_source_variable_does_not_exist",
                 preset_dict=regex_subscription_dict,
             )
 
-    def test_regex_fails_unequal_defaults(self, regex_subscription_dict, music_video_config):
+    def test_regex_fails_unequal_defaults(self, regex_subscription_dict, default_config):
         regex_subscription_dict["regex"]["from"]["title"]["capture_group_defaults"] = ["1 != 2"]
         with pytest.raises(
             ValidationException,
             match=re.escape("number of defaults must match number of capture groups, 1 != 2"),
         ):
             _ = Subscription.from_dict(
-                config=music_video_config,
+                config=default_config,
                 preset_name="test_regex_fails_unequal_defaults",
                 preset_dict=regex_subscription_dict,
             )
 
-    def test_regex_fails_unequal_capture_group_names(
-        self, regex_subscription_dict, music_video_config
-    ):
+    def test_regex_fails_unequal_capture_group_names(self, regex_subscription_dict, default_config):
         regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"].append("unequal")
         with pytest.raises(
             ValidationException,
@@ -377,7 +375,7 @@ class TestRegex:
             ),
         ):
             _ = Subscription.from_dict(
-                config=music_video_config,
+                config=default_config,
                 preset_name="test_regex_fails_unequal_capture_group_names",
                 preset_dict=regex_subscription_dict,
             )

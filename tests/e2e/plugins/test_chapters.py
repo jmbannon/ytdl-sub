@@ -10,7 +10,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def sponsorblock_and_subs_preset_dict(output_directory) -> Dict:
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://www.youtube.com/watch?v=-wJOUAuKZm8",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
@@ -57,13 +57,13 @@ class TestChapters:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_chapters_sponsorblock_and_removal_with_subs(
         self,
-        music_video_config,
+        default_config,
         sponsorblock_and_subs_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="sponsorblock_with_embedded_subs_test",
             preset_dict=sponsorblock_and_subs_preset_dict,
         )
@@ -86,14 +86,14 @@ class TestChapters:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_chapters_from_comments(
         self,
-        music_video_config,
+        default_config,
         chapters_from_comments_preset_dict,
         timestamps_file_path,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="chapters_from_comments",
             preset_dict=chapters_from_comments_preset_dict,
         )

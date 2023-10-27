@@ -8,7 +8,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def preset_dict(output_directory):
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://www.youtube.com/watch?v=2zYF9JLHDmA",
         "output_options": {"output_directory": output_directory},
         "ytdl_options": {
@@ -21,7 +21,7 @@ def preset_dict(output_directory):
 @pytest.fixture
 def playlist_preset_dict(output_directory):
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://www.youtube.com/playlist?list=PL5BC0FC26BECA5A35",
         "output_options": {"output_directory": output_directory},
         "ytdl_options": {
@@ -34,7 +34,7 @@ def playlist_preset_dict(output_directory):
 @pytest.fixture
 def livestream_preset_dict(output_directory):
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://www.youtube.com/watch?v=DoUOrTJbIu4",
         "output_options": {"output_directory": output_directory},
         "ytdl_options": {
@@ -46,12 +46,12 @@ def livestream_preset_dict(output_directory):
 class TestFileConvert:
     def test_livestreams_download_filtered(
         self,
-        music_video_config,
+        default_config,
         livestream_preset_dict,
         output_directory,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="match_filter_test",
             preset_dict=livestream_preset_dict,
         )
@@ -62,13 +62,13 @@ class TestFileConvert:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_match_filters_empty(
         self,
-        music_video_config,
+        default_config,
         preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="match_filter_test",
             preset_dict=preset_dict,
         )
@@ -79,13 +79,13 @@ class TestFileConvert:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_match_filters_partial(
         self,
-        music_video_config,
+        default_config,
         playlist_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="match_filter_test",
             preset_dict=playlist_preset_dict,
         )

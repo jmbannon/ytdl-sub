@@ -103,13 +103,13 @@ class TestPlaylist:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_playlist_download(
         self,
-        music_video_config,
+        default_config,
         playlist_preset_dict,
         output_directory,
         dry_run,
     ):
         playlist_subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="music_video_playlist_test",
             preset_dict=playlist_preset_dict,
         )
@@ -143,7 +143,7 @@ class TestPlaylist:
             )
 
             self._ensure_subscription_migrates(
-                config=music_video_config,
+                config=default_config,
                 subscription_name="music_video_playlist_test",
                 subscription_dict=playlist_preset_dict,
                 output_directory=output_directory,

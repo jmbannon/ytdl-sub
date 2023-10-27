@@ -178,7 +178,7 @@ class ConfigOptions(StrictDictValidator):
 
         .. code-block:: bash
 
-           ytdl-sub dl --preset "music_video" --download.url "youtube.com/watch?v=a1b2c3"
+           ytdl-sub dl --preset "Jellyfin Music Videos" --download.url "youtube.com/watch?v=a1b2c3"
 
         to
 

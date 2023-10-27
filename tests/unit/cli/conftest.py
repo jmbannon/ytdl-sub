@@ -65,13 +65,13 @@ def persist_logs_directory() -> str:
 
 @pytest.fixture
 def persist_logs_config_factory(
-    music_video_config: ConfigFile, persist_logs_directory: str
+    default_config: ConfigFile, persist_logs_directory: str
 ) -> Callable:
     def _persist_logs_config_factory(keep_successful_logs: bool) -> ConfigFile:
         return ConfigFile.from_dict(
             dict(
                 mergedeep.merge(
-                    music_video_config.as_dict(),
+                    default_config.as_dict(),
                     {
                         "configuration": {
                             "persist_logs": {

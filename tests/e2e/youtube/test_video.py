@@ -16,7 +16,7 @@ from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
 @pytest.fixture
 def single_video_preset_dict_old_video_tags_format(output_directory):
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
         # override the output directory with our fixture-generated dir
         "output_options": {
@@ -38,7 +38,7 @@ def single_video_preset_dict_old_video_tags_format(output_directory):
 @pytest.fixture
 def single_video_preset_dict(output_directory):
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
         # override the output directory with our fixture-generated dir
         "output_options": {
@@ -95,12 +95,12 @@ def single_video_preset_dict_dl_args(single_video_preset_dict):
 class TestYoutubeVideo:
     def test_single_video_old_video_tags_format_download(
         self,
-        music_video_config,
+        default_config,
         single_video_preset_dict_old_video_tags_format,
         output_directory,
     ):
         single_video_subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="music_video_single_video_test",
             preset_dict=single_video_preset_dict_old_video_tags_format,
         )
@@ -115,13 +115,13 @@ class TestYoutubeVideo:
     @pytest.mark.parametrize("dry_run", [True])
     def test_single_video_download(
         self,
-        music_video_config,
+        default_config,
         single_video_preset_dict,
         output_directory,
         dry_run,
     ):
         single_video_subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="music_video_single_video_test",
             preset_dict=single_video_preset_dict,
         )
@@ -140,13 +140,13 @@ class TestYoutubeVideo:
 
     def test_single_video_download_missing_thumbnail(
         self,
-        music_video_config,
+        default_config,
         single_video_preset_dict,
         working_directory,
         output_directory,
     ):
         single_video_subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="music_video_single_video_test",
             preset_dict=single_video_preset_dict,
         )
@@ -179,13 +179,13 @@ class TestYoutubeVideo:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download_from_cli_dl(
         self,
-        music_video_config_path,
+        default_config_path,
         single_video_preset_dict_dl_args,
         output_directory,
         dry_run,
     ):
         args = "--dry-run " if dry_run else ""
-        args += f"--config {music_video_config_path} "
+        args += f"--config {default_config_path} "
         args += f"dl {single_video_preset_dict_dl_args}"
         subscriptions = mock_run_from_cli(args=args)
 

@@ -46,7 +46,7 @@ class TestDownloadArgsParser:
             (
                 {"mv": "--preset music_video", "v": "--download.url"},
                 "dl --mv --v 123abc",
-                {"preset": "music_video", "download": {"url": "123abc"}},
+                {"preset": "Jellyfin Music Videos", "download": {"url": "123abc"}},
             ),
             (
                 {

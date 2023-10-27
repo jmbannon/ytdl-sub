@@ -81,7 +81,7 @@ def test_subscription_logs_write_to_file(
 
 
 def test_update_with_info_json_requires_experimental_flag(
-    music_video_config_path: Path,
+    default_config_path: Path,
     music_video_subscription_path: Path,
 ) -> None:
     with patch.object(
@@ -90,7 +90,7 @@ def test_update_with_info_json_requires_experimental_flag(
         [
             "ytdl-sub",
             "--config",
-            str(music_video_config_path),
+            str(default_config_path),
             "sub",
             str(music_video_subscription_path),
             "--update-with-info-json",
