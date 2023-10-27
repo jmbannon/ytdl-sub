@@ -1,14 +1,19 @@
 Files created:
 ----------------------------------------
-{output_directory}/JMC
-  JMC - Oblivion Mod ＂Falcor＂ p.1.info.json
-  JMC - Oblivion Mod ＂Falcor＂ p.1.mp4
+{output_directory}/music_video_single_video_test
+  Oblivion Mod ＂Falcor＂ p.1.mp4
     Video Tags:
+      album: Music Videos
+      artist: music_video_single_video_test
+      genre: ytdl-sub
+      premiered: 2010-08-13
       title: Oblivion Mod "Falcor" p.1
-  JMC - Oblivion Mod ＂Falcor＂ p.1.nfo
+      year: 2010
+  Oblivion Mod ＂Falcor＂ p.1.nfo
     NFO tags:
       musicvideo:
         album: Music Videos
-        artist: JMC
+        artist: music_video_single_video_test
+        genre: ytdl-sub
+        premiered: 2010-08-13
         title: Oblivion Mod "Falcor" p.1
-        year: 2010

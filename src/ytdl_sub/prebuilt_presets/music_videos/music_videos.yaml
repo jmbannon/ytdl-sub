@@ -22,6 +22,7 @@ presets:
 
       # Subscription overrides
       subscription_indent_1: "{music_video_genre_default}"
+      subscription_value: ""
       url: "{subscription_value}"
 
       # Music Video Overrides
