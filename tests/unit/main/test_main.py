@@ -96,17 +96,17 @@ def test_main_permission_error(capsys, mock_sys_exit, expected_uncaught_error_me
     assert mock_error.call_args.args[1] == "test"
 
 
-def test_args_after_sub_work(mock_sys_exit):
+def test_args_after_sub_work(mock_sys_exit, tv_show_config_path):
     with mock_sys_exit(expected_exit_code=0), patch.object(
         sys,
         "argv",
-        ["ytdl-sub", "-c", "examples/tv_show_config.yaml", "sub", "--log-level", "verbose"],
+        ["ytdl-sub", "-c", tv_show_config_path, "sub", "--log-level", "verbose"],
     ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
         main()
 
         assert mock_sub.call_count == 1
         assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
-        assert mock_sub.call_args.kwargs["config"]._name == "examples/tv_show_config.yaml"
+        assert mock_sub.call_args.kwargs["config"]._name == tv_show_config_path
         assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
 
 
@@ -151,11 +151,11 @@ def test_uses_default_config_if_present(mock_sys_exit):
             FileHandler.delete(DEFAULT_CONFIG_FILE_NAME)
 
 
-def test_no_positional_arg_command(mock_sys_exit):
+def test_no_positional_arg_command(mock_sys_exit, tv_show_config_path):
     with mock_sys_exit(expected_exit_code=1), patch.object(
         sys,
         "argv",
-        ["ytdl-sub", "-c", "examples/tv_show_config.yaml", "--log-level", "verbose"],
+        ["ytdl-sub", "-c", tv_show_config_path, "--log-level", "verbose"],
     ), patch.object(logging.Logger, "error") as mock_error:
         main()
 

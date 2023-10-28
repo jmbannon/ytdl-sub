@@ -1,0 +1,76 @@
+###############################################################################
+# Top-level configurations to apply umask and persist error logs
+configuration:
+  umask: "002"
+  persist_logs:
+    logs_directory: './logs'
+    keep_successful_logs: False
+
+presets:
+
+  ###############################################################################
+  # Try to capture music video metadata using regex
+  regex_capture_metadata:
+    regex:
+      from:
+        # Try to capture the artist and title of the track from the
+        # video title. Default to channel and video title.
+        title:
+          match:
+            - "(.*) - (.*) \\[O" # artist - song [Official ...
+            - "(.*) - (.*) \\(O" # artist - song (Official ...
+            - "(.*) - \"(.*)\" \\[O" # artist - "song" [Official ...
+            - "(.*) - \"(.*)\" \\(O" # artist - "song" (Official ...
+            - "(.*): (.*) \\[O" # artist: song [Official ...
+            - "(.*): (.*) \\(O" # artist: song (Official ...
+            - "(.*) - \"(.*)\".*" # artist - "song"
+            - "(.*) - '(.*)'.*" # artist - 'song'
+            - "(.*) - (.*).*" # artist - song
+          exclude:
+            - ".*[Aa][Uu][Dd][Ii][Oo].*"  # Exclude audio vids
+            - ".*[Ll][Yy][Rr][Ii][Cc].*"  # Exclude lyric vids
+          capture_group_names:
+            - "captured_artist"
+            - "captured_title"
+          capture_group_defaults:
+            - "{channel}"
+            - "{title}"
+
+        # Try to capture the year the music video premiered.
+        # Default to upload year
+        description:
+          match:
+            - ".*(19\\d{2}).*" # first 19XX digit value as year
+            - ".*(20\\d{2}).*" # first 20XX digit value as year
+          capture_group_names:
+            - "captured_year"
+          capture_group_defaults:
+            - "{upload_year}"
+
+    overrides:
+      music_video_directory: "/music_videos"
+      music_video_title: "{music_video_year} - {captured_title}"
+      music_video_artist: "{subscription_name}"
+      music_video_album: "Music Videos"
+      music_video_year: "{captured_year}"
+      music_video_file_name: "{music_video_artist_sanitized}/{music_video_title_sanitized}"
+
+  #######################################################
+
+  regex_capture_artist:
+    overrides:
+      music_video_artist: "{captured_artist}"
+
+  #######################################################
+
+  concert:
+    preset: "music_video"
+
+    overrides:
+      music_video_album: "Concerts"
+
+  #######################################################
+
+  year_as_upload_date:
+    overrides:
+      music_video_year: "{upload_year}"

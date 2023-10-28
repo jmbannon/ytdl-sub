@@ -43,12 +43,12 @@ class TestDateRange:
     def test_recent_channel_download(
         self,
         recent_preset_dict,
-        channel_as_tv_show_config,
+        tv_show_config,
         output_directory,
         dry_run,
     ):
         recent_channel_subscription = Subscription.from_dict(
-            config=channel_as_tv_show_config,
+            config=tv_show_config,
             preset_name="recent",
             preset_dict=recent_preset_dict,
         )
@@ -86,7 +86,7 @@ class TestDateRange:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_recent_channel_download__no_vids_in_range(
         self,
-        channel_as_tv_show_config,
+        tv_show_config,
         recent_preset_dict,
         output_directory,
         dry_run,
@@ -94,7 +94,7 @@ class TestDateRange:
         recent_preset_dict["date_range"]["after"] = "21000101"
 
         recent_channel_no_vids_in_range_subscription = Subscription.from_dict(
-            config=channel_as_tv_show_config,
+            config=tv_show_config,
             preset_name="recent",
             preset_dict=recent_preset_dict,
         )
@@ -118,19 +118,19 @@ class TestDateRange:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_rolling_recent_channel_download(
         self,
-        channel_as_tv_show_config,
+        tv_show_config,
         recent_preset_dict,
         rolling_recent_channel_preset_dict,
         output_directory,
         dry_run,
     ):
         recent_channel_subscription = Subscription.from_dict(
-            config=channel_as_tv_show_config,
+            config=tv_show_config,
             preset_name="recent",
             preset_dict=recent_preset_dict,
         )
         rolling_recent_channel_subscription = Subscription.from_dict(
-            config=channel_as_tv_show_config,
+            config=tv_show_config,
             preset_name="recent",
             preset_dict=rolling_recent_channel_preset_dict,
         )
