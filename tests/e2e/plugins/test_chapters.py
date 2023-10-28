@@ -79,7 +79,7 @@ class TestChapters:
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_chapters_sb_and_embedded_subs.json",
             ignore_md5_hashes_for=[
-                "JMC/JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
+                "JMC/This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
             ],
         )
 
@@ -108,5 +108,5 @@ class TestChapters:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/chapters/test_chapters_from_comments.json",
-            ignore_md5_hashes_for=["JMC/JMC - Move 78 - Automated Improvisation [Full Album].mp4"],
+            ignore_md5_hashes_for=["JMC/Move 78 - Automated Improvisation [Full Album].mp4"],
         )
