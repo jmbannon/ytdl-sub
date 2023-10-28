@@ -162,7 +162,7 @@ class TestPlaylist:
             subscription_name="music_video_playlist_test", preset_dict=playlist_preset_dict
         ) as subscription_path:
             args = "--dry-run " if dry_run else ""
-            args += f"sub {subscription_path}"
+            args += f"sub '{subscription_path}'"
             subscriptions = mock_run_from_cli(args=args)
 
             assert len(subscriptions) == 1
