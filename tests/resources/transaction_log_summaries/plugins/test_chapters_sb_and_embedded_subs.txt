@@ -2,7 +2,7 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-sponsorblock_with_embedded_subs_test-download-archive.json
-{output_directory}/sponsorblock_with_embedded_subs_test
+{output_directory}/JMC
   This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.jpg
   This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4
     Embedded Chapters:
@@ -15,7 +15,7 @@ Files created:
     Embedded subtitles with lang(s) en, de
     Video Tags:
       album: Music Videos
-      artist: sponsorblock_with_embedded_subs_test
+      artist: JMC
       genre: ytdl-sub
       premiered: 2021-12-19
       title: This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case
@@ -24,7 +24,7 @@ Files created:
     NFO tags:
       musicvideo:
         album: Music Videos
-        artist: sponsorblock_with_embedded_subs_test
+        artist: JMC
         genre: ytdl-sub
         premiered: 2021-12-19
         title: This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case
