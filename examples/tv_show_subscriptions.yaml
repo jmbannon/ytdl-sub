@@ -1,24 +1,42 @@
-# Global overrides for all subscriptions. Can either be set here or in your config.yaml
+# This example downloads the entirety of a channel (not limited to YouTube).
+# Files will be stored in the form of:
+#
+#   /tv_shows
+#       /Season 2021
+#           s2021.e031701 - Pattys Day Video-thumb.jpg
+#           s2021.e031701 - Pattys Day Video.mp4
+#           s2021.e031701 - Pattys Day Video.nfo
+#           s2021.e031702 - Second Pattys Day Video-thumb.jpg
+#           s2021.e031702 - Second Pattys Day Video.mp4
+#           s2021.e031702 - Second Pattys Day Video.nfo
+#       /Season 2022
+#           s2022.e122501 - Merry Christmas-thumb.jpg
+#           s2022.e122501 - Merry Christmas.mp4
+#           s2022.e122501 - Merry Christmas.nfo
+#       poster.jpg
+#       fanart.jpg
+#       tvshow.nfo
+#
+# The idea is to use dates as numerics to represent season and episode numbers.
+
+# Overrides to the prebuilt presets
 __preset__:
   overrides:
-    tv_show_directory: "/tv_shows"  # Root folder of ytdl-sub TV Shows
-    download_range: "2months"       # Range to keep for only recent
+    tv_show_directory: "/tv_shows"  # Root folder of all ytdl-sub TV Shows
 
+# Choose the player you intend to use
+# Jellyfin TV Show by Date:
+# Kodi TV Show by Date:
+Plex TV Show by Date:
 
-# All subscriptions under this will use the `TV Show Full Archive` preset
-TV Show Full Archive:
-  # Sets "Music" for genre
-  = Music:
-    "Rick A": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-    "Opeth": "https://www.youtube.com/channel/UCmQSJTFZaXN85gYk6W3XbdQ"
+  # Sets genre tag to "Documentaries"
+  = Documentaries:
+    "NOVA PBS": "https://www.youtube.com/@novapbs"
+    "National Geographic": "https://www.youtube.com/@NatGeo"
+    "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
 
-  # Sets "Kids" for genre, "TV-Y" for content rating
+  # Sets genre and content rating tag to "Kids" and "TV-Y"
   = Kids | TV-Y:
     "Jake Trains": "https://www.youtube.com/@JakeTrains"
     "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
 
-
-# All subscriptions under this will use the `TV Show Only Recent` preset
-TV Show Only Recent:
-  = News | TV-14:
-    "BBC": "https://www.youtube.com/@BBCNews"

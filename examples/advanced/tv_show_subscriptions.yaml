@@ -1,0 +1,26 @@
+# Subscriptions using custom presets made in `tv_show_config.yaml`
+
+TV Show Full Archive:
+  = Documentaries | TV-PG:
+    "NOVA PBS": "https://www.youtube.com/@novapbs"
+    "National Geographic": "https://www.youtube.com/@NatGeo"
+    "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
+
+  = Kids | TV-Y:
+    "Jake Trains": "https://www.youtube.com/@JakeTrains"
+    "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
+
+  = Gardening | TV-Y:
+    "Gardening with Ciscoe":
+      # Can define a subscription using 'preset' syntax. Needed for adding multiple urls
+      overrides:
+        url: "https://www.youtube.com/@gardeningwithciscoe4430"
+        url2: "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_"
+        url3: "https://www.youtube.com/playlist?list=PLsJlQSR-KjmaQqqJ9jq18cF6XXXAR4kyn"
+        url4: "https://www.youtube.com/watch?v=2vq-vPubS5I"
+
+TV Show Only Recent:
+  = News | TV-14:
+    "BBC": "https://www.youtube.com/@BBCNews"
+    "Frontline PBS": "https://www.youtube.com/@frontline"
+    "Whitehouse": "https://www.bitchute.com/channel/zWsYVmCOu4JA/"  # Supports non-YT sites
