@@ -1,6 +1,8 @@
 import copy
 from typing import Dict
 from typing import List
+from typing import Optional
+from typing import Tuple
 
 import pytest
 from expected_download import assert_expected_downloads
@@ -16,18 +18,56 @@ from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 
 
-@pytest.mark.parametrize("media_player_preset", TvShowByDateOldPresets.preset_names)
+def _tv_show_by_date_combos() -> List[Tuple[None, str, str]]:
+    combos: List[Tuple[None, str, str]] = []
+
+    for media_player_preset in TvShowByDateOldPresets.preset_names:
+        for tv_show_structure_preset in TvShowByDateEpisodeFormattingPresets.preset_names:
+            combos.append((None, media_player_preset, tv_show_structure_preset))
+
+    return combos
+
+
+def _tv_show_by_date_parent_presets(
+    all_in_one_preset: Optional[str],
+    media_player_preset: str,
+    tv_show_structured_preset: str,
+) -> List[str]:
+    """Hack to include the all_in_one presets in this test suite"""
+    if all_in_one_preset is not None:
+        return [all_in_one_preset]
+    return [
+        media_player_preset,
+        tv_show_structured_preset,
+    ]
+
+
 @pytest.mark.parametrize(
-    "tv_show_structure_preset", TvShowByDateEpisodeFormattingPresets.preset_names
+    "all_in_one_preset, media_player_preset, tv_show_structure_preset",
+    [
+        # Test that the all-in-ones are equivalent to using the two underlying ones
+        ("Kodi TV Show by Date", "kodi_tv_show_by_date", "season_by_year__episode_by_month_day"),
+        (
+            "Jellyfin TV Show by Date",
+            "jellyfin_tv_show_by_date",
+            "season_by_year__episode_by_month_day",
+        ),
+        ("Plex TV Show by Date", "plex_tv_show_by_date", "season_by_year__episode_by_month_day"),
+        *_tv_show_by_date_combos(),
+    ],
 )
 class TestPrebuiltTVShowPresets:
     def test_compilation(
         self,
         config,
+        all_in_one_preset: Optional[str],
         media_player_preset: str,
         tv_show_structure_preset: str,
     ):
-        parent_presets: List[str] = [media_player_preset, tv_show_structure_preset]
+        parent_presets = _tv_show_by_date_parent_presets(
+            all_in_one_preset, media_player_preset, tv_show_structure_preset
+        )
+
         _ = Subscription.from_dict(
             config=config,
             preset_name="preset_test",
@@ -44,10 +84,14 @@ class TestPrebuiltTVShowPresets:
     def test_compilation_many_urls(
         self,
         config,
+        all_in_one_preset: Optional[str],
         media_player_preset: str,
         tv_show_structure_preset: str,
     ):
-        parent_presets: List[str] = [media_player_preset, tv_show_structure_preset]
+        parent_presets = _tv_show_by_date_parent_presets(
+            all_in_one_preset, media_player_preset, tv_show_structure_preset
+        )
+
         _ = Subscription.from_dict(
             config=config,
             preset_name="preset_test",
@@ -65,10 +109,14 @@ class TestPrebuiltTVShowPresets:
     def test_compilation_errors_missing_one(
         self,
         config,
+        all_in_one_preset: Optional[str],
         media_player_preset: str,
         tv_show_structure_preset: str,
     ):
-        parent_presets: List[str] = [media_player_preset, tv_show_structure_preset]
+        parent_presets = _tv_show_by_date_parent_presets(
+            all_in_one_preset, media_player_preset, tv_show_structure_preset
+        )
+
         for parent_preset in parent_presets:
             parent_presets_missing_one = copy.deepcopy(parent_presets).remove(parent_preset)
 
@@ -94,6 +142,7 @@ class TestPrebuiltTVShowPresets:
         subscription_name,
         output_directory,
         mock_download_collection_entries,
+        all_in_one_preset: Optional[str],
         media_player_preset: str,
         tv_show_structure_preset: str,
         is_youtube_channel: bool,
@@ -105,7 +154,9 @@ class TestPrebuiltTVShowPresets:
             int(is_youtube_channel),
             "_many_urls" if is_many_urls else "",
         )
-        parent_presets = [media_player_preset, tv_show_structure_preset]
+        parent_presets = _tv_show_by_date_parent_presets(
+            all_in_one_preset, media_player_preset, tv_show_structure_preset
+        )
 
         preset_dict = {
             "preset": parent_presets,
