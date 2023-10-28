@@ -29,14 +29,14 @@ class TestBandcamp:
     def test_prebuilt_preset_download(
         self,
         subscription_dict,
-        music_audio_config,
+        default_config,
         output_directory,
         dry_run,
     ):
         discography_subscription = Subscription.from_dict(
             preset_dict=subscription_dict,
             preset_name="Sithu Aye",
-            config=music_audio_config,
+            config=default_config,
         )
         transaction_log = discography_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(

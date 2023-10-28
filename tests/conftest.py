@@ -110,6 +110,11 @@ def preset_dict_to_dl_args(preset_dict: Dict) -> str:
     Preset dict converted to CLI parameters
     """
 
+    def _maybe_quote_value(value: Any):
+        if isinstance(value, str) and " " in value:
+            return f'"{value}"'
+        return value
+
     def _recursive_preset_args(cli_key: str, current_value: Dict | Any) -> List[str]:
         if isinstance(current_value, dict):
             preset_args: List[str] = []
@@ -122,10 +127,11 @@ def preset_dict_to_dl_args(preset_dict: Dict) -> str:
             return preset_args
         elif isinstance(current_value, list):
             return [
-                f"--{cli_key}[{idx + 1}] {current_value[idx]}" for idx in range(len(current_value))
+                f"--{cli_key}[{idx + 1}] {_maybe_quote_value(current_value[idx])}"
+                for idx in range(len(current_value))
             ]
         else:
-            return [f"--{cli_key} {current_value}"]
+            return [f"--{cli_key} {_maybe_quote_value(current_value)}"]
 
     return " ".join(_recursive_preset_args(cli_key="", current_value=preset_dict))
 
@@ -158,18 +164,8 @@ def _load_config(config_path: Path, working_directory: str) -> ConfigFile:
 
 
 @pytest.fixture()
-def music_video_config_path() -> Path:
-    return Path("examples/music_videos_config.yaml")
-
-
-@pytest.fixture()
-def music_video_config(music_video_config_path, working_directory) -> ConfigFile:
-    return _load_config(music_video_config_path, working_directory)
-
-
-@pytest.fixture()
 def music_video_subscription_path() -> Path:
-    return Path("examples/music_videos_subscriptions.yaml")
+    return Path("examples/music_video_subscriptions.yaml")
 
 
 @pytest.fixture()
@@ -185,8 +181,19 @@ def tv_show_subscriptions_path() -> Path:
 
 
 @pytest.fixture()
-def music_audio_config(working_directory) -> ConfigFile:
+def default_config(working_directory) -> ConfigFile:
     return ConfigFile.from_dict({"configuration": {"working_directory": working_directory}})
+
+
+@pytest.fixture()
+def default_config_path(default_config) -> str:
+    with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
+        tmp_file.write(json.dumps(default_config._value).encode("utf-8"))
+
+    try:
+        yield tmp_file.name
+    finally:
+        FileHandler.delete(tmp_file.name)
 
 
 @pytest.fixture()

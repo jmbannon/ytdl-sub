@@ -70,10 +70,7 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
                - tag: "{source_title}"
                  attributes:
                    number: "{collection_index}"
-                 behavior: "merge"
              genre:
-               - tag: "Comedy"
-                 behavior: "overwrite"
                - "Comedy"
                - "Drama"
 

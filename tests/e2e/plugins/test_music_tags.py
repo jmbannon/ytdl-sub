@@ -23,12 +23,12 @@ def single_song_video_dict(output_directory):
 class TestMusicTags:
     def test_music_tags_errors_on_video(
         self,
-        music_audio_config,
+        default_config,
         single_song_video_dict,
         output_directory,
     ):
         subscription = Subscription.from_dict(
-            config=music_audio_config,
+            config=default_config,
             preset_name="single_song_test",
             preset_dict=single_song_video_dict,
         )

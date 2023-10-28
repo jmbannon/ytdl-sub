@@ -1,0 +1,79 @@
+presets:
+  _music_video_base:
+    download:
+      - "{url}"
+
+    output_options:
+      output_directory: "{music_video_directory}"
+      file_name: "{music_video_file_name}.{ext}"
+      thumbnail_name: "{music_video_file_name}.jpg"
+      maintain_download_archive: True
+
+    ytdl_options:
+      break_on_existing: True
+
+    overrides:
+#   MUST DEFINE:
+#     music_video_directory
+
+      # Defaults
+      music_video_genre_default: "ytdl-sub"
+      music_video_album_default: "Music Videos"
+
+      # Subscription overrides
+      subscription_indent_1: "{music_video_genre_default}"
+      subscription_value: ""
+      url: "{subscription_value}"
+
+      # Music Video Overrides
+      music_video_title: "{title}"
+      music_video_album: "{music_video_album_default}"
+      music_video_artist: "{subscription_name}"
+      music_video_year: "{upload_year}"
+      music_video_date: "{upload_date_standardized}"
+      music_video_genre: "{subscription_indent_1}"
+
+      # Directory Overrides
+      music_video_file_name: "{music_video_artist_sanitized}/{music_video_title_sanitized}"
+
+  _music_video_nfo:
+    nfo_tags:
+      nfo_name: "{music_video_file_name}.nfo"
+      nfo_root: "musicvideo"
+      tags:
+        artist: "{music_video_artist}"
+        title: "{music_video_title}"
+        album: "{music_video_album}"
+        genre:
+          - "{music_video_genre}"
+        # Kodi v20 to not use year, so removing
+        premiered: "{music_video_date}"
+
+  _music_video_tags:
+    video_tags:
+      artist: "{music_video_artist}"
+      title: "{music_video_title}"
+      album: "{music_video_album}"
+      genre: "{music_video_genre}"
+      year: "{music_video_year}"
+      premiered: "{music_video_date}"
+
+  "Jellyfin Music Videos":
+    preset:
+      - "_base"
+      - "_music_video_base"
+      - "_music_video_nfo"
+      - "_music_video_tags"
+
+  "Kodi Music Videos":
+    preset:
+      - "_kodi_base"
+      - "_music_video_base"
+      - "_music_video_nfo"
+      - "_music_video_tags"
+
+  "Plex Music Videos":
+    preset:
+      - "_plex_video_base"
+      - "_music_video_base"
+      - "_music_video_tags"

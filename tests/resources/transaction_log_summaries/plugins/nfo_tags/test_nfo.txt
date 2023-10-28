@@ -34,15 +34,22 @@ Files created:
           tag:
             the
              tag 🎸🎸
-{output_directory}/Rick Beato
-  Rick Beato - Can you hear the difference？ 🎸🔥 #shorts-thumb.jpg
-  Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.info.json
-  Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.mp4
-  Rick Beato - Can you hear the difference？ 🎸🔥 #shorts.nfo
+{output_directory}/kodi_safe_xml
+  Can you hear the difference？ 🎸🔥 #shorts.jpg
+  Can you hear the difference？ 🎸🔥 #shorts.mp4
+    Video Tags:
+      album: Music Videos
+      artist: kodi_safe_xml
+      genre: ytdl-sub
+      premiered: 2022-06-30
+      title: Can you hear the difference? 🎸🔥 #shorts
+      year: 2022
+  Can you hear the difference？ 🎸🔥 #shorts.nfo
     NFO tags:
       musicvideo:
         album: Music Videos
-        artist: Rick Beato
+        artist: kodi_safe_xml
+        genre: ytdl-sub
         kodi_safe_multi_title 🎸:
           - value 1 🎸
           - value 2 🎸
@@ -72,5 +79,5 @@ Files created:
           tag:
             the
              tag 🎸🎸
+        premiered: 2022-06-30
         title: Can you hear the difference? 🎸🔥 #shorts
-        year: 2022

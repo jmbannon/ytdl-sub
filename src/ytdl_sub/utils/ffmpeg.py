@@ -202,7 +202,7 @@ def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -
     ]
     for key, value in key_values.items():
         ffmpeg_args.extend(["-metadata", f"{key}={value}"])
-    ffmpeg_args.extend(["-codec", "copy", tmp_file_path])
+    ffmpeg_args.extend(["-codec", "copy", "-bitexact", tmp_file_path])
 
     FFMPEG.run(ffmpeg_args)
     FileHandler.move(tmp_file_path, file_path)

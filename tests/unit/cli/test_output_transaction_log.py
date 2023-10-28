@@ -28,7 +28,7 @@ def transaction_log_file_path() -> str:
 @pytest.mark.parametrize("file_transaction_log", [None, "output.log"])
 def test_suppress_transaction_log(
     mock_subscription_download_success,
-    music_video_config_path: Path,
+    default_config_path: Path,
     music_video_subscription_path: Path,
     file_transaction_log: Optional[str],
 ) -> None:
@@ -38,7 +38,7 @@ def test_suppress_transaction_log(
         [
             "ytdl-sub",
             "--config",
-            str(music_video_config_path),
+            str(default_config_path),
             "sub",
             str(music_video_subscription_path),
             "--suppress-transaction-log",
@@ -53,7 +53,7 @@ def test_suppress_transaction_log(
 
 def test_transaction_log_to_file(
     mock_subscription_download_success,
-    music_video_config_path: Path,
+    default_config_path: Path,
     music_video_subscription_path: Path,
     transaction_log_file_path: Path,
 ) -> None:
@@ -63,7 +63,7 @@ def test_transaction_log_to_file(
         [
             "ytdl-sub",
             "--config",
-            str(music_video_config_path),
+            str(default_config_path),
             "sub",
             str(music_video_subscription_path),
             "--transaction-log",
@@ -74,12 +74,12 @@ def test_transaction_log_to_file(
         assert subscriptions
 
     with open(transaction_log_file_path, "r", encoding="utf-8") as transaction_log_file:
-        assert transaction_log_file.readlines()[0] == "Transaction log for john_smith:\n"
+        assert transaction_log_file.readlines()[0] == "Transaction log for Rick Astley:\n"
 
 
 def test_transaction_log_to_logger(
     mock_subscription_download_success,
-    music_video_config_path: Path,
+    default_config_path: Path,
     music_video_subscription_path: Path,
 ) -> None:
     with patch.object(
@@ -88,13 +88,13 @@ def test_transaction_log_to_logger(
         [
             "ytdl-sub",
             "--config",
-            str(music_video_config_path),
+            str(default_config_path),
             "sub",
             str(music_video_subscription_path),
         ],
     ), assert_logs(
         logger=transaction_logger,
-        expected_message="Transaction log for john_smith:\n",
+        expected_message="Transaction log for Rick Astley:\n",
         log_level="info",
     ):
         subscriptions = main()

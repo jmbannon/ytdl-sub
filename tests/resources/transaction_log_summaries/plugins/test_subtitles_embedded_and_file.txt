@@ -3,16 +3,23 @@ Files created:
 {output_directory}
   .ytdl-sub-subtitles_embedded_and_file_test-download-archive.json
 {output_directory}/JMC
-  JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind-thumb.jpg
-  JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.de.srt
-  JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.en.srt
-  JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.info.json
-  JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.mp4
+  YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.de.srt
+  YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.en.srt
+  YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.jpg
+  YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.mp4
     Embedded subtitles with lang(s) en, de
-  JMC - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.nfo
+    Video Tags:
+      album: Music Videos
+      artist: JMC
+      genre: ytdl-sub
+      premiered: 2019-12-05
+      title: YouTube Rewind 2019: For the Record | #YouTubeRewind
+      year: 2019
+  YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.nfo
     NFO tags:
       musicvideo:
         album: Music Videos
         artist: JMC
+        genre: ytdl-sub
+        premiered: 2019-12-05
         title: YouTube Rewind 2019: For the Record | #YouTubeRewind
-        year: 2019

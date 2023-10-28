@@ -2,15 +2,22 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-file_convert_test-download-archive.json
-{output_directory}/Beyond The Guitar
-  Beyond The Guitar - When you hear Hugh Jackman is returning as Wolverine in Deadpool 3-thumb.jpg
-  Beyond The Guitar - When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.info.json
-  Beyond The Guitar - When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.mkv
-    Converted from webm
-  Beyond The Guitar - When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.nfo
+{output_directory}/file_convert_test
+  When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.jpg
+  When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.mkv
+    Converted from mp4
+    Video Tags:
+      album: Music Videos
+      artist: file_convert_test
+      genre: ytdl-sub
+      premiered: 2022-09-28
+      title: When you hear Hugh Jackman is returning as Wolverine in Deadpool 3
+      year: 2022
+  When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.nfo
     NFO tags:
       musicvideo:
         album: Music Videos
-        artist: Beyond The Guitar
+        artist: file_convert_test
+        genre: ytdl-sub
+        premiered: 2022-09-28
         title: When you hear Hugh Jackman is returning as Wolverine in Deadpool 3
-        year: 2022
