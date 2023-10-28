@@ -5,7 +5,6 @@ Files created:
 {output_directory}/file_convert_test
   When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.jpg
   When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.mp4
-    Converted from webm
     Video Tags:
       album: Music Videos
       artist: file_convert_test

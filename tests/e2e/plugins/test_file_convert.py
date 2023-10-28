@@ -12,7 +12,7 @@ def preset_dict(output_directory):
         "preset": "Jellyfin Music Videos",
         "download": "https://www.youtube.com/watch?v=2zYF9JLHDmA",
         "output_options": {"output_directory": output_directory},
-        # download the worst format so it is fast
+        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },

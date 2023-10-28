@@ -39,7 +39,7 @@ def sponsorblock_and_subs_preset_dict(output_directory) -> Dict:
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
-        "overrides": {"artist": "JMC"},
+        "overrides": {"music_video_artist": "JMC"},
     }
 
 
