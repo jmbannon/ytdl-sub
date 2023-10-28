@@ -12,7 +12,8 @@ TV Show Full Archive:
 
   = Gardening | TV-Y:
     "Gardening with Ciscoe":
-      # Can define a subscription using 'preset' syntax. Needed for adding multiple urls
+      # Can define a subscription using 'preset' syntax. Needed for using multiple
+      # urls in a single TV show
       overrides:
         url: "https://www.youtube.com/@gardeningwithciscoe4430"
         url2: "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_"
