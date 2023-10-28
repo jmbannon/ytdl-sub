@@ -10,7 +10,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def sponsorblock_and_subs_preset_dict(output_directory) -> Dict:
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://www.youtube.com/watch?v=-wJOUAuKZm8",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
@@ -39,7 +39,7 @@ def sponsorblock_and_subs_preset_dict(output_directory) -> Dict:
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },
-        "overrides": {"artist": "JMC"},
+        "overrides": {"music_video_artist": "JMC"},
     }
 
 
@@ -57,13 +57,13 @@ class TestChapters:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_chapters_sponsorblock_and_removal_with_subs(
         self,
-        music_video_config,
+        default_config,
         sponsorblock_and_subs_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="sponsorblock_with_embedded_subs_test",
             preset_dict=sponsorblock_and_subs_preset_dict,
         )
@@ -79,21 +79,21 @@ class TestChapters:
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/test_chapters_sb_and_embedded_subs.json",
             ignore_md5_hashes_for=[
-                "JMC/JMC - This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
+                "JMC/This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4"
             ],
         )
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_chapters_from_comments(
         self,
-        music_video_config,
+        default_config,
         chapters_from_comments_preset_dict,
         timestamps_file_path,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="chapters_from_comments",
             preset_dict=chapters_from_comments_preset_dict,
         )
@@ -108,5 +108,5 @@ class TestChapters:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/chapters/test_chapters_from_comments.json",
-            ignore_md5_hashes_for=["JMC/JMC - Move 78 - Automated Improvisation [Full Album].mp4"],
+            ignore_md5_hashes_for=["JMC/Move 78 - Automated Improvisation [Full Album].mp4"],
         )

@@ -2,14 +2,21 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-regex_using_overrides_test-download-archive.json
-{output_directory}/Project Zombie
-  Project Zombie - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
-  Project Zombie - Jesse's Minecraft Server [Trailer - Mar.21].info.json
-  Project Zombie - Jesse's Minecraft Server [Trailer - Mar.21].mp4
-  Project Zombie - Jesse's Minecraft Server [Trailer - Mar.21].nfo
+{output_directory}/regex_using_overrides_test
+  Jesse's Minecraft Server [Trailer - Mar.21].jpg
+  Jesse's Minecraft Server [Trailer - Mar.21].mp4
+    Video Tags:
+      album: Music Videos
+      artist: regex_using_overrides_test
+      genre: ytdl-sub
+      premiered: 2011-03-21
+      title: Jesse's Minecraft Server [Trailer - Mar.21]
+      year: 2011
+  Jesse's Minecraft Server [Trailer - Mar.21].nfo
     NFO tags:
       musicvideo:
         album: Music Videos
-        artist: Project Zombie
+        artist: regex_using_overrides_test
+        genre: ytdl-sub
+        premiered: 2011-03-21
         title: Jesse's Minecraft Server [Trailer - Mar.21]
-        year: 2011

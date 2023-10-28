@@ -71,13 +71,13 @@ class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_audio_extract_single_song_old_format(
         self,
-        music_audio_config,
+        default_config,
         single_preset_dict_old_format,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_audio_config,
+            config=default_config,
             preset_name="single_song_test",
             preset_dict=single_preset_dict_old_format,
         )
@@ -97,13 +97,13 @@ class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [False])
     def test_audio_extract_single_song(
         self,
-        music_audio_config,
+        default_config,
         single_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_audio_config,
+            config=default_config,
             preset_name="single_song_test",
             preset_dict=single_preset_dict,
         )
@@ -123,13 +123,13 @@ class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_audio_extract_single_song_best_format(
         self,
-        music_audio_config,
+        default_config,
         single_best_format_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_audio_config,
+            config=default_config,
             preset_name="single_song_best_test",
             preset_dict=single_best_format_preset_dict,
         )
@@ -149,13 +149,13 @@ class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_audio_extract_multiple_songs(
         self,
-        music_audio_config,
+        default_config,
         youtube_release_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_audio_config,
+            config=default_config,
             preset_name="multiple_songs_test",
             preset_dict=youtube_release_preset_dict,
         )

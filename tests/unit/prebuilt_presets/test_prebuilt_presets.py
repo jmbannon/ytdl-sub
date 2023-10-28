@@ -9,6 +9,7 @@ from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.prebuilt_presets.music import MusicPresets
+from ytdl_sub.prebuilt_presets.music_videos import MusicVideoPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateEpisodeFormattingPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateOldPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionEpisodeFormattingPresets
@@ -449,6 +450,70 @@ class TestPrebuiltMusicPresets:
 
         with mock_download_collection_entries(
             is_youtube_channel=False, num_urls=num_urls, is_extracted_audio=True
+        ):
+            transaction_log = subscription.download(dry_run=False)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"{expected_summary_name}.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name=f"{expected_summary_name}.json",
+        )
+
+
+@pytest.mark.parametrize("music_video_preset", MusicVideoPresets.preset_names)
+class TestPrebuiltMusicVideoPresets:
+    def test_compilation(
+        self,
+        config,
+        music_video_preset: str,
+    ):
+        _ = Subscription.from_dict(
+            config=config,
+            preset_name="preset_test",
+            preset_dict={
+                "preset": [
+                    music_video_preset,
+                ],
+                "overrides": {
+                    "music_video_directory": "/music_videos",
+                    "subscription_value": "https://your.name.here",
+                },
+            },
+        )
+
+    def test_presets_run(
+        self,
+        config,
+        subscription_name,
+        output_directory,
+        mock_download_collection_entries,
+        music_video_preset: str,
+    ):
+        expected_summary_name = f"unit/music_videos/{music_video_preset}"
+
+        preset_dict = {
+            "preset": [
+                music_video_preset,
+            ],
+            "overrides": {
+                "url": "https://your.name.here",
+                "music_video_directory": output_directory,
+            },
+        }
+
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=preset_dict,
+        )
+
+        with mock_download_collection_entries(
+            is_youtube_channel=False, num_urls=1, is_extracted_audio=False
         ):
             transaction_log = subscription.download(dry_run=False)
 

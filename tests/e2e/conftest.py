@@ -1,4 +1,4 @@
-import json
+import shlex
 import sys
 import tempfile
 from typing import List
@@ -9,17 +9,7 @@ import pytest
 from ytdl_sub.cli.entrypoint import main
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.file_handler import FileHandler
-
-
-@pytest.fixture()
-def music_video_config_for_cli(music_video_config) -> str:
-    with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
-        tmp_file.write(json.dumps(music_video_config._value).encode("utf-8"))
-
-    try:
-        yield tmp_file.name
-    finally:
-        FileHandler.delete(tmp_file.name)
+from ytdl_sub.utils.system import IS_WINDOWS
 
 
 @pytest.fixture
@@ -45,6 +35,6 @@ def timestamps_file_path():
 
 
 def mock_run_from_cli(args: str) -> List[Subscription]:
-    args_list = ["ytdl-sub"] + args.split()
+    args_list = ["ytdl-sub"] + shlex.split(args)
     with patch.object(sys, "argv", args_list):
         return main()

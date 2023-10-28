@@ -7,7 +7,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def subscription_dict(output_directory):
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://www.youtube.com/shorts/ucYmEqmlhFw",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
@@ -59,7 +59,7 @@ def subscription_dict(output_directory):
 
 class TestNfoTagsPlugins:
     @pytest.mark.parametrize("kodi_safe", [True, False])
-    def test_nfo_tags(self, subscription_dict, music_video_config, output_directory, kodi_safe):
+    def test_nfo_tags(self, subscription_dict, default_config, output_directory, kodi_safe):
         transaction_log_file_name = "test_nfo.txt"
         if kodi_safe:
             transaction_log_file_name = "test_nfo_kodi_safe.txt"
@@ -67,7 +67,7 @@ class TestNfoTagsPlugins:
             subscription_dict["output_directory_nfo_tags"]["kodi_safe"] = True
 
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="kodi_safe_xml",
             preset_dict=subscription_dict,
         )

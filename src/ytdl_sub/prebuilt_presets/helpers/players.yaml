@@ -19,3 +19,8 @@ presets:
     overrides:
       file_uid: "{uid_sanitized_plex}"
       file_title: "{title_sanitized_plex}"
+
+  _plex_video_base:
+    preset:
+      - "_plex_base"
+    format: "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)"

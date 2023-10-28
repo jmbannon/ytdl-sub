@@ -9,7 +9,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def single_video_subs_embed_preset_dict(output_directory):
     return {
-        "preset": "music_video",
+        "preset": "Jellyfin Music Videos",
         "download": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
@@ -19,7 +19,7 @@ def single_video_subs_embed_preset_dict(output_directory):
             "allow_auto_generated_subtitles": True,
         },
         "format": "worst[ext=mp4]",  # download the worst format so it is fast
-        "overrides": {"artist": "JMC"},
+        "overrides": {"music_video_artist": "JMC"},
     }
 
 
@@ -27,33 +27,37 @@ def single_video_subs_embed_preset_dict(output_directory):
 def test_single_video_subs_embed_and_file_preset_dict(single_video_subs_embed_preset_dict):
     single_video_subs_embed_preset_dict["subtitles"][
         "subtitles_name"
-    ] = "{music_video_name}.{lang}.{subtitles_ext}"
+    ] = "{music_video_file_name}.{lang}.{subtitles_ext}"
     return single_video_subs_embed_preset_dict
 
 
 class TestSubtitles:
-    def test_subtitle_lang_variable_partial_validates(self, music_video_config):
-        music_video_config_dict = music_video_config.as_dict()
-        music_video_config_dict["presets"]["music_video"]["subtitles"] = {
-            "embed_subtitles": False,
-            "languages": ["en", "de"],
-            "allow_auto_generated_subtitles": True,
-            "subtitles_name": "{episode_file_path}.{lang}.{subtitles_ext}",
-            "subtitles_type": "srt",
+    def test_subtitle_lang_variable_partial_validates(self, default_config):
+        default_config_dict = default_config.as_dict()
+        default_config_dict["presets"] = {
+            "test_lang_validates": {
+                "subtitles": {
+                    "embed_subtitles": False,
+                    "languages": ["en", "de"],
+                    "allow_auto_generated_subtitles": True,
+                    "subtitles_name": "{episode_file_path}.{lang}.{subtitles_ext}",
+                    "subtitles_type": "srt",
+                }
+            }
         }
 
-        _ = ConfigFile.from_dict(music_video_config_dict)
+        _ = ConfigFile.from_dict(default_config_dict)
 
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_subtitles_embedded(
         self,
-        music_video_config,
+        default_config,
         single_video_subs_embed_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="subtitles_embedded_test",
             preset_dict=single_video_subs_embed_preset_dict,
         )
@@ -73,13 +77,13 @@ class TestSubtitles:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_subtitles_embedded_and_file(
         self,
-        music_video_config,
+        default_config,
         test_single_video_subs_embed_and_file_preset_dict,
         output_directory,
         dry_run,
     ):
         subscription = Subscription.from_dict(
-            config=music_video_config,
+            config=default_config,
             preset_name="subtitles_embedded_and_file_test",
             preset_dict=test_single_video_subs_embed_and_file_preset_dict,
         )
