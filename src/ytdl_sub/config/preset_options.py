@@ -9,6 +9,7 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.subscriptions.utils import SUBSCRIPTION_NAME
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
@@ -172,6 +173,22 @@ class Overrides(DictFormatterValidator):
                 format_string=self._value[key].format_string,
                 sanitize=True,
             )
+
+        if SUBSCRIPTION_NAME not in self._value:
+            self._add_override_variable(
+                key_name=SUBSCRIPTION_NAME,
+                format_string=self.subscription_name,
+                sanitize=True,
+            )
+
+    @property
+    def subscription_name(self) -> str:
+        """
+        Returns
+        -------
+        Name of the subscription
+        """
+        return self._root_name
 
     def apply_formatter(
         self,

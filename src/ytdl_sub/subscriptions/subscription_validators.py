@@ -9,34 +9,15 @@ from typing import final
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.subscriptions.utils import SUBSCRIPTION_NAME
+from ytdl_sub.subscriptions.utils import SUBSCRIPTION_VALUE
+from ytdl_sub.subscriptions.utils import subscription_indent_variable_name
+from ytdl_sub.subscriptions.utils import subscription_list_variable_name
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import StringListValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
-
-
-def subscription_indent_variable_name(index: int) -> str:
-    """
-    Parameters
-    ----------
-    index
-        0th-based index
-
-    Returns
-    -------
-    subscription_index_i, where i is 1-based index
-    """
-    return f"subscription_indent_{index + 1}"
-
-
-def subscription_value_variable_name() -> str:
-    """
-    Returns
-    -------
-    The override variable name containing the subscription value if present
-    """
-    return "subscription_value"
 
 
 class SubscriptionOutput(Validator, ABC):
@@ -95,7 +76,7 @@ class SubscriptionPresetDictValidator(SubscriptionOutput, DictValidator):
         output_dict["overrides"] = dict(
             output_dict.get("overrides", {}),
             **self._indent_overrides_dict(),
-            **{"subscription_name": self.subscription_name},
+            **{SUBSCRIPTION_NAME: self.subscription_name},
         )
         return {self.subscription_name: output_dict}
 
@@ -117,7 +98,7 @@ class SubscriptionLeafValidator(SubscriptionOutput, ABC):
                 f"used as a subscription name"
             )
 
-        self._overrides_to_add: Dict[str, str] = {"subscription_name": self.subscription_name}
+        self._overrides_to_add: Dict[str, str] = {SUBSCRIPTION_NAME: self.subscription_name}
 
     @final
     def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
@@ -153,7 +134,7 @@ class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
         # TODO: Eventually delete in favor of {subscription_value}
         if subscription_value:
             self._overrides_to_add[subscription_value] = self.value
-        self._overrides_to_add["subscription_value"] = self.value
+        self._overrides_to_add[SUBSCRIPTION_VALUE] = self.value
 
 
 class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValidator):
@@ -176,8 +157,9 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
         for idx, list_value in enumerate(self.list):
             # Write the first list value into subscription_value as well
             if idx == 0:
-                self._overrides_to_add["subscription_value"] = list_value.value
-            self._overrides_to_add[f"subscription_value_{idx + 1}"] = list_value.value
+                self._overrides_to_add[SUBSCRIPTION_VALUE] = list_value.value
+
+            self._overrides_to_add[subscription_list_variable_name(index=idx)] = list_value.value
 
 
 class SubscriptionWithOverridesValidator(SubscriptionLeafValidator, DictFormatterValidator):

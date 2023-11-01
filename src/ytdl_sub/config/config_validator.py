@@ -10,6 +10,7 @@ from ytdl_sub.config.defaults import DEFAULT_FFPROBE_PATH
 from ytdl_sub.config.defaults import DEFAULT_LOCK_DIRECTORY
 from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
+from ytdl_sub.subscriptions.utils import SUBSCRIPTION_VALUE_CONFIG_KEY
 from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
 from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -106,7 +107,7 @@ class ConfigOptions(StrictDictValidator):
         "ffprobe_path",
         "file_name_max_bytes",
         "experimental",
-        "subscription_value",
+        SUBSCRIPTION_VALUE_CONFIG_KEY,
     }
 
     def __init__(self, name: str, value: Any):
@@ -142,7 +143,7 @@ class ConfigOptions(StrictDictValidator):
             key="file_name_max_bytes", validator=IntValidator, default=MAX_FILE_NAME_BYTES
         )
         self._subscription_value = self._validate_key_if_present(
-            key="subscription_value", validator=StringValidator
+            key=SUBSCRIPTION_VALUE_CONFIG_KEY, validator=StringValidator
         )
 
     @property
