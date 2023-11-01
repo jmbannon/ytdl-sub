@@ -1,12 +1,15 @@
 import copy
+import dataclasses
 from abc import ABC
 from abc import abstractmethod
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import final
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import StringListValidator
 from ytdl_sub.validators.validators import StringValidator
@@ -36,18 +39,6 @@ def subscription_value_variable_name() -> str:
     return "subscription_value"
 
 
-def maybe_indent_override_values(value: str) -> List[str]:
-    """
-    Returns
-    -------
-    Value if it is an overide [Value]. None otherwise.
-    """
-    if value.startswith("="):
-        # Drop the =, split on |, and strip each indent_value (both left + right)
-        return [indent_value.strip() for indent_value in value[1:].split("|")]
-    return []
-
-
 class SubscriptionOutput(Validator, ABC):
     def __init__(self, name, value, presets: List[str], indent_overrides: List[str]):
         super().__init__(name, value)
@@ -75,6 +66,15 @@ class SubscriptionOutput(Validator, ABC):
         Subscriptions in the form of ``{ subscription_name: preset_dict }``
         """
 
+    @property
+    def subscription_name(self) -> str:
+        """
+        Returns
+        -------
+        The name of the subscription
+        """
+        return self._leaf_name
+
 
 class SubscriptionPresetDictValidator(SubscriptionOutput, DictValidator):
     def __init__(self, name, value, presets: List[str], indent_overrides: List[str]):
@@ -93,12 +93,46 @@ class SubscriptionPresetDictValidator(SubscriptionOutput, DictValidator):
 
         output_dict["preset"] = parent_presets + self._presets + global_presets_to_apply
         output_dict["overrides"] = dict(
-            output_dict.get("overrides", {}), **self._indent_overrides_dict()
+            output_dict.get("overrides", {}),
+            **self._indent_overrides_dict(),
+            **{"subscription_name": self.subscription_name},
         )
-        return {self._leaf_name: output_dict}
+        return {self.subscription_name: output_dict}
 
 
-class SubscriptionValueValidator(SubscriptionOutput, StringValidator):
+class SubscriptionLeafValidator(SubscriptionOutput, ABC):
+    def __init__(
+        self,
+        name,
+        value,
+        config: ConfigFile,
+        presets: List[str],
+        indent_overrides: List[str],
+    ):
+        super().__init__(name=name, value=value, presets=presets, indent_overrides=indent_overrides)
+
+        if self.subscription_name in config.presets.keys:
+            raise self._validation_exception(
+                f"{self.subscription_name} conflicts with an existing preset name and cannot be "
+                f"used as a subscription name"
+            )
+
+        self._overrides_to_add: Dict[str, str] = {"subscription_name": self.subscription_name}
+
+    @final
+    def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
+        return {
+            self.subscription_name: {
+                "preset": self._presets + global_presets_to_apply,
+                "overrides": dict(
+                    self._indent_overrides_dict(),
+                    **self._overrides_to_add,
+                ),
+            }
+        }
+
+
+class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
     def __init__(
         self,
         name,
@@ -108,36 +142,107 @@ class SubscriptionValueValidator(SubscriptionOutput, StringValidator):
         indent_overrides: List[str],
         subscription_value: Optional[str],
     ):
-        super().__init__(name=name, value=value, presets=presets, indent_overrides=indent_overrides)
+        super().__init__(
+            name=name,
+            value=value,
+            config=config,
+            presets=presets,
+            indent_overrides=indent_overrides,
+        )
 
-        if self._leaf_name in config.presets.keys:
-            raise self._validation_exception(
-                f"{self._leaf_name} conflicts with an existing preset name and cannot be "
-                f"used as a subscription name"
-            )
-        self._subscription_value: Optional[str] = subscription_value
-
-    def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
-        subscription_value_dict: Dict[str, str] = {"subscription_value": self.value}
         # TODO: Eventually delete in favor of {subscription_value}
-        if self._subscription_value:
-            subscription_value_dict[self._subscription_value] = self.value
+        if subscription_value:
+            self._overrides_to_add[subscription_value] = self.value
+        self._overrides_to_add["subscription_value"] = self.value
 
-        return {
-            self._leaf_name: {
-                "preset": self._presets + global_presets_to_apply,
-                "overrides": dict(
-                    subscription_value_dict,
-                    **self._indent_overrides_dict(),
-                ),
-            }
-        }
+
+class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValidator):
+    def __init__(
+        self,
+        name,
+        value,
+        config: ConfigFile,
+        presets: List[str],
+        indent_overrides: List[str],
+    ):
+        super().__init__(
+            name=name,
+            value=value,
+            config=config,
+            presets=presets,
+            indent_overrides=indent_overrides,
+        )
+
+        for idx, list_value in enumerate(self.list):
+            # Write the first list value into subscription_value as well
+            if idx == 0:
+                self._overrides_to_add["subscription_value"] = list_value.value
+            self._overrides_to_add[f"subscription_value_{idx + 1}"] = list_value.value
+
+
+class SubscriptionWithOverridesValidator(SubscriptionLeafValidator, DictFormatterValidator):
+    def __init__(
+        self,
+        name,
+        value,
+        config: ConfigFile,
+        presets: List[str],
+        indent_overrides: List[str],
+    ):
+        super().__init__(
+            name=name,
+            value=value,
+            config=config,
+            presets=presets,
+            indent_overrides=indent_overrides,
+        )
+
+        self._overrides_to_add = dict(self.dict_with_format_strings, **self._overrides_to_add)
+
+    @property
+    def subscription_name(self) -> str:
+        """
+        Returns
+        -------
+        Name of the subscription
+        """
+        # drop the ~ in "~Subscription Name":
+        return super().subscription_name[1:]
 
 
 class SubscriptionValidator(SubscriptionOutput):
     """
     Top-level subscription validator
     """
+
+    @dataclasses.dataclass
+    class PresetIndentKey:
+        presets: List[str] = dataclasses.field(default_factory=list)
+        indent_overrides: List[str] = dataclasses.field(default_factory=list)
+
+    def _preset_indent_key(self, key: str, config: ConfigFile) -> Optional[PresetIndentKey]:
+        presets: List[str] = []
+        indent_overrides: List[str] = []
+
+        stripped_split_keys = [sub_key.strip() for sub_key in key.split("|")]
+        for sub_key in stripped_split_keys:
+            if sub_key.startswith("="):
+                indent_overrides.append(sub_key[1:].strip())
+            elif sub_key in config.presets.keys:
+                presets.append(sub_key)
+            else:
+                if presets or indent_overrides:
+                    raise self._validation_exception(
+                        f"'{sub_key.strip()}' in '{key.strip()}' is not a preset name. "
+                        f"To use as a subscription indent value, define it as '= {sub_key.strip()}'"
+                    )
+
+        if not presets and not indent_overrides:
+            return None
+
+        return SubscriptionValidator.PresetIndentKey(
+            presets=presets, indent_overrides=indent_overrides
+        )
 
     def __init__(
         self,
@@ -154,6 +259,8 @@ class SubscriptionValidator(SubscriptionOutput):
         for key, obj in value.items():
             obj_name = f"{name}.{key}" if name else key
 
+            # Subscription defined as
+            # "Sub Name": "value"
             if isinstance(obj, str):
                 self._children.append(
                     SubscriptionValueValidator(
@@ -165,26 +272,45 @@ class SubscriptionValidator(SubscriptionOutput):
                         subscription_value=subscription_value,
                     )
                 )
-            elif isinstance(value, dict):
-                if key in config.presets.keys:
-                    self._children.append(
-                        SubscriptionValidator(
-                            name=obj_name,
-                            value=obj,
-                            config=config,
-                            presets=presets + [key],
-                            indent_overrides=indent_overrides,
-                            subscription_value=subscription_value,
-                        )
+            # Subscription defined as
+            # "Sub Name":
+            #   - "value1"
+            #   - "value2"
+            elif isinstance(obj, list):
+                self._children.append(
+                    SubscriptionListValuesValidator(
+                        name=obj_name,
+                        value=obj,
+                        config=config,
+                        presets=presets,
+                        indent_overrides=indent_overrides,
                     )
-                elif override_values := maybe_indent_override_values(key):
+                )
+            elif isinstance(obj, dict):
+                # Subscription defined as
+                # "~Sub Name":
+                #   override_1: "abc"
+                #   override_2: "123"
+                if key.startswith("~"):
                     self._children.append(
-                        SubscriptionValidator(
+                        SubscriptionWithOverridesValidator(
                             name=obj_name,
                             value=obj,
                             config=config,
                             presets=presets,
-                            indent_overrides=indent_overrides + override_values,
+                            indent_overrides=indent_overrides,
+                        )
+                    )
+                elif (
+                    preset_indent_key := self._preset_indent_key(key=key, config=config)
+                ) is not None:
+                    self._children.append(
+                        SubscriptionValidator(
+                            name=obj_name,
+                            value=obj,
+                            config=config,
+                            presets=presets + preset_indent_key.presets,
+                            indent_overrides=indent_overrides + preset_indent_key.indent_overrides,
                             subscription_value=subscription_value,
                         )
                     )
@@ -197,6 +323,10 @@ class SubscriptionValidator(SubscriptionOutput):
                             indent_overrides=indent_overrides,
                         )
                     )
+            else:
+                raise self._validation_exception(
+                    "Subscription value should either be a string, list, or object"
+                )
 
     def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
         subscription_dicts: Dict[str, Dict] = {}
