@@ -59,6 +59,7 @@ Files created:
   s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id-thumb.jpg
   s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id.info.json
   s2018.e110201 - Jesse's Minecraft Server ｜ IP mc.jesse.id.mp4
+    Embedded subtitles with lang(s) en
     Video Tags:
       contentRating: TV-14
       date: 2018-11-02

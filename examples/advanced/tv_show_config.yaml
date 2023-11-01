@@ -87,21 +87,11 @@ presets:
   ###############################################################################
   # Custom preset to only fetch and keep recent videos.
   # Format the videos in reverse order, so the first video is the most recent
+  # Also include the prebuilt "Only Recent" preset
   TV Show Only Recent:
     preset:
       - "base"
       - "sponsorblock"
       - "no_shorts"
       - "season_by_year__episode_by_month_day_reversed"
-
-    # Only fetch videos after today minus date_range
-    date_range:
-      after: "today-{date_range}"
-
-    # Only keep files uploaded after date_range
-    output_options:
-      keep_files_after: "today-{date_range}"
-
-    # Set the default date_range to 2 months
-    overrides:
-      date_range: "2months"
+      - "Only Recent"
