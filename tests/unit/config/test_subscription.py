@@ -133,6 +133,53 @@ def preset_with_subscription_value_nested_presets_and_indent_variables_same_line
 
 
 @pytest.fixture
+def preset_with_subscription_value_nested_presets_and_indent_variables_all_same_line(
+    preset_with_subscription_value: Dict,
+):
+    return dict(
+        preset_with_subscription_value,
+        **{
+            "parent_preset_2 | =INDENT_1 | parent_preset_1": {
+                "test_2_1": "is_2_1_overwritten",
+            },
+            "parent_preset_2 | =INDENT_1 |= INDENT_2  | = INDENT_3   ": {
+                "test_1": "is_1_overwritten",
+            },
+        },
+    )
+
+
+@pytest.fixture
+def preset_with_subscription_list(
+    preset_with_subscription_value: Dict,
+):
+    return dict(
+        preset_with_subscription_value,
+        **{
+            "parent_preset_2 | parent_preset_1": {
+                "test_2_1": ["is_2_1_overwritten", "is_2_1_list_2"]
+            },
+        },
+    )
+
+
+@pytest.fixture
+def preset_with_subscription_overrides_tilda(
+    preset_with_subscription_value: Dict,
+):
+    return dict(
+        preset_with_subscription_value,
+        **{
+            "parent_preset_2 | parent_preset_1": {
+                "~test_2_1": {
+                    "current_override": "test_2_1",
+                }
+            },
+        },
+    )
+
+
+@pytest.fixture
 def preset_with_subscription_value_nested_presets_and_indent_variables_same_line_old_format_errors(
     preset_with_subscription_value: Dict,
 ):
@@ -261,6 +308,45 @@ def test_subscription_file_value_applies_from_config_and_nested(
     assert sub_2_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
 
+def test_subscription_list(
+    config_file_with_subscription_value: ConfigFile,
+    preset_with_subscription_list: Dict,
+):
+    with mock_load_yaml(preset_dict=preset_with_subscription_list):
+        subs = Subscription.from_file_path(
+            config=config_file_with_subscription_value, subscription_path="mocked"
+        )
+    assert len(subs) == 3
+
+    # Test __value__ worked correctly from the config
+    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.dict_with_format_strings
+
+    assert sub_2_1.get("subscription_name") == "test_2_1"
+    assert sub_2_1.get("subscription_name_sanitized") == "test_2_1"
+    assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
+    assert sub_2_1.get("subscription_value_1") == "is_2_1_overwritten"
+    assert sub_2_1.get("subscription_value_2") == "is_2_1_list_2"
+    assert sub_2_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
+
+
+def test_subscription_overrides_tilda(
+    config_file_with_subscription_value: ConfigFile,
+    preset_with_subscription_overrides_tilda: Dict,
+):
+    with mock_load_yaml(preset_dict=preset_with_subscription_overrides_tilda):
+        subs = Subscription.from_file_path(
+            config=config_file_with_subscription_value, subscription_path="mocked"
+        )
+    assert len(subs) == 3
+
+    # Test __value__ worked correctly from the config
+    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.dict_with_format_strings
+
+    assert sub_2_1.get("subscription_name") == "test_2_1"
+    assert sub_2_1.get("subscription_name_sanitized") == "test_2_1"
+    assert sub_2_1.get("current_override") == "test_2_1"  # tilda sub takes precedence
+
+
 def test_subscription_file_value_applies_from_config_and_nested_and_indent_variables(
     config_file_with_subscription_value: ConfigFile,
     preset_with_subscription_value_nested_presets_and_indent_variables: Dict,
@@ -300,13 +386,20 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
     assert sub_2_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
 
+@pytest.mark.parametrize("all_same_line", [True, False])
 def test_subscription_file_value_applies_from_config_and_nested_and_indent_variables_same_line(
     config_file_with_subscription_value: ConfigFile,
     preset_with_subscription_value_nested_presets_and_indent_variables_same_line: Dict,
+    preset_with_subscription_value_nested_presets_and_indent_variables_all_same_line: Dict,
+    all_same_line: bool,
 ):
-    with mock_load_yaml(
-        preset_dict=preset_with_subscription_value_nested_presets_and_indent_variables_same_line
-    ):
+    preset_dict = preset_with_subscription_value_nested_presets_and_indent_variables_same_line
+    if all_same_line:
+        preset_dict = (
+            preset_with_subscription_value_nested_presets_and_indent_variables_all_same_line
+        )
+
+    with mock_load_yaml(preset_dict=preset_dict):
         subs = Subscription.from_file_path(
             config=config_file_with_subscription_value, subscription_path="mocked"
         )
