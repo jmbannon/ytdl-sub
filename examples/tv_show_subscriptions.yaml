@@ -37,10 +37,18 @@ Plex TV Show by Date:
     "National Geographic": "https://www.youtube.com/@NatGeo"
     "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
 
-  # Sets "Kids" for genre, "TV-Y" for content rating
+  # Sets genre tag to "Kids", "TV-Y" for content rating
   = Kids | = TV-Y:
     "Jake Trains": "https://www.youtube.com/@JakeTrains"
     "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
+
+  # Sets genre tag to "Music"
+  = Music:
+    # Subscriptions can support multiple urls and store in the same
+    # TV Show
+    "Rick Beato":
+      - "https://www.youtube.com/@RickBeato"
+      - "https://www.youtube.com/@rickbeato240"
 
   # Set "News" for genre, use `Only Recent` preset to only store videos uploaded recently
   = News | Only Recent:

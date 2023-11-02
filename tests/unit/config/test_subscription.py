@@ -494,7 +494,7 @@ def test_tv_show_subscriptions(config_file: ConfigFile, tv_show_subscriptions_pa
         config=config_file, subscription_path=tv_show_subscriptions_path
     )
 
-    assert len(subs) == 6
+    assert len(subs) == 7
     assert subs[3].name == "Jake Trains"
     jake_train_overrides = subs[3].overrides.dict_with_format_strings
 

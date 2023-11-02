@@ -23,7 +23,7 @@ TV Show Only Recent:
     # Subscriptions can prefix a tilda to specify override variables
     # to set only for that subscriptions
     "~BBC News":
-      url: "https://www.youtube.com/@BBCNews"
+      url: "https://www.youtube.com/@BBCNews"  # use url2, url3, ... for multi-url in this form
       date_range: "2weeks"
     "Frontline PBS": "https://www.youtube.com/@frontline"
     "Whitehouse": "https://www.bitchute.com/channel/zWsYVmCOu4JA/"  # Supports non-YT sites
