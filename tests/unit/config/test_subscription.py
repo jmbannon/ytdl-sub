@@ -489,12 +489,30 @@ def test_subscription_file_invalid_form(config_file: ConfigFile):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")
 
 
-def test_tv_show_subscriptions(tv_show_config: ConfigFile, tv_show_subscriptions_path: Path):
+def test_tv_show_subscriptions(config_file: ConfigFile, tv_show_subscriptions_path: Path):
     subs = Subscription.from_file_path(
-        config=tv_show_config, subscription_path=tv_show_subscriptions_path
+        config=config_file, subscription_path=tv_show_subscriptions_path
     )
 
     assert len(subs) == 6
+    assert subs[3].name == "Jake Trains"
+    jake_train_overrides = subs[3].overrides.dict_with_format_strings
+
+    assert jake_train_overrides["subscription_name"] == "Jake Trains"
+    assert jake_train_overrides["subscription_name_sanitized"] == "Jake Trains"
+    assert jake_train_overrides["subscription_value"] == "https://www.youtube.com/@JakeTrains"
+    assert jake_train_overrides["subscription_indent_1"] == "Kids"
+    assert jake_train_overrides["subscription_indent_2"] == "TV-Y"
+
+
+def test_advanced_tv_show_subscriptions(
+    tv_show_config: ConfigFile, advanced_tv_show_subscriptions_path: Path
+):
+    subs = Subscription.from_file_path(
+        config=tv_show_config, subscription_path=advanced_tv_show_subscriptions_path
+    )
+
+    assert len(subs) == 9
     assert subs[3].name == "Jake Trains"
     jake_train_overrides = subs[3].overrides.dict_with_format_strings
 

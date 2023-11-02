@@ -184,6 +184,11 @@ def tv_show_subscriptions_path() -> Path:
 
 
 @pytest.fixture()
+def advanced_tv_show_subscriptions_path() -> Path:
+    return Path("examples/advanced/tv_show_subscriptions.yaml")
+
+
+@pytest.fixture()
 def default_config(working_directory) -> ConfigFile:
     return ConfigFile.from_dict({"configuration": {"working_directory": working_directory}})
 

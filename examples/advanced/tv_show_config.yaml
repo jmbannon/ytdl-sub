@@ -95,3 +95,6 @@ presets:
       - "no_shorts"
       - "season_by_year__episode_by_month_day_reversed"
       - "Only Recent"
+
+    overrides:
+      date_range: "2months"
