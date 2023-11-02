@@ -522,6 +522,23 @@ def test_advanced_tv_show_subscriptions(
     assert jake_train_overrides["subscription_indent_1"] == "Kids"
     assert jake_train_overrides["subscription_indent_2"] == "TV-Y"
 
+    assert subs[5].name == "Gardening with Ciscoe"
+    overrides = subs[5].overrides
+
+    assert overrides.apply_formatter(overrides.dict["subscription_name"]) == "Gardening with Ciscoe"
+    assert (
+        overrides.apply_formatter(overrides.dict["subscription_name_sanitized"])
+        == "Gardening with Ciscoe"
+    )
+    assert (
+        overrides.apply_formatter(overrides.dict["url"])
+        == "https://www.youtube.com/@gardeningwithciscoe4430"
+    )
+    assert (
+        overrides.apply_formatter(overrides.dict["url2"])
+        == "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_"
+    )
+
 
 def test_music_subscriptions(default_config: ConfigFile, music_subscriptions_path: Path):
     subs = Subscription.from_file_path(
