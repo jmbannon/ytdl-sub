@@ -199,10 +199,15 @@ for detailed information on all config fields.
 - [Local Install](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-install)
 - [Local Docker Build](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-docker-build)
 
+### Docker Installs
 Docker installs can be either headless or use the GUI image, which is the
 [LSIO](https://www.linuxserver.io/)
 [code-server image](https://hub.docker.com/r/linuxserver/code-server)
-with `ytdl-sub` preinstalled.
+with `ytdl-sub` preinstalled. It is highly recommended to use this to manage
+`ytdl-sub` from browser.
+
+![image](https://github.com/jmbannon/ytdl-sub/assets/10107080/c2aac8a1-5443-4345-b438-be4b17187c80)
+
 
 ## Contributing
 There are many ways to contribute, even without coding. Please take a look in
