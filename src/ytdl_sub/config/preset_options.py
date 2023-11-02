@@ -175,11 +175,12 @@ class Overrides(DictFormatterValidator):
             )
 
         if SUBSCRIPTION_NAME not in self._value:
-            self._add_override_variable(
-                key_name=SUBSCRIPTION_NAME,
-                format_string=self.subscription_name,
-                sanitize=True,
-            )
+            for sanitized in [True, False]:
+                self._add_override_variable(
+                    key_name=SUBSCRIPTION_NAME,
+                    format_string=self.subscription_name,
+                    sanitize=sanitized,
+                )
 
     @property
     def subscription_name(self) -> str:
