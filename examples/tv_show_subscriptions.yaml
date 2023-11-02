@@ -13,12 +13,12 @@ TV Show Full Archive:
     "Opeth": "https://www.youtube.com/channel/UCmQSJTFZaXN85gYk6W3XbdQ"
 
   # Sets "Kids" for genre, "TV-Y" for content rating
-  = Kids | TV-Y:
+  = Kids | = TV-Y:
     "Jake Trains": "https://www.youtube.com/@JakeTrains"
     "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
 
 
 # All subscriptions under this will use the `TV Show Only Recent` preset
 TV Show Only Recent:
-  = News | TV-14:
+  = News | = TV-14:
     "BBC": "https://www.youtube.com/@BBCNews"
