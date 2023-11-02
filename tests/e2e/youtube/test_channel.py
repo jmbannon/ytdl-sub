@@ -43,16 +43,16 @@ class TestChannel:
     expected md5 file hashes.
     """
 
-    @pytest.mark.parametrize("dry_run", [False])
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_full_channel_download(
         self,
-        channel_as_tv_show_config,
+        tv_show_config,
         channel_preset_dict,
         output_directory,
         dry_run,
     ):
         full_channel_subscription = Subscription.from_dict(
-            config=channel_as_tv_show_config, preset_name="pz", preset_dict=channel_preset_dict
+            config=tv_show_config, preset_name="pz", preset_dict=channel_preset_dict
         )
         transaction_log = full_channel_subscription.download(dry_run=dry_run)
         assert_transaction_log_matches(

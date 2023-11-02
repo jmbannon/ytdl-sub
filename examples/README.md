@@ -1,7 +1,13 @@
 # Example Configurations
-This directory shows how you can use ytdl-sub for various use cases. These
-are the configs I personally use and have incorporated as part of the e2e tests.
+This directory shows how use ytdl-sub's built-in presets to start downloading immediately with no
+configuration required. Simply run:
 
-Each example has a `config.yaml` and `subscription.yaml`. The config defines
-_how_ you format your media, whereas the subscription defines _what_ you 
-download plus some additional configuring if needed.
+### Unix
+```commandline
+ytdl-sub sub tv_show_subscriptions.yaml
+```
+
+### Windows
+```commandline
+./ytdl-sub.exe sub tv_show_subscriptions.yaml
+```

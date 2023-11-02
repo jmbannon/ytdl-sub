@@ -1,0 +1,100 @@
+###############################################################################
+# Top-level configurations to apply umask and persist error logs
+configuration:
+  umask: "002"
+  persist_logs:
+    logs_directory: './logs'
+    keep_successful_logs: False
+
+presets:
+
+  ###############################################################################
+  # Set tv_show_directory here instead of in the subscriptions file
+  tv_show_paths:
+    overrides:
+      tv_show_directory: "/tv_shows"
+
+  ###############################################################################
+  # Filter out any YouTube shorts
+  no_shorts:
+    match_filters:
+      filters:
+        - "original_url!*=/shorts/"
+
+  ###############################################################################
+  # Remove all the following sponsorblock sections
+  sponsorblock:
+    chapters:
+      sponsorblock_categories:
+        - "outro"
+        - "selfpromo"
+        - "preview"
+        - "interaction"
+        - "sponsor"
+        - "music_offtopic"
+        - "intro"
+      remove_sponsorblock_categories: "all"
+      force_key_frames: False
+
+  ###############################################################################
+  # Wait 2 days before downloading in hopes to get more accurate sponsorblock
+  sponsorblock_wait:
+    # Import the sponsorblock preset defined above
+    preset:
+      - "sponsorblock"
+
+    date_range:
+      before: "today-2days"
+
+
+  ###############################################################################
+  # base preset to use on all TV Show-based subscriptions
+  base:
+    preset:
+      - "Kodi TV Show by Date"  # Set intended player
+      - "best_video_quality"    # prebuilt preset to get best quality
+      - "tv_show_paths"
+
+    # Embed chapters into video files
+    chapters:
+      embed_chapters: True
+
+    # Embed English subtitles into video files (supports more)
+    subtitles:
+      embed_subtitles: True
+      languages:
+        - "en"
+      allow_auto_generated_subtitles: True
+
+    # ytdl_options lets you pass any arg into yt-dlp's Python API
+    ytdl_options:
+      # Set the cookie file
+      # cookiefile: "/config/youtube_cookies.txt"
+
+      # For YouTube, get English metadata if multiple languages are present
+      extractor_args:
+        youtube:
+          lang:
+            - "en"
+
+  ###############################################################################
+  # Custom preset to archive an entire channel
+  TV Show Full Archive:
+    preset:
+      - "base"
+      - "sponsorblock_wait"  # wait for sponsorblock when full-archiving
+
+  ###############################################################################
+  # Custom preset to only fetch and keep recent videos.
+  # Format the videos in reverse order, so the first video is the most recent
+  # Also include the prebuilt "Only Recent" preset
+  TV Show Only Recent:
+    preset:
+      - "base"
+      - "sponsorblock"
+      - "no_shorts"
+      - "season_by_year__episode_by_month_day_reversed"
+      - "Only Recent"
+
+    overrides:
+      date_range: "2months"

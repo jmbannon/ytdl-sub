@@ -18,3 +18,16 @@ presets:
       playlistreverse: True
       break_on_existing: False
       break_on_reject: True
+
+  "Only Recent":
+    # Only fetch videos after today minus date_range
+    date_range:
+      after: "today-{date_range}"
+
+    # Only keep files uploaded after date_range
+    output_options:
+      keep_files_after: "today-{date_range}"
+
+    # Set the default date_range to 2 months
+    overrides:
+      date_range: "2months"

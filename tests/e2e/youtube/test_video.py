@@ -208,12 +208,12 @@ class TestYoutubeVideo:
 
     def test_single_video_nulled_values(
         self,
-        channel_as_tv_show_config,
+        tv_show_config,
         single_tv_show_video_nulled_values_preset_dict,
         output_directory,
     ):
         single_video_subscription = Subscription.from_dict(
-            config=channel_as_tv_show_config,
+            config=tv_show_config,
             preset_name="tv_video_nulled_values",
             preset_dict=single_tv_show_video_nulled_values_preset_dict,
         )
