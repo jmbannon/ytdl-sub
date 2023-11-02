@@ -1,3 +1,4 @@
+import os
 import pathlib
 from typing import Any
 from typing import Dict
@@ -6,6 +7,15 @@ from typing import Set
 import mergedeep
 
 from ytdl_sub.utils.yaml import load_yaml
+
+
+def get_prebuilt_preset_package_name(path: pathlib.Path) -> str:
+    """
+    Returns
+    -------
+    Package name for prebuilt presets
+    """
+    return os.path.basename(os.path.dirname(path))
 
 
 def _merge_presets() -> Dict[str, Any]:
