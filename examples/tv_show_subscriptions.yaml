@@ -23,6 +23,7 @@
 __preset__:
   overrides:
     tv_show_directory: "/tv_shows"  # Root folder of all ytdl-sub TV Shows
+    date_range: "2months"  # For 'Only Recent' preset, only keep vids uploaded in this range
 
 # Choose the player you intend to use
 # Jellyfin TV Show by Date:
@@ -35,8 +36,11 @@ Plex TV Show by Date:
     "National Geographic": "https://www.youtube.com/@NatGeo"
     "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
 
-  # Sets genre and content rating tag to "Kids" and "TV-Y"
-  = Kids | TV-Y:
+  # Sets "Kids" for genre, "TV-Y" for content rating
+  = Kids | = TV-Y:
     "Jake Trains": "https://www.youtube.com/@JakeTrains"
     "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
 
+  # Set "News" for genre, use `Only Recent` preset to only store videos uploaded recently
+  = News | Only Recent:
+    "BBC News": "https://www.youtube.com/@BBCNews"
