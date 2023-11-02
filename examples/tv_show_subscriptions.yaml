@@ -25,9 +25,10 @@ __preset__:
     tv_show_directory: "/tv_shows"  # Root folder of all ytdl-sub TV Shows
     date_range: "2months"  # For 'Only Recent' preset, only keep vids uploaded in this range
 
-# Choose the player you intend to use
-# Jellyfin TV Show by Date:
-# Kodi TV Show by Date:
+# Choose the player you intend to use by setting the top-level key to be either:
+#   - Plex TV Show by Date:
+#   - Jellyfin TV Show by Date:
+#   - Kodi TV Show by Date:
 Plex TV Show by Date:
 
   # Sets genre tag to "Documentaries"
