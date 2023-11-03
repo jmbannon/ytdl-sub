@@ -9,7 +9,7 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.subscriptions.utils import SUBSCRIPTION_NAME
+from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
