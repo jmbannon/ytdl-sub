@@ -1,4 +1,4 @@
-FROM lscr.io/linuxserver/code-server:4.18.0
+FROM lscr.io/linuxserver/code-server:4.18.0-ls181
 
 # Needed for phantomjs
 ENV OPENSSL_CONF=/etc/ssl
