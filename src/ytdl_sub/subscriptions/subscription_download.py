@@ -364,6 +364,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         try:
             yield
         except Exception as exc:  # pylint: disable=broad-except
+            logger.exception("The following error occurred for the subscription %s:", self.name)
             self._exception = exc
 
         return self.transaction_log
