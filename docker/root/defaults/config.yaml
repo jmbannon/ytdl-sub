@@ -4,20 +4,16 @@
 #   Prebuilt Presets:    https://ytdl-sub.readthedocs.io/en/latest/presets.html
 #   Config Docs:         https://ytdl-sub.readthedocs.io/en/latest/config.html
 #
-# Examples are included in the /config/examples/ directory.
-# Any config and subscription can be ran using:
-#   ytdl-sub --config /path/to/config.yaml sub /path/to/subscriptions.yaml
+# The subscriptions in `subscriptions.yaml` uses prebuilt presets which do not require
+# any additions to this config. They can be downloaded using the command:
+#
+#   ytdl-sub --config config.yaml sub subscriptions.yaml
 #
 # Or dry-ran with:
-#   ytdl-sub --dry-run --config /path/to/config.yaml sub /path/to/subscriptions.yaml
+#
+#   ytdl-sub --dry-run --config config.yaml sub subscriptions.yaml
+#
+# See the documentation above on how to build your own custom presets.
 #
 configuration:
-  working_directory: '/tmp/ytdl-sub-downloads'
-
-presets:
-
-  video:
-    output_options:
-      output_directory: "/tmp/ytdl-sub-output"
-      file_name: "{uid}.{ext}"
-      thumbnail_name: "{uid}.{thumbnail_ext}"
+  working_directory: ".ytdl-sub-working-directory"
