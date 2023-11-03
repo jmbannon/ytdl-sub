@@ -37,6 +37,7 @@ After starting, code-server will be running at http://localhost:8443/
          - PUID=1000
          - PGID=1000
          - TZ=America/Los_Angeles
+         - DOCKER_MODS=linuxserver/mods:universal-cron
        volumes:
          - <path/to/ytdl-sub/config>:/config
          - <path/to/tv_shows>:/tv_shows  # optional
@@ -99,6 +100,7 @@ ____
          - PUID=1000
          - PGID=1000
          - TZ=America/Los_Angeles
+         - DOCKER_MODS=linuxserver/mods:universal-cron
        volumes:
          - <path/to/ytdl-sub/config>:/config
          - <path/to/tv_shows>:/tv_shows  # optional
@@ -124,6 +126,7 @@ ____
          - PUID=1000
          - PGID=1000
          - TZ=America/Los_Angeles
+         - DOCKER_MODS=linuxserver/mods:universal-cron
          - NVIDIA_DRIVER_CAPABILITIES=all  # Nvidia ENV args
          - NVIDIA_VISIBLE_DEVICES=all
        volumes:
@@ -150,6 +153,7 @@ Docker
        -e PUID=1000 \
        -e PGID=1000 \
        -e TZ=America/Los_Angeles \
+       -e DOCKER_MODS=linuxserver/mods:universal-cron \
        -p 8443:8443 \
        -v <path/to/ytdl-sub/config>:/config \
        -v <OPTIONAL/path/to/tv_shows>:/tv_shows \
