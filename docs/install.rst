@@ -3,22 +3,62 @@ Install
 ``ytdl-sub`` can be installed on the following platforms.
 
 .. contents::
-    :depth: 2
+    :depth: 3
 
 All installations require a 64-bit CPU. 32-bit is not supported.
 
 Docker Compose
 --------------
-The ytdl-sub docker image uses
-`Linux Server's <https://www.linuxserver.io/>`_
-`base alpine image <https://github.com/linuxserver/docker-baseimage-alpine/>`_
-It looks, feels, and operates like other LinuxServer images. This is the
-recommended way to use ytdl-sub.
+The ytdl-sub Docker images use
+`LSIO-based images <https://www.linuxserver.io/>`_
+and installs ytdl-sub on top. There are a few flavors to choose from.
 
-The docker image is intended to be used as a console. For automating
-``subscriptions.yaml`` downloads to pull new media, see
+For automating ``subscriptions.yaml`` downloads to pull new media, see
 `this guide <https://github.com/jmbannon/ytdl-sub/wiki/7.-Automate-Downloading-New-Content-Using-Your-Configs/>`_
-on how set up a cron job in the docker container.
+on how set up a cron job in any of the docker containers.
+
+GUI
+^^^^
+
+The GUI image uses LSIO's
+`code-server <https://hub.docker.com/r/linuxserver/code-server>`_
+for its base image. More info on other code-server environment variables
+can be found within its documentation. This is the recommended way to use ``ytdl-sub``.
+
+After starting, code-server will be running at http://localhost:8443/
+
+.. code-block:: yaml
+
+   services:
+     ytdl-sub:
+       image: ghcr.io/jmbannon/ytdl-sub-gui:latest
+       container_name: ytdl-sub
+       environment:
+         - PUID=1000
+         - PGID=1000
+         - TZ=America/Los_Angeles
+       volumes:
+         - <path/to/ytdl-sub/config>:/config
+         - <path/to/tv_shows>:/tv_shows  # optional
+         - <path/to/movies>:/movies  # optional
+         - <path/to/music_videos>:/music_videos  # optional
+         - <path/to/music>:/music  # optional
+       ports:
+         - 8443:8443
+       restart: unless-stopped
+
+Headless
+^^^^^^^^^^
+
+The headless image uses LSIO's
+`baseimage-alpine <https://github.com/linuxserver/docker-baseimage-alpine>`_
+for its base image. With this image, ``ytdl-sub`` is meant to be ran from console
+via exec'ing into the image using the command:
+
+.. code-block:: bash
+
+   docker exec -u abc -it ytdl-sub /bin/bash
+
 
 .. code-block:: yaml
 
@@ -39,46 +79,51 @@ on how set up a cron job in the docker container.
          - <path/to/music>:/music  # optional
        restart: unless-stopped
 
-CPU Passthrough
-^^^^^^^^^^^^^^^^^^^^^^
-For CPU passthrough, you must use the ``ytdl-sub`` Ubuntu version with the following additions:
+Passthrough
+^^^^^^^^^^^
+For CPU or GPU passthrough, you must use either the GUI image or the headless Ubuntu image
+``ghcr.io/jmbannon/ytdl-sub:ubuntu-latest``.
+
+The docker-compose examples use the GUI image.
+
+CPU
+____
 
 .. code-block:: yaml
 
    services:
      ytdl-sub:
-       image: ghcr.io/jmbannon/ytdl-sub:ubuntu-latest
+       image: ghcr.io/jmbannon/ytdl-sub-gui:latest
        container_name: ytdl-sub
        environment:
          - PUID=1000
          - PGID=1000
          - TZ=America/Los_Angeles
-         - DOCKER_MODS=linuxserver/mods:universal-cron
        volumes:
          - <path/to/ytdl-sub/config>:/config
          - <path/to/tv_shows>:/tv_shows  # optional
          - <path/to/movies>:/movies  # optional
          - <path/to/music_videos>:/music_videos  # optional
          - <path/to/music>:/music  # optional
+       ports:
+         - 8443:8443
        devices:
          - /dev/dri:/dev/dri  # CPU passthrough
        restart: unless-stopped
 
-Nvidia GPU Passthrough
-^^^^^^^^^^^^^^^^^^^^^^
-For GPU passthrough, you must use the ``ytdl-sub`` Ubuntu version with the following additions:
+GPU
+____
 
 .. code-block:: yaml
 
    services:
      ytdl-sub:
-       image: ghcr.io/jmbannon/ytdl-sub:ubuntu-latest
+       image: ghcr.io/jmbannon/ytdl-sub-gui:latest
        container_name: ytdl-sub
        environment:
          - PUID=1000
          - PGID=1000
          - TZ=America/Los_Angeles
-         - DOCKER_MODS=linuxserver/mods:universal-cron
          - NVIDIA_DRIVER_CAPABILITIES=all  # Nvidia ENV args
          - NVIDIA_VISIBLE_DEVICES=all
        volumes:
@@ -87,6 +132,8 @@ For GPU passthrough, you must use the ``ytdl-sub`` Ubuntu version with the follo
          - <path/to/movies>:/movies  # optional
          - <path/to/music_videos>:/music_videos  # optional
          - <path/to/music>:/music  # optional
+       ports:
+         - 8443:8443
        deploy:
          resources:
            reservations:
@@ -103,14 +150,14 @@ Docker
        -e PUID=1000 \
        -e PGID=1000 \
        -e TZ=America/Los_Angeles \
-       -e DOCKER_MODS=linuxserver/mods:universal-cron \
+       -p 8443:8443 \
        -v <path/to/ytdl-sub/config>:/config \
        -v <OPTIONAL/path/to/tv_shows>:/tv_shows \
        -v <OPTIONAL/path/to/movies>:/movies \
        -v <OPTIONAL/path/to/music_videos>:/music_videos \
        -v <OPTIONAL/path/to/music>:/music \
        --restart unless-stopped \
-       ghcr.io/jmbannon/ytdl-sub:latest
+       ghcr.io/jmbannon/ytdl-sub-gui:latest
 
 Windows
 --------------

@@ -423,8 +423,9 @@ Source Variables
 Override Variables
 ------------------
 
-.. autoclass:: ytdl_sub.config.preset_options.OverridesVariables()
+.. autoclass:: ytdl_sub.entries.variables.override_variables.OverrideVariables()
    :members:
+   :member-order: bysource
 
 -------------------------------------------------------------------------------
 

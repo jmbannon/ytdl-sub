@@ -9,10 +9,9 @@ from typing import final
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset_options import Overrides
-from ytdl_sub.subscriptions.utils import SUBSCRIPTION_NAME
-from ytdl_sub.subscriptions.utils import SUBSCRIPTION_VALUE
-from ytdl_sub.subscriptions.utils import subscription_indent_variable_name
-from ytdl_sub.subscriptions.utils import subscription_list_variable_name
+from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
+from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_VALUE
+from ytdl_sub.entries.variables.override_variables import OverrideVariables
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import StringListValidator
@@ -33,7 +32,7 @@ class SubscriptionOutput(Validator, ABC):
         indent overrides to merge with the preset dict's overrides
         """
         return {
-            subscription_indent_variable_name(i): self._indent_overrides[i]
+            OverrideVariables.subscription_indent_i(i): self._indent_overrides[i]
             for i in range(len(self._indent_overrides))
         }
 
@@ -159,7 +158,9 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
             if idx == 0:
                 self._overrides_to_add[SUBSCRIPTION_VALUE] = list_value.value
 
-            self._overrides_to_add[subscription_list_variable_name(index=idx)] = list_value.value
+            self._overrides_to_add[
+                OverrideVariables.subscription_value_i(index=idx)
+            ] = list_value.value
 
 
 class SubscriptionWithOverridesValidator(SubscriptionLeafValidator, DictFormatterValidator):

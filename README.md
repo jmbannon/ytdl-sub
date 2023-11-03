@@ -67,8 +67,10 @@ __preset__:
   ytdl_options:
     cookiefile: "/config/cookie.txt" 
 
-###############################################################################
-# Subscriptions nested under this will use the `Plex TV Show by Date` preset.
+###################################################################
+# Subscriptions nested under this will use the
+# `Plex TV Show by Date` preset.
+#
 # Can choose between:
 #   - Plex TV Show by Date:
 #   - Jellyfin TV Show by Date:
@@ -96,9 +98,9 @@ Plex TV Show by Date:
   = News | Only Recent:
     "BBC News": "https://www.youtube.com/@BBCNews"
 
-###############################################################################
-# Subscriptions nested under these will use the various prebuilt music presets
-
+###################################################################
+# Subscriptions nested under these will use the various prebuilt
+# music presets
 YouTube Releases:
   = Jazz:  # Sets genre tag to "Jazz"
     "Thelonious Monk": "https://www.youtube.com/@theloniousmonk3870/releases"
@@ -118,7 +120,7 @@ Bandcamp:
   = Lofi:
     "Emily Hopkins": "https://emilyharpist.bandcamp.com/"
 
-###############################################################################
+###################################################################
 # Can choose between:
 #   - Plex Music Videos:
 #   - Jellyfin Music Videos:
@@ -188,8 +190,6 @@ for detailed information on all config fields.
 `ytdl-sub` can be installed on the following platforms.
 
 - [Docker Compose](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker-compose_)
-  - [with CPU passthrough](https://ytdl-sub.readthedocs.io/en/latest/install.html#cpu-passthrough)
-  - [with GPU passthrough](https://ytdl-sub.readthedocs.io/en/latest/install.html#nvidia-gpu-passthrough)
 - [Docker CLI](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker)
 - [Windows](https://ytdl-sub.readthedocs.io/en/latest/install.html#windows)
 - [Unraid](https://ytdl-sub.readthedocs.io/en/latest/install.html#unraid)
@@ -199,12 +199,11 @@ for detailed information on all config fields.
 - [Local Install](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-install)
 - [Local Docker Build](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-docker-build)
 
-### Docker Installs
-Docker installs can be either headless or use the GUI image, which is the
-[LSIO](https://www.linuxserver.io/)
-[code-server image](https://hub.docker.com/r/linuxserver/code-server)
-with `ytdl-sub` preinstalled. It is highly recommended to use this to manage
-`ytdl-sub` from browser.
+### Docker Installation
+Docker installs can be either headless or use the GUI image, which comprises
+[LSIO's](https://www.linuxserver.io/)
+[code-server](https://hub.docker.com/r/linuxserver/code-server)
+Docker image with `ytdl-sub` preinstalled. This is the recommended way to use ``ytdl-sub``.
 
 ![image](https://github.com/jmbannon/ytdl-sub/assets/10107080/c2aac8a1-5443-4345-b438-be4b17187c80)
 
