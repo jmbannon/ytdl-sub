@@ -47,6 +47,8 @@ that do the work of config-building, so you can start downloading immediately.
 
 ```yaml
 # subscriptions.yaml:
+# Everything in here can be downloaded using the command:
+#   ytdl-sub sub subscriptions.yaml
 
 # __preset__ is a place to define global overrides for all subscriptions
 __preset__:
@@ -189,7 +191,10 @@ for detailed information on all config fields.
 ## Installation
 `ytdl-sub` can be installed on the following platforms.
 
-- [Docker Compose](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker-compose_)
+- [Docker Compose](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker-compose)
+  - [Web-GUI](https://ytdl-sub.readthedocs.io/en/latest/install.html#gui)
+  - [Headless](https://ytdl-sub.readthedocs.io/en/latest/install.html#headless)
+  - [CPU / GPU Passthrough](https://ytdl-sub.readthedocs.io/en/latest/install.html#passthrough)
 - [Docker CLI](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker)
 - [Windows](https://ytdl-sub.readthedocs.io/en/latest/install.html#windows)
 - [Unraid](https://ytdl-sub.readthedocs.io/en/latest/install.html#unraid)
@@ -200,7 +205,7 @@ for detailed information on all config fields.
 - [Local Docker Build](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-docker-build)
 
 ### Docker Installation
-Docker installs can be either headless or use the GUI image, which comprises
+Docker installs can be either headless or use the Web-GUI image, which comprises
 [LSIO's](https://www.linuxserver.io/)
 [code-server](https://hub.docker.com/r/linuxserver/code-server)
 Docker image with `ytdl-sub` preinstalled. This is the recommended way to use ``ytdl-sub``.

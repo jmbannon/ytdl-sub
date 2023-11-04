@@ -571,3 +571,11 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
         == "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
     )
     assert monk["subscription_indent_1"] == "Pop"
+
+
+def test_default_docker_config_and_subscriptions():
+    default_config = ConfigFile.from_file_path("docker/root/defaults/config.yaml")
+    default_subs = Subscription.from_file_path(
+        config=default_config, subscription_path=Path("docker/root/defaults/subscriptions.yaml")
+    )
+    assert len(default_subs) == 15
