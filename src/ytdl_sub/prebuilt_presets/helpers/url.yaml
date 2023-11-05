@@ -1,0 +1,96 @@
+
+
+presets:
+
+  _single_url_base:
+    overrides:
+      subscription_value: ""
+      url: "{subscription_value}"
+
+  _multi_url_base:
+    download:
+      - url: "{url2}"
+      - url: "{url3}"
+      - url: "{url4}"
+      - url: "{url5}"
+      - url: "{url6}"
+      - url: "{url7}"
+      - url: "{url8}"
+      - url: "{url9}"
+      - url: "{url10}"
+      - url: "{url11}"
+      - url: "{url12}"
+      - url: "{url13}"
+      - url: "{url14}"
+      - url: "{url15}"
+      - url: "{url16}"
+      - url: "{url17}"
+      - url: "{url18}"
+      - url: "{url19}"
+      - url: "{url20}"
+    overrides:
+      subscription_value_2: ""
+      subscription_value_3: ""
+      subscription_value_4: ""
+      subscription_value_5: ""
+      subscription_value_6: ""
+      subscription_value_7: ""
+      subscription_value_8: ""
+      subscription_value_9: ""
+      subscription_value_10: ""
+      subscription_value_11: ""
+      subscription_value_12: ""
+      subscription_value_13: ""
+      subscription_value_14: ""
+      subscription_value_15: ""
+      subscription_value_16: ""
+      subscription_value_17: ""
+      subscription_value_18: ""
+      subscription_value_19: ""
+      subscription_value_20: ""
+      url2: "{subscription_value_2}"
+      url3: "{subscription_value_3}"
+      url4: "{subscription_value_4}"
+      url5: "{subscription_value_5}"
+      url6: "{subscription_value_6}"
+      url7: "{subscription_value_7}"
+      url8: "{subscription_value_8}"
+      url9: "{subscription_value_9}"
+      url10: "{subscription_value_10}"
+      url11: "{subscription_value_11}"
+      url12: "{subscription_value_12}"
+      url13: "{subscription_value_13}"
+      url14: "{subscription_value_14}"
+      url15: "{subscription_value_15}"
+      url16: "{subscription_value_16}"
+      url17: "{subscription_value_17}"
+      url18: "{subscription_value_18}"
+      url19: "{subscription_value_19}"
+      url20: "{subscription_value_20}"
+
+  _single_url:
+    preset: "_single_url_base"
+    download:
+      - "{url}"
+
+  _single_url_with_avatar_and_banner:
+    preset: "_single_url_base"
+    download:
+      - url: "{url}"
+        playlist_thumbnails:
+          - name: "{avatar_uncropped_thumbnail_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{banner_uncropped_thumbnail_file_name}"
+            uid: "banner_uncropped"
+
+##################################################################################
+
+  _multi_url:
+    preset:
+      - "_single_url"
+      - "_multi_url_base"
+
+  _multi_url_with_avatar_and_banner:
+    preset:
+      - "_single_url_with_avatar_and_banner"
+      - "_multi_url_base"

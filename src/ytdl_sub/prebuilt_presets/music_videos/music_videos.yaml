@@ -1,7 +1,7 @@
 presets:
   _music_video_base:
-    download:
-      - "{url}"
+    preset:
+      - "_multi_url"
 
     output_options:
       output_directory: "{music_video_directory}"
@@ -22,8 +22,6 @@ presets:
 
       # Subscription overrides
       subscription_indent_1: "{music_video_genre_default}"
-      subscription_value: ""
-      url: "{subscription_value}"
 
       # Music Video Overrides
       music_video_title: "{title}"
