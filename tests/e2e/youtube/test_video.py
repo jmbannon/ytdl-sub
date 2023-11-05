@@ -21,7 +21,6 @@ def single_video_preset_dict_old_video_tags_format(output_directory):
         "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
         # override the output directory with our fixture-generated dir
         "output_options": {
-            "output_directory": output_directory,
             "maintain_download_archive": False,
         },
         "embed_thumbnail": True,  # embed thumb into the video
@@ -32,7 +31,10 @@ def single_video_preset_dict_old_video_tags_format(output_directory):
                 "title": "{title}",
             }
         },
-        "overrides": {"music_video_artist": "JMC"},
+        "overrides": {
+            "music_video_artist": "JMC",
+            "music_video_directory": output_directory,
+        },
     }
 
 
@@ -43,7 +45,6 @@ def single_video_preset_dict(output_directory):
         "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
         # override the output directory with our fixture-generated dir
         "output_options": {
-            "output_directory": output_directory,
             "maintain_download_archive": False,
         },
         "embed_thumbnail": True,  # embed thumb into the video
@@ -52,7 +53,12 @@ def single_video_preset_dict(output_directory):
         "video_tags": {
             "title": "{title}",
         },
-        "overrides": {"music_video_artist": "JMC"},
+        # And test subscription download proba = 1.0
+        "throttle_protection": {"subscription_download_probability": 1.0},
+        "overrides": {
+            "music_video_artist": "JMC",
+            "music_video_directory": output_directory,
+        },
     }
 
 
@@ -113,7 +119,7 @@ class TestYoutubeVideo:
             transaction_log_summary_file_name="youtube/test_video.txt",
         )
 
-    @pytest.mark.parametrize("dry_run", [True])
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download(
         self,
         default_config,
