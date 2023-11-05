@@ -134,11 +134,14 @@ class DownloadArgsParser:
 
         next_dict[arg_name_split[-1]] = arg_value
 
-        # TODO: handle ints/floats
         if arg_value == "True":
             next_dict[arg_name_split[-1]] = True
         elif arg_value == "False":
             next_dict[arg_name_split[-1]] = False
+        elif arg_value.isdigit():
+            next_dict[arg_name_split[-1]] = int(arg_value)
+        elif arg_value.replace(".", "", 1).isdigit():
+            next_dict[arg_name_split[-1]] = float(arg_value)
 
         return argument_dict
 
