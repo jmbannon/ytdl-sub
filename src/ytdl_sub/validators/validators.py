@@ -149,6 +149,15 @@ class IntValidator(ValueValidator[int]):
     _expected_value_type_name = "int"
 
 
+class ProbabilityValidator(FloatValidator):
+    _expected_value_type_name = "probability"
+
+    def __init__(self, name, value):
+        super().__init__(name, value)
+        if self.value < 0 or self.value > 1:
+            raise self._validation_exception("Probabilities must be between 0 and 1.0")
+
+
 class ListValidator(Validator, ABC, Generic[ValidatorT]):
     """
     Validates a list of objects to validate

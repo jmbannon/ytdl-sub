@@ -15,6 +15,7 @@ disable = [
     "R0913", # Too many arguments
     "R0901", # too-many-ancestors
     "R0902", # too-many-instance-attributes
+    "R1711", # useless-return
     "W0511", # TODO
 ]
 
