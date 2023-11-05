@@ -97,6 +97,26 @@ class TestDownloadArgsParser:
                 "dl --parameter.not.using.list[0] 'v0'",
                 {"parameter": {"not": {"using": {"list[0]": "v0"}}}},
             ),
+            (
+                None,
+                "dl --a.float.parameter 1.3",
+                {"a": {"float": {"parameter": 1.3}}},
+            ),
+            (
+                None,
+                "dl --a.int.parameter 6",
+                {"a": {"int": {"parameter": 6}}},
+            ),
+            (
+                None,
+                "dl --a.true.parameter True",
+                {"a": {"true": {"parameter": True}}},
+            ),
+            (
+                None,
+                "dl --a.false.parameter False",
+                {"a": {"false": {"parameter": False}}},
+            ),
         ],
     )
     def test_successful_args(self, config_options_generator, aliases, cmd, expected_sub_dict):

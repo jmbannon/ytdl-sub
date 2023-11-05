@@ -1,6 +1,7 @@
 import hashlib
 import re
 import shlex
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Tuple
@@ -116,7 +117,7 @@ class DownloadArgsParser:
         return largest_consecutive + 1
 
     @classmethod
-    def _argument_name_and_value_to_dict(cls, arg_name: str, arg_value: str) -> Dict:
+    def _argument_name_and_value_to_dict(cls, arg_name: str, arg_value: Any) -> Dict:
         """
         :param arg_name: Argument name in the form of 'key1.key2.key3'
         :param arg_value: Argument value
@@ -134,14 +135,15 @@ class DownloadArgsParser:
 
         next_dict[arg_name_split[-1]] = arg_value
 
-        if arg_value == "True":
-            next_dict[arg_name_split[-1]] = True
-        elif arg_value == "False":
-            next_dict[arg_name_split[-1]] = False
-        elif arg_value.isdigit():
-            next_dict[arg_name_split[-1]] = int(arg_value)
-        elif arg_value.replace(".", "", 1).isdigit():
-            next_dict[arg_name_split[-1]] = float(arg_value)
+        if isinstance(arg_value, str):
+            if arg_value == "True":
+                next_dict[arg_name_split[-1]] = True
+            elif arg_value == "False":
+                next_dict[arg_name_split[-1]] = False
+            elif arg_value.isdigit():
+                next_dict[arg_name_split[-1]] = int(arg_value)
+            elif arg_value.replace(".", "", 1).isdigit():
+                next_dict[arg_name_split[-1]] = float(arg_value)
 
         return argument_dict
 
