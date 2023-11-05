@@ -71,16 +71,17 @@ class ThrottleProtectionOptions(OptionsDictValidator):
 
        presets:
          my_example_preset:
-           sleep_per_download_s:
-             min: 2.2
-             max: 10.8
-           sleep_per_subscription_s:
-             min: 9.0
-             max: 14.1
-           max_downloads_per_subscription:
-             min: 10
-             max: 36
-           subscription_download_probability: 1.0
+           throttle_protection:
+             sleep_per_download_s:
+               min: 2.2
+               max: 10.8
+             sleep_per_subscription_s:
+               min: 9.0
+               max: 14.1
+             max_downloads_per_subscription:
+               min: 10
+               max: 36
+             subscription_download_probability: 1.0
     """
 
     _optional_keys = {
