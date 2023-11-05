@@ -17,7 +17,6 @@ from ytdl_sub.utils.exceptions import ValidationException
 def regex_subscription_dict_base(output_directory):
     return {
         "preset": "Jellyfin Music Videos",
-        "download": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         "format": "best[height<=480]",  # download the worst format so it is fast
@@ -43,6 +42,7 @@ def regex_subscription_dict_base(output_directory):
         },
         "overrides": {
             "in_regex_default": "in regex default",
+            "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"
         },
     }
 
