@@ -61,8 +61,9 @@ class RandomizedRangeValidator(StrictDictValidator):
 
 class ThrottleProtectionOptions(OptionsDictValidator):
     """
-    Provides options to make ytdl-sub look more 'human-like'. For range-based values,
-    a random number will be chosen within the range to avoid sleeps looking scripted.
+    Provides options to make ytdl-sub look more 'human-like' to protect from throttling. For
+    range-based values, a random number will be chosen within the range to avoid sleeps looking
+    scripted.
 
     Usage:
 
@@ -71,11 +72,11 @@ class ThrottleProtectionOptions(OptionsDictValidator):
        presets:
          my_example_preset:
            sleep_per_download_s:
-             min: 2
-             max: 10
+             min: 2.2
+             max: 10.8
            sleep_per_subscription_s:
-             min: 9
-             max: 14
+             min: 9.0
+             max: 14.1
            max_downloads_per_subscription:
              min: 10
              max: 36
@@ -108,31 +109,31 @@ class ThrottleProtectionOptions(OptionsDictValidator):
     @property
     def sleep_per_download_s(self) -> Optional[RandomizedRangeValidator]:
         """
-        Range in seconds to sleep between each download. Does not include time it takes for ytdl-sub
-        to perform post-processing.
+        Number in seconds to sleep between each download. Does not include time it takes for
+        ytdl-sub to perform post-processing.
         """
         return self._sleep_per_download_s
 
     @property
     def sleep_per_subscription_s(self) -> Optional[RandomizedRangeValidator]:
         """
-        Range in seconds to sleep between each subscription.
+        Number in seconds to sleep between each subscription.
         """
         return self._sleep_per_subscription_s
 
     @property
     def max_downloads_per_subscription(self) -> Optional[RandomizedRangeValidator]:
         """
-        Range of downloads to perform per subscription.
+        Number of downloads to perform per subscription.
         """
         return self._max_downloads_per_subscription
 
     @property
     def subscription_download_probability(self) -> Optional[ProbabilityValidator]:
         """
-        Probability to perform any downloads for each subscription. This is only recommended to
-        set if you run ytdl-sub in a cron-job, that way you are statistically guaranteed over time
-        to eventually download the subscription.
+        Probability to perform any downloads, recomputed for each subscription. This is only
+        recommended to set if you run ytdl-sub in a cron-job, that way you are statistically
+        guaranteed over time to eventually download the subscription.
         """
         return self._subscription_download_probability
 

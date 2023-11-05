@@ -252,6 +252,14 @@ subtitles
 
 -------------------------------------------------------------------------------
 
+throttle_protection
+'''''''''''''''''''
+.. autoclass:: ytdl_sub.plugins.throttle_protection.ThrottleProtectionOptions()
+  :members:
+  :member-order: bysource
+
+-------------------------------------------------------------------------------
+
 video_tags
 ''''''''''
 .. autoclass:: ytdl_sub.plugins.video_tags.VideoTagsOptions()
