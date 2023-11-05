@@ -17,6 +17,7 @@ from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlu
 from ytdl_sub.plugins.regex import RegexPlugin
 from ytdl_sub.plugins.split_by_chapters import SplitByChaptersPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
+from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 from ytdl_sub.plugins.video_tags import VideoTagsPlugin
 
 
@@ -41,6 +42,7 @@ class PluginMapping:
         "subtitles": SubtitlesPlugin,
         "chapters": ChaptersPlugin,
         "split_by_chapters": SplitByChaptersPlugin,
+        "throttle_protection": ThrottleProtectionPlugin,
     }
 
     @classmethod

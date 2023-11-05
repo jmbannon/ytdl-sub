@@ -9,6 +9,7 @@ from typing import Any
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Optional
 from unittest.mock import patch
 
 import pytest
@@ -78,11 +79,17 @@ def reformat_directory() -> Path:
 
 
 @contextlib.contextmanager
-def assert_logs(logger: logging.Logger, expected_message: str, log_level: str = "debug"):
+def assert_logs(
+    logger: logging.Logger,
+    expected_message: str,
+    log_level: str = "debug",
+    expected_occurrences: Optional[int] = None,
+):
     """
     Patches any function, but calls the original function.
     Intended to see if the particular function is called.
     """
+    occurrences = 0
     debug_logger = Logger.get()
 
     def _wrapped_debug(*args, **kwargs):
@@ -92,10 +99,14 @@ def assert_logs(logger: logging.Logger, expected_message: str, log_level: str = 
         yield
 
     for call_args in patched_debug.call_args_list:
-        if expected_message in call_args.args[0]:
-            return
+        occurrences += int(expected_message in call_args.args[0])
 
-    assert False, f"{expected_message} was not found in a logger.debug call"
+    if expected_occurrences:
+        assert (
+            occurrences == expected_occurrences
+        ), f"{expected_message} was expected {expected_occurrences} times, got {occurrences}"
+    else:
+        assert occurrences > 0, f"{expected_message} was not found in a logger.debug call"
 
 
 def preset_dict_to_dl_args(preset_dict: Dict) -> str:

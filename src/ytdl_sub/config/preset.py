@@ -12,7 +12,7 @@ from mergedeep import mergedeep
 
 from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_class_mappings import PluginMapping
+from ytdl_sub.config.plugin_mapping import PluginMapping
 from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import Overrides

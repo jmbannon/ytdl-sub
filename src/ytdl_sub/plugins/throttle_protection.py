@@ -34,12 +34,14 @@ class RandomizedRangeValidator(StrictDictValidator):
             key="min", validator=FloatValidator, default=0.0
         ).value
 
+        if self._min < 0:
+            raise self._validation_exception("min must be greater than zero")
+
         if self._max < self._min:
             raise self._validation_exception(
                 f"max ({self._max}) must be greater than or equal to min ({self._min})"
             )
 
-    @property
     def randomized_float(self) -> float:
         """
         Returns
@@ -48,14 +50,13 @@ class RandomizedRangeValidator(StrictDictValidator):
         """
         return random.uniform(self._min, self._max)
 
-    @property
     def randomized_int(self) -> int:
         """
         Returns
         -------
-        A random integer within the range after casting the min + max to ints
+        A random float within the range, then cast to an integer (floored)
         """
-        return random.randrange(int(self._min), int(self._max))
+        return int(self.randomized_float())
 
 
 class ThrottleProtectionOptions(OptionsDictValidator):
@@ -124,7 +125,7 @@ class ThrottleProtectionOptions(OptionsDictValidator):
         """
         Range of downloads to perform per subscription.
         """
-        return self._sleep_per_subscription_s
+        return self._max_downloads_per_subscription
 
     @property
     def subscription_download_probability(self) -> Optional[ProbabilityValidator]:
@@ -152,7 +153,7 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         # If subscriptions have a max download limit, set it here for the first subscription
         if self.plugin_options.max_downloads_per_subscription:
             self._subscription_max_downloads = (
-                self.plugin_options.max_downloads_per_subscription.randomized_int
+                self.plugin_options.max_downloads_per_subscription.randomized_int()
             )
 
     def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
@@ -168,8 +169,13 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         ]
 
         if self.plugin_options.subscription_download_probability:
-            # assume proba is set to 1.0, random.random() will always be < 1, so do nothing
-            if random.random() < self.plugin_options.subscription_download_probability.value:
+            proba = self.plugin_options.subscription_download_probability.value
+            # assume proba is set to 1.0, random.random() will always be < 1, can never reach this
+            if random.random() > proba:
+                logger.info(
+                    "Subscription download probability of %f missed, skipping this subscription",
+                    proba,
+                )
                 return do_not_perform_download
 
         return perform_download
@@ -181,7 +187,8 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         ):
             if self._subscription_download_counter == self._subscription_max_downloads:
                 logger.info(
-                    "reached subscription max downloads of %d", self._subscription_max_downloads
+                    "Reached subscription max downloads of %d for throttle protection",
+                    self._subscription_max_downloads,
                 )
                 self._subscription_download_counter += 1  # increment to only print once
 
@@ -190,17 +197,20 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         return entry
 
     def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
-        if self._subscription_download_counter == 0:
-            logger.info(
-                "setting subscription max downloads to %d", self._subscription_max_downloads
+        if (
+            self._subscription_max_downloads is not None
+            and self._subscription_download_counter == 0
+        ):
+            logger.debug(
+                "Setting subscription max downloads to %d", self._subscription_max_downloads
             )
 
         # Increment the counter
         self._subscription_download_counter += 1
 
         if self.plugin_options.sleep_per_download_s:
-            sleep_time = self.plugin_options.sleep_per_download_s.randomized_float
-            logger.info("sleeping between downloads for %0.2f seconds", sleep_time)
+            sleep_time = self.plugin_options.sleep_per_download_s.randomized_float()
+            logger.debug("Sleeping between downloads for %0.2f seconds", sleep_time)
             time.sleep(sleep_time)
 
         return None
@@ -216,6 +226,6 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
             )
 
         if self.plugin_options.sleep_per_subscription_s:
-            sleep_time = self.plugin_options.sleep_per_subscription_s.randomized_float
-            logger.info("sleeping between subscriptions for %0.2f seconds", sleep_time)
+            sleep_time = self.plugin_options.sleep_per_subscription_s.randomized_float()
+            logger.debug("Sleeping between subscriptions for %0.2f seconds", sleep_time)
             time.sleep(sleep_time)
