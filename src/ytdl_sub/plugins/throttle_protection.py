@@ -1,6 +1,8 @@
 import random
 import time
-from typing import Optional, Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
@@ -153,23 +155,24 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
                 self.plugin_options.max_downloads_per_subscription.randomized_int
             )
 
-    def ytdl_options(self) -> Optional[Dict]:
+    def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
         """
         Returns
         -------
-        ytdl options to enable/disable when downloading entries for this specific plugin
+        If subscription_download_probability, match-filters that will perform no downloads
+        if it's rolled to not download.
         """
+        perform_download: Tuple[List[str], List[str]] = [], []
+        do_not_perform_download: Tuple[List[str], List[str]] = [], [
+            "title = __YTDL_SUB_THROTTLE_PROTECTION_ON_SUBSCRIPTION_DOWNLOAD__"
+        ]
+
         if self.plugin_options.subscription_download_probability:
             # assume proba is set to 1.0, random.random() will always be < 1, so do nothing
             if random.random() < self.plugin_options.subscription_download_probability.value:
-                return None
+                return do_not_perform_download
 
-            # otherwise, do not perform any downloads
-            return {
-                "max_downloads": 0
-            }
-
-        return None
+        return perform_download
 
     def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
         if (
@@ -177,7 +180,9 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
             and self._subscription_download_counter >= self._subscription_max_downloads
         ):
             if self._subscription_download_counter == self._subscription_max_downloads:
-                logger.info("reached subscription max downloads of %d", self._subscription_max_downloads)
+                logger.info(
+                    "reached subscription max downloads of %d", self._subscription_max_downloads
+                )
                 self._subscription_download_counter += 1  # increment to only print once
 
             return None
@@ -186,7 +191,9 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
 
     def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
         if self._subscription_download_counter == 0:
-            logger.info("setting subscription max downloads to %d", self._subscription_max_downloads)
+            logger.info(
+                "setting subscription max downloads to %d", self._subscription_max_downloads
+            )
 
         # Increment the counter
         self._subscription_download_counter += 1
