@@ -15,11 +15,49 @@ __preset__:
     music_video_directory: "/music_videos"
 
 # Choose between Jellyfin/Kodi/Plex Music Videos
-# "Jellyfin Music Videos":
-# "Kodi Music Videos":
-"Plex Music Videos":
+#   - Plex Music Videos:
+#   - Jellyfin Music Videos:
+#   - Kodi Music Videos:
+Plex Music Videos:
   = Pop:  # Sets genre tag to "Pop"
     "Rick Astley": "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
     "Michael Jackson": "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
   = Blues:
     "Eric Clapton": "https://www.youtube.com/playlist?list=PLABGggHhsbEeaRtdzqnxYoEINsJE_4GF4"
+
+# Choose between Jellyfin/Kodi/Plex Music Videos with Extras
+#   - Plex Music Videos with Extras:
+#   - Jellyfin Music Videos with Extras:
+#   - Kodi Music Videos with Extras:
+#
+# The pattern for this preset is
+#   - "Album Title | Video Title"
+#   - "https://..."
+#   - "Album Title | Video Title"
+#   - "https://..."
+#    ...
+#
+# For Kodi + Plex, the Album Title can be anything.
+# For Plex, the Album Title must be one of the following:
+#   - behindthescenes
+#   - concert
+#   - interview
+#   - live
+#   - lyrics
+#   - video
+# to conform to their naming convention found here:
+# https://support.plex.tv/articles/205568377-adding-local-artist-and-music-videos/
+# You will get a regex error if it's not set correctly.
+#
+# Video Title is optional. It will use that title instead of the video's actual title.
+# Note that this should be only used on URLS that link to a single video, otherwise
+# every video in a playlist gets the same title.
+Plex Music Videos with Extras:
+  = Metal:
+    "System of a Down":
+      - "video"
+      - "https://www.youtube.com/playlist?list=OLAK5uy_kYvOOhnr1a5kluwLptB3wOvhkYQ7mQS8E"
+      - "behindthescenes | Making of Toxicity - Early Cut"
+      - "https://www.youtube.com/watch?v=c9Oo2RHkOaA"
+      - "concert | Lowlands (2001)"
+      - "https://www.youtube.com/watch?v=Jwl4DfdtkSw"
