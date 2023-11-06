@@ -1,0 +1,50 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+{output_directory}/subscription_test
+  Custom Title-behindthescenes.jpg
+  Custom Title-behindthescenes.mp4
+    Video Tags:
+      album: behindthescenes
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2021-08-08
+      title: Custom Title
+      year: 2021
+  Mock Entry 20-4-behindthescenes.jpg
+  Mock Entry 20-4-behindthescenes.mp4
+    Video Tags:
+      album: behindthescenes
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-08-06
+      title: Mock Entry 20-4
+      year: 2020
+  Mock Entry 20-5-behindthescenes.jpg
+  Mock Entry 20-5-behindthescenes.mp4
+    Video Tags:
+      album: behindthescenes
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-07-06
+      title: Mock Entry 20-5
+      year: 2020
+  Mock Entry 20-6-behindthescenes.jpg
+  Mock Entry 20-6-behindthescenes.mp4
+    Video Tags:
+      album: behindthescenes
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-07-06
+      title: Mock Entry 20-6
+      year: 2020
+  Mock Entry 20-7-behindthescenes.jpg
+  Mock Entry 20-7-behindthescenes.mp4
+    Video Tags:
+      album: behindthescenes
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-06-06
+      title: Mock Entry 20-7
+      year: 2020

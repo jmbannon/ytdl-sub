@@ -1,8 +1,5 @@
 presets:
   _music_video_base:
-    preset:
-      - "_multi_url"
-
     output_options:
       output_directory: "{music_video_directory}"
       file_name: "{music_video_file_name}.{ext}"
@@ -32,7 +29,8 @@ presets:
       music_video_genre: "{subscription_indent_1}"
 
       # Directory Overrides
-      music_video_file_name: "{music_video_artist_sanitized}/{music_video_title_sanitized}"
+      music_video_file_name_suffix: ""
+      music_video_file_name: "{music_video_artist_sanitized}/{music_video_title_sanitized}{music_video_file_name_suffix}"
 
   _music_video_nfo:
     nfo_tags:
@@ -58,6 +56,7 @@ presets:
 
   "Jellyfin Music Videos":
     preset:
+      - "_multi_url"
       - "_base"
       - "_music_video_base"
       - "_music_video_nfo"
@@ -65,6 +64,7 @@ presets:
 
   "Kodi Music Videos":
     preset:
+      - "_multi_url"
       - "_kodi_base"
       - "_music_video_base"
       - "_music_video_nfo"
@@ -72,6 +72,7 @@ presets:
 
   "Plex Music Videos":
     preset:
+      - "_multi_url"
       - "_plex_video_base"
       - "_music_video_base"
       - "_music_video_tags"

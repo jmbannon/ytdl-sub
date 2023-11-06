@@ -1,0 +1,48 @@
+presets:
+  _music_video_extras_base:
+    preset:
+      - "_music_video_base"
+      - "_metadata_list_url"
+      - "_metadata_capture"
+
+    overrides:
+      # Metadata is in the form of "Album Title | Video Title"
+      # for Plex, Album Title will serve as the suffix. For more details, see
+      # https://support.plex.tv/articles/205568377-adding-local-artist-and-music-videos/
+      metadata_to_capture_1: "{url_metadata}"
+      metadata_to_capture_2: "{url_metadata}"
+      metadata_to_capture_2_default: "{title}"
+
+      music_video_album: "{metadata_captured_1}"
+      music_video_title: "{metadata_captured_2}"
+
+  "Jellyfin Music Videos with Extras":
+    preset:
+      - "_base"
+      - "_music_video_extras_base"
+      - "_music_video_nfo"
+      - "_music_video_tags"
+
+  "Kodi Music Videos with Extras":
+    preset:
+      - "_kodi_base"
+      - "_music_video_extras_base"
+      - "_music_video_nfo"
+      - "_music_video_tags"
+
+  "Plex Music Videos with Extras":
+    preset:
+      - "_plex_video_base"
+      - "_music_video_extras_base"
+      - "_music_video_tags"
+
+    regex:
+      from:
+        metadata_verify_plex_suffix:
+          match:
+            - "^(?:behindthescenes|concert|interview|live|lyrics|video) \\| .*"
+            - "^(?:behindthescenes|concert|interview|live|lyrics|video)$"
+
+    overrides:
+      metadata_verify_plex_suffix: "{url_metadata}"
+      music_video_file_name_suffix: "-{music_video_album}"

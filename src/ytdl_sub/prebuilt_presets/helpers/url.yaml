@@ -84,3 +84,117 @@ presets:
       url18: "{subscription_value_18}"
       url19: "{subscription_value_19}"
       url20: "{subscription_value_20}"
+
+##################################################################################
+# Multi urls in the form of
+#
+#   "Subscription Name":
+#     - "url1 metadata ..."
+#     - "url1"
+#     - "url2 metadata ..."
+#     - "url2"
+#
+# where each URL requires metadata above it.
+# url1 can optionally grab channel avatar + banner
+#
+
+  _metadata_list_url:
+    download:
+      - url: "{subscription_value_2}"
+        variables:
+          url_metadata: "{subscription_value_1}"
+        playlist_thumbnails:
+          - name: "{avatar_uncropped_thumbnail_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{banner_uncropped_thumbnail_file_name}"
+            uid: "banner_uncropped"
+      - url: "{subscription_value_4}"
+        variables:
+          url_metadata: "{subscription_value_3}"
+      - url: "{subscription_value_6}"
+        variables:
+          url_metadata: "{subscription_value_5}"
+      - url: "{subscription_value_8}"
+        variables:
+          url_metadata: "{subscription_value_7}"
+      - url: "{subscription_value_10}"
+        variables:
+          url_metadata: "{subscription_value_9}"
+      - url: "{subscription_value_12}"
+        variables:
+          url_metadata: "{subscription_value_11}"
+      - url: "{subscription_value_14}"
+        variables:
+          url_metadata: "{subscription_value_13}"
+      - url: "{subscription_value_16}"
+        variables:
+          url_metadata: "{subscription_value_15}"
+      - url: "{subscription_value_18}"
+        variables:
+          url_metadata: "{subscription_value_17}"
+      - url: "{subscription_value_20}"
+        variables:
+          url_metadata: "{subscription_value_19}"
+      - url: "{subscription_value_22}"
+        variables:
+          url_metadata: "{subscription_value_21}"
+      - url: "{subscription_value_24}"
+        variables:
+          url_metadata: "{subscription_value_23}"
+      - url: "{subscription_value_26}"
+        variables:
+          url_metadata: "{subscription_value_25}"
+      - url: "{subscription_value_28}"
+        variables:
+          url_metadata: "{subscription_value_27}"
+      - url: "{subscription_value_30}"
+        variables:
+          url_metadata: "{subscription_value_29}"
+      - url: "{subscription_value_32}"
+        variables:
+          url_metadata: "{subscription_value_31}"
+      - url: "{subscription_value_34}"
+        variables:
+          url_metadata: "{subscription_value_33}"
+      - url: "{subscription_value_36}"
+        variables:
+          url_metadata: "{subscription_value_35}"
+    overrides:
+      avatar_uncropped_thumbnail_file_name: ""
+      banner_uncropped_thumbnail_file_name: ""
+      subscription_value: ""
+      subscription_value_2: ""
+      subscription_value_3: ""
+      subscription_value_4: ""
+      subscription_value_5: ""
+      subscription_value_6: ""
+      subscription_value_7: ""
+      subscription_value_8: ""
+      subscription_value_9: ""
+      subscription_value_10: ""
+      subscription_value_11: ""
+      subscription_value_12: ""
+      subscription_value_13: ""
+      subscription_value_14: ""
+      subscription_value_15: ""
+      subscription_value_16: ""
+      subscription_value_17: ""
+      subscription_value_18: ""
+      subscription_value_19: ""
+      subscription_value_20: ""
+      subscription_value_21: ""
+      subscription_value_22: ""
+      subscription_value_23: ""
+      subscription_value_24: ""
+      subscription_value_25: ""
+      subscription_value_26: ""
+      subscription_value_27: ""
+      subscription_value_28: ""
+      subscription_value_29: ""
+      subscription_value_30: ""
+      subscription_value_31: ""
+      subscription_value_32: ""
+      subscription_value_33: ""
+      subscription_value_34: ""
+      subscription_value_35: ""
+      subscription_value_36: ""

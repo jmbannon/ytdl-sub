@@ -1,4 +1,5 @@
 import copy
+from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -9,6 +10,7 @@ from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.prebuilt_presets.music import MusicPresets
+from ytdl_sub.prebuilt_presets.music_videos import MusicVideoExtrasPresets
 from ytdl_sub.prebuilt_presets.music_videos import MusicVideoPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateEpisodeFormattingPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateOldPresets
@@ -16,6 +18,7 @@ from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionEpisodeFormattingP
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionSeasonPresets
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.exceptions import ValidationException
 
 
@@ -514,6 +517,131 @@ class TestPrebuiltMusicVideoPresets:
 
         with mock_download_collection_entries(
             is_youtube_channel=False, num_urls=1, is_extracted_audio=False
+        ):
+            transaction_log = subscription.download(dry_run=False)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"{expected_summary_name}.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name=f"{expected_summary_name}.json",
+        )
+
+
+@pytest.mark.parametrize("music_video_extras_preset", MusicVideoExtrasPresets.preset_names)
+@pytest.mark.parametrize(
+    "album_metadata",
+    ["behindthescenes", "concert", "interview", "live", "lyrics", "video", "Custom Album"],
+)
+@pytest.mark.parametrize("multi_url", [True, False])
+class TestPrebuiltMusicVideoPresets:
+    def _will_succeed(self, music_video_extras_preset: str, album_metadata: str) -> bool:
+        if "Plex" not in music_video_extras_preset:
+            return True
+
+        return album_metadata in [
+            "behindthescenes",
+            "concert",
+            "interview",
+            "live",
+            "lyrics",
+            "video",
+        ]
+
+    def _preset_dict(
+        self,
+        output_directory: Path,
+        music_video_extras_preset: str,
+        album_metadata: str,
+        multi_url: bool,
+    ) -> Tuple[Dict, bool]:
+        """Dict, whether it will succeed or not"""
+
+        subscription_indent_1 = album_metadata
+        subscription_indent_2 = "https://your.name.here"
+        subscription_indent_3 = ""
+        subscription_indent_4 = ""
+
+        if multi_url:
+            subscription_indent_3 = subscription_indent_1 + " | Custom Title"
+            subscription_indent_4 = "https://your.name.here2"
+
+        preset_dict = {
+            "preset": [
+                music_video_extras_preset,
+            ],
+            "overrides": {
+                "music_video_directory": output_directory,
+                "subscription_value_1": subscription_indent_1,
+                "subscription_value_2": subscription_indent_2,
+                "subscription_value_3": subscription_indent_3,
+                "subscription_value_4": subscription_indent_4,
+            },
+        }
+
+        return preset_dict, self._will_succeed(
+            music_video_extras_preset=music_video_extras_preset, album_metadata=album_metadata
+        )
+
+    def test_compilation(
+        self,
+        config,
+        output_directory: Path,
+        music_video_extras_preset: str,
+        album_metadata: str,
+        multi_url: bool,
+    ):
+        preset_dict, _ = self._preset_dict(
+            output_directory=output_directory,
+            music_video_extras_preset=music_video_extras_preset,
+            album_metadata=album_metadata,
+            multi_url=multi_url,
+        )
+
+        _ = Subscription.from_dict(
+            config=config, preset_name="preset_test", preset_dict=preset_dict
+        )
+
+    def test_presets_run(
+        self,
+        config,
+        subscription_name,
+        output_directory,
+        mock_download_collection_entries,
+        music_video_extras_preset: str,
+        album_metadata: str,
+        multi_url: bool,
+    ):
+        expected_summary_name = (
+            f"unit/music_videos/{music_video_extras_preset}/{album_metadata}/multi_url_{multi_url}"
+        )
+
+        preset_dict, will_succeed = self._preset_dict(
+            output_directory=output_directory,
+            music_video_extras_preset=music_video_extras_preset,
+            album_metadata=album_metadata,
+            multi_url=multi_url,
+        )
+
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=preset_dict,
+        )
+
+        if not will_succeed:
+            with pytest.raises(RegexNoMatchException), mock_download_collection_entries(
+                is_youtube_channel=False, num_urls=2 if multi_url else 1, is_extracted_audio=False
+            ):
+                subscription.download(dry_run=False)
+            return
+
+        with mock_download_collection_entries(
+            is_youtube_channel=False, num_urls=2 if multi_url else 1, is_extracted_audio=False
         ):
             transaction_log = subscription.download(dry_run=False)
 
