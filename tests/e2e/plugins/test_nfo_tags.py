@@ -19,7 +19,8 @@ def subscription_dict(output_directory):
                     "attributes": {"🎸?": "value\nnewlines 🎸"},
                     "tag": "the \n tag 🎸🎸",
                 },
-                "kodi_safe_multi_title 🎸": ["value 1 🎸", "value 2 🎸"],
+                # should not show third empty
+                "kodi_safe_multi_title 🎸": ["value 1 🎸", "value 2 🎸", ""],
                 "kodi_safe_multi_title_with_attrs": [
                     {
                         "attributes": {"🎸?": "value\nnewlines 🎸"},
@@ -29,7 +30,16 @@ def subscription_dict(output_directory):
                         "attributes": {"🎸?": "value\nnewlines 🎸"},
                         "tag": "the \n tag 2 🎸🎸",
                     },
+                    {
+                        "attributes": {"🎸?": "EMPTY TAG SHOULD NOT SHOW"},
+                        "tag": "",
+                    },
                 ],
+                "empty_attribute_tag_SHOULD_NOT_SHOW": {
+                    "attributes": {"🎸?": "value\nnewlines 🎸"},
+                    "tag": "",
+                },
+                "empty_tag_SHOULD_NOT_SHOW": "",
             },
         },
         "output_directory_nfo_tags": {
@@ -41,7 +51,8 @@ def subscription_dict(output_directory):
                     "attributes": {"🎸?": "value\nnewlines 🎸"},
                     "tag": "the \n tag 🎸🎸",
                 },
-                "kodi_safe_multi_title 🎸": ["value 1 🎸", "value 2 🎸"],
+                # should not show third empty
+                "kodi_safe_multi_title 🎸": ["value 1 🎸", "value 2 🎸", ""],
                 "kodi_safe_multi_title_with_attrs": [
                     {
                         "attributes": {"🎸?": "value\nnewlines 🎸"},
@@ -51,7 +62,16 @@ def subscription_dict(output_directory):
                         "attributes": {"🎸?": "value\nnewlines 🎸"},
                         "tag": "the \n tag 2 🎸🎸",
                     },
+                    {
+                        "attributes": {"🎸?": "EMPTY TAG SHOULD NOT SHOW"},
+                        "tag": "",
+                    },
                 ],
+                "empty_attribute_tag_SHOULD_NOT_SHOW": {
+                    "attributes": {"🎸?": "value\nnewlines 🎸"},
+                    "tag": "",
+                },
+                "empty_tag_SHOULD_NOT_SHOW": "",
             },
         },
     }
