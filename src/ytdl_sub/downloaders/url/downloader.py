@@ -79,6 +79,10 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
             thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
             thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
 
+            # If the thumbnail name is an empty string, completely ignore trying to download it
+            if not thumbnail_name:
+                continue
+
             # If latest entry, always update the thumbnail on each entry
             if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
 

@@ -2,13 +2,26 @@
 
 presets:
 
-  _single_url_base:
-    overrides:
-      subscription_value: ""
-      url: "{subscription_value}"
-
-  _multi_url_base:
+##################################################################################
+# Multi urls in the form of
+#
+#   "Subscription Name":
+#     - "url"
+#     - "url2"
+# or
+#
+#   "Subscription Name": "url"
+#
+# where url tries to grab channel avatar + banner
+#
+  _multi_url:
     download:
+      - url: "{url}"
+        playlist_thumbnails:
+          - name: "{avatar_uncropped_thumbnail_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{banner_uncropped_thumbnail_file_name}"
+            uid: "banner_uncropped"
       - url: "{url2}"
       - url: "{url3}"
       - url: "{url4}"
@@ -29,6 +42,9 @@ presets:
       - url: "{url19}"
       - url: "{url20}"
     overrides:
+      avatar_uncropped_thumbnail_file_name: ""
+      banner_uncropped_thumbnail_file_name: ""
+      subscription_value: ""
       subscription_value_2: ""
       subscription_value_3: ""
       subscription_value_4: ""
@@ -48,6 +64,7 @@ presets:
       subscription_value_18: ""
       subscription_value_19: ""
       subscription_value_20: ""
+      url: "{subscription_value}"
       url2: "{subscription_value_2}"
       url3: "{subscription_value_3}"
       url4: "{subscription_value_4}"
@@ -67,30 +84,3 @@ presets:
       url18: "{subscription_value_18}"
       url19: "{subscription_value_19}"
       url20: "{subscription_value_20}"
-
-  _single_url:
-    preset: "_single_url_base"
-    download:
-      - "{url}"
-
-  _single_url_with_avatar_and_banner:
-    preset: "_single_url_base"
-    download:
-      - url: "{url}"
-        playlist_thumbnails:
-          - name: "{avatar_uncropped_thumbnail_file_name}"
-            uid: "avatar_uncropped"
-          - name: "{banner_uncropped_thumbnail_file_name}"
-            uid: "banner_uncropped"
-
-##################################################################################
-
-  _multi_url:
-    preset:
-      - "_single_url"
-      - "_multi_url_base"
-
-  _multi_url_with_avatar_and_banner:
-    preset:
-      - "_single_url_with_avatar_and_banner"
-      - "_multi_url_base"
