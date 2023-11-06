@@ -97,16 +97,18 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
         nfo_tags: Dict[str, List[XmlElement]] = defaultdict(list)
 
         for key, string_tags in self.plugin_options.tags.string_tags.items():
-            nfo_tags[key].extend(
+            tags = [
                 XmlElement(
                     text=self.overrides.apply_formatter(formatter=string_tag, entry=entry),
                     attributes={},
                 )
                 for string_tag in string_tags
-            )
+            ]
+            # Do not add tags with empty text
+            nfo_tags[key].extend(tag for tag in tags if tag.text)
 
         for key, attribute_tags in self.plugin_options.tags.attribute_tags.items():
-            nfo_tags[key].extend(
+            tags = [
                 XmlElement(
                     text=self.overrides.apply_formatter(formatter=attribute_tag.tag, entry=entry),
                     attributes={
@@ -117,9 +119,12 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
                     },
                 )
                 for attribute_tag in attribute_tags
-            )
+            ]
+            # Do not add tags with empty text
+            nfo_tags[key].extend(tag for tag in tags if tag.text)
 
-        return nfo_tags
+        # Do not add tags with empty lists
+        return {key: tags for key, tags in nfo_tags.items() if len(tags) > 0}
 
     def _create_nfo(self, entry: Entry, save_to_entry: bool = True) -> None:
         # Write the nfo tags to XML with the nfo_root
@@ -127,6 +132,10 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
             formatter=self.plugin_options.nfo_root, entry=entry
         )
         nfo_tags = self._get_xml_element_dict(entry=entry)
+
+        # If the nfo tags are empty, then stop continuing
+        if not nfo_tags:
+            return
 
         if self.plugin_options.kodi_safe:
             nfo_root = to_max_3_byte_utf8_string(nfo_root)

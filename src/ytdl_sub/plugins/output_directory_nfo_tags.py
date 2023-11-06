@@ -1,5 +1,3 @@
-from typing import Optional
-
 from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.nfo_tags import NfoTagsValidator
@@ -95,23 +93,16 @@ class OutputDirectoryNfoTagsPlugin(SharedNfoTagsPlugin):
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
         super().__init__(options, overrides, enhanced_download_archive)
-        self._last_entry: Optional[Entry] = None
+        self._created_output_nfo = False
 
     def post_process_entry(self, entry: Entry) -> None:
         """
-        Tracks the last entry processed
-        """
-        self._last_entry = entry
-
-    def post_process_subscription(self):
-        """
-        Creates an NFO file in the root of the output directory using the last entry
+        Creates output NFO using the first entry, and only creates it once
         """
         if (
-            self.plugin_options.nfo_name is None
-            or self.plugin_options.nfo_root is None
-            or self._last_entry is None
+            not self._created_output_nfo
+            and self.plugin_options.nfo_name is not None
+            and self.plugin_options.nfo_root is not None
         ):
-            return
-
-        self._create_nfo(entry=self._last_entry, save_to_entry=False)
+            self._create_nfo(entry=entry, save_to_entry=False)
+            self._created_output_nfo = True
