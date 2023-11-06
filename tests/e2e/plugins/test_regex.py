@@ -42,7 +42,7 @@ def regex_subscription_dict_base(output_directory):
         },
         "overrides": {
             "in_regex_default": "in regex default",
-            "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35"
+            "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
         },
     }
 
