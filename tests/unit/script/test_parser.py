@@ -28,6 +28,13 @@ class TestParser:
             ]
         )
 
+    def test_array(self):
+        parsed = parse("hello {['elem1', 'elem2']}")
+        parsed_empty = parse("hello {[]}")
+        parsed_with_var = parse("hello {['elem1', variable_name]}")
+        parsed_extend = parse("hi {%extend(['elem1', 'elem2'], ['elem3'], [],   ['elem4'])}")
+        assert False
+
     def test_conditional(self):
         parsed = parse("hello {%if(True, 'hi', 3.4)}")
         assert parsed == SyntaxTree(

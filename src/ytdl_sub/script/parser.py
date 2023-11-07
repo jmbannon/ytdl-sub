@@ -4,6 +4,7 @@ from typing import Optional
 from ytdl_sub.script.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.function import ArgumentType
 from ytdl_sub.script.types.function import Function
+from ytdl_sub.script.types.resolvable import Array
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -48,7 +49,7 @@ class _Parser:
             if ch.isspace() and not var_name:
                 self._pos += 1
                 continue
-            if ch in ["}", ",", ")"] or ch.isspace():
+            if ch in ["}", ",", ")", "]"] or ch.isspace():
                 break
 
             is_lower = ch.isascii() and ch.islower()
@@ -115,6 +116,9 @@ class _Parser:
             return Boolean(value=False)
         if self._read(increment_pos=False) in ["'", '"']:
             return self._parse_string()
+        if self._read(increment_pos=False) == "[":
+            self._pos += 1
+            return self._parse_array()
         if self._read(increment_pos=False).isascii() and self._read(increment_pos=False).islower():
             return self._parse_variable()
         raise StringFormattingException(
@@ -122,7 +126,7 @@ class _Parser:
             "string, boolean, or variable without brackets"
         )
 
-    def _parse_function_args(self) -> List[ArgumentType]:
+    def _parse_args(self, breaking_char: str = ")") -> List[ArgumentType]:
         """
         Begin parsing function args after the first ``(``, i.e. ``function_name(``
         """
@@ -131,7 +135,7 @@ class _Parser:
 
         arguments: List[ArgumentType] = []
         while ch := self._read(increment_pos=False):
-            if ch == ")":
+            if ch == breaking_char:
                 break
 
             if ch.isspace():
@@ -162,7 +166,22 @@ class _Parser:
             if ch != "(":
                 function_name += ch
             else:
-                function_args = self._parse_function_args()
+                function_args = self._parse_args()
+
+        raise StringFormattingException("Invalid function")
+
+    def _parse_array(self) -> Array:
+        """
+        Begin parsing an array after reading the first ``[``
+        """
+        function_args: List[String | Variable | "Function"] = []
+
+        while ch := self._read(increment_pos=False):
+            if ch == "]":
+                self._pos += 1
+                return Array(value=function_args)
+            else:
+                function_args = self._parse_args(breaking_char="]")
 
         raise StringFormattingException("Invalid function")
 
@@ -193,6 +212,9 @@ class _Parser:
                 if ch1 == "%":
                     self._pos += 1
                     self._ast.append(self._parse_function())
+                elif ch1 == "[":
+                    self._pos += 1
+                    self._ast.append(self._parse_array())
                 else:
                     self._ast.append(self._parse_variable())
             else:

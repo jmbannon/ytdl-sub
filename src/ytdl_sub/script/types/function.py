@@ -15,6 +15,7 @@ from typing import final
 from typing import get_origin
 
 from ytdl_sub.script.functions import Functions
+from ytdl_sub.script.types.resolvable import Array
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -26,7 +27,7 @@ from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
 
-ArgumentType = Union[Integer, Float, String, Boolean, Variable, "Function"]
+ArgumentType = Union[Integer, Float, String, Boolean, Variable, "Function", Array]
 
 
 @dataclass(frozen=True)

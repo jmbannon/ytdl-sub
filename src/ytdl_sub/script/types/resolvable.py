@@ -61,13 +61,8 @@ class String(ResolvableT[str]):
 
 
 @dataclass(frozen=True)
-class _List(Resolvable, Generic[T], ABC):
-    value: List[T]
+class Array(Resolvable):
+    value: List[Resolvable]
 
     def __str__(self) -> str:
-        return f"[{', '.join([str(val) for val in self.value])}]"
-
-
-@dataclass(frozen=True)
-class StringList(_List[String]):
-    pass
+        return f"[{', '.join([val.value for val in self.value])}]"
