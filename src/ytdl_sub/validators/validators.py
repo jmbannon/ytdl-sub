@@ -138,6 +138,12 @@ class StringValidator(ValueValidator[str]):
     _expected_value_type = str
     _expected_value_type_name = "string"
 
+    def __init__(self, name: str, value: Any):
+        if isinstance(value, (int, float, bool)):
+            value = str(value)
+
+        super().__init__(name, value)
+
 
 class FloatValidator(ValueValidator[float]):
     _expected_value_type = (int, float)

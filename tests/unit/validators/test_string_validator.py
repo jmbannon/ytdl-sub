@@ -4,12 +4,12 @@ from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.validators import StringValidator
 
 
-@pytest.mark.parametrize("value", ["a", "unicode 💩", ""])
+@pytest.mark.parametrize("value", ["a", "unicode 💩", "", 1, 3.14, True, False])
 def test_string_validator(value):
     string_validator = StringValidator(name="good_str_validator", value=value)
     assert string_validator._name == "good_str_validator"
-    assert string_validator._value == value
-    assert string_validator.value == value
+    assert string_validator._value == str(value)
+    assert string_validator.value == str(value)
 
 
 @pytest.mark.parametrize("value", [None, {}, True, 0])
