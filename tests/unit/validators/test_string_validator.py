@@ -12,8 +12,8 @@ def test_string_validator(value):
     assert string_validator.value == str(value)
 
 
-@pytest.mark.parametrize("value", [None, {}, True, 0])
-def test_bool_validator_fails_bad_value(value):
+@pytest.mark.parametrize("value", [None, dict(), [], set()])
+def test_string_validator_fails_bad_value(value):
     with pytest.raises(
         ValidationException, match="Validation error in fail: should be of type string"
     ):
