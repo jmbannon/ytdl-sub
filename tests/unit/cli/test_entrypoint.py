@@ -31,7 +31,7 @@ def test_subscription_logs_write_to_file(
     mock_success_output: bool,
     keep_successful_logs: bool,
 ):
-    subscripton_names = ["Rick Astley", "Michael Jackson", "Eric Clapton", "System of a Down"]
+    subscripton_names = ["Rick Astley", "Michael Jackson", "Eric Clapton"]
     num_runs = 2
 
     config = persist_logs_config_factory(keep_successful_logs=keep_successful_logs)

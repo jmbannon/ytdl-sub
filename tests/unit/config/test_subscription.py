@@ -560,7 +560,7 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
         config=default_config, subscription_path=music_video_subscription_path
     )
 
-    assert len(subs) == 4
+    assert len(subs) == 3
     assert subs[1].name == "Michael Jackson"
     monk = subs[1].overrides.dict_with_format_strings
 
