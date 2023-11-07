@@ -3,6 +3,7 @@ from typing import Dict
 import pytest
 
 from ytdl_sub.script.syntax_tree import SyntaxTree
+from ytdl_sub.script.types.function import Function
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -23,11 +24,35 @@ class TestSyntaxTree:
             "b_": String(value="b"),
         }
 
+    def test_simple_with_function(self):
+        overrides: Dict[str, SyntaxTree] = {
+            "a": SyntaxTree(ast=[String("a")]),
+            "b": SyntaxTree(ast=[Function(name="capitalize", args=[Variable("b_")])]),
+            "b_": SyntaxTree(ast=[String("b")]),
+        }
+
+        resolved = SyntaxTree.resolve_overrides(parsed_overrides=overrides)
+        assert resolved == {
+            "a": String(value="a"),
+            "b": String(value="B"),
+            "b_": String(value="b"),
+        }
+
     def test_simple_cycle(self):
         overrides: Dict[str, SyntaxTree] = {
             "a": SyntaxTree(ast=[Variable("b")]),
             "b": SyntaxTree(ast=[Variable("a")]),
         }
 
+        with pytest.raises(StringFormattingException):
+            _ = SyntaxTree.resolve_overrides(parsed_overrides=overrides)
+
+    def test_simple_cycle_with_function(self):
+        overrides: Dict[str, SyntaxTree] = {
+            "a": SyntaxTree(ast=[String("a")]),
+            "b": SyntaxTree(ast=[Function(name="capitalize", args=[Variable("b_")])]),
+            "b_": SyntaxTree(ast=[Variable("b")]),
+        }
+        _ = SyntaxTree.resolve_overrides(parsed_overrides=overrides)
         with pytest.raises(StringFormattingException):
             _ = SyntaxTree.resolve_overrides(parsed_overrides=overrides)

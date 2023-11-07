@@ -15,7 +15,6 @@ from typing import final
 from typing import get_origin
 
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.functions.special_functions import SpecialFunctions
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -227,4 +226,13 @@ class Function(VariableDependency):
         return variables
 
     def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
-        raise NotImplemented()
+        resolved_args: List[Resolvable] = []
+        for arg in self.args:
+            if arg in resolved_variables:
+                resolved_args.append(resolved_variables[arg])
+            elif isinstance(arg, Function):
+                resolved_args.append(arg.resolve(resolved_variables))
+            else:
+                resolved_args.append(arg)
+
+        return self.callable(*resolved_args)
