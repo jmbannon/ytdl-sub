@@ -4,7 +4,6 @@ from typing import Optional
 from ytdl_sub.script.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.function import ArgumentType
 from ytdl_sub.script.types.function import Function
-from ytdl_sub.script.types.function import IfFunction
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -158,10 +157,6 @@ class _Parser:
 
         while ch := self._read():
             if ch == ")":
-                # Special case for If functions since it can return a Union based on input types
-                if function_name == "if":
-                    return IfFunction(name=function_name, args=function_args)
-
                 return Function(name=function_name, args=function_args)
 
             if ch != "(":

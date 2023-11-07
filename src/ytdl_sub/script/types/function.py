@@ -20,6 +20,9 @@ from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import Resolvable_0
+from ytdl_sub.script.types.resolvable import Resolvable_1
+from ytdl_sub.script.types.resolvable import Resolvable_2
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -173,10 +176,12 @@ class Function(VariableDependency):
 
     @property
     def callable(self) -> Callable[..., Resolvable]:
-        try:
+        if hasattr(Functions, self.name):
             return getattr(Functions, self.name)
-        except AttributeError:
-            raise StringFormattingException(f"Function name {self.name} does not exist")
+        if hasattr(Functions, self.name + "_"):
+            return getattr(Functions, self.name + "_")
+
+        raise StringFormattingException(f"Function name {self.name} does not exist")
 
     @functools.cached_property
     def arg_spec(self) -> FullArgSpec:
@@ -188,7 +193,22 @@ class Function(VariableDependency):
 
     @property
     def output_type(self) -> Type[Resolvable]:
-        return self.arg_spec.annotations["return"]
+        output_type = self.arg_spec.annotations["return"]
+        if is_union(output_type):
+            union_types_list = []
+            for union_type in output_type.__args__:
+                if union_type == Resolvable_0:
+                    union_types_list.append(type(self.args[0]))
+                elif union_type == Resolvable_1:
+                    union_types_list.append(type(self.args[1]))
+                elif union_type == Resolvable_2:
+                    union_types_list.append(type(self.args[2]))
+                else:
+                    union_types_list.append(union_type)
+
+            return Union[tuple(union_types_list)]
+
+        return output_type
 
     @property
     def variables(self) -> Set[Variable]:
@@ -208,18 +228,3 @@ class Function(VariableDependency):
 
     def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
         raise NotImplemented()
-
-
-@dataclass(frozen=True)
-class IfFunction(Function):
-    def __post_init__(self):
-        super().__post_init__()
-        assert len(self.args) == 3  # bool, true, false
-
-    @property
-    def callable(self) -> Callable[..., Resolvable]:
-        return SpecialFunctions.if_
-
-    @property
-    def output_type(self) -> Type[Resolvable]:
-        return Union[self.args[1].__class__, self.args[2].__class__]

@@ -10,8 +10,20 @@ T = TypeVar("T")
 NumericT = TypeVar("NumericT", bound=int | float)
 
 
+class Resolvable_0(ABC):
+    pass
+
+
+class Resolvable_1(ABC):
+    pass
+
+
+class Resolvable_2(ABC):
+    pass
+
+
 @dataclass(frozen=True)
-class Resolvable(ABC):
+class Resolvable(Resolvable_0, Resolvable_1, Resolvable_2, ABC):
     value: Any
 
     def __str__(self) -> str:

@@ -5,7 +5,6 @@ import pytest
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.function import Function
-from ytdl_sub.script.types.function import IfFunction
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -34,7 +33,7 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                IfFunction(
+                Function(
                     name="if", args=[Boolean(value=True), String(value="hi"), Float(value=3.4)]
                 ),
             ]
@@ -49,7 +48,7 @@ class TestParser:
                 Function(
                     name="concat",
                     args=[
-                        IfFunction(
+                        Function(
                             name="if", args=[Boolean(value=True), String("hi"), String("mom")]
                         ),
                         String(value="and dad"),
@@ -66,7 +65,7 @@ class TestParser:
                 Function(
                     name="string",
                     args=[
-                        IfFunction(name="if", args=[Boolean(True), String("hi"), Integer(4)]),
+                        Function(name="if", args=[Boolean(True), String("hi"), Integer(4)]),
                     ],
                 ),
             ]
