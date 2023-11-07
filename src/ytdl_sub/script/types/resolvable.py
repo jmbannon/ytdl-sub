@@ -1,7 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Dict
 from typing import Generic
 from typing import List
 from typing import TypeVar
@@ -63,6 +63,13 @@ class String(ResolvableT[str]):
 @dataclass(frozen=True)
 class Array(Resolvable):
     value: List[Resolvable]
+
+    def __str__(self) -> str:
+        return f"[{', '.join([val.value for val in self.value])}]"
+
+@dataclass(frozen=True)
+class Map(Resolvable):
+    value: Dict[Resolvable, Resolvable]
 
     def __str__(self) -> str:
         return f"[{', '.join([val.value for val in self.value])}]"
