@@ -53,6 +53,5 @@ class TestSyntaxTree:
             "b": SyntaxTree(ast=[Function(name="capitalize", args=[Variable("b_")])]),
             "b_": SyntaxTree(ast=[Variable("b")]),
         }
-        _ = SyntaxTree.resolve_overrides(parsed_overrides=overrides)
         with pytest.raises(StringFormattingException):
             _ = SyntaxTree.resolve_overrides(parsed_overrides=overrides)

@@ -43,6 +43,7 @@ class TestParser:
         parsed_empty = parse("hello {%map()}")
         parsed_with_var = parse("hello {%map([variable_name, 'elem2'])}")
         parsed_extend = parse("hi {%map([variable_name, 'elem2'], ['elem3', variable_name])}")
+        parse_raw_map = parse("hello {{'key': 'value'}}")
         parsed_extend.resolve({})
         assert False
 

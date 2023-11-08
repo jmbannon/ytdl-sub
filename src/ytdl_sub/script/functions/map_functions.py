@@ -1,9 +1,12 @@
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.resolvable import Map
+from ytdl_sub.script.types.map import Map
+from ytdl_sub.script.types.resolvable import Hashable
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
@@ -21,3 +24,11 @@ class MapFunctions:
             output[key_value.value[0]] = key_value.value[1]
 
         return Map(output)
+
+    @staticmethod
+    def get(mapping: Map, key: Hashable, default: Optional[Resolvable] = None) -> Resolvable:
+        if key not in mapping.value:
+            if default is not None:
+                return default
+            raise StringFormattingException("key not found")
+        return mapping.value[key]

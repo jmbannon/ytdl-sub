@@ -1,7 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
 from typing import Any
-from typing import Dict
 from typing import Generic
 from typing import TypeVar
 
@@ -33,13 +32,17 @@ class Resolvable(Resolvable_0, Resolvable_1, Resolvable_2, ABC):
         return str(self.value)
 
 
+class Hashable(Resolvable, ABC):
+    pass
+
+
 @dataclass(frozen=True)
-class ResolvableT(Resolvable, ABC, Generic[T]):
+class ResolvableT(Hashable, ABC, Generic[T]):
     value: T
 
 
 @dataclass(frozen=True)
-class Numeric(ResolvableT[NumericT], ABC, Generic[NumericT]):
+class Numeric(ResolvableT[NumericT], Hashable, ABC, Generic[NumericT]):
     pass
 
 
@@ -54,18 +57,10 @@ class Float(Numeric[float], ArgumentType):
 
 
 @dataclass(frozen=True)
-class Boolean(ResolvableT[bool], ArgumentType):
+class Boolean(ResolvableT[bool], Hashable, ArgumentType):
     pass
 
 
 @dataclass(frozen=True)
-class String(ResolvableT[str], ArgumentType):
+class String(ResolvableT[str], Hashable, ArgumentType):
     pass
-
-
-@dataclass(frozen=True)
-class Map(Resolvable, ArgumentType):
-    value: Dict[Resolvable, Resolvable]
-
-    def __str__(self) -> str:
-        return f"[{', '.join([val.value for val in self.value])}]"

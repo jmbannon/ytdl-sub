@@ -1,3 +1,4 @@
+from typing import Dict
 from typing import List
 from typing import Optional
 
@@ -6,6 +7,7 @@ from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import ArgumentType
 from ytdl_sub.script.types.function import Function
+from ytdl_sub.script.types.map import UnresolvedMap
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -120,6 +122,9 @@ class _Parser:
         if self._read(increment_pos=False) == "[":
             self._pos += 1
             return self._parse_array()
+        if self._read(increment_pos=False) == "{":
+            self._pos += 1
+            assert self._parse_map()
         if self._read(increment_pos=False).isascii() and self._read(increment_pos=False).islower():
             return self._parse_variable()
         raise StringFormattingException(
@@ -127,7 +132,7 @@ class _Parser:
             "string, boolean, or variable without brackets"
         )
 
-    def _parse_args(self, breaking_char: str = ")") -> List[ArgumentType]:
+    def _parse_args(self, breaking_chars: str = ")") -> List[ArgumentType]:
         """
         Begin parsing function args after the first ``(``, i.e. ``function_name(``
         """
@@ -136,7 +141,7 @@ class _Parser:
 
         arguments: List[ArgumentType] = []
         while ch := self._read(increment_pos=False):
-            if ch == breaking_char:
+            if ch in breaking_chars:
                 break
 
             if ch.isspace():
@@ -182,9 +187,39 @@ class _Parser:
                 self._pos += 1
                 return UnresolvedArray(value=function_args)
             else:
-                function_args = self._parse_args(breaking_char="]")
+                function_args = self._parse_args(breaking_chars="]")
 
         raise StringFormattingException("Invalid function")
+
+    def _parse_map(self) -> UnresolvedMap:
+        """
+        Begin parsing a map after reading the first ``{``
+        """
+        output: Dict[ArgumentType, ArgumentType] = {}
+        key: Optional[ArgumentType] = None
+
+        while ch := self._read(increment_pos=False):
+            if ch == "}":
+                if key is not None:
+                    raise StringFormattingException("Key with no value")
+
+                self._pos += 1
+                return UnresolvedMap(value=output)
+            elif key is None:
+                key_args = self._parse_args(breaking_chars=":")
+                if len(key_args) != 1:
+                    raise StringFormattingException("Lazy parsing but got mlutiple args")
+                key = key_args[0]
+            elif key is not None and ch == ":":
+                self._pos += 1
+                value_args = self._parse_args(breaking_chars=",}")
+                if len(value_args) != 1:
+                    raise StringFormattingException("Lazy parsing, no value")
+
+                output[key] = value_args[0]
+                key = None
+            else:
+                raise StringFormattingException("Invalid map")
 
     def _parse(self) -> SyntaxTree:
         bracket_counter = 0
@@ -216,6 +251,9 @@ class _Parser:
                 elif ch1 == "[":
                     self._pos += 1
                     self._ast.append(self._parse_array())
+                elif ch1 == "{":
+                    self._pos += 1
+                    self._ast.append(self._parse_map())
                 else:
                     self._ast.append(self._parse_variable())
             else:
