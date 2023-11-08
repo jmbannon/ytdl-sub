@@ -1,6 +1,8 @@
-from typing import List, Dict
+from typing import Dict
+from typing import List
 
-from ytdl_sub.script.types.resolvable import Array, Map
+from ytdl_sub.script.types.array import Array
+from ytdl_sub.script.types.resolvable import Map
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.utils.exceptions import StringFormattingException
 

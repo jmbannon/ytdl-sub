@@ -1,13 +1,16 @@
 from abc import ABC
-from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 from typing import Generic
-from typing import List
 from typing import TypeVar
 
 T = TypeVar("T")
 NumericT = TypeVar("NumericT", bound=int | float)
+
+
+class ArgumentType(ABC):
+    pass
 
 
 class Resolvable_0(ABC):
@@ -41,34 +44,27 @@ class Numeric(ResolvableT[NumericT], ABC, Generic[NumericT]):
 
 
 @dataclass(frozen=True)
-class Integer(Numeric[int]):
+class Integer(Numeric[int], ArgumentType):
     pass
 
 
 @dataclass(frozen=True)
-class Float(Numeric[float]):
+class Float(Numeric[float], ArgumentType):
     pass
 
 
 @dataclass(frozen=True)
-class Boolean(ResolvableT[bool]):
+class Boolean(ResolvableT[bool], ArgumentType):
     pass
 
 
 @dataclass(frozen=True)
-class String(ResolvableT[str]):
+class String(ResolvableT[str], ArgumentType):
     pass
 
 
 @dataclass(frozen=True)
-class Array(Resolvable):
-    value: List[Resolvable]
-
-    def __str__(self) -> str:
-        return f"[{', '.join([val.value for val in self.value])}]"
-
-@dataclass(frozen=True)
-class Map(Resolvable):
+class Map(Resolvable, ArgumentType):
     value: Dict[Resolvable, Resolvable]
 
     def __str__(self) -> str:

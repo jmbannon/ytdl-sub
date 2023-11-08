@@ -32,7 +32,10 @@ class TestParser:
         parsed = parse("hello {['elem1', 'elem2']}")
         parsed_empty = parse("hello {[]}")
         parsed_with_var = parse("hello {['elem1', variable_name]}")
-        parsed_extend = parse("hi {%extend(['elem1', 'elem2'], ['elem3'], [],   ['elem4'])}")
+        parsed_extend = parse(
+            "hi {%at(%flatten_array(%extend(['elem1', 'elem2'], ['elem3'], [['elem4'], ['elem5', 'elem6']],   ['elem7'])), 1)}"
+        )
+        parsed_extend.resolve({})
         assert False
 
     def test_map(self):

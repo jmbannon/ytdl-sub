@@ -1,7 +1,5 @@
 import functools
 import inspect
-from abc import ABC
-from abc import abstractmethod
 from dataclasses import dataclass
 from inspect import FullArgSpec
 from typing import Callable
@@ -11,44 +9,17 @@ from typing import Optional
 from typing import Set
 from typing import Type
 from typing import Union
-from typing import final
 from typing import get_origin
 
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.types.resolvable import Array
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import Resolvable_0
 from ytdl_sub.script.types.resolvable import Resolvable_1
 from ytdl_sub.script.types.resolvable import Resolvable_2
-from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.utils.exceptions import StringFormattingException
-
-ArgumentType = Union[Integer, Float, String, Boolean, Variable, "Function", Array]
-
-
-@dataclass(frozen=True)
-class VariableDependency(ABC):
-    @property
-    @abstractmethod
-    def variables(self) -> Set[Variable]:
-        raise NotImplemented()
-
-    @abstractmethod
-    def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> str:
-        raise NotImplemented()
-
-    @final
-    def has_variable_dependency(self, resolved_variables: Dict[Variable, Resolvable]) -> bool:
-        """
-        Returns
-        -------
-        True if variable dependency. False otherwise.
-        """
-        return not self.variables.issubset(set(resolved_variables.keys()))
 
 
 def is_union(arg_type: Type) -> bool:
@@ -151,7 +122,7 @@ class FunctionInputSpec:
 
 
 @dataclass(frozen=True)
-class Function(VariableDependency):
+class Function(VariableDependency, ArgumentType):
     name: str
     args: List[ArgumentType]
 
@@ -227,13 +198,9 @@ class Function(VariableDependency):
         return variables
 
     def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
-        resolved_args: List[Resolvable] = []
-        for arg in self.args:
-            if arg in resolved_variables:
-                resolved_args.append(resolved_variables[arg])
-            elif isinstance(arg, Function):
-                resolved_args.append(arg.resolve(resolved_variables))
-            else:
-                resolved_args.append(arg)
+        resolved_args = [
+            self._resolve_argument_type(resolved_variables=resolved_variables, arg=arg)
+            for arg in self.args
+        ]
 
         return self.callable(*resolved_args)

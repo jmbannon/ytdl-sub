@@ -2,9 +2,10 @@ from typing import List
 from typing import Optional
 
 from ytdl_sub.script.syntax_tree import SyntaxTree
+from ytdl_sub.script.types.array import Array
+from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import ArgumentType
 from ytdl_sub.script.types.function import Function
-from ytdl_sub.script.types.resolvable import Array
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -20,7 +21,7 @@ class _Parser:
     def __init__(self, text: str):
         self._text = text
         self._pos = 0
-        self._ast: List[String | Variable | Function] = []
+        self._ast: List[ArgumentType] = []
 
         self._syntax_tree = self._parse()
 
@@ -157,7 +158,7 @@ class _Parser:
         Begin parsing a function after reading the first ``%``
         """
         function_name: str = ""
-        function_args: List[String | Variable | "Function"] = []
+        function_args: List[ArgumentType] = []
 
         while ch := self._read():
             if ch == ")":
@@ -170,16 +171,16 @@ class _Parser:
 
         raise StringFormattingException("Invalid function")
 
-    def _parse_array(self) -> Array:
+    def _parse_array(self) -> UnresolvedArray:
         """
         Begin parsing an array after reading the first ``[``
         """
-        function_args: List[String | Variable | "Function"] = []
+        function_args: List[ArgumentType] = []
 
         while ch := self._read(increment_pos=False):
             if ch == "]":
                 self._pos += 1
-                return Array(value=function_args)
+                return UnresolvedArray(value=function_args)
             else:
                 function_args = self._parse_args(breaking_char="]")
 

@@ -1,20 +1,20 @@
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
-from typing import Optional
 from typing import Set
 
 from ytdl_sub.script.types.function import Function
-from ytdl_sub.script.types.function import VariableDependency
+from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
 @dataclass(frozen=True)
 class SyntaxTree(VariableDependency):
-    ast: List[String | Variable | Function]
+    ast: List[ArgumentType]
 
     @property
     def variables(self) -> Set[Variable]:
@@ -35,14 +35,9 @@ class SyntaxTree(VariableDependency):
     def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
         resolved: List[Resolvable] = []
         for token in self.ast:
-            if isinstance(token, Resolvable):
-                resolved.append(token)
-            elif isinstance(token, Variable):
-                resolved.append(resolved_variables[token])
-            elif isinstance(token, Function):
-                resolved.append(token.resolve(resolved_variables=resolved_variables))
-            else:
-                assert False, "should never reach"
+            resolved.append(
+                self._resolve_argument_type(resolved_variables=resolved_variables, arg=token)
+            )
 
         # If only one resolvable resides in the AST, return as that
         if len(resolved) == 1:
