@@ -124,7 +124,7 @@ class _Parser:
             return self._parse_array()
         if self._read(increment_pos=False) == "{":
             self._pos += 1
-            assert self._parse_map()
+            return self._parse_map()
         if self._read(increment_pos=False).isascii() and self._read(increment_pos=False).islower():
             return self._parse_variable()
         raise StringFormattingException(
