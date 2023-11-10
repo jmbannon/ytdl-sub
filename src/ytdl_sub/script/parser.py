@@ -21,6 +21,13 @@ from ytdl_sub.validators.string_formatter_validators import is_valid_source_vari
 
 # pylint: disable=invalid-name
 
+UNEXPECTED_ARGUMENT = InvalidSyntaxException("Unexpected comma when parsing arguments")
+MAP_KEY_WITH_NO_VALUE = InvalidSyntaxException("Map has a key with no value")
+MAP_KEY_MULTIPLE_VALUES = InvalidSyntaxException(
+    "Map key has multiple values when there should only be one"
+)
+MAP_MISSING_KEY = InvalidSyntaxException("Map has a missing key")
+
 
 class _Parser:
     def __init__(self, text: str):
@@ -189,7 +196,7 @@ class _Parser:
                 comma_count += 1
                 if argument_index != comma_count:
                     self._set_highlight_position()
-                    raise InvalidSyntaxException("Unexpected comma when parsing arguments")
+                    raise UNEXPECTED_ARGUMENT
 
                 self._pos += 1
             else:
@@ -243,32 +250,39 @@ class _Parser:
         while ch := self._read(increment_pos=False):
             if ch == "}":
                 if key is not None:
-                    raise InvalidSyntaxException("Map has a key with no value")
+                    raise MAP_KEY_WITH_NO_VALUE
 
                 self._pos += 1
                 return UnresolvedMap(value=output)
             elif ch == ",":
                 if in_comma:
-                    raise StringFormattingException("Comma followed by comma")
+                    raise UNEXPECTED_ARGUMENT
                 if key is not None:
-                    raise InvalidSyntaxException("Map has a key with no value")
-                if output is None:
-                    raise InvalidSyntaxException("Map has an extra comma")
+                    raise MAP_KEY_WITH_NO_VALUE
+                if not output:
+                    raise UNEXPECTED_ARGUMENT
                 in_comma = True
                 self._pos += 1
             elif key is None:
                 self._set_highlight_position()
                 in_comma = False
-                key_args = self._parse_args(breaking_chars=":")
-                if len(key_args) != 1:
-                    raise StringFormattingException("Lazy parsing but got mlutiple args")
+                key_args = self._parse_args(breaking_chars=":}")
+
+                if len(key_args) == 0 and self._read(increment_pos=False) == "}":
+                    continue  # will return the map next iteration
+                if len(key_args) == 0:
+                    raise MAP_MISSING_KEY
+                if len(key_args) > 1:
+                    raise MAP_KEY_MULTIPLE_VALUES
                 key = key_args[0]
             elif key is not None and ch == ":":
                 self._set_highlight_position()
                 self._pos += 1
                 value_args = self._parse_args(breaking_chars=",}")
-                if len(value_args) != 1:
-                    raise InvalidSyntaxException("Map has a key with no value")
+                if len(value_args) == 0:
+                    raise MAP_KEY_WITH_NO_VALUE
+                if len(value_args) > 1:
+                    raise StringFormattingException("map has key with multiple values")
 
                 output[key] = value_args[0]
                 key = None

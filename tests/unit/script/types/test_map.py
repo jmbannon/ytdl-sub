@@ -2,6 +2,10 @@ import re
 
 import pytest
 
+from ytdl_sub.script.parser import MAP_KEY_MULTIPLE_VALUES
+from ytdl_sub.script.parser import MAP_KEY_WITH_NO_VALUE
+from ytdl_sub.script.parser import MAP_MISSING_KEY
+from ytdl_sub.script.parser import UNEXPECTED_ARGUMENT
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.map import ResolvedMap
 from ytdl_sub.script.types.resolvable import Float
@@ -57,8 +61,17 @@ class TestMap:
             )
         }
 
-    def test_empty_map(self):
-        assert Script({"map": "{{}}"}).resolve() == {"map": ResolvedMap({})}
+    @pytest.mark.parametrize(
+        "empty_map",
+        [
+            "{{}}",
+            "{{ }}",
+            "{{      }}",
+            "{{\n}}",
+        ],
+    )
+    def test_empty_map(self, empty_map: str):
+        assert Script({"map": empty_map}).resolve() == {"map": ResolvedMap({})}
 
     @pytest.mark.parametrize(
         "value",
@@ -72,18 +85,42 @@ class TestMap:
         ],
     )
     def test_key_has_no_value(self, value: str):
-        with pytest.raises(InvalidSyntaxException, match=re.escape("Map has a key with no value")):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_KEY_WITH_NO_VALUE))):
             Script({"map": value}).resolve()
 
     @pytest.mark.parametrize(
         "value",
         [
+            "{{,}}",
             "{{ , }}",
+            "{{'key':'value',,}}",
             "{{'key': 'value', ,}}",
         ],
     )
     def test_map_unexpected_comma(self, value: str):
-        with pytest.raises(
-            InvalidSyntaxException, match=re.escape("Unexpected comma when parsing arguments")
-        ):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(UNEXPECTED_ARGUMENT))):
+            Script({"map": value}).resolve()
+
+    @pytest.mark.parametrize(
+        "value",
+        [
+            "{{'key1','key2'}}",
+            "{{'key1'     , 'key2'}}",
+            "{{ 'key1', 'key2': 'value' }}",
+        ],
+    )
+    def test_map_multiple_keys(self, value: str):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_KEY_MULTIPLE_VALUES))):
+            Script({"map": value}).resolve()
+
+    @pytest.mark.parametrize(
+        "value",
+        [
+            "{{:}}",
+            "{{  :  }}",
+            "{{  : 'value' }}",
+        ],
+    )
+    def test_map_missing_key(self, value: str):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_MISSING_KEY))):
             Script({"map": value}).resolve()
