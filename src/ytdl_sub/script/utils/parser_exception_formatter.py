@@ -2,13 +2,10 @@ import sys
 from typing import List
 
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
-from ytdl_sub.script.utils.exceptions import NonFormattedInvalidSyntaxException
 
 
 class ParserExceptionFormatter:
-    def __init__(
-        self, text: str, start: int, end: int, exception: NonFormattedInvalidSyntaxException
-    ):
+    def __init__(self, text: str, start: int, end: int, exception: InvalidSyntaxException):
         self._text = text
         self._start = start
         self._end = end

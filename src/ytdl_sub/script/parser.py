@@ -15,7 +15,6 @@ from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
-from ytdl_sub.script.utils.exceptions import NonFormattedInvalidSyntaxException
 from ytdl_sub.script.utils.parser_exception_formatter import ParserExceptionFormatter
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
@@ -32,7 +31,7 @@ class _Parser:
 
         try:
             self._syntax_tree = self._parse()
-        except NonFormattedInvalidSyntaxException as exc:
+        except InvalidSyntaxException as exc:
             raise ParserExceptionFormatter(
                 self._text, self._error_highlight_pos, self._pos, exc
             ).highlight() from exc
@@ -243,7 +242,7 @@ class _Parser:
         while ch := self._read(increment_pos=False):
             if ch == "}":
                 if key is not None:
-                    raise NonFormattedInvalidSyntaxException("Map has a key with no value")
+                    raise InvalidSyntaxException("Map has a key with no value")
 
                 self._pos += 1
                 return UnresolvedMap(value=output)
@@ -268,7 +267,7 @@ class _Parser:
                 self._pos += 1
                 value_args = self._parse_args(breaking_chars=",}")
                 if len(value_args) != 1:
-                    raise NonFormattedInvalidSyntaxException("Map has a key with no value")
+                    raise InvalidSyntaxException("Map has a key with no value")
 
                 output[key] = value_args[0]
                 key = None
