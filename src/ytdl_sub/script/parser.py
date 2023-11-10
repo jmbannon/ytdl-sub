@@ -15,6 +15,8 @@ from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
+from ytdl_sub.script.utils.exceptions import NonFormattedInvalidSyntaxException
+from ytdl_sub.script.utils.parser_exception_formatter import ParserExceptionFormatter
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 
@@ -43,18 +45,10 @@ class _Parser:
         parked_pos = self._pos
         try:
             yield
-        except InvalidSyntaxException as exc:
-            border = 4
-            text_left = max(0, parked_pos - border)
-            text_right = min(len(self._text), self._pos + border)
-            text_len = text_right - text_left
-
-            raise InvalidSyntaxException(
-                "Invalid syntax:\n"
-                f"  {self._text[text_left:text_right]}\n"
-                f"  {' ' * border}{'^' * text_len}\n\n"
-                f"{str(exc)}"
-            ) from exc
+        except NonFormattedInvalidSyntaxException as exc:
+            raise ParserExceptionFormatter(
+                self._text, parked_pos, self._pos, exc
+            ).highlight() from exc
 
     def _read(self, increment_pos: bool = True, length: int = 1) -> Optional[str]:
         try:
@@ -250,7 +244,7 @@ class _Parser:
             while ch := self._read(increment_pos=False):
                 if ch == "}":
                     if key is not None:
-                        raise InvalidSyntaxException("Map has a key with no value")
+                        raise NonFormattedInvalidSyntaxException("Map has a key with no value")
 
                     self._pos += 1
                     return UnresolvedMap(value=output)
@@ -264,19 +258,21 @@ class _Parser:
                     in_comma = True
                     self._pos += 1
                 elif key is None:
-                    in_comma = False
-                    key_args = self._parse_args(breaking_chars=":")
-                    if len(key_args) != 1:
-                        raise StringFormattingException("Lazy parsing but got mlutiple args")
-                    key = key_args[0]
+                    with self._error_formatting():
+                        in_comma = False
+                        key_args = self._parse_args(breaking_chars=":")
+                        if len(key_args) != 1:
+                            raise StringFormattingException("Lazy parsing but got mlutiple args")
+                        key = key_args[0]
                 elif key is not None and ch == ":":
-                    self._pos += 1
-                    value_args = self._parse_args(breaking_chars=",}")
-                    if len(value_args) != 1:
-                        raise InvalidSyntaxException("Map has a key with no value")
+                    with self._error_formatting():
+                        self._pos += 1
+                        value_args = self._parse_args(breaking_chars=",}")
+                        if len(value_args) != 1:
+                            raise NonFormattedInvalidSyntaxException("Map has a key with no value")
 
-                    output[key] = value_args[0]
-                    key = None
+                        output[key] = value_args[0]
+                        key = None
                 else:
                     raise StringFormattingException("Invalid map")
 

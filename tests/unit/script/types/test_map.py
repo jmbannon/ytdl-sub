@@ -72,5 +72,5 @@ class TestMap:
         ],
     )
     def test_key_has_no_value(self, value: str):
-        # with pytest.raises(InvalidSyntaxException, match=re.escape("Map has a key with no value")):
-        Script({"map": value}).resolve()
+        with pytest.raises(InvalidSyntaxException, match=re.escape("Map has a key with no value")):
+            Script({"map": value}).resolve()

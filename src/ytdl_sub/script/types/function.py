@@ -197,8 +197,8 @@ class CustomFunction(Function):
                 resolved_variables=resolved_variables_with_args,
                 custom_functions=custom_functions,
             )
-        else:
-            raise StringFormattingException(f"Custom function {self.name} does not exist")
+
+        raise StringFormattingException(f"Custom function {self.name} does not exist")
 
 
 class BuiltInFunction(Function):
