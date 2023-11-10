@@ -1,7 +1,12 @@
+import re
+
+import pytest
+
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.map import ResolvedMap
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 
 class TestMap:
@@ -54,3 +59,18 @@ class TestMap:
 
     def test_empty_map(self):
         assert Script({"map": "{{}}"}).resolve() == {"map": ResolvedMap({})}
+
+    @pytest.mark.parametrize(
+        "value",
+        [
+            "{{'key': }}",
+            "{{'key':}}",
+            "{{'key': 'value', 'key2':}}",
+            "{{'key': 'value', 'key2': }}",
+            "{{    'key': 'value', 'key2':\n}}",
+            "{{    'key': ,\n}}",
+        ],
+    )
+    def test_key_has_no_value(self, value: str):
+        with pytest.raises(InvalidSyntaxException, match=re.escape("Map has a key with no value")):
+            Script({"map": value}).resolve()
