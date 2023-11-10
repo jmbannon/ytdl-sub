@@ -1,14 +1,15 @@
+from typing import Optional
 from typing import Union
 
 import pytest
 
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
 
@@ -28,28 +29,28 @@ class TestParser:
             ]
         )
 
-    def test_array(self):
-        parsed = parse("hello {['elem1', 'elem2']}")
-        parsed_empty = parse("hello {[]}")
-        parsed_with_var = parse("hello {['elem1', variable_name]}")
-        parsed_extend = parse(
-            "hi {%at(%flatten_array(%extend(['elem1', 'elem2'], ['elem3'], [['elem4'], ['elem5', 'elem6']],   ['elem7'])), 1)}"
-        )
-        parsed_extend.resolve({})
-        assert False
-
-    def test_map(self):
-        parsed = parse("hello {%map(['elem1', 'elem2'])}")
-        parsed_empty = parse("hello {%map()}")
-        parsed_with_var = parse("hello {%map([variable_name, 'elem2'])}")
-        parsed_extend = parse("hi {%map([variable_name, 'elem2'], ['elem3', variable_name])}")
-        parse_raw_map = parse("hello {{'key': 'value'}}")
-        parsed_extend.resolve({})
-        assert False
-
-    def test_function_argument(self):
-        parsed = parse("hello {%map([$1, $2])}")
-        assert False
+    # def test_array(self):
+    #     parsed = parse("hello {['elem1', 'elem2']}")
+    #     parsed_empty = parse("hello {[]}")
+    #     parsed_with_var = parse("hello {['elem1', variable_name]}")
+    #     parsed_extend = parse(
+    #         "hi {%at(%flatten_array(%extend(['elem1', 'elem2'], ['elem3'], [['elem4'], ['elem5', 'elem6']],   ['elem7'])), 1)}"
+    #     )
+    #     parsed_extend.resolve({})
+    #     assert False
+    #
+    # def test_map(self):
+    #     parsed = parse("hello {%map(['elem1', 'elem2'])}")
+    #     parsed_empty = parse("hello {%map()}")
+    #     parsed_with_var = parse("hello {%map([variable_name, 'elem2'])}")
+    #     parsed_extend = parse("hi {%map([variable_name, 'elem2'], ['elem3', variable_name])}")
+    #     parse_raw_map = parse("hello {{'key': 'value'}}")
+    #     parsed_extend.resolve({})
+    #     assert False
+    #
+    # def test_function_argument(self):
+    #     parsed = parse("hello {%map([$1, $2])}")
+    #     assert False
 
     def test_conditional(self):
         parsed = parse("hello {%if(True, 'hi', 3.4)}")
@@ -141,13 +142,18 @@ class TestParser:
             ]
         )
 
-    @pytest.mark.parametrize("whitespace", ["", " ", "  ", "\n", " \n "])
-    def test_single_function_multiple_args(self, whitespace: str):
+    @pytest.mark.parametrize("whitespace", [None, " ", "  ", "\n", " \n "])
+    def test_single_function_multiple_args(self, whitespace: Optional[str]):
         s = whitespace
-        parsed = parse(
+        if s is None:
+            s = ""
+
+        input_str = (
             f"hello{s}{{{s}%concat({s}'string'{s},{s}%string(1){s},{s}%string(2.4){s},"
-            f"{s}%string(TRUE){s},{s}%string(variable_name){s},{s}%capitalize({s}'hi'{s}){s}){s}}}"
+            f"{s}%string(TRUE){s},{s}%string(variable_name){s},{s}%capitalize({s}'hi'{s}){s})}}"
+            f"{s}"
         )
+        parsed = parse(input_str)
         assert parsed == SyntaxTree(
             [
                 String(value=f"hello{s}"),

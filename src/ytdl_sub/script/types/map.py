@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
@@ -15,6 +16,22 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 @dataclass(frozen=True)
 class Map:
     value: Dict[Hashable, Resolvable]
+
+    def to_native(self) -> Dict:
+        output = {}
+        for key, value in self.value.items():
+            native_key = key.value
+            if isinstance(value, Map):
+                native_value = value.to_native()
+            else:
+                native_value = value.value
+
+            output[native_key] = native_value
+
+        return output
+
+    def __str__(self):
+        return json.dumps(self.to_native())
 
 
 @dataclass(frozen=True)

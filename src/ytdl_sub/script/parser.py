@@ -2,8 +2,6 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-from ytdl_sub.script.syntax_tree import SyntaxTree
-from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import ArgumentType
 from ytdl_sub.script.types.function import Function
@@ -12,6 +10,7 @@ from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -225,6 +224,7 @@ class _Parser:
         """
         output: Dict[ArgumentType, ArgumentType] = {}
         key: Optional[ArgumentType] = None
+        in_comma = False
 
         while ch := self._read(increment_pos=False):
             if ch == "}":
@@ -233,7 +233,17 @@ class _Parser:
 
                 self._pos += 1
                 return UnresolvedMap(value=output)
+            elif ch == ",":
+                if in_comma:
+                    raise StringFormattingException("Comma followed by comma")
+                if key is not None:
+                    raise StringFormattingException("key followed by comma")
+                if output is None:
+                    raise StringFormattingException("Empty dict with comma")
+                in_comma = True
+                self._pos += 1
             elif key is None:
+                in_comma = False
                 key_args = self._parse_args(breaking_chars=":")
                 if len(key_args) != 1:
                     raise StringFormattingException("Lazy parsing but got mlutiple args")
@@ -255,7 +265,7 @@ class _Parser:
         while ch := self._read():
             if ch == "}":
                 bracket_counter -= 1
-                break
+                continue
             if ch == "{":
                 bracket_counter += 1
                 if literal_str:
@@ -284,8 +294,12 @@ class _Parser:
                     self._ast.append(self._parse_map())
                 else:
                     self._ast.append(self._parse_variable())
-            else:
+            elif bracket_counter == 0:
+                # Only accumulate literal str if not in brackets
                 literal_str += ch
+            else:
+                # Should only be possible to get here if it's a space
+                assert ch.isspace()
 
         if bracket_counter != 0:
             raise StringFormattingException("Bracket count mismatch")

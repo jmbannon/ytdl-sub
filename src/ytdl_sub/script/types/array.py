@@ -14,6 +14,9 @@ from ytdl_sub.script.types.variable_dependency import VariableDependency
 class Array:
     value: List[Resolvable]
 
+    def __str__(self):
+        return f"[{', '.join([str(val.value) for val in self.value])}]"
+
 
 @dataclass(frozen=True)
 class UnresolvedArray(Array, VariableDependency, ArgumentType):

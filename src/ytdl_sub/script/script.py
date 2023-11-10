@@ -2,8 +2,8 @@ from typing import Dict
 from typing import Optional
 
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 
 
