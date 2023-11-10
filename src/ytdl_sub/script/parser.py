@@ -30,8 +30,12 @@ class _Parser:
         self._error_highlight_pos = 0
         self._ast: List[ArgumentType] = []
 
-        with self._error_formatting():
+        try:
             self._syntax_tree = self._parse()
+        except NonFormattedInvalidSyntaxException as exc:
+            raise ParserExceptionFormatter(
+                self._text, self._error_highlight_pos, self._pos, exc
+            ).highlight() from exc
 
     @property
     def ast(self) -> SyntaxTree:
@@ -41,15 +45,6 @@ class _Parser:
         Abstract syntax tree of the parsed text
         """
         return self._syntax_tree
-
-    @contextmanager
-    def _error_formatting(self) -> None:
-        try:
-            yield
-        except NonFormattedInvalidSyntaxException as exc:
-            raise ParserExceptionFormatter(
-                self._text, self._error_highlight_pos, self._pos, exc
-            ).highlight() from exc
 
     def _set_highlight_position(self) -> None:
         self._error_highlight_pos = self._pos
