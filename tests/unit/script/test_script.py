@@ -11,27 +11,34 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 
 
 class TestSyntaxTree:
-    def test_simple(self):
-        script = Script(
-            {
-                "a": "a",
-                "b": "{b_}",
-                "b_": "b",
-            }
-        )
-
     def test_custom_function(self):
-        script = Script(
+        assert Script(
             {
                 "%custom_func": "return {[$1, $2]}",
                 "aa": "a",
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",
             }
-        )
+        ).resolve() == {"aa": String("a"), "bb": String("b"), "cc": String("return [aa, bb]")}
 
-        out = script.resolve()
-        assert False
+    def test_simple(self):
+        assert Script({"a": "a", "b": "{b_}", "b_": "b",}).resolve() == {
+            "a": String("a"),
+            "b": String("b"),
+            "b_": String("b"),
+        }
 
+    def test_simple_with_function(self):
+        assert Script({"a": "a", "b": "{%capitalize(b_)}", "b_": "b",}).resolve() == {
+            "a": String("a"),
+            "b": String("B"),
+            "b_": String("b"),
+        }
 
+    def test_simple_cycle(self):
+        with pytest.raises(StringFormattingException):
+            Script({"a": "{b}", "b": "{a}"}).resolve()
 
+    def test_simple_cycle_with_function(self):
+        with pytest.raises(StringFormattingException):
+            Script({"b": "{%capitalize(b_)}", "b_": "{b}"}).resolve()

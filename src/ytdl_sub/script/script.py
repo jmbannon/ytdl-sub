@@ -1,4 +1,5 @@
-from typing import Dict, Optional
+from typing import Dict
+from typing import Optional
 
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.syntax_tree import SyntaxTree
@@ -28,7 +29,9 @@ class Script:
             if not self._is_function(override_name)
         }
 
-    def resolve(self, pre_resolved_variables: Optional[Dict[Variable, Resolvable]] = None) -> Dict[str, Resolvable]:
+    def resolve(
+        self, pre_resolved_variables: Optional[Dict[Variable, Resolvable]] = None
+    ) -> Dict[str, Resolvable]:
         return SyntaxTree.resolve_overrides(
             parsed_overrides=self._variables,
             custom_functions=self._functions,

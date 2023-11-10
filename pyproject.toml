@@ -5,6 +5,7 @@ force_single_line = true
 
 [tool.black]
 line_length = 100
+target-version = ["py310"]
 
 [tool.pylint.MASTER]
 disable = [

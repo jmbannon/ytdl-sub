@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Set
 
-from ytdl_sub.script.types.function import Function
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
@@ -73,14 +73,19 @@ class SyntaxTree(VariableDependency):
 
     @classmethod
     def resolve_overrides(
-        cls, parsed_overrides: Dict[str, "SyntaxTree"], custom_functions: Dict[str, "SyntaxTree"], pre_resolved_variables: Optional[Dict[Variable, Resolvable]]
+        cls,
+        parsed_overrides: Dict[str, "SyntaxTree"],
+        custom_functions: Dict[str, "SyntaxTree"],
+        pre_resolved_variables: Optional[Dict[Variable, Resolvable]],
     ) -> Dict[str, Resolvable]:
         overrides: Dict[Variable, "SyntaxTree"] = {
             Variable(name): ast for name, ast in parsed_overrides.items()
         }
 
         unresolved_variables: List[Variable] = list(overrides.keys())
-        resolved_variables: Dict[Variable, Resolvable] = pre_resolved_variables if pre_resolved_variables else {}
+        resolved_variables: Dict[Variable, Resolvable] = (
+            pre_resolved_variables if pre_resolved_variables else {}
+        )
 
         while unresolved_variables:
             unresolved_count: int = len(unresolved_variables)

@@ -14,7 +14,7 @@ from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
 
-_fields_validator = re.compile(r"{([a-z][a-z0-9_]+?)}")
+_fields_validator = re.compile(r"{([a-z][a-z0-9_]*?)}")
 
 _fields_validator_exception_message: str = (
     "{variable_names} must start with a lowercase letter, should only contain lowercase letters, "

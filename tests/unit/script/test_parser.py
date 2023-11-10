@@ -4,7 +4,7 @@ import pytest
 
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.syntax_tree import SyntaxTree
-from ytdl_sub.script.types.function import Function
+from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -24,7 +24,7 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                Function(name="capitalize", args=[String(value="hi mom")]),
+                BuiltInFunction(name="capitalize", args=[String(value="hi mom")]),
             ]
         )
 
@@ -56,7 +56,7 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                Function(
+                BuiltInFunction(
                     name="if", args=[Boolean(value=True), String(value="hi"), Float(value=3.4)]
                 ),
             ]
@@ -68,10 +68,10 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                Function(
+                BuiltInFunction(
                     name="concat",
                     args=[
-                        Function(
+                        BuiltInFunction(
                             name="if", args=[Boolean(value=True), String("hi"), String("mom")]
                         ),
                         String(value="and dad"),
@@ -85,10 +85,10 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                Function(
+                BuiltInFunction(
                     name="string",
                     args=[
-                        Function(name="if", args=[Boolean(True), String("hi"), Integer(4)]),
+                        BuiltInFunction(name="if", args=[Boolean(True), String("hi"), Integer(4)]),
                     ],
                 ),
             ]
@@ -99,7 +99,7 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                Function(name="concat", args=[String(value="hi mom")]),
+                BuiltInFunction(name="concat", args=[String(value="hi mom")]),
             ]
         )
 
@@ -108,7 +108,7 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                Function(name="concat", args=[String(value="hi"), String(value="mom")]),
+                BuiltInFunction(name="concat", args=[String(value="hi"), String(value="mom")]),
             ]
         )
 
@@ -117,7 +117,7 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                Function(
+                BuiltInFunction(
                     name="replace",
                     args=[String(value="hi mom"), String(value="hi"), String(value="")],
                 ),
@@ -129,7 +129,7 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String("hello "),
-                Function(
+                BuiltInFunction(
                     name="replace",
                     args=[
                         String(value="hi mom"),
@@ -151,15 +151,15 @@ class TestParser:
         assert parsed == SyntaxTree(
             [
                 String(value=f"hello{s}"),
-                Function(
+                BuiltInFunction(
                     name="concat",
                     args=[
                         String(value="string"),
-                        Function(name="string", args=[Integer(value=1)]),
-                        Function(name="string", args=[Float(value=2.4)]),
-                        Function(name="string", args=[Boolean(value=True)]),
-                        Function(name="string", args=[Variable(name="variable_name")]),
-                        Function(name="capitalize", args=[String(value="hi")]),
+                        BuiltInFunction(name="string", args=[Integer(value=1)]),
+                        BuiltInFunction(name="string", args=[Float(value=2.4)]),
+                        BuiltInFunction(name="string", args=[Boolean(value=True)]),
+                        BuiltInFunction(name="string", args=[Variable(name="variable_name")]),
+                        BuiltInFunction(name="capitalize", args=[String(value="hi")]),
                     ],
                 ),
             ]
