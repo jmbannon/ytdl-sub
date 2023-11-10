@@ -27,9 +27,11 @@ class _Parser:
     def __init__(self, text: str):
         self._text = text
         self._pos = 0
+        self._error_highlight_pos = 0
         self._ast: List[ArgumentType] = []
 
-        self._syntax_tree = self._parse()
+        with self._error_formatting():
+            self._syntax_tree = self._parse()
 
     @property
     def ast(self) -> SyntaxTree:
@@ -42,13 +44,15 @@ class _Parser:
 
     @contextmanager
     def _error_formatting(self) -> None:
-        parked_pos = self._pos
         try:
             yield
         except NonFormattedInvalidSyntaxException as exc:
             raise ParserExceptionFormatter(
-                self._text, parked_pos, self._pos, exc
+                self._text, self._error_highlight_pos, self._pos, exc
             ).highlight() from exc
+
+    def _set_highlight_position(self) -> None:
+        self._error_highlight_pos = self._pos
 
     def _read(self, increment_pos: bool = True, length: int = 1) -> Optional[str]:
         try:
@@ -240,41 +244,41 @@ class _Parser:
         key: Optional[ArgumentType] = None
         in_comma = False
 
-        with self._error_formatting():
-            while ch := self._read(increment_pos=False):
-                if ch == "}":
-                    if key is not None:
-                        raise NonFormattedInvalidSyntaxException("Map has a key with no value")
+        self._set_highlight_position()
+        while ch := self._read(increment_pos=False):
+            if ch == "}":
+                if key is not None:
+                    raise NonFormattedInvalidSyntaxException("Map has a key with no value")
 
-                    self._pos += 1
-                    return UnresolvedMap(value=output)
-                elif ch == ",":
-                    if in_comma:
-                        raise StringFormattingException("Comma followed by comma")
-                    if key is not None:
-                        raise InvalidSyntaxException("Map has a key with no value")
-                    if output is None:
-                        raise StringFormattingException("Empty dict with comma")
-                    in_comma = True
-                    self._pos += 1
-                elif key is None:
-                    with self._error_formatting():
-                        in_comma = False
-                        key_args = self._parse_args(breaking_chars=":")
-                        if len(key_args) != 1:
-                            raise StringFormattingException("Lazy parsing but got mlutiple args")
-                        key = key_args[0]
-                elif key is not None and ch == ":":
-                    with self._error_formatting():
-                        self._pos += 1
-                        value_args = self._parse_args(breaking_chars=",}")
-                        if len(value_args) != 1:
-                            raise NonFormattedInvalidSyntaxException("Map has a key with no value")
+                self._pos += 1
+                return UnresolvedMap(value=output)
+            elif ch == ",":
+                if in_comma:
+                    raise StringFormattingException("Comma followed by comma")
+                if key is not None:
+                    raise InvalidSyntaxException("Map has a key with no value")
+                if output is None:
+                    raise StringFormattingException("Empty dict with comma")
+                in_comma = True
+                self._pos += 1
+            elif key is None:
+                self._set_highlight_position()
+                in_comma = False
+                key_args = self._parse_args(breaking_chars=":")
+                if len(key_args) != 1:
+                    raise StringFormattingException("Lazy parsing but got mlutiple args")
+                key = key_args[0]
+            elif key is not None and ch == ":":
+                self._set_highlight_position()
+                self._pos += 1
+                value_args = self._parse_args(breaking_chars=",}")
+                if len(value_args) != 1:
+                    raise NonFormattedInvalidSyntaxException("Map has a key with no value")
 
-                        output[key] = value_args[0]
-                        key = None
-                else:
-                    raise StringFormattingException("Invalid map")
+                output[key] = value_args[0]
+                key = None
+            else:
+                raise StringFormattingException("Invalid map")
 
     def _parse(self) -> SyntaxTree:
         bracket_counter = 0
