@@ -188,7 +188,8 @@ class _Parser:
             elif ch == ",":
                 comma_count += 1
                 if argument_index != comma_count:
-                    raise StringFormattingException("Comma argument shenanigans")
+                    self._set_highlight_position()
+                    raise InvalidSyntaxException("Unexpected comma when parsing arguments")
 
                 self._pos += 1
             else:
@@ -252,7 +253,7 @@ class _Parser:
                 if key is not None:
                     raise InvalidSyntaxException("Map has a key with no value")
                 if output is None:
-                    raise StringFormattingException("Empty dict with comma")
+                    raise InvalidSyntaxException("Map has an extra comma")
                 in_comma = True
                 self._pos += 1
             elif key is None:

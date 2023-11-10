@@ -74,3 +74,16 @@ class TestMap:
     def test_key_has_no_value(self, value: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape("Map has a key with no value")):
             Script({"map": value}).resolve()
+
+    @pytest.mark.parametrize(
+        "value",
+        [
+            "{{ , }}",
+            "{{'key': 'value', ,}}",
+        ],
+    )
+    def test_map_unexpected_comma(self, value: str):
+        with pytest.raises(
+            InvalidSyntaxException, match=re.escape("Unexpected comma when parsing arguments")
+        ):
+            Script({"map": value}).resolve()
