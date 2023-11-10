@@ -36,6 +36,10 @@ class Hashable(Resolvable, ABC):
     pass
 
 
+class NonHashable(ABC):
+    pass
+
+
 @dataclass(frozen=True)
 class ResolvableT(Hashable, ABC, Generic[T]):
     value: T

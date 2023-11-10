@@ -3,6 +3,7 @@ import re
 import pytest
 
 from ytdl_sub.script.parser import MAP_KEY_MULTIPLE_VALUES
+from ytdl_sub.script.parser import MAP_KEY_NOT_HASHABLE
 from ytdl_sub.script.parser import MAP_KEY_WITH_NO_VALUE
 from ytdl_sub.script.parser import MAP_MISSING_KEY
 from ytdl_sub.script.parser import UNEXPECTED_ARGUMENT
@@ -123,4 +124,17 @@ class TestMap:
     )
     def test_map_missing_key(self, value: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_MISSING_KEY))):
+            Script({"map": value}).resolve()
+
+    @pytest.mark.parametrize(
+        "value",
+        [
+            "{{{}:'value'}}",
+            "{{ {} : 'value' }}",
+            "{{[]:'value'}}",
+            "{{ [] : 'value' }}",
+        ],
+    )
+    def test_map_key_not_hashable(self, value: str):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_KEY_NOT_HASHABLE))):
             Script({"map": value}).resolve()

@@ -10,6 +10,7 @@ from ytdl_sub.script.types.map import UnresolvedMap
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
@@ -27,6 +28,9 @@ MAP_KEY_MULTIPLE_VALUES = InvalidSyntaxException(
     "Map key has multiple values when there should only be one"
 )
 MAP_MISSING_KEY = InvalidSyntaxException("Map has a missing key")
+MAP_KEY_NOT_HASHABLE = InvalidSyntaxException(
+    "Map key must be a hashable type (Integer, Float, Boolean, String)"
+)
 
 
 class _Parser:
@@ -283,6 +287,8 @@ class _Parser:
                     raise MAP_KEY_WITH_NO_VALUE
                 if len(value_args) > 1:
                     raise StringFormattingException("map has key with multiple values")
+                if isinstance(key, NonHashable):
+                    raise MAP_KEY_NOT_HASHABLE
 
                 output[key] = value_args[0]
                 key = None

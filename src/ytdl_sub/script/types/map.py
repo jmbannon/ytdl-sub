@@ -6,6 +6,7 @@ from typing import Set
 
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Hashable
+from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
@@ -14,7 +15,7 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 
 
 @dataclass(frozen=True)
-class Map:
+class Map(NonHashable):
     value: Dict[Hashable, Resolvable]
 
     def to_native(self) -> Dict:

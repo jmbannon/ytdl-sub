@@ -4,6 +4,7 @@ from typing import List
 from typing import Set
 
 from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
@@ -11,7 +12,7 @@ from ytdl_sub.script.types.variable_dependency import VariableDependency
 
 
 @dataclass(frozen=True)
-class Array:
+class Array(NonHashable):
     value: List[Resolvable]
 
     def __str__(self):
