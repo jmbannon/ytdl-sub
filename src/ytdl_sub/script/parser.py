@@ -12,6 +12,7 @@ from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
@@ -71,6 +72,30 @@ class _Parser:
         assert is_valid_source_variable_name(var_name, raise_exception=False)
         return Variable(var_name)
 
+    def _parse_function_argument(self) -> FunctionArgument:
+        """
+        Begin parsing function args after the first ``$``, i.e. ``$1``
+        """
+        var_name = ""
+        while ch := self._read(increment_pos=False):
+            if ch.isspace() and not var_name:
+                self._pos += 1
+                continue
+            if ch in ["}", ",", ")", "]"] or ch.isspace():
+                break
+
+            is_numeric = ch.isnumeric()
+            if not is_numeric:
+                raise StringFormattingException("invalid function var name")
+
+            var_name += ch
+            self._pos += 1
+
+        if not var_name:
+            raise StringFormattingException("invalid var name")
+
+        return FunctionArgument(name=f"${var_name}")
+
     def _parse_numeric(self) -> Integer | Float:
         numeric_string = ""
         while ch := self._read(increment_pos=False):
@@ -125,6 +150,9 @@ class _Parser:
         if self._read(increment_pos=False) == "{":
             self._pos += 1
             return self._parse_map()
+        if self._read(increment_pos=False) == "$":
+            self._pos += 1
+            return self._parse_function_argument()
         if self._read(increment_pos=False).isascii() and self._read(increment_pos=False).islower():
             return self._parse_variable()
         raise StringFormattingException(
@@ -167,7 +195,7 @@ class _Parser:
 
         while ch := self._read():
             if ch == ")":
-                return Function(name=function_name, args=function_args)
+                return Function.from_name_and_args(name=function_name, args=function_args)
 
             if ch != "(":
                 function_name += ch

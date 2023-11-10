@@ -47,6 +47,10 @@ class TestParser:
         parsed_extend.resolve({})
         assert False
 
+    def test_function_argument(self):
+        parsed = parse("hello {%map([$1, $2])}")
+        assert False
+
     def test_conditional(self):
         parsed = parse("hello {%if(True, 'hi', 3.4)}")
         assert parsed == SyntaxTree(

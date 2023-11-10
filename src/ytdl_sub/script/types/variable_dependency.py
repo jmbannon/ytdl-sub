@@ -7,6 +7,7 @@ from typing import final
 
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.exceptions import StringFormattingException
 
@@ -18,12 +19,24 @@ class VariableDependency(ABC):
     def variables(self) -> Set[Variable]:
         raise NotImplemented()
 
+    @property
     @abstractmethod
-    def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
+    def function_arguments(self) -> Set[FunctionArgument]:
+        raise NotImplemented()
+
+    @abstractmethod
+    def resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Resolvable:
         raise NotImplemented()
 
     def _resolve_argument_type(
-        self, resolved_variables: Dict[Variable, Resolvable], arg: ArgumentType
+        self,
+        arg: ArgumentType,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
         if isinstance(arg, Resolvable):
             return arg
@@ -32,7 +45,9 @@ class VariableDependency(ABC):
                 raise StringFormattingException("should never reach@")
             return resolved_variables[arg]
         if isinstance(arg, VariableDependency):
-            return arg.resolve(resolved_variables)
+            return arg.resolve(
+                resolved_variables=resolved_variables, custom_functions=custom_functions
+            )
 
         assert False, "never reach here"
 

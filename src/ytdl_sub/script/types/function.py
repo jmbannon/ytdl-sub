@@ -1,5 +1,7 @@
+import copy
 import functools
 import inspect
+from abc import ABC
 from dataclasses import dataclass
 from inspect import FullArgSpec
 from typing import Callable
@@ -17,6 +19,7 @@ from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import Resolvable_0
 from ytdl_sub.script.types.resolvable import Resolvable_1
 from ytdl_sub.script.types.resolvable import Resolvable_2
+from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -122,21 +125,87 @@ class FunctionInputSpec:
 
 
 @dataclass(frozen=True)
-class Function(VariableDependency, ArgumentType):
+class Function(VariableDependency, ArgumentType, ABC):
     name: str
     args: List[ArgumentType]
 
-    def __post_init__(self):
-        if not self.input_spec.is_compatible(input_args=self.args):
-            raise StringFormattingException(
-                f"Invalid arguments passed to function {self.name}.\n"
-                f"{self._expected_received_error_msg()}"
-            )
+    @property
+    def variables(self) -> Set[Variable]:
+        """
+        Returns
+        -------
+        All variables used within the function
+        """
+        variables: Set[Variable] = set()
+        for arg in self.args:
+            if isinstance(arg, Variable):
+                variables.add(arg)
+            elif isinstance(arg, VariableDependency):
+                variables.update(arg.variables)
 
+        return variables
+
+    @property
+    def function_arguments(self) -> Set[FunctionArgument]:
+        """
+        Returns
+        -------
+        All function arguments used within the function
+        """
+        function_arguments: Set[FunctionArgument] = set()
+        for arg in self.args:
+            if isinstance(arg, FunctionArgument):
+                function_arguments.add(arg)
+            elif isinstance(arg, VariableDependency):
+                function_arguments.update(arg.function_arguments)
+
+        return function_arguments
+
+    @classmethod
+    def from_name_and_args(cls, name: str, args: List[ArgumentType]) -> "Function":
+        if hasattr(Functions, name) or hasattr(Functions, name + "_"):
+            return BuiltInFunction(name=name, args=args)
+
+        return CustomFunction(name=name, args=args)
+
+
+class CustomFunction(Function):
+    def resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Resolvable:
+        resolved_args: List[Resolvable] = [
+            self._resolve_argument_type(
+                arg=arg, resolved_variables=resolved_variables, custom_functions=custom_functions
+            )
+            for arg in self.args
+        ]
+
+        if self.name in custom_functions:
+            if len(self.args) != len(custom_functions[self.name].function_arguments):
+                raise StringFormattingException("Custom function arg length does not equal")
+
+            resolved_variables_with_args = copy.deepcopy(resolved_variables)
+            for i, arg in enumerate(resolved_args):
+                function_arg = FunctionArgument(name=f"${i+1}")  # Function args are 1-based
+                if function_arg in resolved_variables_with_args:
+                    raise StringFormattingException("nested custom functions???")
+                resolved_variables_with_args[function_arg] = arg
+
+            return custom_functions[self.name].resolve(
+                resolved_variables=resolved_variables_with_args,
+                custom_functions=custom_functions,
+            )
+        else:
+            raise StringFormattingException(f"Custom function {self.name} does not exist")
+
+
+class BuiltInFunction(Function):
     def _expected_received_error_msg(self) -> str:
         received_type_names: List[str] = []
         for arg in self.args:
-            if isinstance(arg, Function):
+            if isinstance(arg, BuiltInFunction):
                 received_type_names.append(f"%{arg.name}(...)->{arg.output_type.__name__}")
             else:
                 received_type_names.append(arg.__class__.__name__)
@@ -144,6 +213,13 @@ class Function(VariableDependency, ArgumentType):
         received_args_str = f"({', '.join([name for name in received_type_names])})"
 
         return f"Expected {self.input_spec.expected_args_str()}.\nReceived {received_args_str}"
+
+    def __post_init__(self):
+        if not self.input_spec.is_compatible(input_args=self.args):
+            raise StringFormattingException(
+                f"Invalid arguments passed to function {self.name}.\n"
+                f"{self._expected_received_error_msg()}"
+            )
 
     @property
     def callable(self) -> Callable[..., Resolvable]:
@@ -181,25 +257,15 @@ class Function(VariableDependency, ArgumentType):
 
         return output_type
 
-    @property
-    def variables(self) -> Set[Variable]:
-        """
-        Returns
-        -------
-        All variables used within the function
-        """
-        variables: Set[Variable] = set()
-        for arg in self.args:
-            if isinstance(arg, Variable):
-                variables.add(arg)
-            elif isinstance(arg, Function):
-                variables.update(arg.variables)
-
-        return variables
-
-    def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
-        resolved_args = [
-            self._resolve_argument_type(resolved_variables=resolved_variables, arg=arg)
+    def resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Resolvable:
+        resolved_args: List[Resolvable] = [
+            self._resolve_argument_type(
+                arg=arg, resolved_variables=resolved_variables, custom_functions=custom_functions
+            )
             for arg in self.args
         ]
 

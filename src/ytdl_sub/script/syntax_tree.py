@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
 from typing import List
 from typing import Set
 
@@ -7,6 +7,7 @@ from ytdl_sub.script.types.function import Function
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -27,16 +28,40 @@ class SyntaxTree(VariableDependency):
         for token in self.ast:
             if isinstance(token, Variable):
                 variables.add(token)
-            elif isinstance(token, Function):
+            elif isinstance(token, VariableDependency):
                 variables.update(token.variables)
 
         return variables
 
-    def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
+    @property
+    def function_arguments(self) -> Set[FunctionArgument]:
+        """
+        Returns
+        -------
+        All function arguments used within the SyntaxTree
+        """
+        function_arguments: Set[FunctionArgument] = set()
+        for token in self.ast:
+            if isinstance(token, FunctionArgument):
+                function_arguments.add(token)
+            elif isinstance(token, VariableDependency):
+                function_arguments.update(token.function_arguments)
+
+        return function_arguments
+
+    def resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Resolvable:
         resolved: List[Resolvable] = []
         for token in self.ast:
             resolved.append(
-                self._resolve_argument_type(resolved_variables=resolved_variables, arg=token)
+                self._resolve_argument_type(
+                    arg=token,
+                    resolved_variables=resolved_variables,
+                    custom_functions=custom_functions,
+                )
             )
 
         # If only one resolvable resides in the AST, return as that
@@ -47,13 +72,15 @@ class SyntaxTree(VariableDependency):
         return String("".join([str(res) for res in resolved]))
 
     @classmethod
-    def resolve_overrides(cls, parsed_overrides: Dict[str, "SyntaxTree"]) -> Dict[str, Resolvable]:
+    def resolve_overrides(
+        cls, parsed_overrides: Dict[str, "SyntaxTree"], custom_functions: Dict[str, "SyntaxTree"], pre_resolved_variables: Optional[Dict[Variable, Resolvable]]
+    ) -> Dict[str, Resolvable]:
         overrides: Dict[Variable, "SyntaxTree"] = {
             Variable(name): ast for name, ast in parsed_overrides.items()
         }
 
         unresolved_variables: List[Variable] = list(overrides.keys())
-        resolved_variables: Dict[Variable, Resolvable] = {}
+        resolved_variables: Dict[Variable, Resolvable] = pre_resolved_variables if pre_resolved_variables else {}
 
         while unresolved_variables:
             unresolved_count: int = len(unresolved_variables)
@@ -63,7 +90,8 @@ class SyntaxTree(VariableDependency):
                     resolved_variables=resolved_variables
                 ):
                     resolved_variables[variable] = overrides[variable].resolve(
-                        resolved_variables=resolved_variables
+                        resolved_variables=resolved_variables,
+                        custom_functions=custom_functions,
                     )
                     unresolved_variables.remove(variable)
 

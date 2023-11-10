@@ -5,6 +5,7 @@ from typing import Set
 
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 
@@ -20,12 +21,38 @@ class UnresolvedArray(Array, VariableDependency, ArgumentType):
 
     @property
     def variables(self) -> Set[Variable]:
-        return {value for value in self.value if isinstance(value, Variable)}
+        variables: Set[Variable] = set()
+        for arg in self.value:
+            if isinstance(arg, Variable):
+                variables.add(arg)
+            elif isinstance(arg, VariableDependency):
+                variables.update(arg.variables)
 
-    def resolve(self, resolved_variables: Dict[Variable, Resolvable]) -> Resolvable:
+        return variables
+
+    @property
+    def function_arguments(self) -> Set[FunctionArgument]:
+        variables: Set[FunctionArgument] = set()
+        for arg in self.value:
+            if isinstance(arg, FunctionArgument):
+                variables.add(arg)
+            elif isinstance(arg, VariableDependency):
+                variables.update(arg.function_arguments)
+
+        return variables
+
+    def resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Resolvable:
         return ResolvedArray(
             [
-                self._resolve_argument_type(resolved_variables=resolved_variables, arg=arg)
+                self._resolve_argument_type(
+                    arg=arg,
+                    resolved_variables=resolved_variables,
+                    custom_functions=custom_functions,
+                )
                 for arg in self.value
             ]
         )
