@@ -16,11 +16,18 @@ from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
+from ytdl_sub.script.utils.exceptions import UnreachableSyntaxException
 from ytdl_sub.script.utils.parser_exception_formatter import ParserExceptionFormatter
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 
 # pylint: disable=invalid-name
+
+UNREACHABLE = UnreachableSyntaxException(
+    "If you see this error, you have discovered a bug in the script parser!\n"
+    "Please upload your config/subscription file(s) to and make a GitHub issue at "
+    "https://github.com/jmbannon/ytdl-sub/issues"
+)
 
 UNEXPECTED_ARGUMENT = InvalidSyntaxException("Unexpected comma when parsing arguments")
 MAP_KEY_WITH_NO_VALUE = InvalidSyntaxException("Map has a key with no value")
@@ -285,15 +292,15 @@ class _Parser:
                 value_args = self._parse_args(breaking_chars=",}")
                 if len(value_args) == 0:
                     raise MAP_KEY_WITH_NO_VALUE
-                if len(value_args) > 1:
-                    raise StringFormattingException("map has key with multiple values")
                 if isinstance(key, NonHashable):
                     raise MAP_KEY_NOT_HASHABLE
+                if len(value_args) > 1:
+                    raise UNREACHABLE
 
                 output[key] = value_args[0]
                 key = None
             else:
-                raise StringFormattingException("Invalid map")
+                raise UNREACHABLE
 
     def _parse(self) -> SyntaxTree:
         bracket_counter = 0
