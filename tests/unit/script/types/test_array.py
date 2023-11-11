@@ -1,7 +1,13 @@
+import re
+
+import pytest
+
+from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 
 class TestArray:
@@ -34,8 +40,32 @@ class TestArray:
             )
         }
 
-    def test_empty_array(self):
-        assert Script({"array": "{[]}"}).resolve() == {"array": ResolvedArray([])}
+    @pytest.mark.parametrize(
+        "array",
+        [
+            "{[]}",
+            "{  []  }",
+            "{  [    ] }",
+            "{[\n]}",
+        ],
+    )
+    def test_empty(self, array: str):
+        assert Script({"array": array}).resolve() == {"array": ResolvedArray([])}
+
+    @pytest.mark.parametrize(
+        "array",
+        [
+            "{[,]}",
+            "{[ ,]}",
+            "{ [ , ]}",
+            "{  ['test',]  }",
+            "{  [   'test',  ] }",
+            "{[\n,\n]}",
+        ],
+    )
+    def test_unexpected_comma(self, array: str):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(UNEXPECTED_COMMA_ARGUMENT))):
+            Script({"array": array}).resolve()
 
     def test_custom_function(self):
         assert Script(

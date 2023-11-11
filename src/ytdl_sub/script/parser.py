@@ -29,7 +29,7 @@ UNREACHABLE = UnreachableSyntaxException(
     "https://github.com/jmbannon/ytdl-sub/issues"
 )
 
-UNEXPECTED_ARGUMENT = InvalidSyntaxException("Unexpected comma when parsing arguments")
+UNEXPECTED_COMMA_ARGUMENT = InvalidSyntaxException("Unexpected comma when parsing arguments")
 MAP_KEY_WITH_NO_VALUE = InvalidSyntaxException("Map has a key with no value")
 MAP_KEY_MULTIPLE_VALUES = InvalidSyntaxException(
     "Map key has multiple values when there should only be one"
@@ -207,7 +207,7 @@ class _Parser:
                 comma_count += 1
                 if argument_index != comma_count:
                     self._set_highlight_position()
-                    raise UNEXPECTED_ARGUMENT
+                    raise UNEXPECTED_COMMA_ARGUMENT
 
                 self._pos += 1
             else:
@@ -247,7 +247,7 @@ class _Parser:
             else:
                 function_args = self._parse_args(breaking_chars="]")
 
-        raise StringFormattingException("Invalid function")
+        raise UNREACHABLE
 
     def _parse_map(self) -> UnresolvedMap:
         """
@@ -267,11 +267,11 @@ class _Parser:
                 return UnresolvedMap(value=output)
             elif ch == ",":
                 if in_comma:
-                    raise UNEXPECTED_ARGUMENT
+                    raise UNEXPECTED_COMMA_ARGUMENT
                 if key is not None:
                     raise MAP_KEY_WITH_NO_VALUE
                 if not output:
-                    raise UNEXPECTED_ARGUMENT
+                    raise UNEXPECTED_COMMA_ARGUMENT
                 in_comma = True
                 self._pos += 1
             elif key is None:

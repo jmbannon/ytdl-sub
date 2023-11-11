@@ -6,7 +6,7 @@ from ytdl_sub.script.parser import MAP_KEY_MULTIPLE_VALUES
 from ytdl_sub.script.parser import MAP_KEY_NOT_HASHABLE
 from ytdl_sub.script.parser import MAP_KEY_WITH_NO_VALUE
 from ytdl_sub.script.parser import MAP_MISSING_KEY
-from ytdl_sub.script.parser import UNEXPECTED_ARGUMENT
+from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.map import ResolvedMap
 from ytdl_sub.script.types.resolvable import Float
@@ -99,7 +99,7 @@ class TestMap:
         ],
     )
     def test_map_unexpected_comma(self, value: str):
-        with pytest.raises(InvalidSyntaxException, match=re.escape(str(UNEXPECTED_ARGUMENT))):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(UNEXPECTED_COMMA_ARGUMENT))):
             Script({"map": value}).resolve()
 
     @pytest.mark.parametrize(
