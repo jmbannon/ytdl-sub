@@ -2,11 +2,13 @@ import re
 
 import pytest
 
+from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
 from ytdl_sub.script.parser import MAP_KEY_MULTIPLE_VALUES
 from ytdl_sub.script.parser import MAP_KEY_NOT_HASHABLE
 from ytdl_sub.script.parser import MAP_KEY_WITH_NO_VALUE
 from ytdl_sub.script.parser import MAP_MISSING_KEY
 from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
+from ytdl_sub.script.parser import ArgumentParser
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.map import ResolvedMap
 from ytdl_sub.script.types.resolvable import Float
@@ -75,6 +77,21 @@ class TestMap:
         assert Script({"map": empty_map}).resolve() == {"map": ResolvedMap({})}
 
     @pytest.mark.parametrize(
+        "map",
+        [
+            "{{}",
+            "{{      }",
+            "{{\n}",
+            "{{'key': 'value'}",
+            "{{ 'key' : 'value' }",
+            "{{      }",
+        ],
+    )
+    def test_map_not_closed(self, map: str):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(BRACKET_NOT_CLOSED))):
+            Script({"map": map}).resolve()
+
+    @pytest.mark.parametrize(
         "value",
         [
             "{{'key': }}",
@@ -99,7 +116,10 @@ class TestMap:
         ],
     )
     def test_map_unexpected_comma(self, value: str):
-        with pytest.raises(InvalidSyntaxException, match=re.escape(str(UNEXPECTED_COMMA_ARGUMENT))):
+        with pytest.raises(
+            InvalidSyntaxException,
+            match=re.escape(str(UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY))),
+        ):
             Script({"map": value}).resolve()
 
     @pytest.mark.parametrize(

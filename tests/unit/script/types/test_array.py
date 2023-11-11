@@ -2,7 +2,10 @@ import re
 
 import pytest
 
+from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
+from ytdl_sub.script.parser import UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
+from ytdl_sub.script.parser import ArgumentParser
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Float
@@ -64,8 +67,42 @@ class TestArray:
         ],
     )
     def test_unexpected_comma(self, array: str):
-        with pytest.raises(InvalidSyntaxException, match=re.escape(str(UNEXPECTED_COMMA_ARGUMENT))):
+        with pytest.raises(
+            InvalidSyntaxException,
+            match=re.escape(str(UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.ARRAY))),
+        ):
             Script({"array": array}).resolve()
+
+    @pytest.mark.parametrize(
+        "array",
+        [
+            "{[}",
+            "{[      }",
+            "{[\n}",
+            "{['key'}",
+            "{[ 'key'   }",
+        ],
+    )
+    def test_array_not_closed(self, array: str):
+        with pytest.raises(
+            InvalidSyntaxException,
+            match=re.escape(str(UNEXPECTED_CHAR_ARGUMENT(ArgumentParser.ARRAY))),
+        ):
+            assert Script({"array": array}).resolve()
+
+    @pytest.mark.parametrize(
+        "array",
+        [
+            "{]}" "{      ]}",
+            "{\n]}",
+        ],
+    )
+    def test_array_not_opened(self, array: str):
+        with pytest.raises(
+            InvalidSyntaxException,
+            match=re.escape(str(UNEXPECTED_CHAR_ARGUMENT(ArgumentParser.SCRIPT))),
+        ):
+            assert Script({"array": array}).resolve()
 
     def test_custom_function(self):
         assert Script(

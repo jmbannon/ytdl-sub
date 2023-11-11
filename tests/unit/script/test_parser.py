@@ -1,8 +1,12 @@
+import re
 from typing import Optional
 from typing import Union
 
 import pytest
 
+from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
+from ytdl_sub.script.parser import UNEXPECTED_CHAR_ARGUMENT
+from ytdl_sub.script.parser import ArgumentParser
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Boolean
@@ -11,6 +15,7 @@ from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
@@ -180,9 +185,12 @@ class TestParserBracketFailures:
             parse("{")
 
     def test_bracket_close(self):
-        with pytest.raises(StringFormattingException):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(BRACKET_NOT_CLOSED))):
             parse("}")
 
     def test_bracket_in_function(self):
-        with pytest.raises(StringFormattingException):
+        with pytest.raises(
+            InvalidSyntaxException,
+            match=re.escape(str(UNEXPECTED_CHAR_ARGUMENT(ArgumentParser.MAP_KEY))),
+        ):
             parse("hello {%capitalize({as_arg)}")

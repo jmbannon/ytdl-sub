@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from enum import Enum
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -23,13 +24,32 @@ from ytdl_sub.validators.string_formatter_validators import is_valid_source_vari
 
 # pylint: disable=invalid-name
 
+
+class ArgumentParser(Enum):
+    SCRIPT = "script"
+    FUNCTION = "function"
+    ARRAY = "array"
+    MAP_KEY = "map key"
+    MAP_VALUE = "map value"
+
+
 UNREACHABLE = UnreachableSyntaxException(
     "If you see this error, you have discovered a bug in the script parser!\n"
     "Please upload your config/subscription file(s) to and make a GitHub issue at "
     "https://github.com/jmbannon/ytdl-sub/issues"
 )
 
-UNEXPECTED_COMMA_ARGUMENT = InvalidSyntaxException("Unexpected comma when parsing arguments")
+BRACKET_NOT_CLOSED = InvalidSyntaxException("Bracket not properly closed")
+
+
+def UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
+    return InvalidSyntaxException(f"Unexpected character when parsing {parser.value} arguments")
+
+
+def UNEXPECTED_COMMA_ARGUMENT(parser: ArgumentParser):
+    return InvalidSyntaxException(f"Unexpected comma when parsing {parser.value} arguments")
+
+
 MAP_KEY_WITH_NO_VALUE = InvalidSyntaxException("Map has a key with no value")
 MAP_KEY_MULTIPLE_VALUES = InvalidSyntaxException(
     "Map key has multiple values when there should only be one"
@@ -38,6 +58,10 @@ MAP_MISSING_KEY = InvalidSyntaxException("Map has a missing key")
 MAP_KEY_NOT_HASHABLE = InvalidSyntaxException(
     "Map key must be a hashable type (Integer, Float, Boolean, String)"
 )
+
+
+def _is_variable_start(char: str) -> bool:
+    return char.isalpha() and char.islower()
 
 
 class _Parser:
@@ -67,6 +91,9 @@ class _Parser:
         self._error_highlight_pos = self._pos
 
     def _read(self, increment_pos: bool = True, length: int = 1) -> Optional[str]:
+        if self._pos >= len(self._text):
+            return None
+
         try:
             ch = self._text[self._pos : (self._pos + length)]
         except IndexError:
@@ -101,7 +128,7 @@ class _Parser:
         assert is_valid_source_variable_name(var_name, raise_exception=False)
         return Variable(var_name)
 
-    def _parse_function_argument(self) -> FunctionArgument:
+    def _parse_custom_function_argument(self) -> FunctionArgument:
         """
         Begin parsing function args after the first ``$``, i.e. ``$1``
         """
@@ -159,7 +186,7 @@ class _Parser:
 
         raise StringFormattingException("String not closed")
 
-    def _parse_function_arg(self) -> ArgumentType:
+    def _parse_function_arg(self, argument_parser: ArgumentParser) -> ArgumentType:
         if self._read(increment_pos=False) == "%":
             self._pos += 1
             return self._parse_function()
@@ -181,38 +208,39 @@ class _Parser:
             return self._parse_map()
         if self._read(increment_pos=False) == "$":
             self._pos += 1
-            return self._parse_function_argument()
-        if self._read(increment_pos=False).isascii() and self._read(increment_pos=False).islower():
+            return self._parse_custom_function_argument()
+        if _is_variable_start(self._read(increment_pos=False)):
             return self._parse_variable()
-        raise StringFormattingException(
-            "Invalid function argument, should be either a function, int, float, "
-            "string, boolean, or variable without brackets"
-        )
 
-    def _parse_args(self, breaking_chars: str = ")") -> List[ArgumentType]:
+        self._set_highlight_position()
+        raise UNEXPECTED_CHAR_ARGUMENT(parser=argument_parser)
+
+    def _parse_args(
+        self, argument_parser: ArgumentParser, breaking_chars: str = ")"
+    ) -> List[ArgumentType]:
         """
         Begin parsing function args after the first ``(``, i.e. ``function_name(``
         """
-        argument_index = 0
         comma_count = 0
-
         arguments: List[ArgumentType] = []
         while ch := self._read(increment_pos=False):
             if ch in breaking_chars:
+                # i.e. ["arg", ] which is invalid
+                if arguments and len(arguments) == comma_count:
+                    raise UNEXPECTED_COMMA_ARGUMENT(argument_parser)
                 break
 
             if ch.isspace():
                 self._pos += 1
             elif ch == ",":
+                self._set_highlight_position()
                 comma_count += 1
-                if argument_index != comma_count:
-                    self._set_highlight_position()
-                    raise UNEXPECTED_COMMA_ARGUMENT
+                if len(arguments) != comma_count:
+                    raise UNEXPECTED_COMMA_ARGUMENT(argument_parser)
 
                 self._pos += 1
             else:
-                argument_index += 1
-                arguments.append(self._parse_function_arg())
+                arguments.append(self._parse_function_arg(argument_parser=argument_parser))
 
         return arguments
 
@@ -230,7 +258,7 @@ class _Parser:
             if ch != "(":
                 function_name += ch
             else:
-                function_args = self._parse_args()
+                function_args = self._parse_args(argument_parser=ArgumentParser.FUNCTION)
 
         raise StringFormattingException("Invalid function")
 
@@ -245,7 +273,9 @@ class _Parser:
                 self._pos += 1
                 return UnresolvedArray(value=function_args)
             else:
-                function_args = self._parse_args(breaking_chars="]")
+                function_args = self._parse_args(
+                    argument_parser=ArgumentParser.ARRAY, breaking_chars="]"
+                )
 
         raise UNREACHABLE
 
@@ -267,17 +297,19 @@ class _Parser:
                 return UnresolvedMap(value=output)
             elif ch == ",":
                 if in_comma:
-                    raise UNEXPECTED_COMMA_ARGUMENT
+                    raise UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
                 if key is not None:
                     raise MAP_KEY_WITH_NO_VALUE
                 if not output:
-                    raise UNEXPECTED_COMMA_ARGUMENT
+                    raise UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
                 in_comma = True
                 self._pos += 1
             elif key is None:
                 self._set_highlight_position()
                 in_comma = False
-                key_args = self._parse_args(breaking_chars=":}")
+                key_args = self._parse_args(
+                    argument_parser=ArgumentParser.MAP_KEY, breaking_chars=":}"
+                )
 
                 if len(key_args) == 0 and self._read(increment_pos=False) == "}":
                     continue  # will return the map next iteration
@@ -289,7 +321,9 @@ class _Parser:
             elif key is not None and ch == ":":
                 self._set_highlight_position()
                 self._pos += 1
-                value_args = self._parse_args(breaking_chars=",}")
+                value_args = self._parse_args(
+                    argument_parser=ArgumentParser.MAP_VALUE, breaking_chars=",}"
+                )
                 if len(value_args) == 0:
                     raise MAP_KEY_WITH_NO_VALUE
                 if isinstance(key, NonHashable):
@@ -303,13 +337,19 @@ class _Parser:
                 raise UNREACHABLE
 
     def _parse(self) -> SyntaxTree:
+        bracket_counter_pos_stack: List[int] = []
         bracket_counter = 0
         literal_str = ""
         while ch := self._read():
             if ch == "}":
+                if bracket_counter == 0:
+                    raise BRACKET_NOT_CLOSED
+
+                del bracket_counter_pos_stack[-1]
                 bracket_counter -= 1
                 continue
             if ch == "{":
+                bracket_counter_pos_stack.append(self._pos - 1)  # pos incremented when read
                 bracket_counter += 1
                 if literal_str:
                     self._ast.append(String(value=literal_str))
@@ -335,8 +375,10 @@ class _Parser:
                 elif ch1 == "{":
                     self._pos += 1
                     self._ast.append(self._parse_map())
-                else:
+                elif _is_variable_start(ch1):
                     self._ast.append(self._parse_variable())
+                else:
+                    raise UNEXPECTED_CHAR_ARGUMENT(parser=ArgumentParser.SCRIPT)
             elif bracket_counter == 0:
                 # Only accumulate literal str if not in brackets
                 literal_str += ch
@@ -345,7 +387,8 @@ class _Parser:
                 assert ch.isspace()
 
         if bracket_counter != 0:
-            raise StringFormattingException("Bracket count mismatch")
+            self._error_highlight_pos = bracket_counter_pos_stack[-1]
+            raise BRACKET_NOT_CLOSED
 
         if literal_str:
             self._ast.append(String(value=literal_str))
