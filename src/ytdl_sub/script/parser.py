@@ -41,6 +41,11 @@ UNREACHABLE = UnreachableSyntaxException(
 
 BRACKET_NOT_CLOSED = InvalidSyntaxException("Bracket not properly closed")
 
+NUMERICS_ONLY_ARGS = InvalidSyntaxException(
+    "Numerics can only be used as arguments to functions, maps, or arrays"
+)
+NUMERICS_INVALID_CHAR = InvalidSyntaxException("Invalid value when parsing a numeric")
+
 
 def UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
     return InvalidSyntaxException(f"Unexpected character when parsing {parser.value} arguments")
@@ -62,6 +67,10 @@ MAP_KEY_NOT_HASHABLE = InvalidSyntaxException(
 
 def _is_variable_start(char: str) -> bool:
     return char.isalpha() and char.islower()
+
+
+def _is_numeric_start(char: str) -> bool:
+    return char.isnumeric() or char == "-"
 
 
 class _Parser:
@@ -154,17 +163,38 @@ class _Parser:
 
     def _parse_numeric(self) -> Integer | Float:
         numeric_string = ""
+
+        if self._read(increment_pos=False) == "-":
+            numeric_string += "-"
+            self._pos += 1
+        if has_decimal := (self._read(increment_pos=False) == "."):
+            numeric_string += "."
+            self._pos += 1
+
         while ch := self._read(increment_pos=False):
-            if not (ch.isnumeric() or ch == "."):
+            if ch == "-":
+                raise NUMERICS_INVALID_CHAR
+
+            if ch == ".":
+                if has_decimal:
+                    raise NUMERICS_INVALID_CHAR
+                has_decimal = True
+
+                self._pos += 1
+                numeric_string += ch
+            elif ch.isnumeric():
+                self._pos += 1
+                numeric_string += ch
+            else:
                 break
 
-            self._pos += 1
-            numeric_string += ch
+        if numeric_string == "." or numeric_string == "-":
+            raise NUMERICS_INVALID_CHAR
 
         try:
             numeric_float = float(numeric_string)
         except ValueError:
-            raise StringFormattingException(f"Invalid numeric: {numeric_string}")
+            raise UNREACHABLE
 
         if (numeric_int := int(numeric_float)) == numeric_float:
             return Integer(value=numeric_int)
@@ -190,7 +220,7 @@ class _Parser:
         if self._read(increment_pos=False) == "%":
             self._pos += 1
             return self._parse_function()
-        if self._read(increment_pos=False).isnumeric():
+        if _is_numeric_start(self._read(increment_pos=False)):
             return self._parse_numeric()
         if (self._read(increment_pos=False, length=4) or "").lower() == "true":
             self._pos += 4
@@ -377,6 +407,8 @@ class _Parser:
                     self._ast.append(self._parse_map())
                 elif _is_variable_start(ch1):
                     self._ast.append(self._parse_variable())
+                elif _is_numeric_start(ch1):
+                    raise NUMERICS_ONLY_ARGS
                 else:
                     raise UNEXPECTED_CHAR_ARGUMENT(parser=ArgumentParser.SCRIPT)
             elif bracket_counter == 0:

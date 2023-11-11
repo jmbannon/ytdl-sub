@@ -2,7 +2,6 @@ import re
 
 import pytest
 
-from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
 from ytdl_sub.script.parser import UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ArgumentParser
