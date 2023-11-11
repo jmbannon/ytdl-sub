@@ -7,7 +7,7 @@ from ytdl_sub.script.types.resolvable import Resolvable
 
 class ArrayFunctions:
     @staticmethod
-    def extend(*arrays: Array) -> Array:
+    def array_extend(*arrays: Array) -> Array:
         output: List[Resolvable] = []
         for array in arrays:
             output.extend(array.value)
@@ -15,16 +15,20 @@ class ArrayFunctions:
         return Array(output)
 
     @staticmethod
-    def at(array: Array, idx: Integer) -> Resolvable:
+    def array_at(array: Array, idx: Integer) -> Resolvable:
         return array.value[idx.value]
 
     @staticmethod
-    def flatten_array(array: Array) -> Array:
+    def array_flatten(array: Array) -> Array:
         output: List[Resolvable] = []
         for elem in array.value:
             if isinstance(elem, Array):
-                output.extend(ArrayFunctions.flatten_array(elem).value)
+                output.extend(ArrayFunctions.array_flatten(elem).value)
             else:
                 output.append(elem)
 
         return Array(output)
+
+    @staticmethod
+    def array_reverse(array: Array) -> Array:
+        return Array(list(reversed(array.value)))
