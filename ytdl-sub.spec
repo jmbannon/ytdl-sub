@@ -9,10 +9,7 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('src/ytdl_sub/prebuilt_presets/helpers/*.yaml', 'ytdl_sub/prebuilt_presets/helpers'),
-        ('src/ytdl_sub/prebuilt_presets/internal/*.yaml', 'ytdl_sub/prebuilt_presets/internal'),
-        ('src/ytdl_sub/prebuilt_presets/music_videos/*.yaml', 'ytdl_sub/prebuilt_presets/music_videos'),
-        ('src/ytdl_sub/prebuilt_presets/tv_show/*.yaml', 'ytdl_sub/prebuilt_presets/tv_show'),
+        ('src/ytdl_sub/prebuilt_presets', 'ytdl_sub/prebuilt_presets'),
     ],
     hiddenimports=[],
     hookspath=[],
