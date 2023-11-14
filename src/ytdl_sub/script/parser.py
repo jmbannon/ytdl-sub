@@ -47,6 +47,10 @@ NUMERICS_ONLY_ARGS = InvalidSyntaxException(
 NUMERICS_INVALID_CHAR = InvalidSyntaxException("Invalid value when parsing a numeric")
 
 
+STRINGS_ONLY_ARGS = InvalidSyntaxException(
+    "Strings can only be used as arguments to functions, maps, or arrays"
+)
+
 def UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
     return InvalidSyntaxException(f"Unexpected character when parsing {parser.value} arguments")
 
@@ -72,6 +76,8 @@ def _is_variable_start(char: str) -> bool:
 def _is_numeric_start(char: str) -> bool:
     return char.isnumeric() or char == "-"
 
+def _is_string_start(char: str) -> bool:
+    return char in ["'", '"']
 
 def _is_breakable(char: str) -> bool:
     return char in ["}", ",", ")", "]"] or char.isspace()
@@ -214,7 +220,9 @@ class _Parser:
         """
         string_value = ""
         open_quotation_char = self._read()
-        assert open_quotation_char in ["'", '"']
+
+        if not _is_string_start(open_quotation_char):
+            raise UNREACHABLE
 
         while ch := self._read():
             if ch == open_quotation_char:
@@ -235,7 +243,7 @@ class _Parser:
         if (self._read(increment_pos=False, length=5) or "").lower() == "false":
             self._pos += 5
             return Boolean(value=False)
-        if self._read(increment_pos=False) in ["'", '"']:
+        if _is_string_start(self._read(increment_pos=False)):
             return self._parse_string()
         if self._read(increment_pos=False) == "[":
             self._pos += 1
@@ -416,6 +424,8 @@ class _Parser:
                     self._ast.append(self._parse_variable())
                 elif _is_numeric_start(ch1):
                     raise NUMERICS_ONLY_ARGS
+                elif _is_string_start(ch1):
+                    raise STRINGS_ONLY_ARGS
                 else:
                     raise UNEXPECTED_CHAR_ARGUMENT(parser=ArgumentParser.SCRIPT)
             elif bracket_counter == 0:
