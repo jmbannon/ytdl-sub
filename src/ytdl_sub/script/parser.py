@@ -73,6 +73,10 @@ def _is_numeric_start(char: str) -> bool:
     return char.isnumeric() or char == "-"
 
 
+def _is_breakable(char: str) -> bool:
+    return char in ["}", ",", ")", "]"] or char.isspace()
+
+
 class _Parser:
     def __init__(self, text: str):
         self._text = text
@@ -118,7 +122,7 @@ class _Parser:
             if ch.isspace() and not var_name:
                 self._pos += 1
                 continue
-            if ch in ["}", ",", ")", "]"] or ch.isspace():
+            if _is_breakable(ch):
                 break
 
             is_lower = ch.isascii() and ch.islower()
@@ -146,7 +150,7 @@ class _Parser:
             if ch.isspace() and not var_name:
                 self._pos += 1
                 continue
-            if ch in ["}", ",", ")", "]"] or ch.isspace():
+            if _is_breakable(ch):
                 break
 
             is_numeric = ch.isnumeric()
@@ -185,8 +189,11 @@ class _Parser:
             elif ch.isnumeric():
                 self._pos += 1
                 numeric_string += ch
-            else:
+            elif _is_breakable(ch):
                 break
+            else:
+                self._set_highlight_position()
+                raise NUMERICS_INVALID_CHAR
 
         if numeric_string == "." or numeric_string == "-":
             raise NUMERICS_INVALID_CHAR
