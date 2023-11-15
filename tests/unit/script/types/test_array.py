@@ -20,7 +20,7 @@ class TestArray:
 
     def test_return_as_str(self):
         assert Script({"array": "str: {['a', 3.14]}"}).resolve() == {
-            "array": String("str: [a, 3.14]")
+            "array": String('str: ["a", 3.14]')
         }
 
     def test_nested_array(self):
@@ -111,4 +111,4 @@ class TestArray:
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",
             }
-        ).resolve() == {"aa": String("a"), "bb": String("b"), "cc": String("return [a, b]")}
+        ).resolve() == {"aa": String("a"), "bb": String("b"), "cc": String('return ["a", "b"]')}

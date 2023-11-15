@@ -3,8 +3,9 @@ from typing import Tuple
 
 import pytest
 
-from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR, STRINGS_ONLY_ARGS
+from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR
 from ytdl_sub.script.parser import NUMERICS_ONLY_ARGS
+from ytdl_sub.script.parser import STRINGS_ONLY_ARGS
 from ytdl_sub.script.parser import UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ArgumentParser
@@ -21,10 +22,10 @@ class TestString:
         "string",
         [
             "{'323'}",
-            "{  \"4253\"  }",
-            "{\"hi\"}",
-            "{   \"asfsd\"   }",
-            "{\"sdfasf\"}",
+            '{  "4253"  }',
+            '{"hi"}',
+            '{   "asfsd"   }',
+            '{"sdfasf"}',
             "{  '3fsdf'   }",
         ],
     )

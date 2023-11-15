@@ -51,6 +51,7 @@ STRINGS_ONLY_ARGS = InvalidSyntaxException(
     "Strings can only be used as arguments to functions, maps, or arrays"
 )
 
+
 def UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
     return InvalidSyntaxException(f"Unexpected character when parsing {parser.value} arguments")
 
@@ -76,8 +77,10 @@ def _is_variable_start(char: str) -> bool:
 def _is_numeric_start(char: str) -> bool:
     return char.isnumeric() or char == "-"
 
+
 def _is_string_start(char: str) -> bool:
     return char in ["'", '"']
+
 
 def _is_breakable(char: str) -> bool:
     return char in ["}", ",", ")", "]"] or char.isspace()

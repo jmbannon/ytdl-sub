@@ -8,6 +8,7 @@ from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Hashable
 from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import ResolvableToJson
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
@@ -17,22 +18,6 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 @dataclass(frozen=True)
 class Map(NonHashable):
     value: Dict[Hashable, Resolvable]
-
-    def to_native(self) -> Dict:
-        output = {}
-        for key, value in self.value.items():
-            native_key = key.value
-            if isinstance(value, Map):
-                native_value = value.to_native()
-            else:
-                native_value = value.value
-
-            output[native_key] = native_value
-
-        return output
-
-    def __str__(self):
-        return json.dumps(self.to_native())
 
 
 @dataclass(frozen=True)
@@ -92,5 +77,5 @@ class UnresolvedMap(Map, VariableDependency, ArgumentType):
 
 
 @dataclass(frozen=True)
-class ResolvedMap(Map, Resolvable):
+class ResolvedMap(Map, ResolvableToJson):
     pass

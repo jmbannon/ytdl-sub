@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
@@ -6,6 +7,7 @@ from typing import Set
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import ResolvableToJson
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
@@ -14,9 +16,6 @@ from ytdl_sub.script.types.variable_dependency import VariableDependency
 @dataclass(frozen=True)
 class Array(NonHashable):
     value: List[Resolvable]
-
-    def __str__(self):
-        return f"[{', '.join([str(val.value) for val in self.value])}]"
 
 
 @dataclass(frozen=True)
@@ -63,5 +62,5 @@ class UnresolvedArray(Array, VariableDependency, ArgumentType):
 
 
 @dataclass(frozen=True)
-class ResolvedArray(Array, Resolvable):
+class ResolvedArray(Array, ResolvableToJson):
     pass

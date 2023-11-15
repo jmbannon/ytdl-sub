@@ -14,7 +14,7 @@ class TestSyntaxTree:
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",
             }
-        ).resolve() == {"aa": String("a"), "bb": String("b"), "cc": String("return [a, b]")}
+        ).resolve() == {"aa": String("a"), "bb": String("b"), "cc": String('return ["a", "b"]')}
 
     def test_simple(self):
         assert Script({"a": "a", "b": "{b_}", "b_": "b"}).resolve() == {

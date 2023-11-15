@@ -1,4 +1,6 @@
+import json
 from abc import ABC
+from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Any
 from typing import Generic
@@ -38,6 +40,22 @@ class Hashable(Resolvable, ABC):
 
 class NonHashable(ABC):
     pass
+
+
+class ResolvableToJson(Resolvable, ABC):
+    @classmethod
+    def _to_native(cls, to_convert: Resolvable) -> Any:
+        if isinstance(to_convert.value, list):
+            return [cls._to_native(val) for val in to_convert.value]
+        if isinstance(to_convert.value, dict):
+            return {
+                cls._to_native(key): cls._to_native(value)
+                for key, value in to_convert.value.items()
+            }
+        return to_convert.value
+
+    def __str__(self):
+        return json.dumps(self._to_native(self))
 
 
 @dataclass(frozen=True)
