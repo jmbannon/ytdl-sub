@@ -50,6 +50,10 @@ NUMERICS_INVALID_CHAR = InvalidSyntaxException("Invalid value when parsing a num
 STRINGS_ONLY_ARGS = InvalidSyntaxException(
     "Strings can only be used as arguments to functions, maps, or arrays"
 )
+STRINGS_NOT_CLOSED = InvalidSyntaxException(
+    "String was not closed properly. "
+    "Must open and close with the same type of quote (single/double)"
+)
 
 
 def UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
@@ -221,18 +225,26 @@ class _Parser:
         """
         Begin parsing a string, including the quotation value
         """
+        self._set_highlight_position()
         string_value = ""
         open_quotation_char = self._read()
 
         if not _is_string_start(open_quotation_char):
             raise UNREACHABLE
 
+        is_escaped = False
         while ch := self._read():
-            if ch == open_quotation_char:
+            if ch == open_quotation_char and not is_escaped:
                 return String(value=string_value)
-            string_value += ch
 
-        raise StringFormattingException("String not closed")
+            if ch == "\\" and not is_escaped:
+                is_escaped = True
+                continue
+
+            string_value += ch
+            is_escaped = False
+
+        raise STRINGS_NOT_CLOSED
 
     def _parse_function_arg(self, argument_parser: ArgumentParser) -> ArgumentType:
         if self._read(increment_pos=False) == "%":
