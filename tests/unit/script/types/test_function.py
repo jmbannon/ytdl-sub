@@ -11,6 +11,7 @@ from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ArgumentParser
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
@@ -18,4 +19,40 @@ from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 
 class TestFunction:
-    pass
+    @pytest.mark.parametrize(
+        "function_str, expected_output",
+        [
+            ("{%if(True, True, False)}", True),
+            ("{%if(False, True, False)}", False),
+        ],
+    )
+    def test_if_function(self, function_str: str, expected_output: bool):
+        assert Script({"func": function_str}).resolve() == {
+            "func": Boolean(expected_output),
+        }
+
+    def test_nested_if_function(self):
+        function_str = """{
+            %if(
+                True,
+                %if(
+                    True,
+                    %if(
+                        True,
+                        "winner",
+                        True
+                    ),
+                    True
+                ),
+                True
+            )
+        }"""
+        assert Script({"func": function_str}).resolve() == {
+            "func": String("winner"),
+        }
+
+    @pytest.mark.parametrize(
+        "function_str", ["{%array_at({'a': 'dict?'}, 1)}" "{%array_extend('not', 'array')}"]
+    )
+    def test_incompatible_types(self, function_str):
+        assert Script({"func": function_str}).resolve()

@@ -43,7 +43,7 @@ class FunctionInputSpec:
         input_arg: ArgumentType,
         expected_arg_type: Type[Resolvable | Optional[Resolvable]],
     ) -> bool:
-        if isinstance(input_arg, Function):
+        if isinstance(input_arg, BuiltInFunction):
             input_arg_type = input_arg.output_type
         elif isinstance(input_arg, Variable):
             return True  # unresolved variables can be anything, so pass for now
@@ -115,7 +115,7 @@ class FunctionInputSpec:
             return f"({self.varargs.__name__}, ...)"
 
     @classmethod
-    def from_function(cls, func: "Function") -> "FunctionInputSpec":
+    def from_function(cls, func: "BuiltInFunction") -> "FunctionInputSpec":
         if func.arg_spec.varargs:
             return FunctionInputSpec(varargs=func.arg_spec.annotations[func.arg_spec.varargs])
 
@@ -164,7 +164,7 @@ class Function(VariableDependency, ArgumentType, ABC):
     @classmethod
     def from_name_and_args(cls, name: str, args: List[ArgumentType]) -> "Function":
         if hasattr(Functions, name) or hasattr(Functions, name + "_"):
-            return BuiltInFunction(name=name, args=args)
+            return BuiltInFunction(name=name, args=args).validate_args()
 
         return CustomFunction(name=name, args=args)
 
@@ -214,12 +214,13 @@ class BuiltInFunction(Function):
 
         return f"Expected {self.input_spec.expected_args_str()}.\nReceived {received_args_str}"
 
-    def __post_init__(self):
+    def validate_args(self) -> "BuiltInFunction":
         if not self.input_spec.is_compatible(input_args=self.args):
             raise StringFormattingException(
                 f"Invalid arguments passed to function {self.name}.\n"
                 f"{self._expected_received_error_msg()}"
             )
+        return self
 
     @property
     def callable(self) -> Callable[..., Resolvable]:
