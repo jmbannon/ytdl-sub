@@ -12,6 +12,7 @@ from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ArgumentParser
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
@@ -37,6 +38,8 @@ class TestString:
     @pytest.mark.parametrize(
         "string, expected_string",
         [
+            ("{%string('')}", ""),
+            ('{%string("")}', ""),
             ("{%string('323')}", "323"),
             ('{%string(  "4253"  )}', "4253"),
             ('{%string("hi")}', "hi"),
@@ -54,6 +57,16 @@ class TestString:
     )
     def test_string(self, string: str, expected_string: str):
         assert Script({"string": string}).resolve() == {"string": String(expected_string)}
+
+    @pytest.mark.parametrize(
+        "string, expected_bool",
+        [
+            ("{%bool('')}", False),
+            ("{%bool('false')}", True),
+        ],
+    )
+    def test_return_as_bool(self, string: str, expected_bool: bool):
+        assert Script({"as_bool": string}).resolve() == {"as_bool": Boolean(expected_bool)}
 
     @pytest.mark.parametrize(
         "string",

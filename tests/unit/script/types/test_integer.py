@@ -10,6 +10,7 @@ from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ArgumentParser
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
@@ -48,6 +49,16 @@ class TestInteger:
             "integer": Integer(expected_integer),
             "as_string": String(str(expected_integer)),
         }
+
+    @pytest.mark.parametrize(
+        "integer, expected_bool",
+        [
+            ("{%bool(0)}", False),
+            ("{%bool(1)}", True),
+        ],
+    )
+    def test_return_as_bool(self, integer: str, expected_bool: bool):
+        assert Script({"as_bool": integer}).resolve() == {"as_bool": Boolean(expected_bool)}
 
     @pytest.mark.parametrize(
         "integer",

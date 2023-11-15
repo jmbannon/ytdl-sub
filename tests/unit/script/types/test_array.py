@@ -7,6 +7,7 @@ from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ArgumentParser
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
@@ -21,6 +22,18 @@ class TestArray:
     def test_return_as_str(self):
         assert Script({"array": "str: {['a', 3.14]}"}).resolve() == {
             "array": String('str: ["a", 3.14]')
+        }
+
+    @pytest.mark.parametrize(
+        "array, expected_bool",
+        [
+            ("{%bool([])}", False),
+            ("{%bool([False])}", True),
+        ],
+    )
+    def test_return_as_bool(self, array: str, expected_bool: bool):
+        assert Script({"array_as_bool": array}).resolve() == {
+            "array_as_bool": Boolean(expected_bool)
         }
 
     def test_nested_array(self):

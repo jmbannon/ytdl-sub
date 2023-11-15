@@ -11,6 +11,7 @@ from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ArgumentParser
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.map import ResolvedMap
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
@@ -26,6 +27,16 @@ class TestMap:
         assert Script({"map": "json: {{'a': 3.14}}"}).resolve() == {
             "map": String('json: {"a": 3.14}')
         }
+
+    @pytest.mark.parametrize(
+        "map_, expected_bool",
+        [
+            ("{%bool({})}", False),
+            ("{%bool({'key': 'value'})}", True),
+        ],
+    )
+    def test_return_as_bool(self, map_: str, expected_bool: bool):
+        assert Script({"as_bool": map_}).resolve() == {"as_bool": Boolean(expected_bool)}
 
     def test_nested_map(self):
         map_str = """{
