@@ -15,7 +15,9 @@ class ArgumentType(ABC):
     Any possible argument type that has not been resolved yet
     """
 
-    pass
+    @classmethod
+    def human_readable_name(cls) -> str:
+        return cls.__name__
 
 
 class AnyType_0(ABC):

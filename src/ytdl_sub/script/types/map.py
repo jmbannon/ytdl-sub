@@ -20,6 +20,10 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 class Map(NonHashable):
     value: Dict[Hashable, Resolvable]
 
+    @classmethod
+    def human_readable_name(cls) -> str:
+        return "Map"
+
 
 @dataclass(frozen=True)
 class UnresolvedMap(Map, VariableDependency, FutureResolvable):

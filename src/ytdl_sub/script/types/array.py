@@ -18,6 +18,10 @@ from ytdl_sub.script.types.variable_dependency import VariableDependency
 class Array(NonHashable):
     value: List[Resolvable]
 
+    @classmethod
+    def human_readable_name(cls) -> str:
+        return "Array"
+
 
 @dataclass(frozen=True)
 class UnresolvedArray(Array, VariableDependency, FutureResolvable):

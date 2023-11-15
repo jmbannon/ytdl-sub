@@ -207,7 +207,13 @@ class BuiltInFunction(Function):
         received_type_names: List[str] = []
         for arg in self.args:
             if isinstance(arg, BuiltInFunction):
-                received_type_names.append(f"%{arg.name}(...)->{arg.output_type.__name__}")
+                if is_union(arg.output_type):
+                    # TODO: Move naming to separate function, deal with Union input naming
+                    received_type_names.append(
+                        f"%{arg.name}(...)->Union[{', '.join(arg_type.human_readable_name() for arg_type in arg.output_type.__args__)}]"
+                    )
+                else:
+                    received_type_names.append(f"%{arg.name}(...)->{arg.output_type.__name__}")
             else:
                 received_type_names.append(arg.__class__.__name__)
 
