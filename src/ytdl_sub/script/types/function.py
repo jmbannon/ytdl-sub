@@ -14,14 +14,15 @@ from typing import Union
 from typing import get_origin
 
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.types.resolvable import ArgumentType
-from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import AnyType_0
 from ytdl_sub.script.types.resolvable import AnyType_1
 from ytdl_sub.script.types.resolvable import AnyType_2
+from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
+from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
@@ -216,7 +217,7 @@ class BuiltInFunction(Function):
 
     def validate_args(self) -> "BuiltInFunction":
         if not self.input_spec.is_compatible(input_args=self.args):
-            raise StringFormattingException(
+            raise IncompatibleFunctionArguments(
                 f"Invalid arguments passed to function {self.name}.\n"
                 f"{self._expected_received_error_msg()}"
             )
@@ -239,6 +240,12 @@ class BuiltInFunction(Function):
     def input_spec(self) -> FunctionInputSpec:
         return FunctionInputSpec.from_function(self)
 
+    @classmethod
+    def _arg_output_type(cls, arg: ArgumentType) -> Type[ArgumentType]:
+        if isinstance(arg, BuiltInFunction):
+            return arg.output_type
+        return type(arg)
+
     @property
     def output_type(self) -> Type[Resolvable]:
         output_type = self.arg_spec.annotations["return"]
@@ -246,11 +253,11 @@ class BuiltInFunction(Function):
             union_types_list = []
             for union_type in output_type.__args__:
                 if union_type == AnyType_0:
-                    union_types_list.append(type(self.args[0]))
+                    union_types_list.append(self._arg_output_type(self.args[0]))
                 elif union_type == AnyType_1:
-                    union_types_list.append(type(self.args[1]))
+                    union_types_list.append(self._arg_output_type(self.args[1]))
                 elif union_type == AnyType_2:
-                    union_types_list.append(type(self.args[2]))
+                    union_types_list.append(self._arg_output_type(self.args[2]))
                 else:
                     union_types_list.append(union_type)
 

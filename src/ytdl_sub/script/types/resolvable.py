@@ -14,33 +14,38 @@ class ArgumentType(ABC):
     """
     Any possible argument type that has not been resolved yet
     """
+
     pass
 
-class AnyType(ArgumentType, ABC):
+
+class AnyType_0(ABC):
+    pass
+
+
+class AnyType_1(ABC):
+    pass
+
+
+class AnyType_2(ABC):
+    pass
+
+
+class AnyType(ArgumentType, AnyType_0, AnyType_1, AnyType_2, ABC):
     """
     Human-readable name for FutureResolvable
     """
+
     value: Any
+
 
 class FutureResolvable(AnyType, ABC):
     """
     Type that will be resolved in the future
     """
 
-class AnyType_0(FutureResolvable, ABC):
-    pass
-
-
-class AnyType_1(FutureResolvable, ABC):
-    pass
-
-
-class AnyType_2(FutureResolvable, ABC):
-    pass
-
 
 @dataclass(frozen=True)
-class Resolvable(AnyType_0, AnyType_1, AnyType_2, ABC):
+class Resolvable(AnyType, ABC):
     def __str__(self) -> str:
         return str(self.value)
 

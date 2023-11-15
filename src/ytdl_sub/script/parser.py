@@ -16,6 +16,7 @@ from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import UnreachableSyntaxException
 from ytdl_sub.script.utils.parser_exception_formatter import ParserExceptionFormatter
@@ -125,8 +126,8 @@ class _Parser:
         """
         return self._syntax_tree
 
-    def _set_highlight_position(self) -> None:
-        self._error_highlight_pos = self._pos
+    def _set_highlight_position(self, pos: Optional[int] = None) -> None:
+        self._error_highlight_pos = pos if pos is not None else self._pos
 
     def _read(self, increment_pos: bool = True, length: int = 1) -> Optional[str]:
         if self._pos >= len(self._text):
@@ -322,10 +323,15 @@ class _Parser:
         """
         function_name: str = ""
         function_args: List[ArgumentType] = []
+        function_start_pos = self._pos
 
         while ch := self._read():
             if ch == ")":
-                return Function.from_name_and_args(name=function_name, args=function_args)
+                try:
+                    return Function.from_name_and_args(name=function_name, args=function_args)
+                except IncompatibleFunctionArguments as exc:
+                    self._set_highlight_position(function_start_pos)
+                    raise InvalidSyntaxException(exc) from exc
 
             if ch != "(":
                 function_name += ch

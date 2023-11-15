@@ -1,7 +1,7 @@
 from typing import Optional
 
-from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import AnyType
+from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 
 

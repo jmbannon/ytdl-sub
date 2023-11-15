@@ -1,7 +1,7 @@
+from ytdl_sub.script.types.resolvable import AnyType
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Numeric
-from ytdl_sub.script.types.resolvable import AnyType
 
 
 def _to_numeric(value: int | float) -> Numeric:

@@ -51,6 +51,25 @@ class TestFunction:
             "func": String("winner"),
         }
 
+    def test_nested_if_function_incompatible(self):
+        function_str = """{
+            %map_get(
+                %if(
+                    True,
+                    %if(
+                        True,
+                        {},
+                        []
+                    ),
+                    {}
+                ),
+                "key"
+            )
+        }"""
+        assert Script({"func": function_str}).resolve() == {
+            "func": String("winner"),
+        }
+
     @pytest.mark.parametrize(
         "function_str", ["{%array_at({'a': 'dict?'}, 1)}" "{%array_extend('not', 'array')}"]
     )

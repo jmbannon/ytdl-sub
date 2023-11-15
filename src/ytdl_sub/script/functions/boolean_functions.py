@@ -1,4 +1,5 @@
-from ytdl_sub.script.types.resolvable import Boolean, AnyType
+from ytdl_sub.script.types.resolvable import AnyType
+from ytdl_sub.script.types.resolvable import Boolean
 
 
 class BooleanFunctions:

@@ -4,9 +4,9 @@ from typing import Optional
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.map import Map
+from ytdl_sub.script.types.resolvable import AnyType
 from ytdl_sub.script.types.resolvable import Hashable
 from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import AnyType
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.utils.exceptions import StringFormattingException
 
@@ -27,7 +27,7 @@ class MapFunctions:
         return Map(output)
 
     @staticmethod
-    def get(mapping: Map, key: Hashable, default: Optional[AnyType] = None) -> AnyType:
+    def map_get(mapping: Map, key: Hashable, default: Optional[AnyType] = None) -> AnyType:
         if key not in mapping.value:
             if default is not None:
                 return default
