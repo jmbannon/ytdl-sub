@@ -1,30 +1,29 @@
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import Boolean, AnyType
 
 
 class BooleanFunctions:
     @staticmethod
-    def bool(value: Resolvable) -> Boolean:
+    def bool(value: AnyType) -> Boolean:
         return Boolean(bool(value.value))
 
     @staticmethod
-    def equals(left: Resolvable, right: Resolvable) -> Boolean:
+    def equals(left: AnyType, right: AnyType) -> Boolean:
         return Boolean(left.value == right.value)
 
     @staticmethod
-    def lt(left: Resolvable, right: Resolvable) -> Boolean:
+    def lt(left: AnyType, right: AnyType) -> Boolean:
         return Boolean(left.value < right.value)
 
     @staticmethod
-    def lte(left: Resolvable, right: Resolvable) -> Boolean:
+    def lte(left: AnyType, right: AnyType) -> Boolean:
         return Boolean(left.value <= right.value)
 
     @staticmethod
-    def gt(left: Resolvable, right: Resolvable) -> Boolean:
+    def gt(left: AnyType, right: AnyType) -> Boolean:
         return Boolean(left.value > right.value)
 
     @staticmethod
-    def gte(left: Resolvable, right: Resolvable) -> Boolean:
+    def gte(left: AnyType, right: AnyType) -> Boolean:
         return Boolean(left.value >= right.value)
 
     @staticmethod

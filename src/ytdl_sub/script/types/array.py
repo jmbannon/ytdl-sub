@@ -4,7 +4,7 @@ from typing import Dict
 from typing import List
 from typing import Set
 
-from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import ArgumentType, FutureResolvable
 from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import ResolvableToJson
@@ -19,7 +19,7 @@ class Array(NonHashable):
 
 
 @dataclass(frozen=True)
-class UnresolvedArray(Array, VariableDependency, ArgumentType):
+class UnresolvedArray(Array, VariableDependency, FutureResolvable):
     value: List[ArgumentType]
 
     @property

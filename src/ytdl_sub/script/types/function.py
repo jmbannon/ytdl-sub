@@ -16,9 +16,9 @@ from typing import get_origin
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import Resolvable_0
-from ytdl_sub.script.types.resolvable import Resolvable_1
-from ytdl_sub.script.types.resolvable import Resolvable_2
+from ytdl_sub.script.types.resolvable import AnyType_0
+from ytdl_sub.script.types.resolvable import AnyType_1
+from ytdl_sub.script.types.resolvable import AnyType_2
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
@@ -245,11 +245,11 @@ class BuiltInFunction(Function):
         if is_union(output_type):
             union_types_list = []
             for union_type in output_type.__args__:
-                if union_type == Resolvable_0:
+                if union_type == AnyType_0:
                     union_types_list.append(type(self.args[0]))
-                elif union_type == Resolvable_1:
+                elif union_type == AnyType_1:
                     union_types_list.append(type(self.args[1]))
-                elif union_type == Resolvable_2:
+                elif union_type == AnyType_2:
                     union_types_list.append(type(self.args[2]))
                 else:
                     union_types_list.append(union_type)

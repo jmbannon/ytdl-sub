@@ -4,7 +4,7 @@ from typing import Dict
 from typing import List
 from typing import Set
 
-from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import ArgumentType, FutureResolvable
 from ytdl_sub.script.types.resolvable import Hashable
 from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -21,7 +21,7 @@ class Map(NonHashable):
 
 
 @dataclass(frozen=True)
-class UnresolvedMap(Map, VariableDependency, ArgumentType):
+class UnresolvedMap(Map, VariableDependency, FutureResolvable):
     value: Dict[ArgumentType, ArgumentType]
 
     @property

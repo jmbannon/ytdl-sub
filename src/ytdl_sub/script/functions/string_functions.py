@@ -1,13 +1,13 @@
 from typing import Optional
 
 from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import AnyType
 from ytdl_sub.script.types.resolvable import String
 
 
 class StringFunctions:
     @staticmethod
-    def string(value: Resolvable) -> String:
+    def string(value: AnyType) -> String:
         return String(value=str(value.value))
 
     @staticmethod
