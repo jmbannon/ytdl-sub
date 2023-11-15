@@ -155,7 +155,7 @@ class TestParser:
 
         input_str = (
             f"hello{s}{{{s}%concat({s}'string'{s},{s}%string(1){s},{s}%string(2.4){s},"
-            f"{s}%string(TRUE){s},{s}%string(variable_name){s},{s}%capitalize({s}'hi'{s}){s})}}"
+            f"{s}%string(True){s},{s}%string(variable_name){s},{s}%capitalize({s}'hi'{s}){s})}}"
             f"{s}"
         )
         parsed = parse(input_str)

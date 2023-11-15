@@ -3,8 +3,9 @@ from typing import Tuple
 
 import pytest
 
-from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR, STRINGS_NOT_CLOSED
+from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR
 from ytdl_sub.script.parser import NUMERICS_ONLY_ARGS
+from ytdl_sub.script.parser import STRINGS_NOT_CLOSED
 from ytdl_sub.script.parser import STRINGS_ONLY_ARGS
 from ytdl_sub.script.parser import UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import UNEXPECTED_COMMA_ARGUMENT

@@ -55,6 +55,10 @@ STRINGS_NOT_CLOSED = InvalidSyntaxException(
     "Must open and close with the same type of quote (single/double)"
 )
 
+BOOLEAN_ONLY_ARGS = InvalidSyntaxException(
+    "Booleans can only be used as arguments to functions, maps, or arrays"
+)
+
 
 def UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
     return InvalidSyntaxException(f"Unexpected character when parsing {parser.value} arguments")
@@ -88,6 +92,14 @@ def _is_string_start(char: str) -> bool:
 
 def _is_breakable(char: str) -> bool:
     return char in ["}", ",", ")", "]"] or char.isspace()
+
+
+def _is_boolean_true(string: Optional[str]) -> bool:
+    return string == "True"
+
+
+def _is_boolean_false(string: Optional[str]) -> bool:
+    return string == "False"
 
 
 class _Parser:
@@ -252,10 +264,10 @@ class _Parser:
             return self._parse_function()
         if _is_numeric_start(self._read(increment_pos=False)):
             return self._parse_numeric()
-        if (self._read(increment_pos=False, length=4) or "").lower() == "true":
+        if _is_boolean_true(self._read(increment_pos=False, length=4)):
             self._pos += 4
             return Boolean(value=True)
-        if (self._read(increment_pos=False, length=5) or "").lower() == "false":
+        if _is_boolean_false(self._read(increment_pos=False, length=5)):
             self._pos += 5
             return Boolean(value=False)
         if _is_string_start(self._read(increment_pos=False)):
@@ -441,6 +453,10 @@ class _Parser:
                     raise NUMERICS_ONLY_ARGS
                 elif _is_string_start(ch1):
                     raise STRINGS_ONLY_ARGS
+                elif _is_boolean_true(
+                    self._read(increment_pos=False, length=4)
+                ) or _is_boolean_false(self._read(increment_pos=False, length=5)):
+                    raise BOOLEAN_ONLY_ARGS
                 else:
                     raise UNEXPECTED_CHAR_ARGUMENT(parser=ArgumentParser.SCRIPT)
             elif bracket_counter == 0:

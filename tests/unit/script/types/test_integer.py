@@ -44,7 +44,10 @@ class TestInteger:
         ],
     )
     def test_integer(self, integer: str, expected_integer: int):
-        assert Script({"integer": integer}).resolve() == {"integer": Integer(expected_integer)}
+        assert Script({"integer": integer, "as_string": "{%string(integer)}"}).resolve() == {
+            "integer": Integer(expected_integer),
+            "as_string": String(str(expected_integer)),
+        }
 
     @pytest.mark.parametrize(
         "integer",
