@@ -10,9 +10,9 @@ from yt_dlp.utils import sanitize_filename
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
-from ytdl_sub.validators.validators import ListValidator, StringValidator
+from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import Validator
+from ytdl_sub.validators.validators import StringValidator
 
 _fields_validator = re.compile(r"{([a-z][a-z0-9_]+?)}")
 
