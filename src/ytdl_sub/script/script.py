@@ -13,7 +13,7 @@ class Script:
         return override_name.startswith("%")
 
     @classmethod
-    def _function_name(self, function_key: str) -> str:
+    def _function_name(cls, function_key: str) -> str:
         return function_key[1:]
 
     def __init__(self, overrides: Dict[str, str]):

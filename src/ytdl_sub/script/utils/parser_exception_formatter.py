@@ -2,7 +2,6 @@ import sys
 from typing import List
 from typing import TypeVar
 
-from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import UserException
 
 TUserException = TypeVar("TUserException", bound=UserException)

@@ -9,6 +9,7 @@ from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
@@ -17,12 +18,12 @@ class VariableDependency(ABC):
     @property
     @abstractmethod
     def variables(self) -> Set[Variable]:
-        raise NotImplemented()
+        raise NotImplemented
 
     @property
     @abstractmethod
     def function_arguments(self) -> Set[FunctionArgument]:
-        raise NotImplemented()
+        raise NotImplemented
 
     @abstractmethod
     def resolve(
@@ -30,10 +31,11 @@ class VariableDependency(ABC):
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
-        raise NotImplemented()
+        raise NotImplemented
 
+    @classmethod
     def _resolve_argument_type(
-        self,
+        cls,
         arg: ArgumentType,
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
@@ -49,7 +51,7 @@ class VariableDependency(ABC):
                 resolved_variables=resolved_variables, custom_functions=custom_functions
             )
 
-        assert False, "never reach here"
+        raise UNREACHABLE
 
     @final
     def has_variable_dependency(self, resolved_variables: Dict[Variable, Resolvable]) -> bool:

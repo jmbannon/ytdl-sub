@@ -228,7 +228,9 @@ class BuiltInFunction(Function):
                 if is_union(arg.output_type):
                     # TODO: Move naming to separate function, deal with Union input naming
                     received_type_names.append(
-                        f"%{arg.name}(...)->Union[{', '.join(arg_type.type_name() for arg_type in arg.output_type.__args__)}]"
+                        f"%{arg.name}(...)->Union["
+                        f"{', '.join(type_.type_name() for type_ in arg.output_type.__args__)}"
+                        f"]"
                     )
                 else:
                     received_type_names.append(f"%{arg.name}(...)->{arg.output_type.type_name()}")

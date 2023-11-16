@@ -24,6 +24,7 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 
 # pylint: disable=invalid-name
+# pylint: disable=too-many-branches
 
 
 class ArgumentParser(Enum):
@@ -367,7 +368,8 @@ class _Parser:
 
                 self._pos += 1
                 return UnresolvedMap(value=output)
-            elif ch == ",":
+
+            if ch == ",":
                 if in_comma:
                     raise UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
                 if key is not None:
