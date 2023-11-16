@@ -22,19 +22,25 @@ class ArgumentType(NamedType, ABC):
     """
 
 
-class AnyType_0(NamedType, ABC):
-    pass
+class AnyTypeReturnable(NamedType, ABC):
+    """
+    AnyType to express generics in functions that are part of the return type
+    """
 
 
-class AnyType_1(NamedType, ABC):
-    pass
+class AnyTypeReturnableA(NamedType, ABC):
+    """
+    AnyType to express generics in functions when more than one are present (i.e. `if`)
+    """
 
 
-class AnyType_2(NamedType, ABC):
-    pass
+class AnyTypeReturnableB(NamedType, ABC):
+    """
+    AnyType to express generics in functions when more than one are present (i.e. `if`)
+    """
 
 
-class AnyType(ArgumentType, AnyType_0, AnyType_1, AnyType_2, ABC):
+class AnyType(ArgumentType, AnyTypeReturnable, AnyTypeReturnableA, AnyTypeReturnableB, ABC):
     """
     Human-readable name for FutureResolvable
     """

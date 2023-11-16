@@ -14,9 +14,9 @@ from typing import Union
 from typing import get_origin
 
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.types.resolvable import AnyType_0
-from ytdl_sub.script.types.resolvable import AnyType_1
-from ytdl_sub.script.types.resolvable import AnyType_2
+from ytdl_sub.script.types.resolvable import AnyTypeReturnable
+from ytdl_sub.script.types.resolvable import AnyTypeReturnableA
+from ytdl_sub.script.types.resolvable import AnyTypeReturnableB
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -278,12 +278,9 @@ class BuiltInFunction(Function):
         if is_union(output_type):
             union_types_list = []
             for union_type in output_type.__args__:
-                if union_type == AnyType_0:
-                    union_types_list.append(self._arg_output_type(self.args[0]))
-                elif union_type == AnyType_1:
-                    union_types_list.append(self._arg_output_type(self.args[1]))
-                elif union_type == AnyType_2:
-                    union_types_list.append(self._arg_output_type(self.args[2]))
+                if union_type in (AnyTypeReturnable, AnyTypeReturnableA, AnyTypeReturnableB):
+                    generic_arg_index = self.input_spec.args.index(union_type)
+                    union_types_list.append(self._arg_output_type(self.args[generic_arg_index]))
                 else:
                     union_types_list.append(union_type)
 
