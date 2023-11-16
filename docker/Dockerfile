@@ -15,6 +15,7 @@ RUN mkdir -p /config && \
       g++ \
       nano \
       make \
+      libffi-dev \
       "python3>=3.10" \
       py3-pip \
       fontconfig \
@@ -46,6 +47,7 @@ RUN mkdir -p /config && \
     apk del \
       g++ \
       make \
+      libffi-dev \
       py3-pip \
       py3-setuptools
 
