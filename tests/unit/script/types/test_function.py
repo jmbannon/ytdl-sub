@@ -74,7 +74,8 @@ class TestFunction:
         with pytest.raises(
             IncompatibleFunctionArguments,
             match=_incompatible_arguments_match(
-                expected="Map, Hashable, Optional", recieved="%if(...)->Union[Map, Array], String"
+                expected="Map, Hashable, Optional[AnyType]",
+                recieved="%if(...)->Union[Map, Array], String",
             ),
         ):
             Script({"func": function_str}).resolve()
@@ -83,4 +84,8 @@ class TestFunction:
         "function_str", ["{%array_at({'a': 'dict?'}, 1)}" "{%array_extend('not', 'array')}"]
     )
     def test_incompatible_types(self, function_str):
-        assert Script({"func": function_str}).resolve()
+        with pytest.raises(
+            IncompatibleFunctionArguments,
+            match=_incompatible_arguments_match(expected="Array, Integer", recieved="Map, Integer"),
+        ):
+            Script({"func": function_str}).resolve()

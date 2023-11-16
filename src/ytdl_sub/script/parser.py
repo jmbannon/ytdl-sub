@@ -222,13 +222,13 @@ class _Parser:
                 self._set_highlight_position()
                 raise NUMERICS_INVALID_CHAR
 
-        if numeric_string == "." or numeric_string == "-":
+        if numeric_string in (".", "-"):
             raise NUMERICS_INVALID_CHAR
 
         try:
             numeric_float = float(numeric_string)
-        except ValueError:
-            raise UNREACHABLE
+        except ValueError as exc:
+            raise UNREACHABLE from exc
 
         if (numeric_int := int(numeric_float)) == numeric_float:
             return Integer(value=numeric_int)
@@ -351,10 +351,10 @@ class _Parser:
             if ch == "]":
                 self._pos += 1
                 return UnresolvedArray(value=function_args)
-            else:
-                function_args = self._parse_args(
-                    argument_parser=ArgumentParser.ARRAY, breaking_chars="]"
-                )
+
+            function_args = self._parse_args(
+                argument_parser=ArgumentParser.ARRAY, breaking_chars="]"
+            )
 
         raise UNREACHABLE
 

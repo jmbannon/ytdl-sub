@@ -19,7 +19,7 @@ class Array(NonHashable):
     value: List[Resolvable]
 
     @classmethod
-    def human_readable_name(cls) -> str:
+    def type_name(cls) -> str:
         return "Array"
 
 

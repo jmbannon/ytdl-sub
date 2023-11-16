@@ -18,6 +18,7 @@ from ytdl_sub.script.types.resolvable import AnyType_0
 from ytdl_sub.script.types.resolvable import AnyType_1
 from ytdl_sub.script.types.resolvable import AnyType_2
 from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
@@ -28,6 +29,14 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 
 def is_union(arg_type: Type) -> bool:
     return get_origin(arg_type) is Union
+
+
+def is_optional(arg_type: Type) -> bool:
+    return is_union(arg_type) and type(None) in arg_type.__args__
+
+
+def get_optional_type(optional_type: Type) -> Type[NamedType]:
+    return [arg for arg in optional_type.__args__ if arg != type(None)][0]
 
 
 @dataclass(frozen=True)
@@ -110,10 +119,17 @@ class FunctionInputSpec:
             assert False, "should never reach here"
 
     def expected_args_str(self) -> str:
+        def to_human_readable_name(python_type: Type[NamedType] | Type[Union[NamedType]]) -> str:
+            if is_optional(python_type):
+                return f"Optional[{to_human_readable_name(get_optional_type(python_type))}]"
+            if is_union(python_type):
+                return ", ".join(to_human_readable_name(arg) for arg in python_type.__args__)
+            return python_type.type_name()
+
         if self.args is not None:
-            return f"({', '.join([type_.__name__ for type_ in self.args])})"
+            return f"({', '.join([to_human_readable_name(type_) for type_ in self.args])})"
         elif self.varargs is not None:
-            return f"({self.varargs.__name__}, ...)"
+            return f"({to_human_readable_name(self.varargs.__name__)}, ...)"
 
     @classmethod
     def from_function(cls, func: "BuiltInFunction") -> "FunctionInputSpec":
@@ -210,12 +226,12 @@ class BuiltInFunction(Function):
                 if is_union(arg.output_type):
                     # TODO: Move naming to separate function, deal with Union input naming
                     received_type_names.append(
-                        f"%{arg.name}(...)->Union[{', '.join(arg_type.human_readable_name() for arg_type in arg.output_type.__args__)}]"
+                        f"%{arg.name}(...)->Union[{', '.join(arg_type.type_name() for arg_type in arg.output_type.__args__)}]"
                     )
                 else:
-                    received_type_names.append(f"%{arg.name}(...)->{arg.output_type.__name__}")
+                    received_type_names.append(f"%{arg.name}(...)->{arg.output_type.type_name()}")
             else:
-                received_type_names.append(arg.__class__.__name__)
+                received_type_names.append(arg.type_name())
 
         received_args_str = f"({', '.join([name for name in received_type_names])})"
 
@@ -224,7 +240,7 @@ class BuiltInFunction(Function):
     def validate_args(self) -> "BuiltInFunction":
         if not self.input_spec.is_compatible(input_args=self.args):
             raise IncompatibleFunctionArguments(
-                f"Invalid arguments passed to function {self.name}.\n"
+                f"Incompatible arguments passed to function {self.name}.\n"
                 f"{self._expected_received_error_msg()}"
             )
         return self

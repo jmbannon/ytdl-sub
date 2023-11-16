@@ -10,25 +10,27 @@ T = TypeVar("T")
 NumericT = TypeVar("NumericT", bound=int | float)
 
 
-class ArgumentType(ABC):
+class NamedType(ABC):
+    @classmethod
+    def type_name(cls) -> str:
+        return cls.__name__
+
+
+class ArgumentType(NamedType, ABC):
     """
     Any possible argument type that has not been resolved yet
     """
 
-    @classmethod
-    def human_readable_name(cls) -> str:
-        return cls.__name__
 
-
-class AnyType_0(ABC):
+class AnyType_0(NamedType, ABC):
     pass
 
 
-class AnyType_1(ABC):
+class AnyType_1(NamedType, ABC):
     pass
 
 
-class AnyType_2(ABC):
+class AnyType_2(NamedType, ABC):
     pass
 
 
