@@ -219,7 +219,7 @@ class BuiltInFunction(Function):
 
         received_args_str = f"({', '.join([name for name in received_type_names])})"
 
-        return f"Expected {self.input_spec.expected_args_str()}.\nReceived {received_args_str}"
+        return f"Expected {self.input_spec.expected_args_str()}\nReceived {received_args_str}"
 
     def validate_args(self) -> "BuiltInFunction":
         if not self.input_spec.is_compatible(input_args=self.args):

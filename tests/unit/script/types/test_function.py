@@ -15,7 +15,12 @@ from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
+
+
+def _incompatible_arguments_match(expected: str, recieved: str) -> str:
+    return re.escape(f"Expected ({expected})\nReceived ({recieved})")
 
 
 class TestFunction:
@@ -66,9 +71,13 @@ class TestFunction:
                 "key"
             )
         }"""
-        assert Script({"func": function_str}).resolve() == {
-            "func": String("winner"),
-        }
+        with pytest.raises(
+            IncompatibleFunctionArguments,
+            match=_incompatible_arguments_match(
+                expected="Map, Hashable, Optional", recieved="%if(...)->Union[Map, Array], String"
+            ),
+        ):
+            Script({"func": function_str}).resolve()
 
     @pytest.mark.parametrize(
         "function_str", ["{%array_at({'a': 'dict?'}, 1)}" "{%array_extend('not', 'array')}"]

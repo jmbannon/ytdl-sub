@@ -1,11 +1,17 @@
+from abc import ABC
+
 from ytdl_sub.utils.exceptions import ValidationException
 
 
-class InvalidSyntaxException(ValidationException):
+class UserException(ValidationException, ABC):
+    """It's the user's fault!"""
+
+
+class InvalidSyntaxException(UserException):
     """Syntax is incorrect"""
 
 
-class IncompatibleFunctionArguments(ValidationException):
+class IncompatibleFunctionArguments(UserException):
     """Function has invalid arguments"""
 
 

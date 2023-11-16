@@ -19,6 +19,7 @@ from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import UnreachableSyntaxException
+from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.parser_exception_formatter import ParserExceptionFormatter
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
@@ -112,7 +113,7 @@ class _Parser:
 
         try:
             self._syntax_tree = self._parse()
-        except InvalidSyntaxException as exc:
+        except UserException as exc:
             raise ParserExceptionFormatter(
                 self._text, self._error_highlight_pos, self._pos, exc
             ).highlight() from exc
@@ -329,9 +330,9 @@ class _Parser:
             if ch == ")":
                 try:
                     return Function.from_name_and_args(name=function_name, args=function_args)
-                except IncompatibleFunctionArguments as exc:
+                except IncompatibleFunctionArguments:
                     self._set_highlight_position(function_start_pos)
-                    raise InvalidSyntaxException(exc) from exc
+                    raise
 
             if ch != "(":
                 function_name += ch

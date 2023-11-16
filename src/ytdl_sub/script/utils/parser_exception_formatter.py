@@ -1,11 +1,15 @@
 import sys
 from typing import List
+from typing import TypeVar
 
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
+from ytdl_sub.script.utils.exceptions import UserException
+
+TUserException = TypeVar("TUserException", bound=UserException)
 
 
 class ParserExceptionFormatter:
-    def __init__(self, text: str, start: int, end: int, exception: InvalidSyntaxException):
+    def __init__(self, text: str, start: int, end: int, exception: TUserException):
         self._text = text
         self._start = start
         self._end = end
@@ -65,10 +69,10 @@ class ParserExceptionFormatter:
 
         return "\n" + "\n".join(to_return)
 
-    def highlight(self) -> InvalidSyntaxException:
+    def highlight(self) -> TUserException:
         if self.is_multi_line:
             invalid_syntax = self.exception_text_lines(border_lines=3)
         else:
             invalid_syntax = self.exception_text(border=20)
 
-        return InvalidSyntaxException(f"{invalid_syntax}\n{str(self._exception)}")
+        return self._exception.__class__(f"{invalid_syntax}\n{str(self._exception)}")
