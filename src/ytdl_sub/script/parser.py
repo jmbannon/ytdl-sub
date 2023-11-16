@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from enum import Enum
 from typing import Dict
 from typing import List
@@ -16,9 +15,9 @@ from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
-from ytdl_sub.script.utils.exceptions import UnreachableSyntaxException
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.parser_exception_formatter import ParserExceptionFormatter
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -34,12 +33,6 @@ class ArgumentParser(Enum):
     MAP_KEY = "map key"
     MAP_VALUE = "map value"
 
-
-UNREACHABLE = UnreachableSyntaxException(
-    "If you see this error, you have discovered a bug in the script parser!\n"
-    "Please upload your config/subscription file(s) to and make a GitHub issue at "
-    "https://github.com/jmbannon/ytdl-sub/issues"
-)
 
 BRACKET_NOT_CLOSED = InvalidSyntaxException("Bracket not properly closed")
 

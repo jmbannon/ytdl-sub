@@ -17,3 +17,10 @@ class IncompatibleFunctionArguments(UserException):
 
 class UnreachableSyntaxException(InvalidSyntaxException):
     """For use in places where code _should_ never reach, but might from bugs"""
+
+
+UNREACHABLE = UnreachableSyntaxException(
+    "If you see this error, you have discovered a bug in the script parser!\n"
+    "Please upload your config/subscription file(s) to and make a GitHub issue at "
+    "https://github.com/jmbannon/ytdl-sub/issues"
+)

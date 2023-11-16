@@ -23,6 +23,7 @@ from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
+from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.utils.exceptions import StringFormattingException
 
@@ -113,10 +114,10 @@ class FunctionInputSpec:
     def is_compatible(self, input_args: List[ArgumentType]) -> bool:
         if self.args is not None:
             return self._is_args_compatible(input_args=input_args)
-        elif self.varargs is not None:
+        if self.varargs is not None:
             return self._is_varargs_compatible(input_args=input_args)
-        else:
-            assert False, "should never reach here"
+
+        raise UNREACHABLE  # TODO: functions with no args
 
     def expected_args_str(self) -> str:
         def to_human_readable_name(python_type: Type[NamedType] | Type[Union[NamedType]]) -> str:
@@ -128,8 +129,9 @@ class FunctionInputSpec:
 
         if self.args is not None:
             return f"({', '.join([to_human_readable_name(type_) for type_ in self.args])})"
-        elif self.varargs is not None:
+        if self.varargs is not None:
             return f"({to_human_readable_name(self.varargs.__name__)}, ...)"
+        return "()"
 
     @classmethod
     def from_function(cls, func: "BuiltInFunction") -> "FunctionInputSpec":
@@ -233,7 +235,7 @@ class BuiltInFunction(Function):
             else:
                 received_type_names.append(arg.type_name())
 
-        received_args_str = f"({', '.join([name for name in received_type_names])})"
+        received_args_str = f"({', '.join(name for name in received_type_names)})"
 
         return f"Expected {self.input_spec.expected_args_str()}\nReceived {received_args_str}"
 

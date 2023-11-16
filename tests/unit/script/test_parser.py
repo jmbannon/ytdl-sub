@@ -34,29 +34,6 @@ class TestParser:
             ]
         )
 
-    # def test_array(self):
-    #     parsed = parse("hello {['elem1', 'elem2']}")
-    #     parsed_empty = parse("hello {[]}")
-    #     parsed_with_var = parse("hello {['elem1', variable_name]}")
-    #     parsed_extend = parse(
-    #         "hi {%at(%flatten_array(%extend(['elem1', 'elem2'], ['elem3'], [['elem4'], ['elem5', 'elem6']],   ['elem7'])), 1)}"
-    #     )
-    #     parsed_extend.resolve({})
-    #     assert False
-    #
-    # def test_map(self):
-    #     parsed = parse("hello {%map(['elem1', 'elem2'])}")
-    #     parsed_empty = parse("hello {%map()}")
-    #     parsed_with_var = parse("hello {%map([variable_name, 'elem2'])}")
-    #     parsed_extend = parse("hi {%map([variable_name, 'elem2'], ['elem3', variable_name])}")
-    #     parse_raw_map = parse("hello {{'key': 'value'}}")
-    #     parsed_extend.resolve({})
-    #     assert False
-    #
-    # def test_function_argument(self):
-    #     parsed = parse("hello {%map([$1, $2])}")
-    #     assert False
-
     def test_conditional(self):
         parsed = parse("hello {%if(True, 'hi', 3.4)}")
         assert parsed == SyntaxTree(
