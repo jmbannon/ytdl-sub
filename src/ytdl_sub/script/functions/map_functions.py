@@ -1,5 +1,4 @@
 from typing import Dict
-from typing import List
 from typing import Optional
 
 from ytdl_sub.script.types.array import Array
@@ -7,7 +6,6 @@ from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import AnyType
 from ytdl_sub.script.types.resolvable import Hashable
 from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 

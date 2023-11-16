@@ -95,9 +95,9 @@ class FunctionInputSpec:
         if len(input_args) > len(self.args):
             return False
 
-        for idx in range(len(self.args)):
+        for idx, arg in enumerate(self.args):
             input_arg = input_args[idx] if idx < len(input_args) else None
-            if not self._is_type_compatible(input_arg=input_arg, expected_arg_type=self.args[idx]):
+            if not self._is_type_compatible(input_arg=input_arg, expected_arg_type=arg):
                 return False
 
         return True

@@ -1,6 +1,5 @@
 import json
 from abc import ABC
-from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Any
 from typing import Generic

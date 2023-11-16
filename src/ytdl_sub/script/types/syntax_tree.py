@@ -102,7 +102,8 @@ class SyntaxTree(VariableDependency):
 
             if len(unresolved_variables) == unresolved_count:
                 raise StringFormattingException(
-                    f"Cycle detected within these variables: {', '.join(sorted([var.name for var in unresolved_variables]))}"
+                    f"Cycle detected within these variables: "
+                    f"{', '.join(sorted([var.name for var in unresolved_variables]))}"
                 )
 
         return {variable.name: resolvable for variable, resolvable in resolved_variables.items()}

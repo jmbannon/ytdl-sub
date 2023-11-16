@@ -18,12 +18,12 @@ class VariableDependency(ABC):
     @property
     @abstractmethod
     def variables(self) -> Set[Variable]:
-        raise NotImplemented
+        pass
 
     @property
     @abstractmethod
     def function_arguments(self) -> Set[FunctionArgument]:
-        raise NotImplemented
+        pass
 
     @abstractmethod
     def resolve(
@@ -31,7 +31,7 @@ class VariableDependency(ABC):
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
-        raise NotImplemented
+        pass
 
     @classmethod
     def _resolve_argument_type(
