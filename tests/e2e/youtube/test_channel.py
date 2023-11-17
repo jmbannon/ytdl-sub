@@ -77,6 +77,28 @@ class TestChannel:
         channel_preset_dict: Dict,
     ):
         subscription_name = "pz"
+        tv_show_name = channel_preset_dict["overrides"]["tv_show_name"]
+        archive_file_name = f".ytdl-sub-{subscription_name}-download-archive.json"
+
+        pz_channel_mock_downloaded_with_archive_factory(
+            tv_show_name=tv_show_name, archive_file_name=archive_file_name
+        )
+
+        full_channel_subscription = Subscription.from_dict(
+            config=tv_show_config, preset_name=subscription_name, preset_dict=channel_preset_dict
+        )
+        transaction_log = full_channel_subscription.download(dry_run=True)
+        assert transaction_log.is_empty
+
+    def test_full_channel_existing_archive_keep_max_files(
+        self,
+        pz_channel_mock_downloaded_with_archive_factory: Callable,
+        tv_show_config: ConfigFile,
+        channel_preset_dict: Dict,
+        output_directory: str,
+    ):
+        subscription_name = "pz"
+        channel_preset_dict = dict(channel_preset_dict, **{"output_options": {"keep_max_files": 1}})
         full_channel_subscription = Subscription.from_dict(
             config=tv_show_config, preset_name=subscription_name, preset_dict=channel_preset_dict
         )
@@ -86,5 +108,10 @@ class TestChannel:
         pz_channel_mock_downloaded_with_archive_factory(
             tv_show_name=tv_show_name, archive_file_name=archive_file_name
         )
+
         transaction_log = full_channel_subscription.download(dry_run=True)
-        assert transaction_log.is_empty
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_channel_full_keep_max_files.txt",
+        )

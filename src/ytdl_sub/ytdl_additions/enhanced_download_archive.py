@@ -537,7 +537,16 @@ class EnhancedDownloadArchive:
 
         return self
 
-    def remove_stale_files(self, date_range: DateRange) -> "EnhancedDownloadArchive":
+    def _remove_entry(self, uid: str, mapping: DownloadMapping) -> None:
+        for file_name in mapping.file_names:
+            self._file_handler.delete_file_from_output_directory(file_name=file_name)
+
+        self.mapping.remove_entry(entry_id=uid)
+        self.num_entries_removed += 1
+
+    def remove_stale_files(
+        self, date_range: Optional[DateRange], keep_max_files: Optional[int]
+    ) -> "EnhancedDownloadArchive":
         """
         Checks all entries within the mappings. If any entries' upload dates are not within the
         provided date range, delete them.
@@ -545,22 +554,32 @@ class EnhancedDownloadArchive:
         Parameters
         ----------
         date_range
-            Date range the upload date must be in to not get deleted
+            Optional. Date range the upload date must be in to not get deleted
+        keep_max_files
+            Optional. Max number of files to keep
 
         Returns
         -------
         self
         """
-        stale_mappings: Dict[str, DownloadMapping] = self.mapping.get_entries_out_of_range(
-            date_range=date_range
-        )
+        if date_range is not None:
+            stale_mappings: Dict[str, DownloadMapping] = self.mapping.get_entries_out_of_range(
+                date_range=date_range
+            )
 
-        for uid, mapping in stale_mappings.items():
-            for file_name in mapping.file_names:
-                self._file_handler.delete_file_from_output_directory(file_name=file_name)
+            for uid, mapping in stale_mappings.items():
+                self._remove_entry(uid=uid, mapping=mapping)
 
-            self.mapping.remove_entry(entry_id=uid)
-            self.num_entries_removed += 1
+        if keep_max_files is not None:
+            num_files = 0
+            for uid, mapping in sorted(
+                self.mapping.entry_mappings.items(),
+                key=lambda kv_: kv_[1].upload_date,
+                reverse=True,
+            ):
+                num_files += 1
+                if num_files > keep_max_files:
+                    self._remove_entry(uid=uid, mapping=mapping)
 
         return self
 

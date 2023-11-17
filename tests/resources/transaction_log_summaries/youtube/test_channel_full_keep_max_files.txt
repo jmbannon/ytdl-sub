@@ -1,0 +1,56 @@
+Files modified:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-pz-download-archive.json
+
+Files removed:
+----------------------------------------
+{output_directory}/Season 2010
+  s2010.e081301 - Oblivion Mod ＂Falcor＂ p.1-thumb.jpg
+  s2010.e081301 - Oblivion Mod ＂Falcor＂ p.1.info.json
+  s2010.e081301 - Oblivion Mod ＂Falcor＂ p.1.mp4
+  s2010.e081301 - Oblivion Mod ＂Falcor＂ p.1.nfo
+  s2010.e120201 - Oblivion Mod ＂Falcor＂ p.2-thumb.jpg
+  s2010.e120201 - Oblivion Mod ＂Falcor＂ p.2.info.json
+  s2010.e120201 - Oblivion Mod ＂Falcor＂ p.2.mp4
+  s2010.e120201 - Oblivion Mod ＂Falcor＂ p.2.nfo
+{output_directory}/Season 2011
+  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
+  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
+  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
+  s2011.e022701 - Jesse's Minecraft Server [Trailer - Feb.27]-thumb.jpg
+  s2011.e022701 - Jesse's Minecraft Server [Trailer - Feb.27].info.json
+  s2011.e022701 - Jesse's Minecraft Server [Trailer - Feb.27].mp4
+  s2011.e022701 - Jesse's Minecraft Server [Trailer - Feb.27].nfo
+  s2011.e032101 - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
+  s2011.e032101 - Jesse's Minecraft Server [Trailer - Mar.21].info.json
+  s2011.e032101 - Jesse's Minecraft Server [Trailer - Mar.21].mp4
+  s2011.e032101 - Jesse's Minecraft Server [Trailer - Mar.21].nfo
+  s2011.e052901 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net)-thumb.jpg
+  s2011.e052901 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).info.json
+  s2011.e052901 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).mp4
+  s2011.e052901 - Project Zombie ｜Official Trailer｜ (IP： mc.projectzombie.beastnode.net).nfo
+  s2011.e063001 - Project Zombie ｜Fin｜-thumb.jpg
+  s2011.e063001 - Project Zombie ｜Fin｜.info.json
+  s2011.e063001 - Project Zombie ｜Fin｜.mp4
+  s2011.e063001 - Project Zombie ｜Fin｜.nfo
+  s2011.e112101 - Skyrim 'Ultra HD w⧸Mods' [PC]-thumb.jpg
+  s2011.e112101 - Skyrim 'Ultra HD w⧸Mods' [PC].info.json
+  s2011.e112101 - Skyrim 'Ultra HD w⧸Mods' [PC].mp4
+  s2011.e112101 - Skyrim 'Ultra HD w⧸Mods' [PC].nfo
+{output_directory}/Season 2012
+  s2012.e012301 - Project Zombie ｜Map Trailer｜-thumb.jpg
+  s2012.e012301 - Project Zombie ｜Map Trailer｜.info.json
+  s2012.e012301 - Project Zombie ｜Map Trailer｜.mp4
+  s2012.e012301 - Project Zombie ｜Map Trailer｜.nfo
+{output_directory}/Season 2013
+  s2013.e071901 - Project Zombie Rewind ｜Trailer｜-thumb.jpg
+  s2013.e071901 - Project Zombie Rewind ｜Trailer｜.info.json
+  s2013.e071901 - Project Zombie Rewind ｜Trailer｜.mp4
+  s2013.e071901 - Project Zombie Rewind ｜Trailer｜.nfo
+{output_directory}/Season 2018
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer-thumb.jpg
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.info.json
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.mp4
+  s2018.e102901 - Jesse's Minecraft Server ｜ Teaser Trailer.nfo

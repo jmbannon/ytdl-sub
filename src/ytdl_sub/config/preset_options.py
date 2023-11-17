@@ -19,6 +19,7 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
+from ytdl_sub.validators.validators import IntValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import Validator
 
@@ -253,6 +254,7 @@ class OutputOptions(StrictDictValidator):
         "maintain_download_archive",
         "keep_files_before",
         "keep_files_after",
+        "keep_max_files",
     }
 
     @classmethod
@@ -307,6 +309,7 @@ class OutputOptions(StrictDictValidator):
         self._keep_files_after = self._validate_key_if_present(
             "keep_files_after", StringDatetimeValidator
         )
+        self._keep_max_files = self._validate_key_if_present("keep_max_files", IntValidator)
 
         if (
             self._keep_files_before or self._keep_files_after
@@ -387,7 +390,8 @@ class OutputOptions(StrictDictValidator):
         Optional. Requires ``maintain_download_archive`` set to True.
 
         Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
-        files before ``now``, which implies all files.
+        files before ``now``, which implies all files. Can be used in conjunction with
+        ``keep_max_files``.
         """
         return self._keep_files_before
 
@@ -397,6 +401,19 @@ class OutputOptions(StrictDictValidator):
         Optional. Requires ``maintain_download_archive`` set to True.
 
         Only keeps files that are uploaded after this datetime. By default, ytdl-sub will keep
-        files after ``19000101``, which implies all files.
+        files after ``19000101``, which implies all files. Can be used in conjunction with
+        ``keep_max_files``.
         """
         return self._keep_files_after
+
+    @property
+    def keep_max_files(self) -> Optional[int]:
+        """
+        Optional. Requires ``maintain_download_archive`` set to True.
+
+        Only keeps N most recently uploaded videos. Can be used in conjunction with
+        ``keep_files_before`` and ``keep_files_after``.
+        """
+        if self._keep_max_files:
+            return self._keep_max_files.value
+        return None
