@@ -62,9 +62,10 @@ __preset__:
     # Root folder of all ytdl-sub Music Videos
     music_video_directory: "/music_videos"
     
-    # For 'Only Recent' preset, only keep vids uploaded in this range
-    date_range: "2months"
-  
+    # For 'Only Recent' preset, only keep vids within this range and limit
+    only_recent_date_range: "2months"
+    only_recent_max_files: 30
+    
   # Pass any arg directly to yt-dlp's Python API
   ytdl_options:
     cookiefile: "/config/cookie.txt" 

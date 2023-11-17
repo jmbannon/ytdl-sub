@@ -23,7 +23,10 @@
 __preset__:
   overrides:
     tv_show_directory: "/tv_shows"  # Root folder of all ytdl-sub TV Shows
-    date_range: "2months"  # For 'Only Recent' preset, only keep vids uploaded in this range
+
+    # For 'Only Recent' preset, only keep vids within this range and limit
+    only_recent_date_range: "2months"
+    only_recent_max_files: 30
 
 # Choose the player you intend to use by setting the top-level key to be either:
 #   - Plex TV Show by Date:
