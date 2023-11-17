@@ -12,7 +12,7 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import Validator
+from ytdl_sub.validators.validators import StringValidator
 
 _fields_validator = re.compile(r"{([a-z][a-z0-9_]+?)}")
 
@@ -47,7 +47,7 @@ def is_valid_source_variable_name(input_str: str, raise_exception: bool = False)
     return is_source_variable_name
 
 
-class StringFormatterValidator(Validator):
+class StringFormatterValidator(StringValidator):
     """
     String that can use
     :class:`source variables <ytdl_sub.entries.variables.entry_variables.SourceVariables>`
@@ -73,7 +73,6 @@ class StringFormatterValidator(Validator):
     and would resolve to something like ``sweet_tv_show.s2022.e502.mp4``.
     """
 
-    _expected_value_type = str
     _expected_value_type_name = "format string"
     _variable_not_found_error_msg_formatter = (
         "Format variable '{variable_name}' does not exist. Available variables: {available_fields}"

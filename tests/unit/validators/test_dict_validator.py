@@ -42,7 +42,7 @@ class TestDictValidator:
         ):
             _ = dict_validator._validate_key(key="key_name", validator=StringValidator)
 
-    @pytest.mark.parametrize("bad_value", [True, None, {}])
+    @pytest.mark.parametrize("bad_value", [None, {}, []])
     def test_dict_validator_validate_key_errors_bad_validation(self, bad_value):
         dict_validator = DictValidator(name="parent", value={"child": bad_value})
         with pytest.raises(
@@ -87,7 +87,7 @@ class TestDictValidator:
 
         assert out is None
 
-    @pytest.mark.parametrize("bad_value", [True, None, {}])
+    @pytest.mark.parametrize("bad_value", [None, {}, []])
     def test_dict_validator_validate_key_errors_none_bad_validation(self, bad_value):
         dict_validator = DictValidator(name="parent", value={"child": bad_value})
         with pytest.raises(
