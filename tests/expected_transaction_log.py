@@ -11,7 +11,7 @@ _TRANSACTION_LOG_SUMMARY_PATH = RESOURCE_PATH / "transaction_log_summaries"
 
 
 def assert_transaction_log_matches(
-    output_directory: Path,
+    output_directory: Path | str,
     transaction_log: FileHandlerTransactionLog,
     transaction_log_summary_file_name: str,
 ):

@@ -1,7 +1,11 @@
+from typing import Callable
+from typing import Dict
+
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -65,3 +69,22 @@ class TestChannel:
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_channel_full.json",
         )
+
+    def test_full_channel_existing_archive_downloads_nothing(
+        self,
+        pz_channel_mock_downloaded_with_archive_factory: Callable,
+        tv_show_config: ConfigFile,
+        channel_preset_dict: Dict,
+    ):
+        subscription_name = "pz"
+        full_channel_subscription = Subscription.from_dict(
+            config=tv_show_config, preset_name=subscription_name, preset_dict=channel_preset_dict
+        )
+        tv_show_name = channel_preset_dict["overrides"]["tv_show_name"]
+        archive_file_name = f".ytdl-sub-{subscription_name}-download-archive.json"
+
+        pz_channel_mock_downloaded_with_archive_factory(
+            tv_show_name=tv_show_name, archive_file_name=archive_file_name
+        )
+        transaction_log = full_channel_subscription.download(dry_run=True)
+        assert transaction_log.is_empty
