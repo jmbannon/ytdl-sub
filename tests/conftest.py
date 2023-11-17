@@ -14,6 +14,9 @@ from unittest.mock import patch
 
 import pytest
 from expected_download import _get_files_in_directory
+from resources import copy_file_fixture
+from resources import file_fixture_path
+from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
@@ -67,13 +70,13 @@ def working_directory() -> str:
 
 
 @pytest.fixture()
-def output_directory() -> Path:
+def output_directory() -> str:
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 
 
 @pytest.fixture()
-def reformat_directory() -> Path:
+def reformat_directory() -> str:
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 
@@ -161,6 +164,38 @@ def preset_dict_to_subscription_yaml_generator() -> Callable:
             FileHandler.delete(tmp_file.name)
 
     return _preset_dict_to_subscription_yaml_generator
+
+
+###################################################################################################
+# Staging a mock already-existing download
+
+
+@pytest.fixture
+def pz_channel_mock_downloaded_with_archive_factory(output_directory: Path) -> Callable:
+    def _pz_channel_mock_downloaded_with_archive_factory(tv_show_name: str, archive_file_name: str):
+        subscription_path = Path(output_directory) / sanitize_filename(tv_show_name)
+        copy_file_fixture(
+            fixture_name="pz_download_archive.json",
+            output_file_path=subscription_path / archive_file_name,
+        )
+
+        with open(
+            file_fixture_path("pz_download_archive.json"), "r", encoding="utf-8"
+        ) as archive_file:
+            archive_dict = json.load(archive_file)
+
+        assert isinstance(archive_dict, dict)
+        for uid, metadata in archive_dict.items():
+            assert isinstance(metadata, dict)
+            for filename in metadata["file_names"]:
+                assert isinstance(filename, str)
+                output_file_path = subscription_path / filename
+                if filename.endswith(".mp4"):
+                    copy_file_fixture("sample_vid.mp4", output_file_path)
+                else:
+                    copy_file_fixture("empty.txt", output_file_path)
+
+    return _pz_channel_mock_downloaded_with_archive_factory
 
 
 ###################################################################################################
