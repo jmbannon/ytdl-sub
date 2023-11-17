@@ -226,7 +226,9 @@ class OverridesIntegerFormatterValidator(StringFormatterValidator):
         try:
             int(output)
         except Exception as exc:
-            raise self._validation_exception(f"Expected an integer, but received '{output}'") from exc
+            raise self._validation_exception(
+                f"Expected an integer, but received '{output}'"
+            ) from exc
         return output
 
 
