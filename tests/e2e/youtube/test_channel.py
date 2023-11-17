@@ -12,7 +12,9 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.fixture
 def channel_preset_dict(output_directory):
     return {
-        "preset": "TV Show Full Archive",
+        "preset": [
+            "TV Show Full Archive",
+        ],
         "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
             "max_views": 100000,  # do not download the popular PJ concert
@@ -98,7 +100,10 @@ class TestChannel:
         output_directory: str,
     ):
         subscription_name = "pz"
-        channel_preset_dict = dict(channel_preset_dict, **{"output_options": {"keep_max_files": 1}})
+        channel_preset_dict["preset"].append("Only Recent")
+        channel_preset_dict["overrides"]["only_recent_date_range"] = "10years"
+        channel_preset_dict["overrides"]["only_recent_max_files"] = 1
+
         full_channel_subscription = Subscription.from_dict(
             config=tv_show_config, preset_name=subscription_name, preset_dict=channel_preset_dict
         )

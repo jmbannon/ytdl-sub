@@ -218,6 +218,18 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 # pylint: enable=line-too-long
 
 
+class OverridesIntegerFormatterValidator(StringFormatterValidator):
+    _expected_value_type_name = "integer"
+
+    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
+        output = super().apply_formatter(variable_dict)
+        try:
+            int(output)
+        except Exception as exc:
+            raise self._validation_exception(f"Expected an integer, but received '{output}'") from exc
+        return output
+
+
 class ListFormatterValidator(ListValidator[StringFormatterValidator]):
     _inner_list_type = StringFormatterValidator
 

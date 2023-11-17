@@ -570,7 +570,7 @@ class EnhancedDownloadArchive:
             for uid, mapping in stale_mappings.items():
                 self._remove_entry(uid=uid, mapping=mapping)
 
-        if keep_max_files is not None:
+        if keep_max_files is not None and keep_max_files > 0:
             num_files = 0
             for uid, mapping in sorted(
                 self.mapping.entry_mappings.items(),
