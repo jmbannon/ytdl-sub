@@ -22,12 +22,15 @@ presets:
   "Only Recent":
     # Only fetch videos after today minus date_range
     date_range:
-      after: "today-{date_range}"
+      after: "today-{only_recent_date_range}"
 
     # Only keep files uploaded after date_range
     output_options:
-      keep_files_after: "today-{date_range}"
+      keep_files_after: "today-{only_recent_date_range}"
+      keep_files_max: "{only_recent_max_files}"
 
     # Set the default date_range to 2 months
     overrides:
       date_range: "2months"
+      only_recent_date_range: "{date_range}"
+      only_recent_max_files: 0

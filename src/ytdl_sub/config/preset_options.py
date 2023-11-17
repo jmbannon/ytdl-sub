@@ -411,9 +411,9 @@ class OutputOptions(StrictDictValidator):
         """
         Optional. Requires ``maintain_download_archive`` set to True.
 
-        Only keeps N most recently uploaded videos. Can be used in conjunction with
-        ``keep_files_before`` and ``keep_files_after``.
+        Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
+        applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
         """
-        if self._keep_max_files:
+        if self._keep_max_files and self._keep_max_files.value > 0:
             return self._keep_max_files.value
         return None
