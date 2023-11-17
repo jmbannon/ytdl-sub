@@ -97,4 +97,5 @@ presets:
       - "Only Recent"
 
     overrides:
-      date_range: "2months"
+      only_recent_date_range: "2months"
+      only_recent_max_files: 30
