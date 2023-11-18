@@ -116,10 +116,14 @@ class String(ResolvableT[str], Hashable, ArgumentType):
     pass
 
 
-class FunctionLike(NamedType):
+@dataclass(frozen=True)
+class FunctionType(ArgumentType, ABC):
     name: str
     args: List[ArgumentType]
 
+
+@dataclass(frozen=True)
+class TypeHintedFunctionType(FunctionType, ABC):
     @abstractmethod
     def output_type(self) -> Type[Resolvable]:
         pass

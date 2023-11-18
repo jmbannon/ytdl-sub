@@ -6,7 +6,7 @@ from typing import Union
 from typing import get_origin
 
 from ytdl_sub.script.types.resolvable import ArgumentType
-from ytdl_sub.script.types.resolvable import FunctionLike
+from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import Variable
@@ -30,7 +30,7 @@ def is_type_compatible(
     expected_arg_type: Type[Resolvable | Optional[Resolvable]],
 ) -> bool:
     arg_type: Type[NamedType] = arg.__class__
-    if isinstance(arg, FunctionLike):
+    if isinstance(arg, FunctionType):
         arg_type = arg.output_type()
     elif isinstance(arg, Variable):
         return True  # unresolved variables can be anything, so pass for now

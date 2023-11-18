@@ -4,8 +4,8 @@ from typing import Type
 from typing import TypeVar
 from typing import Union
 
-from ytdl_sub.script.types.resolvable import FunctionLike
 from ytdl_sub.script.types.resolvable import NamedType
+from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.type_checking import FunctionInputSpec
@@ -90,7 +90,7 @@ class FunctionArgumentsExceptionFormatter:
     def __init__(
         self,
         input_spec: FunctionInputSpec,
-        function_instance: FunctionLike,
+        function_instance: TypeHintedFunctionType,
     ):
         self._args = input_spec.args
         self._varargs = input_spec.varargs
@@ -115,7 +115,7 @@ class FunctionArgumentsExceptionFormatter:
     def highlight(self) -> IncompatibleFunctionArguments:
         received_type_names: List[str] = []
         for arg in self._input_args:
-            if isinstance(arg, FunctionLike):
+            if isinstance(arg, TypeHintedFunctionType):
                 if is_union(arg.output_type()):
                     # TODO: Move naming to separate function, deal with Union input naming
                     received_type_names.append(

@@ -16,8 +16,9 @@ from ytdl_sub.script.types.resolvable import AnyTypeReturnable
 from ytdl_sub.script.types.resolvable import AnyTypeReturnableA
 from ytdl_sub.script.types.resolvable import AnyTypeReturnableB
 from ytdl_sub.script.types.resolvable import ArgumentType
-from ytdl_sub.script.types.resolvable import FunctionLike
+from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
@@ -28,10 +29,7 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 
 
 @dataclass(frozen=True)
-class Function(VariableDependency, ArgumentType, ABC):
-    name: str
-    args: List[ArgumentType]
-
+class Function(FunctionType, VariableDependency, ABC):
     @property
     def variables(self) -> Set[Variable]:
         """
@@ -104,7 +102,7 @@ class CustomFunction(Function):
         raise StringFormattingException(f"Custom function {self.name} does not exist")
 
 
-class BuiltInFunction(Function, FunctionLike):
+class BuiltInFunction(Function, TypeHintedFunctionType):
     def validate_args(self) -> "BuiltInFunction":
         if not self.input_spec.is_compatible(input_args=self.args):
             raise FunctionArgumentsExceptionFormatter(
