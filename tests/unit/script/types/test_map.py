@@ -8,7 +8,7 @@ from ytdl_sub.script.parser import MAP_KEY_MULTIPLE_VALUES
 from ytdl_sub.script.parser import MAP_KEY_NOT_HASHABLE
 from ytdl_sub.script.parser import MAP_KEY_WITH_NO_VALUE
 from ytdl_sub.script.parser import MAP_MISSING_KEY
-from ytdl_sub.script.parser import ArgumentParser
+from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.map import ResolvedMap
 from ytdl_sub.script.types.resolvable import Boolean
@@ -129,7 +129,7 @@ class TestMap:
     def test_map_unexpected_comma(self, value: str):
         with pytest.raises(
             InvalidSyntaxException,
-            match=re.escape(str(_UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY))),
+            match=re.escape(str(_UNEXPECTED_COMMA_ARGUMENT(ParsedArgType.MAP_KEY))),
         ):
             Script({"map": value}).resolve()
 

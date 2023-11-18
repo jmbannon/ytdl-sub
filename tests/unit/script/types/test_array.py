@@ -4,7 +4,7 @@ import pytest
 
 from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import _UNEXPECTED_COMMA_ARGUMENT
-from ytdl_sub.script.parser import ArgumentParser
+from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Boolean
@@ -81,7 +81,7 @@ class TestArray:
     def test_unexpected_comma(self, array: str):
         with pytest.raises(
             InvalidSyntaxException,
-            match=re.escape(str(_UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.ARRAY))),
+            match=re.escape(str(_UNEXPECTED_COMMA_ARGUMENT(ParsedArgType.ARRAY))),
         ):
             Script({"array": array}).resolve()
 
@@ -98,7 +98,7 @@ class TestArray:
     def test_array_not_closed(self, array: str):
         with pytest.raises(
             InvalidSyntaxException,
-            match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ArgumentParser.ARRAY))),
+            match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ParsedArgType.ARRAY))),
         ):
             assert Script({"array": array}).resolve()
 
@@ -112,7 +112,7 @@ class TestArray:
     def test_array_not_opened(self, array: str):
         with pytest.raises(
             InvalidSyntaxException,
-            match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ArgumentParser.SCRIPT))),
+            match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ParsedArgType.SCRIPT))),
         ):
             assert Script({"array": array}).resolve()
 

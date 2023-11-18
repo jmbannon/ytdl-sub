@@ -11,7 +11,6 @@ from typing import Optional
 from typing import Set
 from typing import Type
 from typing import Union
-from typing import get_origin
 
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.resolvable import AnyTypeReturnable
@@ -25,19 +24,11 @@ from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
+from ytdl_sub.script.utils.type_checking import get_optional_type
+from ytdl_sub.script.utils.type_checking import is_optional
+from ytdl_sub.script.utils.type_checking import is_type_compatible
+from ytdl_sub.script.utils.type_checking import is_union
 from ytdl_sub.utils.exceptions import StringFormattingException
-
-
-def is_union(arg_type: Type) -> bool:
-    return get_origin(arg_type) is Union
-
-
-def is_optional(arg_type: Type) -> bool:
-    return is_union(arg_type) and type(None) in arg_type.__args__
-
-
-def get_optional_type(optional_type: Type) -> Type[NamedType]:
-    return [arg for arg in optional_type.__args__ if arg != type(None)][0]
 
 
 @dataclass(frozen=True)
@@ -49,45 +40,16 @@ class FunctionInputSpec:
         assert (self.args is None) ^ (self.varargs is None)
 
     @classmethod
-    def _is_type_compatible(
-        cls,
-        input_arg: ArgumentType,
-        expected_arg_type: Type[Resolvable | Optional[Resolvable]],
-    ) -> bool:
-        if isinstance(input_arg, BuiltInFunction):
-            input_arg_type = input_arg.output_type
-        elif isinstance(input_arg, Variable):
+    def _is_arg_compatible(
+        cls, arg: NamedType, expected_arg_type: Type[Resolvable | Optional[Resolvable]]
+    ):
+        input_arg_type = arg.__class__
+        if isinstance(arg, BuiltInFunction):
+            input_arg_type = arg.output_type
+        elif isinstance(arg, Variable):
             return True  # unresolved variables can be anything, so pass for now
-        else:
-            input_arg_type = input_arg.__class__
 
-        if is_union(expected_arg_type):
-            # See if the arg is a valid against the union
-            valid_type = False
-
-            # if the input arg is a union, do a direct comparison
-            if is_union(input_arg_type):
-                valid_type = input_arg_type == expected_arg_type
-            # otherwise, iterate the union to see if it's compatible
-            else:
-                for union_type in expected_arg_type.__args__:
-                    if issubclass(input_arg_type, union_type):
-                        valid_type = True
-                        break
-
-            if not valid_type:
-                return False
-        # If the input is a union and the expected type is not, see if
-        # each possible union input is compatible with the expected type
-        elif is_union(input_arg_type):
-            for union_type in input_arg_type.__args__:
-                if not issubclass(union_type, expected_arg_type):
-                    return False
-
-        elif not issubclass(input_arg_type, expected_arg_type):
-            return False
-
-        return True
+        return is_type_compatible(arg_type=input_arg_type, expected_arg_type=expected_arg_type)
 
     def _is_args_compatible(self, input_args: List[ArgumentType]) -> bool:
         assert self.args is not None
@@ -97,7 +59,7 @@ class FunctionInputSpec:
 
         for idx, arg in enumerate(self.args):
             input_arg = input_args[idx] if idx < len(input_args) else None
-            if not self._is_type_compatible(input_arg=input_arg, expected_arg_type=arg):
+            if not self._is_arg_compatible(arg=input_arg, expected_arg_type=arg):
                 return False
 
         return True
@@ -106,7 +68,7 @@ class FunctionInputSpec:
         assert self.varargs is not None
 
         for input_arg in input_args:
-            if not self._is_type_compatible(input_arg=input_arg, expected_arg_type=self.varargs):
+            if not self._is_arg_compatible(arg=input_arg, expected_arg_type=self.varargs):
                 return False
 
         return True

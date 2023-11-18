@@ -6,7 +6,7 @@ import pytest
 
 from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
-from ytdl_sub.script.parser import ArgumentParser
+from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Boolean
@@ -168,6 +168,6 @@ class TestParserBracketFailures:
     def test_bracket_in_function(self):
         with pytest.raises(
             InvalidSyntaxException,
-            match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ArgumentParser.MAP_KEY))),
+            match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ParsedArgType.MAP_KEY))),
         ):
             parse("hello {%capitalize({as_arg)}")

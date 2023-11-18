@@ -28,7 +28,7 @@ from ytdl_sub.validators.string_formatter_validators import is_valid_source_vari
 # pylint: disable=too-many-return-statements
 
 
-class ArgumentParser(Enum):
+class ParsedArgType(Enum):
     SCRIPT = "script"
     FUNCTION = "function"
     ARRAY = "array"
@@ -57,12 +57,12 @@ BOOLEAN_ONLY_ARGS = InvalidSyntaxException(
 )
 
 
-def _UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
-    return InvalidSyntaxException(f"Unexpected character when parsing {parser.value} arguments")
+def _UNEXPECTED_CHAR_ARGUMENT(arg_type: ParsedArgType):
+    return InvalidSyntaxException(f"Unexpected character when parsing {arg_type.value} arguments")
 
 
-def _UNEXPECTED_COMMA_ARGUMENT(parser: ArgumentParser):
-    return InvalidSyntaxException(f"Unexpected comma when parsing {parser.value} arguments")
+def _UNEXPECTED_COMMA_ARGUMENT(arg_type: ParsedArgType):
+    return InvalidSyntaxException(f"Unexpected comma when parsing {arg_type.value} arguments")
 
 
 MAP_KEY_WITH_NO_VALUE = InvalidSyntaxException("Map has a key with no value")
@@ -255,7 +255,7 @@ class _Parser:
 
         raise STRINGS_NOT_CLOSED
 
-    def _parse_function_arg(self, argument_parser: ArgumentParser) -> ArgumentType:
+    def _parse_function_arg(self, argument_parser: ParsedArgType) -> ArgumentType:
         if self._read(increment_pos=False) == "%":
             self._pos += 1
             return self._parse_function()
@@ -282,10 +282,10 @@ class _Parser:
             return self._parse_variable()
 
         self._set_highlight_position()
-        raise _UNEXPECTED_CHAR_ARGUMENT(parser=argument_parser)
+        raise _UNEXPECTED_CHAR_ARGUMENT(arg_type=argument_parser)
 
     def _parse_args(
-        self, argument_parser: ArgumentParser, breaking_chars: str = ")"
+        self, argument_parser: ParsedArgType, breaking_chars: str = ")"
     ) -> List[ArgumentType]:
         """
         Begin parsing function args after the first ``(``, i.e. ``function_name(``
@@ -332,7 +332,7 @@ class _Parser:
             if ch != "(":
                 function_name += ch
             else:
-                function_args = self._parse_args(argument_parser=ArgumentParser.FUNCTION)
+                function_args = self._parse_args(argument_parser=ParsedArgType.FUNCTION)
 
         raise StringFormattingException("Invalid function")
 
@@ -348,7 +348,7 @@ class _Parser:
                 return UnresolvedArray(value=function_args)
 
             function_args = self._parse_args(
-                argument_parser=ArgumentParser.ARRAY, breaking_chars="]"
+                argument_parser=ParsedArgType.ARRAY, breaking_chars="]"
             )
 
         raise UNREACHABLE
@@ -372,18 +372,18 @@ class _Parser:
 
             if ch == ",":
                 if in_comma:
-                    raise _UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
+                    raise _UNEXPECTED_COMMA_ARGUMENT(ParsedArgType.MAP_KEY)
                 if key is not None:
                     raise MAP_KEY_WITH_NO_VALUE
                 if not output:
-                    raise _UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
+                    raise _UNEXPECTED_COMMA_ARGUMENT(ParsedArgType.MAP_KEY)
                 in_comma = True
                 self._pos += 1
             elif key is None:
                 self._set_highlight_position()
                 in_comma = False
                 key_args = self._parse_args(
-                    argument_parser=ArgumentParser.MAP_KEY, breaking_chars=":}"
+                    argument_parser=ParsedArgType.MAP_KEY, breaking_chars=":}"
                 )
 
                 if len(key_args) == 0 and self._read(increment_pos=False) == "}":
@@ -397,7 +397,7 @@ class _Parser:
                 self._set_highlight_position()
                 self._pos += 1
                 value_args = self._parse_args(
-                    argument_parser=ArgumentParser.MAP_VALUE, breaking_chars=",}"
+                    argument_parser=ParsedArgType.MAP_VALUE, breaking_chars=",}"
                 )
                 if len(value_args) == 0:
                     raise MAP_KEY_WITH_NO_VALUE
@@ -461,7 +461,7 @@ class _Parser:
                 ) or _is_boolean_false(self._read(increment_pos=False, length=5)):
                     raise BOOLEAN_ONLY_ARGS
                 else:
-                    raise _UNEXPECTED_CHAR_ARGUMENT(parser=ArgumentParser.SCRIPT)
+                    raise _UNEXPECTED_CHAR_ARGUMENT(arg_type=ParsedArgType.SCRIPT)
             elif bracket_counter == 0:
                 # Only accumulate literal str if not in brackets
                 literal_str += ch
