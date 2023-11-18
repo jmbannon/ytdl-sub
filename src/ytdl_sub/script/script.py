@@ -8,6 +8,13 @@ from ytdl_sub.script.types.variable import Variable
 
 
 class Script:
+    """
+    Takes a dictionary of both
+        ``{ variable_names: syntax }``
+    and
+        ``{ %custom_function: syntax }``
+    """
+
     @classmethod
     def _is_function(cls, override_name: str):
         return override_name.startswith("%")
@@ -32,6 +39,16 @@ class Script:
     def resolve(
         self, pre_resolved_variables: Optional[Dict[Variable, Resolvable]] = None
     ) -> Dict[str, Resolvable]:
+        """
+        Parameters
+        ----------
+        pre_resolved_variables
+            Optional variables that have been resolved elsewhere and could be used in this script
+
+        Returns
+        -------
+        Dict of resolved values
+        """
         return SyntaxTree.resolve_overrides(
             parsed_overrides=self._variables,
             custom_functions=self._functions,

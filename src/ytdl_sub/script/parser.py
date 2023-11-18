@@ -25,6 +25,7 @@ from ytdl_sub.validators.string_formatter_validators import is_valid_source_vari
 
 # pylint: disable=invalid-name
 # pylint: disable=too-many-branches
+# pylint: disable=too-many-return-statements
 
 
 class ArgumentParser(Enum):
@@ -56,11 +57,11 @@ BOOLEAN_ONLY_ARGS = InvalidSyntaxException(
 )
 
 
-def UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
+def _UNEXPECTED_CHAR_ARGUMENT(parser: ArgumentParser):
     return InvalidSyntaxException(f"Unexpected character when parsing {parser.value} arguments")
 
 
-def UNEXPECTED_COMMA_ARGUMENT(parser: ArgumentParser):
+def _UNEXPECTED_COMMA_ARGUMENT(parser: ArgumentParser):
     return InvalidSyntaxException(f"Unexpected comma when parsing {parser.value} arguments")
 
 
@@ -281,7 +282,7 @@ class _Parser:
             return self._parse_variable()
 
         self._set_highlight_position()
-        raise UNEXPECTED_CHAR_ARGUMENT(parser=argument_parser)
+        raise _UNEXPECTED_CHAR_ARGUMENT(parser=argument_parser)
 
     def _parse_args(
         self, argument_parser: ArgumentParser, breaking_chars: str = ")"
@@ -295,7 +296,7 @@ class _Parser:
             if ch in breaking_chars:
                 # i.e. ["arg", ] which is invalid
                 if arguments and len(arguments) == comma_count:
-                    raise UNEXPECTED_COMMA_ARGUMENT(argument_parser)
+                    raise _UNEXPECTED_COMMA_ARGUMENT(argument_parser)
                 break
 
             if ch.isspace():
@@ -304,7 +305,7 @@ class _Parser:
                 self._set_highlight_position()
                 comma_count += 1
                 if len(arguments) != comma_count:
-                    raise UNEXPECTED_COMMA_ARGUMENT(argument_parser)
+                    raise _UNEXPECTED_COMMA_ARGUMENT(argument_parser)
 
                 self._pos += 1
             else:
@@ -371,11 +372,11 @@ class _Parser:
 
             if ch == ",":
                 if in_comma:
-                    raise UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
+                    raise _UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
                 if key is not None:
                     raise MAP_KEY_WITH_NO_VALUE
                 if not output:
-                    raise UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
+                    raise _UNEXPECTED_COMMA_ARGUMENT(ArgumentParser.MAP_KEY)
                 in_comma = True
                 self._pos += 1
             elif key is None:
@@ -460,7 +461,7 @@ class _Parser:
                 ) or _is_boolean_false(self._read(increment_pos=False, length=5)):
                     raise BOOLEAN_ONLY_ARGS
                 else:
-                    raise UNEXPECTED_CHAR_ARGUMENT(parser=ArgumentParser.SCRIPT)
+                    raise _UNEXPECTED_CHAR_ARGUMENT(parser=ArgumentParser.SCRIPT)
             elif bracket_counter == 0:
                 # Only accumulate literal str if not in brackets
                 literal_str += ch
