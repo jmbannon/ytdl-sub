@@ -1,10 +1,16 @@
+from dataclasses import dataclass
+from typing import List
 from typing import Optional
 from typing import Type
 from typing import Union
 from typing import get_origin
 
+from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import FunctionLike
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
 
 def is_union(arg_type: Type) -> bool:
@@ -20,9 +26,15 @@ def get_optional_type(optional_type: Type) -> Type[NamedType]:
 
 
 def is_type_compatible(
-    arg_type: Type[NamedType],
+    arg: NamedType,
     expected_arg_type: Type[Resolvable | Optional[Resolvable]],
 ) -> bool:
+    arg_type: Type[NamedType] = arg.__class__
+    if isinstance(arg, FunctionLike):
+        arg_type = arg.output_type()
+    elif isinstance(arg, Variable):
+        return True  # unresolved variables can be anything, so pass for now
+
     if is_union(expected_arg_type):
         # See if the arg is a valid against the union
         valid_type = False
@@ -50,3 +62,42 @@ def is_type_compatible(
         return False
 
     return True
+
+
+@dataclass(frozen=True)
+class FunctionInputSpec:
+    args: Optional[List[Type[Resolvable | Optional[Resolvable]]]] = None
+    varargs: Optional[Type[Resolvable]] = None
+
+    def __post_init__(self):
+        assert (self.args is None) ^ (self.varargs is None)
+
+    def _is_args_compatible(self, input_args: List[ArgumentType]) -> bool:
+        assert self.args is not None
+
+        if len(input_args) > len(self.args):
+            return False
+
+        for idx, arg in enumerate(self.args):
+            input_arg = input_args[idx] if idx < len(input_args) else None
+            if not is_type_compatible(arg=input_arg, expected_arg_type=arg):
+                return False
+
+        return True
+
+    def _is_varargs_compatible(self, input_args: List[ArgumentType]) -> bool:
+        assert self.varargs is not None
+
+        for input_arg in input_args:
+            if not is_type_compatible(arg=input_arg, expected_arg_type=self.varargs):
+                return False
+
+        return True
+
+    def is_compatible(self, input_args: List[ArgumentType]) -> bool:
+        if self.args is not None:
+            return self._is_args_compatible(input_args=input_args)
+        if self.varargs is not None:
+            return self._is_varargs_compatible(input_args=input_args)
+
+        raise UNREACHABLE  # TODO: functions with no args

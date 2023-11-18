@@ -1,8 +1,11 @@
 import json
 from abc import ABC
+from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Any
 from typing import Generic
+from typing import List
+from typing import Type
 from typing import TypeVar
 
 T = TypeVar("T")
@@ -111,3 +114,12 @@ class Boolean(ResolvableT[bool], Hashable, ArgumentType):
 @dataclass(frozen=True)
 class String(ResolvableT[str], Hashable, ArgumentType):
     pass
+
+
+class FunctionLike(NamedType):
+    name: str
+    args: List[ArgumentType]
+
+    @abstractmethod
+    def output_type(self) -> Type[Resolvable]:
+        pass

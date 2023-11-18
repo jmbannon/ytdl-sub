@@ -44,7 +44,7 @@ class TestParser:
                 ),
             ]
         )
-        assert parsed.ast[1].output_type == Union[String, Float]
+        assert parsed.ast[1].output_type() == Union[String, Float]
 
     def test_conditional_as_input_same_outputs(self):
         parsed = parse("hello {%concat(%if(True, 'hi', 'mom'), 'and dad')}")

@@ -15,11 +15,11 @@ from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.utils.exception_formatters import ParserExceptionFormatter
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import UserException
-from ytdl_sub.script.utils.parser_exception_formatter import ParserExceptionFormatter
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 
