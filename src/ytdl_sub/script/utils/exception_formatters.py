@@ -123,12 +123,7 @@ class FunctionArgumentsExceptionFormatter:
             return f"({self._to_human_readable_name(self._varargs)}, ...)"
         return "()"
 
-    def highlight(self) -> IncompatibleFunctionArguments:
-        """
-        Returns
-        -------
-        Exception with human-readable error highlighting for incompatible function arguments
-        """
+    def _received_args_str(self) -> str:
         received_type_names: List[str] = []
         for arg in self._input_args:
             if isinstance(arg, TypeHintedFunctionType):
@@ -143,9 +138,15 @@ class FunctionArgumentsExceptionFormatter:
             else:
                 received_type_names.append(arg.type_name())
 
-        received_args_str = f"({', '.join(name for name in received_type_names)})"
+        return f"({', '.join(name for name in received_type_names)})"
 
+    def highlight(self) -> IncompatibleFunctionArguments:
+        """
+        Returns
+        -------
+        Exception with human-readable error highlighting for incompatible function arguments
+        """
         return IncompatibleFunctionArguments(
             f"Incompatible arguments passed to function {self._name}.\n"
-            f"Expected {self._expected_args_str()}\nReceived {received_args_str}"
+            f"Expected {self._expected_args_str()}\nReceived {self._received_args_str()}"
         )
