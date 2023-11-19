@@ -14,6 +14,7 @@ from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
 # pylint: disable=missing-raises-doc
 
+
 def is_union(arg_type: Type) -> bool:
     """
     Returns
