@@ -480,6 +480,9 @@ class _Parser:
 
 
 def parse(text: str) -> SyntaxTree:
+    """
+    Entrypoint for parsing ytdl-sub code into a Syntax Tree
+    """
     return _Parser(text).ast
 
 

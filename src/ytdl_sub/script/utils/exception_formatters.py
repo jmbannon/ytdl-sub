@@ -23,7 +23,10 @@ class ParserExceptionFormatter:
         self._end = end
         self._exception = exception
 
-    def exception_text(self, border: int):
+    def _exception_text(self, border: int):
+        """
+        Format for single-line exceptions
+        """
         text_left = max(0, self._start - border)
         text_right = min(len(self._text), self._start + border)
         relative_start = self._start - text_left
@@ -44,10 +47,13 @@ class ParserExceptionFormatter:
         return "\n" + exception_text
 
     @property
-    def is_multi_line(self) -> bool:
+    def _is_multi_line(self) -> bool:
         return "\n" in self._text
 
-    def exception_text_lines(self, border_lines: int = 0) -> str:
+    def _exception_text_lines(self, border_lines: int = 0) -> str:
+        """
+        Format for multi-line exceptions
+        """
         split_text = self._text.split("\n")
 
         start_line: int = sys.maxsize
@@ -78,10 +84,15 @@ class ParserExceptionFormatter:
         return "\n" + "\n".join(to_return)
 
     def highlight(self) -> TUserException:
-        if self.is_multi_line:
-            invalid_syntax = self.exception_text_lines(border_lines=3)
+        """
+        Returns
+        -------
+        Exception with human-readable error highlighting for invalid syntax
+        """
+        if self._is_multi_line:
+            invalid_syntax = self._exception_text_lines(border_lines=3)
         else:
-            invalid_syntax = self.exception_text(border=20)
+            invalid_syntax = self._exception_text(border=20)
 
         return self._exception.__class__(f"{invalid_syntax}\n{str(self._exception)}")
 
@@ -113,11 +124,15 @@ class FunctionArgumentsExceptionFormatter:
         return "()"
 
     def highlight(self) -> IncompatibleFunctionArguments:
+        """
+        Returns
+        -------
+        Exception with human-readable error highlighting for incompatible function arguments
+        """
         received_type_names: List[str] = []
         for arg in self._input_args:
             if isinstance(arg, TypeHintedFunctionType):
                 if is_union(arg.output_type()):
-                    # TODO: Move naming to separate function, deal with Union input naming
                     received_type_names.append(
                         f"%{arg.name}(...)->Union["
                         f"{', '.join(type_.type_name() for type_ in arg.output_type().__args__)}"
