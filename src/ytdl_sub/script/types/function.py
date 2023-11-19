@@ -23,6 +23,8 @@ from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
+from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.script.utils.type_checking import FunctionInputSpec
 from ytdl_sub.script.utils.type_checking import is_union
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -167,4 +169,11 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
             for arg in self.args
         ]
 
-        return self.callable(*resolved_args)
+        try:
+            return self.callable(*resolved_args)
+        except UserThrownRuntimeError:
+            raise
+        except Exception as exc:
+            raise FunctionRuntimeException(
+                f"Runtime error occurred when executing the function %{self.name}: {str(exc)}"
+            ) from exc

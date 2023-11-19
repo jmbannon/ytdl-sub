@@ -5,7 +5,9 @@ import pytest
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
+from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 
 
 def _incompatible_arguments_match(expected: str, recieved: str) -> str:
@@ -78,3 +80,20 @@ class TestFunction:
             match=_incompatible_arguments_match(expected="Array, Integer", recieved="Map, Integer"),
         ):
             Script({"func": function_str}).resolve()
+
+    def test_runtime_error(self):
+        with pytest.raises(
+            FunctionRuntimeException,
+            match=re.escape(
+                "Runtime error occurred when executing the function %div: division by zero"
+            ),
+        ):
+            Script({"divide_by_zero": "{%div(8820, 0)}"}).resolve()
+
+    def test_user_throw(self):
+        with pytest.raises(UserThrownRuntimeError, match=re.escape("test this error message")):
+            Script({"throw_error": "{%throw('test this error message')}"}).resolve()
+
+    def test_user_assert(self):
+        with pytest.raises(UserThrownRuntimeError, match=re.escape("test this error message")):
+            Script({"throw_error": "{%assert(False, 'test this error message')}"}).resolve()

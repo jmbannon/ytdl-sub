@@ -15,11 +15,19 @@ class IncompatibleFunctionArguments(UserException):
     """Function has invalid arguments"""
 
 
-class UnreachableSyntaxException(InvalidSyntaxException):
+class FunctionRuntimeException(ValueError):
+    """Exception thrown when a ytdl-sub function has an error occur at runtime"""
+
+
+class UserThrownRuntimeError(ValidationException):
+    """An error explicitly thrown by the user via a function"""
+
+
+class _UnreachableSyntaxException(InvalidSyntaxException):
     """For use in places where code _should_ never reach, but might from bugs"""
 
 
-UNREACHABLE = UnreachableSyntaxException(
+UNREACHABLE = _UnreachableSyntaxException(
     "If you see this error, you have discovered a bug in the script parser!\n"
     "Please upload your config/subscription file(s) to and make a GitHub issue at "
     "https://github.com/jmbannon/ytdl-sub/issues"
