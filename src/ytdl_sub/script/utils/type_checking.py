@@ -14,14 +14,29 @@ from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
 
 def is_union(arg_type: Type) -> bool:
+    """
+    Returns
+    -------
+    True if typing is Union. False otherwise.
+    """
     return get_origin(arg_type) is Union
 
 
 def is_optional(arg_type: Type) -> bool:
+    """
+    Returns
+    -------
+    True if typing is Optional. False otherwise.
+    """
     return is_union(arg_type) and type(None) in arg_type.__args__
 
 
 def get_optional_type(optional_type: Type) -> Type[NamedType]:
+    """
+    Returns
+    -------
+    Type within the Optional[Type]
+    """
     return [arg for arg in optional_type.__args__ if arg != type(None)][0]
 
 
@@ -29,6 +44,11 @@ def is_type_compatible(
     arg: NamedType,
     expected_arg_type: Type[Resolvable | Optional[Resolvable]],
 ) -> bool:
+    """
+    Returns
+    -------
+    True if arg is compatible with expected_arg_type. False otherwise.
+    """
     arg_type: Type[NamedType] = arg.__class__
     if isinstance(arg, FunctionType):
         arg_type = arg.output_type()
@@ -95,6 +115,11 @@ class FunctionInputSpec:
         return True
 
     def is_compatible(self, input_args: List[ArgumentType]) -> bool:
+        """
+        Returns
+        -------
+        True if input_args is compatible. False otherwise.
+        """
         if self.args is not None:
             return self._is_args_compatible(input_args=input_args)
         if self.varargs is not None:
