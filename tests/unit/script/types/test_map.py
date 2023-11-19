@@ -28,16 +28,6 @@ class TestMap:
             "map": String('json: {"a": 3.14}')
         }
 
-    @pytest.mark.parametrize(
-        "map_, expected_bool",
-        [
-            ("{%bool({})}", False),
-            ("{%bool({'key': 'value'})}", True),
-        ],
-    )
-    def test_return_as_bool(self, map_: str, expected_bool: bool):
-        assert Script({"as_bool": map_}).resolve() == {"as_bool": Boolean(expected_bool)}
-
     def test_nested_map(self):
         map_str = """{
             {

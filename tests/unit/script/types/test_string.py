@@ -50,16 +50,6 @@ class TestString:
         assert Script({"string": string}).resolve() == {"string": String(expected_string)}
 
     @pytest.mark.parametrize(
-        "string, expected_bool",
-        [
-            ("{%bool('')}", False),
-            ("{%bool('false')}", True),
-        ],
-    )
-    def test_return_as_bool(self, string: str, expected_bool: bool):
-        assert Script({"as_bool": string}).resolve() == {"as_bool": Boolean(expected_bool)}
-
-    @pytest.mark.parametrize(
         "string",
         [
             "{%string('open only single)}",

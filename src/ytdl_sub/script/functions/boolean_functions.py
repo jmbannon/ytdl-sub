@@ -5,10 +5,16 @@ from ytdl_sub.script.types.resolvable import Boolean
 class BooleanFunctions:
     @staticmethod
     def bool(value: AnyType) -> Boolean:
+        """
+        Cast any type to a boolean
+        """
         return Boolean(bool(value.value))
 
     @staticmethod
     def equals(left: AnyType, right: AnyType) -> Boolean:
+        """
+        Returns True if left equals right. False otherwise.
+        """
         return Boolean(left.value == right.value)
 
     @staticmethod

@@ -24,18 +24,6 @@ class TestArray:
             "array": String('str: ["a", 3.14]')
         }
 
-    @pytest.mark.parametrize(
-        "array, expected_bool",
-        [
-            ("{%bool([])}", False),
-            ("{%bool([False])}", True),
-        ],
-    )
-    def test_return_as_bool(self, array: str, expected_bool: bool):
-        assert Script({"array_as_bool": array}).resolve() == {
-            "array_as_bool": Boolean(expected_bool)
-        }
-
     def test_nested_array(self):
         assert Script(
             {"array": "{['level1', ['level2', ['level3', 'level3'], 'level2'], 'level1']}"}

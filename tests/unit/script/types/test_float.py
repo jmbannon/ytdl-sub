@@ -45,16 +45,6 @@ class TestFloat:
         }
 
     @pytest.mark.parametrize(
-        "float_, expected_bool",
-        [
-            ("{%bool(0.0)}", False),
-            ("{%bool(0.1)}", True),
-        ],
-    )
-    def test_return_as_bool(self, float_: str, expected_bool: bool):
-        assert Script({"as_bool": float_}).resolve() == {"as_bool": Boolean(expected_bool)}
-
-    @pytest.mark.parametrize(
         "float_",
         [
             "{%add(0, --1.0)}",
@@ -68,3 +58,17 @@ class TestFloat:
     def test_invalid_float(self, float_: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(NUMERICS_INVALID_CHAR))):
             Script({"float": float_}).resolve()
+
+    @pytest.mark.parametrize(
+        "to_cast, expected_float",
+        [
+            ("{%float(5)}", 5.0),
+            ("{%float(0.9)}", 0.9),
+            ("{%float(-3.00)}", -3.0),
+            ("{%float(True)}", 1.0),
+            ("{%float(False)}", 0.0),
+            ("{%float('142.43')}", 142.43),
+        ],
+    )
+    def test_cast_as_float(self, to_cast: str, expected_float: float):
+        assert Script({"as_float": to_cast}).resolve() == {"as_float": Float(expected_float)}

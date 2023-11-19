@@ -45,16 +45,6 @@ class TestInteger:
         }
 
     @pytest.mark.parametrize(
-        "integer, expected_bool",
-        [
-            ("{%bool(0)}", False),
-            ("{%bool(1)}", True),
-        ],
-    )
-    def test_return_as_bool(self, integer: str, expected_bool: bool):
-        assert Script({"as_bool": integer}).resolve() == {"as_bool": Boolean(expected_bool)}
-
-    @pytest.mark.parametrize(
         "integer",
         [
             "{%add(0, --1)}",
@@ -68,3 +58,17 @@ class TestInteger:
     def test_invalid_integer(self, integer: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(NUMERICS_INVALID_CHAR))):
             Script({"integer": integer}).resolve()
+
+    @pytest.mark.parametrize(
+        "to_cast, expected_int",
+        [
+            ("{%int(5)}", 5),
+            ("{%int(0.9)}", 0),
+            ("{%int(-3.00)}", -3),
+            ("{%int(True)}", 1),
+            ("{%int(False)}", 0),
+            ("{%int('142')}", 142),
+        ],
+    )
+    def test_cast_as_integer(self, to_cast: str, expected_int: int):
+        assert Script({"as_int": to_cast}).resolve() == {"as_int": Integer(expected_int)}

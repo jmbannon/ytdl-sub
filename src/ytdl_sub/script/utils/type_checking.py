@@ -12,6 +12,7 @@ from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
+# pylint: disable=missing-raises-doc
 
 def is_union(arg_type: Type) -> bool:
     """

@@ -1,7 +1,11 @@
+from typing import Union
+
 from ytdl_sub.script.types.resolvable import AnyType
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Numeric
+from ytdl_sub.script.types.resolvable import String
 
 
 def _to_numeric(value: int | float) -> Numeric:
@@ -12,11 +16,11 @@ def _to_numeric(value: int | float) -> Numeric:
 
 class NumericFunctions:
     @staticmethod
-    def float(value: AnyType) -> Float:
+    def float(value: Union[Float, Integer, Boolean, String]) -> Float:
         return Float(value=float(value.value))
 
     @staticmethod
-    def int(value: AnyType) -> Integer:
+    def int(value: Union[Float, Integer, Boolean, String]) -> Integer:
         return Integer(value=int(value.value))
 
     @staticmethod
@@ -36,8 +40,8 @@ class NumericFunctions:
         return _to_numeric(left.value / right.value)
 
     @staticmethod
-    def mod(value: Integer, modulo: Integer) -> Integer:
-        return Integer(value=value.value % modulo.value)
+    def mod(value: Numeric, modulo: Numeric) -> Numeric:
+        return _to_numeric(value=value.value % modulo.value)
 
     @staticmethod
     def max(left: Numeric, right: Numeric) -> Numeric:
