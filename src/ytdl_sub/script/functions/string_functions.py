@@ -8,32 +8,29 @@ from ytdl_sub.script.types.resolvable import String
 class StringFunctions:
     @staticmethod
     def string(value: AnyType) -> String:
+        """
+        Cast to String.
+        """
         return String(value=str(value.value))
 
     @staticmethod
     def lower(string: String) -> String:
         """
-        Returns
-        -------
-        Lower-cased string
+        Lower-case the entire String.
         """
         return String(string.value.lower())
 
     @staticmethod
     def upper(string: String) -> String:
         """
-        Returns
-        -------
-        Upper-cased string
+        Upper-case the entire String.
         """
         return String(string.value.upper())
 
     @staticmethod
     def capitalize(string: String) -> String:
         """
-        Returns
-        -------
-        Capitalized string
+        Capitalize all words in the String.
         """
         return String(string.value.capitalize())
 
@@ -41,6 +38,10 @@ class StringFunctions:
     def replace(
         string: String, old: String, new: String, count: Optional[Integer] = None
     ) -> String:
+        """
+        Replace the ``old`` part of the String with the ``new``. Optionally only replace it
+        ``count`` number of times.
+        """
         if count:
             return String(string.value.replace(old.value, new.value, count.value))
 
@@ -48,4 +49,7 @@ class StringFunctions:
 
     @staticmethod
     def concat(*args: String) -> String:
+        """
+        Concatenate multiple Strings into a single String.
+        """
         return String("".join(*args))

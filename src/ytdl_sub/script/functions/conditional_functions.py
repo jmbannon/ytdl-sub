@@ -10,6 +10,10 @@ class ConditionalFunctions:
     def if_(
         condition: Boolean, true: AnyTypeReturnableA, false: AnyTypeReturnableB
     ) -> Union[AnyTypeReturnableA, AnyTypeReturnableB]:
+        """
+        Conditional ``if`` statement that returns the ``true`` or ``false`` parameter
+        depending on the ``condition`` value.
+        """
         if condition.value:
             return true
         return false

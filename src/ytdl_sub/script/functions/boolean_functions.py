@@ -1,6 +1,8 @@
 from ytdl_sub.script.types.resolvable import AnyType
 from ytdl_sub.script.types.resolvable import Boolean
 
+# pylint: disable=invalid-name
+
 
 class BooleanFunctions:
     """

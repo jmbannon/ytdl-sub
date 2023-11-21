@@ -15,6 +15,11 @@ NumericT = TypeVar("NumericT", bound=int | float)
 class NamedType(ABC):
     @classmethod
     def type_name(cls) -> str:
+        """
+        Returns
+        -------
+        The type name to present to users. Defaults to the class name.
+        """
         return cls.__name__
 
 
