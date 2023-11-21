@@ -16,4 +16,6 @@ class Functions(
     BooleanFunctions,
     ErrorFunctions,
 ):
-    pass
+    @classmethod
+    def is_built_in(cls, name: str) -> bool:
+        return hasattr(cls, name) or hasattr(cls, name + "_")

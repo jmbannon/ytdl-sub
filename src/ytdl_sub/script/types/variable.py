@@ -10,4 +10,6 @@ class Variable(ArgumentType):
 
 @dataclass(frozen=True)
 class FunctionArgument(Variable):
+    """Arguments for custom functions, i.e. $0, $1, etc"""
+
     pass

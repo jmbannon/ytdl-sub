@@ -7,16 +7,21 @@ from inspect import FullArgSpec
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Set
 from typing import Type
 from typing import Union
 
 from ytdl_sub.script.functions import Functions
+from ytdl_sub.script.types.array import Array
+from ytdl_sub.script.types.array import ResolvedArray
+from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.resolvable import AnyTypeReturnable
 from ytdl_sub.script.types.resolvable import AnyTypeReturnableA
 from ytdl_sub.script.types.resolvable import AnyTypeReturnableB
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import FunctionType
+from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
 from ytdl_sub.script.types.variable import FunctionArgument
@@ -67,9 +72,8 @@ class Function(FunctionType, VariableDependency, ABC):
 
     @classmethod
     def from_name_and_args(cls, name: str, args: List[ArgumentType]) -> "Function":
-        if hasattr(Functions, name) or hasattr(Functions, name + "_"):
+        if Functions.is_built_in(name):
             return BuiltInFunction(name=name, args=args).validate_args()
-
         return CustomFunction(name=name, args=args)
 
 
@@ -92,7 +96,7 @@ class CustomFunction(Function):
 
             resolved_variables_with_args = copy.deepcopy(resolved_variables)
             for i, arg in enumerate(resolved_args):
-                function_arg = FunctionArgument(name=f"${i+1}")  # Function args are 1-based
+                function_arg = FunctionArgument(name=f"${i}")  # Function args are 1-based
                 if function_arg in resolved_variables_with_args:
                     raise StringFormattingException("nested custom functions???")
                 resolved_variables_with_args[function_arg] = arg
@@ -139,6 +143,12 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
             args=[self.arg_spec.annotations[arg_name] for arg_name in self.arg_spec.args]
         )
 
+    @property
+    def lambda_function(self) -> Optional[str]:
+        if Lambda in (self.input_spec.args or []):
+            return [lam for lam in self.args if isinstance(lam, Lambda)][0].function_name
+        return None
+
     @classmethod
     def _arg_output_type(cls, arg: ArgumentType) -> Type[ArgumentType]:
         if isinstance(arg, BuiltInFunction):
@@ -165,6 +175,34 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
+        if lambda_function := self.lambda_function:
+            resolved_args: List[Resolvable] = [
+                self._resolve_argument_type(
+                    arg=arg,
+                    resolved_variables=resolved_variables,
+                    custom_functions=custom_functions,
+                )
+                for arg in self.args
+                if not isinstance(arg, Lambda)
+            ]
+            lambda_arg = [arg for arg in self.args if isinstance(arg, Lambda)]
+
+            lambda_args = self.callable(*(resolved_args + lambda_arg))
+            assert isinstance(lambda_args, ResolvedArray)
+
+            return self._resolve_argument_type(
+                arg=UnresolvedArray(
+                    [
+                        BuiltInFunction(name=lambda_function, args=lambda_arg.value)
+                        if Functions.is_built_in(lambda_function)
+                        else CustomFunction(name=lambda_function, args=lambda_arg.value)
+                        for lambda_arg in lambda_args.value
+                    ]
+                ),
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
         resolved_args: List[Resolvable] = [
             self._resolve_argument_type(
                 arg=arg, resolved_variables=resolved_variables, custom_functions=custom_functions

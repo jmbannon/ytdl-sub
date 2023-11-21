@@ -9,7 +9,7 @@ class TestSyntaxTree:
     def test_custom_function(self):
         assert Script(
             {
-                "%custom_func": "return {[$1, $2]}",
+                "%custom_func": "return {[$0, $1]}",
                 "aa": "a",
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",

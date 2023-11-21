@@ -4,7 +4,9 @@ import pytest
 
 from ytdl_sub.script.parser import FUNCTION_INVALID_CHAR
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Boolean
+from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
@@ -114,3 +116,8 @@ class TestFunction:
             match=re.escape(str(FUNCTION_INVALID_CHAR)),
         ):
             Script({"dne": "{%throw}"}).resolve()
+
+    def test_lambda_function(self):
+        assert Script(
+            {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([1, 2, 3], %times_two)}"}
+        ).resolve() == {"wip": ResolvedArray([Integer(2), Integer(4), Integer(6)])}

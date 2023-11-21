@@ -132,3 +132,8 @@ class TypeHintedFunctionType(FunctionType, ABC):
     @abstractmethod
     def output_type(self) -> Type[Resolvable]:
         pass
+
+
+@dataclass(frozen=True)
+class Lambda(ArgumentType):
+    function_name: str

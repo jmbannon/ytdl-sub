@@ -10,6 +10,7 @@ from ytdl_sub.script.types.map import UnresolvedMap
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
@@ -172,7 +173,7 @@ class _Parser:
 
     def _parse_custom_function_argument(self) -> FunctionArgument:
         """
-        Begin parsing function args after the first ``$``, i.e. ``$1``
+        Begin parsing function args after the first ``$``, i.e. ``$0``
         """
         var_name = ""
         while ch := self._read(increment_pos=False):
@@ -320,26 +321,35 @@ class _Parser:
 
         return arguments
 
-    def _parse_function(self) -> Function:
+    def _parse_function(self) -> Function | Lambda:
         """
         Begin parsing a function after reading the first ``%``
         """
         function_name: str = ""
-        function_args: List[ArgumentType] = []
+        function_args: Optional[List[ArgumentType]] = None
         function_start_pos = self._pos
 
         while ch := self._read():
             if ch == ")":
-                try:
-                    return Function.from_name_and_args(name=function_name, args=function_args)
-                except IncompatibleFunctionArguments:
-                    self._set_highlight_position(function_start_pos)
-                    raise
+                if function_args is not None:
+                    # Had '(' to indicate there are args
+                    try:
+                        return Function.from_name_and_args(name=function_name, args=function_args)
+                    except IncompatibleFunctionArguments:
+                        self._set_highlight_position(function_start_pos)
+                        raise
+
+                # Go back one so the parent function can close using the ')'
+                self._pos -= 1
+                return Lambda(function_name=function_name)
 
             if _is_function_name_char(ch):
                 function_name += ch
             elif ch == "(":
                 function_args = self._parse_args(argument_parser=ParsedArgType.FUNCTION)
+            elif ch.isspace() or ch == ",":
+                # function with no args, it's a lambda
+                return Lambda(function_name=function_name)
             else:
                 break
 

@@ -1,7 +1,9 @@
 from typing import List
 
 from ytdl_sub.script.types.array import Array
+from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
 
 
@@ -44,3 +46,10 @@ class ArrayFunctions:
         Reverse an Array.
         """
         return Array(list(reversed(array.value)))
+
+    @staticmethod
+    def array_apply(array: Array, lambda_function: Lambda) -> Array:
+        """
+        Reverse an Array.
+        """
+        return ResolvedArray([ResolvedArray([val]) for val in array.value])

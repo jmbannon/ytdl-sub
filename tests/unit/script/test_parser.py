@@ -8,10 +8,13 @@ from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
 from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.parser import parse
+from ytdl_sub.script.types.array import Array
+from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
@@ -154,6 +157,19 @@ class TestParser:
             + ([String(value=s)] if s else [])
         )
         assert parsed.variables == {Variable(name="variable_name")}
+
+    def test_lambda_function(self):
+        assert parse("{%array_apply([1], %times_two)}") == SyntaxTree(
+            [
+                BuiltInFunction(
+                    name="array_apply",
+                    args=[
+                        UnresolvedArray(value=[Integer(1)]),
+                        Lambda(function_name="times_two"),
+                    ],
+                )
+            ]
+        )
 
 
 class TestParserBracketFailures:
