@@ -26,6 +26,7 @@ from ytdl_sub.validators.string_formatter_validators import is_valid_source_vari
 # pylint: disable=invalid-name
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-return-statements
+# pylint: disable=consider-using-ternary
 
 
 class ParsedArgType(Enum):
@@ -56,6 +57,8 @@ BOOLEAN_ONLY_ARGS = InvalidSyntaxException(
     "Booleans can only be used as arguments to functions, maps, or arrays"
 )
 
+FUNCTION_INVALID_CHAR = InvalidSyntaxException("Invalid value when parsing a function")
+
 
 def _UNEXPECTED_CHAR_ARGUMENT(arg_type: ParsedArgType):
     return InvalidSyntaxException(f"Unexpected character when parsing {arg_type.value} arguments")
@@ -77,6 +80,10 @@ MAP_KEY_NOT_HASHABLE = InvalidSyntaxException(
 
 def _is_variable_start(char: str) -> bool:
     return char.isalpha() and char.islower()
+
+
+def _is_function_name_char(char: str) -> bool:
+    return (char.isalpha() and char.islower()) or char.isnumeric() or char == "_"
 
 
 def _is_numeric_start(char: str) -> bool:
@@ -329,12 +336,15 @@ class _Parser:
                     self._set_highlight_position(function_start_pos)
                     raise
 
-            if ch != "(":
+            if _is_function_name_char(ch):
                 function_name += ch
-            else:
+            elif ch == "(":
                 function_args = self._parse_args(argument_parser=ParsedArgType.FUNCTION)
+            else:
+                break
 
-        raise StringFormattingException("Invalid function")
+        self._set_highlight_position(pos=self._pos - 1)
+        raise FUNCTION_INVALID_CHAR
 
     def _parse_array(self) -> UnresolvedArray:
         """
