@@ -15,6 +15,10 @@ class IncompatibleFunctionArguments(UserException):
     """Function has invalid arguments"""
 
 
+class FunctionDoesNotExist(UserException):
+    """Tried to use a function that does not exist"""
+
+
 class FunctionRuntimeException(ValueError):
     """Exception thrown when a ytdl-sub function has an error occur at runtime"""
 

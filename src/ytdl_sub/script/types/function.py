@@ -23,6 +23,7 @@ from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
+from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.script.utils.type_checking import FunctionInputSpec
@@ -101,7 +102,9 @@ class CustomFunction(Function):
                 custom_functions=custom_functions,
             )
 
-        raise StringFormattingException(f"Custom function {self.name} does not exist")
+        raise FunctionDoesNotExist(
+            f"Function %{self.name} does not exist as a built-in or custom function."
+        )
 
 
 class BuiltInFunction(Function, TypeHintedFunctionType):

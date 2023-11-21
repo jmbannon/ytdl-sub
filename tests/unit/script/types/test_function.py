@@ -5,6 +5,7 @@ import pytest
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
@@ -97,3 +98,10 @@ class TestFunction:
     def test_user_assert(self):
         with pytest.raises(UserThrownRuntimeError, match=re.escape("test this error message")):
             Script({"throw_error": "{%assert(False, 'test this error message')}"}).resolve()
+
+    def test_function_does_not_exist(self):
+        with pytest.raises(
+            FunctionDoesNotExist,
+            match=re.escape("Function %lolnope does not exist as a built-in or custom function."),
+        ):
+            Script({"dne": "{%lolnope(False, 'test this error message')}"}).resolve()
