@@ -50,6 +50,16 @@ class ArrayFunctions:
     @staticmethod
     def array_apply(array: Array, lambda_function: Lambda) -> Array:
         """
-        Reverse an Array.
+        Apply a lambda function on every element in the Array.
         """
         return ResolvedArray([ResolvedArray([val]) for val in array.value])
+
+    @staticmethod
+    def array_enumerate(array: Array, lambda_function: Lambda) -> Array:
+        """
+        Apply a lambda function on every element in the Array, where each arg
+        passed to the lambda function is ``idx, element`` as two separate args.
+        """
+        return ResolvedArray(
+            [ResolvedArray([Integer(idx), val]) for idx, val in enumerate(array.value)]
+        )

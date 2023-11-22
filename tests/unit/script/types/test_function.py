@@ -127,8 +127,6 @@ class TestFunction:
             {
                 "%times_three": "{%mul($0, 3)}",
                 "%times_two": "{%mul($0, 2)}",
-                "wip": "{%array_apply([1, 2, 3], %if(False, %times_two, %times_three))}"
+                "wip": "{%array_apply([1, 2, 3], %if(False, %times_two, %times_three))}",
             }
-        ).resolve() == {
-            "wip": ResolvedArray([Integer(3), Integer(6), Integer(9)])
-        }
+        ).resolve() == {"wip": ResolvedArray([Integer(3), Integer(6), Integer(9)])}
