@@ -144,9 +144,9 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         )
 
     @property
-    def lambda_function(self) -> Optional[str]:
+    def lambda_argument(self) -> Optional[Lambda]:
         if Lambda in (self.input_spec.args or []):
-            return [lam for lam in self.args if isinstance(lam, Lambda)][0].function_name
+            return [lam for lam in self.args if isinstance(lam, Lambda)][0]
         return None
 
     @classmethod
@@ -170,48 +170,64 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
 
         return output_type
 
+    def _resolve_lambda_function(
+        self,
+        resolved_arguments: List[Resolvable | Lambda],
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Resolvable:
+        """
+        Resolve the lambda function by
+            1. Calling the actual built-in function, which actually forms the input args to the
+               lambda. NOTE: the lambda argument MUST BE the last argument in the input spec!
+            2. Preemptively creating the lambda's unresolved output array using output args from (1)
+            3. Resolve it like any other syntax
+        """
+        assert self.lambda_argument is not None
+        lambda_function_name = self.lambda_argument.function_name
+
+        lambda_args = self.callable(*resolved_arguments)
+        assert isinstance(lambda_args, ResolvedArray)
+
+        return self._resolve_argument_type(
+            arg=UnresolvedArray(
+                [
+                    BuiltInFunction(name=lambda_function_name, args=lambda_arg.value)
+                    if Functions.is_built_in(lambda_function_name)
+                    else CustomFunction(name=lambda_function_name, args=lambda_arg.value)
+                    for lambda_arg in lambda_args.value
+                ]
+            ),
+            resolved_variables=resolved_variables,
+            custom_functions=custom_functions,
+        )
+
     def resolve(
         self,
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
-        if lambda_function := self.lambda_function:
-            resolved_args: List[Resolvable] = [
-                self._resolve_argument_type(
-                    arg=arg,
-                    resolved_variables=resolved_variables,
-                    custom_functions=custom_functions,
-                )
-                for arg in self.args
-                if not isinstance(arg, Lambda)
-            ]
-            lambda_arg = [arg for arg in self.args if isinstance(arg, Lambda)]
+        # Resolve all non-lambda arguments
+        resolved_arguments: List[Resolvable | Lambda] = [
+            self._resolve_argument_type(
+                arg=arg,
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+            for arg in self.args
+            if not isinstance(arg, Lambda)
+        ]
 
-            lambda_args = self.callable(*(resolved_args + lambda_arg))
-            assert isinstance(lambda_args, ResolvedArray)
-
-            return self._resolve_argument_type(
-                arg=UnresolvedArray(
-                    [
-                        BuiltInFunction(name=lambda_function, args=lambda_arg.value)
-                        if Functions.is_built_in(lambda_function)
-                        else CustomFunction(name=lambda_function, args=lambda_arg.value)
-                        for lambda_arg in lambda_args.value
-                    ]
-                ),
+        # If a lambda is in a function's arg, resolve it differently
+        if lambda_argument := self.lambda_argument:
+            return self._resolve_lambda_function(
+                resolved_arguments=resolved_arguments + [lambda_argument],
                 resolved_variables=resolved_variables,
                 custom_functions=custom_functions,
             )
 
-        resolved_args: List[Resolvable] = [
-            self._resolve_argument_type(
-                arg=arg, resolved_variables=resolved_variables, custom_functions=custom_functions
-            )
-            for arg in self.args
-        ]
-
         try:
-            return self.callable(*resolved_args)
+            return self.callable(*resolved_arguments)
         except UserThrownRuntimeError:
             raise
         except Exception as exc:
