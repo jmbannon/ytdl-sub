@@ -57,7 +57,7 @@ class AnyType(ArgumentType, AnyTypeReturnable, AnyTypeReturnableA, AnyTypeReturn
 
 class FutureResolvable(AnyType, ABC):
     """
-    Type that will be resolved in the future
+    Type that will be resolved in the future (Map, Array)
     """
 
 
