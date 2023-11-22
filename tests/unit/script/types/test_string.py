@@ -5,7 +5,6 @@ import pytest
 from ytdl_sub.script.parser import STRINGS_NOT_CLOSED
 from ytdl_sub.script.parser import STRINGS_ONLY_ARGS
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 

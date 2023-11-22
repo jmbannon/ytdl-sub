@@ -19,6 +19,10 @@ class FunctionDoesNotExist(UserException):
     """Tried to use a function that does not exist"""
 
 
+class VariableDoesNotExist(UserException):
+    """Tried to use a variable that does not exist"""
+
+
 class CycleDetected(UserException):
     """A cycle exists within a user's script"""
 
