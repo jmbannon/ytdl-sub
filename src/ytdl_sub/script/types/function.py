@@ -28,7 +28,7 @@ from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
-from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
+from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist, UNREACHABLE
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.script.utils.type_checking import FunctionInputSpec
@@ -144,10 +144,8 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         )
 
     @property
-    def lambda_argument(self) -> Optional[Lambda]:
-        if Lambda in (self.input_spec.args or []):
-            return [lam for lam in self.args if isinstance(lam, Lambda)][0]
-        return None
+    def is_lambda_function(self) -> bool:
+        return Lambda in (self.input_spec.args or [])
 
     @classmethod
     def _arg_output_type(cls, arg: ArgumentType) -> Type[ArgumentType]:
@@ -184,8 +182,11 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
             2. Preemptively creating the lambda's unresolved output array using output args from (1)
             3. Resolve it like any other syntax
         """
-        assert self.lambda_argument is not None
-        lambda_function_name = self.lambda_argument.function_name
+        function_input_lambda_args = [arg for arg in resolved_arguments if isinstance(arg, Lambda)]
+        if not self.is_lambda_function or len(function_input_lambda_args) != 1:
+            raise UNREACHABLE
+
+        lambda_function_name = function_input_lambda_args[0].function_name
 
         try:
             lambda_args = self.callable(*resolved_arguments)
@@ -222,13 +223,12 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
                 custom_functions=custom_functions,
             )
             for arg in self.args
-            if not isinstance(arg, Lambda)
         ]
 
         # If a lambda is in a function's arg, resolve it differently
-        if lambda_argument := self.lambda_argument:
+        if self.is_lambda_function:
             return self._resolve_lambda_function(
-                resolved_arguments=resolved_arguments + [lambda_argument],
+                resolved_arguments=resolved_arguments,
                 resolved_variables=resolved_variables,
                 custom_functions=custom_functions,
             )

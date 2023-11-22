@@ -135,5 +135,5 @@ class TypeHintedFunctionType(FunctionType, ABC):
 
 
 @dataclass(frozen=True)
-class Lambda(ArgumentType):
+class Lambda(Resolvable):
     function_name: str

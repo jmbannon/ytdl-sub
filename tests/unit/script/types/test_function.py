@@ -121,3 +121,14 @@ class TestFunction:
         assert Script(
             {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([1, 2, 3], %times_two)}"}
         ).resolve() == {"wip": ResolvedArray([Integer(2), Integer(4), Integer(6)])}
+
+    def test_conditional_lambda_function(self):
+        assert Script(
+            {
+                "%times_three": "{%mul($0, 3)}",
+                "%times_two": "{%mul($0, 2)}",
+                "wip": "{%array_apply([1, 2, 3], %if(False, %times_two, %times_three))}"
+            }
+        ).resolve() == {
+            "wip": ResolvedArray([Integer(3), Integer(6), Integer(9)])
+        }
