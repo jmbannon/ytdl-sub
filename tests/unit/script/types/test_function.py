@@ -118,6 +118,14 @@ class TestFunction:
         ):
             Script({"dne": "{%throw}"}).resolve()
 
+    def test_custom_function_use_input_param_multiple_times(self):
+        assert Script(
+            {
+                "%custom_square": "{%mul($0, $0)}",
+                "output": "{%custom_square(3)}",
+            }
+        ).resolve() == {"output": Integer(9)}
+
     def test_custom_function_cycle(self):
         with pytest.raises(
             CycleDetected, match=re.escape("The custom function %cycle_func cannot call itself.")

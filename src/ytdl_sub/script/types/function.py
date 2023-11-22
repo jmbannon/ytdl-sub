@@ -58,9 +58,6 @@ class CustomFunction(Function, NamedCustomFunction):
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
-        if NamedCustomFunction(name=self.name) in self.custom_functions:
-            raise CycleDetected("ackkk!")
-
         resolved_args: List[Resolvable] = [
             self._resolve_argument_type(
                 arg=arg, resolved_variables=resolved_variables, custom_functions=custom_functions
@@ -74,11 +71,14 @@ class CustomFunction(Function, NamedCustomFunction):
 
             resolved_variables_with_args = copy.deepcopy(resolved_variables)
             for i, arg in enumerate(resolved_args):
-                function_arg = FunctionArgument.from_idx(
-                    idx=i, custom_function_name=self.name
-                )  # Function args are 0-based
-                # if function_arg in resolved_variables_with_args:
-                #     raise StringFormattingException("nested custom functions???")
+                function_arg = FunctionArgument.from_idx(idx=i, custom_function_name=self.name)
+
+                if function_arg in resolved_variables_with_args:
+                    # function args should always be unique since they are only defined once
+                    # in the custom function as %custom_function_name___idx
+                    # and returned as a set from each custom function.
+                    raise UNREACHABLE
+
                 resolved_variables_with_args[function_arg] = arg
 
             return custom_functions[self.name].resolve(
