@@ -3,11 +3,11 @@ import re
 import pytest
 
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArgumentName
+from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 
 
 class TestCustomFunction:
@@ -90,7 +90,7 @@ class TestCustomFunction:
             "$3.14",
         ],
     )
-    def test_custom_function_invalid_function_arguments(self, name: str):
+    def test_custom_function_invalid_function_argument_names(self, name: str):
         with pytest.raises(
             InvalidCustomFunctionArgumentName,
             match=re.escape(
@@ -102,5 +102,48 @@ class TestCustomFunction:
                     "%func1": f"{{%mul(1, {name})}}",
                     "%func0": "{%mul(%func1(1), $0)}",
                     "output": "{%func0(1)}",
+                }
+            ).resolve()
+
+    @pytest.mark.parametrize(
+        "argument",
+        [
+            "$1",
+            "$2",
+            "$3",
+        ],
+    )
+    def test_custom_function_invalid_function_argument_single(self, argument: str):
+        with pytest.raises(
+            InvalidCustomFunctionArguments,
+            match=re.escape(
+                f"Custom function %func1 has invalid function arguments: "
+                f"The argument must start with $0, not {argument}."
+            ),
+        ):
+            Script(
+                {
+                    "%func1": f"{{[{argument}]}}",
+                }
+            ).resolve()
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            "$0, $2",
+            "$1, $2, $3",
+        ],
+    )
+    def test_custom_function_invalid_function_argument_out_of_order(self, arguments: str):
+        with pytest.raises(
+            InvalidCustomFunctionArguments,
+            match=re.escape(
+                f"Custom function %func1 has invalid function arguments: "
+                f"{arguments} do not increment from $0 to ${len(arguments.split(',')) - 1}."
+            ),
+        ):
+            Script(
+                {
+                    "%func1": f"{{[{arguments}]}}",
                 }
             ).resolve()

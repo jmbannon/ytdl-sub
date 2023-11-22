@@ -19,6 +19,10 @@ class InvalidFunctionName(UserException):
     """Custom function name is invalid"""
 
 
+class InvalidCustomFunctionArguments(UserException):
+    """Custom function arguments are invalid (i.e. they do not increment)"""
+
+
 class InvalidCustomFunctionArgumentName(UserException):
     """Custom function argument name (i.e. $0) is invalid"""
 

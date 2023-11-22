@@ -9,6 +9,7 @@ from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
+from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 
 # pylint: disable=missing-raises-doc
@@ -93,6 +94,21 @@ class Script:
                 deps=[],
             )
 
+    def _ensure_custom_function_arguments_valid(self):
+        for custom_function_name, custom_function in self._functions.items():
+            indices = sorted([arg.index for arg in custom_function.function_arguments])
+            if indices != list(range(len(indices))):
+                if len(indices) == 1:
+                    raise InvalidCustomFunctionArguments(
+                        f"Custom function %{custom_function_name} has invalid function arguments: "
+                        f"The argument must start with $0, not ${indices[0]}."
+                    )
+                raise InvalidCustomFunctionArguments(
+                    f"Custom function %{custom_function_name} has invalid function arguments: "
+                    f"{', '.join(sorted(f'${idx}' for idx in indices))} "
+                    f"do not increment from $0 to ${len(indices) - 1}."
+                )
+
     def __init__(self, overrides: Dict[str, str]):
         function_names: Set[str] = {
             self._function_name(name) for name in overrides.keys() if self._is_function(name)
@@ -126,6 +142,7 @@ class Script:
         }
 
         self._ensure_no_custom_function_cycles()
+        self._ensure_custom_function_arguments_valid()
         self._ensure_no_variable_cycles()
 
     def resolve(
