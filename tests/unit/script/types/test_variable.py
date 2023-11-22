@@ -5,6 +5,7 @@ import pytest
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import CycleDetected
+from ytdl_sub.script.utils.exceptions import InvalidVariableName
 from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 
 
@@ -50,3 +51,13 @@ class TestVariable:
             match=re.escape("Variable c does not exist."),
         ):
             Script({"a": "a", "b": "{c}"}).resolve()
+
+    def test_invalid_variable_name_inline(self):
+        with pytest.raises(
+            InvalidVariableName,
+            match=re.escape(
+                "Variable name 'vali_LOL_INVALID' is invalid. "
+                "Names must be lower_snake_cased and begin with a letter."
+            ),
+        ):
+            Script({"a": "{vali_LOL_INVALID}"}).resolve()

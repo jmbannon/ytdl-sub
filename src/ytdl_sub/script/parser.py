@@ -26,8 +26,10 @@ from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
+from ytdl_sub.script.utils.exceptions import InvalidVariableName
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
+from ytdl_sub.script.utils.name_validation import validate_variable_name
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 
@@ -172,21 +174,17 @@ class _Parser:
             if _is_breakable(ch):
                 break
 
-            is_lower = ch.isascii() and ch.islower()
-            if not var_name and not is_lower:
-                raise StringFormattingException("invalid var name")
-
-            if not (is_lower or ch.isnumeric() or ch == "_"):
-                raise StringFormattingException("invalid var name")
+            if not var_name:
+                variable_start_pos = self._pos
 
             var_name += ch
             self._pos += 1
 
-        if not var_name:
-            raise StringFormattingException("invalid var name")
-
-        if not is_valid_source_variable_name(var_name, raise_exception=False):
-            raise UNREACHABLE
+        try:
+            validate_variable_name(var_name)
+        except InvalidVariableName:
+            self._set_highlight_position(variable_start_pos)
+            raise
 
         if self._variable_names is not None and var_name not in self._variable_names:
             self._set_highlight_position(variable_start_pos)

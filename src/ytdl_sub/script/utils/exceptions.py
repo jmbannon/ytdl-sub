@@ -11,6 +11,14 @@ class InvalidSyntaxException(UserException):
     """Syntax is incorrect"""
 
 
+class InvalidVariableName(UserException):
+    """Variable name is invalid"""
+
+
+class InvalidFunctionName(UserException):
+    """Custom function name is invalid"""
+
+
 class IncompatibleFunctionArguments(UserException):
     """Function has invalid arguments"""
 
