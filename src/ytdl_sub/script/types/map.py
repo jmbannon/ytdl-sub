@@ -11,7 +11,7 @@ from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import ResolvableToJson
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
-from ytdl_sub.utils.exceptions import StringFormattingException
+from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 
 
 @dataclass(frozen=True)
@@ -42,7 +42,9 @@ class UnresolvedMap(Map, VariableDependency, AnyArgument):
                 arg=key, resolved_variables=resolved_variables, custom_functions=custom_functions
             )
             if not isinstance(resolved_key, Hashable):
-                raise StringFormattingException("key is not hashable")
+                raise KeyNotHashableRuntimeException(
+                    f"Tried to use {resolved_key.type_name()} as a Map key, but it is not hashable."
+                )
 
             output[resolved_key] = self._resolve_argument_type(
                 arg=value, resolved_variables=resolved_variables, custom_functions=custom_functions

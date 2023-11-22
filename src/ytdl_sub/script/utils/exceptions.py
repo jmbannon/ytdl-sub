@@ -43,8 +43,16 @@ class CycleDetected(UserException):
     """A cycle exists within a user's script"""
 
 
-class FunctionRuntimeException(ValueError):
+class RuntimeException(ValueError, ABC):
+    """Exception thrown at runtime during resolution"""
+
+
+class FunctionRuntimeException(RuntimeException):
     """Exception thrown when a ytdl-sub function has an error occur at runtime"""
+
+
+class KeyNotHashableRuntimeException(RuntimeException):
+    """Map tried to use a non-hashable key at runtime"""
 
 
 class UserThrownRuntimeError(ValidationException):

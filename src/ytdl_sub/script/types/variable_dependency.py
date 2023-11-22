@@ -12,7 +12,6 @@ from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
-from ytdl_sub.utils.exceptions import StringFormattingException
 
 
 @dataclass(frozen=True)
@@ -78,7 +77,8 @@ class VariableDependency(ABC):
             return arg
         if isinstance(arg, Variable):
             if arg not in resolved_variables:
-                raise StringFormattingException("should never reach@")
+                # All variables should exist and be resolved at this point
+                raise UNREACHABLE
             return resolved_variables[arg]
         if isinstance(arg, VariableDependency):
             return arg.resolve(

@@ -15,6 +15,7 @@ from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
+from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 
 
 class TestMap:
@@ -159,3 +160,26 @@ class TestMap:
     def test_map_key_not_hashable(self, value: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_KEY_NOT_HASHABLE))):
             Script({"map": value}).resolve()
+
+    def test_map_key_is_hashable_variable(self):
+        assert Script(
+            {
+                "map": "{{key_variable : 'value' }}",
+                "key_variable": "hashable",
+            }
+        ).resolve() == {
+            "key_variable": String("hashable"),
+            "map": ResolvedMap({String("hashable"): String("value")}),
+        }
+
+    def test_map_key_is_non_hashable_variable(self):
+        with pytest.raises(
+            KeyNotHashableRuntimeException,
+            match=re.escape("Tried to use Array as a Map key, but it is not hashable."),
+        ):
+            Script(
+                {
+                    "map": "{{key_variable : 'value' }}",
+                    "key_variable": "{['non-hashable']}",
+                }
+            ).resolve()
