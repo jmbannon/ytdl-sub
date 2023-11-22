@@ -179,14 +179,21 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         """
         Resolve the lambda function by
             1. Calling the actual built-in function, which actually forms the input args to the
-               lambda. NOTE: the lambda argument MUST BE the last argument in the input spec!
+               lambda. NOTE: the lambda argument MUST BE the last argument in the input spec
+               and output a ResolvedArray, where each element is the input args to the lambda.
             2. Preemptively creating the lambda's unresolved output array using output args from (1)
             3. Resolve it like any other syntax
         """
         assert self.lambda_argument is not None
         lambda_function_name = self.lambda_argument.function_name
 
-        lambda_args = self.callable(*resolved_arguments)
+        try:
+            lambda_args = self.callable(*resolved_arguments)
+        except Exception as exc:
+            raise FunctionRuntimeException(
+                f"Runtime error occurred when executing the function %{self.name}: {str(exc)}"
+            ) from exc
+
         assert isinstance(lambda_args, ResolvedArray)
 
         return self._resolve_argument_type(
