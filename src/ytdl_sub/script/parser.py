@@ -66,6 +66,10 @@ BOOLEAN_ONLY_ARGS = InvalidSyntaxException(
     "Booleans can only be used as arguments to functions, maps, or arrays"
 )
 
+CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS = InvalidSyntaxException(
+    "Custom function arguments can only be used as arguments to functions, maps, or arrays"
+)
+
 FUNCTION_INVALID_CHAR = InvalidSyntaxException("Invalid value when parsing a function")
 
 
@@ -113,6 +117,10 @@ def _is_boolean_true(string: Optional[str]) -> bool:
 
 def _is_boolean_false(string: Optional[str]) -> bool:
     return string == "False"
+
+
+def _is_custom_function_argument_start(char: str) -> bool:
+    return char == "$"
 
 
 class _Parser:
@@ -303,7 +311,7 @@ class _Parser:
         if self._read(increment_pos=False) == "{":
             self._pos += 1
             return self._parse_map()
-        if self._read(increment_pos=False) == "$":
+        if _is_custom_function_argument_start(self._read(increment_pos=False)):
             self._pos += 1
             return self._parse_custom_function_argument()
         if _is_variable_start(self._read(increment_pos=False)):
@@ -520,6 +528,8 @@ class _Parser:
                     self._read(increment_pos=False, length=4)
                 ) or _is_boolean_false(self._read(increment_pos=False, length=5)):
                     raise BOOLEAN_ONLY_ARGS
+                elif _is_custom_function_argument_start(self._read(increment_pos=False)):
+                    raise CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS
                 else:
                     raise _UNEXPECTED_CHAR_ARGUMENT(arg_type=ParsedArgType.SCRIPT)
             elif bracket_counter == 0:

@@ -2,12 +2,14 @@ import re
 
 import pytest
 
+from ytdl_sub.script.parser import CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArgumentName
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
+from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 
 class TestCustomFunction:
@@ -104,6 +106,13 @@ class TestCustomFunction:
                     "output": "{%func0(1)}",
                 }
             ).resolve()
+
+    def test_custom_function_function_argument_usage_in_brackets(self):
+        with pytest.raises(
+            InvalidSyntaxException,
+            match=re.escape(str(CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS)),
+        ):
+            Script({"%func1": "{$0}"}).resolve()
 
     @pytest.mark.parametrize(
         "argument",
