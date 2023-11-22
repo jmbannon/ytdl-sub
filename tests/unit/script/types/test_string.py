@@ -23,7 +23,7 @@ class TestString:
     )
     def test_string_not_arg(self, string: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(STRINGS_ONLY_ARGS))):
-            Script({"string": string}).resolve()
+            Script({"out": string}).resolve()
 
     @pytest.mark.parametrize(
         "string, expected_string",
@@ -59,4 +59,4 @@ class TestString:
     )
     def test_string_not_closed_properly(self, string: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(STRINGS_NOT_CLOSED))):
-            Script({"string": string}).resolve()
+            Script({"out": string}).resolve()

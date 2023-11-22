@@ -25,7 +25,7 @@ class TestFloat:
     )
     def test_float_not_arg(self, integer: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(NUMERICS_ONLY_ARGS))):
-            Script({"float": integer}).resolve()
+            Script({"out": integer}).resolve()
 
     @pytest.mark.parametrize(
         "float_, expected_float",
@@ -57,7 +57,7 @@ class TestFloat:
     )
     def test_invalid_float(self, float_: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(NUMERICS_INVALID_CHAR))):
-            Script({"float": float_}).resolve()
+            Script({"out": float_}).resolve()
 
     @pytest.mark.parametrize(
         "to_cast, expected_float",

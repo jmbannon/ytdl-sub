@@ -25,13 +25,12 @@ from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
+from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArgumentName
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import InvalidVariableName
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.script.utils.name_validation import validate_variable_name
-from ytdl_sub.utils.exceptions import StringFormattingException
-from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 
 # pylint: disable=invalid-name
 # pylint: disable=too-many-branches
@@ -197,6 +196,7 @@ class _Parser:
         Begin parsing function args after the first ``$``, i.e. ``$0``
         """
         var_name = ""
+        variable_start_pos = self._pos
         while ch := self._read(increment_pos=False):
             if ch.isspace() and not var_name:
                 self._pos += 1
@@ -204,15 +204,14 @@ class _Parser:
             if _is_breakable(ch):
                 break
 
-            is_numeric = ch.isnumeric()
-            if not is_numeric:
-                raise StringFormattingException("invalid function var name")
-
             var_name += ch
             self._pos += 1
 
-        if not var_name:
-            raise StringFormattingException("invalid var name")
+        if not var_name.isnumeric():
+            self._set_highlight_position(variable_start_pos)
+            raise InvalidCustomFunctionArgumentName(
+                "Custom function arguments must be numeric and increment starting from zero."
+            )
 
         return FunctionArgument.from_idx(idx=int(var_name), custom_function_name=self._name)
 

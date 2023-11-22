@@ -7,6 +7,7 @@ from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
+from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArgumentName
 
 
 class TestCustomFunction:
@@ -78,5 +79,28 @@ class TestCustomFunction:
                     "%func1": "{%mul(%lolnope(1), $0)}",
                     "%func0": "{%mul(%func1(1), $0)}",
                     "output": "{%func(1)}",
+                }
+            ).resolve()
+
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "$00invalid",
+            "$abc",
+            "$3.14",
+        ],
+    )
+    def test_custom_function_invalid_function_arguments(self, name: str):
+        with pytest.raises(
+            InvalidCustomFunctionArgumentName,
+            match=re.escape(
+                "Custom function arguments must be numeric and increment starting from zero."
+            ),
+        ):
+            Script(
+                {
+                    "%func1": f"{{%mul(1, {name})}}",
+                    "%func0": "{%mul(%func1(1), $0)}",
+                    "output": "{%func0(1)}",
                 }
             ).resolve()
