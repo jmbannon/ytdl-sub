@@ -16,7 +16,7 @@ def is_valid_name(name: str) -> bool:
     return re.match(_NAME_REGEX_VALIDATOR, name) is not None
 
 
-def validate_variable_name(variable_name: str) -> None:
+def validate_variable_name(variable_name: str) -> str:
     """
     Raises
     ------
@@ -25,9 +25,17 @@ def validate_variable_name(variable_name: str) -> None:
     """
     if not is_valid_name(variable_name):
         raise InvalidVariableName(
-            f"Variable name '{variable_name}' is invalid. "
-            f"Names must be lower_snake_cased and begin with a letter."
+            f"Variable name '{variable_name}' is invalid:"
+            " Names must be lower_snake_cased and begin with a letter."
         )
+
+    if Functions.is_built_in(variable_name):
+        raise InvalidVariableName(
+            f"Variable name '{variable_name}' is invalid:"
+            " The name is used by a built-in function and cannot be overwritten."
+        )
+
+    return variable_name
 
 
 def validate_custom_function_name(custom_function_name: str) -> None:

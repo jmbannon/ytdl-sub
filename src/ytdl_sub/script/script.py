@@ -9,6 +9,7 @@ from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
+from ytdl_sub.script.utils.name_validation import validate_variable_name
 
 # pylint: disable=missing-raises-doc
 
@@ -97,7 +98,7 @@ class Script:
             self._function_name(name) for name in overrides.keys() if self._is_function(name)
         }
         variable_names: Set[str] = {
-            name for name in overrides.keys() if not self._is_function(name)
+            validate_variable_name(name) for name in overrides.keys() if not self._is_function(name)
         }
 
         self._functions: Dict[str, SyntaxTree] = {

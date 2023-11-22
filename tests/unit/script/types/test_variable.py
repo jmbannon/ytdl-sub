@@ -52,12 +52,72 @@ class TestVariable:
         ):
             Script({"a": "a", "b": "{c}"}).resolve()
 
-    def test_invalid_variable_name_inline(self):
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "vali_LOL_INVALID",
+            "name!!",
+            "na(",
+            "na[",
+        ],
+    )
+    def test_invalid_variable_name_inline(self, name: str):
         with pytest.raises(
             InvalidVariableName,
             match=re.escape(
-                "Variable name 'vali_LOL_INVALID' is invalid. "
-                "Names must be lower_snake_cased and begin with a letter."
+                f"Variable name '{name}' is invalid:"
+                " Names must be lower_snake_cased and begin with a letter."
             ),
         ):
-            Script({"a": "{vali_LOL_INVALID}"}).resolve()
+            Script({"a": f"{{{name}}}"}).resolve()
+
+    @pytest.mark.parametrize(
+        "name",
+        ["float", "bool", "mul"],
+    )
+    def test_invalid_variable_name_inline_is_built_in(self, name: str):
+        with pytest.raises(
+            InvalidVariableName,
+            match=re.escape(
+                f"Variable name '{name}' is invalid:"
+                " The name is used by a built-in function and cannot be overwritten."
+            ),
+        ):
+            Script({"a": f"{{{name}}}"}).resolve()
+
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "vali_LOL_INVALID",
+            "name!!",
+            "na(",
+            "na[",
+            "$2232",
+            "1245",
+            "CAN_CATCH_MORE",
+            "{brackets_in_definition}",
+        ],
+    )
+    def test_invalid_variable_name_definition(self, name: str):
+        with pytest.raises(
+            InvalidVariableName,
+            match=re.escape(
+                f"Variable name '{name}' is invalid:"
+                " Names must be lower_snake_cased and begin with a letter."
+            ),
+        ):
+            Script({f"{name}": "value"}).resolve()
+
+    @pytest.mark.parametrize(
+        "name",
+        ["float", "bool", "mul"],
+    )
+    def test_invalid_variable_name_definition_is_built_in(self, name: str):
+        with pytest.raises(
+            InvalidVariableName,
+            match=re.escape(
+                f"Variable name '{name}' is invalid:"
+                " The name is used by a built-in function and cannot be overwritten."
+            ),
+        ):
+            Script({f"{name}": "value"}).resolve()
