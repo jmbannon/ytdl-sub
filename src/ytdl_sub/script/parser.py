@@ -2,9 +2,13 @@ from enum import Enum
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 
+from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import Argument
+from ytdl_sub.script.types.function import BuiltInFunction
+from ytdl_sub.script.types.function import CustomFunction
 from ytdl_sub.script.types.function import Function
 from ytdl_sub.script.types.map import UnresolvedMap
 from ytdl_sub.script.types.resolvable import Boolean
@@ -19,6 +23,7 @@ from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exception_formatters import ParserExceptionFormatter
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
+from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import UserException
@@ -109,9 +114,17 @@ def _is_boolean_false(string: Optional[str]) -> bool:
 
 
 class _Parser:
-    def __init__(self, text: str, custom_function_name: Optional[str]):
+    def __init__(
+        self,
+        text: str,
+        name: Optional[str],
+        custom_function_names: Optional[Set[str]],
+        variable_names: Optional[Set[str]],
+    ):
         self._text = text
-        self._custom_function_name = custom_function_name
+        self._name = name
+        self._custom_function_names = custom_function_names
+        self._variable_names = variable_names
         self._pos = 0
         self._error_highlight_pos = 0
         self._ast: List[Argument] = []
@@ -195,9 +208,7 @@ class _Parser:
         if not var_name:
             raise StringFormattingException("invalid var name")
 
-        return FunctionArgument.from_idx(
-            idx=int(var_name), custom_function_name=self._custom_function_name
-        )
+        return FunctionArgument.from_idx(idx=int(var_name), custom_function_name=self._name)
 
     def _parse_numeric(self) -> Integer | Float:
         numeric_string = ""
@@ -337,17 +348,33 @@ class _Parser:
             if ch == ")":
                 # Had '(' to indicate there are args
                 if function_args is not None:
-                    if self._custom_function_name == function_name:
+                    if self._name == function_name:
                         self._set_highlight_position(function_start_pos)
                         raise CycleDetected(
                             f"The custom function %{function_name} cannot call itself."
                         )
 
-                    try:
-                        return Function.from_name_and_args(name=function_name, args=function_args)
-                    except IncompatibleFunctionArguments:
+                    if Functions.is_built_in(function_name):
+                        try:
+                            return BuiltInFunction(
+                                name=function_name, args=function_args
+                            ).validate_args()
+                        except IncompatibleFunctionArguments:
+                            self._set_highlight_position(function_start_pos)
+                            raise
+
+                    # Is custom function
+                    if (
+                        self._custom_function_names is not None
+                        and function_name not in self._custom_function_names
+                    ):
                         self._set_highlight_position(function_start_pos)
-                        raise
+                        raise FunctionDoesNotExist(
+                            f"Function %{function_name} does not exist as a built-in or "
+                            "custom function."
+                        )
+
+                    return CustomFunction(name=function_name, args=function_args)
 
                 # Go back one so the parent function can close using the ')'
                 self._pos -= 1
@@ -507,11 +534,21 @@ class _Parser:
         return SyntaxTree(ast=self._ast)
 
 
-def parse(text: str, custom_function_name: Optional[str] = None) -> SyntaxTree:
+def parse(
+    text: str,
+    name: Optional[str] = None,
+    custom_function_names: Optional[Set[str]] = None,
+    variable_names: Optional[Set[str]] = None,
+) -> SyntaxTree:
     """
     Entrypoint for parsing ytdl-sub code into a Syntax Tree
     """
-    return _Parser(text=text, custom_function_name=custom_function_name).ast
+    return _Parser(
+        text=text,
+        name=name,
+        custom_function_names=custom_function_names,
+        variable_names=variable_names,
+    ).ast
 
 
 # pylint: enable=invalid-name

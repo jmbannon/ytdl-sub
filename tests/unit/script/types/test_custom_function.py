@@ -6,6 +6,7 @@ from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.utils.exceptions import CycleDetected
+from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 
 
 class TestCustomFunction:
@@ -64,5 +65,18 @@ class TestCustomFunction:
                     "%cycle_func1": "{%mul(%cycle_func2(1), %safe_func($0))}",
                     "%cycle_func0": "{%mul(%cycle_func1(1), %safe_func($0))}",
                     "output": "{%cycle_func0(1)}",
+                }
+            ).resolve()
+
+    def test_custom_function_uses_non_existent_function(self):
+        with pytest.raises(
+            FunctionDoesNotExist,
+            match=re.escape("Function %lolnope does not exist as a built-in or custom function."),
+        ):
+            Script(
+                {
+                    "%func1": "{%mul(%lolnope(1), $0)}",
+                    "%func0": "{%mul(%func1(1), $0)}",
+                    "output": "{%func(1)}",
                 }
             ).resolve()

@@ -1,6 +1,7 @@
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -70,6 +71,9 @@ class Script:
         deps: List[str],
     ) -> None:
         for dep in custom_function_dependency.custom_functions:
+            if dep.name not in self._functions:
+                continue  # does not exist, will throw downstream
+
             if custom_function_name in deps + [dep.name]:
                 cycle_deps = [custom_function_name] + deps + [dep.name]
                 cycle_deps_str = " -> ".join([f"%{name}" for name in cycle_deps])
@@ -92,20 +96,35 @@ class Script:
             )
 
     def __init__(self, overrides: Dict[str, str]):
+        function_names: Set[str] = {
+            self._function_name(name) for name in overrides.keys() if self._is_function(name)
+        }
+        variable_names: Set[str] = {
+            name for name in overrides.keys() if not self._is_function(name)
+        }
+
         self._functions: Dict[str, SyntaxTree] = {
             # custom_function_name must be passed to properly type custom function
             # arguments uniquely if they're nested (i.e. $0 to $custom_func___0)
             self._function_name(function_key): parse(
-                text=function_value, custom_function_name=self._function_name(function_key)
+                text=function_value,
+                name=self._function_name(function_key),
+                custom_function_names=function_names,
+                variable_names=variable_names,
             )
             for function_key, function_value in overrides.items()
             if self._is_function(function_key)
         }
 
         self._variables: Dict[str, SyntaxTree] = {
-            override_name: parse(override_value)
-            for override_name, override_value in overrides.items()
-            if not self._is_function(override_name)
+            variable_key: parse(
+                text=variable_value,
+                name=variable_key,
+                custom_function_names=function_names,
+                variable_names=variable_names,
+            )
+            for variable_key, variable_value in overrides.items()
+            if not self._is_function(variable_key)
         }
 
         self._ensure_no_custom_function_cycles()

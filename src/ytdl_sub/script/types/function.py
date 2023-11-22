@@ -41,12 +41,6 @@ class Function(FunctionType, VariableDependency, ABC):
     def _iterable_arguments(self) -> List[Argument]:
         return self.args
 
-    @classmethod
-    def from_name_and_args(cls, name: str, args: List[Argument]) -> "Function":
-        if Functions.is_built_in(name):
-            return BuiltInFunction(name=name, args=args).validate_args()
-        return CustomFunction(name=name, args=args)
-
 
 class CustomFunction(Function, NamedCustomFunction):
     def resolve(
@@ -82,9 +76,9 @@ class CustomFunction(Function, NamedCustomFunction):
                 custom_functions=custom_functions,
             )
 
-        raise FunctionDoesNotExist(
-            f"Function %{self.name} does not exist as a built-in or custom function."
-        )
+        # Implies the custom function does not exist. This should have
+        # been checked in the parser with
+        raise UNREACHABLE
 
 
 class BuiltInFunction(Function, TypeHintedFunctionType):

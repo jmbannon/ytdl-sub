@@ -39,8 +39,8 @@ class TestFloat:
         ],
     )
     def test_float(self, float_: str, expected_float: int):
-        assert Script({"float": float_, "as_string": "{%string(float)}"}).resolve() == {
-            "float": Float(expected_float),
+        assert Script({"out": float_, "as_string": "{%string(out)}"}).resolve() == {
+            "out": Float(expected_float),
             "as_string": String(str(expected_float)),
         }
 

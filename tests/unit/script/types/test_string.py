@@ -46,7 +46,7 @@ class TestString:
         ],
     )
     def test_string(self, string: str, expected_string: str):
-        assert Script({"string": string}).resolve() == {"string": String(expected_string)}
+        assert Script({"out": string}).resolve() == {"out": String(expected_string)}
 
     @pytest.mark.parametrize(
         "string",
