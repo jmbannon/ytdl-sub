@@ -6,7 +6,10 @@ from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
+
+# pylint: disable=missing-raises-doc
 
 
 class Script:
@@ -28,6 +31,32 @@ class Script:
         """
         return function_key[1:]
 
+    def _traverse_variable_dependencies(
+        self,
+        variable_name: str,
+        variable_dependency: SyntaxTree,
+        deps: List[str],
+    ) -> None:
+        for dep in variable_dependency.variables:
+            if variable_name in deps + [dep.name]:
+                cycle_deps = [variable_name] + deps + [dep.name]
+                cycle_deps_str = " -> ".join(cycle_deps)
+                raise CycleDetected(f"Cycle detected within these variables: {cycle_deps_str}")
+
+            self._traverse_variable_dependencies(
+                variable_name=variable_name,
+                variable_dependency=self._variables[dep.name],
+                deps=deps + [dep.name],
+            )
+
+    def _ensure_no_variable_cycles(self):
+        for variable_name, variable_definition in self._variables.items():
+            self._traverse_variable_dependencies(
+                variable_name=variable_name,
+                variable_dependency=variable_definition,
+                deps=[],
+            )
+
     def _traverse_custom_function_dependencies(
         self,
         custom_function_name: str,
@@ -38,7 +67,9 @@ class Script:
             if custom_function_name in deps + [dep.name]:
                 cycle_deps = [custom_function_name] + deps + [dep.name]
                 cycle_deps_str = " -> ".join([f"%{name}" for name in cycle_deps])
-                raise CycleDetected(f"Custom functions contain a cycle: {cycle_deps_str}")
+                raise CycleDetected(
+                    f"Cycle detected within these custom functions: {cycle_deps_str}"
+                )
 
             self._traverse_custom_function_dependencies(
                 custom_function_name=custom_function_name,
@@ -72,6 +103,7 @@ class Script:
         }
 
         self._ensure_no_custom_function_cycles()
+        self._ensure_no_variable_cycles()
 
     def resolve(
         self, pre_resolved_variables: Optional[Dict[Variable, Resolvable]] = None
@@ -109,9 +141,8 @@ class Script:
                     unresolved_variables.remove(variable)
 
             if len(unresolved_variables) == unresolved_count:
-                raise CycleDetected(
-                    f"Cycle detected within these variables: "
-                    f"{', '.join(sorted([var.name for var in unresolved_variables]))}"
-                )
+                # Implies a cycle within the variables. Should never reach
+                # since cycles are detected in __init__
+                raise UNREACHABLE
 
         return {variable.name: resolvable for variable, resolvable in resolved_variables.items()}

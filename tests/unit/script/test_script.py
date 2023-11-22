@@ -1,7 +1,10 @@
+import re
+
 import pytest
 
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
@@ -38,9 +41,15 @@ class TestSyntaxTree:
         }
 
     def test_simple_cycle(self):
-        with pytest.raises(StringFormattingException):
+        with pytest.raises(
+            CycleDetected,
+            match=re.escape("Cycle detected within these variables: " "a -> b -> a"),
+        ):
             Script({"a": "{b}", "b": "{a}"}).resolve()
 
     def test_simple_cycle_with_function(self):
-        with pytest.raises(StringFormattingException):
+        with pytest.raises(
+            CycleDetected,
+            match=re.escape("Cycle detected within these variables: " "b -> b_ -> b"),
+        ):
             Script({"b": "{%capitalize(b_)}", "b_": "{b}"}).resolve()

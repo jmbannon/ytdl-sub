@@ -7,13 +7,10 @@ from inspect import FullArgSpec
 from typing import Callable
 from typing import Dict
 from typing import List
-from typing import Optional
-from typing import Set
 from typing import Type
 from typing import Union
 
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.resolvable import Argument
@@ -30,7 +27,6 @@ from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
-from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError

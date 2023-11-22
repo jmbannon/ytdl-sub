@@ -2,7 +2,6 @@ import itertools
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
-from typing import Set
 
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Argument

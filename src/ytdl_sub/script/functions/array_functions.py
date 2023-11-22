@@ -47,6 +47,8 @@ class ArrayFunctions:
         """
         return Array(list(reversed(array.value)))
 
+    # pylint: disable=unused-argument
+
     @staticmethod
     def array_apply(array: Array, lambda_function: Lambda) -> Array:
         """
@@ -63,3 +65,5 @@ class ArrayFunctions:
         return ResolvedArray(
             [ResolvedArray([Integer(idx), val]) for idx, val in enumerate(array.value)]
         )
+
+    # pylint: enable=unused-argument

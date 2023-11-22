@@ -29,7 +29,8 @@ class TestCustomFunction:
         with pytest.raises(
             CycleDetected,
             match=re.escape(
-                "Custom functions contain a cycle: %cycle_func1 -> %cycle_func0 -> %cycle_func1"
+                "Cycle detected within these custom functions: "
+                "%cycle_func1 -> %cycle_func0 -> %cycle_func1"
             ),
         ):
             Script(
@@ -44,7 +45,7 @@ class TestCustomFunction:
         with pytest.raises(
             CycleDetected,
             match=re.escape(
-                "Custom functions contain a cycle: "
+                "Cycle detected within these custom functions: "
                 "%cycle_func4 -> "
                 "%cycle_func0 -> "
                 "%cycle_func1 -> "
