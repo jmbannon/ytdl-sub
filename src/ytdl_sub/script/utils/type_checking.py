@@ -5,7 +5,7 @@ from typing import Type
 from typing import Union
 from typing import get_origin
 
-from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -97,7 +97,7 @@ class FunctionInputSpec:
     def __post_init__(self):
         assert (self.args is None) ^ (self.varargs is None)
 
-    def _is_args_compatible(self, input_args: List[ArgumentType]) -> bool:
+    def _is_args_compatible(self, input_args: List[Argument]) -> bool:
         assert self.args is not None
 
         if len(input_args) > len(self.args):
@@ -110,7 +110,7 @@ class FunctionInputSpec:
 
         return True
 
-    def _is_varargs_compatible(self, input_args: List[ArgumentType]) -> bool:
+    def _is_varargs_compatible(self, input_args: List[Argument]) -> bool:
         assert self.varargs is not None
 
         for input_arg in input_args:
@@ -119,7 +119,7 @@ class FunctionInputSpec:
 
         return True
 
-    def is_compatible(self, input_args: List[ArgumentType]) -> bool:
+    def is_compatible(self, input_args: List[Argument]) -> bool:
         """
         Returns
         -------

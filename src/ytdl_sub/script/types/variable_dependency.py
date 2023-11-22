@@ -6,7 +6,7 @@ from typing import List
 from typing import Set
 from typing import final
 
-from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
@@ -19,7 +19,7 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 class VariableDependency(ABC):
     @property
     @abstractmethod
-    def _iterable_arguments(self) -> List[ArgumentType]:
+    def _iterable_arguments(self) -> List[Argument]:
         pass
 
     @final
@@ -70,7 +70,7 @@ class VariableDependency(ABC):
     @classmethod
     def _resolve_argument_type(
         cls,
-        arg: ArgumentType,
+        arg: Argument,
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:

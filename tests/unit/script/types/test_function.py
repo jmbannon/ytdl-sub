@@ -68,7 +68,7 @@ class TestFunction:
         with pytest.raises(
             IncompatibleFunctionArguments,
             match=_incompatible_arguments_match(
-                expected="Map, Hashable, Optional[AnyType]",
+                expected="Map, Hashable, Optional[AnyArgument]",
                 recieved="%if(...)->Union[Map, Array], String",
             ),
         ):

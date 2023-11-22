@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Dict
 from typing import List
 
-from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
@@ -11,10 +11,10 @@ from ytdl_sub.script.types.variable_dependency import VariableDependency
 
 @dataclass(frozen=True)
 class SyntaxTree(VariableDependency):
-    ast: List[ArgumentType]
+    ast: List[Argument]
 
     @property
-    def _iterable_arguments(self) -> List[ArgumentType]:
+    def _iterable_arguments(self) -> List[Argument]:
         return self.ast
 
     def resolve(

@@ -1,13 +1,13 @@
 from typing import Optional
 
-from ytdl_sub.script.types.resolvable import AnyType
+from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 
 
 class StringFunctions:
     @staticmethod
-    def string(value: AnyType) -> String:
+    def string(value: AnyArgument) -> String:
         """
         Cast to String.
         """

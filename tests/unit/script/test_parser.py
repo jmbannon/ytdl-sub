@@ -165,7 +165,7 @@ class TestParser:
                     name="array_apply",
                     args=[
                         UnresolvedArray(value=[Integer(1)]),
-                        Lambda(function_name="times_two"),
+                        Lambda(value="times_two"),
                     ],
                 )
             ]

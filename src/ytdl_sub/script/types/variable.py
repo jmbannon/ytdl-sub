@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import NamedArgument
 
 
 @dataclass(frozen=True)
-class Variable(ArgumentType):
-    name: str
+class Variable(NamedArgument):
+    pass
 
 
 @dataclass(frozen=True)

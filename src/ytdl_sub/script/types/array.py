@@ -1,14 +1,12 @@
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
-from typing import Set
 
-from ytdl_sub.script.types.resolvable import ArgumentType
-from ytdl_sub.script.types.resolvable import FutureResolvable
+from ytdl_sub.script.types.resolvable import AnyArgument
+from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import ResolvableToJson
-from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 
@@ -23,11 +21,11 @@ class Array(NonHashable):
 
 
 @dataclass(frozen=True)
-class UnresolvedArray(Array, VariableDependency, FutureResolvable):
-    value: List[ArgumentType]
+class UnresolvedArray(Array, VariableDependency, AnyArgument):
+    value: List[Argument]
 
     @property
-    def _iterable_arguments(self) -> List[ArgumentType]:
+    def _iterable_arguments(self) -> List[Argument]:
         return self.value
 
     def resolve(

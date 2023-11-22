@@ -12,6 +12,7 @@ T = TypeVar("T")
 NumericT = TypeVar("NumericT", bound=int | float)
 
 
+@dataclass(frozen=True)
 class NamedType(ABC):
     @classmethod
     def type_name(cls) -> str:
@@ -23,31 +24,45 @@ class NamedType(ABC):
         return cls.__name__
 
 
-class ArgumentType(NamedType, ABC):
+@dataclass(frozen=True)
+class Argument(NamedType, ABC):
     """
     Any possible argument type that has not been resolved yet
     """
 
 
-class AnyTypeReturnable(NamedType, ABC):
+@dataclass(frozen=True)
+class NamedArgument(Argument, ABC):
+    """
+    Argument that has an explicit name (i.e. custom function or variable)
+    """
+
+    name: str
+
+
+@dataclass(frozen=True)
+class ReturnableArgument(NamedType, ABC):
     """
     AnyType to express generics in functions that are part of the return type
     """
 
 
-class AnyTypeReturnableA(NamedType, ABC):
+@dataclass(frozen=True)
+class ReturnableArgumentA(NamedType, ABC):
     """
     AnyType to express generics in functions when more than one are present (i.e. `if`)
     """
 
 
-class AnyTypeReturnableB(NamedType, ABC):
+@dataclass(frozen=True)
+class ReturnableArgumentB(NamedType, ABC):
     """
     AnyType to express generics in functions when more than one are present (i.e. `if`)
     """
 
 
-class AnyType(ArgumentType, AnyTypeReturnable, AnyTypeReturnableA, AnyTypeReturnableB, ABC):
+@dataclass(frozen=True)
+class AnyArgument(Argument, ReturnableArgument, ReturnableArgumentA, ReturnableArgumentB, ABC):
     """
     Human-readable name for FutureResolvable
     """
@@ -55,26 +70,23 @@ class AnyType(ArgumentType, AnyTypeReturnable, AnyTypeReturnableA, AnyTypeReturn
     value: Any
 
 
-class FutureResolvable(AnyType, ABC):
-    """
-    Type that will be resolved in the future (Map, Array)
-    """
-
-
 @dataclass(frozen=True)
-class Resolvable(AnyType, ABC):
+class Resolvable(AnyArgument, ABC):
     def __str__(self) -> str:
         return str(self.value)
 
 
+@dataclass(frozen=True)
 class Hashable(Resolvable, ABC):
     pass
 
 
+@dataclass(frozen=True)
 class NonHashable(ABC):
     pass
 
 
+@dataclass(frozen=True)
 class ResolvableToJson(Resolvable, ABC):
     @classmethod
     def _to_native(cls, to_convert: Resolvable) -> Any:
@@ -102,34 +114,33 @@ class Numeric(ResolvableT[NumericT], Hashable, ABC, Generic[NumericT]):
 
 
 @dataclass(frozen=True)
-class Integer(Numeric[int], ArgumentType):
+class Integer(Numeric[int], Argument):
     pass
 
 
 @dataclass(frozen=True)
-class Float(Numeric[float], ArgumentType):
+class Float(Numeric[float], Argument):
     pass
 
 
 @dataclass(frozen=True)
-class Boolean(ResolvableT[bool], Hashable, ArgumentType):
+class Boolean(ResolvableT[bool], Hashable, Argument):
     pass
 
 
 @dataclass(frozen=True)
-class String(ResolvableT[str], Hashable, ArgumentType):
+class String(ResolvableT[str], Hashable, Argument):
     pass
 
 
 @dataclass(frozen=True)
-class NamedCustomFunction(ArgumentType, ABC):
+class NamedCustomFunction(Argument, ABC):
     name: str
 
 
 @dataclass(frozen=True)
-class FunctionType(ArgumentType, ABC):
-    name: str
-    args: List[ArgumentType]
+class FunctionType(NamedArgument, ABC):
+    args: List[Argument]
 
 
 @dataclass(frozen=True)
@@ -141,4 +152,4 @@ class TypeHintedFunctionType(FunctionType, ABC):
 
 @dataclass(frozen=True)
 class Lambda(Resolvable):
-    function_name: str
+    value: str

@@ -4,7 +4,7 @@ from typing import List
 from typing import Optional
 
 from ytdl_sub.script.types.array import UnresolvedArray
-from ytdl_sub.script.types.function import ArgumentType
+from ytdl_sub.script.types.function import Argument
 from ytdl_sub.script.types.function import Function
 from ytdl_sub.script.types.map import UnresolvedMap
 from ytdl_sub.script.types.resolvable import Boolean
@@ -114,7 +114,7 @@ class _Parser:
         self._custom_function_name = custom_function_name
         self._pos = 0
         self._error_highlight_pos = 0
-        self._ast: List[ArgumentType] = []
+        self._ast: List[Argument] = []
 
         try:
             self._syntax_tree = self._parse()
@@ -267,7 +267,7 @@ class _Parser:
 
         raise STRINGS_NOT_CLOSED
 
-    def _parse_function_arg(self, argument_parser: ParsedArgType) -> ArgumentType:
+    def _parse_function_arg(self, argument_parser: ParsedArgType) -> Argument:
         if self._read(increment_pos=False) == "%":
             self._pos += 1
             return self._parse_function()
@@ -298,12 +298,12 @@ class _Parser:
 
     def _parse_args(
         self, argument_parser: ParsedArgType, breaking_chars: str = ")"
-    ) -> List[ArgumentType]:
+    ) -> List[Argument]:
         """
         Begin parsing function args after the first ``(``, i.e. ``function_name(``
         """
         comma_count = 0
-        arguments: List[ArgumentType] = []
+        arguments: List[Argument] = []
         while ch := self._read(increment_pos=False):
             if ch in breaking_chars:
                 # i.e. ["arg", ] which is invalid
@@ -330,7 +330,7 @@ class _Parser:
         Begin parsing a function after reading the first ``%``
         """
         function_name: str = ""
-        function_args: Optional[List[ArgumentType]] = None
+        function_args: Optional[List[Argument]] = None
         function_start_pos = self._pos
 
         while ch := self._read():
@@ -351,7 +351,7 @@ class _Parser:
 
                 # Go back one so the parent function can close using the ')'
                 self._pos -= 1
-                return Lambda(function_name=function_name)
+                return Lambda(value=function_name)
 
             if _is_function_name_char(ch):
                 function_name += ch
@@ -359,7 +359,7 @@ class _Parser:
                 function_args = self._parse_args(argument_parser=ParsedArgType.FUNCTION)
             elif ch.isspace() or ch == ",":
                 # function with no args, it's a lambda
-                return Lambda(function_name=function_name)
+                return Lambda(value=function_name)
             else:
                 break
 
@@ -370,7 +370,7 @@ class _Parser:
         """
         Begin parsing an array after reading the first ``[``
         """
-        function_args: List[ArgumentType] = []
+        function_args: List[Argument] = []
 
         while ch := self._read(increment_pos=False):
             if ch == "]":
@@ -387,8 +387,8 @@ class _Parser:
         """
         Begin parsing a map after reading the first ``{``
         """
-        output: Dict[ArgumentType, ArgumentType] = {}
-        key: Optional[ArgumentType] = None
+        output: Dict[Argument, Argument] = {}
+        key: Optional[Argument] = None
         in_comma = False
 
         self._set_highlight_position()

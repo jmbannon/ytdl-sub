@@ -1,4 +1,4 @@
-from ytdl_sub.script.types.resolvable import AnyType
+from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
 
 # pylint: disable=invalid-name
@@ -10,49 +10,49 @@ class BooleanFunctions:
     """
 
     @staticmethod
-    def bool(value: AnyType) -> Boolean:
+    def bool(value: AnyArgument) -> Boolean:
         """
         Cast any type to a Boolean.
         """
         return Boolean(bool(value.value))
 
     @staticmethod
-    def eq(left: AnyType, right: AnyType) -> Boolean:
+    def eq(left: AnyArgument, right: AnyArgument) -> Boolean:
         """
         ``==`` operator. Returns True if left == right. False otherwise.
         """
         return Boolean(left.value == right.value)
 
     @staticmethod
-    def ne(left: AnyType, right: AnyType) -> Boolean:
+    def ne(left: AnyArgument, right: AnyArgument) -> Boolean:
         """
         ``!=`` operator. Returns True if left != right. False otherwise.
         """
         return Boolean(left.value != right.value)
 
     @staticmethod
-    def lt(left: AnyType, right: AnyType) -> Boolean:
+    def lt(left: AnyArgument, right: AnyArgument) -> Boolean:
         """
         ``<`` operator. Returns True if left < right. False otherwise.
         """
         return Boolean(left.value < right.value)
 
     @staticmethod
-    def lte(left: AnyType, right: AnyType) -> Boolean:
+    def lte(left: AnyArgument, right: AnyArgument) -> Boolean:
         """
         ``<=`` operator. Returns True if left <= right. False otherwise.
         """
         return Boolean(left.value <= right.value)
 
     @staticmethod
-    def gt(left: AnyType, right: AnyType) -> Boolean:
+    def gt(left: AnyArgument, right: AnyArgument) -> Boolean:
         """
         ``>`` operator. Returns True if left > right. False otherwise.
         """
         return Boolean(left.value > right.value)
 
     @staticmethod
-    def gte(left: AnyType, right: AnyType) -> Boolean:
+    def gte(left: AnyArgument, right: AnyArgument) -> Boolean:
         """
         ``>=`` operator. Returns True if left >= right. False otherwise.
         """

@@ -1,4 +1,4 @@
-from ytdl_sub.script.types.resolvable import AnyType
+from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
@@ -6,7 +6,7 @@ from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 
 class ErrorFunctions:
     @staticmethod
-    def throw(error_message: String) -> AnyType:
+    def throw(error_message: String) -> AnyArgument:
         """
         Explicitly throw an error with the provided error message.
         """

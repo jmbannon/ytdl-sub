@@ -16,14 +16,14 @@ from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.array import UnresolvedArray
-from ytdl_sub.script.types.resolvable import AnyTypeReturnable
-from ytdl_sub.script.types.resolvable import AnyTypeReturnableA
-from ytdl_sub.script.types.resolvable import AnyTypeReturnableB
-from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import ReturnableArgument
+from ytdl_sub.script.types.resolvable import ReturnableArgumentA
+from ytdl_sub.script.types.resolvable import ReturnableArgumentB
 from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
@@ -42,11 +42,11 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 @dataclass(frozen=True)
 class Function(FunctionType, VariableDependency, ABC):
     @property
-    def _iterable_arguments(self) -> List[ArgumentType]:
+    def _iterable_arguments(self) -> List[Argument]:
         return self.args
 
     @classmethod
-    def from_name_and_args(cls, name: str, args: List[ArgumentType]) -> "Function":
+    def from_name_and_args(cls, name: str, args: List[Argument]) -> "Function":
         if Functions.is_built_in(name):
             return BuiltInFunction(name=name, args=args).validate_args()
         return CustomFunction(name=name, args=args)
@@ -128,7 +128,7 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         return Lambda in (self.input_spec.args or [])
 
     @classmethod
-    def _arg_output_type(cls, arg: ArgumentType) -> Type[ArgumentType]:
+    def _arg_output_type(cls, arg: Argument) -> Type[Argument]:
         if isinstance(arg, BuiltInFunction):
             return arg.output_type()
         return type(arg)
@@ -138,7 +138,7 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         if is_union(output_type):
             union_types_list = []
             for union_type in output_type.__args__:
-                if union_type in (AnyTypeReturnable, AnyTypeReturnableA, AnyTypeReturnableB):
+                if union_type in (ReturnableArgument, ReturnableArgumentA, ReturnableArgumentB):
                     generic_arg_index = self.input_spec.args.index(union_type)
                     union_types_list.append(self._arg_output_type(self.args[generic_arg_index]))
                 else:
@@ -166,7 +166,7 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         if not self.is_lambda_function or len(function_input_lambda_args) != 1:
             raise UNREACHABLE
 
-        lambda_function_name = function_input_lambda_args[0].function_name
+        lambda_function_name = function_input_lambda_args[0].value
 
         try:
             lambda_args = self.callable(*resolved_arguments)
