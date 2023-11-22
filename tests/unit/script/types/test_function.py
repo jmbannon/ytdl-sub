@@ -149,3 +149,14 @@ class TestFunction:
                 "power_of_4": "{%power_4(2)}",
             }
         ).resolve() == {"power_of_4": Integer(16)}
+
+    def test_nested_lambda_custom_functions_within_custom_functions(self):
+        assert Script(
+            {
+                "%nest4": "{%mul($0, 2)}",
+                "%nest3": "{%array_at(%array_apply([$0], %nest4), 0)}",
+                "%nest2": "{%array_at(%array_apply([$0], %nest3), 0)}",
+                "%nest1": "{%array_at(%array_apply([$0], %nest2), 0)}",
+                "output": "{%array_at(%array_apply([2], %nest1), 0)}",
+            }
+        ).resolve() == {"output": Integer(4)}
