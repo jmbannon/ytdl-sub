@@ -9,7 +9,6 @@ from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
-from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 
 # pylint: disable=missing-raises-doc
 
@@ -41,9 +40,7 @@ class Script:
     ) -> None:
         for dep in variable_dependency.variables:
             if dep.name not in self._variables:
-                raise VariableDoesNotExist(
-                    f"{variable_name} uses the variable {dep.name} which does not exist."
-                )
+                continue  # does not exist, will throw downstream in parser
 
             if variable_name in deps + [dep.name]:
                 cycle_deps = [variable_name] + deps + [dep.name]
@@ -72,7 +69,7 @@ class Script:
     ) -> None:
         for dep in custom_function_dependency.custom_functions:
             if dep.name not in self._functions:
-                continue  # does not exist, will throw downstream
+                continue  # does not exist, will throw downstream in parser
 
             if custom_function_name in deps + [dep.name]:
                 cycle_deps = [custom_function_name] + deps + [dep.name]

@@ -47,6 +47,6 @@ class TestVariable:
     def test_undefined_variable(self):
         with pytest.raises(
             VariableDoesNotExist,
-            match=re.escape("b uses the variable c which does not exist."),
+            match=re.escape("Variable c does not exist."),
         ):
             Script({"a": "a", "b": "{c}"}).resolve()

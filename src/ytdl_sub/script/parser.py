@@ -27,6 +27,7 @@ from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import UserException
+from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 
@@ -163,6 +164,7 @@ class _Parser:
 
     def _parse_variable(self) -> Variable:
         var_name = ""
+        variable_start_pos = self._pos
         while ch := self._read(increment_pos=False):
             if ch.isspace() and not var_name:
                 self._pos += 1
@@ -183,7 +185,13 @@ class _Parser:
         if not var_name:
             raise StringFormattingException("invalid var name")
 
-        assert is_valid_source_variable_name(var_name, raise_exception=False)
+        if not is_valid_source_variable_name(var_name, raise_exception=False):
+            raise UNREACHABLE
+
+        if self._variable_names is not None and var_name not in self._variable_names:
+            self._set_highlight_position(variable_start_pos)
+            raise VariableDoesNotExist(f"Variable {var_name} does not exist.")
+
         return Variable(var_name)
 
     def _parse_custom_function_argument(self) -> FunctionArgument:
