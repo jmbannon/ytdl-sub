@@ -19,6 +19,10 @@ class FunctionDoesNotExist(UserException):
     """Tried to use a function that does not exist"""
 
 
+class CycleDetected(UserException):
+    """A cycle exists within a user's script"""
+
+
 class FunctionRuntimeException(ValueError):
     """Exception thrown when a ytdl-sub function has an error occur at runtime"""
 

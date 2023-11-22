@@ -18,6 +18,7 @@ from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exception_formatters import ParserExceptionFormatter
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
+from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import UserException
@@ -334,8 +335,14 @@ class _Parser:
 
         while ch := self._read():
             if ch == ")":
+                # Had '(' to indicate there are args
                 if function_args is not None:
-                    # Had '(' to indicate there are args
+                    if self._custom_function_name == function_name:
+                        self._set_highlight_position(function_start_pos)
+                        raise CycleDetected(
+                            f"The custom function %{function_name} cannot call itself."
+                        )
+
                     try:
                         return Function.from_name_and_args(name=function_name, args=function_args)
                     except IncompatibleFunctionArguments:

@@ -8,6 +8,7 @@ from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
@@ -116,6 +117,14 @@ class TestFunction:
             match=re.escape(str(FUNCTION_INVALID_CHAR)),
         ):
             Script({"dne": "{%throw}"}).resolve()
+
+    def test_custom_function_cycle(self):
+        with pytest.raises(
+            CycleDetected, match=re.escape("The custom function %cycle_func cannot call itself.")
+        ):
+            Script(
+                {"%cycle_func": "{%mul(%cycle_func(1), $0)}", "output": "{%cycle_func(1)}"}
+            ).resolve()
 
     def test_lambda_with_custom_function(self):
         assert Script(
