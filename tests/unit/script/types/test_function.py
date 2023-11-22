@@ -128,12 +128,41 @@ class TestFunction:
 
     def test_custom_function_chained_cycle(self):
         with pytest.raises(
-            CycleDetected, match=re.escape("The custom function %cycle_func cannot call itself.")
+            CycleDetected,
+            match=re.escape(
+                "Custom functions contain a cycle: %cycle_func1 -> %cycle_func0 -> %cycle_func1"
+            ),
         ):
             Script(
                 {
                     "%cycle_func1": "{%mul(%cycle_func0(1), $0)}",
                     "%cycle_func0": "{%mul(%cycle_func1(1), $0)}",
+                    "output": "{%cycle_func0(1)}",
+                }
+            ).resolve()
+
+    def test_custom_function_deep_chained_cycle(self):
+        with pytest.raises(
+            CycleDetected,
+            match=re.escape(
+                "Custom functions contain a cycle: "
+                "%cycle_func4 -> "
+                "%cycle_func0 -> "
+                "%cycle_func1 -> "
+                "%cycle_func2 -> "
+                "%cycle_func3 -> "
+                "%cycle_func4"
+            ),
+        ):
+            Script(
+                {
+                    "%nested_safe_func": "{%mul($0, 1)}",
+                    "%safe_func": "{%nested_safe_func($0, 1)}",
+                    "%cycle_func4": "{%mul(%cycle_func0(1), %safe_func($0))}",
+                    "%cycle_func3": "{%mul(%cycle_func4(1), %safe_func($0))}",
+                    "%cycle_func2": "{%mul(%cycle_func3(1), %safe_func($0))}",
+                    "%cycle_func1": "{%mul(%cycle_func2(1), %safe_func($0))}",
+                    "%cycle_func0": "{%mul(%cycle_func1(1), %safe_func($0))}",
                     "output": "{%cycle_func0(1)}",
                 }
             ).resolve()

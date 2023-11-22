@@ -29,7 +29,7 @@ class VariableDependency(ABC):
         for arg in self._iterable_arguments:
             if isinstance(arg, Variable):
                 output.add(arg)
-            elif isinstance(arg, VariableDependency):
+            if isinstance(arg, VariableDependency):
                 output.update(arg.variables)
 
         return output
@@ -41,7 +41,7 @@ class VariableDependency(ABC):
         for arg in self._iterable_arguments:
             if isinstance(arg, FunctionArgument):
                 output.add(arg)
-            elif isinstance(arg, VariableDependency):
+            if isinstance(arg, VariableDependency):
                 output.update(arg.function_arguments)
 
         return output
@@ -54,7 +54,7 @@ class VariableDependency(ABC):
             if isinstance(arg, NamedCustomFunction):
                 # Custom funcs aren't hashable, so recreate just the base-class portion
                 output.add(NamedCustomFunction(name=arg.name))
-            elif isinstance(arg, VariableDependency):
+            if isinstance(arg, VariableDependency):
                 output.update(arg.custom_functions)
 
         return output

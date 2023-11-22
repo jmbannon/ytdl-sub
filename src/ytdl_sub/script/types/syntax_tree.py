@@ -1,13 +1,16 @@
+import copy
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
 from typing import Optional
 
 from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
+from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.utils.exceptions import StringFormattingException
 
 
@@ -42,6 +45,47 @@ class SyntaxTree(VariableDependency):
         return String("".join([str(res) for res in resolved]))
 
     @classmethod
+    def _get_custom_function_dependencies(
+        cls,
+        custom_function_name: str,
+        custom_function_dependency: "SyntaxTree",
+        custom_functions: Dict[str, "SyntaxTree"],
+        deps: List[str],
+    ) -> List[str]:
+        deps = copy.deepcopy(deps)  # do not work with references
+
+        for dep in custom_function_dependency.custom_functions:
+            # Skip leaf functions since they will never cause a cycle
+            if not custom_functions[dep.name].custom_functions:
+                continue
+
+            deps.append(dep.name)
+
+            if custom_function_name in deps:
+                cycle_deps = [custom_function_name] + deps[0 : deps.index(custom_function_name) + 1]
+                cycle_deps_str = " -> ".join([f"%{name}" for name in cycle_deps])
+                raise CycleDetected(f"Custom functions contain a cycle: {cycle_deps_str}")
+
+            deps += cls._get_custom_function_dependencies(
+                custom_function_name=custom_function_name,
+                custom_function_dependency=custom_functions[dep.name],
+                custom_functions=custom_functions,
+                deps=deps,
+            )
+
+        return deps
+
+    @classmethod
+    def _ensure_no_custom_function_cycles(cls, custom_functions: Dict[str, "SyntaxTree"]):
+        for custom_function_name, custom_function in custom_functions.items():
+            _ = cls._get_custom_function_dependencies(
+                custom_function_name=custom_function_name,
+                custom_function_dependency=custom_function,
+                custom_functions=custom_functions,
+                deps=[],
+            )
+
+    @classmethod
     def resolve_overrides(
         cls,
         parsed_overrides: Dict[str, "SyntaxTree"],
@@ -56,6 +100,8 @@ class SyntaxTree(VariableDependency):
         resolved_variables: Dict[Variable, Resolvable] = (
             pre_resolved_variables if pre_resolved_variables else {}
         )
+
+        cls._ensure_no_custom_function_cycles(custom_functions=custom_functions)
 
         while unresolved_variables:
             unresolved_count: int = len(unresolved_variables)

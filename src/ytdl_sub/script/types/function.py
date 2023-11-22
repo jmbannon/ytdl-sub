@@ -22,6 +22,7 @@ from ytdl_sub.script.types.resolvable import AnyTypeReturnableB
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import Lambda
+from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
 from ytdl_sub.script.types.variable import FunctionArgument
@@ -29,6 +30,7 @@ from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
+from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
@@ -50,12 +52,15 @@ class Function(FunctionType, VariableDependency, ABC):
         return CustomFunction(name=name, args=args)
 
 
-class CustomFunction(Function):
+class CustomFunction(Function, NamedCustomFunction):
     def resolve(
         self,
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
+        if NamedCustomFunction(name=self.name) in self.custom_functions:
+            raise CycleDetected("ackkk!")
+
         resolved_args: List[Resolvable] = [
             self._resolve_argument_type(
                 arg=arg, resolved_variables=resolved_variables, custom_functions=custom_functions
@@ -72,8 +77,8 @@ class CustomFunction(Function):
                 function_arg = FunctionArgument.from_idx(
                     idx=i, custom_function_name=self.name
                 )  # Function args are 0-based
-                if function_arg in resolved_variables_with_args:
-                    raise StringFormattingException("nested custom functions???")
+                # if function_arg in resolved_variables_with_args:
+                #     raise StringFormattingException("nested custom functions???")
                 resolved_variables_with_args[function_arg] = arg
 
             return custom_functions[self.name].resolve(
