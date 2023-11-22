@@ -467,9 +467,7 @@ class _Parser:
                     self._pos += 1
 
                 if ch1 is None:
-                    raise StringFormattingException(
-                        "Open bracket at the end was not properly closed"
-                    )
+                    break  # will hit closing bracket error
 
                 if ch1 == "%":
                     self._pos += 1

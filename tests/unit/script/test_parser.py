@@ -174,7 +174,7 @@ class TestParser:
 
 class TestParserBracketFailures:
     def test_bracket_open(self):
-        with pytest.raises(StringFormattingException):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(BRACKET_NOT_CLOSED))):
             parse("{")
 
     def test_bracket_close(self):
