@@ -1,5 +1,7 @@
+import itertools
 from dataclasses import dataclass
 from typing import Dict
+from typing import List
 from typing import Set
 
 from ytdl_sub.script.types.resolvable import ArgumentType
@@ -28,36 +30,16 @@ class UnresolvedMap(Map, VariableDependency, FutureResolvable):
     value: Dict[ArgumentType, ArgumentType]
 
     @property
+    def _as_flat_list(self) -> List[ArgumentType]:
+        return list(itertools.chain(*self.value.items()))
+
+    @property
     def variables(self) -> Set[Variable]:
-        output: Set[Variable] = set()
-        for key, value in self.value.items():
-            if isinstance(key, Variable):
-                output.add(key)
-            elif isinstance(key, VariableDependency):
-                output.update(key.variables)
-
-            if isinstance(value, Variable):
-                output.add(key)
-            elif isinstance(value, VariableDependency):
-                output.update(value.variables)
-
-        return output
+        return self._variables(*self._as_flat_list)
 
     @property
     def function_arguments(self) -> Set[FunctionArgument]:
-        output: Set[FunctionArgument] = set()
-        for key, value in self.value.items():
-            if isinstance(key, FunctionArgument):
-                output.add(key)
-            elif isinstance(key, VariableDependency):
-                output.update(key.function_arguments)
-
-            if isinstance(value, FunctionArgument):
-                output.add(key)
-            elif isinstance(value, VariableDependency):
-                output.update(value.function_arguments)
-
-        return output
+        return self._function_arguments(*self._as_flat_list)
 
     def resolve(
         self,

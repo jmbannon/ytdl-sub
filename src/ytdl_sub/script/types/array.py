@@ -28,25 +28,11 @@ class UnresolvedArray(Array, VariableDependency, FutureResolvable):
 
     @property
     def variables(self) -> Set[Variable]:
-        variables: Set[Variable] = set()
-        for arg in self.value:
-            if isinstance(arg, Variable):
-                variables.add(arg)
-            elif isinstance(arg, VariableDependency):
-                variables.update(arg.variables)
-
-        return variables
+        return self._variables(*self.value)
 
     @property
     def function_arguments(self) -> Set[FunctionArgument]:
-        variables: Set[FunctionArgument] = set()
-        for arg in self.value:
-            if isinstance(arg, FunctionArgument):
-                variables.add(arg)
-            elif isinstance(arg, VariableDependency):
-                variables.update(arg.function_arguments)
-
-        return variables
+        return self._function_arguments(*self.value)
 
     def resolve(
         self,

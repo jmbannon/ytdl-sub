@@ -15,6 +15,28 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 
 @dataclass(frozen=True)
 class VariableDependency(ABC):
+    @classmethod
+    def _variables(cls, *args: ArgumentType) -> Set[Variable]:
+        output: Set[Variable] = set()
+        for arg in args:
+            if isinstance(arg, Variable):
+                output.add(arg)
+            elif isinstance(arg, VariableDependency):
+                output.update(arg.variables)
+
+        return output
+
+    @classmethod
+    def _function_arguments(cls, *args: ArgumentType) -> Set[FunctionArgument]:
+        output: Set[FunctionArgument] = set()
+        for arg in args:
+            if isinstance(arg, FunctionArgument):
+                output.add(arg)
+            elif isinstance(arg, VariableDependency):
+                output.update(arg.function_arguments)
+
+        return output
+
     @property
     @abstractmethod
     def variables(self) -> Set[Variable]:

@@ -19,35 +19,11 @@ class SyntaxTree(VariableDependency):
 
     @property
     def variables(self) -> Set[Variable]:
-        """
-        Returns
-        -------
-        All variables used within the SyntaxTree
-        """
-        variables: Set[Variable] = set()
-        for token in self.ast:
-            if isinstance(token, Variable):
-                variables.add(token)
-            elif isinstance(token, VariableDependency):
-                variables.update(token.variables)
-
-        return variables
+        return self._variables(*self.ast)
 
     @property
     def function_arguments(self) -> Set[FunctionArgument]:
-        """
-        Returns
-        -------
-        All function arguments used within the SyntaxTree
-        """
-        function_arguments: Set[FunctionArgument] = set()
-        for token in self.ast:
-            if isinstance(token, FunctionArgument):
-                function_arguments.add(token)
-            elif isinstance(token, VariableDependency):
-                function_arguments.update(token.function_arguments)
-
-        return function_arguments
+        return self._function_arguments(*self.ast)
 
     def resolve(
         self,

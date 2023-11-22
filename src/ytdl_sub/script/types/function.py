@@ -41,35 +41,11 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 class Function(FunctionType, VariableDependency, ABC):
     @property
     def variables(self) -> Set[Variable]:
-        """
-        Returns
-        -------
-        All variables used within the function
-        """
-        variables: Set[Variable] = set()
-        for arg in self.args:
-            if isinstance(arg, Variable):
-                variables.add(arg)
-            elif isinstance(arg, VariableDependency):
-                variables.update(arg.variables)
-
-        return variables
+        return self._variables(*self.args)
 
     @property
     def function_arguments(self) -> Set[FunctionArgument]:
-        """
-        Returns
-        -------
-        All function arguments used within the function
-        """
-        function_arguments: Set[FunctionArgument] = set()
-        for arg in self.args:
-            if isinstance(arg, FunctionArgument):
-                function_arguments.add(arg)
-            elif isinstance(arg, VariableDependency):
-                function_arguments.update(arg.function_arguments)
-
-        return function_arguments
+        return self._function_arguments(*self.args)
 
     @classmethod
     def from_name_and_args(cls, name: str, args: List[ArgumentType]) -> "Function":
