@@ -97,7 +97,9 @@ class CustomFunction(Function):
 
             resolved_variables_with_args = copy.deepcopy(resolved_variables)
             for i, arg in enumerate(resolved_args):
-                function_arg = FunctionArgument(name=f"${i}")  # Function args are 0-based
+                function_arg = FunctionArgument.from_idx(
+                    idx=i, custom_function_name=self.name
+                )  # Function args are 0-based
                 if function_arg in resolved_variables_with_args:
                     raise StringFormattingException("nested custom functions???")
                 resolved_variables_with_args[function_arg] = arg

@@ -9,6 +9,7 @@ from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
@@ -52,8 +53,10 @@ def is_type_compatible(
     True if arg is compatible with expected_arg_type. False otherwise.
     """
     arg_type: Type[NamedType] = arg.__class__
-    if isinstance(arg, FunctionType):
-        arg_type = arg.output_type()
+    if isinstance(arg, FunctionType) and isinstance(arg, TypeHintedFunctionType):
+        arg_type = arg.output_type()  # built-in function
+    elif isinstance(arg, FunctionType):
+        return True  # custom-function, can be anything, so pass for now
     elif isinstance(arg, Variable):
         return True  # unresolved variables can be anything, so pass for now
 

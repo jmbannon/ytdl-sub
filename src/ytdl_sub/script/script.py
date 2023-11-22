@@ -21,11 +21,18 @@ class Script:
 
     @classmethod
     def _function_name(cls, function_key: str) -> str:
+        """
+        Drop the % in %custom_function
+        """
         return function_key[1:]
 
     def __init__(self, overrides: Dict[str, str]):
         self._functions: Dict[str, SyntaxTree] = {
-            self._function_name(function_key): parse(function_value)
+            # custom_function_name must be passed to properly type custom function
+            # arguments uniquely if they're nested (i.e. $0 to $custom_func___0)
+            self._function_name(function_key): parse(
+                text=function_value, custom_function_name=self._function_name(function_key)
+            )
             for function_key, function_value in overrides.items()
             if self._is_function(function_key)
         }

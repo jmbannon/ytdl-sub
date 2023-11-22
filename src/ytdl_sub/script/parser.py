@@ -108,8 +108,9 @@ def _is_boolean_false(string: Optional[str]) -> bool:
 
 
 class _Parser:
-    def __init__(self, text: str):
+    def __init__(self, text: str, custom_function_name: Optional[str]):
         self._text = text
+        self._custom_function_name = custom_function_name
         self._pos = 0
         self._error_highlight_pos = 0
         self._ast: List[ArgumentType] = []
@@ -193,7 +194,9 @@ class _Parser:
         if not var_name:
             raise StringFormattingException("invalid var name")
 
-        return FunctionArgument(name=f"${var_name}")
+        return FunctionArgument.from_idx(
+            idx=int(var_name), custom_function_name=self._custom_function_name
+        )
 
     def _parse_numeric(self) -> Integer | Float:
         numeric_string = ""
@@ -499,11 +502,11 @@ class _Parser:
         return SyntaxTree(ast=self._ast)
 
 
-def parse(text: str) -> SyntaxTree:
+def parse(text: str, custom_function_name: Optional[str] = None) -> SyntaxTree:
     """
     Entrypoint for parsing ytdl-sub code into a Syntax Tree
     """
-    return _Parser(text).ast
+    return _Parser(text=text, custom_function_name=custom_function_name).ast
 
 
 # pylint: enable=invalid-name
