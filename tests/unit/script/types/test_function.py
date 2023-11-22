@@ -126,6 +126,18 @@ class TestFunction:
                 {"%cycle_func": "{%mul(%cycle_func(1), $0)}", "output": "{%cycle_func(1)}"}
             ).resolve()
 
+    def test_custom_function_chained_cycle(self):
+        with pytest.raises(
+            CycleDetected, match=re.escape("The custom function %cycle_func cannot call itself.")
+        ):
+            Script(
+                {
+                    "%cycle_func1": "{%mul(%cycle_func0(1), $0)}",
+                    "%cycle_func0": "{%mul(%cycle_func1(1), $0)}",
+                    "output": "{%cycle_func0(1)}",
+                }
+            ).resolve()
+
     def test_lambda_with_custom_function(self):
         assert Script(
             {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([1, 2, 3], %times_two)}"}
