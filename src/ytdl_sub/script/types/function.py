@@ -40,12 +40,8 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 @dataclass(frozen=True)
 class Function(FunctionType, VariableDependency, ABC):
     @property
-    def variables(self) -> Set[Variable]:
-        return self._variables(*self.args)
-
-    @property
-    def function_arguments(self) -> Set[FunctionArgument]:
-        return self._function_arguments(*self.args)
+    def _iterable_arguments(self) -> List[ArgumentType]:
+        return self.args
 
     @classmethod
     def from_name_and_args(cls, name: str, args: List[ArgumentType]) -> "Function":

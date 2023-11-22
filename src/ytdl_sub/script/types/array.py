@@ -27,12 +27,8 @@ class UnresolvedArray(Array, VariableDependency, FutureResolvable):
     value: List[ArgumentType]
 
     @property
-    def variables(self) -> Set[Variable]:
-        return self._variables(*self.value)
-
-    @property
-    def function_arguments(self) -> Set[FunctionArgument]:
-        return self._function_arguments(*self.value)
+    def _iterable_arguments(self) -> List[ArgumentType]:
+        return self.value
 
     def resolve(
         self,

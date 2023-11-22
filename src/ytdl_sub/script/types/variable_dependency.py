@@ -2,10 +2,12 @@ from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Dict
+from typing import List
 from typing import Set
 from typing import final
 
 from ytdl_sub.script.types.resolvable import ArgumentType
+from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
@@ -15,10 +17,16 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 
 @dataclass(frozen=True)
 class VariableDependency(ABC):
-    @classmethod
-    def _variables(cls, *args: ArgumentType) -> Set[Variable]:
+    @property
+    @abstractmethod
+    def _iterable_arguments(self) -> List[ArgumentType]:
+        pass
+
+    @final
+    @property
+    def variables(self) -> Set[Variable]:
         output: Set[Variable] = set()
-        for arg in args:
+        for arg in self._iterable_arguments:
             if isinstance(arg, Variable):
                 output.add(arg)
             elif isinstance(arg, VariableDependency):
@@ -26,10 +34,11 @@ class VariableDependency(ABC):
 
         return output
 
-    @classmethod
-    def _function_arguments(cls, *args: ArgumentType) -> Set[FunctionArgument]:
+    @final
+    @property
+    def function_arguments(self) -> Set[FunctionArgument]:
         output: Set[FunctionArgument] = set()
-        for arg in args:
+        for arg in self._iterable_arguments:
             if isinstance(arg, FunctionArgument):
                 output.add(arg)
             elif isinstance(arg, VariableDependency):
@@ -37,15 +46,18 @@ class VariableDependency(ABC):
 
         return output
 
+    @final
     @property
-    @abstractmethod
-    def variables(self) -> Set[Variable]:
-        pass
+    def custom_functions(self) -> Set[NamedCustomFunction]:
+        output: Set[NamedCustomFunction] = set()
+        for arg in self._iterable_arguments:
+            if isinstance(arg, NamedCustomFunction):
+                # Custom funcs aren't hashable, so recreate just the base-class portion
+                output.add(NamedCustomFunction(name=arg.name))
+            elif isinstance(arg, VariableDependency):
+                output.update(arg.custom_functions)
 
-    @property
-    @abstractmethod
-    def function_arguments(self) -> Set[FunctionArgument]:
-        pass
+        return output
 
     @abstractmethod
     def resolve(

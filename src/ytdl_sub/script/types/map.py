@@ -30,16 +30,8 @@ class UnresolvedMap(Map, VariableDependency, FutureResolvable):
     value: Dict[ArgumentType, ArgumentType]
 
     @property
-    def _as_flat_list(self) -> List[ArgumentType]:
+    def _iterable_arguments(self) -> List[ArgumentType]:
         return list(itertools.chain(*self.value.items()))
-
-    @property
-    def variables(self) -> Set[Variable]:
-        return self._variables(*self._as_flat_list)
-
-    @property
-    def function_arguments(self) -> Set[FunctionArgument]:
-        return self._function_arguments(*self._as_flat_list)
 
     def resolve(
         self,

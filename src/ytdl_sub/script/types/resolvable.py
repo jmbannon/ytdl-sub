@@ -122,6 +122,11 @@ class String(ResolvableT[str], Hashable, ArgumentType):
 
 
 @dataclass(frozen=True)
+class NamedCustomFunction(ArgumentType, ABC):
+    name: str
+
+
+@dataclass(frozen=True)
 class FunctionType(ArgumentType, ABC):
     name: str
     args: List[ArgumentType]

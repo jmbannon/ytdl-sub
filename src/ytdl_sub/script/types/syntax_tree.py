@@ -2,12 +2,10 @@ from dataclasses import dataclass
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Set
 
 from ytdl_sub.script.types.resolvable import ArgumentType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
-from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -18,12 +16,8 @@ class SyntaxTree(VariableDependency):
     ast: List[ArgumentType]
 
     @property
-    def variables(self) -> Set[Variable]:
-        return self._variables(*self.ast)
-
-    @property
-    def function_arguments(self) -> Set[FunctionArgument]:
-        return self._function_arguments(*self.ast)
+    def _iterable_arguments(self) -> List[ArgumentType]:
+        return self.ast
 
     def resolve(
         self,
