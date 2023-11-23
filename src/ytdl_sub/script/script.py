@@ -1,3 +1,4 @@
+import copy
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -196,7 +197,7 @@ class Script:
             Variable(name): ast for name, ast in self._variables.items()
         }
 
-        unresolved_variables: List[Variable] = list(variables.keys())
+        unresolved_variables: Set[Variable] = set(variables.keys())
         resolved_variables: Dict[Variable, Resolvable] = (
             pre_resolved_variables if pre_resolved_variables else {}
         )
@@ -204,7 +205,7 @@ class Script:
         while unresolved_variables:
             unresolved_count: int = len(unresolved_variables)
 
-            for variable in unresolved_variables:
+            for variable in copy.deepcopy(unresolved_variables):
                 if not variables[variable].has_variable_dependency(
                     resolved_variables=resolved_variables
                 ):
