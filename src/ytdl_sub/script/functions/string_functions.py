@@ -30,9 +30,16 @@ class StringFunctions:
     @staticmethod
     def capitalize(string: String) -> String:
         """
-        Capitalize all words in the String.
+        Capitalize the first character in the string.
         """
         return String(string.value.capitalize())
+
+    @staticmethod
+    def titlecase(string: String) -> String:
+        """
+        Capitalize each word in the string.
+        """
+        return String(string.value.title())
 
     @staticmethod
     def replace(

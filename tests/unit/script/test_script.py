@@ -29,6 +29,9 @@ class TestScript:
         ).resolve(unresolvable={"bb"}) == {"aa": String("a")}
 
     def test_partial_update_script(self):
+        # to be resolved later
+        entry_map = ResolvedMap({String("title"): String("the title")})
+
         script = Script(
             {
                 "entry": "{%throw('entry has not been populated yet')}",
@@ -44,13 +47,14 @@ class TestScript:
 
         script.add(
             {
+                "new_variable_titlecase": "{%titlecase(new_variable_upper)}",
                 "new_variable": "{resolved_override} {title}",
                 "new_variable_upper": "{%upper(new_variable)}",
             }
-        ).resolve(
-            resolved={"entry": ResolvedMap({String("title"): String("the title")})}, update=True
-        )
+        ).resolve(resolved={"entry": entry_map}, update=True)
 
         assert script.get("title") == String("the title")
         assert script.get("new_variable") == String("hi mom the title")
         assert script.get("new_variable_upper") == String("HI MOM THE TITLE")
+        assert script.get("new_variable_titlecase") == String("Hi Mom The Title")
+        assert script.get("entry") == entry_map
