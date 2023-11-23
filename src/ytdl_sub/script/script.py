@@ -142,12 +142,12 @@ class Script:
                         f"{nested_custom_function.num_input_args}"
                     )
 
-    def __init__(self, overrides: Dict[str, str]):
+    def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
-            self._function_name(name) for name in overrides.keys() if self._is_function(name)
+            self._function_name(name) for name in script.keys() if self._is_function(name)
         }
         variable_names: Set[str] = {
-            validate_variable_name(name) for name in overrides.keys() if not self._is_function(name)
+            validate_variable_name(name) for name in script.keys() if not self._is_function(name)
         }
 
         self._functions: Dict[str, SyntaxTree] = {
@@ -159,7 +159,7 @@ class Script:
                 custom_function_names=function_names,
                 variable_names=variable_names,
             )
-            for function_key, function_value in overrides.items()
+            for function_key, function_value in script.items()
             if self._is_function(function_key)
         }
 
@@ -170,7 +170,7 @@ class Script:
                 custom_function_names=function_names,
                 variable_names=variable_names,
             )
-            for variable_key, variable_value in overrides.items()
+            for variable_key, variable_value in script.items()
             if not self._is_function(variable_key)
         }
 
@@ -192,11 +192,11 @@ class Script:
         -------
         Dict of resolved values
         """
-        overrides: Dict[Variable, SyntaxTree] = {
+        variables: Dict[Variable, SyntaxTree] = {
             Variable(name): ast for name, ast in self._variables.items()
         }
 
-        unresolved_variables: List[Variable] = list(overrides.keys())
+        unresolved_variables: List[Variable] = list(variables.keys())
         resolved_variables: Dict[Variable, Resolvable] = (
             pre_resolved_variables if pre_resolved_variables else {}
         )
@@ -205,10 +205,10 @@ class Script:
             unresolved_count: int = len(unresolved_variables)
 
             for variable in unresolved_variables:
-                if not overrides[variable].has_variable_dependency(
+                if not variables[variable].has_variable_dependency(
                     resolved_variables=resolved_variables
                 ):
-                    resolved_variables[variable] = overrides[variable].resolve(
+                    resolved_variables[variable] = variables[variable].resolve(
                         resolved_variables=resolved_variables,
                         custom_functions=self._functions,
                     )
