@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -38,3 +39,9 @@ class SyntaxTree(VariableDependency):
 
         # Otherwise, to concat multiple resolved outputs, we must concat as strings
         return String("".join([str(res) for res in resolved]))
+
+    @property
+    def resolvable(self) -> Optional[Resolvable]:
+        if len(self.ast) == 1 and isinstance(self.ast[0], Resolvable):
+            return self.ast[0]
+        return None

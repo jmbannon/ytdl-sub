@@ -11,6 +11,7 @@ from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
+from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 
 # pylint: disable=missing-raises-doc
@@ -143,6 +144,12 @@ class Script:
                         f"{nested_custom_function.num_input_args}"
                     )
 
+    def _validate(self) -> None:
+        self._ensure_no_custom_function_cycles()
+        self._ensure_custom_function_arguments_valid()
+        self._ensure_no_variable_cycles()
+        self._ensure_custom_function_usage_num_input_arguments_valid()
+
     def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
             self._function_name(name) for name in script.keys() if self._is_function(name)
@@ -174,25 +181,29 @@ class Script:
             for variable_key, variable_value in script.items()
             if not self._is_function(variable_key)
         }
+        self._validate()
 
-        self._ensure_no_custom_function_cycles()
-        self._ensure_custom_function_arguments_valid()
-        self._ensure_no_variable_cycles()
-        self._ensure_custom_function_usage_num_input_arguments_valid()
+    def _update_internally(self, resolved_variables: Dict[str, Resolvable]) -> None:
+        for variable_name, resolved in resolved_variables.items():
+            self._variables[variable_name] = SyntaxTree(ast=[resolved])
 
     def resolve(
         self,
         resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
+        update: bool = False,
     ) -> Dict[str, Resolvable]:
         """
         Parameters
         ----------
         resolved
-            Optional variables that have been resolved elsewhere and could be used in this script
+            Optional. Variables that have been resolved elsewhere and could be used in this script
         unresolvable
-            Variables that cannot be resolved, forcing any variable that depends on it to not be
-            resolved.
+            Optional. Variables that cannot be resolved, forcing any variable that depends on it
+            to not be resolved.
+        update
+            Optional. Whether to update the internal representation of variables with their
+            resolved value (if they get resolved).
 
         Returns
         -------
@@ -232,4 +243,32 @@ class Script:
                 # since cycles are detected in __init__
                 raise UNREACHABLE
 
-        return {variable.name: resolvable for variable, resolvable in resolved.items()}
+        resolved_variables = {
+            variable.name: resolvable for variable, resolvable in resolved.items()
+        }
+        if update:
+            self._update_internally(resolved_variables=resolved_variables)
+
+        return resolved_variables
+
+    def add(self, variables: Dict[str, str]) -> "Script":
+        for variable_name, variable_definition in variables.items():
+            self._variables[variable_name] = parse(
+                text=variable_definition,
+                name=variable_name,
+                custom_function_names=set(self._functions.keys()),
+                variable_names=set(self._variables.keys()).union(variables.keys()),
+            )
+        self._validate()
+        return self
+
+    def get(self, variable_name: str) -> Resolvable:
+        if variable_name not in self._variables:
+            raise RuntimeException(
+                f"Tried to get resolved variable {variable_name}, but it does not exist"
+            )
+
+        if (resolvable := self._variables[variable_name].resolvable) is not None:
+            return resolvable
+
+        raise RuntimeException(f"Tried to get unresolved variable {variable_name}")

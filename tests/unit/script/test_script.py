@@ -34,16 +34,23 @@ class TestScript:
                 "entry": "{%throw('entry has not been populated yet')}",
                 "title": "{%map_get(entry, 'title')}",
                 "override": "hi",
+                "resolved_override": "{override} mom",
             }
         )
 
-        overrides = script.resolve(unresolvable={"entry"})
-        assert overrides == {"override": String("hi")}
+        script.resolve(unresolvable={"entry"}, update=True)
+        assert script.get("override") == String("hi")
+        assert script.get("resolved_override") == String("hi mom")
 
-        entry_map = ResolvedMap({String("title"): String("the title")})
-        entry_output = script.resolve(resolved=dict(overrides, **{"entry": entry_map}))
-        assert entry_output == {
-            "override": String("hi"),
-            "entry": entry_map,
-            "title": String("the title"),
-        }
+        script.add(
+            {
+                "new_variable": "{resolved_override} {title}",
+                "new_variable_upper": "{%upper(new_variable)}",
+            }
+        ).resolve(
+            resolved={"entry": ResolvedMap({String("title"): String("the title")})}, update=True
+        )
+
+        assert script.get("title") == String("the title")
+        assert script.get("new_variable") == String("hi mom the title")
+        assert script.get("new_variable_upper") == String("HI MOM THE TITLE")

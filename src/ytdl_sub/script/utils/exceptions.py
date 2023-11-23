@@ -7,6 +7,10 @@ class UserException(ValidationException, ABC):
     """It's the user's fault!"""
 
 
+class RuntimeException(ValueError, ABC):
+    """Exception thrown at runtime during resolution"""
+
+
 class InvalidSyntaxException(UserException):
     """Syntax is incorrect"""
 
@@ -41,10 +45,6 @@ class VariableDoesNotExist(UserException):
 
 class CycleDetected(UserException):
     """A cycle exists within a user's script"""
-
-
-class RuntimeException(ValueError, ABC):
-    """Exception thrown at runtime during resolution"""
 
 
 class FunctionRuntimeException(RuntimeException):
