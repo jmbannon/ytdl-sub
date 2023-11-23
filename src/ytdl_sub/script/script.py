@@ -4,7 +4,6 @@ from typing import Optional
 from typing import Set
 
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.types.function import CustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
