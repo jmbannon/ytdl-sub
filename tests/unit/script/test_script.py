@@ -12,7 +12,7 @@ class TestScript:
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",
             }
-        ).resolve(pre_resolved_variables={"bb": String("bb_override")}) == {
+        ).resolve(resolved={"bb": String("bb_override")}) == {
             "aa": String("a"),
             "bb": String("bb_override"),
             "cc": String('return ["a", "bb_override"]'),
@@ -41,9 +41,7 @@ class TestScript:
         assert overrides == {"override": String("hi")}
 
         entry_map = ResolvedMap({String("title"): String("the title")})
-        entry_output = script.resolve(
-            pre_resolved_variables=dict(overrides, **{"entry": entry_map})
-        )
+        entry_output = script.resolve(resolved=dict(overrides, **{"entry": entry_map}))
         assert entry_output == {
             "override": String("hi"),
             "entry": entry_map,

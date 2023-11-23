@@ -182,13 +182,13 @@ class Script:
 
     def resolve(
         self,
-        pre_resolved_variables: Optional[Dict[str, Resolvable]] = None,
+        resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
     ) -> Dict[str, Resolvable]:
         """
         Parameters
         ----------
-        pre_resolved_variables
+        resolved
             Optional variables that have been resolved elsewhere and could be used in this script
         unresolvable
             Variables that cannot be resolved, forcing any variable that depends on it to not be
@@ -198,39 +198,38 @@ class Script:
         -------
         Dict of resolved values
         """
-        variables: Dict[Variable, SyntaxTree] = {
-            Variable(name): ast for name, ast in self._variables.items()
+        resolved: Dict[Variable, Resolvable] = {
+            Variable(name): value for name, value in (resolved or {}).items()
+        }
+        unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
+        unresolved: Dict[Variable, SyntaxTree] = {
+            Variable(name): ast
+            for name, ast in self._variables.items()
+            if Variable(name) not in set(resolved.keys()).union(unresolvable)
         }
 
-        unresolvable_variables: Set[Variable] = set(Variable(var) for var in (unresolvable or {}))
-        resolved_variables: Dict[Variable, Resolvable] = {
-            Variable(name): value for name, value in (pre_resolved_variables or {}).items()
-        }
-        unresolved_variables: Set[Variable] = (
-            set(variables.keys()) - set(resolved_variables.keys()) - unresolvable_variables
-        )
+        while unresolved:
+            unresolved_count: int = len(unresolved)
 
-        while unresolved_variables:
-            unresolved_count: int = len(unresolved_variables)
-
-            for variable in copy.deepcopy(unresolved_variables):
+            for variable, definition in copy.deepcopy(unresolved).items():
                 # If the variable's variable dependencies contain an unresolvable variable,
                 # declare it as unresolvable and continue
-                if variables[variable].contains(unresolvable_variables):
-                    unresolvable_variables.add(variable)
-                    unresolved_variables.remove(variable)
+                if definition.contains(unresolvable):
+                    unresolvable.add(variable)
+                    del unresolved[variable]
 
-                # Otherwise, resolve it
-                elif not variables[variable].is_subset_of(variables=resolved_variables.keys()):
-                    resolved_variables[variable] = variables[variable].resolve(
-                        resolved_variables=resolved_variables,
+                # Otherwise, if it has dependencies that are all resolved, then
+                # resolve the definition
+                elif not definition.is_subset_of(variables=resolved.keys()):
+                    resolved[variable] = unresolved[variable].resolve(
+                        resolved_variables=resolved,
                         custom_functions=self._functions,
                     )
-                    unresolved_variables.remove(variable)
+                    del unresolved[variable]
 
-            if len(unresolved_variables) == unresolved_count:
+            if len(unresolved) == unresolved_count:
                 # Implies a cycle within the variables. Should never reach
                 # since cycles are detected in __init__
                 raise UNREACHABLE
 
-        return {variable.name: resolvable for variable, resolvable in resolved_variables.items()}
+        return {variable.name: resolvable for variable, resolvable in resolved.items()}
