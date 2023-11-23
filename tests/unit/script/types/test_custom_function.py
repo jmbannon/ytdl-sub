@@ -156,3 +156,65 @@ class TestCustomFunction:
                     "%func1": f"{{[{arguments}]}}",
                 }
             ).resolve()
+
+    def test_custom_function_uses_custom_function_wrong_number_of_arguments(self):
+        with pytest.raises(
+            InvalidCustomFunctionArguments,
+            match=re.escape(
+                "Custom function %func0 has invalid usage of the custom function %func1: "
+                "Expects 1 argument but received 2"
+            ),
+        ):
+            Script(
+                {
+                    "%func1": "{%mul(1, $0)}",
+                    "%func0": "{%mul(%func1(1, 2), $0)}",
+                    "output": "{%func0(1)}",
+                }
+            ).resolve()
+
+    def test_custom_function_uses_custom_function_wrong_number_of_arguments_plural(self):
+        with pytest.raises(
+            InvalidCustomFunctionArguments,
+            match=re.escape(
+                "Custom function %func0 has invalid usage of the custom function %func1: "
+                "Expects 2 arguments but received 1"
+            ),
+        ):
+            Script(
+                {
+                    "%func1": "{%mul($1, $0)}",
+                    "%func0": "{%mul(%func1(1), $0)}",
+                    "output": "{%func0(1)}",
+                }
+            ).resolve()
+
+    def test_variable_uses_custom_function_wrong_number_of_arguments(self):
+        with pytest.raises(
+            InvalidCustomFunctionArguments,
+            match=re.escape(
+                "Variable output has invalid usage of the custom function %func1: "
+                "Expects 1 argument but received 2"
+            ),
+        ):
+            Script(
+                {
+                    "%func1": "{%mul(1, $0)}",
+                    "output": "{%mul(%func1(1, 2), 1)}",
+                }
+            ).resolve()
+
+    def test_variable_uses_custom_function_wrong_number_of_arguments_plural(self):
+        with pytest.raises(
+            InvalidCustomFunctionArguments,
+            match=re.escape(
+                "Variable output has invalid usage of the custom function %func1: "
+                "Expects 2 arguments but received 1"
+            ),
+        ):
+            Script(
+                {
+                    "%func1": "{%mul($1, $0)}",
+                    "output": "{%mul(%func1(1), 1)}",
+                }
+            ).resolve()

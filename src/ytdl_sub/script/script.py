@@ -4,6 +4,7 @@ from typing import Optional
 from typing import Set
 
 from ytdl_sub.script.parser import parse
+from ytdl_sub.script.types.function import CustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
@@ -109,6 +110,39 @@ class Script:
                     f"do not increment from $0 to ${len(indices) - 1}."
                 )
 
+    def _ensure_custom_function_usage_num_input_arguments_valid(self):
+        for variable_name, variable_definition in self._variables.items():
+            for nested_custom_function in variable_definition.custom_functions:
+                if nested_custom_function.num_input_args != (
+                    expected_num_args := len(
+                        self._functions[nested_custom_function.name].function_arguments
+                    )
+                ):
+                    raise InvalidCustomFunctionArguments(
+                        f"Variable {variable_name} has invalid usage of the custom "
+                        f"function %{nested_custom_function.name}: Expects {expected_num_args} "
+                        f"argument{'s' if expected_num_args > 1 else ''} but received "
+                        f"{nested_custom_function.num_input_args}"
+                    )
+
+        for function_name, function_definition in self._functions.items():
+            for nested_custom_function in function_definition.custom_functions:
+                if nested_custom_function.name == function_name:
+                    # Do not need to validate a cycle that should not exist
+                    continue
+
+                if nested_custom_function.num_input_args != (
+                    expected_num_args := len(
+                        self._functions[nested_custom_function.name].function_arguments
+                    )
+                ):
+                    raise InvalidCustomFunctionArguments(
+                        f"Custom function %{function_name} has invalid usage of the custom "
+                        f"function %{nested_custom_function.name}: Expects {expected_num_args} "
+                        f"argument{'s' if expected_num_args > 1 else ''} but received "
+                        f"{nested_custom_function.num_input_args}"
+                    )
+
     def __init__(self, overrides: Dict[str, str]):
         function_names: Set[str] = {
             self._function_name(name) for name in overrides.keys() if self._is_function(name)
@@ -144,6 +178,7 @@ class Script:
         self._ensure_no_custom_function_cycles()
         self._ensure_custom_function_arguments_valid()
         self._ensure_no_variable_cycles()
+        self._ensure_custom_function_usage_num_input_arguments_valid()
 
     def resolve(
         self, pre_resolved_variables: Optional[Dict[Variable, Resolvable]] = None

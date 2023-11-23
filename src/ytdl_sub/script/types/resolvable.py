@@ -134,8 +134,13 @@ class String(ResolvableT[str], Hashable, Argument):
 
 
 @dataclass(frozen=True)
-class NamedCustomFunction(Argument, ABC):
-    name: str
+class NamedCustomFunction(NamedArgument, ABC):
+    pass
+
+
+@dataclass(frozen=True)
+class ParsedCustomFunction(NamedCustomFunction):
+    num_input_args: int
 
 
 @dataclass(frozen=True)

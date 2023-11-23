@@ -387,7 +387,10 @@ class _Parser:
                             "custom function."
                         )
 
-                    return CustomFunction(name=function_name, args=function_args)
+                    return CustomFunction(
+                        name=function_name,
+                        args=function_args,
+                    )
 
                 # Go back one so the parent function can close using the ')'
                 self._pos -= 1

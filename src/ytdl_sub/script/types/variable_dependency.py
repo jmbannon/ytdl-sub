@@ -7,7 +7,9 @@ from typing import Set
 from typing import final
 
 from ytdl_sub.script.types.resolvable import Argument
+from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
+from ytdl_sub.script.types.resolvable import ParsedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
@@ -47,12 +49,16 @@ class VariableDependency(ABC):
 
     @final
     @property
-    def custom_functions(self) -> Set[NamedCustomFunction]:
-        output: Set[NamedCustomFunction] = set()
+    def custom_functions(self) -> Set[ParsedCustomFunction]:
+        output: Set[ParsedCustomFunction] = set()
         for arg in self._iterable_arguments:
             if isinstance(arg, NamedCustomFunction):
+                if not isinstance(arg, FunctionType):
+                    # A NamedCustomFunction should also always be a FunctionType
+                    raise UNREACHABLE
+
                 # Custom funcs aren't hashable, so recreate just the base-class portion
-                output.add(NamedCustomFunction(name=arg.name))
+                output.add(ParsedCustomFunction(name=arg.name, num_input_args=len(arg.args)))
             if isinstance(arg, VariableDependency):
                 output.update(arg.custom_functions)
 
