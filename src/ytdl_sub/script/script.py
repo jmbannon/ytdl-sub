@@ -181,13 +181,18 @@ class Script:
         self._ensure_custom_function_usage_num_input_arguments_valid()
 
     def resolve(
-        self, pre_resolved_variables: Optional[Dict[str, Resolvable]] = None
+        self,
+        pre_resolved_variables: Optional[Dict[str, Resolvable]] = None,
+        unresolvable: Optional[Set[str]] = None,
     ) -> Dict[str, Resolvable]:
         """
         Parameters
         ----------
         pre_resolved_variables
             Optional variables that have been resolved elsewhere and could be used in this script
+        unresolvable
+            Variables that cannot be resolved, forcing any variable that depends on it to not be
+            resolved.
 
         Returns
         -------
@@ -197,60 +202,26 @@ class Script:
             Variable(name): ast for name, ast in self._variables.items()
         }
 
+        unresolvable_variables: Set[Variable] = set(Variable(var) for var in (unresolvable or {}))
         resolved_variables: Dict[Variable, Resolvable] = {
             Variable(name): value for name, value in (pre_resolved_variables or {}).items()
         }
-        unresolved_variables: Set[Variable] = set(variables.keys()) - set(resolved_variables.keys())
+        unresolved_variables: Set[Variable] = (
+            set(variables.keys()) - set(resolved_variables.keys()) - unresolvable_variables
+        )
 
         while unresolved_variables:
             unresolved_count: int = len(unresolved_variables)
 
             for variable in copy.deepcopy(unresolved_variables):
-                if not variables[variable].has_variable_dependency(
-                    resolved_variables=resolved_variables
-                ):
-                    resolved_variables[variable] = variables[variable].resolve(
-                        resolved_variables=resolved_variables,
-                        custom_functions=self._functions,
-                    )
-                    unresolved_variables.remove(variable)
-
-            if len(unresolved_variables) == unresolved_count:
-                # Implies a cycle within the variables. Should never reach
-                # since cycles are detected in __init__
-                raise UNREACHABLE
-
-        return {variable.name: resolvable for variable, resolvable in resolved_variables.items()}
-
-    def partial_resolve(self, unresolvable: Set[str]) -> Dict[str, Resolvable]:
-        """
-        Parameters
-        ----------
-        unresolvable
-            Variables that cannot be resolved
-
-        Returns
-        -------
-        Dict of resolved values
-        """
-        variables: Dict[Variable, SyntaxTree] = {
-            Variable(name): ast for name, ast in self._variables.items()
-        }
-
-        unresolvable_variables: Set[Variable] = set(Variable(var) for var in unresolvable)
-        unresolved_variables: Set[Variable] = set(variables.keys()) - unresolvable_variables
-        resolved_variables: Dict[Variable, Resolvable] = {}
-
-        while unresolved_variables:
-            unresolved_count: int = len(unresolved_variables)
-
-            for variable in copy.deepcopy(unresolved_variables):
-                if variables[variable].variables.intersection(unresolvable_variables):
+                # If the variable's variable dependencies contain an unresolvable variable,
+                # declare it as unresolvable and continue
+                if variables[variable].contains(unresolvable_variables):
                     unresolvable_variables.add(variable)
                     unresolved_variables.remove(variable)
-                elif not variables[variable].has_variable_dependency(
-                    resolved_variables=resolved_variables
-                ):
+
+                # Otherwise, resolve it
+                elif not variables[variable].is_subset_of(variables=resolved_variables.keys()):
                     resolved_variables[variable] = variables[variable].resolve(
                         resolved_variables=resolved_variables,
                         custom_functions=self._functions,

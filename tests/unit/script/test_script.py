@@ -26,7 +26,7 @@ class TestScript:
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",
             }
-        ).partial_resolve(unresolvable={"bb"}) == {"aa": String("a")}
+        ).resolve(unresolvable={"bb"}) == {"aa": String("a")}
 
     def test_partial_update_script(self):
         script = Script(
@@ -37,7 +37,7 @@ class TestScript:
             }
         )
 
-        overrides = script.partial_resolve(unresolvable={"entry"})
+        overrides = script.resolve(unresolvable={"entry"})
         assert overrides == {"override": String("hi")}
 
         entry_map = ResolvedMap({String("title"): String("the title")})

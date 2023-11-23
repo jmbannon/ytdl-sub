@@ -2,6 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Dict
+from typing import Iterable
 from typing import List
 from typing import Set
 from typing import final
@@ -94,10 +95,14 @@ class VariableDependency(ABC):
         raise UNREACHABLE
 
     @final
-    def has_variable_dependency(self, resolved_variables: Dict[Variable, Resolvable]) -> bool:
+    def is_subset_of(self, variables: Iterable[Variable]) -> bool:
         """
         Returns
         -------
         True if variable dependency. False otherwise.
         """
-        return not self.variables.issubset(set(resolved_variables.keys()))
+        return not self.variables.issubset(variables)
+
+    @final
+    def contains(self, variables: Iterable[Variable]) -> bool:
+        return len(self.variables.intersection(variables)) > 0
