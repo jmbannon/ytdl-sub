@@ -31,7 +31,6 @@ from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.script.utils.type_checking import FunctionInputSpec
 from ytdl_sub.script.utils.type_checking import is_union
-from ytdl_sub.utils.exceptions import StringFormattingException
 
 
 @dataclass(frozen=True)
@@ -56,7 +55,8 @@ class CustomFunction(Function, NamedCustomFunction):
 
         if self.name in custom_functions:
             if len(self.args) != len(custom_functions[self.name].function_arguments):
-                raise StringFormattingException("Custom function arg length does not equal")
+                # Should be validated in the Script
+                raise UNREACHABLE
 
             resolved_variables_with_args = copy.deepcopy(resolved_variables)
             for i, arg in enumerate(resolved_args):
@@ -97,7 +97,8 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         if hasattr(Functions, self.name + "_"):
             return getattr(Functions, self.name + "_")
 
-        raise StringFormattingException(f"Function name {self.name} does not exist")
+        # Should be validated in the parser
+        raise UNREACHABLE
 
     @functools.cached_property
     def arg_spec(self) -> FullArgSpec:

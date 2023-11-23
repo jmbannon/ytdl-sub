@@ -8,7 +8,6 @@ from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
 from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Boolean
@@ -19,7 +18,6 @@ from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
-from ytdl_sub.utils.exceptions import StringFormattingException
 
 
 class TestParser:
