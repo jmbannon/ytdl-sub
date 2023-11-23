@@ -1,4 +1,5 @@
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.map import ResolvedMap
 from ytdl_sub.script.types.resolvable import String
 
 
@@ -26,3 +27,25 @@ class TestScript:
                 "cc": "{%custom_func(aa, bb)}",
             }
         ).partial_resolve(unresolvable={"bb"}) == {"aa": String("a")}
+
+    def test_dynamic_script(self):
+        script = Script(
+            {
+                "entry": "{%throw('entry has not been populated yet')}",
+                "title": "{%map_get(entry, 'title')}",
+                "override": "hi",
+            }
+        )
+
+        overrides = script.partial_resolve(unresolvable={"entry"})
+        assert overrides == {"override": String("hi")}
+
+        entry_map = ResolvedMap({String("title"): String("the title")})
+        entry_output = script.resolve(
+            pre_resolved_variables=dict(overrides, **{"entry": entry_map})
+        )
+        assert entry_output == {
+            "override": String("hi"),
+            "entry": entry_map,
+            "title": String("the title"),
+        }
