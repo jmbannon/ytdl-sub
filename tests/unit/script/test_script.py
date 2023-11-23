@@ -28,7 +28,7 @@ class TestScript:
             }
         ).partial_resolve(unresolvable={"bb"}) == {"aa": String("a")}
 
-    def test_dynamic_script(self):
+    def test_partial_update_script(self):
         script = Script(
             {
                 "entry": "{%throw('entry has not been populated yet')}",
