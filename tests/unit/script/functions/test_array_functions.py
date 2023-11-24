@@ -80,7 +80,7 @@ class TestArrayFunctions:
                 {
                     "%enumerate_output": "{[$0, $1]}",
                     "array1": "{['a', 'b', 'c']}",
-                    "output": "{%array_apply(array1, %enumerate_output)}",
+                    "output": "{%array_enumerate(array1, %enumerate_output)}",
                 }
             )
             .resolve(update=True)

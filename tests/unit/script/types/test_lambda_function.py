@@ -1,6 +1,11 @@
+import re
+
+import pytest
+
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 
 
 class TestLambdaFunction:
@@ -47,3 +52,65 @@ class TestLambdaFunction:
                 "output": "{%array_at(%array_apply([2], %nest1), 0)}",
             }
         ).resolve() == {"output": Integer(4)}
+
+    def test_custom_function_lambda_in_variable_incompatible_number_of_args(self):
+        with pytest.raises(
+            IncompatibleFunctionArguments,
+            match=re.escape(
+                "Variable output has invalid usage of the custom function "
+                "%enumerate_output as a lambda: Expects 2 arguments but will receive 1."
+            ),
+        ):
+            Script(
+                {
+                    "%enumerate_output": "{[$0, $1]}",
+                    "array1": "{['a', 'b', 'c']}",
+                    "output": "{%array_apply(array1, %enumerate_output)}",
+                }
+            )
+
+    def test_function_lambda_in_variable_incompatible_number_of_args(self):
+        with pytest.raises(
+            IncompatibleFunctionArguments,
+            match=re.escape(
+                "Variable output has invalid usage of the function %replace as a lambda: "
+                "Expects 3 - 4 arguments but will receive 1."
+            ),
+        ):
+            Script(
+                {
+                    "array1": "{['a', 'b', 'c']}",
+                    "output": "{%array_apply(array1, %replace)}",
+                }
+            )
+
+    def test_custom_function_lambda_in_custom_function_incompatible_number_of_args(self):
+        with pytest.raises(
+            IncompatibleFunctionArguments,
+            match=re.escape(
+                "Custom function %output has invalid usage of the custom function "
+                "%enumerate_output as a lambda: Expects 3 arguments but will receive 2."
+            ),
+        ):
+            Script(
+                {
+                    "%enumerate_output": "{[$0, $1, $2]}",
+                    "array1": "{['a', 'b', 'c']}",
+                    "%output": "{%array_enumerate(array1, %enumerate_output)}",
+                }
+            )
+
+    def test_function_lambda_in_custom_function_incompatible_number_of_args(self):
+        with pytest.raises(
+            IncompatibleFunctionArguments,
+            match=re.escape(
+                "Custom function %output has invalid usage of the function "
+                "%replace as a lambda: Expects 3 - 4 arguments but will receive 2."
+            ),
+        ):
+            Script(
+                {
+                    "array1": "{['a', 'b', 'c']}",
+                    "%output": "{%array_enumerate(array1, %replace)}",
+                }
+            )

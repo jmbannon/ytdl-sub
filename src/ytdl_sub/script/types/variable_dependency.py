@@ -48,6 +48,11 @@ class VariableDependency(ABC):
 
     @final
     @property
+    def built_in_functions(self) -> List[BuiltInFunctionType]:
+        return self._recurse_get(BuiltInFunctionType)
+
+    @final
+    @property
     def function_arguments(self) -> Set[FunctionArgument]:
         return set(self._recurse_get(FunctionArgument))
 

@@ -12,6 +12,7 @@ from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import Lambda
+from ytdl_sub.script.types.resolvable import Lambda2
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import Variable
@@ -59,6 +60,12 @@ def is_type_compatible(
     arg_type: Type[NamedType] = arg.__class__
     if isinstance(arg, BuiltInFunctionType):
         arg_type = arg.output_type()  # built-in function
+    elif isinstance(arg, Lambda):
+        # lambda, check if expected_arg_type is a subclass
+        # Do not return on just that to also allow lambdas to be returned as
+        # ReturnableArguments (i.e in an %if statement)
+        if issubclass(expected_arg_type, arg_type):
+            return True
     elif isinstance(arg, FunctionType):
         return True  # custom-function, can be anything, so pass for now
     elif isinstance(arg, Variable):
@@ -137,9 +144,24 @@ class FunctionSpec:
 
         raise UNREACHABLE  # TODO: functions with no args
 
+    def is_num_args_compatible(self, num_input_args: int) -> bool:
+        if self.args is not None:
+            return self.num_required_args <= num_input_args <= len(self.args)
+        return True  # varargs can take any number
+
     @property
-    def is_lambda_function(self) -> bool:
-        return Lambda in (self.args or [])
+    def num_required_args(self) -> int:
+        if self.args is not None:
+            return sum(1 for arg in self.args if not is_optional(arg))
+        return 0  # varargs can take any number
+
+    @property
+    def is_lambda_function(self) -> Optional[Type[Lambda | Lambda2]]:
+        if Lambda2 in (self.args or []):
+            return Lambda2
+        elif Lambda in (self.args or []):
+            return Lambda
+        return None
 
     @classmethod
     def from_callable(cls, callable_ref: Callable[..., Resolvable]) -> "FunctionSpec":

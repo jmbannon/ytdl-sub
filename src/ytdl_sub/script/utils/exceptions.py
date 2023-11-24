@@ -55,6 +55,10 @@ class KeyNotHashableRuntimeException(RuntimeException):
     """Map tried to use a non-hashable key at runtime"""
 
 
+class FunctionDoesNotExistRuntimeException(RuntimeException):
+    """Tried to get a function that does not exist"""
+
+
 class UserThrownRuntimeError(ValidationException):
     """An error explicitly thrown by the user via a function"""
 

@@ -154,3 +154,18 @@ class Lambda(Resolvable):
 
     def native(self) -> Any:
         return f"%{self.value}"
+
+    @classmethod
+    def num_input_args(cls) -> int:
+        return 1
+
+
+@dataclass(frozen=True)
+class Lambda2(Lambda):
+    """
+    Type-hinting for functions that apply lambdas with two inputs per element
+    """
+
+    @classmethod
+    def num_input_args(cls) -> int:
+        return 2
