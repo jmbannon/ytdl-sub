@@ -17,7 +17,7 @@ class ArrayFunctions:
         for array in arrays:
             output.extend(array.value)
 
-        return Array(output)
+        return ResolvedArray(output)
 
     @staticmethod
     def array_at(array: Array, idx: Integer) -> Resolvable:
@@ -38,14 +38,14 @@ class ArrayFunctions:
             else:
                 output.append(elem)
 
-        return Array(output)
+        return ResolvedArray(output)
 
     @staticmethod
     def array_reverse(array: Array) -> Array:
         """
         Reverse an Array.
         """
-        return Array(list(reversed(array.value)))
+        return ResolvedArray(list(reversed(array.value)))
 
     # pylint: disable=unused-argument
 
