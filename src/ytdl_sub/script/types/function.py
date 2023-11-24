@@ -12,6 +12,7 @@ from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.resolvable import Argument
+from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
@@ -19,7 +20,6 @@ from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import ReturnableArgument
 from ytdl_sub.script.types.resolvable import ReturnableArgumentA
 from ytdl_sub.script.types.resolvable import ReturnableArgumentB
-from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
@@ -78,7 +78,7 @@ class CustomFunction(Function, NamedCustomFunction):
         raise UNREACHABLE
 
 
-class BuiltInFunction(Function, TypeHintedFunctionType):
+class BuiltInFunction(Function, BuiltInFunctionType):
     def validate_args(self) -> "BuiltInFunction":
         if not self.function_spec.is_compatible(input_args=self.args):
             raise FunctionArgumentsExceptionFormatter(

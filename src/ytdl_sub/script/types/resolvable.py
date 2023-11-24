@@ -142,7 +142,7 @@ class FunctionType(NamedArgument, ABC):
 
 
 @dataclass(frozen=True)
-class TypeHintedFunctionType(FunctionType, ABC):
+class BuiltInFunctionType(FunctionType, ABC):
     @abstractmethod
     def output_type(self) -> Type[Resolvable]:
         pass
