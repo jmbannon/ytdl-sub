@@ -75,6 +75,10 @@ class Resolvable(AnyArgument, ABC):
     def __str__(self) -> str:
         return str(self.value)
 
+    @property
+    def native(self) -> Any:
+        return self.value
+
 
 @dataclass(frozen=True)
 class Hashable(Resolvable, ABC):
@@ -88,19 +92,8 @@ class NonHashable(ABC):
 
 @dataclass(frozen=True)
 class ResolvableToJson(Resolvable, ABC):
-    @classmethod
-    def _to_native(cls, to_convert: Resolvable) -> Any:
-        if isinstance(to_convert.value, list):
-            return [cls._to_native(val) for val in to_convert.value]
-        if isinstance(to_convert.value, dict):
-            return {
-                cls._to_native(key): cls._to_native(value)
-                for key, value in to_convert.value.items()
-            }
-        return to_convert.value
-
     def __str__(self):
-        return json.dumps(self._to_native(self))
+        return json.dumps(self.native)
 
 
 @dataclass(frozen=True)
@@ -158,3 +151,6 @@ class TypeHintedFunctionType(FunctionType, ABC):
 @dataclass(frozen=True)
 class Lambda(Resolvable):
     value: str
+
+    def native(self) -> Any:
+        return f"%{self.value}"

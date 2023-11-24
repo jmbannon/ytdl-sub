@@ -1,5 +1,6 @@
 import itertools
 from dataclasses import dataclass
+from typing import Any
 from typing import Dict
 from typing import List
 
@@ -55,4 +56,6 @@ class UnresolvedMap(Map, VariableDependency, AnyArgument):
 
 @dataclass(frozen=True)
 class ResolvedMap(Map, ResolvableToJson):
-    pass
+    @property
+    def native(self) -> Any:
+        return {key.native: value.native for key, value in self.value.items()}

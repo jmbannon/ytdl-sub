@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 from typing import Dict
 from typing import List
 
@@ -47,4 +48,6 @@ class UnresolvedArray(Array, VariableDependency, AnyArgument):
 
 @dataclass(frozen=True)
 class ResolvedArray(Array, ResolvableToJson):
-    pass
+    @property
+    def native(self) -> Any:
+        return [val.native for val in self.value]
