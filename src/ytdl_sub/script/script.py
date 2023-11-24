@@ -156,7 +156,11 @@ class Script:
                 if lambda_type := spec.is_lambda_function:
 
                     lambda_function_names = set(
-                        [lamb.value for lamb in function.args if isinstance(lamb, Lambda)]
+                        [
+                            lamb.value
+                            for lamb in SyntaxTree(function.args).lambdas
+                            if isinstance(lamb, Lambda)
+                        ]
                     )
 
                     # Only case len(lambda_function_names) > 1 is when used in if-statements
@@ -202,7 +206,11 @@ class Script:
                 if lambda_type := spec.is_lambda_function:
 
                     lambda_function_names = set(
-                        [lamb.value for lamb in function.args if isinstance(lamb, Lambda)]
+                        [
+                            lamb.value
+                            for lamb in SyntaxTree(function.args).lambdas
+                            if isinstance(lamb, Lambda)
+                        ]
                     )
 
                     # Only case len(lambda_function_names) > 1 is when used in if-statements

@@ -31,11 +31,14 @@ class VariableDependency(ABC):
     def _iterable_arguments(self) -> List[Argument]:
         pass
 
-    def _recurse_get(self, ttype: Type[TType]) -> List[TType]:
+    def _recurse_get(self, ttype: Type[TType], subclass: bool = False) -> List[TType]:
         output: List[TType] = []
         for arg in self._iterable_arguments:
-            if isinstance(arg, ttype):
+            if subclass and issubclass(type(arg), ttype):
                 output.append(arg)
+            elif isinstance(arg, ttype):
+                output.append(arg)
+
             if isinstance(arg, VariableDependency):
                 output.extend(arg._recurse_get(ttype))
 
@@ -55,6 +58,11 @@ class VariableDependency(ABC):
     @property
     def function_arguments(self) -> Set[FunctionArgument]:
         return set(self._recurse_get(FunctionArgument))
+
+    @final
+    @property
+    def lambdas(self) -> Set[Lambda]:
+        return set(self._recurse_get(Lambda, subclass=True))
 
     @final
     @property

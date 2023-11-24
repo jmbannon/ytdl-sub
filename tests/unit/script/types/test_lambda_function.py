@@ -53,7 +53,12 @@ class TestLambdaFunction:
             }
         ).resolve() == {"output": Integer(4)}
 
-    def test_custom_function_lambda_in_variable_incompatible_number_of_args(self):
+
+class TestLambdaFunctionIncompatibleNumArguments:
+    @pytest.mark.parametrize(
+        "lambda_value", ["%enumerate_output", "%if(False, %capitalize, %enumerate_output)"]
+    )
+    def test_custom_function_lambda_in_variable(self, lambda_value: str):
         with pytest.raises(
             IncompatibleFunctionArguments,
             match=re.escape(
@@ -65,11 +70,12 @@ class TestLambdaFunction:
                 {
                     "%enumerate_output": "{[$0, $1]}",
                     "array1": "{['a', 'b', 'c']}",
-                    "output": "{%array_apply(array1, %enumerate_output)}",
+                    "output": f"{{%array_apply(array1, {lambda_value})}}",
                 }
             )
 
-    def test_function_lambda_in_variable_incompatible_number_of_args(self):
+    @pytest.mark.parametrize("lambda_value", ["%replace", "%if(False, %capitalize, %replace)"])
+    def test_function_lambda_in_variable(self, lambda_value: str):
         with pytest.raises(
             IncompatibleFunctionArguments,
             match=re.escape(
@@ -80,11 +86,14 @@ class TestLambdaFunction:
             Script(
                 {
                     "array1": "{['a', 'b', 'c']}",
-                    "output": "{%array_apply(array1, %replace)}",
+                    "output": f"{{%array_apply(array1, {lambda_value})}}",
                 }
             )
 
-    def test_custom_function_lambda_in_custom_function_incompatible_number_of_args(self):
+    @pytest.mark.parametrize(
+        "lambda_value", ["%enumerate_output", "%if(False, %concat, %enumerate_output)"]
+    )
+    def test_custom_function_lambda_in_custom_function(self, lambda_value: str):
         with pytest.raises(
             IncompatibleFunctionArguments,
             match=re.escape(
@@ -96,11 +105,12 @@ class TestLambdaFunction:
                 {
                     "%enumerate_output": "{[$0, $1, $2]}",
                     "array1": "{['a', 'b', 'c']}",
-                    "%output": "{%array_enumerate(array1, %enumerate_output)}",
+                    "%output": f"{{%array_enumerate(array1, {lambda_value})}}",
                 }
             )
 
-    def test_function_lambda_in_custom_function_incompatible_number_of_args(self):
+    @pytest.mark.parametrize("lambda_value", ["%replace", "%if(False, %concat, %replace)"])
+    def test_function_lambda_in_custom_function(self, lambda_value: str):
         with pytest.raises(
             IncompatibleFunctionArguments,
             match=re.escape(
@@ -111,6 +121,6 @@ class TestLambdaFunction:
             Script(
                 {
                     "array1": "{['a', 'b', 'c']}",
-                    "%output": "{%array_enumerate(array1, %replace)}",
+                    "%output": f"{{%array_enumerate(array1, {lambda_value})}}",
                 }
             )

@@ -60,12 +60,6 @@ def is_type_compatible(
     arg_type: Type[NamedType] = arg.__class__
     if isinstance(arg, BuiltInFunctionType):
         arg_type = arg.output_type()  # built-in function
-    elif isinstance(arg, Lambda):
-        # lambda, check if expected_arg_type is a subclass
-        # Do not return on just that to also allow lambdas to be returned as
-        # ReturnableArguments (i.e in an %if statement)
-        if issubclass(expected_arg_type, arg_type):
-            return True
     elif isinstance(arg, FunctionType):
         return True  # custom-function, can be anything, so pass for now
     elif isinstance(arg, Variable):
@@ -93,6 +87,12 @@ def is_type_compatible(
         for union_type in arg_type.__args__:
             if not issubclass(union_type, expected_arg_type):
                 return False
+
+    elif issubclass(arg_type, Lambda) and issubclass(expected_arg_type, arg_type):
+        # lambda, check if expected_arg_type is a subclass
+        # Do not return on just that to also allow lambdas to be returned as
+        # ReturnableArguments (i.e in an %if statement)
+        return True
 
     elif not issubclass(arg_type, expected_arg_type):
         return False
