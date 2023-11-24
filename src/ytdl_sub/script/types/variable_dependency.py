@@ -1,13 +1,17 @@
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
+from typing import Callable
 from typing import Dict
 from typing import Iterable
 from typing import List
 from typing import Set
+from typing import Type
+from typing import TypeVar
 from typing import final
 
 from ytdl_sub.script.types.resolvable import Argument
+from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
@@ -17,6 +21,8 @@ from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
+TType = TypeVar("TType")
+
 
 @dataclass(frozen=True)
 class VariableDependency(ABC):
@@ -25,41 +31,25 @@ class VariableDependency(ABC):
     def _iterable_arguments(self) -> List[Argument]:
         pass
 
+    def _recurse_get(self, ttype: Type[TType]) -> List[TType]:
+        output: List[TType] = []
+        for arg in self._iterable_arguments:
+            if isinstance(arg, ttype):
+                output.append(arg)
+            if isinstance(arg, VariableDependency):
+                output.extend(arg._recurse_get(ttype))
+
+        return output
+
     @final
     @property
     def variables(self) -> Set[Variable]:
-        output: Set[Variable] = set()
-        for arg in self._iterable_arguments:
-            if isinstance(arg, Variable):
-                output.add(arg)
-            if isinstance(arg, VariableDependency):
-                output.update(arg.variables)
-
-        return output
+        return set(self._recurse_get(Variable))
 
     @final
     @property
     def function_arguments(self) -> Set[FunctionArgument]:
-        output: Set[FunctionArgument] = set()
-        for arg in self._iterable_arguments:
-            if isinstance(arg, FunctionArgument):
-                output.add(arg)
-            if isinstance(arg, VariableDependency):
-                output.update(arg.function_arguments)
-
-        return output
-
-    @final
-    @property
-    def lambda_arguments(self) -> Set[Lambda]:
-        output: Set[Lambda] = set()
-        for arg in self._iterable_arguments:
-            if isinstance(arg, Lambda):
-                output.add(arg)
-            if isinstance(arg, VariableDependency):
-                output.update(arg.lambda_arguments)
-
-        return output
+        return set(self._recurse_get(FunctionArgument))
 
     @final
     @property
