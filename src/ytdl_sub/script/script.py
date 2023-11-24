@@ -149,9 +149,11 @@ class Script:
                         f"{nested_custom_function.num_input_args}"
                     )
 
-    def _ensure_lambda_usage_num_input_arguments_valid(self):
-        for variable_name, variable_definition in self._variables.items():
-            for function in variable_definition.built_in_functions:
+    def _ensure_lambda_usage_num_input_arguments_valid(
+        self, definitions: Dict[str, SyntaxTree], prefix: str
+    ):
+        for name, definition in definitions.items():
+            for function in definition.built_in_functions:
                 spec = FunctionSpec.from_callable(Functions.get(function.name))
                 if lambda_type := spec.is_lambda_function:
 
@@ -177,7 +179,7 @@ class Script:
                                     )
 
                                 raise IncompatibleFunctionArguments(
-                                    f"Variable {variable_name} has invalid usage of the "
+                                    f"{prefix}{name} has invalid usage of the "
                                     f"function %{lambda_function_name} as a lambda: "
                                     f"Expects {expected_args_str} "
                                     f"argument{'s' if expected_args_str != '1' else ''} but will "
@@ -192,57 +194,7 @@ class Script:
                             )
                             if lambda_type.num_input_args() != expected_num_arguments:
                                 raise IncompatibleFunctionArguments(
-                                    f"Variable {variable_name} has invalid usage of the custom "
-                                    f"function %{lambda_function_name} as a lambda: "
-                                    f"Expects {expected_num_arguments} "
-                                    f"argument{'s' if expected_num_arguments > 1 else ''} but will "
-                                    f"receive {lambda_type.num_input_args()}."
-                                )
-
-        # TODO: DEDUPLICATE
-        for function_name, function_definition in self._functions.items():
-            for function in function_definition.built_in_functions:
-                spec = FunctionSpec.from_callable(Functions.get(function.name))
-                if lambda_type := spec.is_lambda_function:
-
-                    lambda_function_names = set(
-                        [
-                            lamb.value
-                            for lamb in SyntaxTree(function.args).lambdas
-                            if isinstance(lamb, Lambda)
-                        ]
-                    )
-
-                    # Only case len(lambda_function_names) > 1 is when used in if-statements
-                    for lambda_function_name in lambda_function_names:
-                        if Functions.is_built_in(lambda_function_name):
-                            lambda_spec = FunctionSpec.from_callable(
-                                Functions.get(lambda_function_name)
-                            )
-                            if not lambda_spec.is_num_args_compatible(lambda_type.num_input_args()):
-                                expected_args_str = str(lambda_spec.num_required_args)
-                                if lambda_spec.num_required_args != len(lambda_spec.args):
-                                    expected_args_str = (
-                                        f"{expected_args_str} - {len(lambda_spec.args)}"
-                                    )
-
-                                raise IncompatibleFunctionArguments(
-                                    f"Custom function %{function_name} has invalid usage of the "
-                                    f"function %{lambda_function_name} as a lambda: "
-                                    f"Expects {expected_args_str} "
-                                    f"argument{'s' if expected_args_str != '1' else ''} but will "
-                                    f"receive {lambda_type.num_input_args()}."
-                                )
-                        else:  # is custom function
-                            if lambda_function_name not in self._functions:
-                                raise UNREACHABLE  # Custom function should have been validated
-
-                            expected_num_arguments = len(
-                                self._functions[lambda_function_name].function_arguments
-                            )
-                            if lambda_type.num_input_args() != expected_num_arguments:
-                                raise IncompatibleFunctionArguments(
-                                    f"Custom function %{function_name} has invalid usage of the custom "
+                                    f"{prefix}{name} has invalid usage of the custom "
                                     f"function %{lambda_function_name} as a lambda: "
                                     f"Expects {expected_num_arguments} "
                                     f"argument{'s' if expected_num_arguments > 1 else ''} but will "
@@ -254,7 +206,13 @@ class Script:
         self._ensure_custom_function_arguments_valid()
         self._ensure_no_variable_cycles()
         self._ensure_custom_function_usage_num_input_arguments_valid()
-        self._ensure_lambda_usage_num_input_arguments_valid()
+
+        self._ensure_lambda_usage_num_input_arguments_valid(
+            definitions=self._variables, prefix="Variable "
+        )
+        self._ensure_lambda_usage_num_input_arguments_valid(
+            definitions=self._functions, prefix="Custom function %"
+        )
 
     def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
