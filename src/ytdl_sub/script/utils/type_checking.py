@@ -1,4 +1,7 @@
+import inspect
 from dataclasses import dataclass
+from inspect import FullArgSpec
+from typing import Callable
 from typing import List
 from typing import Optional
 from typing import Type
@@ -7,6 +10,7 @@ from typing import get_origin
 
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import FunctionType
+from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
@@ -90,7 +94,8 @@ def is_type_compatible(
 
 
 @dataclass(frozen=True)
-class FunctionInputSpec:
+class FunctionSpec:
+    return_type: Type[Resolvable]
     args: Optional[List[Type[Resolvable | Optional[Resolvable]]]] = None
     varargs: Optional[Type[Resolvable]] = None
 
@@ -131,3 +136,21 @@ class FunctionInputSpec:
             return self._is_varargs_compatible(input_args=input_args)
 
         raise UNREACHABLE  # TODO: functions with no args
+
+    @property
+    def is_lambda_function(self) -> bool:
+        return Lambda in (self.args or [])
+
+    @classmethod
+    def from_callable(cls, callable_ref: Callable[..., Resolvable]) -> "FunctionSpec":
+        arg_spec: FullArgSpec = inspect.getfullargspec(callable_ref)
+        if arg_spec.varargs:
+            return FunctionSpec(
+                return_type=arg_spec.annotations["return"],
+                varargs=arg_spec.annotations[arg_spec.varargs],
+            )
+
+        return FunctionSpec(
+            return_type=arg_spec.annotations["return"],
+            args=[arg_spec.annotations[arg_name] for arg_name in arg_spec.args],
+        )

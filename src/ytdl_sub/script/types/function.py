@@ -1,9 +1,7 @@
 import copy
 import functools
-import inspect
 from abc import ABC
 from dataclasses import dataclass
-from inspect import FullArgSpec
 from typing import Callable
 from typing import Dict
 from typing import List
@@ -29,7 +27,7 @@ from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptio
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
-from ytdl_sub.script.utils.type_checking import FunctionInputSpec
+from ytdl_sub.script.utils.type_checking import FunctionSpec
 from ytdl_sub.script.utils.type_checking import is_union
 
 
@@ -82,9 +80,9 @@ class CustomFunction(Function, NamedCustomFunction):
 
 class BuiltInFunction(Function, TypeHintedFunctionType):
     def validate_args(self) -> "BuiltInFunction":
-        if not self.input_spec.is_compatible(input_args=self.args):
+        if not self.function_spec.is_compatible(input_args=self.args):
             raise FunctionArgumentsExceptionFormatter(
-                input_spec=self.input_spec,
+                input_spec=self.function_spec,
                 function_instance=self,
             ).highlight()
 
@@ -101,21 +99,8 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         raise UNREACHABLE
 
     @functools.cached_property
-    def arg_spec(self) -> FullArgSpec:
-        return inspect.getfullargspec(self.callable)
-
-    @property
-    def input_spec(self) -> FunctionInputSpec:
-        if self.arg_spec.varargs:
-            return FunctionInputSpec(varargs=self.arg_spec.annotations[self.arg_spec.varargs])
-
-        return FunctionInputSpec(
-            args=[self.arg_spec.annotations[arg_name] for arg_name in self.arg_spec.args]
-        )
-
-    @property
-    def is_lambda_function(self) -> bool:
-        return Lambda in (self.input_spec.args or [])
+    def function_spec(self) -> FunctionSpec:
+        return FunctionSpec.from_callable(self.callable)
 
     @classmethod
     def _arg_output_type(cls, arg: Argument) -> Type[Argument]:
@@ -124,19 +109,18 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         return type(arg)
 
     def output_type(self) -> Type[Resolvable]:
-        output_type = self.arg_spec.annotations["return"]
-        if is_union(output_type):
+        if is_union(self.function_spec.return_type):
             union_types_list = []
-            for union_type in output_type.__args__:
+            for union_type in self.function_spec.return_type.__args__:
                 if union_type in (ReturnableArgument, ReturnableArgumentA, ReturnableArgumentB):
-                    generic_arg_index = self.input_spec.args.index(union_type)
+                    generic_arg_index = self.function_spec.args.index(union_type)
                     union_types_list.append(self._arg_output_type(self.args[generic_arg_index]))
                 else:
                     union_types_list.append(union_type)
 
             return Union[tuple(union_types_list)]
 
-        return output_type
+        return self.function_spec.return_type
 
     def _resolve_lambda_function(
         self,
@@ -153,7 +137,7 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
             3. Resolve it like any other syntax
         """
         function_input_lambda_args = [arg for arg in resolved_arguments if isinstance(arg, Lambda)]
-        if not self.is_lambda_function or len(function_input_lambda_args) != 1:
+        if not self.function_spec.is_lambda_function or len(function_input_lambda_args) != 1:
             raise UNREACHABLE
 
         lambda_function_name = function_input_lambda_args[0].value
@@ -196,7 +180,7 @@ class BuiltInFunction(Function, TypeHintedFunctionType):
         ]
 
         # If a lambda is in a function's arg, resolve it differently
-        if self.is_lambda_function:
+        if self.function_spec.is_lambda_function:
             return self._resolve_lambda_function(
                 resolved_arguments=resolved_arguments,
                 resolved_variables=resolved_variables,

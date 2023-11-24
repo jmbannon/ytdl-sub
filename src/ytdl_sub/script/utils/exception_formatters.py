@@ -8,7 +8,7 @@ from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import TypeHintedFunctionType
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import UserException
-from ytdl_sub.script.utils.type_checking import FunctionInputSpec
+from ytdl_sub.script.utils.type_checking import FunctionSpec
 from ytdl_sub.script.utils.type_checking import get_optional_type
 from ytdl_sub.script.utils.type_checking import is_optional
 from ytdl_sub.script.utils.type_checking import is_union
@@ -100,7 +100,7 @@ class ParserExceptionFormatter:
 class FunctionArgumentsExceptionFormatter:
     def __init__(
         self,
-        input_spec: FunctionInputSpec,
+        input_spec: FunctionSpec,
         function_instance: TypeHintedFunctionType,
     ):
         self._args = input_spec.args

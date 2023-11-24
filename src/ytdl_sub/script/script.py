@@ -4,6 +4,7 @@ from typing import List
 from typing import Optional
 from typing import Set
 
+from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
@@ -143,6 +144,12 @@ class Script:
                         f"argument{'s' if expected_num_args > 1 else ''} but received "
                         f"{nested_custom_function.num_input_args}"
                     )
+
+    def _ensure_lambda_usage_num_input_arguments_valid(self) -> None:
+        for variable_name, variable_definition in self._variables.items():
+            for lambda_argument in variable_definition.lambda_arguments:
+                if Functions.is_built_in(name=lambda_argument.value):
+                    pass
 
     def _validate(self) -> None:
         self._ensure_no_custom_function_cycles()

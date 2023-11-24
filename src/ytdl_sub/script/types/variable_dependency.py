@@ -9,6 +9,7 @@ from typing import final
 
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import FunctionType
+from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import ParsedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -45,6 +46,18 @@ class VariableDependency(ABC):
                 output.add(arg)
             if isinstance(arg, VariableDependency):
                 output.update(arg.function_arguments)
+
+        return output
+
+    @final
+    @property
+    def lambda_arguments(self) -> Set[Lambda]:
+        output: Set[Lambda] = set()
+        for arg in self._iterable_arguments:
+            if isinstance(arg, Lambda):
+                output.add(arg)
+            if isinstance(arg, VariableDependency):
+                output.update(arg.lambda_arguments)
 
         return output
 
