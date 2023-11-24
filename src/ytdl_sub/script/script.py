@@ -7,6 +7,7 @@ from typing import Set
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.resolvable import Lambda
+from ytdl_sub.script.types.resolvable import NamedArgument
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
@@ -40,6 +41,21 @@ class Script:
         """
         return function_key[1:]
 
+    def _ensure_no_cycle(
+        self, name: str, dep: str, deps: List[str], definitions: Dict[str, SyntaxTree]
+    ):
+        if dep not in definitions:
+            return  # does not exist, will throw downstream in parser
+
+        if name in deps + [dep]:
+            type_name, pre = (
+                ("custom functions", "%") if definitions is self._functions else ("variables", "")
+            )
+            cycle_deps = [name] + deps + [dep]
+            cycle_deps_str = " -> ".join([f"{pre}{name}" for name in cycle_deps])
+
+            raise CycleDetected(f"Cycle detected within these {type_name}: {cycle_deps_str}")
+
     def _traverse_variable_dependencies(
         self,
         variable_name: str,
@@ -47,14 +63,9 @@ class Script:
         deps: List[str],
     ) -> None:
         for dep in variable_dependency.variables:
-            if dep.name not in self._variables:
-                continue  # does not exist, will throw downstream in parser
-
-            if variable_name in deps + [dep.name]:
-                cycle_deps = [variable_name] + deps + [dep.name]
-                cycle_deps_str = " -> ".join(cycle_deps)
-                raise CycleDetected(f"Cycle detected within these variables: {cycle_deps_str}")
-
+            self._ensure_no_cycle(
+                name=variable_name, dep=dep.name, deps=deps, definitions=self._variables
+            )
             self._traverse_variable_dependencies(
                 variable_name=variable_name,
                 variable_dependency=self._variables[dep.name],
@@ -76,16 +87,9 @@ class Script:
         deps: List[str],
     ) -> None:
         for dep in custom_function_dependency.custom_functions:
-            if dep.name not in self._functions:
-                continue  # does not exist, will throw downstream in parser
-
-            if custom_function_name in deps + [dep.name]:
-                cycle_deps = [custom_function_name] + deps + [dep.name]
-                cycle_deps_str = " -> ".join([f"%{name}" for name in cycle_deps])
-                raise CycleDetected(
-                    f"Cycle detected within these custom functions: {cycle_deps_str}"
-                )
-
+            self._ensure_no_cycle(
+                name=custom_function_name, dep=dep.name, deps=deps, definitions=self._functions
+            )
             self._traverse_custom_function_dependencies(
                 custom_function_name=custom_function_name,
                 custom_function_dependency=self._functions[dep.name],
