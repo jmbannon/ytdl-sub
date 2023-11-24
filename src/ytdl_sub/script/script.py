@@ -115,35 +115,18 @@ class Script:
                     f"do not increment from $0 to ${len(indices) - 1}."
                 )
 
-    def _ensure_custom_function_usage_num_input_arguments_valid(self):
-        for variable_name, variable_definition in self._variables.items():
-            for nested_custom_function in variable_definition.custom_functions:
+    def _ensure_custom_function_usage_num_input_arguments_valid(
+        self, definitions: Dict[str, SyntaxTree], prefix: str
+    ):
+        for name, definition in definitions.items():
+            for nested_custom_function in definition.custom_functions:
                 if nested_custom_function.num_input_args != (
                     expected_num_args := len(
                         self._functions[nested_custom_function.name].function_arguments
                     )
                 ):
                     raise InvalidCustomFunctionArguments(
-                        f"Variable {variable_name} has invalid usage of the custom "
-                        f"function %{nested_custom_function.name}: Expects {expected_num_args} "
-                        f"argument{'s' if expected_num_args > 1 else ''} but received "
-                        f"{nested_custom_function.num_input_args}"
-                    )
-
-        # TODO: DEDUPLICATE
-        for function_name, function_definition in self._functions.items():
-            for nested_custom_function in function_definition.custom_functions:
-                if nested_custom_function.name == function_name:
-                    # Do not need to validate a cycle that should not exist
-                    continue
-
-                if nested_custom_function.num_input_args != (
-                    expected_num_args := len(
-                        self._functions[nested_custom_function.name].function_arguments
-                    )
-                ):
-                    raise InvalidCustomFunctionArguments(
-                        f"Custom function %{function_name} has invalid usage of the custom "
+                        f"{prefix}{name} has invalid usage of the custom "
                         f"function %{nested_custom_function.name}: Expects {expected_num_args} "
                         f"argument{'s' if expected_num_args > 1 else ''} but received "
                         f"{nested_custom_function.num_input_args}"
@@ -205,14 +188,17 @@ class Script:
         self._ensure_no_custom_function_cycles()
         self._ensure_custom_function_arguments_valid()
         self._ensure_no_variable_cycles()
-        self._ensure_custom_function_usage_num_input_arguments_valid()
 
-        self._ensure_lambda_usage_num_input_arguments_valid(
-            definitions=self._variables, prefix="Variable "
-        )
-        self._ensure_lambda_usage_num_input_arguments_valid(
-            definitions=self._functions, prefix="Custom function %"
-        )
+        for prefix, definitions in (
+            ("Variable ", self._variables),
+            ("Custom function %", self._functions),
+        ):
+            self._ensure_custom_function_usage_num_input_arguments_valid(
+                prefix=prefix, definitions=definitions
+            )
+            self._ensure_lambda_usage_num_input_arguments_valid(
+                prefix=prefix, definitions=definitions
+            )
 
     def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
