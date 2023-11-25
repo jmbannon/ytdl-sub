@@ -193,9 +193,9 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
                         "file_convert ffmpeg_post_process_args did not produce an output file"
                     )
 
+                FileHandler.delete(input_video_file_path)
                 FileHandler.move(tmp_output_file, converted_video_file_path)
                 FileHandler.delete(tmp_output_file)
-                FileHandler.delete(input_video_file_path)
 
         if original_ext != new_ext:
             entry.add_kwargs(
