@@ -2,13 +2,12 @@ from abc import ABC
 
 from ytdl_sub.utils.exceptions import ValidationException
 
+###################################################################################################
+# USER EXCEPTIONS
+
 
 class UserException(ValidationException, ABC):
     """It's the user's fault!"""
-
-
-class RuntimeException(ValueError, ABC):
-    """Exception thrown at runtime during resolution"""
 
 
 class InvalidSyntaxException(UserException):
@@ -47,18 +46,6 @@ class CycleDetected(UserException):
     """A cycle exists within a user's script"""
 
 
-class FunctionRuntimeException(RuntimeException):
-    """Exception thrown when a ytdl-sub function has an error occur at runtime"""
-
-
-class KeyNotHashableRuntimeException(RuntimeException):
-    """Map tried to use a non-hashable key at runtime"""
-
-
-class FunctionDoesNotExistRuntimeException(RuntimeException):
-    """Tried to get a function that does not exist"""
-
-
 class UserThrownRuntimeError(ValidationException):
     """An error explicitly thrown by the user via a function"""
 
@@ -72,3 +59,26 @@ UNREACHABLE = _UnreachableSyntaxException(
     "Please upload your config/subscription file(s) to and make a GitHub issue at "
     "https://github.com/jmbannon/ytdl-sub/issues"
 )
+
+###################################################################################################
+# RUNTIME EXCEPTIONS
+
+
+class RuntimeException(ValueError, ABC):
+    """Exception thrown at runtime during resolution"""
+
+
+class FunctionRuntimeException(RuntimeException):
+    """Exception thrown when a ytdl-sub function has an error occur at runtime"""
+
+
+class KeyNotHashableRuntimeException(RuntimeException):
+    """Map tried to use a non-hashable key at runtime"""
+
+
+class FunctionDoesNotExistRuntimeException(RuntimeException):
+    """Tried to get a function that does not exist"""
+
+
+class KeyDoesNotExistRuntimeException(RuntimeException):
+    """Tried to access a key on a map that does not exist, with no default"""

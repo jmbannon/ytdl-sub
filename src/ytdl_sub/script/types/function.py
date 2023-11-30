@@ -26,6 +26,7 @@ from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
+from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.script.utils.type_checking import FunctionSpec
 from ytdl_sub.script.utils.type_checking import is_union
@@ -189,7 +190,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
         try:
             return self.callable(*resolved_arguments)
-        except UserThrownRuntimeError:
+        except (UserThrownRuntimeError, RuntimeException):
             raise
         except Exception as exc:
             raise FunctionRuntimeException(

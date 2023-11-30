@@ -3,6 +3,7 @@ from typing import Optional
 from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Hashable
+from ytdl_sub.script.utils.exceptions import KeyDoesNotExistRuntimeException
 
 
 class MapFunctions:
@@ -12,6 +13,11 @@ class MapFunctions:
         Return ``key``'s value within the Map. If ``key`` does not exist, and ``default`` is
         provided, it will return ``default``. Otherwise, will error.
         """
-        if default is not None:
-            return mapping.value.get(key, default=default)
+        if key not in mapping.value:
+            if default is not None:
+                return default
+
+            raise KeyDoesNotExistRuntimeException(
+                f"Tried to call %map_get with key {key.value}, but it does not exist"
+            )
         return mapping.value[key]
