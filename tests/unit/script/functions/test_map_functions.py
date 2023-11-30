@@ -46,3 +46,25 @@ class TestMapFunctions:
                     "output": "{%map_get(input_map, 'dne')}",
                 }
             ).resolve()
+
+    @pytest.mark.parametrize(
+        "contains_value, expected_value",
+        [
+            ("'key'", True),
+            ("'dne'", False),
+            ("%string(%array_at(['dne', 'key'], 1))", True),
+        ],
+    )
+    def test_map_contains(self, contains_value: str, expected_value: bool):
+        output = (
+            Script(
+                {
+                    "input_map": "{{'key': 'value'}}",
+                    "output": f"{{%map_contains(input_map, {contains_value})}}",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == expected_value
