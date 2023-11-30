@@ -176,3 +176,14 @@ class Lambda2(Lambda):
     @classmethod
     def num_input_args(cls) -> int:
         return 2
+
+
+@dataclass(frozen=True)
+class Lambda3(Lambda):
+    """
+    Type-hinting for functions that apply lambdas with three inputs per element
+    """
+
+    @classmethod
+    def num_input_args(cls) -> int:
+        return 3

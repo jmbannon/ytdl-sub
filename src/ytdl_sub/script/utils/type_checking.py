@@ -5,6 +5,7 @@ from typing import Callable
 from typing import List
 from typing import Optional
 from typing import Type
+from typing import TypeVar
 from typing import Union
 from typing import get_origin
 
@@ -13,12 +14,16 @@ from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Lambda2
+from ytdl_sub.script.types.resolvable import Lambda3
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
 # pylint: disable=missing-raises-doc
+
+
+TLambda = TypeVar("TLambda", bound=Lambda)
 
 
 def is_union(arg_type: Type) -> bool:
@@ -156,10 +161,12 @@ class FunctionSpec:
         return 0  # varargs can take any number
 
     @property
-    def is_lambda_function(self) -> Optional[Type[Lambda | Lambda2]]:
+    def is_lambda_function(self) -> Optional[Type[TLambda]]:
+        if Lambda3 in (self.args or []):
+            return Lambda3
         if Lambda2 in (self.args or []):
             return Lambda2
-        elif Lambda in (self.args or []):
+        if Lambda in (self.args or []):
             return Lambda
         return None
 

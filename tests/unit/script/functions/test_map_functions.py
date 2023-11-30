@@ -68,3 +68,33 @@ class TestMapFunctions:
             .native
         )
         assert output == expected_value
+
+    def test_map_apply(self):
+        output = (
+            Script(
+                {
+                    "%custom_func": "{[%upper($0), %lower($1)]}",
+                    "map1": "{{'Key1': 'Value1', 'Key2': 'Value2'}}",
+                    "output": "{%map_apply(map1, %custom_func)}",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == [["KEY1", "value1"], ["KEY2", "value2"]]
+
+    def test_map_enumerate(self):
+        output = (
+            Script(
+                {
+                    "%custom_func": "{[$0, %upper($1), %lower($2)]}",
+                    "map1": "{{'Key1': 'Value1', 'Key2': 'Value2'}}",
+                    "output": "{%map_enumerate(map1, %custom_func)}",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == [[0, "KEY1", "value1"], [1, "KEY2", "value2"]]
