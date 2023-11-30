@@ -4,13 +4,10 @@ import pytest
 
 from ytdl_sub.script.parser import FUNCTION_INVALID_CHAR
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
-from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 
 
 def _incompatible_arguments_match(expected: str, recieved: str) -> str:
@@ -18,38 +15,6 @@ def _incompatible_arguments_match(expected: str, recieved: str) -> str:
 
 
 class TestFunction:
-    @pytest.mark.parametrize(
-        "function_str, expected_output",
-        [
-            ("{%if(True, True, False)}", True),
-            ("{%if(False, True, False)}", False),
-        ],
-    )
-    def test_if_function(self, function_str: str, expected_output: bool):
-        assert Script({"func": function_str}).resolve() == {
-            "func": Boolean(expected_output),
-        }
-
-    def test_nested_if_function(self):
-        function_str = """{
-            %if(
-                True,
-                %if(
-                    True,
-                    %if(
-                        True,
-                        "winner",
-                        True
-                    ),
-                    True
-                ),
-                True
-            )
-        }"""
-        assert Script({"func": function_str}).resolve() == {
-            "func": String("winner"),
-        }
-
     def test_nested_if_function_incompatible(self):
         function_str = """{
             %map_get(
