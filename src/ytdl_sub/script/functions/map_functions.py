@@ -7,8 +7,8 @@ from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Hashable
 from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import Lambda2
-from ytdl_sub.script.types.resolvable import Lambda3
+from ytdl_sub.script.types.resolvable import LambdaThree
+from ytdl_sub.script.types.resolvable import LambdaTwo
 from ytdl_sub.script.utils.exceptions import KeyDoesNotExistRuntimeException
 
 
@@ -38,7 +38,7 @@ class MapFunctions:
     # pylint: disable=unused-argument
 
     @staticmethod
-    def map_apply(mapping: Map, lambda_function: Lambda2) -> Array:
+    def map_apply(mapping: Map, lambda_function: LambdaTwo) -> Array:
         """
         Apply a lambda function on the Map, where each arg
         passed to the lambda function is ``key, value`` as two separate args.
@@ -46,7 +46,7 @@ class MapFunctions:
         return ResolvedArray([ResolvedArray([key, value]) for key, value in mapping.value.items()])
 
     @staticmethod
-    def map_enumerate(mapping: Map, lambda_function: Lambda3) -> Array:
+    def map_enumerate(mapping: Map, lambda_function: LambdaThree) -> Array:
         """
         Apply a lambda function on the Map, where each arg
         passed to the lambda function is ``idx, key, value`` as three separate args.

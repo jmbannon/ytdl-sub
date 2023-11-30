@@ -4,7 +4,7 @@ from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import Lambda2
+from ytdl_sub.script.types.resolvable import LambdaTwo
 from ytdl_sub.script.types.resolvable import Resolvable
 
 
@@ -58,7 +58,7 @@ class ArrayFunctions:
         return ResolvedArray([ResolvedArray([val]) for val in array.value])
 
     @staticmethod
-    def array_enumerate(array: Array, lambda_function: Lambda2) -> Array:
+    def array_enumerate(array: Array, lambda_function: LambdaTwo) -> Array:
         """
         Apply a lambda function on every element in the Array, where each arg
         passed to the lambda function is ``idx, element`` as two separate args.

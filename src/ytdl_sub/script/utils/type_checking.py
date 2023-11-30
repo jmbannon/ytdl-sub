@@ -13,8 +13,8 @@ from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import Lambda2
-from ytdl_sub.script.types.resolvable import Lambda3
+from ytdl_sub.script.types.resolvable import LambdaThree
+from ytdl_sub.script.types.resolvable import LambdaTwo
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import Variable
@@ -162,10 +162,10 @@ class FunctionSpec:
 
     @property
     def is_lambda_function(self) -> Optional[Type[TLambda]]:
-        if Lambda3 in (self.args or []):
-            return Lambda3
-        if Lambda2 in (self.args or []):
-            return Lambda2
+        if LambdaThree in (self.args or []):
+            return LambdaThree
+        if LambdaTwo in (self.args or []):
+            return LambdaTwo
         if Lambda in (self.args or []):
             return Lambda
         return None

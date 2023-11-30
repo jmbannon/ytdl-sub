@@ -168,7 +168,7 @@ class Lambda(Resolvable):
 
 
 @dataclass(frozen=True)
-class Lambda2(Lambda):
+class LambdaTwo(Lambda):
     """
     Type-hinting for functions that apply lambdas with two inputs per element
     """
@@ -179,7 +179,7 @@ class Lambda2(Lambda):
 
 
 @dataclass(frozen=True)
-class Lambda3(Lambda):
+class LambdaThree(Lambda):
     """
     Type-hinting for functions that apply lambdas with three inputs per element
     """
