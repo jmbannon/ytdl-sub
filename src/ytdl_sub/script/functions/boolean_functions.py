@@ -59,26 +59,27 @@ class BooleanFunctions:
         return Boolean(left.value >= right.value)
 
     @staticmethod
-    def and_(left: Boolean, right: Boolean) -> Boolean:
+    def and_(*values: AnyArgument) -> Boolean:
         """
-        ``and`` operator. Returns True if left and right are both True. False otherwise.
+        ``and`` operator. Returns True if all values evaluate to True. False otherwise.
         """
-        return Boolean(left.value and right.value)
+        return Boolean(all(bool(val.value) for val in values))
 
     @staticmethod
-    def or_(left: Boolean, right: Boolean) -> Boolean:
+    def or_(*values: AnyArgument) -> Boolean:
         """
-        ``or`` operator. Returns True if either left or right are True. False otherwise.
+        ``or`` operator. Returns True if any value evaluates to True. False otherwise.
         """
-        return Boolean(left.value or right.value)
+        return Boolean(any(bool(val.value) for val in values))
 
     @staticmethod
-    def xor(left: Boolean, right: Boolean) -> Boolean:
+    def xor(*values: AnyArgument) -> Boolean:
         """
-        ``^`` operator. Returns True if either left or right are True and the other is False.
-        Returns False otherwise.
+        ``^`` operator. Returns True if exactly one value is set to True. False otherwise.
         """
-        return Boolean(left.value ^ right.value)
+        bit_array = [bool(val.value) for val in values]
+
+        return Boolean(sum(bit_array) == 1)
 
     @staticmethod
     def not_(value: Boolean) -> Boolean:
