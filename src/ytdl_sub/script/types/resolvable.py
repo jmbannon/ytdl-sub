@@ -32,6 +32,15 @@ class Argument(NamedType, ABC):
 
 
 @dataclass(frozen=True)
+class ValueArgument(Argument, ABC):
+    """
+    Argument that has a value
+    """
+
+    value: Any
+
+
+@dataclass(frozen=True)
 class NamedArgument(Argument, ABC):
     """
     Argument that has an explicit name (i.e. custom function or variable)
@@ -41,33 +50,31 @@ class NamedArgument(Argument, ABC):
 
 
 @dataclass(frozen=True)
-class ReturnableArgument(NamedType, ABC):
+class ReturnableArgument(ValueArgument, NamedType, ABC):
     """
     AnyType to express generics in functions that are part of the return type
     """
 
 
 @dataclass(frozen=True)
-class ReturnableArgumentA(NamedType, ABC):
+class ReturnableArgumentA(ValueArgument, NamedType, ABC):
     """
     AnyType to express generics in functions when more than one are present (i.e. `if`)
     """
 
 
 @dataclass(frozen=True)
-class ReturnableArgumentB(NamedType, ABC):
+class ReturnableArgumentB(ValueArgument, NamedType, ABC):
     """
     AnyType to express generics in functions when more than one are present (i.e. `if`)
     """
 
 
 @dataclass(frozen=True)
-class AnyArgument(Argument, ReturnableArgument, ReturnableArgumentA, ReturnableArgumentB, ABC):
+class AnyArgument(ReturnableArgument, ReturnableArgumentA, ReturnableArgumentB, ABC):
     """
     Human-readable name for FutureResolvable
     """
-
-    value: Any
 
 
 @dataclass(frozen=True)

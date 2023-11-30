@@ -1,5 +1,5 @@
 from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import Boolean
+from ytdl_sub.script.types.resolvable import ReturnableArgument
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 
@@ -13,10 +13,11 @@ class ErrorFunctions:
         raise UserThrownRuntimeError(error_message)
 
     @staticmethod
-    def assert_(condition: Boolean, assert_message: String) -> Boolean:
+    def assert_(value: ReturnableArgument, assert_message: String) -> ReturnableArgument:
         """
-        Explicitly throw an error with the provided assert message if ``condition`` is False.
+        Explicitly throw an error with the provided assert message if ``value`` evaluates to False.
+        If it evaluates to True, it will return ``value``.
         """
-        if not condition.value:
+        if not bool(value.value):
             raise UserThrownRuntimeError(assert_message)
-        return condition
+        return value

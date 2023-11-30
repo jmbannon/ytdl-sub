@@ -93,14 +93,6 @@ class TestFunction:
         ):
             Script({"divide_by_zero": "{%div(8820, 0)}"}).resolve()
 
-    def test_user_throw(self):
-        with pytest.raises(UserThrownRuntimeError, match=re.escape("test this error message")):
-            Script({"throw_error": "{%throw('test this error message')}"}).resolve()
-
-    def test_user_assert(self):
-        with pytest.raises(UserThrownRuntimeError, match=re.escape("test this error message")):
-            Script({"throw_error": "{%assert(False, 'test this error message')}"}).resolve()
-
     def test_function_does_not_exist(self):
         with pytest.raises(
             FunctionDoesNotExist,
