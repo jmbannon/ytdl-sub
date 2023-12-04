@@ -2,6 +2,7 @@ from typing import Optional
 
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import Numeric
 from ytdl_sub.script.types.resolvable import String
 
 
@@ -60,3 +61,25 @@ class StringFunctions:
         Concatenate multiple Strings into a single String.
         """
         return String("".join(list([val.value for val in values])))
+
+    @staticmethod
+    def pad(string: String, length: Integer, char: String) -> String:
+        """
+        Pads the string to the given length
+        """
+        output = string.value
+        while len(output) < length.value:
+            output = f"{char}{output}"
+
+        return String(output)
+
+    @staticmethod
+    def pad_zero(numeric: Numeric, length: Integer) -> String:
+        """
+        Pads a numeric with zeros to the given length
+        """
+        return StringFunctions.pad(
+            string=String(str(numeric.value)),
+            length=length,
+            char=String("0"),
+        )

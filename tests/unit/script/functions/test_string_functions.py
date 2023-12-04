@@ -76,3 +76,25 @@ class TestNumericFunctions:
     def test_concat(self, values: str, expected_output: str):
         output = single_variable_output(f"{{%concat({values})}}")
         assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "values, expected_output",
+        [
+            ("'HI', 6, '.'", "....HI"),
+            ("'HI', 2, '.'", "HI"),
+        ],
+    )
+    def test_pad(self, values: str, expected_output: str):
+        output = single_variable_output(f"{{%pad({values})}}")
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "values, expected_output",
+        [
+            ("2012, 6", "002012"),
+            ("2012, 2", "2012"),
+        ],
+    )
+    def test_pad_zero(self, values: str, expected_output: str):
+        output = single_variable_output(f"{{%pad_zero({values})}}")
+        assert output == expected_output
