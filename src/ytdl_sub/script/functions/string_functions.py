@@ -55,8 +55,8 @@ class StringFunctions:
         return String(string.value.replace(old.value, new.value))
 
     @staticmethod
-    def concat(*args: String) -> String:
+    def concat(*values: String) -> String:
         """
         Concatenate multiple Strings into a single String.
         """
-        return String("".join(*args))
+        return String("".join(list([val.value for val in values])))
