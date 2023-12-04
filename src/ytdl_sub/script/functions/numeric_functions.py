@@ -1,3 +1,4 @@
+import math
 from typing import Union
 
 from ytdl_sub.script.types.resolvable import Boolean
@@ -29,25 +30,36 @@ class NumericFunctions:
         return Integer(value=int(value.value))
 
     @staticmethod
-    def add(left: Numeric, right: Numeric) -> Numeric:
+    def add(*values: Numeric) -> Numeric:
         """
-        ``+`` operator. Returns ``left + right``.
+        ``+`` operator. Returns the sum of all values.
         """
-        return _to_numeric(left.value + right.value)
+        return _to_numeric(sum(val.value for val in values))
 
     @staticmethod
-    def sub(left: Numeric, right: Numeric) -> Numeric:
+    def sub(*values: Numeric) -> Numeric:
         """
-        ``-`` operator. Returns ``left - right``.
+        ``-`` operator. Subtracts all values from left to right.
         """
-        return _to_numeric(left.value - right.value)
+        output = values[0].value
+        for val in values[1:]:
+            output -= val.value
+
+        return _to_numeric(output)
 
     @staticmethod
-    def mul(left: Numeric, right: Numeric) -> Numeric:
+    def mul(*values: Numeric) -> Numeric:
         """
-        ``*`` operator. Returns ``left * right``.
+        ``*`` operator. Returns the product of all values.
         """
-        return _to_numeric(left.value * right.value)
+        return _to_numeric(math.prod([val.value for val in values]))
+
+    @staticmethod
+    def pow(base: Numeric, exponent: Numeric) -> Numeric:
+        """
+        ``**`` operator. Returns the exponential of the base and exponent value.
+        """
+        return _to_numeric(math.pow(base.value, exponent.value))
 
     @staticmethod
     def div(left: Numeric, right: Numeric) -> Numeric:

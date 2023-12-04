@@ -1,4 +1,5 @@
 import pytest
+from unit.script.conftest import single_variable_output
 
 from ytdl_sub.script.script import Script
 
@@ -21,16 +22,7 @@ class TestBooleanFunctions:
     @pytest.mark.parametrize("is_ne", [True, False])
     def test_eq_ne(self, lhs: str, rhs: str, expected_output: bool, is_ne: bool):
         op = "ne" if is_ne else "eq"
-        output = (
-            Script(
-                {
-                    "output": f"{{%{op}({lhs}, {rhs})}}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output(f"{{%{op}({lhs}, {rhs})}}")
 
         if is_ne:
             assert output != expected_output
@@ -49,16 +41,7 @@ class TestBooleanFunctions:
     @pytest.mark.parametrize("is_gt", [True, False])
     def test_lte_gt(self, lhs: str, rhs: str, expected_output: bool, is_gt: bool):
         op = "gt" if is_gt else "lte"
-        output = (
-            Script(
-                {
-                    "output": f"{{%{op}({lhs}, {rhs})}}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output(f"{{%{op}({lhs}, {rhs})}}")
 
         if is_gt:
             assert output != expected_output
@@ -78,16 +61,7 @@ class TestBooleanFunctions:
     @pytest.mark.parametrize("is_lt", [True, False])
     def test_gte_lt(self, lhs: str, rhs: str, expected_output: bool, is_lt: bool):
         op = "lt" if is_lt else "gte"
-        output = (
-            Script(
-                {
-                    "output": f"{{%{op}({lhs}, {rhs})}}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output(f"{{%{op}({lhs}, {rhs})}}")
 
         if is_lt:
             assert output != expected_output
@@ -106,16 +80,7 @@ class TestBooleanFunctions:
         ],
     )
     def test_and(self, values: str, expected_output: bool):
-        output = (
-            Script(
-                {
-                    "output": f"{{%and({values})}}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output(f"{{%and({values})}}")
         assert output == expected_output
 
     @pytest.mark.parametrize(
@@ -131,16 +96,7 @@ class TestBooleanFunctions:
         ],
     )
     def test_or(self, values: str, expected_output: bool):
-        output = (
-            Script(
-                {
-                    "output": f"{{%or({values})}}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output(f"{{%or({values})}}")
         assert output == expected_output
 
     @pytest.mark.parametrize(
@@ -157,16 +113,7 @@ class TestBooleanFunctions:
         ],
     )
     def test_xor(self, values: str, expected_output: bool):
-        output = (
-            Script(
-                {
-                    "output": f"{{%xor({values})}}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output(f"{{%xor({values})}}")
         assert output == expected_output
 
     @pytest.mark.parametrize(
@@ -177,14 +124,5 @@ class TestBooleanFunctions:
         ],
     )
     def test_not(self, value: str, expected_output: bool):
-        output = (
-            Script(
-                {
-                    "output": f"{{%not({value})}}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output(f"{{%not({value})}}")
         assert output == expected_output

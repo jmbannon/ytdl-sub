@@ -1,3 +1,5 @@
+from unit.script.conftest import single_variable_output
+
 from ytdl_sub.script.script import Script
 
 
@@ -19,59 +21,19 @@ class TestArrayFunctions:
         assert output == ["a", "b", "c"]
 
     def test_array_at(self):
-        output = (
-            Script(
-                {
-                    "array1": "{['a', 'b', 'c']}",
-                    "output": "{%array_at(array1, 1)}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output("{%array_at(['a', 'b', 'c'], 1)}")
         assert output == "b"
 
     def test_array_flatten(self):
-        output = (
-            Script(
-                {
-                    "array1": "{['a', ['b'], [['c']]]}",
-                    "output": "{%array_flatten(array1)}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output("{%array_flatten(['a', ['b'], [['c']]])}")
         assert output == ["a", "b", "c"]
 
     def test_array_reverse(self):
-        output = (
-            Script(
-                {
-                    "array1": "{['a', 'b', 'c']}",
-                    "output": "{%array_reverse(array1)}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output("{%array_reverse(['a', 'b', 'c'])}")
         assert output == ["c", "b", "a"]
 
     def test_array_apply(self):
-        output = (
-            Script(
-                {
-                    "array1": "{['a', 'b', 'c']}",
-                    "output": "{%array_apply(array1, %capitalize)}",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
+        output = single_variable_output("{%array_apply(['a', 'b', 'c'], %capitalize)}")
         assert output == ["A", "B", "C"]
 
     def test_array_enumerate(self):
