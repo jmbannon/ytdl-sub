@@ -6,6 +6,7 @@ from ytdl_sub.script.functions.conditional_functions import ConditionalFunctions
 from ytdl_sub.script.functions.error_functions import ErrorFunctions
 from ytdl_sub.script.functions.map_functions import MapFunctions
 from ytdl_sub.script.functions.numeric_functions import NumericFunctions
+from ytdl_sub.script.functions.regex_functions import RegexFunctions
 from ytdl_sub.script.functions.string_functions import StringFunctions
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExistRuntimeException
@@ -19,6 +20,7 @@ class Functions(
     MapFunctions,
     BooleanFunctions,
     ErrorFunctions,
+    RegexFunctions,
 ):
     @classmethod
     def is_built_in(cls, name: str) -> bool:
