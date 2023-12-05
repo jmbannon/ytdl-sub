@@ -85,11 +85,3 @@ class StringFunctions:
             length=length,
             char=String("0"),
         )
-
-    @staticmethod
-    def sanitize(string: String) -> String:
-        """
-        Returns a sanitized string that is safe to use in file paths (Windows, OSX, Unix).
-        """
-        # TODO: Move this out of script before making it a separate library
-        return String(sanitize_filename(string.value))

@@ -1,8 +1,8 @@
 from typing import Dict
 from typing import Optional
 
-from ytdl_sub.entries.script.kwargs import KwargKey
-from ytdl_sub.entries.script.variables import Variables
+from ytdl_sub.entries.script.variable_definitions import KwargKey
+from ytdl_sub.entries.script.variable_definitions import Variables
 
 ENTRY_MAP_VARIABLE = "entry"
 
@@ -32,8 +32,11 @@ def sanitized(key: KwargKey) -> str:
 
 
 def sanitized_plex(key: KwargKey) -> str:
-    return f"""{{
-    }}"""
+    return f"{{%sanitize_plex_episode({key.variable_name})}}"
+
+
+def date_metadata(date_key: KwargKey, metadata_key: str) -> str:
+    return f"{{%map_get(%date_metadata({date_key.variable_name}), '{metadata_key}')}}"
 
 
 # singleton to produce variable keys
@@ -62,10 +65,12 @@ ENTRY_DEFAULT_VARIABLES: Dict[KwargKey, str] = {
 }
 
 ENTRY_DERIVED_VARIABLES: Dict[KwargKey, str] = {
-    # UID_SANITIZED
-    # UID_SANITIZED_PLEX
-    # title_sanitized
-    # title_sanitized_plex
+    v.uid_sanitized: sanitized(v.uid),
+    v.uid_sanitized_plex: sanitized_plex(v.uid_sanitized_plex),
+    v.title_sanitized: sanitized(v.title),
+    v.title_sanitized_plex: sanitized_plex(v.title),
+    v.upload_date: entry_get(v.upload_date, "TODO CURRENT TIME"),
+    v.release_date: entry_get(v.release_date, "TODO CURRENT TIME"),
     # epoch_date
     # epoch_hour
     # creator
@@ -86,43 +91,45 @@ ENTRY_ARCHIVE_VARIABLES: Dict[KwargKey, str] = {
 }
 
 ENTRY_UPLOAD_DATE_VARIABLES: Dict[KwargKey, str] = {
-    # upload_date
-    # upload_year
-    # upload_year_truncated
-    # upload_year_truncated_reversed
-    # upload_month_reversed
-    # upload_month_reversed_padded
-    # upload_month_padded
-    # upload_day_padded
-    # upload_month
-    # upload_day
-    # upload_day_reversed
-    # upload_day_reversed_padded
-    # upload_day_of_year
-    # upload_day_of_year_padded
-    # upload_day_of_year_reversed
-    # upload_day_of_year_reversed_padded
-    # upload_date_standardized
+    v.upload_year: date_metadata(v.upload_date, "year"),
+    v.upload_year_truncated: date_metadata(v.upload_date, "year_truncated"),
+    v.upload_year_truncated_reversed: date_metadata(v.upload_date, "year_truncated_reversed"),
+    v.upload_month_reversed: date_metadata(v.upload_date, "month_reversed"),
+    v.upload_month_reversed_padded: date_metadata(v.upload_date, "month_reversed_padded"),
+    v.upload_month_padded: date_metadata(v.upload_date, "month_padded"),
+    v.upload_day_padded: date_metadata(v.upload_date, "day_padded"),
+    v.upload_month: date_metadata(v.upload_date, "month"),
+    v.upload_day: date_metadata(v.upload_date, "day"),
+    v.upload_day_reversed: date_metadata(v.upload_date, "day_reversed"),
+    v.upload_day_reversed_padded: date_metadata(v.upload_date, "day_reversed_padded"),
+    v.upload_day_of_year: date_metadata(v.upload_date, "day_of_year"),
+    v.upload_day_of_year_padded: date_metadata(v.upload_date, "day_of_year_padded"),
+    v.upload_day_of_year_reversed: date_metadata(v.upload_date, "day_of_year_reversed"),
+    v.upload_day_of_year_reversed_padded: date_metadata(
+        v.upload_date, "day_of_year_reversed_padded"
+    ),
+    v.upload_date_standardized: date_metadata(v.upload_date, "date_standardized"),
 }
 
 ENTRY_RELEASE_DATE_VARIABLES: Dict[KwargKey, str] = {
-    # release_date
-    # release_year
-    # release_year_truncated
-    # release_year_truncated_reversed
-    # release_month_reversed
-    # release_month_reversed_padded
-    # release_month_padded
-    # release_day_padded
-    # release_month
-    # release_day
-    # release_day_reversed
-    # release_day_reversed_padded
-    # release_day_of_year
-    # release_day_of_year_padded
-    # release_day_of_year_reversed
-    # release_day_of_year_reversed_padded
-    # release_date_standardized
+    v.release_year: date_metadata(v.release_date, "year"),
+    v.release_year_truncated: date_metadata(v.release_date, "year_truncated"),
+    v.release_year_truncated_reversed: date_metadata(v.release_date, "year_truncated_reversed"),
+    v.release_month_reversed: date_metadata(v.release_date, "month_reversed"),
+    v.release_month_reversed_padded: date_metadata(v.release_date, "month_reversed_padded"),
+    v.release_month_padded: date_metadata(v.release_date, "month_padded"),
+    v.release_day_padded: date_metadata(v.release_date, "day_padded"),
+    v.release_month: date_metadata(v.release_date, "month"),
+    v.release_day: date_metadata(v.release_date, "day"),
+    v.release_day_reversed: date_metadata(v.release_date, "day_reversed"),
+    v.release_day_reversed_padded: date_metadata(v.release_date, "day_reversed_padded"),
+    v.release_day_of_year: date_metadata(v.release_date, "day_of_year"),
+    v.release_day_of_year_padded: date_metadata(v.release_date, "day_of_year_padded"),
+    v.release_day_of_year_reversed: date_metadata(v.release_date, "day_of_year_reversed"),
+    v.release_day_of_year_reversed_padded: date_metadata(
+        v.release_date, "day_of_year_reversed_padded"
+    ),
+    v.release_date_standardized: date_metadata(v.release_date, "date_standardized"),
 }
 
 ENTRY_SOURCE_VARIABLES: Dict[KwargKey, str] = {

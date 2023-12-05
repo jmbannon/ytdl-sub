@@ -1,8 +1,19 @@
-from ytdl_sub.entries.script.kwargs import KwargKey
+from dataclasses import dataclass
+from typing import Optional
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member
 # pylint: disable=too-many-public-methods
+
+
+@dataclass(frozen=True)
+class KwargKey:
+    entry_key: str
+    variable_name: str
+
+    @classmethod
+    def init(cls, entry_key: str, variable_name: Optional[str] = None) -> "KwargKey":
+        return cls(entry_key=entry_key, variable_name=variable_name if variable_name else entry_key)
 
 
 class Variables:
