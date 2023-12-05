@@ -141,6 +141,9 @@ ENTRY_SOURCE_VARIABLES: Dict[KwargKey, str] = {
     # source_count
     # source_webpage_url
     # source_description
+    # source_uploader_id
+    # source_uploader
+    # source_uploader_url
 }
 
 ENTRY_PLAYLIST_VARIABLES: Dict[KwargKey, str] = {
@@ -162,7 +165,4 @@ ENTRY_PLAYLIST_VARIABLES: Dict[KwargKey, str] = {
     # playlist_uploader
     # playlist_uploader_sanitized
     # playlist_uploader_url
-    # source_uploader_id
-    # source_uploader
-    # source_uploader_url
 }
