@@ -1,4 +1,5 @@
 from typing import Callable
+from typing import Dict
 
 from ytdl_sub.script.functions.array_functions import ArrayFunctions
 from ytdl_sub.script.functions.boolean_functions import BooleanFunctions
@@ -22,9 +23,11 @@ class Functions(
     ErrorFunctions,
     RegexFunctions,
 ):
+    _custom_functions: Dict[str, Callable[..., Resolvable]] = {}
+
     @classmethod
     def is_built_in(cls, name: str) -> bool:
-        return hasattr(cls, name) or hasattr(cls, f"{name}_")
+        return hasattr(cls, name) or hasattr(cls, f"{name}_") or name in cls._custom_functions
 
     @classmethod
     def get(cls, name: str) -> Callable[..., Resolvable]:
@@ -32,5 +35,15 @@ class Functions(
             return getattr(cls, name)
         if hasattr(cls, f"{name}_"):
             return getattr(cls, f"{name}_")
+        if name in cls._custom_functions:
+            return cls._custom_functions[name]
 
         raise FunctionDoesNotExistRuntimeException(f"The function {name} does not exist")
+
+    @classmethod
+    def register_function(cls, function: Callable[..., Resolvable]) -> None:
+        if cls.is_built_in(function.__name__):
+            raise ValueError(
+                f"Cannot register a function with name {function.__name__} because it already exists"
+            )
+        cls._custom_functions[function.__name__] = function

@@ -91,13 +91,11 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
     @property
     def callable(self) -> Callable[..., Resolvable]:
-        if hasattr(Functions, self.name):
-            return getattr(Functions, self.name)
-        if hasattr(Functions, self.name + "_"):
-            return getattr(Functions, self.name + "_")
-
-        # Should be validated in the parser
-        raise UNREACHABLE
+        try:
+            return Functions.get(self.name)
+        except Exception as exc:
+            # Should be validated in the parser
+            raise UNREACHABLE from exc
 
     @functools.cached_property
     def function_spec(self) -> FunctionSpec:

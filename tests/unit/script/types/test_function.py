@@ -1,9 +1,12 @@
 import re
 
 import pytest
+from unit.script.conftest import single_variable_output
 
+from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import FUNCTION_INVALID_CHAR
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
@@ -12,6 +15,10 @@ from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 def _incompatible_arguments_match(expected: str, recieved: str) -> str:
     return re.escape(f"Expected ({expected})\nReceived ({recieved})")
+
+
+def mock_register_function(integer: Integer) -> Integer:
+    return Integer(integer.value + 100)
 
 
 class TestFunction:
@@ -71,3 +78,11 @@ class TestFunction:
             match=re.escape(str(FUNCTION_INVALID_CHAR)),
         ):
             Script({"dne": "{%throw}"}).resolve()
+
+    def test_register_function(self):
+        try:
+            Functions.register_function(function=mock_register_function)
+            output = single_variable_output(f"{{%mock_register_function(10)}}")
+            assert output == 110
+        finally:
+            del Functions._custom_functions[mock_register_function.__name__]
