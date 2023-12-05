@@ -76,6 +76,10 @@ class KeyNotHashableRuntimeException(RuntimeException):
     """Map tried to use a non-hashable key at runtime"""
 
 
+class ArrayValueDoesNotExist(RuntimeException):
+    """Tried to get an index of a value in an Array that does not exist"""
+
+
 class FunctionDoesNotExistRuntimeException(RuntimeException):
     """Tried to get a function that does not exist"""
 

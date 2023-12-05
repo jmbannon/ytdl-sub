@@ -28,6 +28,18 @@ class TestArrayFunctions:
         output = single_variable_output("{%array_flatten(['a', ['b'], [['c']]])}")
         assert output == ["a", "b", "c"]
 
+    def test_array_contains(self):
+        output = single_variable_output("{%array_contains(['a', ['b'], [['c']]], [['c']])}")
+        assert output is True
+
+    def test_array_index(self):
+        output = single_variable_output("{%array_index(['a', ['b'], [['c']]], [['c']])}")
+        assert output == 2
+
+    def test_array_slice(self):
+        output = single_variable_output("{%array_slice(['a', ['b'], [['c']]], 1, -1)}")
+        assert output == [["b"]]
+
     def test_array_reverse(self):
         output = single_variable_output("{%array_reverse(['a', 'b', 'c'])}")
         assert output == ["c", "b", "a"]

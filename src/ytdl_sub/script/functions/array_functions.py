@@ -1,11 +1,16 @@
 from typing import List
+from typing import Optional
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import ResolvedArray
+from ytdl_sub.script.types.resolvable import AnyArgument
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import LambdaTwo
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.utils.exceptions import UNREACHABLE
+from ytdl_sub.script.utils.exceptions import ArrayValueDoesNotExist
 
 
 class ArrayFunctions:
@@ -26,6 +31,38 @@ class ArrayFunctions:
         Return the element in the Array at index ``idx``.
         """
         return array.value[idx.value]
+
+    @staticmethod
+    def array_contains(array: Array, value: AnyArgument) -> Boolean:
+        """
+        Return True if the value exists in the Array. False otherwise.
+        """
+        return Boolean(value in array.value)
+
+    @staticmethod
+    def array_index(array: Array, value: AnyArgument) -> Integer:
+        """
+        Return the index of the value within the Array if it exists. If it does not, it will
+        throw an error.
+        """
+        if not ArrayFunctions.array_contains(array=array, value=value):
+            raise ArrayValueDoesNotExist(
+                "Tried to get the index of a value in an Array that does not exist"
+            )
+
+        if isinstance(value, Resolvable):
+            return Integer(array.value.index(value))
+
+        raise UNREACHABLE
+
+    @staticmethod
+    def array_slice(array: Array, start: Integer, end: Optional[Integer] = None) -> Array:
+        """
+        Returns the slice of the Array.
+        """
+        if end is not None:
+            return ResolvedArray(array.value[start.value : end.value])
+        return ResolvedArray(array.value[start.value :])
 
     @staticmethod
     def array_flatten(array: Array) -> Array:
