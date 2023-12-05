@@ -98,3 +98,15 @@ class TestNumericFunctions:
     def test_pad_zero(self, values: str, expected_output: str):
         output = single_variable_output(f"{{%pad_zero({values})}}")
         assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "values, expected_output",
+        [
+            ("'2012'", "2012"),
+            ("'$?ahh'", "$？ahh"),
+        ],
+    )
+    def test_sanitize(self, values: str, expected_output: str):
+        # TODO: Move this out once it is its own library
+        output = single_variable_output(f"{{%sanitize({values})}}")
+        assert output == expected_output
