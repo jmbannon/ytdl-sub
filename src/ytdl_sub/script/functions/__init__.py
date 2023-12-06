@@ -4,6 +4,7 @@ from typing import Dict
 from ytdl_sub.script.functions.array_functions import ArrayFunctions
 from ytdl_sub.script.functions.boolean_functions import BooleanFunctions
 from ytdl_sub.script.functions.conditional_functions import ConditionalFunctions
+from ytdl_sub.script.functions.date_functions import DateFunctions
 from ytdl_sub.script.functions.error_functions import ErrorFunctions
 from ytdl_sub.script.functions.map_functions import MapFunctions
 from ytdl_sub.script.functions.numeric_functions import NumericFunctions
@@ -22,6 +23,7 @@ class Functions(
     BooleanFunctions,
     ErrorFunctions,
     RegexFunctions,
+    DateFunctions,
 ):
     _custom_functions: Dict[str, Callable[..., Resolvable]] = {}
 
