@@ -53,6 +53,7 @@ ENTRY_REQUIRED_VARIABLES: Dict[KwargKey, str] = {
     v.ie_key: entry_get(v.ie_key),
     v.epoch: entry_get_int(v.epoch),
     v.webpage_url: entry_get(v.webpage_url),
+    v.ext: entry_get(v.ext),
 }
 
 ENTRY_DEFAULT_VARIABLES: Dict[KwargKey, str] = {
@@ -69,16 +70,15 @@ ENTRY_DERIVED_VARIABLES: Dict[KwargKey, str] = {
     v.uid_sanitized_plex: sanitized_plex(v.uid_sanitized_plex),
     v.title_sanitized: sanitized(v.title),
     v.title_sanitized_plex: sanitized_plex(v.title),
-    v.upload_date: entry_get(v.upload_date, "TODO CURRENT TIME"),
-    v.release_date: entry_get(v.release_date, "TODO CURRENT TIME"),
-    # epoch_date
-    # epoch_hour
-    # creator
-    # creator_sanitized
-    # channel
-    # channel_sanitized
-    # channel_id
-    # ext
+    v.epoch_date: f"{{%datetime_strftime({v.epoch.variable_name}, '%Y%m%d')}}",
+    v.epoch_hour: f"{{%datetime_strftime({v.epoch.variable_name}, '%H')}}",
+    v.upload_date: entry_get(v.upload_date, v.epoch_date),
+    v.release_date: entry_get(v.release_date, v.upload_date),
+    v.channel: entry_get(v.channel, v.uploader),
+    v.channel_sanitized: sanitized(v.channel),
+    v.creator: entry_get(v.creator, v.channel),
+    v.creator_sanitized: sanitized(v.creator),
+    v.channel_id: entry_get(v.channel_id, v.uploader_id),
 }
 
 ENTRY_ARCHIVE_VARIABLES: Dict[KwargKey, str] = {
