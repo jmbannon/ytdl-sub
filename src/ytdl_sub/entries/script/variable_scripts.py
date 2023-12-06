@@ -4,7 +4,9 @@ from typing import Optional
 from ytdl_sub.entries.script.variable_definitions import KwargKey
 from ytdl_sub.entries.script.variable_definitions import Variables
 
-ENTRY_MAP_VARIABLE = "entry"
+ENTRY_MAP_VARIABLE = "entry_metadata"
+PLAYLIST_MAP_VARIABLE = "playlist_metadata"
+SOURCE_MAP_VARIABLE = "source_metadata"
 
 
 def _entry_get(key: KwargKey, default: Optional[KwargKey | str | int]) -> str:
@@ -25,6 +27,10 @@ def entry_get(key: KwargKey, default: Optional[KwargKey | str | int] = None) -> 
 
 def entry_get_int(key: KwargKey, default: Optional[KwargKey] = None) -> str:
     return f"{{%int({_entry_get(key=key, default=default)}}}"
+
+
+def pad_int(key: KwargKey, pad: int) -> str:
+    return f"{{%pad_zero({key.variable_name}, {pad})}}"
 
 
 def sanitized(key: KwargKey) -> str:
@@ -82,12 +88,12 @@ ENTRY_DERIVED_VARIABLES: Dict[KwargKey, str] = {
 }
 
 ENTRY_ARCHIVE_VARIABLES: Dict[KwargKey, str] = {
-    # download_index
-    # download_index_padded6
-    # upload_date_index
-    # upload_date_index_padded
-    # upload_date_index_reversed
-    # upload_date_index_reversed_padded
+    v.download_index: entry_get_int(v.download_index),
+    v.download_index_padded6: pad_int(v.download_index, 6),
+    v.upload_date_index: entry_get_int(v.upload_date_index),
+    v.upload_date_index_padded: pad_int(v.upload_date_index, 2),
+    v.upload_date_index_reversed: f"{{%sub(100, {v.download_index})}}",
+    v.upload_date_index_reversed_padded: pad_int(v.upload_date_index_reversed, 2),
 }
 
 ENTRY_UPLOAD_DATE_VARIABLES: Dict[KwargKey, str] = {
