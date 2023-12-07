@@ -201,7 +201,7 @@ PLAYLIST_VARIABLES: Dict[Variable, str] = {
 }
 
 PLAYLIST_INJECTED_VARIABLES: Dict[Variable, str] = {
-    v.playlist_max_upload_year: playlist_get(v.playlist_max_upload_year, v.upload_year)
+    v.playlist_max_upload_year: playlist_get_int(v.playlist_max_upload_year, v.upload_year)
 }
 
 PLAYLIST_DERIVED_VARIABLES: Dict[Variable, str] = {
@@ -212,7 +212,7 @@ PLAYLIST_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.playlist_index_padded6: pad_int(v.playlist_index, 6),
     v.playlist_index_reversed_padded6: pad_int(v.playlist_index_reversed, 6),
     v.playlist_uploader_sanitized: sanitized(v.playlist_uploader),
-    # v.playlist_max_upload_year_truncated:
+    v.playlist_max_upload_year_truncated: f"{{%int(%slice(%string({v.playlist_max_upload_year.variable_name}), 2))}}",
 }
 
 
