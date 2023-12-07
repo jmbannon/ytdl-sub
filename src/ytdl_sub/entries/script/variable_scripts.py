@@ -1,6 +1,8 @@
 from typing import Dict
 from typing import Optional
 
+import mergedeep
+
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.script.variable_definitions import Metadata
 from ytdl_sub.entries.script.variable_definitions import MetadataVariable
@@ -220,4 +222,25 @@ SOURCE_VARIABLES: Dict[MetadataVariable, str] = {
 SOURCE_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.source_title_sanitized: sanitized(v.source_title),
     v.source_index_padded: pad_int(v.source_index, 2),
+}
+
+_VARIABLE_SCRIPTS: Dict[Variable, str] = {}
+mergedeep.merge(
+    _VARIABLE_SCRIPTS,
+    ENTRY_HARDCODED_VARIABLES,
+    ENTRY_REQUIRED_VARIABLES,
+    ENTRY_DEFAULT_VARIABLES,
+    ENTRY_INJECTED_VARIABLES,
+    ENTRY_DERIVED_VARIABLES,
+    ENTRY_UPLOAD_DATE_VARIABLES,
+    ENTRY_RELEASE_DATE_VARIABLES,
+    PLAYLIST_VARIABLES,
+    PLAYLIST_INJECTED_VARIABLES,
+    PLAYLIST_DERIVED_VARIABLES,
+    SOURCE_VARIABLES,
+    SOURCE_DERIVED_VARIABLES,
+)
+
+VARIABLE_SCRIPTS: Dict[str, str] = {
+    var.variable_name: script for var, script in _VARIABLE_SCRIPTS.items()
 }
