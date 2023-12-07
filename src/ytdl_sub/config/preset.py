@@ -27,10 +27,12 @@ from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script import ScriptBuilder
 from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
@@ -178,21 +180,40 @@ class Preset(_PresetShell):
         return added_variables
 
     @functools.cached_property
-    def _mock_script(self) -> Script:
+    def _cached_script_builder(self) -> ScriptBuilder:
         # Set the formatter variables to be the overrides
-        variable_dict = copy.deepcopy(self.overrides.dict_with_format_strings)
-
-        source_variables = {
-            source_var: "dummy_string"
-            for source_var in self._source_variables
-            + self.downloader_options.added_source_variables()
-        }
-        variable_dict = dict(source_variables, **variable_dict)
-        variable_dict = dict(variable_dict, **self._added_variables)
-
-        script = Script(variable_dict)
-        script.resolve(update=True)
+        script = ScriptBuilder(
+            Scriptable.add_sanitized_variables(self.overrides.dict_with_format_strings)
+        )
+        script.add(
+            Scriptable.add_sanitized_variables(
+                {source_var: "dummy_string" for source_var in self._source_variables}
+            )
+        )
         return script
+
+    @property
+    def _script_builder(self) -> ScriptBuilder:
+        return copy.deepcopy(self._cached_script_builder)
+
+    @functools.cached_property
+    def _script_builder_with_added_variables(self) -> ScriptBuilder:
+        return self._script_builder.add(
+            Scriptable.add_sanitized_variables(
+                {source_var: "dummy_string" for source_var in self._added_variables}
+            )
+        )
+
+    @functools.cached_property
+    def _cached_script(self) -> Script:
+        """
+        Contains actualized script which should hold all Override variables
+        """
+        return self._script_builder_with_added_variables.partial_build(update=True)
+
+    @property
+    def _script(self) -> Script:
+        return copy.deepcopy(self._cached_script)
 
     def __validate_and_get_plugins(self) -> PresetPlugins:
         preset_plugins = PresetPlugins()
@@ -209,30 +230,43 @@ class Preset(_PresetShell):
         return preset_plugins
 
     def __validate_added_variables(self):
-        self.downloader_options.validate_with_variables(script=copy.deepcopy(self._mock_script))
+        script_builder = self._script_builder
+        self.downloader_options.validate_with_variables(script=copy.deepcopy(script_builder))
+        script_builder.add(
+            Scriptable.add_sanitized_variables(
+                {name: "dummy_string" for name in self.downloader_options.added_source_variables()}
+            )
+        )
 
         for _, plugin_options in sorted(
             self.plugins.zipped(), key=lambda pl: pl[0].priority.modify_entry
         ):
             # Validate current plugin using source + added plugin variables
-            plugin_options.validate_with_variables(script=copy.deepcopy(self._mock_script))
+            plugin_options.validate_with_variables(script=copy.deepcopy(script_builder))
+            script_builder.add(
+                Scriptable.add_sanitized_variables(
+                    {
+                        name: "dummy_string"
+                        for name in self.downloader_options.added_source_variables()
+                    }
+                )
+            )
 
     def __validate_override_string_formatter_validator(
         self,
         formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
-    ):
-        script = copy.deepcopy(self._mock_script)
-        try:
-            script.add({"tmp_var": formatter_validator.format_string})
-        except VariableDoesNotExist as exc:
-            raise StringFormattingVariableNotFoundException(exc) from exc
-
-        unresolved: Optional[Set[str]] = (
-            {VARIABLES.entry_metadata.variable_name}
+    ) -> None:
+        unresolvable = (
+            set([VARIABLES.entry_metadata.variable_name] + list(self._added_variables.keys()))
             if isinstance(formatter_validator, OverridesStringFormatterValidator)
             else None
         )
-        _ = script.resolve(unresolvable=unresolved)["tmp_var"]  # TODO: error if not present
+        try:
+            self._script.add({"tmp_var": formatter_validator.format_string}).resolve(
+                unresolvable=unresolvable
+            ).get("tmp_var")
+        except VariableDoesNotExist as exc:
+            raise StringFormattingVariableNotFoundException(exc) from exc
 
     def __recursive_preset_validate(
         self,

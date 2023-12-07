@@ -6,6 +6,7 @@ from typing import Optional
 
 from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script import ScriptBuilder
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -252,20 +253,21 @@ class MultiUrlValidator(OptionsValidator):
         """
         return list(self._urls.list[0].variables.keys)
 
-    def validate_with_variables(self, script: Script) -> None:
+    def validate_with_variables(self, script: ScriptBuilder) -> None:
         """
         Ensures new variables added are not existing variables
         """
         # Apply formatting to each new source variable, ensure it resolves
         for collection_url in self.urls.list:
             script.add(collection_url.variables.dict_with_format_strings)
-            script.resolve(update=True)
+
+        resolved_script = script.partial_build(update=True)
 
         # Ensure at least URL is non-empty
         has_non_empty_url = False
         for url_validator in self.urls.list:
-            script.add({"tmp_var_url": url_validator.url.format_string})
-            has_non_empty_url |= bool(str(script.resolve().get("tmp_var_url")))
+            resolved_script.add({"tmp_var_url": url_validator.url.format_string})
+            has_non_empty_url |= bool(str(resolved_script.resolve().get_native("tmp_var_url")))
 
         if not has_non_empty_url:
             raise self._validation_exception("Must contain at least one url that is non-empty")

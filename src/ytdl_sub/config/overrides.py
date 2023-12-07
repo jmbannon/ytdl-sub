@@ -127,8 +127,8 @@ class Overrides(DictFormatterValidator, Scriptable):
         if function_overrides:
             script.add(function_overrides)
 
-        return str(
-            script.add({"tmp_var": formatter.format_string}).resolve(unresolvable=unresolvable)[
-                "tmp_var"
-            ]
+        return (
+            script.add({"tmp_var": formatter.format_string})
+            .resolve(unresolvable=unresolvable)
+            .get_str("tmp_var")
         )

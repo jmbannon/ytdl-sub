@@ -1,8 +1,10 @@
 import copy
+from collections import defaultdict
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Set
+from typing import Tuple
 
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
@@ -369,28 +371,45 @@ class ScriptBuilder:
         return self
 
     @property
-    def _missing_metadata(self) -> Dict[str, Set[str]]:
-        missing_metadata: Dict[str, Set[str]] = {}
+    def _missing_metadata(self) -> Tuple[Dict[str, Set[str]], Dict[str, Set[str]]]:
+        variables_missing_metadata: Dict[str, Set[str]] = defaultdict(set)
+        functions_missing_metadata: Dict[str, Set[str]] = defaultdict(set)
 
         defined_variables: Set[str] = set(self._variables.keys())
         defined_functions: Set[str] = set(self._functions.keys())
-        for name, variable in self._variables.items():
-            missing_metadata[name] = {var.name for var in variable.variables}.difference(
-                defined_variables
-            )
-            missing_metadata[name].update(
-                {fun.name for fun in variable.custom_functions}.difference(defined_functions)
-            )
 
-        for name, function in self._functions.items():
-            missing_metadata[name] = {var.name for var in function.variables}.difference(
-                defined_variables
-            )
-            missing_metadata[name].update(
-                {fun.name for fun in function.custom_functions}.difference(defined_functions)
-            )
+        while True:
+            variables_missing_metadata_snapshot = copy.deepcopy(variables_missing_metadata)
+            functions_missing_metadata_snapshot = copy.deepcopy(functions_missing_metadata)
 
-        return missing_metadata
+            for name, variable in self._variables.items():
+                if diff := {var.name for var in variable.variables}.difference(defined_variables):
+                    variables_missing_metadata[name].update(diff)
+
+                if diff := {fun.name for fun in variable.custom_functions}.difference(
+                    defined_functions
+                ):
+                    variables_missing_metadata[name].update(diff)
+
+            for name, function in self._functions.items():
+                if diff := {var.name for var in function.variables}.difference(defined_variables):
+                    functions_missing_metadata[name].update(diff)
+
+                if diff := {fun.name for fun in function.custom_functions}.difference(
+                    defined_functions
+                ):
+                    functions_missing_metadata[name].update(diff)
+
+            if (
+                variables_missing_metadata == variables_missing_metadata_snapshot
+                and functions_missing_metadata == functions_missing_metadata_snapshot
+            ):
+                break
+
+            defined_variables -= set(variables_missing_metadata.keys())
+            defined_functions -= set(functions_missing_metadata.keys())
+
+        return variables_missing_metadata, functions_missing_metadata
 
     @classmethod
     def _build(cls, variables: Dict[str, SyntaxTree], functions: Dict[str, SyntaxTree]) -> Script:
@@ -400,26 +419,29 @@ class ScriptBuilder:
         script._validate()
         return script
 
-    def partial_build(self) -> Script:
-        missing_metadata = self._missing_metadata
+    def partial_build(self, update: bool = False) -> Script:
+        missing_variables, missing_functions = self._missing_metadata
         maybe_resolvable_variables: Dict[str, SyntaxTree] = {
             name: variable
             for name, variable in self._variables.items()
-            if name not in missing_metadata
+            if name not in missing_variables
         }
         maybe_resolvable_functions: Dict[str, SyntaxTree] = {
             name: function
             for name, function in self._functions.items()
-            if name not in missing_metadata
+            if name not in missing_functions
         }
 
-        return self._build(
+        script = self._build(
             variables=maybe_resolvable_variables, functions=maybe_resolvable_functions
         )
+        if update:
+            script.resolve(update=True)
+        return script
 
     def build(self) -> Script:
-        for name, missing_metadata in self._missing_metadata.items():
-            if missing_metadata:
+        for missing_metadata in self._missing_metadata:
+            for name, missing in missing_metadata.items():
                 raise ScriptBuilderMissingDefinitions(
                     f"{name} is missing the following definitions: {', '.join(missing_metadata)}"
                 )

@@ -6,6 +6,7 @@ from typing import TypeVar
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script import ScriptBuilder
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
@@ -53,7 +54,7 @@ class OptionsValidator(Validator, ABC):
         """
         return []
 
-    def validate_with_variables(self, script: Script) -> None:
+    def validate_with_variables(self, script: ScriptBuilder) -> None:
         """
         Optional validation after init with the session's source and override variables.
 
