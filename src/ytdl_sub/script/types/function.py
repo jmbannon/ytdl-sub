@@ -108,6 +108,9 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         return type(arg)
 
     def output_type(self) -> Type[Resolvable]:
+        if self.function_spec.return_type is ReturnableArgument:
+            generic_arg_index = self.function_spec.args.index(ReturnableArgument)
+            return self._arg_output_type(self.args[generic_arg_index])
         if is_union(self.function_spec.return_type):
             union_types_list = []
             for union_type in self.function_spec.return_type.__args__:
