@@ -1,5 +1,5 @@
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.map import ResolvedMap
+from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import String
 
 
@@ -30,7 +30,7 @@ class TestScript:
 
     def test_partial_update_script(self):
         # to be resolved later
-        entry_map = ResolvedMap({String("title"): String("the title")})
+        entry_map = Map({String("title"): String("the title")})
 
         script = Script(
             {

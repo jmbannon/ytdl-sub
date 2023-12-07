@@ -1,3 +1,4 @@
+from abc import ABC
 from dataclasses import dataclass
 from typing import Any
 from typing import Dict
@@ -15,7 +16,7 @@ from ytdl_sub.script.types.variable_dependency import VariableDependency
 
 
 @dataclass(frozen=True)
-class _Array(NonHashable):
+class _Array(NonHashable, ABC):
     value: List[Resolvable]
 
     @classmethod

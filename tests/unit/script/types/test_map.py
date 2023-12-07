@@ -10,7 +10,7 @@ from ytdl_sub.script.parser import MAP_KEY_WITH_NO_VALUE
 from ytdl_sub.script.parser import MAP_MISSING_KEY
 from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.map import ResolvedMap
+from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
@@ -20,7 +20,7 @@ from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 class TestMap:
     def test_return(self):
         assert Script({"map": "{{'a': 3.14}}"}).resolve() == {
-            "map": ResolvedMap({String("a"): Float(3.14)})
+            "map": Map({String("a"): Float(3.14)})
         }
 
     def test_return_as_str(self):
@@ -45,13 +45,13 @@ class TestMap:
         }"""
 
         assert Script({"map": map_str}).resolve() == {
-            "map": ResolvedMap(
+            "map": Map(
                 {
-                    String("level1"): ResolvedMap(
+                    String("level1"): Map(
                         {
-                            String("level2"): ResolvedMap(
+                            String("level2"): Map(
                                 {
-                                    String("level3"): ResolvedMap(
+                                    String("level3"): Map(
                                         {String("level4_key"): String("level4_value")}
                                     ),
                                     String("level3_key"): String("level3_value"),
@@ -75,7 +75,7 @@ class TestMap:
         ],
     )
     def test_empty_map(self, empty_map: str):
-        assert Script({"map": empty_map}).resolve() == {"map": ResolvedMap({})}
+        assert Script({"map": empty_map}).resolve() == {"map": Map({})}
 
     @pytest.mark.parametrize(
         "map",
@@ -168,7 +168,7 @@ class TestMap:
             }
         ).resolve() == {
             "key_variable": String("hashable"),
-            "map": ResolvedMap({String("hashable"): String("value")}),
+            "map": Map({String("hashable"): String("value")}),
         }
 
     def test_map_key_is_non_hashable_variable(self):
