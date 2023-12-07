@@ -8,7 +8,7 @@ from typing import Optional
 from typing import final
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_VALUE
 from ytdl_sub.entries.variables.override_variables import OverrideVariables

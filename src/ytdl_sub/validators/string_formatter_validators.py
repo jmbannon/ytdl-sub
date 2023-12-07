@@ -93,33 +93,6 @@ class StringFormatterValidator(StringValidator):
         """
         return self._value
 
-    def _variable_dict(self, variable_dict: Dict[str, str]) -> Dict[str, str]:
-        sanitized_variables = {
-            f"{var_name}_sanitized": f"{{%sanitize({var_name})}}"
-            for var_name in variable_dict.keys()
-        }
-        return dict(variable_dict, **sanitized_variables)
-
-    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
-        """
-        Calls `format` on the format string using the variable_dict as input kwargs
-
-        Parameters
-        ----------
-        variable_dict
-            kwargs to pass to the format string
-
-        Returns
-        -------
-        Format string formatted
-        """
-        out = (
-            Script(self._variable_dict(variable_dict))
-            .add({"tmp_var": self.format_string})
-            .resolve()["tmp_var"]
-        )
-        return str(out)
-
 
 # pylint: disable=line-too-long
 class OverridesStringFormatterValidator(StringFormatterValidator):
@@ -132,37 +105,6 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
     or the fields in
     :class:`nfo_output_directory <ytdl_sub.plugins.output_directory_nfo_tags.OutputDirectoryNfoTagsOptions>`
     """
-
-    _variable_not_found_error_msg_formatter = (
-        "Override variable '{variable_name}' does not exist. For this field, ensure your override "
-        "variable does not contain any source variables - it is a requirement that this be a "
-        "static string. Available override variables: {available_fields}"
-    )
-
-    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
-        """
-        Calls `format` on the format string using the variable_dict as input kwargs
-
-        Parameters
-        ----------
-        variable_dict
-            kwargs to pass to the format string
-
-        Returns
-        -------
-        Format string formatted
-        """
-        output = (
-            Script(self._variable_dict(variable_dict))
-            .add({"tmp_var": self.format_string})
-            .resolve(unresolvable={VARIABLES.entry_metadata.variable_name})
-        )
-        if "tmp_var" not in output:
-            raise self._validation_exception(
-                "Has a dependency on entry variables when it is not allowed",
-                exception_class=StringFormattingVariableNotFoundException,
-            )
-        return str(output["tmp_var"])
 
 
 # pylint: enable=line-too-long

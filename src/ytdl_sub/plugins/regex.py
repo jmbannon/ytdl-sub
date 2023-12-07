@@ -9,7 +9,9 @@ from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
+from ytdl_sub.script.script import Script
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.logger import Logger
@@ -212,34 +214,22 @@ class RegexOptions(OptionsDictValidator):
         """
         return self._skip_if_match_fails
 
-    def validate_with_variables(
-        self, source_variables: List[str], override_variables: Dict[str, str]
-    ) -> None:
-        """
-        Ensures each source variable capture group is valid
-
-        Parameters
-        ----------
-        source_variables
-            Available source variables when running the plugin
-        override_variables
-            Available override variables when running the plugin
-        """
+    def validate_with_variables(self, script: Script) -> None:
         for key, regex_options in self.source_variable_capture_dict.items():
             # Ensure each variable getting captured is a source variable
-            if key not in source_variables and key not in override_variables:
+            if key not in script._variables:
                 raise self._validation_exception(
                     f"cannot regex capture '{key}' because it is not a source or override variable"
                 )
 
             # Ensure the capture group names are not existing source/override variables
             for capture_group_name in regex_options.capture_group_names:
-                if capture_group_name in source_variables:
+                if capture_group_name in VARIABLE_SCRIPTS:
                     raise self._validation_exception(
                         f"'{capture_group_name}' cannot be used as a capture group name because it "
                         f"is a source variable"
                     )
-                if capture_group_name in override_variables:
+                if capture_group_name in script._variables:
                     raise self._validation_exception(
                         f"'{capture_group_name}' cannot be used as a capture group name because it "
                         f"is an override variable"

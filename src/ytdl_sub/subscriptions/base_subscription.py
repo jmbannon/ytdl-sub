@@ -3,10 +3,10 @@ from pathlib import Path
 from typing import Optional
 
 from ytdl_sub.config.config_validator import ConfigOptions
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.config.preset import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
-from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog

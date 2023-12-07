@@ -11,8 +11,8 @@ from typing import Tuple
 
 from yt_dlp.utils import RejectedVideoReached
 
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin import PluginPriority
-from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.source_plugin import SourcePluginExtension
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
@@ -356,7 +356,11 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             else entry.is_thumbnail_downloaded_via_ytdlp,
             url=entry.webpage_url,
         )
-        return Entry(download_entry_dict, working_directory=self.working_directory)
+        return Entry(
+            download_entry_dict,
+            working_directory=self.working_directory,
+            override_variables=self.overrides.dict_with_format_strings,
+        )
 
     def _iterate_child_entries(
         self, url_validator: UrlValidator, entries: List[Entry]
@@ -413,7 +417,10 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             working_directory=self.working_directory,
         )
         orphans = EntryParent.from_entry_dicts_with_no_parents(
-            parents=parents, entry_dicts=entry_dicts, working_directory=self.working_directory
+            parents=parents,
+            entry_dicts=entry_dicts,
+            working_directory=self.working_directory,
+            override_variables=self.overrides.dict_with_format_strings,
         )
 
         return parents, orphans

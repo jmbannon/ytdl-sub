@@ -2,18 +2,31 @@ import copy
 import json
 import os
 from pathlib import Path
+from typing import Dict
 from typing import Optional
 from typing import final
 
 from ytdl_sub.entries.base_entry import BaseEntry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
 
 
-class Entry(BaseEntry):
+class Entry(BaseEntry, Scriptable):
     """
     Entry object to represent a single media object returned from yt-dlp.
     """
+
+    def __init__(
+        self, entry_dict: Dict, working_directory: str, override_variables: Dict[str, str]
+    ):
+        BaseEntry.__init__(self, entry_dict=entry_dict, working_directory=working_directory)
+        Scriptable.__init__(self)
+
+        self.script.add({VARIABLES.entry_metadata.variable_name: json.dumps(self._kwargs)})
+        self.script.add(override_variables)
+        self.script.resolve(update=True)
 
     @property
     def ext(self) -> str:

@@ -5,6 +5,7 @@ from typing import List
 from typing import Optional
 
 from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.script.script import Script
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -251,37 +252,20 @@ class MultiUrlValidator(OptionsValidator):
         """
         return list(self._urls.list[0].variables.keys)
 
-    def validate_with_variables(
-        self, source_variables: List[str], override_variables: Dict[str, str]
-    ) -> None:
+    def validate_with_variables(self, script: Script) -> None:
         """
         Ensures new variables added are not existing variables
         """
-        for source_var_name in self.added_source_variables():
-            if source_var_name in source_variables:
-                raise self._validation_exception(
-                    f"'{source_var_name}' cannot be used as a variable name because it "
-                    f"is an existing source variable"
-                )
-
-        base_variables = dict(
-            override_variables, **{source_var: "dummy_string" for source_var in source_variables}
-        )
-
         # Apply formatting to each new source variable, ensure it resolves
         for collection_url in self.urls.list:
-            for (
-                source_var_name,
-                source_var_formatter_str,
-            ) in collection_url.variables.dict_with_format_strings.items():
-                _ = StringFormatterValidator(
-                    name=f"{self._name}.{source_var_name}", value=source_var_formatter_str
-                ).apply_formatter(base_variables)
+            script.add(collection_url.variables.dict_with_format_strings)
+            script.resolve(update=True)
 
         # Ensure at least URL is non-empty
         has_non_empty_url = False
         for url_validator in self.urls.list:
-            has_non_empty_url |= bool(url_validator.url.apply_formatter(base_variables))
+            script.add({"tmp_var_url": url_validator.url.format_string})
+            has_non_empty_url |= bool(str(script.resolve().get("tmp_var_url")))
 
         if not has_non_empty_url:
             raise self._validation_exception("Must contain at least one url that is non-empty")

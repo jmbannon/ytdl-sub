@@ -98,9 +98,7 @@ def source_get_int(key: MetadataVariable, default: Optional[Variable | int] = No
 ###############################################################################################
 # Scripts
 
-ENTRY_EMPTY_METADATA: Dict[Variable, str] = {
-    v.entry_metadata: "{ {} }"
-}
+ENTRY_EMPTY_METADATA: Dict[Variable, str] = {v.entry_metadata: "{ {} }"}
 
 ENTRY_HARDCODED_VARIABLES: Dict[Variable, str] = {
     v.info_json_ext: "info.json",

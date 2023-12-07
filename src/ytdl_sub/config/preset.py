@@ -1,9 +1,11 @@
 import copy
+import functools
 from typing import Any
 from typing import Dict
 from typing import Iterable
 from typing import List
 from typing import Optional
+from typing import Set
 from typing import Tuple
 from typing import Type
 from typing import Union
@@ -11,18 +13,22 @@ from typing import Union
 from mergedeep import mergedeep
 
 from ytdl_sub.config.config_validator import ConfigValidator
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin_mapping import PluginMapping
 from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import OutputOptions
-from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
+from ytdl_sub.script.script import Script
+from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
+from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import dump_yaml
@@ -159,6 +165,35 @@ class Preset(_PresetShell):
     def _source_variables(self) -> List[str]:
         return list(VARIABLE_SCRIPTS.keys())
 
+    @property
+    def _added_variables(self) -> Dict[str, str]:
+        added_variables: Dict[str, str] = {
+            var_name: "dummy_string"
+            for var_name in self.downloader_options.added_source_variables()
+        }
+
+        for plugin_options in self.plugins.plugin_options:
+            for source_var in plugin_options.added_source_variables():
+                added_variables[source_var] = "dummy_string"
+        return added_variables
+
+    @functools.cached_property
+    def _mock_script(self) -> Script:
+        # Set the formatter variables to be the overrides
+        variable_dict = copy.deepcopy(self.overrides.dict_with_format_strings)
+
+        source_variables = {
+            source_var: "dummy_string"
+            for source_var in self._source_variables
+            + self.downloader_options.added_source_variables()
+        }
+        variable_dict = dict(source_variables, **variable_dict)
+        variable_dict = dict(variable_dict, **self._added_variables)
+
+        script = Script(variable_dict)
+        script.resolve(update=True)
+        return script
+
     def __validate_and_get_plugins(self) -> PresetPlugins:
         preset_plugins = PresetPlugins()
 
@@ -174,54 +209,30 @@ class Preset(_PresetShell):
         return preset_plugins
 
     def __validate_added_variables(self):
-        source_variables = copy.deepcopy(self._source_variables)
-
-        # Validate added download option variables here since plugins could subsequently use them
-        self.downloader_options.validate_with_variables(
-            source_variables=source_variables,
-            override_variables=self.overrides.dict_with_format_strings,
-        )
-        source_variables.extend(self.downloader_options.added_source_variables())
+        self.downloader_options.validate_with_variables(script=copy.deepcopy(self._mock_script))
 
         for _, plugin_options in sorted(
             self.plugins.zipped(), key=lambda pl: pl[0].priority.modify_entry
         ):
             # Validate current plugin using source + added plugin variables
-            plugin_options.validate_with_variables(
-                source_variables=source_variables,
-                override_variables=self.overrides.dict_with_format_strings,
-            )
-
-            # Extend existing source variables with ones created from this plugin
-            source_variables.extend(plugin_options.added_source_variables())
+            plugin_options.validate_with_variables(script=copy.deepcopy(self._mock_script))
 
     def __validate_override_string_formatter_validator(
         self,
         formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
     ):
-        # Set the formatter variables to be the overrides
-        variable_dict = copy.deepcopy(self.overrides.dict_with_format_strings)
+        script = copy.deepcopy(self._mock_script)
+        try:
+            script.add({"tmp_var": formatter_validator.format_string})
+        except VariableDoesNotExist as exc:
+            raise StringFormattingVariableNotFoundException(exc) from exc
 
-        source_variables = {
-            source_var: "dummy_string"
-            for source_var in self._source_variables
-            + self.downloader_options.added_source_variables()
-        }
-        variable_dict = dict(source_variables, **variable_dict)
-
-        # For all plugins, add in any extra added source variables
-        # TODO: Check in order variables are added
-        for plugin_options in self.plugins.plugin_options:
-            added_plugin_variables = {
-                source_var: "dummy_string" for source_var in plugin_options.added_source_variables()
-            }
-            # sanity check plugin variables do not override source variables
-            expected_len = len(variable_dict) + len(added_plugin_variables)
-            variable_dict = dict(variable_dict, **added_plugin_variables)
-
-            assert len(variable_dict) == expected_len, "plugin variables overwrote source variables"
-
-        _ = formatter_validator.apply_formatter(variable_dict=variable_dict)
+        unresolved: Optional[Set[str]] = (
+            {VARIABLES.entry_metadata.variable_name}
+            if isinstance(formatter_validator, OverridesStringFormatterValidator)
+            else None
+        )
+        _ = script.resolve(unresolvable=unresolved)["tmp_var"]  # TODO: error if not present
 
     def __recursive_preset_validate(
         self,
@@ -332,6 +343,13 @@ class Preset(_PresetShell):
         # After all options are initialized, perform a recursive post-validate that requires
         # values from multiple validators
         self.__recursive_preset_validate()
+
+        self.overrides.initialize_script(
+            unresolved_variables={
+                var_name: f"{{%throw('Plugin variable {var_name} has not been created yet')}}"
+                for var_name in self._added_variables
+            }
+        )
 
     @property
     def name(self) -> str:

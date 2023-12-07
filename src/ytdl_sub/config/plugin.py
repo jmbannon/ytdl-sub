@@ -7,7 +7,7 @@ from typing import Optional
 from typing import Tuple
 from typing import Type
 
-from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata

@@ -6,8 +6,8 @@ from typing import Iterable
 from typing import List
 from typing import Optional
 
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.preset_options import OptionsDictValidator
-from ytdl_sub.config.preset_options import Overrides
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
@@ -82,6 +82,7 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
                 return Entry(
                     entry_dict=entry_dict,
                     working_directory=self.working_directory,
+                    override_variables=self.overrides.dict_with_format_strings,
                 )
 
         raise ValidationException(

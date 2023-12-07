@@ -652,6 +652,7 @@ class EnhancedDownloadArchive:
             parent_entry = Entry(
                 entry_dict=entry.kwargs(SPLIT_BY_CHAPTERS_PARENT_ENTRY),
                 working_directory=entry.working_directory(),
+                override_variables={},
             )
             self.mapping.add_entry(parent_entry, entry_file_path=output_file_name)
         elif entry:
