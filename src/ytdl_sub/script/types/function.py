@@ -107,22 +107,26 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             return arg.output_type()
         return type(arg)
 
+    def _output_generic_type(self, union_args: List[Type[Argument]]) -> Type[Resolvable]:
+        union_types_list = set()
+        for union_type in union_args:
+            possible_output_type = union_type
+            if union_type in (ReturnableArgument, ReturnableArgumentA, ReturnableArgumentB):
+                generic_arg_index = self.function_spec.args.index(union_type)
+                possible_output_type = self._arg_output_type(self.args[generic_arg_index])
+
+            if is_union(possible_output_type):
+                union_types_list.update(possible_output_type.__args__)
+            else:
+                union_types_list.add(possible_output_type)
+
+        return Union[tuple(union_types_list)]
+
     def output_type(self) -> Type[Resolvable]:
-        if self.function_spec.return_type is ReturnableArgument:
-            generic_arg_index = self.function_spec.args.index(ReturnableArgument)
-            return self._arg_output_type(self.args[generic_arg_index])
         if is_union(self.function_spec.return_type):
-            union_types_list = []
-            for union_type in self.function_spec.return_type.__args__:
-                if union_type in (ReturnableArgument, ReturnableArgumentA, ReturnableArgumentB):
-                    generic_arg_index = self.function_spec.args.index(union_type)
-                    union_types_list.append(self._arg_output_type(self.args[generic_arg_index]))
-                else:
-                    union_types_list.append(union_type)
+            return self._output_generic_type(self.function_spec.return_type.__args__)
 
-            return Union[tuple(union_types_list)]
-
-        return self.function_spec.return_type
+        return self._output_generic_type([self.function_spec.return_type])
 
     def _resolve_lambda_function(
         self,

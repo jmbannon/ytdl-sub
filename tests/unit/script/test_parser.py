@@ -78,6 +78,29 @@ class TestParser:
             ]
         )
 
+    def test_nested_if_output_type(self):
+        parsed = parse(
+            """{
+            %if(
+                True,
+                %if(
+                    True,
+                    %if(
+                        True,
+                        "winner",
+                        True
+                    ),
+                    True
+                ),
+                True
+            )
+        }"""
+        )
+        assert len(parsed.ast) == 1
+        token = parsed.ast[0]
+        assert isinstance(token, BuiltInFunction)
+        assert token.output_type() == Union[String, Boolean]
+
     def test_single_function_one_vararg(self):
         parsed = parse("hello {%concat('hi mom')}")
         assert parsed == SyntaxTree(
