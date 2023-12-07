@@ -21,6 +21,11 @@ class MetadataVariable(Variable):
     metadata_key: str
 
 
+@dataclass(frozen=True)
+class DerivedMetadata(MetadataVariable, Metadata):
+    pass
+
+
 class _Variables:
     @property
     def entry_metadata(self) -> Metadata:
@@ -33,24 +38,24 @@ class _Variables:
         return Metadata("entry_metadata")
 
     @property
-    def playlist_metadata(self) -> Metadata:
+    def playlist_metadata(self) -> DerivedMetadata:
         """
         Returns
         -------
         dict
             The playlist's info.json in dict form
         """
-        return Metadata("playlist_metadata")
+        return DerivedMetadata("playlist_metadata", metadata_key="playlist_metadata")
 
     @property
-    def source_metadata(self) -> Metadata:
+    def source_metadata(self) -> DerivedMetadata:
         """
         Returns
         -------
         dict
             The source's info.json in dict form
         """
-        return Metadata("source_metadata")
+        return DerivedMetadata("source_metadata", metadata_key="source_metadata")
 
     @property
     def uid(self) -> MetadataVariable:

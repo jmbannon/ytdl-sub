@@ -4,6 +4,7 @@ from typing import Optional
 import mergedeep
 
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_definitions import DerivedMetadata
 from ytdl_sub.entries.script.variable_definitions import Metadata
 from ytdl_sub.entries.script.variable_definitions import MetadataVariable
 from ytdl_sub.entries.script.variable_definitions import Variable
@@ -88,6 +89,11 @@ def source_get_int(key: MetadataVariable, default: Optional[Variable | int] = No
 
 ###############################################################################################
 # Scripts
+
+ENTRY_METADATA: Dict[DerivedMetadata, str] = {
+    v.playlist_metadata: entry_get(v.playlist_metadata),
+    v.source_metadata: entry_get(v.source_metadata),
+}
 
 
 ENTRY_HARDCODED_VARIABLES: Dict[Variable, str] = {
