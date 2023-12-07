@@ -6,12 +6,11 @@ from typing import Optional
 from typing import final
 
 from ytdl_sub.entries.base_entry import BaseEntry
-from ytdl_sub.entries.variables.entry_variables import EntryVariables
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
 
 
-class Entry(EntryVariables, BaseEntry):
+class Entry(BaseEntry):
     """
     Entry object to represent a single media object returned from yt-dlp.
     """

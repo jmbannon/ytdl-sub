@@ -281,7 +281,7 @@ class MultiUrlValidator(OptionsValidator):
         # Ensure at least URL is non-empty
         has_non_empty_url = False
         for url_validator in self.urls.list:
-            has_non_empty_url |= bool(url_validator.url.apply_formatter(override_variables))
+            has_non_empty_url |= bool(url_validator.url.apply_formatter(base_variables))
 
         if not has_non_empty_url:
             raise self._validation_exception("Must contain at least one url that is non-empty")

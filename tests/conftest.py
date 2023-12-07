@@ -19,11 +19,20 @@ from resources import file_fixture_path
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.entries.script.function_scripts import CustomFunctions
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.logger import LoggerLevels
 from ytdl_sub.utils.yaml import load_yaml
+
+
+@pytest.fixture(autouse=True)
+def register_custom_functions():
+    """
+    Clean logs after every test
+    """
+    CustomFunctions.register()
 
 
 @pytest.fixture(autouse=True)

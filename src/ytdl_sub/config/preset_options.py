@@ -1,3 +1,5 @@
+import copy
+import json
 from abc import ABC
 from typing import Any
 from typing import Dict
@@ -5,10 +7,13 @@ from typing import List
 from typing import Optional
 from typing import TypeVar
 
+import mergedeep
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
@@ -212,11 +217,13 @@ class Overrides(DictFormatterValidator):
         -------
         The format_string after .format has been called
         """
-        variable_dict = self.dict_with_format_strings
+        variable_dict = copy.deepcopy(VARIABLE_SCRIPTS)
+        mergedeep.merge(variable_dict, self.dict_with_format_strings)
+
         if entry:
-            variable_dict = dict(entry.to_dict(), **variable_dict)
+            mergedeep.merge(variable_dict, {VARIABLES.entry_metadata.variable_name: json.dumps(entry._kwargs)})
         if function_overrides:
-            variable_dict = dict(variable_dict, **function_overrides)
+            mergedeep.merge(variable_dict, function_overrides)
 
         return formatter.apply_formatter(variable_dict)
 

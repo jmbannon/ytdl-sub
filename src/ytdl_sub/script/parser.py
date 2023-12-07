@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from typing import Dict
 from typing import List
@@ -159,6 +160,8 @@ class _Parser:
         self._error_highlight_pos = pos if pos is not None else self._pos
 
     def _read(self, increment_pos: bool = True, length: int = 1) -> Optional[str]:
+        if isinstance(self._text, int):
+            pass
         if self._pos >= len(self._text):
             return None
 
@@ -562,7 +565,7 @@ def parse(
     Entrypoint for parsing ytdl-sub code into a Syntax Tree
     """
     return _Parser(
-        text=text,
+        text=json.dumps(text) if not isinstance(text, str) else text,
         name=name,
         custom_function_names=custom_function_names,
         variable_names=variable_names,

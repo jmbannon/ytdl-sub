@@ -98,6 +98,9 @@ def source_get_int(key: MetadataVariable, default: Optional[Variable | int] = No
 ###############################################################################################
 # Scripts
 
+ENTRY_EMPTY_METADATA: Dict[Variable, str] = {
+    v.entry_metadata: "{ {} }"
+}
 
 ENTRY_HARDCODED_VARIABLES: Dict[Variable, str] = {
     v.info_json_ext: "info.json",
@@ -236,6 +239,7 @@ SOURCE_DERIVED_VARIABLES: Dict[Variable, str] = {
 _VARIABLE_SCRIPTS: Dict[Variable, str] = {}
 mergedeep.merge(
     _VARIABLE_SCRIPTS,
+    ENTRY_EMPTY_METADATA,
     ENTRY_HARDCODED_VARIABLES,
     ENTRY_REQUIRED_VARIABLES,
     ENTRY_DEFAULT_VARIABLES,

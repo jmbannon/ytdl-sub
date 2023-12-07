@@ -20,6 +20,7 @@ from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
 from ytdl_sub.utils.exceptions import ValidationException
@@ -156,7 +157,7 @@ class Preset(_PresetShell):
 
     @property
     def _source_variables(self) -> List[str]:
-        return Entry.source_variables()
+        return list(VARIABLE_SCRIPTS.keys())
 
     def __validate_and_get_plugins(self) -> PresetPlugins:
         preset_plugins = PresetPlugins()
@@ -201,29 +202,24 @@ class Preset(_PresetShell):
         # Set the formatter variables to be the overrides
         variable_dict = copy.deepcopy(self.overrides.dict_with_format_strings)
 
-        # If the formatter supports source variables, set the formatter variables to include
-        # both source and override variables
-        if not isinstance(formatter_validator, OverridesStringFormatterValidator):
-            source_variables = {
-                source_var: "dummy_string"
-                for source_var in self._source_variables
-                + self.downloader_options.added_source_variables()
+        source_variables = {
+            source_var: "dummy_string"
+            for source_var in self._source_variables
+            + self.downloader_options.added_source_variables()
+        }
+        variable_dict = dict(source_variables, **variable_dict)
+
+        # For all plugins, add in any extra added source variables
+        # TODO: Check in order variables are added
+        for plugin_options in self.plugins.plugin_options:
+            added_plugin_variables = {
+                source_var: "dummy_string" for source_var in plugin_options.added_source_variables()
             }
-            variable_dict = dict(source_variables, **variable_dict)
+            # sanity check plugin variables do not override source variables
+            expected_len = len(variable_dict) + len(added_plugin_variables)
+            variable_dict = dict(variable_dict, **added_plugin_variables)
 
-            # For all plugins, add in any extra added source variables
-            for plugin_options in self.plugins.plugin_options:
-                added_plugin_variables = {
-                    source_var: "dummy_string"
-                    for source_var in plugin_options.added_source_variables()
-                }
-                # sanity check plugin variables do not override source variables
-                expected_len = len(variable_dict) + len(added_plugin_variables)
-                variable_dict = dict(variable_dict, **added_plugin_variables)
-
-                assert (
-                    len(variable_dict) == expected_len
-                ), "plugin variables overwrote source variables"
+            assert len(variable_dict) == expected_len, "plugin variables overwrote source variables"
 
         _ = formatter_validator.apply_formatter(variable_dict=variable_dict)
 

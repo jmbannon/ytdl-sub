@@ -7,6 +7,10 @@ from typing import final
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.script.parser import parse
+from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
@@ -74,54 +78,10 @@ class StringFormatterValidator(StringValidator):
     """
 
     _expected_value_type_name = "format string"
-    _variable_not_found_error_msg_formatter = (
-        "Format variable '{variable_name}' does not exist. Available variables: {available_fields}"
-    )
-
-    _max_format_recursion = 8
-
-    def __validate_and_get_format_variables(self) -> List[str]:
-        """
-        Returns
-        -------
-        list[str]
-            List of format variables in the format string
-
-        Raises
-        ------
-        ValidationException
-            If the format string contains invalid variable formatting
-        """
-        open_bracket_count = self.format_string.count("{")
-        close_bracket_count = self.format_string.count("}")
-
-        if open_bracket_count != close_bracket_count:
-            raise self._validation_exception(
-                "Brackets are reserved for {variable_names} and should contain "
-                "a single open and close bracket.",
-                exception_class=StringFormattingException,
-            )
-
-        format_variables: List[str] = list(re.findall(_fields_validator, self.format_string))
-
-        if len(format_variables) != open_bracket_count:
-            raise self._validation_exception(
-                error_message=_fields_validator_exception_message,
-                exception_class=StringFormattingException,
-            )
-
-        for variable in format_variables:
-            if iskeyword(variable):
-                raise self._validation_exception(
-                    f"'{variable}' is a Python keyword and cannot be used as a variable.",
-                    exception_class=StringFormattingException,
-                )
-
-        return format_variables
 
     def __init__(self, name, value: str):
         super().__init__(name=name, value=value)
-        self.format_variables = self.__validate_and_get_format_variables()
+        _ = parse(str(value))
 
     @final
     @property
@@ -133,36 +93,12 @@ class StringFormatterValidator(StringValidator):
         """
         return self._value
 
-    def _apply_formatter(
-        self, formatter: "StringFormatterValidator", variable_dict: Dict[str, str]
-    ) -> "StringFormatterValidator":
-        # Ensure the variable names exist within the entry and overrides
-        for variable_name in formatter.format_variables:
-            # If the variable exists, but is sanitized...
-            if (
-                variable_name.endswith("_sanitized")
-                and variable_name.removesuffix("_sanitized") in variable_dict
-            ):
-                # Resolve just the non-sanitized version, then sanitize it
-                variable_dict[variable_name] = sanitize_filename(
-                    StringFormatterValidator(
-                        name=self._name, value=f"{{{variable_name.removesuffix('_sanitized')}}}"
-                    ).apply_formatter(variable_dict)
-                )
-            # If the variable doesn't exist, error
-            elif variable_name not in variable_dict:
-                available_fields = ", ".join(sorted(variable_dict.keys()))
-                raise self._validation_exception(
-                    self._variable_not_found_error_msg_formatter.format(
-                        variable_name=variable_name, available_fields=available_fields
-                    ),
-                    exception_class=StringFormattingVariableNotFoundException,
-                )
-
-        return StringFormatterValidator(
-            name=self._name,
-            value=formatter.format_string.format(**OrderedDict(variable_dict)),
-        )
+    def _variable_dict(self, variable_dict: Dict[str, str]) -> Dict[str, str]:
+        sanitized_variables = {
+            f"{var_name}_sanitized": f"{{%sanitize({var_name})}}"
+            for var_name in variable_dict.keys()
+        }
+        return dict(variable_dict, **sanitized_variables)
 
     def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
         """
@@ -177,23 +113,12 @@ class StringFormatterValidator(StringValidator):
         -------
         Format string formatted
         """
-        formatter = self
-        recursion_depth = 0
-        max_depth = self._max_format_recursion
-
-        while formatter.format_variables and recursion_depth < max_depth:
-            formatter = self._apply_formatter(formatter=formatter, variable_dict=variable_dict)
-            recursion_depth += 1
-
-        if formatter.format_variables:
-            raise self._validation_exception(
-                f"Attempted to format but failed after reaching max recursion depth of "
-                f"{max_depth}. Try to keep variables dependent on only one other variable at max. "
-                f"Unresolved variables: {', '.join(sorted(formatter.format_variables))}",
-                exception_class=StringFormattingException,
-            )
-
-        return formatter.format_string
+        out = (
+            Script(self._variable_dict(variable_dict))
+            .add({"tmp_var": self.format_string})
+            .resolve()["tmp_var"]
+        )
+        return str(out)
 
 
 # pylint: disable=line-too-long
@@ -213,6 +138,31 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
         "variable does not contain any source variables - it is a requirement that this be a "
         "static string. Available override variables: {available_fields}"
     )
+
+    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
+        """
+        Calls `format` on the format string using the variable_dict as input kwargs
+
+        Parameters
+        ----------
+        variable_dict
+            kwargs to pass to the format string
+
+        Returns
+        -------
+        Format string formatted
+        """
+        output = (
+            Script(self._variable_dict(variable_dict))
+            .add({"tmp_var": self.format_string})
+            .resolve(unresolvable={VARIABLES.entry_metadata.variable_name})
+        )
+        if "tmp_var" not in output:
+            raise self._validation_exception(
+                "Has a dependency on entry variables when it is not allowed",
+                exception_class=StringFormattingVariableNotFoundException,
+            )
+        return str(output["tmp_var"])
 
 
 # pylint: enable=line-too-long

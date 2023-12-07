@@ -110,7 +110,8 @@ class CustomFunctions:
 
     @staticmethod
     def register():
-        Functions.register_function(CustomFunctions.legacy_bracket_safety)
-        Functions.register_function(CustomFunctions.sanitize)
-        Functions.register_function(CustomFunctions.sanitize_plex_episode)
-        Functions.register_function(CustomFunctions.to_date_metadata)
+        if not Functions.is_built_in("sanitize"):
+            Functions.register_function(CustomFunctions.legacy_bracket_safety)
+            Functions.register_function(CustomFunctions.sanitize)
+            Functions.register_function(CustomFunctions.sanitize_plex_episode)
+            Functions.register_function(CustomFunctions.to_date_metadata)
