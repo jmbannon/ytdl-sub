@@ -3,6 +3,7 @@ import re
 import pytest
 
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import InvalidVariableName
@@ -11,25 +12,31 @@ from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 
 class TestVariable:
     def test_simple(self):
-        assert Script({"a": "a", "b": "{b_}", "b_": "b"}).resolve() == {
-            "a": String("a"),
-            "b": String("b"),
-            "b_": String("b"),
-        }
+        assert Script({"a": "a", "b": "{b_}", "b_": "b"}).resolve() == ScriptOutput(
+            {
+                "a": String("a"),
+                "b": String("b"),
+                "b_": String("b"),
+            }
+        )
 
     def test_multiple_variables(self):
-        assert Script({"a": "a", "b": "b", "b_": "  {a}  {b}  "}).resolve() == {
-            "a": String("a"),
-            "b": String("b"),
-            "b_": String("  a  b  "),
-        }
+        assert Script({"a": "a", "b": "b", "b_": "  {a}  {b}  "}).resolve() == ScriptOutput(
+            {
+                "a": String("a"),
+                "b": String("b"),
+                "b_": String("  a  b  "),
+            }
+        )
 
     def test_simple_with_function(self):
-        assert Script({"a": "a", "b": "{%capitalize(b_)}", "b_": "b"}).resolve() == {
-            "a": String("a"),
-            "b": String("B"),
-            "b_": String("b"),
-        }
+        assert Script({"a": "a", "b": "{%capitalize(b_)}", "b_": "b"}).resolve() == ScriptOutput(
+            {
+                "a": String("a"),
+                "b": String("B"),
+                "b_": String("b"),
+            }
+        )
 
     def test_simple_cycle(self):
         with pytest.raises(

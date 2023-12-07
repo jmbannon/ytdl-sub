@@ -4,6 +4,7 @@ import pytest
 
 from ytdl_sub.script.parser import CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
@@ -19,7 +20,7 @@ class TestCustomFunction:
                 "%custom_square": "{%mul($0, $0)}",
                 "output": "{%custom_square(3)}",
             }
-        ).resolve() == {"output": Integer(9)}
+        ).resolve() == ScriptOutput({"output": Integer(9)})
 
     def test_custom_function_cycle(self):
         with pytest.raises(

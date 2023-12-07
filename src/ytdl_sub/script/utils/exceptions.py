@@ -42,6 +42,10 @@ class VariableDoesNotExist(UserException):
     """Tried to use a variable that does not exist"""
 
 
+class ScriptBuilderMissingDefinitions(UserException):
+    """Tried to build an incomplete ScriptBuilder"""
+
+
 class CycleDetected(UserException):
     """A cycle exists within a user's script"""
 

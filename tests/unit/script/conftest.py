@@ -9,7 +9,6 @@ def single_variable_output(script: str):
             }
         )
         .resolve(update=True)
-        .get("output")
-        .native
+        .get_native("output")
     )
     return output

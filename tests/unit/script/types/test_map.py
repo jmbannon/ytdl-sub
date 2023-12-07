@@ -10,6 +10,7 @@ from ytdl_sub.script.parser import MAP_KEY_WITH_NO_VALUE
 from ytdl_sub.script.parser import MAP_MISSING_KEY
 from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
@@ -19,14 +20,14 @@ from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 
 class TestMap:
     def test_return(self):
-        assert Script({"map": "{{'a': 3.14}}"}).resolve() == {
-            "map": Map({String("a"): Float(3.14)})
-        }
+        assert Script({"map": "{{'a': 3.14}}"}).resolve() == ScriptOutput(
+            {"map": Map({String("a"): Float(3.14)})}
+        )
 
     def test_return_as_str(self):
-        assert Script({"map": "json: {{'a': 3.14}}"}).resolve() == {
-            "map": String('json: {"a": 3.14}')
-        }
+        assert Script({"map": "json: {{'a': 3.14}}"}).resolve() == ScriptOutput(
+            {"map": String('json: {"a": 3.14}')}
+        )
 
     def test_nested_map(self):
         map_str = """{
@@ -44,26 +45,28 @@ class TestMap:
             }
         }"""
 
-        assert Script({"map": map_str}).resolve() == {
-            "map": Map(
-                {
-                    String("level1"): Map(
-                        {
-                            String("level2"): Map(
-                                {
-                                    String("level3"): Map(
-                                        {String("level4_key"): String("level4_value")}
-                                    ),
-                                    String("level3_key"): String("level3_value"),
-                                }
-                            ),
-                            String("level2_key"): String("level2_value"),
-                        }
-                    ),
-                    String("level1_key"): String("level1_value"),
-                }
-            )
-        }
+        assert Script({"map": map_str}).resolve() == ScriptOutput(
+            {
+                "map": Map(
+                    {
+                        String("level1"): Map(
+                            {
+                                String("level2"): Map(
+                                    {
+                                        String("level3"): Map(
+                                            {String("level4_key"): String("level4_value")}
+                                        ),
+                                        String("level3_key"): String("level3_value"),
+                                    }
+                                ),
+                                String("level2_key"): String("level2_value"),
+                            }
+                        ),
+                        String("level1_key"): String("level1_value"),
+                    }
+                )
+            }
+        )
 
     @pytest.mark.parametrize(
         "empty_map",
@@ -75,7 +78,7 @@ class TestMap:
         ],
     )
     def test_empty_map(self, empty_map: str):
-        assert Script({"map": empty_map}).resolve() == {"map": Map({})}
+        assert Script({"map": empty_map}).resolve() == ScriptOutput({"map": Map({})})
 
     @pytest.mark.parametrize(
         "map",
@@ -166,10 +169,12 @@ class TestMap:
                 "map": "{{key_variable : 'value' }}",
                 "key_variable": "hashable",
             }
-        ).resolve() == {
-            "key_variable": String("hashable"),
-            "map": Map({String("hashable"): String("value")}),
-        }
+        ).resolve() == ScriptOutput(
+            {
+                "key_variable": String("hashable"),
+                "map": Map({String("hashable"): String("value")}),
+            }
+        )
 
     def test_map_key_is_non_hashable_variable(self):
         with pytest.raises(

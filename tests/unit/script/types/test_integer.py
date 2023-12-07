@@ -5,6 +5,7 @@ import pytest
 from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR
 from ytdl_sub.script.parser import NUMERICS_ONLY_ARGS
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
@@ -39,10 +40,14 @@ class TestInteger:
         ],
     )
     def test_integer(self, integer: str, expected_integer: int):
-        assert Script({"integer": integer, "as_string": "{%string(integer)}"}).resolve() == {
-            "integer": Integer(expected_integer),
-            "as_string": String(str(expected_integer)),
-        }
+        assert Script(
+            {"integer": integer, "as_string": "{%string(integer)}"}
+        ).resolve() == ScriptOutput(
+            {
+                "integer": Integer(expected_integer),
+                "as_string": String(str(expected_integer)),
+            }
+        )
 
     @pytest.mark.parametrize(
         "integer",
@@ -71,4 +76,6 @@ class TestInteger:
         ],
     )
     def test_cast_as_integer(self, to_cast: str, expected_int: int):
-        assert Script({"as_int": to_cast}).resolve() == {"as_int": Integer(expected_int)}
+        assert Script({"as_int": to_cast}).resolve() == ScriptOutput(
+            {"as_int": Integer(expected_int)}
+        )

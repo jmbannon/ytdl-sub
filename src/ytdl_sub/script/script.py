@@ -6,19 +6,34 @@ from typing import Set
 
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
+from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 from ytdl_sub.script.utils.exceptions import RuntimeException
+from ytdl_sub.script.utils.exceptions import ScriptBuilderMissingDefinitions
+from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 from ytdl_sub.script.utils.type_checking import FunctionSpec
 
 # pylint: disable=missing-raises-doc
+
+
+def _is_function(override_name: str):
+    return override_name.startswith("%")
+
+
+def _function_name(function_key: str) -> str:
+    """
+    Drop the % in %custom_function
+    """
+    return function_key[1:]
 
 
 class Script:
@@ -28,17 +43,6 @@ class Script:
     and
         ``{ %custom_function: syntax }``
     """
-
-    @classmethod
-    def _is_function(cls, override_name: str):
-        return override_name.startswith("%")
-
-    @classmethod
-    def _function_name(cls, function_key: str) -> str:
-        """
-        Drop the % in %custom_function
-        """
-        return function_key[1:]
 
     def _ensure_no_cycle(
         self, name: str, dep: str, deps: List[str], definitions: Dict[str, SyntaxTree]
@@ -205,23 +209,23 @@ class Script:
 
     def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
-            self._function_name(name) for name in script.keys() if self._is_function(name)
+            _function_name(name) for name in script.keys() if _is_function(name)
         }
         variable_names: Set[str] = {
-            validate_variable_name(name) for name in script.keys() if not self._is_function(name)
+            validate_variable_name(name) for name in script.keys() if not _is_function(name)
         }
 
         self._functions: Dict[str, SyntaxTree] = {
             # custom_function_name must be passed to properly type custom function
             # arguments uniquely if they're nested (i.e. $0 to $custom_func___0)
-            self._function_name(function_key): parse(
+            _function_name(function_key): parse(
                 text=function_value,
-                name=self._function_name(function_key),
+                name=_function_name(function_key),
                 custom_function_names=function_names,
                 variable_names=variable_names,
             )
             for function_key, function_value in script.items()
-            if self._is_function(function_key)
+            if _is_function(function_key)
         }
 
         self._variables: Dict[str, SyntaxTree] = {
@@ -232,7 +236,7 @@ class Script:
                 variable_names=variable_names,
             )
             for variable_key, variable_value in script.items()
-            if not self._is_function(variable_key)
+            if not _is_function(variable_key)
         }
         self._validate()
 
@@ -245,7 +249,7 @@ class Script:
         resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
         update: bool = False,
-    ) -> Dict[str, Resolvable]:
+    ) -> ScriptOutput:
         """
         Parameters
         ----------
@@ -302,7 +306,7 @@ class Script:
         if update:
             self._update_internally(resolved_variables=resolved_variables)
 
-        return resolved_variables
+        return ScriptOutput(resolved_variables)
 
     def add(self, variables: Dict[str, str]) -> "Script":
         for variable_name, variable_definition in variables.items():
@@ -325,3 +329,99 @@ class Script:
             return resolvable
 
         raise RuntimeException(f"Tried to get unresolved variable {variable_name}")
+
+
+class ScriptBuilder:
+    """
+    Takes a dictionary of both
+        ``{ variable_names: syntax }``
+    and
+        ``{ %custom_function: syntax }``
+    """
+
+    def __init__(self, script: Dict[str, str]):
+        self._functions: Dict[str, SyntaxTree] = {
+            # custom_function_name must be passed to properly type custom function
+            # arguments uniquely if they're nested (i.e. $0 to $custom_func___0)
+            _function_name(function_key): parse(
+                text=function_value,
+                name=_function_name(function_key),
+            )
+            for function_key, function_value in script.items()
+            if _is_function(function_key)
+        }
+
+        self._variables: Dict[str, SyntaxTree] = {
+            variable_key: parse(
+                text=variable_value,
+                name=variable_key,
+            )
+            for variable_key, variable_value in script.items()
+            if not _is_function(variable_key)
+        }
+
+    def add(self, variables: Dict[str, str]) -> "ScriptBuilder":
+        for variable_name, variable_definition in variables.items():
+            self._variables[variable_name] = parse(
+                text=variable_definition,
+                name=variable_name,
+            )
+        return self
+
+    @property
+    def _missing_metadata(self) -> Dict[str, Set[str]]:
+        missing_metadata: Dict[str, Set[str]] = {}
+
+        defined_variables: Set[str] = set(self._variables.keys())
+        defined_functions: Set[str] = set(self._functions.keys())
+        for name, variable in self._variables.items():
+            missing_metadata[name] = {var.name for var in variable.variables}.difference(
+                defined_variables
+            )
+            missing_metadata[name].update(
+                {fun.name for fun in variable.custom_functions}.difference(defined_functions)
+            )
+
+        for name, function in self._functions.items():
+            missing_metadata[name] = {var.name for var in function.variables}.difference(
+                defined_variables
+            )
+            missing_metadata[name].update(
+                {fun.name for fun in function.custom_functions}.difference(defined_functions)
+            )
+
+        return missing_metadata
+
+    @classmethod
+    def _build(cls, variables: Dict[str, SyntaxTree], functions: Dict[str, SyntaxTree]) -> Script:
+        script = Script({})
+        script._variables = variables
+        script._functions = functions
+        script._validate()
+        return script
+
+    def partial_build(self) -> Script:
+        missing_metadata = self._missing_metadata
+        maybe_resolvable_variables: Dict[str, SyntaxTree] = {
+            name: variable
+            for name, variable in self._variables.items()
+            if name not in missing_metadata
+        }
+        maybe_resolvable_functions: Dict[str, SyntaxTree] = {
+            name: function
+            for name, function in self._functions.items()
+            if name not in missing_metadata
+        }
+
+        return self._build(
+            variables=maybe_resolvable_variables, functions=maybe_resolvable_functions
+        )
+
+    def build(self) -> Script:
+        for name, missing_metadata in self._missing_metadata.items():
+            if missing_metadata:
+                raise ScriptBuilderMissingDefinitions(
+                    f"{name} is missing the following definitions: {', '.join(missing_metadata)}"
+                )
+
+        return self._build(variables=self._variables, functions=self._functions)

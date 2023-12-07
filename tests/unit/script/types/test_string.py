@@ -5,6 +5,7 @@ import pytest
 from ytdl_sub.script.parser import STRINGS_NOT_CLOSED
 from ytdl_sub.script.parser import STRINGS_ONLY_ARGS
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
@@ -46,7 +47,7 @@ class TestString:
         ],
     )
     def test_string(self, string: str, expected_string: str):
-        assert Script({"out": string}).resolve() == {"out": String(expected_string)}
+        assert Script({"out": string}).resolve() == ScriptOutput({"out": String(expected_string)})
 
     @pytest.mark.parametrize(
         "string",

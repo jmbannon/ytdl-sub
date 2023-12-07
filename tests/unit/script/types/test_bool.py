@@ -4,6 +4,7 @@ import pytest
 
 from ytdl_sub.script.parser import BOOLEAN_ONLY_ARGS
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
@@ -33,10 +34,14 @@ class TestBool:
         ],
     )
     def test_boolean(self, boolean: bool, expected_boolean: bool):
-        assert Script({"boolean": boolean, "as_string": "{%string(boolean)}"}).resolve() == {
-            "boolean": Boolean(expected_boolean),
-            "as_string": String(str(expected_boolean)),
-        }
+        assert Script(
+            {"boolean": boolean, "as_string": "{%string(boolean)}"}
+        ).resolve() == ScriptOutput(
+            {
+                "boolean": Boolean(expected_boolean),
+                "as_string": String(str(expected_boolean)),
+            }
+        )
 
     @pytest.mark.parametrize(
         "to_cast, expected_bool",
@@ -56,4 +61,6 @@ class TestBool:
         ],
     )
     def test_cast_as_bool(self, to_cast: str, expected_bool: bool):
-        assert Script({"as_bool": to_cast}).resolve() == {"as_bool": Boolean(expected_bool)}
+        assert Script({"as_bool": to_cast}).resolve() == ScriptOutput(
+            {"as_bool": Boolean(expected_bool)}
+        )

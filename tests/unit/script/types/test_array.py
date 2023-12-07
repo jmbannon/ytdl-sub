@@ -6,6 +6,7 @@ from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import _UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
@@ -14,33 +15,35 @@ from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 class TestArray:
     def test_return(self):
-        assert Script({"array": "{['a', 3.14]}"}).resolve() == {
-            "array": Array([String("a"), Float(3.14)])
-        }
+        assert Script({"array": "{['a', 3.14]}"}).resolve() == ScriptOutput(
+            {"array": Array([String("a"), Float(3.14)])}
+        )
 
     def test_return_as_str(self):
-        assert Script({"array": "str: {['a', 3.14]}"}).resolve() == {
-            "array": String('str: ["a", 3.14]')
-        }
+        assert Script({"array": "str: {['a', 3.14]}"}).resolve() == ScriptOutput(
+            {"array": String('str: ["a", 3.14]')}
+        )
 
     def test_nested_array(self):
         assert Script(
             {"array": "{['level1', ['level2', ['level3', 'level3'], 'level2'], 'level1']}"}
-        ).resolve() == {
-            "array": Array(
-                [
-                    String("level1"),
-                    Array(
-                        [
-                            String("level2"),
-                            Array([String("level3"), String("level3")]),
-                            String("level2"),
-                        ],
-                    ),
-                    String("level1"),
-                ]
-            )
-        }
+        ).resolve() == ScriptOutput(
+            {
+                "array": Array(
+                    [
+                        String("level1"),
+                        Array(
+                            [
+                                String("level2"),
+                                Array([String("level3"), String("level3")]),
+                                String("level2"),
+                            ],
+                        ),
+                        String("level1"),
+                    ]
+                )
+            }
+        )
 
     @pytest.mark.parametrize(
         "array",
@@ -52,7 +55,7 @@ class TestArray:
         ],
     )
     def test_empty(self, array: str):
-        assert Script({"array": array}).resolve() == {"array": Array([])}
+        assert Script({"array": array}).resolve() == ScriptOutput({"array": Array([])})
 
     @pytest.mark.parametrize(
         "array",
@@ -111,4 +114,6 @@ class TestArray:
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",
             }
-        ).resolve() == {"aa": String("a"), "bb": String("b"), "cc": String('return ["a", "b"]')}
+        ).resolve() == ScriptOutput(
+            {"aa": String("a"), "bb": String("b"), "cc": String('return ["a", "b"]')}
+        )

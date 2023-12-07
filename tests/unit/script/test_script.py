@@ -1,4 +1,5 @@
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import String
 
@@ -12,11 +13,13 @@ class TestScript:
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",
             }
-        ).resolve(resolved={"bb": String("bb_override")}) == {
-            "aa": String("a"),
-            "bb": String("bb_override"),
-            "cc": String('return ["a", "bb_override"]'),
-        }
+        ).resolve(resolved={"bb": String("bb_override")}) == ScriptOutput(
+            {
+                "aa": String("a"),
+                "bb": String("bb_override"),
+                "cc": String('return ["a", "bb_override"]'),
+            }
+        )
 
     def test_partial_resolve(self):
         assert Script(
@@ -26,7 +29,7 @@ class TestScript:
                 "bb": "b",
                 "cc": "{%custom_func(aa, bb)}",
             }
-        ).resolve(unresolvable={"bb"}) == {"aa": String("a")}
+        ).resolve(unresolvable={"bb"}) == ScriptOutput({"aa": String("a")})
 
     def test_partial_update_script(self):
         # to be resolved later

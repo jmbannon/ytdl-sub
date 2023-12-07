@@ -5,6 +5,7 @@ import pytest
 from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR
 from ytdl_sub.script.parser import NUMERICS_ONLY_ARGS
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
@@ -39,10 +40,12 @@ class TestFloat:
         ],
     )
     def test_float(self, float_: str, expected_float: int):
-        assert Script({"out": float_, "as_string": "{%string(out)}"}).resolve() == {
-            "out": Float(expected_float),
-            "as_string": String(str(expected_float)),
-        }
+        assert Script({"out": float_, "as_string": "{%string(out)}"}).resolve() == ScriptOutput(
+            {
+                "out": Float(expected_float),
+                "as_string": String(str(expected_float)),
+            }
+        )
 
     @pytest.mark.parametrize(
         "float_",
@@ -71,4 +74,6 @@ class TestFloat:
         ],
     )
     def test_cast_as_float(self, to_cast: str, expected_float: float):
-        assert Script({"as_float": to_cast}).resolve() == {"as_float": Float(expected_float)}
+        assert Script({"as_float": to_cast}).resolve() == ScriptOutput(
+            {"as_float": Float(expected_float)}
+        )

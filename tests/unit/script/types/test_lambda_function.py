@@ -3,6 +3,7 @@ import re
 import pytest
 
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
@@ -12,7 +13,7 @@ class TestLambdaFunction:
     def test_lambda_with_custom_function(self):
         assert Script(
             {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([1, 2, 3], %times_two)}"}
-        ).resolve() == {"wip": Array([Integer(2), Integer(4), Integer(6)])}
+        ).resolve() == ScriptOutput({"wip": Array([Integer(2), Integer(4), Integer(6)])})
 
     def test_conditional_lambda_with_custom_functions(self):
         assert Script(
@@ -21,7 +22,7 @@ class TestLambdaFunction:
                 "%times_two": "{%mul($0, 2)}",
                 "wip": "{%array_apply([1, 2, 3], %if(False, %times_two, %times_three))}",
             }
-        ).resolve() == {"wip": Array([Integer(3), Integer(6), Integer(9)])}
+        ).resolve() == ScriptOutput({"wip": Array([Integer(3), Integer(6), Integer(9)])})
 
     def test_nested_custom_functions(self):
         assert Script(
@@ -30,7 +31,7 @@ class TestLambdaFunction:
                 "%times_two": "{%mul($0, 2)}",
                 "identity": "{%times_three(%times_two(1))}",
             }
-        ).resolve() == {"identity": Integer(6)}
+        ).resolve() == ScriptOutput({"identity": Integer(6)})
 
     def test_nested_custom_functions_within_custom_functions(self):
         assert Script(
@@ -40,7 +41,7 @@ class TestLambdaFunction:
                 "%power_4": "{%mul(%power_3($0), 2)}",
                 "power_of_4": "{%power_4(2)}",
             }
-        ).resolve() == {"power_of_4": Integer(16)}
+        ).resolve() == ScriptOutput({"power_of_4": Integer(16)})
 
     def test_nested_lambda_custom_functions_within_custom_functions(self):
         assert Script(
@@ -51,7 +52,7 @@ class TestLambdaFunction:
                 "%nest1": "{%array_at(%array_apply([$0], %nest2), 0)}",
                 "output": "{%array_at(%array_apply([2], %nest1), 0)}",
             }
-        ).resolve() == {"output": Integer(4)}
+        ).resolve() == ScriptOutput({"output": Integer(4)})
 
 
 class TestLambdaFunctionIncompatibleNumArguments:
