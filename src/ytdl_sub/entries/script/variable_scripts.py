@@ -186,7 +186,7 @@ PLAYLIST_VARIABLES: Dict[MetadataVariable, str] = {
     v.playlist_description: playlist_get(v.playlist_description, v.description),
     v.playlist_uploader_id: playlist_get(v.playlist_uploader_id, v.uploader_id),
     v.playlist_uploader: playlist_get(v.playlist_uploader, v.uploader),
-    v.playlist_uploader_url: playlist_get(v.playlist_uploader_url, v.uploader_url),
+    v.playlist_uploader_url: playlist_get(v.playlist_uploader_url, v.playlist_webpage_url),
 }
 
 PLAYLIST_INJECTED_VARIABLES: Dict[MetadataVariable, str] = {
@@ -214,7 +214,7 @@ SOURCE_VARIABLES: Dict[MetadataVariable, str] = {
     v.source_description: source_get(v.source_description, v.playlist_description),
     v.source_uploader_id: source_get(v.source_uploader_id, v.playlist_uploader_id),
     v.source_uploader: source_get(v.source_uploader, v.playlist_uploader),
-    v.source_uploader_url: source_get(v.source_uploader_url, v.playlist_uploader_url),
+    v.source_uploader_url: source_get(v.source_uploader_url, v.source_webpage_url),
 }
 
 SOURCE_DERIVED_VARIABLES: Dict[Variable, str] = {

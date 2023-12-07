@@ -222,10 +222,10 @@ class _Variables:
         str
             The uploader url if it exists, otherwise returns the webpage_url.
         """
-        return MetadataVariable(variable_name="uploader_url", metadata_key="uploader_url")
+        return MetadataVariable("uploader_url", metadata_key="uploader_url")
 
     @property
-    def source_title(self) -> Variable:
+    def source_title(self) -> MetadataVariable:
         """
         Returns
         -------
@@ -233,7 +233,7 @@ class _Variables:
             Name of the source (i.e. channel with multiple playlists) if it exists, otherwise
             returns its playlist_title.
         """
-        return Variable("source_title")
+        return MetadataVariable("source_title", metadata_key="title")
 
     @property
     def source_title_sanitized(self) -> Variable:
@@ -246,17 +246,17 @@ class _Variables:
         return Variable("source_title_sanitized")
 
     @property
-    def source_uid(self) -> Variable:
+    def source_uid(self) -> MetadataVariable:
         """
         Returns
         -------
         str
             The source unique id if it exists, otherwise returns the playlist unique ID.
         """
-        return Variable("source_uid")
+        return MetadataVariable("source_uid", metadata_key="id")
 
     @property
-    def source_index(self) -> Variable:
+    def source_index(self) -> MetadataVariable:
         """
         Returns
         -------
@@ -266,7 +266,7 @@ class _Variables:
             It is recommended to not use this unless you know the source will never add new content
             (it is easy for this value to change).
         """
-        return Variable("source_index")
+        return MetadataVariable("source_index", metadata_key="playlist_index")
 
     @property
     def source_index_padded(self) -> Variable:
@@ -279,34 +279,34 @@ class _Variables:
         return Variable("source_index_padded")
 
     @property
-    def source_count(self) -> Variable:
+    def source_count(self) -> MetadataVariable:
         """
         Returns
         -------
         int
             The source count if it exists, otherwise returns the playlist count.
         """
-        return Variable("source_count")
+        return MetadataVariable("source_count", metadata_key="playlist_count")
 
     @property
-    def source_webpage_url(self) -> Variable:
+    def source_webpage_url(self) -> MetadataVariable:
         """
         Returns
         -------
         str
             The source webpage url if it exists, otherwise returns the playlist webpage url.
         """
-        return Variable("source_webpage_url")
+        return MetadataVariable("source_webpage_url", metadata_key="webpage_url")
 
     @property
-    def source_description(self) -> Variable:
+    def source_description(self) -> MetadataVariable:
         """
         Returns
         -------
         str
             The source description if it exists, otherwise returns the playlist description.
         """
-        return Variable("source_description")
+        return MetadataVariable("source_description", metadata_key="description")
 
     @property
     def playlist_uid(self) -> MetadataVariable:
@@ -500,34 +500,34 @@ class _Variables:
         return MetadataVariable("playlist_uploader_url", metadata_key="uploader_url")
 
     @property
-    def source_uploader_id(self) -> Variable:
+    def source_uploader_id(self) -> MetadataVariable:
         """
         Returns
         -------
         str
             The source uploader id if it exists, otherwise returns the playlist_uploader_id
         """
-        return Variable("source_uploader_id")
+        return MetadataVariable("source_uploader_id", metadata_key="uploader_id")
 
     @property
-    def source_uploader(self) -> Variable:
+    def source_uploader(self) -> MetadataVariable:
         """
         Returns
         -------
         str
             The source uploader if it exists, otherwise return Variable("")
         """
-        return Variable("source_uploader")
+        return MetadataVariable("source_uploader", metadata_key="uploader")
 
     @property
-    def source_uploader_url(self) -> Variable:
+    def source_uploader_url(self) -> MetadataVariable:
         """
         Returns
         -------
         str
             The source uploader url if it exists, otherwise returns the source webpage_url.
         """
-        return Variable("source_uploader_url")
+        return MetadataVariable("source_uploader_url", metadata_key="uploader_url")
 
     @property
     def creator(self) -> MetadataVariable:
