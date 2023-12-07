@@ -41,7 +41,7 @@ class TestFunction:
             IncompatibleFunctionArguments,
             match=_incompatible_arguments_match(
                 expected="Map, Hashable, Optional[AnyArgument]",
-                recieved="%if(...)->Union[Map, Array], String",
+                recieved="%if(...)->Union[Array, Map], String",
             ),
         ):
             Script({"func": function_str}).resolve()

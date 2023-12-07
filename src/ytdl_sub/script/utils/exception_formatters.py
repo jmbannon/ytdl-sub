@@ -113,7 +113,9 @@ class FunctionArgumentsExceptionFormatter:
         if is_optional(python_type):
             return f"Optional[{cls._to_human_readable_name(get_optional_type(python_type))}]"
         if is_union(python_type):
-            return ", ".join(cls._to_human_readable_name(arg) for arg in python_type.__args__)
+            return ", ".join(
+                sorted(cls._to_human_readable_name(arg) for arg in python_type.__args__)
+            )
         return python_type.type_name()
 
     def _expected_args_str(self) -> str:
@@ -130,7 +132,7 @@ class FunctionArgumentsExceptionFormatter:
                 if is_union(arg.output_type()):
                     received_type_names.append(
                         f"%{arg.name}(...)->Union["
-                        f"{', '.join(type_.type_name() for type_ in arg.output_type().__args__)}"
+                        f"{', '.join(sorted(type_.type_name() for type_ in arg.output_type().__args__))}"
                         f"]"
                     )
                 else:
