@@ -107,7 +107,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             return arg.output_type()
         return type(arg)
 
-    def _output_generic_type(self, union_args: List[Type[Argument]]) -> Type[Resolvable]:
+    def _output_type(self, union_args: List[Type[Argument]]) -> Type[Resolvable]:
         union_types_list = set()
         for union_type in union_args:
             possible_output_type = union_type
@@ -124,9 +124,9 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
     def output_type(self) -> Type[Resolvable]:
         if is_union(self.function_spec.return_type):
-            return self._output_generic_type(self.function_spec.return_type.__args__)
+            return self._output_type(self.function_spec.return_type.__args__)
 
-        return self._output_generic_type([self.function_spec.return_type])
+        return self._output_type([self.function_spec.return_type])
 
     def _resolve_lambda_function(
         self,
