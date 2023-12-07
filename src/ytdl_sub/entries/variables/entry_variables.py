@@ -110,7 +110,7 @@ class EntryVariables(BaseEntryVariables):
         Returns
         -------
         int
-            The source count if it exists, otherwise returns the playlist count.
+            The source count if it exists, otherwise returns 1.
         """
         return self.kwargs_get(SOURCE_COUNT, self.playlist_count)
 

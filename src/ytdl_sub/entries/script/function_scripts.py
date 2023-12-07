@@ -48,7 +48,7 @@ class CustomFunctions:
         return String(out)
 
     @staticmethod
-    def date_metadata(yyyymmdd: String) -> Map:
+    def to_date_metadata(yyyymmdd: String) -> Map:
         date_str = yyyymmdd.value
         if not (date_str.isnumeric() and len(date_str) == 6):
             raise RuntimeException(
