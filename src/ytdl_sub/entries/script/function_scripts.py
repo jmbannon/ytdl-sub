@@ -1,5 +1,6 @@
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
@@ -98,3 +99,9 @@ class CustomFunctions:
                 String("day_of_year_reversed_padded"): String(_pad(day_of_year_reversed, width=3)),
             }
         )
+
+    @staticmethod
+    def register():
+        Functions.register_function(CustomFunctions.sanitize)
+        Functions.register_function(CustomFunctions.sanitize_plex_episode)
+        Functions.register_function(CustomFunctions.to_date_metadata)

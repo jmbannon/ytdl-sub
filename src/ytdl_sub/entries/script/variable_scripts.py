@@ -3,6 +3,7 @@ from typing import Optional
 
 import mergedeep
 
+from ytdl_sub.entries.script.function_scripts import CustomFunctions
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.script.variable_definitions import DerivedMetadata
 from ytdl_sub.entries.script.variable_definitions import Metadata
@@ -33,7 +34,9 @@ def date_metadata(date_key: Variable, metadata_key: str) -> str:
 # Metadata Getters
 
 
-def _get(metadata: Metadata, key: MetadataVariable, default: Optional[Variable | str | int]) -> str:
+def _get_internal(
+    metadata: Metadata, key: MetadataVariable, default: Optional[Variable | str | int]
+) -> str:
     if default is None:
         # TODO: assert with good error message if key DNE
         return f"%map_get({metadata.variable_name}, '{key.metadata_key}')"
@@ -48,7 +51,11 @@ def _get(metadata: Metadata, key: MetadataVariable, default: Optional[Variable |
 def _get_int(
     metadata: Metadata, key: MetadataVariable, default: Optional[Variable | int] = None
 ) -> str:
-    return f"{{%int({_get(metadata=metadata, key=key, default=default)}}}"
+    return f"{{%int({_get_internal(metadata=metadata, key=key, default=default)})}}"
+
+
+def _get(metadata: Metadata, key: MetadataVariable, default: Optional[Variable | str | int]) -> str:
+    return f"{{{_get_internal(metadata=metadata, key=key, default=default)}}}"
 
 
 ###############################################################################################
@@ -56,11 +63,11 @@ def _get_int(
 
 
 def entry_get(key: MetadataVariable, default: Optional[Variable | str | int] = None) -> str:
-    return f"{{{_get(metadata=v.entry_metadata, key=key, default=default)}}}"
+    return _get(metadata=v.entry_metadata, key=key, default=default)
 
 
 def entry_get_int(key: MetadataVariable, default: Optional[Variable | int] = None) -> str:
-    return f"{{%int({_get_int(metadata=v.entry_metadata, key=key, default=default)}}}"
+    return _get_int(metadata=v.entry_metadata, key=key, default=default)
 
 
 ###############################################################################################
@@ -68,11 +75,11 @@ def entry_get_int(key: MetadataVariable, default: Optional[Variable | int] = Non
 
 
 def playlist_get(key: MetadataVariable, default: Optional[Variable | str | int] = None) -> str:
-    return f"{{{_get(metadata=v.playlist_metadata, key=key, default=default)}}}"
+    return _get(metadata=v.playlist_metadata, key=key, default=default)
 
 
 def playlist_get_int(key: MetadataVariable, default: Optional[Variable | int] = None) -> str:
-    return f"{{%int({_get_int(metadata=v.playlist_metadata, key=key, default=default)}}}"
+    return _get_int(metadata=v.playlist_metadata, key=key, default=default)
 
 
 ###############################################################################################
@@ -80,11 +87,11 @@ def playlist_get_int(key: MetadataVariable, default: Optional[Variable | int] = 
 
 
 def source_get(key: MetadataVariable, default: Optional[Variable | str | int] = None) -> str:
-    return f"{{{_get(metadata=v.source_metadata, key=key, default=default)}}}"
+    return _get(metadata=v.source_metadata, key=key, default=default)
 
 
 def source_get_int(key: MetadataVariable, default: Optional[Variable | int] = None) -> str:
-    return f"{{%int({_get_int(metadata=v.source_metadata, key=key, default=default)}}}"
+    return _get_int(metadata=v.source_metadata, key=key, default=default)
 
 
 ###############################################################################################
@@ -131,7 +138,7 @@ ENTRY_INJECTED_VARIABLES: Dict[MetadataVariable, str] = {
 
 ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.uid_sanitized: sanitized(v.uid),
-    v.uid_sanitized_plex: sanitized_plex(v.uid_sanitized_plex),
+    v.uid_sanitized_plex: sanitized_plex(v.uid),
     v.title_sanitized: sanitized(v.title),
     v.title_sanitized_plex: sanitized_plex(v.title),
     v.epoch_date: f"{{%datetime_strftime({v.epoch.variable_name}, '%Y%m%d')}}",
@@ -140,7 +147,7 @@ ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.creator_sanitized: sanitized(v.creator),
     v.download_index_padded6: pad_int(v.download_index, 6),
     v.upload_date_index_padded: pad_int(v.upload_date_index, 2),
-    v.upload_date_index_reversed: f"{{%sub(100, {v.download_index})}}",
+    v.upload_date_index_reversed: f"{{%sub(100, {v.download_index.variable_name})}}",
     v.upload_date_index_reversed_padded: pad_int(v.upload_date_index_reversed, 2),
 }
 
@@ -203,7 +210,7 @@ PLAYLIST_INJECTED_VARIABLES: Dict[MetadataVariable, str] = {
 
 PLAYLIST_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.playlist_title_sanitized: sanitized(v.playlist_title),
-    v.playlist_index_reversed: f"{{%sub({v.playlist_count, v.playlist_index, 1})}}",
+    v.playlist_index_reversed: f"{{%sub({v.playlist_count.variable_name}, {v.playlist_index.variable_name}, 1)}}",
     v.playlist_index_padded: pad_int(v.playlist_index, 2),
     v.playlist_index_reversed_padded: pad_int(v.playlist_index_reversed, 2),
     v.playlist_index_padded6: pad_int(v.playlist_index, 6),
@@ -233,6 +240,7 @@ SOURCE_DERIVED_VARIABLES: Dict[Variable, str] = {
 _VARIABLE_SCRIPTS: Dict[Variable, str] = {}
 mergedeep.merge(
     _VARIABLE_SCRIPTS,
+    ENTRY_METADATA,
     ENTRY_HARDCODED_VARIABLES,
     ENTRY_REQUIRED_VARIABLES,
     ENTRY_DEFAULT_VARIABLES,
@@ -250,3 +258,5 @@ mergedeep.merge(
 VARIABLE_SCRIPTS: Dict[str, str] = {
     var.variable_name: script for var, script in _VARIABLE_SCRIPTS.items()
 }
+
+CustomFunctions.register()

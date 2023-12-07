@@ -1,6 +1,7 @@
 import math
 from typing import Union
 
+from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
@@ -16,14 +17,14 @@ def _to_numeric(value: int | float) -> Numeric:
 
 class NumericFunctions:
     @staticmethod
-    def float(value: Union[Float, Integer, Boolean, String]) -> Float:
+    def float(value: AnyArgument) -> Float:
         """
         Cast to Float.
         """
         return Float(value=float(value.value))
 
     @staticmethod
-    def int(value: Union[Float, Integer, Boolean, String]) -> Integer:
+    def int(value: AnyArgument) -> Integer:
         """
         Cast to Integer.
         """
