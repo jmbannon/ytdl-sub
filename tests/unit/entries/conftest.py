@@ -162,6 +162,7 @@ def mock_entry_kwargs(
     return {
         "id": uid,
         "epoch": 1596878400,
+        "ie_key": "test_ie_key",
         "extractor": extractor,
         "title": title,
         "ext": ext,

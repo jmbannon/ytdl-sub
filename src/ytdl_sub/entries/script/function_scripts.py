@@ -3,6 +3,7 @@ from yt_dlp.utils import sanitize_filename
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import ReturnableArgument
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import RuntimeException
 
@@ -16,13 +17,20 @@ _days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 class CustomFunctions:
     @staticmethod
+    def legacy_bracket_safety(value: ReturnableArgument) -> ReturnableArgument:
+        if isinstance(value, String):
+            value = String(value.value.replace("{", "｛").replace("}", "｝"))
+        return value
+
+    @staticmethod
     def sanitize(string: String) -> String:
         return String(sanitize_filename(string.value))
 
     @staticmethod
     def sanitize_plex_episode(string: String) -> String:
-        out = CustomFunctions.sanitize(string).value
-        for char in out:
+        sanitized_string = CustomFunctions.sanitize(string).value
+        out = ""
+        for char in sanitized_string:
             match char:
                 case "0":
                     out += "０"
@@ -51,7 +59,7 @@ class CustomFunctions:
     @staticmethod
     def to_date_metadata(yyyymmdd: String) -> Map:
         date_str = yyyymmdd.value
-        if not (date_str.isnumeric() and len(date_str) == 6):
+        if not (date_str.isnumeric() and len(date_str) == 8):
             raise RuntimeException(
                 f"Expected input of date_metadata to be YYYYMMDD, but received {date_str}"
             )
@@ -102,6 +110,7 @@ class CustomFunctions:
 
     @staticmethod
     def register():
+        Functions.register_function(CustomFunctions.legacy_bracket_safety)
         Functions.register_function(CustomFunctions.sanitize)
         Functions.register_function(CustomFunctions.sanitize_plex_episode)
         Functions.register_function(CustomFunctions.to_date_metadata)

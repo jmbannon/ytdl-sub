@@ -11,5 +11,8 @@ class TestEntry(object):
         entry_metadata: Dict[str, str] = {
             VARIABLES.entry_metadata.variable_name: f"{{{json.dumps(mock_entry._kwargs)}}}"
         }
-        script = Script(dict(entry_metadata, **VARIABLE_SCRIPTS)).resolve()
-        assert script == mock_entry_to_dict
+        script = Script(dict(entry_metadata, **VARIABLE_SCRIPTS))
+        output = {var_name: var_output.native for var_name, var_output in script.resolve().items()}
+        del output[VARIABLES.entry_metadata.variable_name]
+        del output[VARIABLES.ie_key.variable_name]
+        assert output == mock_entry_to_dict
