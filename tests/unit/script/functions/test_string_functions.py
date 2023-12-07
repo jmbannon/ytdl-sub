@@ -98,3 +98,14 @@ class TestNumericFunctions:
     def test_pad_zero(self, values: str, expected_output: str):
         output = single_variable_output(f"{{%pad_zero({values})}}")
         assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "values, expected_output",
+        [
+            ("'2012', 2", "12"),
+            ("'2012', 1, 3", "01"),
+        ],
+    )
+    def test_slice(self, values, expected_output):
+        output = single_variable_output(f"{{%slice({values})}}")
+        assert output == expected_output

@@ -17,6 +17,15 @@ class StringFunctions:
         return String(value=str(value.value))
 
     @staticmethod
+    def slice(string: String, start: Integer, end: Optional[Integer] = None) -> String:
+        """
+        Returns the slice of the Array.
+        """
+        if end is not None:
+            return String(string.value[start.value : end.value])
+        return String(string.value[start.value :])
+
+    @staticmethod
     def lower(string: String) -> String:
         """
         Lower-case the entire String.
