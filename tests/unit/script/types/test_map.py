@@ -11,7 +11,6 @@ from ytdl_sub.script.parser import MAP_MISSING_KEY
 from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.map import ResolvedMap
-from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException

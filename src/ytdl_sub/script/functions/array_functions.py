@@ -2,7 +2,6 @@ from typing import List
 from typing import Optional
 
 from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
@@ -23,7 +22,7 @@ class ArrayFunctions:
         for array in arrays:
             output.extend(array.value)
 
-        return ResolvedArray(output)
+        return Array(output)
 
     @staticmethod
     def array_at(array: Array, idx: Integer) -> Resolvable:
@@ -61,8 +60,8 @@ class ArrayFunctions:
         Returns the slice of the Array.
         """
         if end is not None:
-            return ResolvedArray(array.value[start.value : end.value])
-        return ResolvedArray(array.value[start.value :])
+            return Array(array.value[start.value : end.value])
+        return Array(array.value[start.value :])
 
     @staticmethod
     def array_flatten(array: Array) -> Array:
@@ -76,14 +75,14 @@ class ArrayFunctions:
             else:
                 output.append(elem)
 
-        return ResolvedArray(output)
+        return Array(output)
 
     @staticmethod
     def array_reverse(array: Array) -> Array:
         """
         Reverse an Array.
         """
-        return ResolvedArray(list(reversed(array.value)))
+        return Array(list(reversed(array.value)))
 
     # pylint: disable=unused-argument
 
@@ -92,7 +91,7 @@ class ArrayFunctions:
         """
         Apply a lambda function on every element in the Array.
         """
-        return ResolvedArray([ResolvedArray([val]) for val in array.value])
+        return Array([Array([val]) for val in array.value])
 
     @staticmethod
     def array_enumerate(array: Array, lambda_function: LambdaTwo) -> Array:
@@ -100,8 +99,6 @@ class ArrayFunctions:
         Apply a lambda function on every element in the Array, where each arg
         passed to the lambda function is ``idx, element`` as two separate args.
         """
-        return ResolvedArray(
-            [ResolvedArray([Integer(idx), val]) for idx, val in enumerate(array.value)]
-        )
+        return Array([Array([Integer(idx), val]) for idx, val in enumerate(array.value)])
 
     # pylint: enable=unused-argument

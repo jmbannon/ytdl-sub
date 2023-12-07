@@ -3,7 +3,7 @@ import re
 import pytest
 
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.array import ResolvedArray
+from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 
@@ -12,7 +12,7 @@ class TestLambdaFunction:
     def test_lambda_with_custom_function(self):
         assert Script(
             {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([1, 2, 3], %times_two)}"}
-        ).resolve() == {"wip": ResolvedArray([Integer(2), Integer(4), Integer(6)])}
+        ).resolve() == {"wip": Array([Integer(2), Integer(4), Integer(6)])}
 
     def test_conditional_lambda_with_custom_functions(self):
         assert Script(
@@ -21,7 +21,7 @@ class TestLambdaFunction:
                 "%times_two": "{%mul($0, 2)}",
                 "wip": "{%array_apply([1, 2, 3], %if(False, %times_two, %times_three))}",
             }
-        ).resolve() == {"wip": ResolvedArray([Integer(3), Integer(6), Integer(9)])}
+        ).resolve() == {"wip": Array([Integer(3), Integer(6), Integer(9)])}
 
     def test_nested_custom_functions(self):
         assert Script(

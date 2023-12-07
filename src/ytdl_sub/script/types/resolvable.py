@@ -88,6 +88,13 @@ class Resolvable(AnyArgument, ABC):
 
 
 @dataclass(frozen=True)
+class FutureResolvable(AnyArgument, ABC):
+    @abstractmethod
+    def future_resolvable_type(self) -> Type[Resolvable]:
+        pass
+
+
+@dataclass(frozen=True)
 class Hashable(Resolvable, ABC):
     pass
 

@@ -1,7 +1,6 @@
 from typing import Optional
 
 from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
@@ -43,7 +42,7 @@ class MapFunctions:
         Apply a lambda function on the Map, where each arg
         passed to the lambda function is ``key, value`` as two separate args.
         """
-        return ResolvedArray([ResolvedArray([key, value]) for key, value in mapping.value.items()])
+        return Array([Array([key, value]) for key, value in mapping.value.items()])
 
     @staticmethod
     def map_enumerate(mapping: Map, lambda_function: LambdaThree) -> Array:
@@ -51,9 +50,9 @@ class MapFunctions:
         Apply a lambda function on the Map, where each arg
         passed to the lambda function is ``idx, key, value`` as three separate args.
         """
-        return ResolvedArray(
+        return Array(
             [
-                ResolvedArray([Integer(idx), key_value[0], key_value[1]])
+                Array([Integer(idx), key_value[0], key_value[1]])
                 for idx, key_value in enumerate(mapping.value.items())
             ]
         )

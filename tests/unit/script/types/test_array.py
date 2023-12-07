@@ -6,8 +6,7 @@ from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
 from ytdl_sub.script.parser import _UNEXPECTED_COMMA_ARGUMENT
 from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.array import ResolvedArray
-from ytdl_sub.script.types.resolvable import Boolean
+from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
@@ -16,7 +15,7 @@ from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 class TestArray:
     def test_return(self):
         assert Script({"array": "{['a', 3.14]}"}).resolve() == {
-            "array": ResolvedArray([String("a"), Float(3.14)])
+            "array": Array([String("a"), Float(3.14)])
         }
 
     def test_return_as_str(self):
@@ -28,13 +27,13 @@ class TestArray:
         assert Script(
             {"array": "{['level1', ['level2', ['level3', 'level3'], 'level2'], 'level1']}"}
         ).resolve() == {
-            "array": ResolvedArray(
+            "array": Array(
                 [
                     String("level1"),
-                    ResolvedArray(
+                    Array(
                         [
                             String("level2"),
-                            ResolvedArray([String("level3"), String("level3")]),
+                            Array([String("level3"), String("level3")]),
                             String("level2"),
                         ],
                     ),
@@ -53,7 +52,7 @@ class TestArray:
         ],
     )
     def test_empty(self, array: str):
-        assert Script({"array": array}).resolve() == {"array": ResolvedArray([])}
+        assert Script({"array": array}).resolve() == {"array": Array([])}
 
     @pytest.mark.parametrize(
         "array",

@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Type
 
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Argument
+from ytdl_sub.script.types.resolvable import FutureResolvable
 from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import ResolvableToJson
@@ -13,7 +15,7 @@ from ytdl_sub.script.types.variable_dependency import VariableDependency
 
 
 @dataclass(frozen=True)
-class Array(NonHashable):
+class _Array(NonHashable):
     value: List[Resolvable]
 
     @classmethod
@@ -22,7 +24,7 @@ class Array(NonHashable):
 
 
 @dataclass(frozen=True)
-class UnresolvedArray(Array, VariableDependency, AnyArgument):
+class UnresolvedArray(_Array, VariableDependency, FutureResolvable):
     value: List[Argument]
 
     @property
@@ -34,7 +36,7 @@ class UnresolvedArray(Array, VariableDependency, AnyArgument):
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
-        return ResolvedArray(
+        return Array(
             [
                 self._resolve_argument_type(
                     arg=arg,
@@ -45,9 +47,12 @@ class UnresolvedArray(Array, VariableDependency, AnyArgument):
             ]
         )
 
+    def future_resolvable_type(self) -> Type[Resolvable]:
+        return Array
+
 
 @dataclass(frozen=True)
-class ResolvedArray(Array, ResolvableToJson):
+class Array(_Array, ResolvableToJson):
     @property
     def native(self) -> Any:
         return [val.native for val in self.value]

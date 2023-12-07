@@ -3,17 +3,14 @@ from typing import AnyStr
 from typing import Match
 
 from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.array import ResolvedArray
 from ytdl_sub.script.types.resolvable import String
 
 
-def _re_output_to_array(re_out: Match[AnyStr] | None) -> ResolvedArray:
+def _re_output_to_array(re_out: Match[AnyStr] | None) -> Array:
     if re_out is None:
-        return ResolvedArray([])
+        return Array([])
 
-    return ResolvedArray(
-        list([String(re_out.string)]) + list(String(group) for group in re_out.groups())
-    )
+    return Array(list([String(re_out.string)]) + list(String(group) for group in re_out.groups()))
 
 
 class RegexFunctions:

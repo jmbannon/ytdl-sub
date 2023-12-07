@@ -9,7 +9,7 @@ from typing import Type
 from typing import Union
 
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.types.array import ResolvedArray
+from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
@@ -151,7 +151,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
                 f"Runtime error occurred when executing the function %{self.name}: {str(exc)}"
             ) from exc
 
-        assert isinstance(lambda_args, ResolvedArray)
+        assert isinstance(lambda_args, Array)
 
         return self._resolve_argument_type(
             arg=UnresolvedArray(

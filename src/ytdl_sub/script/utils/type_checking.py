@@ -12,6 +12,7 @@ from typing import get_origin
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
+from ytdl_sub.script.types.resolvable import FutureResolvable
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import LambdaThree
 from ytdl_sub.script.types.resolvable import LambdaTwo
@@ -65,11 +66,12 @@ def is_type_compatible(
     arg_type: Type[NamedType] = arg.__class__
     if isinstance(arg, BuiltInFunctionType):
         arg_type = arg.output_type()  # built-in function
+    elif isinstance(arg, FutureResolvable):
+        arg_type = arg.future_resolvable_type()
     elif isinstance(arg, FunctionType):
         return True  # custom-function, can be anything, so pass for now
     elif isinstance(arg, Variable):
         return True  # unresolved variables can be anything, so pass for now
-
     if is_union(expected_arg_type):
         # See if the arg is a valid against the union
         valid_type = False
