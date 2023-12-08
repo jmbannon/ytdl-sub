@@ -5,11 +5,13 @@ import pytest
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
+from ytdl_sub.script.script import Script
+from ytdl_sub.utils.file_path import FilePathTruncater
 from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
-from ytdl_sub.validators.file_path_validators import FilePathValidatorMixin
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 
 
+@pytest.mark.usefixtures("register_custom_functions")
 class TestStringFormatterFilePathValidator:
     @pytest.mark.parametrize(
         "ext",
@@ -28,7 +30,9 @@ class TestStringFormatterFilePathValidator:
             file_path = str(Path(temp_dir) / file_name)
 
             formatter = StringFormatterFileNameValidator(name="test", value=str(file_path))
-            truncated_file_path = formatter.apply_formatter({})
+            truncated_file_path = (
+                Script({"file_name": formatter.format_string}).resolve().get_str("file_name")
+            )
 
             assert truncated_file_path.count(".") == ext.count(".")
             assert str(Path(temp_dir)) in truncated_file_path
@@ -56,7 +60,9 @@ class TestStringFormatterFilePathValidator:
             file_path = str(Path(temp_dir) / f"{base_file_name}{ext}")
 
             formatter = StringFormatterFileNameValidator(name="test", value=str(file_path))
-            truncated_file_path = formatter.apply_formatter({})
+            truncated_file_path = (
+                Script({"file_name": formatter.format_string}).resolve().get_str("file_name")
+            )
 
             assert truncated_file_path == str(
                 Path(temp_dir)
@@ -74,16 +80,16 @@ class TestStringFormatterFilePathValidator:
     @pytest.mark.parametrize(
         "file_name_max_bytes, expected_max",
         [
-            (50, 50 - FilePathValidatorMixin._EXTENSION_BYTES),
+            (50, 50 - FilePathTruncater._EXTENSION_BYTES),
             (0, 16),
-            (10000, MAX_FILE_NAME_BYTES - FilePathValidatorMixin._EXTENSION_BYTES),
+            (10000, MAX_FILE_NAME_BYTES - FilePathTruncater._EXTENSION_BYTES),
         ],
     )
     def test_config_changes_max_file_name_bytes(self, file_name_max_bytes: int, expected_max: int):
         # Ensure the default is set
         assert (
-            FilePathValidatorMixin._MAX_BASE_FILE_NAME_BYTES
-            == FilePathValidatorMixin._DEFAULT_MAX_BASE_FILE_NAME_BYTES
+            FilePathTruncater._MAX_BASE_FILE_NAME_BYTES
+            == FilePathTruncater._DEFAULT_MAX_BASE_FILE_NAME_BYTES
         )
 
         try:
@@ -98,8 +104,8 @@ class TestStringFormatterFilePathValidator:
                 }
             )
 
-            assert FilePathValidatorMixin._MAX_BASE_FILE_NAME_BYTES == expected_max
+            assert FilePathTruncater._MAX_BASE_FILE_NAME_BYTES == expected_max
         finally:
-            FilePathValidatorMixin._MAX_BASE_FILE_NAME_BYTES = (
-                FilePathValidatorMixin._DEFAULT_MAX_BASE_FILE_NAME_BYTES
+            FilePathTruncater._MAX_BASE_FILE_NAME_BYTES = (
+                FilePathTruncater._DEFAULT_MAX_BASE_FILE_NAME_BYTES
             )

@@ -8,6 +8,7 @@ from typing import Set
 
 from ytdl_sub.entries.script.variable_scripts import UNRESOLVED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
+from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
@@ -29,6 +30,18 @@ class Scriptable(ABC):
             f"{name}_sanitized": f"{{%sanitize({name})}}" for name in variables.keys()
         }
         return dict(variables, **sanitized_variables)
+
+    @classmethod
+    def wrappable_format_string(cls, format_string: str) -> str:
+        parsed = parse(format_string)
+
+        if resolvable := parsed.maybe_resolvable:
+            return f"'{str(resolvable)}'"
+
+        stripped_format_string = format_string.strip()
+        if stripped_format_string.startswith("{") and stripped_format_string.endswith("}"):
+            return stripped_format_string[1:-1]
+        return format_string
 
     @classmethod
     def to_script(cls, value: Any) -> str:

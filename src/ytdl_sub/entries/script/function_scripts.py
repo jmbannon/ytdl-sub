@@ -1,3 +1,5 @@
+import os
+
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.script.functions import Functions
@@ -7,6 +9,7 @@ from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import ReturnableArgument
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import RuntimeException
+from ytdl_sub.utils.file_path import FilePathTruncater
 
 
 def _pad(num: int, width: int):
@@ -22,6 +25,14 @@ class CustomFunctions:
         if isinstance(value, String):
             value = String(value.value.replace("{", "｛").replace("}", "｝"))
         return value
+
+    @staticmethod
+    def to_native_filepath(filepath: String) -> String:
+        return String(str(os.path.realpath(filepath.value)))
+
+    @staticmethod
+    def truncate_filepath_if_too_long(filepath: String) -> String:
+        return String(FilePathTruncater.maybe_truncate_file_path(filepath.value))
 
     @staticmethod
     def sanitize(value: AnyArgument) -> String:
@@ -113,6 +124,8 @@ class CustomFunctions:
     def register():
         if not Functions.is_built_in("sanitize"):
             Functions.register_function(CustomFunctions.legacy_bracket_safety)
+            Functions.register_function(CustomFunctions.truncate_filepath_if_too_long)
+            Functions.register_function(CustomFunctions.to_native_filepath)
             Functions.register_function(CustomFunctions.sanitize)
             Functions.register_function(CustomFunctions.sanitize_plex_episode)
             Functions.register_function(CustomFunctions.to_date_metadata)

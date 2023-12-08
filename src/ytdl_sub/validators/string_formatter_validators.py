@@ -11,6 +11,7 @@ from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
@@ -81,9 +82,11 @@ class StringFormatterValidator(StringValidator):
 
     def __init__(self, name, value: str):
         super().__init__(name=name, value=value)
-        _ = parse(str(value))
+        try:
+            _ = parse(str(value))
+        except UserException as exc:
+            raise self._validation_exception(exc) from exc
 
-    @final
     @property
     def format_string(self) -> str:
         """
