@@ -18,12 +18,12 @@ class TestScriptBuilder:
         script = ScriptBuilder(
             {
                 "entry": "{ {} }",
-                "title": "{%map_get(entry, 'title')}",
+                "title": "{%map_get(entry, 'title', '')}",
                 "resolved_override": "{override} mom",
             }
         )
 
-        assert script.partial_build().resolve()
+        assert script.partial_build().resolve(unresolvable={"entry"})
 
         with pytest.raises(
             ScriptBuilderMissingDefinitions,
@@ -32,6 +32,7 @@ class TestScriptBuilder:
             script.build()
 
         script.add({"override": "hi"})
+        script.add_resolved({"entry": entry_map})
 
         script.build()
 

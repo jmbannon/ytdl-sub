@@ -519,7 +519,7 @@ class ScriptBuilder:
         for missing_metadata in self._missing_metadata:
             for name, missing in missing_metadata.items():
                 raise ScriptBuilderMissingDefinitions(
-                    f"{name} is missing the following definitions: {', '.join(missing_metadata)}"
+                    f"{name} is missing the following definitions: {', '.join(missing)}"
                 )
 
         return self._build(variables=self._variables, functions=self._functions)
