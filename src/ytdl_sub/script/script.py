@@ -6,6 +6,8 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
+from mergedeep import mergedeep
+
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script_output import ScriptOutput
@@ -257,7 +259,7 @@ class Script:
 
     def _resolve(
         self,
-        resolved: Optional[Dict[str, Resolvable]] = None,
+        pre_resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
         update: bool = False,
         output_filter: Optional[Set[str]] = None,
@@ -265,7 +267,7 @@ class Script:
         """
         Parameters
         ----------
-        resolved
+        pre_resolved
             Optional. Variables that have been resolved elsewhere and could be used in this script
         unresolvable
             Optional. Variables that cannot be resolved, forcing any variable that depends on it
@@ -278,15 +280,14 @@ class Script:
         -------
         Dict of resolved values
         """
-        resolved: Dict[Variable, Resolvable] = dict(
-            # include all current variables that are resolvable
-            {
-                Variable(name): ast.maybe_resolvable
-                for name, ast in self._variables.items()
-                if ast.maybe_resolvable is not None
-            },
-            # add explicit defined resolved variables
-            **{Variable(name): value for name, value in (resolved or {}).items()},
+        # include all current variables that are resolvable
+        resolved: Dict[Variable, Resolvable] = {
+            Variable(name): ast.maybe_resolvable
+            for name, ast in self._variables.items()
+            if ast.maybe_resolvable is not None
+        }
+        mergedeep.merge(
+            resolved, {Variable(name): value for name, value in (pre_resolved or {}).items()}
         )
 
         unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
@@ -300,7 +301,9 @@ class Script:
         while unresolved:
             unresolved_count: int = len(unresolved)
 
-            for variable, definition in copy.deepcopy(unresolved).items():
+            for variable in list(unresolved.keys()):
+                definition = unresolved[variable]
+
                 # If the variable's variable dependencies contain an unresolvable variable,
                 # declare it as unresolvable and continue
                 if definition.contains(unresolvable):
@@ -345,7 +348,7 @@ class Script:
         update: bool = False,
     ) -> ScriptOutput:
         return self._resolve(
-            resolved=resolved, unresolvable=unresolvable, update=update, output_filter=None
+            pre_resolved=resolved, unresolvable=unresolvable, update=update, output_filter=None
         )
 
     def add(self, variables: Dict[str, str]) -> "Script":
@@ -375,7 +378,7 @@ class Script:
         try:
             self.add({var_name: variable_definition})
             return self._resolve(
-                resolved=resolved, unresolvable=unresolvable, output_filter={var_name}
+                pre_resolved=resolved, unresolvable=unresolvable, output_filter={var_name}
             ).get(var_name)
         finally:
             if var_name in self._variables:
