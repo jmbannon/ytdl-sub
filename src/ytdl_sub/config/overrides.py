@@ -2,6 +2,7 @@ import copy
 from typing import Any
 from typing import Dict
 from typing import Optional
+from typing import Set
 
 from yt_dlp.utils import sanitize_filename
 
@@ -9,6 +10,7 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.script.parser import parse
+from ytdl_sub.script.script import Script
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -116,14 +118,15 @@ class Overrides(DictFormatterValidator, Scriptable):
         -------
         The format_string after .format has been called
         """
+        script: Script = self.script
+        unresolvable: Set[str] = self.unresolvable
         if entry:
             script = entry.script
             unresolvable = entry.unresolvable
-        else:
-            script = self.script
-            unresolvable = self.unresolvable
 
-        if function_overrides:
-            script = copy.deepcopy(script).add(function_overrides)
-
-        return str(script.resolve_once(formatter.format_string, unresolvable=unresolvable))
+        return str(
+            script.resolve_once(
+                dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
+                unresolvable=unresolvable,
+            )["tmp_var"]
+        )

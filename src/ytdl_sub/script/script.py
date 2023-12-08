@@ -331,6 +331,10 @@ class Script:
             self._update_internally(resolved_variables=resolved_variables)
 
         if output_filter:
+            for name in output_filter:
+                if name not in resolved_variables:
+                    raise ValueError(f"Specified {name} to resolve, but it did not")
+
             return ScriptOutput(
                 {
                     name: resolvable
@@ -369,20 +373,21 @@ class Script:
 
     def resolve_once(
         self,
-        variable_definition: str,
-        variable_name: Optional[str] = None,
+        variable_definitions: Dict[str, str],
         resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
-    ) -> Resolvable:
-        var_name = variable_name if variable_name else "tmp_var"
+    ) -> Dict[str, Resolvable]:
         try:
-            self.add({var_name: variable_definition})
+            self.add(variable_definitions)
             return self._resolve(
-                pre_resolved=resolved, unresolvable=unresolvable, output_filter={var_name}
-            ).get(var_name)
+                pre_resolved=resolved,
+                unresolvable=unresolvable,
+                output_filter=set(list(variable_definitions.keys())),
+            ).output
         finally:
-            if var_name in self._variables:
-                del self._variables[var_name]
+            for name in variable_definitions.keys():
+                if name in self._variables:
+                    del self._variables[name]
 
     def get(self, variable_name: str) -> Resolvable:
         if variable_name not in self._variables:

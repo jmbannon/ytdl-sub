@@ -259,7 +259,7 @@ class Preset(_PresetShell):
     ) -> None:
         try:
             self._script.resolve_once(
-                formatter_validator.format_string,
+                {"tmp_var": formatter_validator.format_string},
                 unresolvable=self._get_unresolvable_variables(formatter_validator),
             )
         except VariableDoesNotExist as exc:

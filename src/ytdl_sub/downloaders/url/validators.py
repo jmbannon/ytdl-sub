@@ -259,13 +259,17 @@ class MultiUrlValidator(OptionsValidator):
         """
         # Apply formatting to each new source variable, ensure it resolves
         for collection_url in self.urls.list:
-            for name, definition in collection_url.variables.dict_with_format_strings.items():
-                script.resolve_once(variable_name=name, variable_definition=definition)
+            script.resolve_once(collection_url.variables.dict_with_format_strings)
 
         # Ensure at least URL is non-empty
         has_non_empty_url = False
-        for url_validator in self.urls.list:
-            has_non_empty_url |= bool(str(script.resolve_once(url_validator.url.format_string)))
+        url_variables = {
+            f"tmp_var_url_{idx}": url_validator.url.format_string
+            for idx, url_validator in enumerate(self.urls.list)
+        }
+        output = script.resolve_once(url_variables)
+        for out in output:
+            has_non_empty_url |= bool(str(out))
 
         if not has_non_empty_url:
             raise self._validation_exception("Must contain at least one url that is non-empty")
