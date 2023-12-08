@@ -40,11 +40,11 @@ def _get_internal(
         # TODO: assert with good error message if key DNE
         out = f"%map_get({metadata.variable_name}, '{key.metadata_key}')"
     elif isinstance(default, Variable):
-        out = f"%map_get({metadata.variable_name}, '{key.metadata_key}', {default.variable_name})"
+        out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', {default.variable_name})"
     elif isinstance(default, str):
-        out = f"%map_get({metadata.variable_name}, '{key.metadata_key}', '{default}')"
+        out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', '{default}')"
     else:
-        out = f"%map_get({metadata.variable_name}, '{key.metadata_key}', {default})"
+        out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', {default})"
 
     return f"%legacy_bracket_safety({out})"
 
@@ -107,7 +107,7 @@ ENTRY_HARDCODED_VARIABLES: Dict[Variable, str] = {
 
 ENTRY_REQUIRED_VARIABLES: Dict[MetadataVariable, str] = {
     v.uid: entry_get(v.uid),
-    v.ie_key: entry_get(v.ie_key),
+    v.extractor_key: entry_get(v.extractor_key),
     v.epoch: entry_get_int(v.epoch),
     v.webpage_url: entry_get(v.webpage_url),
     v.ext: entry_get(v.ext),
@@ -116,7 +116,7 @@ ENTRY_REQUIRED_VARIABLES: Dict[MetadataVariable, str] = {
 ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
     v.playlist_index: playlist_get_int(v.playlist_index, 1),
     v.title: entry_get(v.title, v.uid),
-    v.extractor: entry_get(v.extractor, v.ie_key),
+    v.extractor: entry_get(v.extractor, v.extractor_key),
     v.description: entry_get(v.description, ""),
     v.uploader_id: entry_get(v.uploader_id, v.uid),
     v.uploader: entry_get(v.uploader, v.uploader_id),

@@ -113,11 +113,15 @@ def _is_breakable(char: str) -> bool:
 
 
 def _is_boolean_true(string: Optional[str]) -> bool:
-    return string == "True"
+    return string and string.lower() == "true"
 
 
 def _is_boolean_false(string: Optional[str]) -> bool:
-    return string == "False"
+    return string and string.lower() == "false"
+
+
+def _is_null(string: Optional[str]) -> bool:
+    return string and string.lower() == "null"
 
 
 def _is_custom_function_argument_start(char: str) -> bool:
@@ -306,6 +310,9 @@ class _Parser:
         if _is_boolean_false(self._read(increment_pos=False, length=5)):
             self._pos += 5
             return Boolean(value=False)
+        if _is_null(self._read(increment_pos=False, length=4)):
+            self._pos += 4
+            return String(value="")
         if _is_string_start(self._read(increment_pos=False)):
             return self._parse_string()
         if self._read(increment_pos=False) == "[":
@@ -528,7 +535,7 @@ class _Parser:
                     self._ast.append(self._parse_variable())
                 elif _is_numeric_start(ch1):
                     raise NUMERICS_ONLY_ARGS
-                elif _is_string_start(ch1):
+                elif _is_string_start(ch1) or _is_null(self._read(increment_pos=False, length=4)):
                     raise STRINGS_ONLY_ARGS
                 elif _is_boolean_true(
                     self._read(increment_pos=False, length=4)

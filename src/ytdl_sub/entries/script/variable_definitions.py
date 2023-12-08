@@ -74,14 +74,14 @@ class _Variables:
         return Variable("uid_sanitized_plex")
 
     @property
-    def ie_key(self) -> MetadataVariable:
+    def extractor_key(self) -> MetadataVariable:
         """
         Returns
         -------
         str
             The info-extractor key
         """
-        return MetadataVariable(metadata_key="ie_key", variable_name="ie_key")
+        return MetadataVariable(metadata_key="extractor_key", variable_name="extractor_key")
 
     @property
     def extractor(self) -> MetadataVariable:

@@ -8,6 +8,7 @@ from ytdl_sub.script.types.resolvable import Hashable
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import LambdaThree
 from ytdl_sub.script.types.resolvable import LambdaTwo
+from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import KeyDoesNotExistRuntimeException
 
 
@@ -26,6 +27,17 @@ class MapFunctions:
                 f"Tried to call %map_get with key {key.value}, but it does not exist"
             )
         return mapping.value[key]
+
+    @staticmethod
+    def map_get_non_empty(mapping: Map, key: Hashable, default: AnyArgument) -> AnyArgument:
+        """
+        Return ``key``'s value within the Map. If ``key`` does not exist or is an empty string,
+        return ``default``. Otherwise, will error.
+        """
+        output = MapFunctions.map_get(mapping, key, default)
+        if isinstance(output, String) and output.value == "":
+            return default
+        return output
 
     @staticmethod
     def map_contains(mapping: Map, key: Hashable) -> Boolean:
