@@ -88,6 +88,7 @@ class StringFormatterValidator(StringValidator):
             raise self._validation_exception(exc) from exc
 
     @property
+    @final
     def format_string(self) -> str:
         """
         Returns
@@ -95,6 +96,14 @@ class StringFormatterValidator(StringValidator):
         The literal format string, unformatted.
         """
         return self._value
+
+    def post_process(self, resolved: str) -> str:
+        """
+        Returns
+        -------
+        Apply any post processing to the resolved value
+        """
+        return resolved
 
 
 # pylint: disable=line-too-long

@@ -30,7 +30,7 @@ class TestStringFormatterFilePathValidator:
             file_path = str(Path(temp_dir) / file_name)
 
             formatter = StringFormatterFileNameValidator(name="test", value=str(file_path))
-            truncated_file_path = (
+            truncated_file_path = formatter.post_process(
                 Script({"file_name": formatter.format_string}).resolve().get_str("file_name")
             )
 
@@ -60,7 +60,7 @@ class TestStringFormatterFilePathValidator:
             file_path = str(Path(temp_dir) / f"{base_file_name}{ext}")
 
             formatter = StringFormatterFileNameValidator(name="test", value=str(file_path))
-            truncated_file_path = (
+            truncated_file_path = formatter.post_process(
                 Script({"file_name": formatter.format_string}).resolve().get_str("file_name")
             )
 

@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 
 from ytdl_sub.script.parser import parse
+from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -46,16 +47,30 @@ class StringFormatterFileNameValidator(StringFormatterValidator):
 
     _expected_value_type_name = "filepath"
 
-    @property
-    def format_string(self) -> str:
-        return f"{{%to_native_filepath(%truncate_filepath_if_too_long({Scriptable.wrappable_format_string(super().format_string)}))}}"
+    def post_process(self, resolved: str) -> str:
+        return (
+            Script(
+                {
+                    "tmp_var_1": resolved,
+                    "tmp_var_2": "{%to_native_filepath(%truncate_filepath_if_too_long(tmp_var_1))}",
+                }
+            )
+            .resolve()
+            .get_str("tmp_var_2")
+        )
 
 
 class OverridesStringFormatterFilePathValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "static filepath"
 
-    @property
-    def format_string(self) -> str:
+    def post_process(self, resolved: str) -> str:
         return (
-            f"{{%to_native_filepath({Scriptable.wrappable_format_string(super().format_string)})}}"
+            Script(
+                {
+                    "tmp_var_1": resolved,
+                    "tmp_var_2": "{%to_native_filepath(%truncate_filepath_if_too_long(tmp_var_1))}",
+                }
+            )
+            .resolve()
+            .get_str("tmp_var_2")
         )

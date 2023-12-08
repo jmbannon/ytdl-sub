@@ -124,9 +124,11 @@ class Overrides(DictFormatterValidator, Scriptable):
             script = entry.script
             unresolvable = entry.unresolvable
 
-        return str(
-            script.resolve_once(
-                dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
-                unresolvable=unresolvable,
-            )["tmp_var"]
+        return formatter.post_process(
+            str(
+                script.resolve_once(
+                    dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
+                    unresolvable=unresolvable,
+                )["tmp_var"]
+            )
         )

@@ -1,4 +1,5 @@
 import os
+import posixpath
 
 from yt_dlp.utils import sanitize_filename
 
@@ -28,7 +29,7 @@ class CustomFunctions:
 
     @staticmethod
     def to_native_filepath(filepath: String) -> String:
-        return String(str(os.path.realpath(filepath.value)))
+        return String(filepath.value.replace(posixpath.sep, os.sep))
 
     @staticmethod
     def truncate_filepath_if_too_long(filepath: String) -> String:
