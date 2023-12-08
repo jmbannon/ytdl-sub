@@ -128,9 +128,10 @@ ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
     v.channel_id: entry_get(v.channel_id, v.uploader_id),
 }
 
-ENTRY_INJECTED_VARIABLES: Dict[MetadataVariable, str] = {
-    v.download_index: entry_get_int(v.download_index, 1),
-    v.upload_date_index: entry_get_int(v.upload_date_index, 1),
+# TODO: MARK AS UNRESOLVABLE UNTIL THEY ARE ADDED
+ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
+    v.download_index: "{%int(1)}",
+    v.upload_date_index: "{%int(1)}",
 }
 
 ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {

@@ -516,10 +516,14 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 # Same with sponsorblock chapters
                 SPONSORBLOCK_CHAPTERS: download_entry.kwargs_get(SPONSORBLOCK_CHAPTERS),
                 COMMENTS: download_entry.kwargs_get(COMMENTS),
+            }
+        )
+        entry.add(
+            {
                 # Tracks number of entries downloaded
-                DOWNLOAD_INDEX: download_idx,
+                v.download_index.variable_name: download_idx + 1,
                 # Tracks number of entries with the same upload date to make them unique
-                UPLOAD_DATE_INDEX: upload_date_idx,
+                v.upload_date_index.variable_name: upload_date_idx + 1,
             }
         )
 

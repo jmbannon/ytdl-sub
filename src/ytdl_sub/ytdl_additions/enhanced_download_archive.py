@@ -73,7 +73,7 @@ class DownloadMapping:
         """
         return DownloadMapping(
             upload_date=entry.get(v.upload_date_standardized),
-            extractor=entry.extractor,
+            extractor=entry.get(v.extractor),
             file_names=set(),
         )
 
