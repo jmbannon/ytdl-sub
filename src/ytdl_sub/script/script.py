@@ -246,11 +246,12 @@ class Script:
         for variable_name, resolved in resolved_variables.items():
             self._variables[variable_name] = SyntaxTree(ast=[resolved])
 
-    def resolve(
+    def _resolve(
         self,
         resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
         update: bool = False,
+        output_filter: Optional[Set[str]] = None,
     ) -> ScriptOutput:
         """
         Parameters
@@ -268,15 +269,25 @@ class Script:
         -------
         Dict of resolved values
         """
-        resolved: Dict[Variable, Resolvable] = {
-            Variable(name): value for name, value in (resolved or {}).items()
-        }
+        resolved: Dict[Variable, Resolvable] = dict(
+            # include all current variables that are resolvable
+            {
+                Variable(name): ast.resolvable
+                for name, ast in self._variables.items()
+                if ast.resolvable is not None
+            },
+            # add explicit defined resolved variables
+            **{Variable(name): value for name, value in (resolved or {}).items()},
+        )
+
         unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
         unresolved: Dict[Variable, SyntaxTree] = {
             Variable(name): ast
             for name, ast in self._variables.items()
             if Variable(name) not in set(resolved.keys()).union(unresolvable)
         }
+
+        tmp = 0
 
         while unresolved:
             unresolved_count: int = len(unresolved)
@@ -308,7 +319,26 @@ class Script:
         if update:
             self._update_internally(resolved_variables=resolved_variables)
 
+        if output_filter:
+            return ScriptOutput(
+                {
+                    name: resolvable
+                    for name, resolvable in resolved_variables.items()
+                    if name in output_filter
+                }
+            )
+
         return ScriptOutput(resolved_variables)
+
+    def resolve(
+        self,
+        resolved: Optional[Dict[str, Resolvable]] = None,
+        unresolvable: Optional[Set[str]] = None,
+        update: bool = False,
+    ) -> ScriptOutput:
+        return self._resolve(
+            resolved=resolved, unresolvable=unresolvable, update=update, output_filter=None
+        )
 
     def add(self, variables: Dict[str, str]) -> "Script":
         for variable_name, variable_definition in variables.items():
@@ -320,6 +350,21 @@ class Script:
             )
         self._validate()
         return self
+
+    def is_resolvable(
+        self,
+        variable_definition: str,
+        resolved: Optional[Dict[str, Resolvable]] = None,
+        unresolvable: Optional[Set[str]] = None,
+    ) -> Resolvable:
+        try:
+            self.add({"tmp_var": variable_definition})
+            return self._resolve(
+                resolved=resolved, unresolvable=unresolvable, output_filter={"tmp_var"}
+            ).get("tmp_var")
+        finally:
+            if "tmp_var" in self._variables:
+                del self._variables["tmp_var"]
 
     def get(self, variable_name: str) -> Resolvable:
         if variable_name not in self._variables:
@@ -419,7 +464,7 @@ class ScriptBuilder:
         script._validate()
         return script
 
-    def partial_build(self, update: bool = False) -> Script:
+    def partial_build(self) -> Script:
         missing_variables, missing_functions = self._missing_metadata
         maybe_resolvable_variables: Dict[str, SyntaxTree] = {
             name: variable
@@ -435,8 +480,9 @@ class ScriptBuilder:
         script = self._build(
             variables=maybe_resolvable_variables, functions=maybe_resolvable_functions
         )
-        if update:
-            script.resolve(update=True)
+        # Update internal variables with anything that is resolved
+        for variable_name, variable_output in script.resolve(update=True).output.items():
+            self._variables[variable_name] = SyntaxTree([variable_output])
         return script
 
     def build(self) -> Script:

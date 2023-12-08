@@ -190,6 +190,8 @@ class Preset(_PresetShell):
                 {source_var: "dummy_string" for source_var in self._source_variables}
             )
         )
+        # updates any resolved variables
+        _ = script.partial_build()
         return script
 
     @property
@@ -209,7 +211,7 @@ class Preset(_PresetShell):
         """
         Contains actualized script which should hold all Override variables
         """
-        return self._script_builder_with_added_variables.partial_build(update=True)
+        return self._script_builder_with_added_variables.partial_build()
 
     @property
     def _script(self) -> Script:
@@ -252,19 +254,27 @@ class Preset(_PresetShell):
                 )
             )
 
-    def __validate_override_string_formatter_validator(
+    @functools.cache
+    def _get_unresolvable_variables(
         self,
         formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
-    ) -> None:
+    ) -> Optional[Set[str]]:
         unresolvable = (
             set([VARIABLES.entry_metadata.variable_name] + list(self._added_variables.keys()))
             if isinstance(formatter_validator, OverridesStringFormatterValidator)
             else None
         )
+        return unresolvable
+
+    def __validate_override_string_formatter_validator(
+        self,
+        formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
+    ) -> None:
         try:
-            self._script.add({"tmp_var": formatter_validator.format_string}).resolve(
-                unresolvable=unresolvable
-            ).get("tmp_var")
+            self._script.is_resolvable(
+                formatter_validator.format_string,
+                unresolvable=self._get_unresolvable_variables(formatter_validator),
+            )
         except VariableDoesNotExist as exc:
             raise StringFormattingVariableNotFoundException(exc) from exc
 

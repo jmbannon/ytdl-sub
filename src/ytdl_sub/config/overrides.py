@@ -118,17 +118,13 @@ class Overrides(DictFormatterValidator, Scriptable):
         The format_string after .format has been called
         """
         if entry:
-            script = copy.deepcopy(entry.script)
+            script = entry.script
             unresolvable = entry.unresolvable
         else:
-            script = copy.deepcopy(self.script)
+            script = self.script
             unresolvable = self.unresolvable
 
         if function_overrides:
-            script.add(function_overrides)
+            script = copy.deepcopy(script).add(function_overrides)
 
-        return (
-            script.add({"tmp_var": formatter.format_string})
-            .resolve(unresolvable=unresolvable)
-            .get_str("tmp_var")
-        )
+        return str(script.is_resolvable(formatter.format_string, unresolvable=unresolvable))

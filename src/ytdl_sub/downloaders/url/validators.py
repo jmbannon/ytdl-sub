@@ -261,7 +261,7 @@ class MultiUrlValidator(OptionsValidator):
         for collection_url in self.urls.list:
             script.add(collection_url.variables.dict_with_format_strings)
 
-        resolved_script = script.partial_build(update=True)
+        resolved_script = script.partial_build()
 
         # Ensure at least URL is non-empty
         has_non_empty_url = False
