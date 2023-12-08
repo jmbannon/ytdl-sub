@@ -5,7 +5,6 @@ from typing import Any
 from typing import Dict
 from typing import Set
 
-from ytdl_sub.entries.script.variable_scripts import ENTRY_INJECTED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import UNRESOLVED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.script.script import Script
@@ -46,4 +45,4 @@ class Scriptable(ABC):
         )
 
         self.unresolvable -= set(list(values.keys()))
-        self.script.resolve(unresolvable=self.unresolvable, update=True)
+        self.update_script()

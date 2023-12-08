@@ -12,7 +12,6 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.script import ScriptBuilder
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.logger import Logger

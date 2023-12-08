@@ -2,7 +2,6 @@ import copy
 from typing import Any
 from typing import Dict
 from typing import Optional
-from typing import Set
 
 from yt_dlp.utils import sanitize_filename
 

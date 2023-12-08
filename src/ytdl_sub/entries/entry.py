@@ -21,15 +21,15 @@ class Entry(BaseEntry, Scriptable):
     Entry object to represent a single media object returned from yt-dlp.
     """
 
-    def __init__(
-        self, entry_dict: Dict, working_directory: str, override_variables: Dict[str, str]
-    ):
+    def __init__(self, entry_dict: Dict, working_directory: str):
         BaseEntry.__init__(self, entry_dict=entry_dict, working_directory=working_directory)
         Scriptable.__init__(self)
 
+    def initialize_script(self, override_variables: Dict[str, str]) -> "Entry":
         self.script.add({VARIABLES.entry_metadata.variable_name: f"{{{json.dumps(self._kwargs)}}}"})
         self.add(override_variables)
         self.update_script()
+        return self
 
     def get(self, variable: Variable) -> str:
         return self.script.resolve(unresolvable=self.unresolvable).get_str(variable.variable_name)

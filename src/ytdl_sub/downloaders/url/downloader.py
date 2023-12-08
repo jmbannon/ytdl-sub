@@ -360,7 +360,6 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         return Entry(
             download_entry_dict,
             working_directory=self.working_directory,
-            override_variables=self.overrides.dict_with_format_strings,
         )
 
     def _iterate_child_entries(
@@ -421,7 +420,6 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             parents=parents,
             entry_dicts=entry_dicts,
             working_directory=self.working_directory,
-            override_variables=self.overrides.dict_with_format_strings,
         )
 
         return parents, orphans
@@ -471,7 +469,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 entry.add_kwargs(
                     {COLLECTION_URL: self.overrides.apply_formatter(collection_url.url)}
                 )
-                yield entry
+                yield entry.initialize_script(
+                    override_variables=self.overrides.dict_with_format_strings
+                )
 
     def download(self, entry: Entry) -> Optional[Entry]:
         """
@@ -504,11 +504,6 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             download_logger.info("Entry rejected by download match-filter, skipping ..")
             return None
 
-        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
-            upload_date_standardized=entry.get(v.upload_date_standardized)
-        )
-        download_idx = self._enhanced_download_archive.num_entries
-
         entry.add_kwargs(
             {
                 # Subtitles are not downloaded in metadata run, only here, so move over
@@ -518,6 +513,11 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 COMMENTS: download_entry.kwargs_get(COMMENTS),
             }
         )
+
+        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
+            upload_date_standardized=entry.get(v.upload_date_standardized)
+        )
+        download_idx = self._enhanced_download_archive.num_entries
         entry.add(
             {
                 # Tracks number of entries downloaded

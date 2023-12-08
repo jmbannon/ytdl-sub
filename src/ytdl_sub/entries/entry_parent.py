@@ -283,7 +283,6 @@ class EntryParent(BaseEntry):
         parents: List["EntryParent"],
         entry_dicts: List[Dict],
         working_directory: str,
-        override_variables: Dict[str, str],
     ) -> List[Entry]:
         """
         Reads all entries that do not have any parents
@@ -296,7 +295,6 @@ class EntryParent(BaseEntry):
             Entry(
                 entry_dict=entry_dict,
                 working_directory=working_directory,
-                override_variables=override_variables,
             )
             for entry_dict in entry_dicts
             if cls.is_entry(entry_dict) and not _in_any_parents(entry_dict)

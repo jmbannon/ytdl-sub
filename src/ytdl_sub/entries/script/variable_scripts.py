@@ -147,7 +147,7 @@ ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.creator_sanitized: sanitized(v.creator),
     v.download_index_padded6: pad_int(v.download_index, 6),
     v.upload_date_index_padded: pad_int(v.upload_date_index, 2),
-    v.upload_date_index_reversed: f"{{%sub(100, {v.download_index.variable_name})}}",
+    v.upload_date_index_reversed: f"{{%sub(100, {v.upload_date_index.variable_name})}}",
     v.upload_date_index_reversed_padded: pad_int(v.upload_date_index_reversed, 2),
 }
 

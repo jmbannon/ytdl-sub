@@ -87,7 +87,6 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
                 return Entry(
                     entry_dict=entry_dict,
                     working_directory=self.working_directory,
-                    override_variables=self.overrides.dict_with_format_strings,
                 )
 
         raise ValidationException(
@@ -102,13 +101,10 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
         entries: List[Entry] = []
 
         for download_mapping in self._enhanced_download_archive.mapping.entry_mappings.values():
-            entry = self._get_entry_from_download_mapping(download_mapping)
-            entries.append(entry)
+            entry = self._get_entry_from_download_mapping(download_mapping).initialize_script(
+                override_variables=self.overrides.dict_with_format_strings
+            )
 
-        # Remove each entry from the live download archive since it will get re-added
-        # unless it is filtered
-        for entry in entries:
-            self._enhanced_download_archive.mapping.remove_entry(entry.uid)
             prior_variables = entry.kwargs_get(YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY, {})
 
             entry.add(
@@ -123,8 +119,12 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
                     ),
                 }
             )
+            entries.append(entry)
 
         for entry in sorted(entries, key=lambda ent: ent.get(v.download_index)):
+            # Remove each entry from the live download archive since it will get re-added
+            # unless it is filtered
+            self._enhanced_download_archive.mapping.remove_entry(entry.uid)
             yield entry
 
             # If the original entry file_path is no longer maintained in the new mapping, then
