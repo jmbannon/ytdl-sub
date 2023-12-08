@@ -77,8 +77,8 @@ class Script:
                 deps=deps + [dep.name],
             )
 
-    def _ensure_no_variable_cycles(self):
-        for variable_name, variable_definition in self._variables.items():
+    def _ensure_no_variable_cycles(self, variables: Dict[str, SyntaxTree]):
+        for variable_name, variable_definition in variables.items():
             self._traverse_variable_dependencies(
                 variable_name=variable_name,
                 variable_dependency=variable_definition,
@@ -193,15 +193,24 @@ class Script:
                                     f"receive {lambda_type.num_input_args()}."
                                 )
 
-    def _validate(self) -> None:
-        self._ensure_no_custom_function_cycles()
-        self._ensure_custom_function_arguments_valid()
-        self._ensure_no_variable_cycles()
+    def _validate(self, added_variables: Optional[Set[str]] = None) -> None:
+        variables = self._variables
+        if added_variables is not None:
+            variables = {
+                name: ast for name, ast in self._variables.items() if name in added_variables
+            }
 
-        for prefix, definitions in (
-            ("Variable ", self._variables),
-            ("Custom function %", self._functions),
-        ):
+        if added_variables is None:
+            self._ensure_no_custom_function_cycles()
+            self._ensure_custom_function_arguments_valid()
+
+        self._ensure_no_variable_cycles(variables)
+
+        to_validate = [("Variable ", variables)]
+        if added_variables is None:
+            to_validate.append(("Custom function %", self._functions))
+
+        for prefix, definitions in to_validate:
             self._ensure_custom_function_usage_num_input_arguments_valid(
                 prefix=prefix, definitions=definitions
             )
@@ -348,11 +357,10 @@ class Script:
                 custom_function_names=set(self._functions.keys()),
                 variable_names=set(self._variables.keys()).union(variables.keys()),
             )
-            all_resolvable |= self._variables[variable_name].resolvable is not None
+            all_resolvable &= self._variables[variable_name].resolvable is not None
 
         if not all_resolvable:
-            # TODO: is this ever possible?
-            self._validate()
+            self._validate(added_variables=set(list(variables.keys())))
 
         return self
 

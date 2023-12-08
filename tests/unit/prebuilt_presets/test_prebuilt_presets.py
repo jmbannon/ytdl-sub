@@ -153,9 +153,6 @@ class TestPrebuiltTVShowPresets:
         is_youtube_channel: bool,
         is_many_urls: bool,
     ):
-        # yappi.set_clock_type("wall")  # Use set_clock_type("wall") for wall time
-        # yappi.start()
-
         expected_summary_name = "unit/{}/{}/is_yt_{}{}".format(
             media_player_preset,
             tv_show_structure_preset,
@@ -182,6 +179,9 @@ class TestPrebuiltTVShowPresets:
             preset_name=subscription_name,
             preset_dict=preset_dict,
         )
+
+        # yappi.set_clock_type("wall")  # Use set_clock_type("wall") for wall time
+        # yappi.start()
 
         with mock_download_collection_entries(
             is_youtube_channel=is_youtube_channel, num_urls=2 if is_many_urls else 1
