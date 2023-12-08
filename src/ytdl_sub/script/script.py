@@ -340,6 +340,7 @@ class Script:
         )
 
     def add(self, variables: Dict[str, str]) -> "Script":
+        all_resolvable: bool = True
         for variable_name, variable_definition in variables.items():
             self._variables[variable_name] = parse(
                 text=variable_definition,
@@ -347,7 +348,12 @@ class Script:
                 custom_function_names=set(self._functions.keys()),
                 variable_names=set(self._variables.keys()).union(variables.keys()),
             )
-        self._validate()
+            all_resolvable |= self._variables[variable_name].resolvable is not None
+
+        if not all_resolvable:
+            # TODO: is this ever possible?
+            self._validate()
+
         return self
 
     def is_resolvable(
