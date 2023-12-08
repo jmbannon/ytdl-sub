@@ -180,7 +180,7 @@ class Preset(_PresetShell):
         return added_variables
 
     @functools.cached_property
-    def _cached_script_builder(self) -> ScriptBuilder:
+    def _script_builder(self) -> ScriptBuilder:
         # Set the formatter variables to be the overrides
         script = ScriptBuilder(
             Scriptable.add_sanitized_variables(self.overrides.dict_with_format_strings)
@@ -194,28 +194,16 @@ class Preset(_PresetShell):
         _ = script.partial_build()
         return script
 
-    @property
-    def _script_builder(self) -> ScriptBuilder:
-        return copy.deepcopy(self._cached_script_builder)
-
     @functools.cached_property
-    def _script_builder_with_added_variables(self) -> ScriptBuilder:
+    def _script(self) -> Script:
+        """
+        Contains actualized script which should hold all Override variables
+        """
         return self._script_builder.add(
             Scriptable.add_sanitized_variables(
                 {source_var: "dummy_string" for source_var in self._added_variables}
             )
-        )
-
-    @functools.cached_property
-    def _cached_script(self) -> Script:
-        """
-        Contains actualized script which should hold all Override variables
-        """
-        return self._script_builder_with_added_variables.partial_build()
-
-    @property
-    def _script(self) -> Script:
-        return copy.deepcopy(self._cached_script)
+        ).partial_build()
 
     def __validate_and_get_plugins(self) -> PresetPlugins:
         preset_plugins = PresetPlugins()
@@ -232,8 +220,8 @@ class Preset(_PresetShell):
         return preset_plugins
 
     def __validate_added_variables(self):
-        script_builder = self._script_builder
-        self.downloader_options.validate_with_variables(script=copy.deepcopy(script_builder))
+        script_builder = copy.deepcopy(self._script_builder)
+        self.downloader_options.validate_with_variables(script=script_builder.partial_build())
         script_builder.add(
             Scriptable.add_sanitized_variables(
                 {name: "dummy_string" for name in self.downloader_options.added_source_variables()}
@@ -244,7 +232,7 @@ class Preset(_PresetShell):
             self.plugins.zipped(), key=lambda pl: pl[0].priority.modify_entry
         ):
             # Validate current plugin using source + added plugin variables
-            plugin_options.validate_with_variables(script=copy.deepcopy(script_builder))
+            plugin_options.validate_with_variables(script=script_builder.partial_build())
             script_builder.add(
                 Scriptable.add_sanitized_variables(
                     {

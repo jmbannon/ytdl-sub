@@ -66,6 +66,8 @@ class TestPrebuiltTVShowPresets:
         media_player_preset: str,
         tv_show_structure_preset: str,
     ):
+        # yappi.set_clock_type("cpu")  # Use set_clock_type("wall") for wall time
+        # yappi.start()
         parent_presets = _tv_show_by_date_parent_presets(
             all_in_one_preset, media_player_preset, tv_show_structure_preset
         )
@@ -82,6 +84,7 @@ class TestPrebuiltTVShowPresets:
                 },
             },
         )
+        # yappi.get_func_stats().print_all()
 
     def test_compilation_many_urls(
         self,

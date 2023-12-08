@@ -212,7 +212,7 @@ class RegexOptions(OptionsDictValidator):
         """
         return self._skip_if_match_fails
 
-    def validate_with_variables(self, script: ScriptBuilder) -> None:
+    def validate_with_variables(self, script: Script) -> None:
         for key, regex_options in self.source_variable_capture_dict.items():
             # Ensure each variable getting captured is a source variable
             if key not in script._variables:

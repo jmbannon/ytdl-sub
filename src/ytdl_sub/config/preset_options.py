@@ -54,7 +54,7 @@ class OptionsValidator(Validator, ABC):
         """
         return []
 
-    def validate_with_variables(self, script: ScriptBuilder) -> None:
+    def validate_with_variables(self, script: Script) -> None:
         """
         Optional validation after init with the session's source and override variables.
 

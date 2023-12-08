@@ -281,13 +281,12 @@ class Script:
         )
 
         unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
+        unresolved_filter = set(resolved.keys()).union(unresolvable)
         unresolved: Dict[Variable, SyntaxTree] = {
             Variable(name): ast
             for name, ast in self._variables.items()
-            if Variable(name) not in set(resolved.keys()).union(unresolvable)
+            if Variable(name) not in unresolved_filter
         }
-
-        tmp = 0
 
         while unresolved:
             unresolved_count: int = len(unresolved)
@@ -354,17 +353,19 @@ class Script:
     def is_resolvable(
         self,
         variable_definition: str,
+        variable_name: Optional[str] = None,
         resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
     ) -> Resolvable:
+        var_name = variable_name if variable_name else "tmp_var"
         try:
-            self.add({"tmp_var": variable_definition})
+            self.add({var_name: variable_definition})
             return self._resolve(
-                resolved=resolved, unresolvable=unresolvable, output_filter={"tmp_var"}
-            ).get("tmp_var")
+                resolved=resolved, unresolvable=unresolvable, output_filter={var_name}
+            ).get(var_name)
         finally:
-            if "tmp_var" in self._variables:
-                del self._variables["tmp_var"]
+            if var_name in self._variables:
+                del self._variables[var_name]
 
     def get(self, variable_name: str) -> Resolvable:
         if variable_name not in self._variables:
