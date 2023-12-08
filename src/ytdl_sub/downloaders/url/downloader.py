@@ -22,6 +22,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.variables.kwargs import COLLECTION_URL
 from ytdl_sub.entries.variables.kwargs import COMMENTS
 from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
@@ -181,7 +182,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
         """
         # COLLECTION_URL is a recent variable that may not exist for old entries when updating.
         # Try to use source_webpage_url if it does not exist
-        entry_collection_url = entry.kwargs_get(COLLECTION_URL, entry.source_webpage_url)
+        entry_collection_url = entry.kwargs_get(COLLECTION_URL, entry.get(v.source_webpage_url))
 
         # If the collection URL cannot find its mapping, use the last URL
         collection_url = (
@@ -189,7 +190,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
             or list(self._collection_url_mapping.values())[-1]
         )
 
-        entry.add_variables(variables_to_add=collection_url.variables.dict_with_format_strings)
+        entry.add(collection_url.variables.dict_with_format_strings)
 
         return entry
 
@@ -504,7 +505,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             return None
 
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
-            upload_date_standardized=entry.upload_date_standardized
+            upload_date_standardized=entry.get(v.upload_date_standardized)
         )
         download_idx = self._enhanced_download_archive.num_entries
 

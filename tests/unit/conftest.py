@@ -16,6 +16,7 @@ from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
+from ytdl_sub.entries.variables.kwargs import IE_KEY
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX
@@ -68,6 +69,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             PLAYLIST_INDEX: playlist_index,
             PLAYLIST_COUNT: playlist_count,
             EXTRACTOR: "mock-entry-dict",
+            IE_KEY: "mock-ie-key",
             TITLE: f"Mock Entry {uid}",
             EXT: "mp4",
             UPLOAD_DATE: upload_date,

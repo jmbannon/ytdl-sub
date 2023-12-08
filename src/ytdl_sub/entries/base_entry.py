@@ -304,31 +304,6 @@ class BaseEntry(BaseEntryVariables, ABC):
         self._kwargs = dict(self._kwargs, **variables_to_add)
         return self
 
-    def add_variables(self, variables_to_add: Dict[str, str]) -> "BaseEntry":
-        """
-        Parameters
-        ----------
-        variables_to_add
-            Variables to add to this entry
-
-        Returns
-        -------
-        self
-
-        Raises
-        ------
-        ValueError
-            If a variable trying to be added already exists as a source variable
-        """
-        for variable_name in variables_to_add.keys():
-            if self.kwargs_contains(variable_name):
-                raise ValueError(
-                    f"Cannot add variable '{variable_name}': already exists in the kwargs"
-                )
-
-        self._additional_variables = dict(self._additional_variables, **variables_to_add)
-        return self
-
     def get_download_info_json_name(self) -> str:
         """
         Returns

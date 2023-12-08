@@ -12,6 +12,11 @@ class Variable:
 
 
 @dataclass(frozen=True)
+class InternalVariable(Variable):
+    pass
+
+
+@dataclass(frozen=True)
 class Metadata(Variable):
     pass
 

@@ -14,6 +14,7 @@ from yt_dlp import DateRange
 from yt_dlp.utils import make_archive_id
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
@@ -71,7 +72,7 @@ class DownloadMapping:
         DownloadMapping for the entry
         """
         return DownloadMapping(
-            upload_date=entry.upload_date_standardized,
+            upload_date=entry.get(v.upload_date_standardized),
             extractor=entry.extractor,
             file_names=set(),
         )
