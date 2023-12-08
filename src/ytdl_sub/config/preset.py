@@ -258,7 +258,7 @@ class Preset(_PresetShell):
         formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
     ) -> None:
         try:
-            self._script.is_resolvable(
+            self._script.resolve_once(
                 formatter_validator.format_string,
                 unresolvable=self._get_unresolvable_variables(formatter_validator),
             )

@@ -126,4 +126,4 @@ class Overrides(DictFormatterValidator, Scriptable):
         if function_overrides:
             script = copy.deepcopy(script).add(function_overrides)
 
-        return str(script.is_resolvable(formatter.format_string, unresolvable=unresolvable))
+        return str(script.resolve_once(formatter.format_string, unresolvable=unresolvable))

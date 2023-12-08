@@ -41,7 +41,7 @@ class SyntaxTree(VariableDependency):
         return String("".join([str(res) for res in resolved]))
 
     @property
-    def resolvable(self) -> Optional[Resolvable]:
+    def maybe_resolvable(self) -> Optional[Resolvable]:
         if len(self.ast) == 1 and isinstance(self.ast[0], Resolvable):
             return self.ast[0]
         return None

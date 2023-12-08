@@ -281,9 +281,9 @@ class Script:
         resolved: Dict[Variable, Resolvable] = dict(
             # include all current variables that are resolvable
             {
-                Variable(name): ast.resolvable
+                Variable(name): ast.maybe_resolvable
                 for name, ast in self._variables.items()
-                if ast.resolvable is not None
+                if ast.maybe_resolvable is not None
             },
             # add explicit defined resolved variables
             **{Variable(name): value for name, value in (resolved or {}).items()},
@@ -357,14 +357,14 @@ class Script:
                 custom_function_names=set(self._functions.keys()),
                 variable_names=set(self._variables.keys()).union(variables.keys()),
             )
-            all_resolvable &= self._variables[variable_name].resolvable is not None
+            all_resolvable &= self._variables[variable_name].maybe_resolvable is not None
 
         if not all_resolvable:
             self._validate(added_variables=set(list(variables.keys())))
 
         return self
 
-    def is_resolvable(
+    def resolve_once(
         self,
         variable_definition: str,
         variable_name: Optional[str] = None,
@@ -387,7 +387,7 @@ class Script:
                 f"Tried to get resolved variable {variable_name}, but it does not exist"
             )
 
-        if (resolvable := self._variables[variable_name].resolvable) is not None:
+        if (resolvable := self._variables[variable_name].maybe_resolvable) is not None:
             return resolvable
 
         raise RuntimeException(f"Tried to get unresolved variable {variable_name}")
