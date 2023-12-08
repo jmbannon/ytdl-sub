@@ -23,3 +23,8 @@ class ScriptOutput:
 
     def get_str(self, name: str) -> str:
         return str(self.output[name])
+
+    def get_int(self, name: str) -> int:
+        out = self.get_native(name)
+        assert isinstance(out, int)
+        return out

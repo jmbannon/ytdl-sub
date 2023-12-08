@@ -34,6 +34,9 @@ class Entry(BaseEntry, Scriptable):
     def get(self, variable: Variable) -> str:
         return self.script.resolve(unresolvable=self.unresolvable).get_str(variable.variable_name)
 
+    def get_int(self, variable: Variable) -> int:
+        return self.script.resolve(unresolvable=self.unresolvable).get_int(variable.variable_name)
+
     @property
     def ext(self) -> str:
         """

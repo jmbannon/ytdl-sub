@@ -268,8 +268,8 @@ class MultiUrlValidator(OptionsValidator):
             for idx, url_validator in enumerate(self.urls.list)
         }
         output = script.resolve_once(url_variables)
-        for out in output:
+        for out in output.values():
             has_non_empty_url |= bool(str(out))
 
-        if not has_non_empty_url:
+        if not output or not has_non_empty_url:
             raise self._validation_exception("Must contain at least one url that is non-empty")
