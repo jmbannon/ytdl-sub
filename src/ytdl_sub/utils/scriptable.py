@@ -3,14 +3,26 @@ import json
 from abc import ABC
 from typing import Any
 from typing import Dict
+from typing import Iterable
 from typing import Set
 
 from ytdl_sub.entries.script.variable_scripts import UNRESOLVED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import String
 
 
 class Scriptable(ABC):
+    @classmethod
+    def add_dummy_variables(cls, variables: Iterable[str]) -> Dict[str, Resolvable]:
+        dummy_variables: Dict[str, Resolvable] = {}
+        for var in variables:
+            dummy_variables[var] = String("dummy_string")
+            dummy_variables[f"{var}_sanitized"] = String("dummy_string")
+
+        return dummy_variables
+
     @classmethod
     def add_sanitized_variables(cls, variables: Dict[str, str]) -> Dict[str, str]:
         sanitized_variables = {

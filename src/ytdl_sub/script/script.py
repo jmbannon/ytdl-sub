@@ -439,6 +439,12 @@ class ScriptBuilder:
             )
         return self
 
+    def add_resolved(self, variables: Dict[str, Resolvable]) -> "ScriptBuilder":
+        for variable_name, resolvable in variables.items():
+            self._variables[variable_name] = SyntaxTree(ast=[resolvable])
+
+        return self
+
     @property
     def _missing_metadata(self) -> Tuple[Dict[str, Set[str]], Dict[str, Set[str]]]:
         variables_missing_metadata: Dict[str, Set[str]] = defaultdict(set)

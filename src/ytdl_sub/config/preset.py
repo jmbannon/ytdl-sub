@@ -184,13 +184,7 @@ class Preset(_PresetShell):
         script = ScriptBuilder(
             Scriptable.add_sanitized_variables(self.overrides.dict_with_format_strings)
         )
-        script.add(
-            Scriptable.add_sanitized_variables(
-                {source_var: "dummy_string" for source_var in self._source_variables}
-            )
-        )
-        # updates any resolved variables
-        _ = script.partial_build()
+        script.add_resolved(Scriptable.add_dummy_variables(self._source_variables))
         return script
 
     @functools.cached_property
@@ -198,10 +192,8 @@ class Preset(_PresetShell):
         """
         Contains actualized script which should hold all Override variables
         """
-        return self._script_builder.add(
-            Scriptable.add_sanitized_variables(
-                {source_var: "dummy_string" for source_var in self._added_variables}
-            )
+        return self._script_builder.add_resolved(
+            Scriptable.add_dummy_variables(self._added_variables)
         ).partial_build()
 
     def __validate_and_get_plugins(self) -> PresetPlugins:
@@ -221,10 +213,8 @@ class Preset(_PresetShell):
     def __validate_added_variables(self):
         script_builder = copy.deepcopy(self._script_builder)
         self.downloader_options.validate_with_variables(script=script_builder.partial_build())
-        script_builder.add(
-            Scriptable.add_sanitized_variables(
-                {name: "dummy_string" for name in self.downloader_options.added_source_variables()}
-            )
+        script_builder.add_resolved(
+            Scriptable.add_dummy_variables(self.downloader_options.added_source_variables())
         )
 
         for _, plugin_options in sorted(
@@ -232,13 +222,8 @@ class Preset(_PresetShell):
         ):
             # Validate current plugin using source + added plugin variables
             plugin_options.validate_with_variables(script=script_builder.partial_build())
-            script_builder.add(
-                Scriptable.add_sanitized_variables(
-                    {
-                        name: "dummy_string"
-                        for name in self.downloader_options.added_source_variables()
-                    }
-                )
+            script_builder.add_resolved(
+                Scriptable.add_dummy_variables(self.downloader_options.added_source_variables())
             )
 
     @functools.cache

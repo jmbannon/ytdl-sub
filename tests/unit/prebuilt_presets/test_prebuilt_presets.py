@@ -153,8 +153,8 @@ class TestPrebuiltTVShowPresets:
         is_youtube_channel: bool,
         is_many_urls: bool,
     ):
-        yappi.set_clock_type("wall")  # Use set_clock_type("wall") for wall time
-        yappi.start()
+        # yappi.set_clock_type("wall")  # Use set_clock_type("wall") for wall time
+        # yappi.start()
 
         expected_summary_name = "unit/{}/{}/is_yt_{}{}".format(
             media_player_preset,
@@ -225,8 +225,8 @@ class TestPrebuiltTVShowPresets:
         )
 
         reformatted_transaction_log = reformatted_subscription.update_with_info_json(dry_run=False)
-        yappi.get_func_stats().print_all()
-
+        # yappi.get_func_stats().print_all()
+        #
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=reformatted_transaction_log,
