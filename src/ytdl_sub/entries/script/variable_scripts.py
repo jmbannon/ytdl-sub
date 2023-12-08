@@ -1,5 +1,6 @@
 from typing import Dict
 from typing import Optional
+from typing import Set
 
 import mergedeep
 
@@ -132,6 +133,7 @@ ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
 ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
     v.download_index: "{%int(1)}",
     v.upload_date_index: "{%int(1)}",
+    v.playlist_max_upload_year: f"{{{v.upload_year.variable_name}}}",
 }
 
 ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {
@@ -202,10 +204,6 @@ PLAYLIST_VARIABLES: Dict[Variable, str] = {
     v.playlist_uploader_url: playlist_get(v.playlist_uploader_url, v.playlist_webpage_url),
 }
 
-PLAYLIST_INJECTED_VARIABLES: Dict[Variable, str] = {
-    v.playlist_max_upload_year: playlist_get_int(v.playlist_max_upload_year, v.upload_year)
-}
-
 PLAYLIST_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.playlist_title_sanitized: sanitized(v.playlist_title),
     v.playlist_index_reversed: f"{{%sub({v.playlist_count.variable_name}, {v.playlist_index.variable_name}, -1)}}",
@@ -247,7 +245,6 @@ mergedeep.merge(
     ENTRY_UPLOAD_DATE_VARIABLES,
     ENTRY_RELEASE_DATE_VARIABLES,
     PLAYLIST_VARIABLES,
-    PLAYLIST_INJECTED_VARIABLES,
     PLAYLIST_DERIVED_VARIABLES,
     SOURCE_VARIABLES,
     SOURCE_DERIVED_VARIABLES,
@@ -256,5 +253,6 @@ mergedeep.merge(
 VARIABLE_SCRIPTS: Dict[str, str] = {
     var.variable_name: script for var, script in _VARIABLE_SCRIPTS.items()
 }
+UNRESOLVED_VARIABLES: Set[str] = {var.variable_name for var in ENTRY_INJECTED_VARIABLES}
 
 CustomFunctions.register()

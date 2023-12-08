@@ -22,6 +22,7 @@ from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
+from ytdl_sub.validators.validators import DictValidator
 
 logger = Logger.get(name="regex")
 
@@ -112,11 +113,7 @@ class VariableRegex(StrictDictValidator):
         return self._capture_group_defaults is not None
 
 
-class FromSourceVariablesRegex(StrictDictValidator):
-
-    _optional_keys = Entry.source_variables()
-    _allow_extra_keys = True
-
+class FromSourceVariablesRegex(DictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
         self.variable_capture_dict: Dict[str, VariableRegex] = {

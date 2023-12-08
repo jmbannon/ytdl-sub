@@ -10,7 +10,12 @@ from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
+from ytdl_sub.entries.entry import YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
+from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
+from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import get_file_extension
@@ -104,8 +109,22 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
         # unless it is filtered
         for entry in entries:
             self._enhanced_download_archive.mapping.remove_entry(entry.uid)
+            prior_variables = entry.kwargs_get(YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY, {})
 
-        for entry in sorted(entries, key=lambda ent: ent.download_index):
+            entry.add(
+                {
+                    v.download_index.variable_name: prior_variables.get(
+                        v.download_index.variable_name,
+                        VARIABLE_SCRIPTS[v.download_index.variable_name],
+                    ),
+                    v.upload_date_index.variable_name: prior_variables.get(
+                        v.upload_date_index.variable_name,
+                        VARIABLE_SCRIPTS[v.upload_date_index.variable_name],
+                    ),
+                }
+            )
+
+        for entry in sorted(entries, key=lambda ent: ent.get(v.download_index)):
             yield entry
 
             # If the original entry file_path is no longer maintained in the new mapping, then

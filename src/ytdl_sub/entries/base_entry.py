@@ -320,36 +320,6 @@ class BaseEntry(BaseEntryVariables, ABC):
         """
         return str(Path(self.working_directory()) / self.get_download_info_json_name())
 
-    def _added_variables(self) -> Dict[str, str]:
-        """
-        Returns
-        -------
-        Dict of variables added to this entry
-        """
-        return self._additional_variables
-
-    @classmethod
-    def source_variables(cls) -> List[str]:
-        """
-        Returns
-        -------
-        List of all source variables
-        """
-        property_names = [prop for prop in dir(cls) if isinstance(getattr(cls, prop), property)]
-        return property_names
-
-    @final
-    def to_dict(self) -> Dict[str, str]:
-        """
-        Returns
-        -------
-        Dictionary containing all variables
-        """
-        source_variable_dict = {
-            source_var: getattr(self, source_var) for source_var in self.source_variables()
-        }
-        return dict(source_variable_dict, **self._added_variables())
-
     @final
     def to_type(self, entry_type: Type[TBaseEntry]) -> TBaseEntry:
         """

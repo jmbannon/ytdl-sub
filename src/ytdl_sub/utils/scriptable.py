@@ -1,9 +1,12 @@
+import copy
 import json
 from abc import ABC
 from typing import Any
 from typing import Dict
 from typing import Set
 
+from ytdl_sub.entries.script.variable_scripts import ENTRY_INJECTED_VARIABLES
+from ytdl_sub.entries.script.variable_scripts import UNRESOLVED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.script.script import Script
 
@@ -29,8 +32,8 @@ class Scriptable(ABC):
         return f"{{{json.dumps(value)}}}"
 
     def __init__(self):
-        self.script = Script(VARIABLE_SCRIPTS)
-        self.unresolvable: Set[str] = set()
+        self.script = Script(copy.deepcopy(VARIABLE_SCRIPTS))
+        self.unresolvable: Set[str] = copy.deepcopy(UNRESOLVED_VARIABLES)
 
     def update_script(self) -> None:
         self.script.resolve(unresolvable=self.unresolvable, update=True)
@@ -41,4 +44,6 @@ class Scriptable(ABC):
                 {name: self.to_script(value) for name, value in values.items()}
             )
         )
+
+        self.unresolvable -= set(list(values.keys()))
         self.script.resolve(unresolvable=self.unresolvable, update=True)

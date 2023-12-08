@@ -13,6 +13,8 @@ from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
 
+YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
+
 
 class Entry(BaseEntry, Scriptable):
     """
@@ -136,3 +138,12 @@ class Entry(BaseEntry, Scriptable):
                     break
 
         return file_exists
+
+    @final
+    def to_dict(self) -> Dict[str, str]:
+        """
+        Returns
+        -------
+        Dictionary containing all variables
+        """
+        return self.script.resolve().as_native()
