@@ -26,8 +26,8 @@ class Entry(BaseEntry, Scriptable):
         Scriptable.__init__(self)
 
         self.script.add({VARIABLES.entry_metadata.variable_name: f"{{{json.dumps(self._kwargs)}}}"})
-        self.script.add(override_variables)
-        self.script.resolve(update=True)
+        self.add(override_variables)
+        self.update_script()
 
     def get(self, variable: Variable) -> str:
         return self.script.resolve(unresolvable=self.unresolvable).get_str(variable.variable_name)

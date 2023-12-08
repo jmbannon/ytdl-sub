@@ -2,6 +2,7 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.map import Map
+from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import ReturnableArgument
 from ytdl_sub.script.types.resolvable import String
@@ -23,8 +24,8 @@ class CustomFunctions:
         return value
 
     @staticmethod
-    def sanitize(string: String) -> String:
-        return String(sanitize_filename(string.value))
+    def sanitize(value: AnyArgument) -> String:
+        return String(sanitize_filename(str(value)))
 
     @staticmethod
     def sanitize_plex_episode(string: String) -> String:
