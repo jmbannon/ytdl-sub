@@ -280,15 +280,9 @@ class Script:
         -------
         Dict of resolved values
         """
-        # include all current variables that are resolvable
         resolved: Dict[Variable, Resolvable] = {
-            Variable(name): ast.maybe_resolvable
-            for name, ast in self._variables.items()
-            if ast.maybe_resolvable is not None
+            Variable(name): value for name, value in (pre_resolved or {}).items()
         }
-        mergedeep.merge(
-            resolved, {Variable(name): value for name, value in (pre_resolved or {}).items()}
-        )
 
         unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
         unresolved_filter = set(resolved.keys()).union(unresolvable)
@@ -304,9 +298,14 @@ class Script:
             for variable in list(unresolved.keys()):
                 definition = unresolved[variable]
 
+                # If the definition is already a resolvable, mark it as such
+                if resolvable := definition.maybe_resolvable:
+                    resolved[variable] = resolvable
+                    del unresolved[variable]
+
                 # If the variable's variable dependencies contain an unresolvable variable,
                 # declare it as unresolvable and continue
-                if definition.contains(unresolvable):
+                elif definition.contains(unresolvable):
                     unresolvable.add(variable)
                     del unresolved[variable]
 
@@ -356,7 +355,7 @@ class Script:
         )
 
     def add(self, variables: Dict[str, str]) -> "Script":
-        all_resolvable: bool = True
+        added_variables_to_validate: Set[str] = set()
         for variable_name, variable_definition in variables.items():
             self._variables[variable_name] = parse(
                 text=variable_definition,
@@ -364,10 +363,12 @@ class Script:
                 custom_function_names=set(self._functions.keys()),
                 variable_names=set(self._variables.keys()).union(variables.keys()),
             )
-            all_resolvable &= self._variables[variable_name].maybe_resolvable is not None
 
-        if not all_resolvable:
-            self._validate(added_variables=set(list(variables.keys())))
+            if self._variables[variable_name].maybe_resolvable is None:
+                added_variables_to_validate.add(variable_name)
+
+        if added_variables_to_validate:
+            self._validate(added_variables=added_variables_to_validate)
 
         return self
 
