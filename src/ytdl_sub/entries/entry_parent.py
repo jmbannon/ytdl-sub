@@ -1,52 +1,23 @@
 import math
+from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
 
-import mergedeep
-
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import TBaseEntry
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import DESCRIPTION
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_DESCRIPTION
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_MAX_UPLOAD_YEAR
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_MAX_UPLOAD_YEAR_TRUNCATED
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_TITLE
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_UID
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_ID
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_UPLOADER_URL
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_WEBPAGE_URL
-from ytdl_sub.entries.variables.kwargs import SOURCE_COUNT
-from ytdl_sub.entries.variables.kwargs import SOURCE_DESCRIPTION
-from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
-from ytdl_sub.entries.variables.kwargs import SOURCE_INDEX
-from ytdl_sub.entries.variables.kwargs import SOURCE_TITLE
-from ytdl_sub.entries.variables.kwargs import SOURCE_UID
-from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER
-from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_ID
-from ytdl_sub.entries.variables.kwargs import SOURCE_UPLOADER_URL
-from ytdl_sub.entries.variables.kwargs import SOURCE_WEBPAGE_URL
-from ytdl_sub.entries.variables.kwargs import TITLE
-from ytdl_sub.entries.variables.kwargs import UID
-from ytdl_sub.entries.variables.kwargs import UPLOADER
-from ytdl_sub.entries.variables.kwargs import UPLOADER_ID
-from ytdl_sub.entries.variables.kwargs import UPLOADER_URL
-from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
-
-
-class ParentType:
-    PLAYLIST = "playlist"
-    SOURCE = "source"
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_definitions import MetadataVariable
+from ytdl_sub.entries.script.variable_scripts import ENTRY_DEFAULT_VARIABLES
+from ytdl_sub.entries.script.variable_scripts import ENTRY_REQUIRED_VARIABLES
 
 
 def _sort_entries(entries: List[TBaseEntry]) -> List[TBaseEntry]:
     """Try sorting by playlist_id first, then fall back to uid"""
-    return sorted(entries, key=lambda ent: (ent.kwargs_get(PLAYLIST_INDEX, math.inf), ent.uid))
+    return sorted(
+        entries, key=lambda ent: (ent.kwargs_get(v.playlist_index.metadata_key, math.inf), ent.uid)
+    )
 
 
 class EntryParent(BaseEntry):
@@ -73,86 +44,38 @@ class EntryParent(BaseEntry):
             self.entry_children()
         )
 
-    def _playlist_variables(self, idx: int, children: List[TBaseEntry], parent_type: str) -> Dict:
-        _count = self.kwargs_get(PLAYLIST_COUNT, len(children))
-        _index = children[idx].kwargs_get(PLAYLIST_INDEX, idx + 1)
-
-        if parent_type == ParentType.SOURCE:
-            return {SOURCE_INDEX: _index, SOURCE_COUNT: _count}
-        return {
-            SOURCE_INDEX: self.kwargs_get(SOURCE_INDEX, 1),
-            SOURCE_COUNT: self.kwargs_get(SOURCE_INDEX, 1),
-            PLAYLIST_INDEX: _index,
-            PLAYLIST_COUNT: _count,
-        }
-
-    def _parent_variables(self, parent_type: str) -> Dict:
-        def _(source_key: str, playlist_key: str) -> str:
-            return playlist_key if parent_type == ParentType.PLAYLIST else source_key
-
-        def __(key: str) -> Optional[str]:
-            return self.kwargs_get(key=key)
-
-        return {
-            _(SOURCE_ENTRY, PLAYLIST_ENTRY): self._kwargs,
-            _(SOURCE_TITLE, PLAYLIST_TITLE): __(TITLE),
-            _(SOURCE_WEBPAGE_URL, PLAYLIST_WEBPAGE_URL): __(WEBPAGE_URL),
-            _(SOURCE_UID, PLAYLIST_UID): __(UID),
-            _(SOURCE_DESCRIPTION, PLAYLIST_DESCRIPTION): __(DESCRIPTION),
-            _(SOURCE_UPLOADER, PLAYLIST_UPLOADER): __(UPLOADER),
-            _(SOURCE_UPLOADER_ID, PLAYLIST_UPLOADER_ID): __(UPLOADER_ID),
-            _(SOURCE_UPLOADER_URL, PLAYLIST_UPLOADER_URL): __(UPLOADER_URL),
-        }
-
-    def _get_entry_children_variable_list(self, variable_name: str) -> List[str | int]:
-        return [getattr(entry_child, variable_name) for entry_child in self.entry_children()]
-
-    def _entry_aggregate_variables(self) -> Dict:
-        if not self.entry_children():
-            return {}
-
-        return {
-            PLAYLIST_MAX_UPLOAD_YEAR: max(self._get_entry_children_variable_list("upload_year")),
-            PLAYLIST_MAX_UPLOAD_YEAR_TRUNCATED: max(
-                self._get_entry_children_variable_list("upload_year_truncated")
-            ),
-        }
-
-    # pylint: disable=protected-access
+    def _sibling_entry_metadata(self) -> List[Dict[str, Any]]:
+        sibling_entry_metadata: List[Dict[str, Any]] = []
+        variable_filter: List[MetadataVariable] = list(ENTRY_REQUIRED_VARIABLES.keys()) + list(
+            ENTRY_DEFAULT_VARIABLES.keys()
+        )
+        for entry in self.entry_children():
+            sibling_entry_metadata.append(
+                {var.metadata_key: entry.kwargs_get(var.metadata_key) for var in variable_filter}
+            )
+        return sibling_entry_metadata
 
     def _set_child_variables(self, parents: Optional[List["EntryParent"]] = None) -> "EntryParent":
         if parents is None:
             parents = [self]
-            self.add_kwargs(
-                self._playlist_variables(idx=0, children=parents, parent_type=ParentType.SOURCE)
-            )
 
-        kwargs_to_add: Dict = {}
+        kwargs_to_add: Dict[str, Any] = {
+            v.sibling_entry_metadata.metadata_key: self._sibling_entry_metadata()
+        }
         if len(parents) >= 1:
-            mergedeep.merge(kwargs_to_add, parents[-1]._parent_variables(ParentType.PLAYLIST))
+            kwargs_to_add[v.playlist_metadata.metadata_key] = parents[-1]._kwargs
         if len(parents) >= 2:
-            mergedeep.merge(kwargs_to_add, parents[-2]._parent_variables(ParentType.SOURCE))
+            kwargs_to_add[v.source_metadata.metadata_key] = parents[-2]._kwargs
         if len(parents) >= 3:
             raise ValueError(
                 "ytdl-sub currently does support more than 3 layers of playlists/entries. "
                 "If you encounter this error, please file a ticket with the URLs used."
             )
 
-        mergedeep.merge(kwargs_to_add, self._entry_aggregate_variables())
-        for idx, entry_child in enumerate(self.entry_children()):
-            entry_child.add_kwargs(
-                self._playlist_variables(
-                    idx=idx, children=self.entry_children(), parent_type=ParentType.PLAYLIST
-                )
-            )
+        for entry_child in self.entry_children():
             entry_child.add_kwargs(kwargs_to_add)
 
-        for idx, parent_child in enumerate(self.parent_children()):
-            parent_child.add_kwargs(
-                self._playlist_variables(
-                    idx=idx, children=self.parent_children(), parent_type=ParentType.SOURCE
-                )
-            )
+        for parent_child in self.parent_children():
             parent_child._set_child_variables(parents=parents + [parent_child])
 
         return self

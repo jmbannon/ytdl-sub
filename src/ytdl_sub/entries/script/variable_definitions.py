@@ -27,7 +27,12 @@ class MetadataVariable(Variable):
 
 
 @dataclass(frozen=True)
-class DerivedMetadata(MetadataVariable, Metadata):
+class RelativeMetadata(MetadataVariable, Metadata):
+    pass
+
+
+@dataclass(frozen=True)
+class SiblingMetadata(MetadataVariable):
     pass
 
 
@@ -41,6 +46,18 @@ class _Variables:
             The entry's info.json in dict form
         """
         return Metadata("entry_metadata")
+
+    @property
+    def playlist_metadata(self) -> RelativeMetadata:
+        return RelativeMetadata("playlist_metadata", metadata_key="playlist_metadata")
+
+    @property
+    def source_metadata(self) -> RelativeMetadata:
+        return RelativeMetadata("source_metadata", metadata_key="source_metadata")
+
+    @property
+    def sibling_entry_metadata(self) -> SiblingMetadata:
+        return SiblingMetadata("sibling_entry_metadata", metadata_key="sibling_entry_metadata")
 
     @property
     def uid(self) -> MetadataVariable:
@@ -223,7 +240,7 @@ class _Variables:
             Name of the source (i.e. channel with multiple playlists) if it exists, otherwise
             returns its playlist_title.
         """
-        return MetadataVariable("source_title", metadata_key="source_title")
+        return MetadataVariable("source_title", metadata_key=self.title.metadata_key)
 
     @property
     def source_title_sanitized(self) -> Variable:
@@ -243,7 +260,7 @@ class _Variables:
         str
             The source unique id if it exists, otherwise returns the playlist unique ID.
         """
-        return MetadataVariable("source_uid", metadata_key="source_uid")
+        return MetadataVariable("source_uid", metadata_key=self.uid.metadata_key)
 
     @property
     def source_index(self) -> MetadataVariable:
@@ -256,7 +273,7 @@ class _Variables:
             It is recommended to not use this unless you know the source will never add new content
             (it is easy for this value to change).
         """
-        return MetadataVariable("source_index", metadata_key="source_index")
+        return MetadataVariable("source_index", metadata_key=self.playlist_index.metadata_key)
 
     @property
     def source_index_padded(self) -> Variable:
@@ -276,7 +293,7 @@ class _Variables:
         int
             The source count if it exists, otherwise returns the playlist count.
         """
-        return MetadataVariable("source_count", metadata_key="source_count")
+        return MetadataVariable("source_count", metadata_key=self.playlist_count.metadata_key)
 
     @property
     def source_webpage_url(self) -> MetadataVariable:
@@ -286,7 +303,7 @@ class _Variables:
         str
             The source webpage url if it exists, otherwise returns the playlist webpage url.
         """
-        return MetadataVariable("source_webpage_url", metadata_key="source_webpage_url")
+        return MetadataVariable("source_webpage_url", metadata_key=self.webpage_url.metadata_key)
 
     @property
     def source_description(self) -> MetadataVariable:
@@ -296,7 +313,7 @@ class _Variables:
         str
             The source description if it exists, otherwise returns the playlist description.
         """
-        return MetadataVariable("source_description", metadata_key="source_description")
+        return MetadataVariable("source_description", metadata_key=self.description.metadata_key)
 
     @property
     def playlist_uid(self) -> MetadataVariable:
@@ -306,7 +323,7 @@ class _Variables:
         str
             The playlist unique ID if it exists, otherwise return Variable("")
         """
-        return MetadataVariable(variable_name="playlist_uid", metadata_key="playlist_uid")
+        return MetadataVariable(variable_name="playlist_uid", metadata_key=self.uid.metadata_key)
 
     @property
     def playlist_title(self) -> MetadataVariable:
@@ -316,7 +333,9 @@ class _Variables:
         str
             Name of its parent playlist/channel if it exists, otherwise returns its title.
         """
-        return MetadataVariable(variable_name="playlist_title", metadata_key="playlist_title")
+        return MetadataVariable(
+            variable_name="playlist_title", metadata_key=self.title.metadata_key
+        )
 
     @property
     def playlist_title_sanitized(self) -> Variable:
@@ -413,7 +432,7 @@ class _Variables:
             The playlist description if it exists, otherwise returns the entry's description.
         """
         return MetadataVariable(
-            variable_name="playlist_description", metadata_key="playlist_description"
+            variable_name="playlist_description", metadata_key=self.description.metadata_key
         )
 
     @property
@@ -425,7 +444,7 @@ class _Variables:
             The playlist webpage url if it exists. Otherwise, returns the entry webpage url.
         """
         return MetadataVariable(
-            variable_name="playlist_webpage_url", metadata_key="playlist_webpage_url"
+            variable_name="playlist_webpage_url", metadata_key=self.webpage_url.metadata_key
         )
 
     @property
@@ -461,7 +480,7 @@ class _Variables:
         str
             The playlist uploader id if it exists, otherwise returns the entry uploader ID.
         """
-        return MetadataVariable("playlist_uploader_id", metadata_key="playlist_uploader_id")
+        return MetadataVariable("playlist_uploader_id", metadata_key=self.uploader_id.metadata_key)
 
     @property
     def playlist_uploader(self) -> MetadataVariable:
@@ -471,7 +490,7 @@ class _Variables:
         str
             The playlist uploader if it exists, otherwise return Variable("")
         """
-        return MetadataVariable("playlist_uploader", metadata_key="playlist_uploader")
+        return MetadataVariable("playlist_uploader", metadata_key=self.uploader.metadata_key)
 
     @property
     def playlist_uploader_sanitized(self) -> Variable:
@@ -491,7 +510,9 @@ class _Variables:
         str
             The playlist uploader url if it exists, otherwise returns the playlist webpage_url.
         """
-        return MetadataVariable("playlist_uploader_url", metadata_key="playlist_uploader_url")
+        return MetadataVariable(
+            "playlist_uploader_url", metadata_key=self.uploader_url.metadata_key
+        )
 
     @property
     def source_uploader_id(self) -> MetadataVariable:
@@ -501,7 +522,7 @@ class _Variables:
         str
             The source uploader id if it exists, otherwise returns the playlist_uploader_id
         """
-        return MetadataVariable("source_uploader_id", metadata_key="source_uploader_id")
+        return MetadataVariable("source_uploader_id", metadata_key=self.uploader_id.metadata_key)
 
     @property
     def source_uploader(self) -> MetadataVariable:
@@ -511,7 +532,7 @@ class _Variables:
         str
             The source uploader if it exists, otherwise return Variable("")
         """
-        return MetadataVariable("source_uploader", metadata_key="source_uploader")
+        return MetadataVariable("source_uploader", metadata_key=self.uploader.metadata_key)
 
     @property
     def source_uploader_url(self) -> MetadataVariable:
@@ -521,7 +542,7 @@ class _Variables:
         str
             The source uploader url if it exists, otherwise returns the source webpage_url.
         """
-        return MetadataVariable("source_uploader_url", metadata_key="source_uploader_url")
+        return MetadataVariable("source_uploader_url", metadata_key=self.uploader_url.metadata_key)
 
     @property
     def creator(self) -> MetadataVariable:

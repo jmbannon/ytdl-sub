@@ -31,6 +31,7 @@ from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -182,9 +183,9 @@ class Preset(_PresetShell):
     def _script_builder(self) -> ScriptBuilder:
         # Set the formatter variables to be the overrides
         script = ScriptBuilder(
-            Scriptable.add_sanitized_variables(self.overrides.dict_with_format_strings)
+            ScriptUtils.add_sanitized_variables(self.overrides.dict_with_format_strings)
         )
-        script.add_resolved(Scriptable.add_dummy_variables(self._source_variables))
+        script.add_resolved(ScriptUtils.add_dummy_variables(self._source_variables))
         return script
 
     @functools.cached_property
@@ -193,7 +194,7 @@ class Preset(_PresetShell):
         Contains actualized script which should hold all Override variables
         """
         return self._script_builder.add_resolved(
-            Scriptable.add_dummy_variables(self._added_variables)
+            ScriptUtils.add_dummy_variables(self._added_variables)
         ).partial_build()
 
     def __validate_and_get_plugins(self) -> PresetPlugins:
@@ -214,7 +215,7 @@ class Preset(_PresetShell):
         script_builder = copy.deepcopy(self._script_builder)
         self.downloader_options.validate_with_variables(script=script_builder.partial_build())
         script_builder.add_resolved(
-            Scriptable.add_dummy_variables(self.downloader_options.added_source_variables())
+            ScriptUtils.add_dummy_variables(self.downloader_options.added_source_variables())
         )
 
         for _, plugin_options in sorted(
@@ -223,7 +224,7 @@ class Preset(_PresetShell):
             # Validate current plugin using source + added plugin variables
             plugin_options.validate_with_variables(script=script_builder.partial_build())
             script_builder.add_resolved(
-                Scriptable.add_dummy_variables(self.downloader_options.added_source_variables())
+                ScriptUtils.add_dummy_variables(self.downloader_options.added_source_variables())
             )
 
     @functools.cache

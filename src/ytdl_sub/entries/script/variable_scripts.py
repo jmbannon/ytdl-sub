@@ -1,4 +1,5 @@
 from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Set
 
@@ -35,7 +36,7 @@ def date_metadata(date_key: Variable, metadata_key: str) -> str:
 
 
 def _get_internal(
-    metadata: Metadata, key: MetadataVariable, default: Optional[Variable | str | int]
+    metadata: Metadata, key: MetadataVariable, default: Optional[Variable | str | int | Dict | List]
 ) -> str:
     if default is None:
         # TODO: assert with good error message if key DNE
@@ -44,6 +45,10 @@ def _get_internal(
         out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', {default.variable_name})"
     elif isinstance(default, str):
         out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', '{default}')"
+    elif isinstance(default, dict):
+        out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', {{}})"
+    elif isinstance(default, list):
+        out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', [])"
     else:
         out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', {default})"
 
@@ -56,7 +61,9 @@ def _get_int(
     return f"{{%int({_get_internal(metadata=metadata, key=key, default=default)})}}"
 
 
-def _get(metadata: Metadata, key: MetadataVariable, default: Optional[Variable | str | int]) -> str:
+def _get(
+    metadata: Metadata, key: MetadataVariable, default: Optional[Variable | str | int | Dict | List]
+) -> str:
     return f"{{{_get_internal(metadata=metadata, key=key, default=default)}}}"
 
 
@@ -64,7 +71,9 @@ def _get(metadata: Metadata, key: MetadataVariable, default: Optional[Variable |
 # Entry Getters
 
 
-def entry_get(key: MetadataVariable, default: Optional[Variable | str | int] = None) -> str:
+def entry_get(
+    key: MetadataVariable, default: Optional[Variable | str | int | Dict | List] = None
+) -> str:
     return _get(metadata=v.entry_metadata, key=key, default=default)
 
 
@@ -77,11 +86,11 @@ def entry_get_int(key: MetadataVariable, default: Optional[Variable | int] = Non
 
 
 def playlist_get(key: MetadataVariable, default: Optional[Variable | str | int] = None) -> str:
-    return _get(metadata=v.entry_metadata, key=key, default=default)
+    return _get(metadata=v.playlist_metadata, key=key, default=default)
 
 
 def playlist_get_int(key: MetadataVariable, default: Optional[Variable | int] = None) -> str:
-    return _get_int(metadata=v.entry_metadata, key=key, default=default)
+    return _get_int(metadata=v.playlist_metadata, key=key, default=default)
 
 
 ###############################################################################################
@@ -89,11 +98,11 @@ def playlist_get_int(key: MetadataVariable, default: Optional[Variable | int] = 
 
 
 def source_get(key: MetadataVariable, default: Optional[Variable | str | int] = None) -> str:
-    return _get(metadata=v.entry_metadata, key=key, default=default)
+    return _get(metadata=v.source_metadata, key=key, default=default)
 
 
 def source_get_int(key: MetadataVariable, default: Optional[Variable | int] = None) -> str:
-    return _get_int(metadata=v.entry_metadata, key=key, default=default)
+    return _get_int(metadata=v.source_metadata, key=key, default=default)
 
 
 ###############################################################################################
@@ -104,6 +113,12 @@ ENTRY_EMPTY_METADATA: Dict[Variable, str] = {v.entry_metadata: "{ {} }"}
 ENTRY_HARDCODED_VARIABLES: Dict[Variable, str] = {
     v.info_json_ext: "info.json",
     v.thumbnail_ext: "jpg",
+}
+
+ENTRY_RELATIVE_VARIABLES: Dict[MetadataVariable, str] = {
+    v.playlist_metadata: entry_get(v.playlist_metadata, {}),
+    v.source_metadata: entry_get(v.source_metadata, {}),
+    v.sibling_entry_metadata: entry_get(v.sibling_entry_metadata, "{ [] }"),
 }
 
 ENTRY_REQUIRED_VARIABLES: Dict[MetadataVariable, str] = {
@@ -133,7 +148,6 @@ ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
 ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
     v.download_index: "{%int(1)}",
     v.upload_date_index: "{%int(1)}",
-    v.playlist_max_upload_year: f"{{{v.upload_year.variable_name}}}",
     v.comments: "",
     v.requested_subtitles: "",
     v.sponsorblock_chapters: "",
@@ -216,7 +230,6 @@ PLAYLIST_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.playlist_index_padded6: pad_int(v.playlist_index, 6),
     v.playlist_index_reversed_padded6: pad_int(v.playlist_index_reversed, 6),
     v.playlist_uploader_sanitized: sanitized(v.playlist_uploader),
-    v.playlist_max_upload_year_truncated: f"{{%int(%slice(%string({v.playlist_max_upload_year.variable_name}), 2))}}",
 }
 
 
@@ -237,11 +250,20 @@ SOURCE_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.source_index_padded: pad_int(v.source_index, 2),
 }
 
+SIBLING_VARIABLES: Dict[Variable, str] = {
+    v.playlist_max_upload_year: "TODO!!!",
+}
+
+SIBLING_DERIVED_VARIABLES: Dict[Variable, str] = {
+    v.playlist_max_upload_year_truncated: f"{{%int(%slice(%string({v.playlist_max_upload_year.variable_name}), 2))}}",
+}
+
 _VARIABLE_SCRIPTS: Dict[Variable, str] = {}
 mergedeep.merge(
     _VARIABLE_SCRIPTS,
     ENTRY_EMPTY_METADATA,
     ENTRY_HARDCODED_VARIABLES,
+    ENTRY_RELATIVE_VARIABLES,
     ENTRY_REQUIRED_VARIABLES,
     ENTRY_DEFAULT_VARIABLES,
     ENTRY_INJECTED_VARIABLES,
