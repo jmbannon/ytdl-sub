@@ -15,8 +15,6 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.script.variable_scripts import ENTRY_INJECTED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
-from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
-from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import get_file_extension

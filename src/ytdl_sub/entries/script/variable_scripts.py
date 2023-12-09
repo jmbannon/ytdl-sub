@@ -129,7 +129,7 @@ ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
     v.channel_id: entry_get(v.channel_id, v.uploader_id),
 }
 
-# TODO: MARK AS UNRESOLVABLE UNTIL THEY ARE ADDED
+# MARK AS UNRESOLVABLE UNTIL THEY ARE ADDED
 ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
     v.download_index: "{%int(1)}",
     v.upload_date_index: "{%int(1)}",
@@ -137,6 +137,7 @@ ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
     v.comments: "",
     v.requested_subtitles: "",
     v.sponsorblock_chapters: "",
+    v.ytdl_sub_input_url: f"{{{v.source_webpage_url.variable_name}}}",
 }
 
 ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {

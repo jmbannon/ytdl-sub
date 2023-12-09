@@ -23,7 +23,6 @@ from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.entries.variables.kwargs import COLLECTION_URL
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
 from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
 from ytdl_sub.utils.file_handler import FileHandler
@@ -143,9 +142,9 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
         if not self.is_dry_run:
             try_convert_download_thumbnail(entry=entry)
 
-        if entry.kwargs_get(COLLECTION_URL) in self._collection_url_mapping:
+        if (input_url := entry.get_str(v.ytdl_sub_input_url)) in self._collection_url_mapping:
             self._download_url_thumbnails(
-                collection_url=self._collection_url_mapping[entry.kwargs(COLLECTION_URL)],
+                collection_url=self._collection_url_mapping[input_url],
                 entry=entry,
             )
         return entry
@@ -177,7 +176,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
         """
         # COLLECTION_URL is a recent variable that may not exist for old entries when updating.
         # Try to use source_webpage_url if it does not exist
-        entry_collection_url = entry.kwargs_get(COLLECTION_URL, entry.get_str(v.source_webpage_url))
+        entry_collection_url = entry.get_str(v.ytdl_sub_input_url)
 
         # If the collection URL cannot find its mapping, use the last URL
         collection_url = (
@@ -460,13 +459,16 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             for entry in self._iterate_entries(
                 url_validator=collection_url, parents=parents, orphans=orphan_entries
             ):
-                # Add the collection URL to the info_dict to trace where it came from
-                entry.add_kwargs(
-                    {COLLECTION_URL: self.overrides.apply_formatter(collection_url.url)}
-                )
-                yield entry.initialize_script(
+                entry.initialize_script(
                     override_variables=self.overrides.dict_with_format_strings
+                ).add(
+                    {
+                        v.ytdl_sub_input_url.variable_name: self.overrides.apply_formatter(
+                            collection_url.url
+                        )
+                    }
                 )
+                yield entry
 
     def download(self, entry: Entry) -> Optional[Entry]:
         """

@@ -607,6 +607,10 @@ class _Variables:
         return MetadataVariable("requested_subtitles", "requested_subtitles")
 
     @property
+    def ytdl_sub_input_url(self) -> Variable:
+        return Variable("ytdl_sub_input_url")
+
+    @property
     def download_index(self) -> Variable:
         """
         Returns
