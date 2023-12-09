@@ -208,20 +208,22 @@ class TestPrebuiltTVShowPresets:
             "_many_urls" if is_many_urls else "",
         )
 
-        reformatted_subscription = Subscription.from_dict(
-            config=config,
-            preset_name=subscription_name,
-            preset_dict={
-                "preset": parent_presets + [reformatted_tv_show_structure_preset],
-                "output_options": {
-                    "migrated_download_archive_name": ".ytdl-sub-{tv_show_name_sanitized}-download-archive.json"
-                },
-                "overrides": {
-                    "url": "https://your.name.here",
-                    "tv_show_name": "Best Prebuilt TV Show by Date",
-                    "tv_show_directory": output_directory,
-                },
+        reformatted_preset_dict = {
+            "preset": parent_presets + [reformatted_tv_show_structure_preset],
+            "output_options": {
+                "migrated_download_archive_name": ".ytdl-sub-{tv_show_name_sanitized}-download-archive.json"
             },
+            "overrides": {
+                "url": "https://your.name.here",
+                "tv_show_name": "Best Prebuilt TV Show by Date",
+                "tv_show_directory": output_directory,
+            },
+        }
+        if is_many_urls:
+            reformatted_preset_dict["overrides"]["url2"] = "https://url.number.2.here"
+
+        reformatted_subscription = Subscription.from_dict(
+            config=config, preset_name=subscription_name, preset_dict=reformatted_preset_dict
         )
 
         reformatted_transaction_log = reformatted_subscription.update_with_info_json(dry_run=False)
