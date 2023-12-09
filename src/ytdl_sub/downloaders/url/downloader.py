@@ -24,13 +24,8 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.variables.kwargs import COLLECTION_URL
-from ytdl_sub.entries.variables.kwargs import COMMENTS
-from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
-from ytdl_sub.entries.variables.kwargs import REQUESTED_SUBTITLES
 from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
-from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
-from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
@@ -182,7 +177,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
         """
         # COLLECTION_URL is a recent variable that may not exist for old entries when updating.
         # Try to use source_webpage_url if it does not exist
-        entry_collection_url = entry.kwargs_get(COLLECTION_URL, entry.get(v.source_webpage_url))
+        entry_collection_url = entry.kwargs_get(COLLECTION_URL, entry.get_str(v.source_webpage_url))
 
         # If the collection URL cannot find its mapping, use the last URL
         collection_url = (
@@ -504,18 +499,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             download_logger.info("Entry rejected by download match-filter, skipping ..")
             return None
 
-        entry.add_kwargs(
-            {
-                # Subtitles are not downloaded in metadata run, only here, so move over
-                REQUESTED_SUBTITLES: download_entry.kwargs_get(REQUESTED_SUBTITLES),
-                # Same with sponsorblock chapters
-                SPONSORBLOCK_CHAPTERS: download_entry.kwargs_get(SPONSORBLOCK_CHAPTERS),
-                COMMENTS: download_entry.kwargs_get(COMMENTS),
-            }
-        )
-
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
-            upload_date_standardized=entry.get(v.upload_date_standardized)
+            upload_date_standardized=entry.get_str(v.upload_date_standardized)
         )
         download_idx = self._enhanced_download_archive.num_entries
         entry.add(
@@ -524,6 +509,15 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 v.download_index.variable_name: download_idx + 1,
                 # Tracks number of entries with the same upload date to make them unique
                 v.upload_date_index.variable_name: upload_date_idx + 1,
+                v.requested_subtitles.variable_name: download_entry.kwargs_get(
+                    v.requested_subtitles.metadata_key
+                ),
+                v.sponsorblock_chapters.variable_name: download_entry.kwargs_get(
+                    v.sponsorblock_chapters.metadata_key
+                ),
+                v.comments.variable_name: download_entry.kwargs_get(
+                    v.sponsorblock_chapters.metadata_key
+                ),
             }
         )
 

@@ -13,6 +13,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_scripts import ENTRY_INJECTED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
 from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
@@ -101,27 +102,27 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
         entries: List[Entry] = []
 
         for download_mapping in self._enhanced_download_archive.mapping.entry_mappings.values():
-            entry = self._get_entry_from_download_mapping(download_mapping).initialize_script(
-                override_variables=self.overrides.dict_with_format_strings
-            )
+            entry = self._get_entry_from_download_mapping(download_mapping)
 
-            prior_variables = entry.kwargs_get(YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY, {})
+            # See if prior variables exist. If so, delete them from metadata
+            # to avoid saving them recursively on multiple updates
+            prior_variables = {}
+            if entry.kwargs_contains(YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY):
+                prior_variables = entry.kwargs(YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY)
+                del entry._kwargs[YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY]
 
-            entry.add(
+            entry.initialize_script(override_variables=self.overrides.dict_with_format_strings).add(
                 {
-                    v.download_index.variable_name: prior_variables.get(
-                        v.download_index.variable_name,
-                        VARIABLE_SCRIPTS[v.download_index.variable_name],
-                    ),
-                    v.upload_date_index.variable_name: prior_variables.get(
-                        v.upload_date_index.variable_name,
-                        VARIABLE_SCRIPTS[v.upload_date_index.variable_name],
-                    ),
+                    inj.variable_name: prior_variables.get(
+                        inj.variable_name,
+                        VARIABLE_SCRIPTS[inj.variable_name],
+                    )
+                    for inj in ENTRY_INJECTED_VARIABLES
                 }
             )
             entries.append(entry)
 
-        for entry in sorted(entries, key=lambda ent: ent.get(v.download_index)):
+        for entry in sorted(entries, key=lambda ent: ent.get_str(v.download_index)):
             # Remove each entry from the live download archive since it will get re-added
             # unless it is filtered
             self._enhanced_download_archive.mapping.remove_entry(entry.uid)

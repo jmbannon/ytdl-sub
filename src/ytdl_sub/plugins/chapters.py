@@ -9,7 +9,7 @@ from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import COMMENTS
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
@@ -305,7 +305,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         # If there are no embedded chapters, and comment chapters are allowed...
         if not _contains_any_chapters(entry) and self.plugin_options.allow_chapters_from_comments:
             # Try to get chapters from comments
-            for comment in entry.kwargs_get(COMMENTS, []):
+            for comment in entry.get(v.comments, list):
                 chapters = Chapters.from_string(comment.get("text", ""))
                 if chapters.contains_any_chapters():
                     break

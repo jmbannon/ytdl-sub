@@ -134,6 +134,9 @@ ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
     v.download_index: "{%int(1)}",
     v.upload_date_index: "{%int(1)}",
     v.playlist_max_upload_year: f"{{{v.upload_year.variable_name}}}",
+    v.comments: "",
+    v.requested_subtitles: "",
+    v.sponsorblock_chapters: "",
 }
 
 ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {

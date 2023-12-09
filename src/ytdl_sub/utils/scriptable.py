@@ -45,6 +45,8 @@ class Scriptable(ABC):
 
     @classmethod
     def to_script(cls, value: Any) -> str:
+        if value is None:
+            return ""
         if isinstance(value, str):
             return value
         if isinstance(value, int):

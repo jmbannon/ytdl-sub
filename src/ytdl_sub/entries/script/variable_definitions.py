@@ -595,7 +595,19 @@ class _Variables:
         return Variable("thumbnail_ext")
 
     @property
-    def download_index(self) -> MetadataVariable:
+    def comments(self) -> MetadataVariable:
+        return MetadataVariable("comments", "comments")
+
+    @property
+    def sponsorblock_chapters(self) -> MetadataVariable:
+        return MetadataVariable("sponsorblock_chapters", "sponsorblock_chapters")
+
+    @property
+    def requested_subtitles(self) -> MetadataVariable:
+        return MetadataVariable("requested_subtitles", "requested_subtitles")
+
+    @property
+    def download_index(self) -> Variable:
         """
         Returns
         -------
@@ -603,7 +615,7 @@ class _Variables:
             The i'th entry downloaded. NOTE that this is fetched dynamically from the download
             archive.
         """
-        return MetadataVariable(variable_name="download_index", metadata_key="download_index")
+        return Variable(variable_name="download_index")
 
     @property
     def download_index_padded6(self) -> Variable:
@@ -616,14 +628,14 @@ class _Variables:
         return Variable("download_index_padded6")
 
     @property
-    def upload_date_index(self) -> MetadataVariable:
+    def upload_date_index(self) -> Variable:
         """
         Returns
         -------
         int
             The i'th entry downloaded with this upload date.
         """
-        return MetadataVariable(variable_name="upload_date_index", metadata_key="upload_date_index")
+        return Variable(variable_name="upload_date_index")
 
     @property
     def upload_date_index_padded(self) -> Variable:

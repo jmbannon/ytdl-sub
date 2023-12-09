@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 from typing import Dict
 from typing import Optional
+from typing import Type
+from typing import TypeVar
 from typing import final
 
 from ytdl_sub.entries.base_entry import BaseEntry
@@ -14,6 +16,8 @@ from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
 
 YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
+
+TType = TypeVar("TType")
 
 
 class Entry(BaseEntry, Scriptable):
@@ -31,11 +35,15 @@ class Entry(BaseEntry, Scriptable):
         self.update_script()
         return self
 
-    def get(self, variable: Variable) -> str:
-        return self.script.resolve(unresolvable=self.unresolvable).get_str(variable.variable_name)
+    def get(self, variable: Variable, expected_type: Type[TType]) -> TType:
+        out = self.script.resolve(unresolvable=self.unresolvable).get_native(variable.variable_name)
+        return expected_type(out)
+
+    def get_str(self, variable: Variable) -> str:
+        return self.get(variable, str)
 
     def get_int(self, variable: Variable) -> int:
-        return self.script.resolve(unresolvable=self.unresolvable).get_int(variable.variable_name)
+        return self.get(variable, int)
 
     @property
     def ext(self) -> str:
@@ -44,7 +52,7 @@ class Entry(BaseEntry, Scriptable):
         This is not reflected in the entry. See if the mkv file exists and return "mkv" if so,
         otherwise, return the original extension.
         """
-        ext = self.get(VARIABLES.ext)
+        ext = self.get_str(VARIABLES.ext)
         for possible_ext in [ext, "mkv"]:
             file_path = str(Path(self.working_directory()) / f"{self.uid}.{possible_ext}")
             if os.path.isfile(file_path):
@@ -70,7 +78,7 @@ class Entry(BaseEntry, Scriptable):
         -------
         The download thumbnail's file name
         """
-        return f"{self.get(VARIABLES.uid)}.{self.get(VARIABLES.thumbnail_ext)}"
+        return f"{self.get_str(VARIABLES.uid)}.{self.get_str(VARIABLES.thumbnail_ext)}"
 
     def get_download_thumbnail_path(self) -> str:
         """Returns the entry's thumbnail's file path to where it was downloaded"""
