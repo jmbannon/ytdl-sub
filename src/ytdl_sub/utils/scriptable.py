@@ -19,11 +19,11 @@ class Scriptable(ABC):
         self.script.resolve(unresolvable=self.unresolvable, update=True)
 
     def add(self, values: Dict[str, Any]) -> None:
+        self.unresolvable -= set(list(values.keys()))
         self.script.add(
             ScriptUtils.add_sanitized_variables(
                 {name: ScriptUtils.to_script(value) for name, value in values.items()}
-            )
+            ),
+            unresolvable=self.unresolvable,
         )
-
-        self.unresolvable -= set(list(values.keys()))
         self.update_script()

@@ -354,14 +354,16 @@ class Script:
             pre_resolved=resolved, unresolvable=unresolvable, update=update, output_filter=None
         )
 
-    def add(self, variables: Dict[str, str]) -> "Script":
+    def add(self, variables: Dict[str, str], unresolvable: Optional[Set[str]] = None) -> "Script":
         added_variables_to_validate: Set[str] = set()
         for variable_name, variable_definition in variables.items():
             self._variables[variable_name] = parse(
                 text=variable_definition,
                 name=variable_name,
                 custom_function_names=set(self._functions.keys()),
-                variable_names=set(self._variables.keys()).union(variables.keys()),
+                variable_names=set(self._variables.keys())
+                .union(variables.keys())
+                .union(unresolvable or set()),
             )
 
             if self._variables[variable_name].maybe_resolvable is None:

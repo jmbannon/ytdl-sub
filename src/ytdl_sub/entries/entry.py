@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from typing import Dict
 from typing import Optional
+from typing import Set
 from typing import Type
 from typing import TypeVar
 from typing import final
@@ -29,8 +30,26 @@ class Entry(BaseEntry, Scriptable):
         BaseEntry.__init__(self, entry_dict=entry_dict, working_directory=working_directory)
         Scriptable.__init__(self)
 
-    def initialize_script(self, override_variables: Dict[str, str]) -> "Entry":
+    def initialize_script(
+        self, override_variables: Dict[str, str], unresolvable: Set[str]
+    ) -> "Entry":
+        # TODO: CLEAN THIS SHIT UP
+        # Overrides contains added variables that are unresolvable, add them here
+        self.unresolvable |= unresolvable
+
+        # Remove the entry variable
+        self.unresolvable.remove(VARIABLES.entry_metadata.variable_name)
+
+        # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
         self.script.add({VARIABLES.entry_metadata.variable_name: f"{{{json.dumps(self._kwargs)}}}"})
+        self.script.add(
+            {
+                unresolved: f"{{%throw('Variable {unresolved} has not been resolved yet')}}"
+                for unresolved in self.unresolvable
+            }
+        )
+
+        # use .add here to get sanitized
         self.add(override_variables)
         self.update_script()
         return self

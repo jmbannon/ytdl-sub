@@ -38,7 +38,7 @@ class TestEntry(object):
 
         mock_entry_kwargs["upload_date"] = upload_date
         entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script(
-            override_variables={}
+            override_variables={}, unresolvable=set()
         )
         assert entry.get_int(v.upload_year_truncated_reversed) == year_rev
         assert entry.get_int(v.upload_month_reversed) == month_rev
@@ -58,7 +58,7 @@ class TestEntry(object):
     ):
         mock_entry_kwargs["upload_date"] = upload_date
         entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script(
-            override_variables={}
+            override_variables={}, unresolvable=set()
         )
 
         assert entry.get_int(v.upload_day_of_year) == day_year

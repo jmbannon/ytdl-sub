@@ -109,7 +109,10 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
                 prior_variables = entry.kwargs(YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY)
                 del entry._kwargs[YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY]
 
-            entry.initialize_script(override_variables=self.overrides.dict_with_format_strings).add(
+            entry.initialize_script(
+                override_variables=self.overrides.dict_with_format_strings,
+                unresolvable=self.overrides.unresolvable,
+            ).add(
                 {
                     inj.variable_name: prior_variables.get(
                         inj.variable_name,
