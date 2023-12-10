@@ -4,6 +4,7 @@ from typing import Dict
 from typing import Optional
 from typing import Set
 
+import mergedeep
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.entry import Entry
@@ -11,6 +12,7 @@ from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -49,44 +51,25 @@ class Overrides(DictFormatterValidator, Scriptable):
         dict_formatter = DictFormatterValidator(name=name, value=value)
         _ = [parse(format_string) for format_string in dict_formatter.dict_with_format_strings]
 
-    # pylint: enable=line-too-long
-
-    def _add_override_variable(self, key_name: str, format_string: str, sanitize: bool = False):
-        if sanitize:
-            key_name = f"{key_name}_sanitized"
-            format_string = sanitize_filename(format_string)
-
-        self._value[key_name] = StringFormatterValidator(
-            name="__should_never_fail__",
-            value=format_string,
-        )
-
     def __init__(self, name, value):
         DictFormatterValidator.__init__(self, name, value)
         Scriptable.__init__(self)
 
-        # Add sanitized overrides
-        for key in self._keys:
-            self._add_override_variable(
-                key_name=key,
-                format_string=self._value[key].format_string,
-                sanitize=True,
-            )
-
-        if SUBSCRIPTION_NAME not in self._value:
-            for sanitized in [True, False]:
-                self._add_override_variable(
-                    key_name=SUBSCRIPTION_NAME,
-                    format_string=self.subscription_name,
-                    sanitize=sanitized,
-                )
-
         self.unresolvable.add(VARIABLES.entry_metadata.variable_name)
 
-    def initialize_script(self, unresolved_variables: Dict[str, str]) -> None:
-        self.script.add(dict(self.dict_with_format_strings, **unresolved_variables))
-        self.unresolvable.update(set(unresolved_variables.keys()))
+    def initial_variables(self, unresolved_variables: Dict[str, str]) -> Dict[str, str]:
+        initial_variables: Dict[str, str] = {}
+        mergedeep.merge(
+            initial_variables,
+            self.dict_with_format_strings,
+            unresolved_variables,
+            {SUBSCRIPTION_NAME: self.subscription_name},
+        )
+        return ScriptUtils.add_sanitized_variables(initial_variables)
 
+    def initialize_script(self, unresolved_variables: Dict[str, str]) -> None:
+        self.script.add(self.initial_variables(unresolved_variables=unresolved_variables))
+        self.unresolvable.update(set(unresolved_variables.keys()))
         self.update_script()
 
     @property

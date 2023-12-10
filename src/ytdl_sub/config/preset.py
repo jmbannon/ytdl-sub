@@ -183,7 +183,7 @@ class Preset(_PresetShell):
     def _script_builder(self) -> ScriptBuilder:
         # Set the formatter variables to be the overrides
         script = ScriptBuilder(
-            ScriptUtils.add_sanitized_variables(self.overrides.dict_with_format_strings)
+            self.overrides.initial_variables(unresolved_variables=self._added_variables)
         )
         script.add_resolved(ScriptUtils.add_dummy_variables(self._source_variables))
         return script
