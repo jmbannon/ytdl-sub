@@ -2,13 +2,17 @@ import copy
 import json
 import os
 from pathlib import Path
+from typing import Dict
 from typing import Optional
+from typing import Set
+from typing import Type
 from typing import TypeVar
 from typing import final
 
-from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import Variable
+from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
 
@@ -17,10 +21,48 @@ YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
 TType = TypeVar("TType")
 
 
-class Entry(BaseEntry):
+class Entry(BaseEntry, Scriptable):
     """
     Entry object to represent a single media object returned from yt-dlp.
     """
+
+    def __init__(self, entry_dict: Dict, working_directory: str):
+        BaseEntry.__init__(self, entry_dict=entry_dict, working_directory=working_directory)
+        Scriptable.__init__(self)
+
+    def initialize_script(
+        self, override_variables: Dict[str, str], unresolvable: Set[str]
+    ) -> "Entry":
+        # TODO: CLEAN THIS SHIT UP
+        # Overrides contains added variables that are unresolvable, add them here
+        self.unresolvable |= unresolvable
+
+        # Remove the entry variable
+        self.unresolvable.remove(VARIABLES.entry_metadata.variable_name)
+
+        # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
+        self.script.add({VARIABLES.entry_metadata.variable_name: f"{{{json.dumps(self._kwargs)}}}"})
+        self.script.add(
+            {
+                unresolved: f"{{%throw('Variable {unresolved} has not been resolved yet')}}"
+                for unresolved in self.unresolvable
+            }
+        )
+
+        # use .add here to get sanitized
+        self.add(override_variables)
+        self.update_script()
+        return self
+
+    def get(self, variable: Variable, expected_type: Type[TType]) -> TType:
+        out = self.script.resolve(unresolvable=self.unresolvable).get_native(variable.variable_name)
+        return expected_type(out)
+
+    def get_str(self, variable: Variable) -> str:
+        return self.get(variable, str)
+
+    def get_int(self, variable: Variable) -> int:
+        return self.get(variable, int)
 
     @property
     def ext(self) -> str:
@@ -29,7 +71,7 @@ class Entry(BaseEntry):
         This is not reflected in the entry. See if the mkv file exists and return "mkv" if so,
         otherwise, return the original extension.
         """
-        ext = self.kwargs(VARIABLES.ext.metadata_key)
+        ext = self.get_str(VARIABLES.ext)
         for possible_ext in [ext, "mkv"]:
             file_path = str(Path(self.working_directory()) / f"{self.uid}.{possible_ext}")
             if os.path.isfile(file_path):
@@ -55,7 +97,7 @@ class Entry(BaseEntry):
         -------
         The download thumbnail's file name
         """
-        return f"{self.kwargs(VARIABLES.uid.metadata_key)}.jpg"
+        return f"{self.get_str(VARIABLES.uid)}.{self.get_str(VARIABLES.thumbnail_ext)}"
 
     def get_download_thumbnail_path(self) -> str:
         """Returns the entry's thumbnail's file path to where it was downloaded"""
@@ -79,12 +121,12 @@ class Entry(BaseEntry):
 
         return None
 
-    def write_info_json(self, overrides: Overrides) -> None:
+    def write_info_json(self) -> None:
         """
         Write the entry's _kwargs back into the info.json file as well as its source variables
         """
         kwargs_dict = copy.deepcopy(self._kwargs)
-        kwargs_dict["ytdl_sub_entry_variables"] = overrides.to_dict()
+        kwargs_dict["ytdl_sub_entry_variables"] = self.to_dict()
         kwargs_json = json.dumps(kwargs_dict, ensure_ascii=False, sort_keys=True, indent=2)
 
         with open(self.get_download_info_json_path(), "w", encoding="utf-8") as file:
@@ -126,3 +168,12 @@ class Entry(BaseEntry):
                     break
 
         return file_exists
+
+    @final
+    def to_dict(self) -> Dict[str, str]:
+        """
+        Returns
+        -------
+        Dictionary containing all variables
+        """
+        return self.script.resolve().as_native()

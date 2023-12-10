@@ -62,7 +62,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
             Optional. Metadata to record to the transaction log for this entry
         """
         # Move the file after all direct file modifications are complete
-        output_file_name = self.overrides.apply_formatter(formatter=self.output_options.file_name)
+        output_file_name = self.overrides.apply_formatter(
+            formatter=self.output_options.file_name, entry=entry
+        )
         self._enhanced_download_archive.save_file_to_output_directory(
             file_name=entry.get_download_file_name(),
             file_metadata=entry_metadata,
@@ -73,7 +75,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         # Always pretend to include the thumbnail in a dry-run
         if self.output_options.thumbnail_name and (dry_run or entry.is_thumbnail_downloaded()):
             output_thumbnail_name = self.overrides.apply_formatter(
-                formatter=self.output_options.thumbnail_name
+                formatter=self.output_options.thumbnail_name, entry=entry
             )
 
             # Copy the thumbnails since they could be used later for other things
@@ -90,7 +92,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         if self.output_options.info_json_name:
             output_info_json_name = self.overrides.apply_formatter(
-                formatter=self.output_options.info_json_name
+                formatter=self.output_options.info_json_name, entry=entry
             )
 
             # if not dry-run, write the info json

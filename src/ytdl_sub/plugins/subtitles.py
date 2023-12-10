@@ -196,6 +196,7 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
                 subtitle_file_name = f"{entry.uid}.{lang}.{self.plugin_options.subtitles_type}"
                 output_subtitle_file_name = self.overrides.apply_formatter(
                     formatter=self.plugin_options.subtitles_name,
+                    entry=entry,
                     function_overrides={"lang": lang},
                 )
 

@@ -157,7 +157,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         tags_to_write: Dict[str, List[str]] = defaultdict(list)
         for tag_name, tag_formatters in self.plugin_options.tags.as_lists.items():
             for tag_formatter in tag_formatters:
-                tag_value = self.overrides.apply_formatter(formatter=tag_formatter)
+                tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
                 tags_to_write[tag_name].append(tag_value)
 
         # write the actual tags if its not a dry run

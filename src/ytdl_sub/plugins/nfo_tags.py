@@ -99,7 +99,7 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
         for key, string_tags in self.plugin_options.tags.string_tags.items():
             tags = [
                 XmlElement(
-                    text=self.overrides.apply_formatter(formatter=string_tag),
+                    text=self.overrides.apply_formatter(formatter=string_tag, entry=entry),
                     attributes={},
                 )
                 for string_tag in string_tags
@@ -110,9 +110,11 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
         for key, attribute_tags in self.plugin_options.tags.attribute_tags.items():
             tags = [
                 XmlElement(
-                    text=self.overrides.apply_formatter(formatter=attribute_tag.tag),
+                    text=self.overrides.apply_formatter(formatter=attribute_tag.tag, entry=entry),
                     attributes={
-                        attr_name: self.overrides.apply_formatter(formatter=attr_formatter)
+                        attr_name: self.overrides.apply_formatter(
+                            formatter=attr_formatter, entry=entry
+                        )
                         for attr_name, attr_formatter in attribute_tag.attributes.dict.items()
                     },
                 )
@@ -126,7 +128,9 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
 
     def _create_nfo(self, entry: Entry, save_to_entry: bool = True) -> None:
         # Write the nfo tags to XML with the nfo_root
-        nfo_root = self.overrides.apply_formatter(formatter=self.plugin_options.nfo_root)
+        nfo_root = self.overrides.apply_formatter(
+            formatter=self.plugin_options.nfo_root, entry=entry
+        )
         nfo_tags = self._get_xml_element_dict(entry=entry)
 
         # If the nfo tags are empty, then stop continuing
@@ -148,7 +152,9 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
 
         xml = to_xml(nfo_dict=nfo_tags, nfo_root=nfo_root)
 
-        nfo_file_name = self.overrides.apply_formatter(formatter=self.plugin_options.nfo_name)
+        nfo_file_name = self.overrides.apply_formatter(
+            formatter=self.plugin_options.nfo_name, entry=entry
+        )
 
         # Save the nfo's XML to file
         nfo_file_path = Path(self.working_directory) / nfo_file_name

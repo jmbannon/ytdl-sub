@@ -1,29 +1,22 @@
 import copy
 from typing import Any
 from typing import Dict
+from typing import Optional
 from typing import Set
-from typing import Type
-from typing import TypeVar
-from typing import final
 
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import Variable
-from ytdl_sub.entries.script.variable_scripts import UNRESOLVED_VARIABLES
-from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
-from ytdl_sub.utils.script import ScriptUtils
+from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 
-TType = TypeVar("TType")
 
-
-class Overrides(DictFormatterValidator):
+class Overrides(DictFormatterValidator, Scriptable):
     """
     Optional. This section allows you to define variables that can be used in any string formatter.
     For example, if you want your file and thumbnail files to match without copy-pasting a large
@@ -69,7 +62,8 @@ class Overrides(DictFormatterValidator):
         )
 
     def __init__(self, name, value):
-        super().__init__(name, value)
+        DictFormatterValidator.__init__(self, name, value)
+        Scriptable.__init__(self)
 
         # Add sanitized overrides
         for key in self._keys:
@@ -87,52 +81,13 @@ class Overrides(DictFormatterValidator):
                     sanitize=sanitized,
                 )
 
-        self.script = Script(copy.deepcopy(VARIABLE_SCRIPTS))
-        self.unresolvable: Set[str] = copy.deepcopy(UNRESOLVED_VARIABLES)
+        self.unresolvable.add(VARIABLES.entry_metadata.variable_name)
 
-    def initialize_script(self, unresolved_variables: Set[str]) -> None:
-        self.unresolvable |= unresolved_variables
-        self.script.add(
-            dict(
-                self.dict_with_format_strings,
-                **{
-                    unresolved: f"{{%throw('Variable {unresolved} has not been resolved yet')}}"
-                    for unresolved in self.unresolvable
-                },
-            )
-        )
+    def initialize_script(self, unresolved_variables: Dict[str, str]) -> None:
+        self.script.add(dict(self.dict_with_format_strings, **unresolved_variables))
+        self.unresolvable.update(set(unresolved_variables.keys()))
+
         self.update_script()
-
-    def add_entry_kwargs(self, entry_kwargs: Dict[str, Any]) -> "Overrides":
-        self.unresolvable.remove(VARIABLES.entry_metadata.variable_name)
-        self.script.add(
-            {VARIABLES.entry_metadata.variable_name: ScriptUtils.to_script(entry_kwargs)}
-        )
-        self.update_script()
-        return self
-
-    def add(self, values: Dict[str, Any]) -> None:
-        self.unresolvable -= set(list(values.keys()))
-        self.script.add(
-            ScriptUtils.add_sanitized_variables(
-                {name: ScriptUtils.to_script(value) for name, value in values.items()}
-            ),
-            unresolvable=self.unresolvable,
-        )
-        self.update_script()
-
-    def update_script(self) -> None:
-        self.script.resolve(unresolvable=self.unresolvable, update=True)
-
-    def get(self, variable: Variable | str, expected_type: Type[TType]) -> TType:
-        out = self.script.resolve(unresolvable=self.unresolvable).get_native(variable.variable_name)
-        return expected_type(out)
-
-    def get_str(self, variable: Variable) -> str:
-        return self.get(variable, str)
-
-    def get_int(self, variable: Variable) -> int:
-        return self.get(variable, int)
 
     @property
     def subscription_name(self) -> str:
@@ -143,18 +98,10 @@ class Overrides(DictFormatterValidator):
         """
         return self._root_name
 
-    @final
-    def to_dict(self) -> Dict[str, str]:
-        """
-        Returns
-        -------
-        Dictionary containing all variables
-        """
-        return self.script.resolve().as_native()
-
     def apply_formatter(
         self,
         formatter: StringFormatterValidator,
+        entry: Optional[Entry] = None,
         function_overrides: Dict[str, str] = None,
     ) -> str:
         """
@@ -171,15 +118,17 @@ class Overrides(DictFormatterValidator):
         -------
         The format_string after .format has been called
         """
+        script: Script = self.script
+        unresolvable: Set[str] = self.unresolvable
+        if entry:
+            script = entry.script
+            unresolvable = entry.unresolvable
+
         return formatter.post_process(
             str(
-                self.script.resolve_once(
+                script.resolve_once(
                     dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
-                    unresolvable=self.unresolvable.union(
-                        VARIABLES.entry_metadata.variable_name
-                        if isinstance(formatter, OverridesStringFormatterValidator)
-                        else set()
-                    ),
+                    unresolvable=unresolvable,
                 )["tmp_var"]
             )
         )
