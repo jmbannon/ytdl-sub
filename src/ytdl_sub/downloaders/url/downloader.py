@@ -459,10 +459,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             for entry in self._iterate_entries(
                 url_validator=collection_url, parents=parents, orphans=orphan_entries
             ):
-                entry.initialize_script(
-                    override_variables=self.overrides.dict_with_format_strings,
-                    unresolvable=self.overrides.unresolvable,
-                ).add(
+                entry.initialize_script(self.overrides).add(
                     {
                         v.ytdl_sub_input_url.variable_name: self.overrides.apply_formatter(
                             collection_url.url

@@ -30,28 +30,20 @@ class Entry(BaseEntry, Scriptable):
         BaseEntry.__init__(self, entry_dict=entry_dict, working_directory=working_directory)
         Scriptable.__init__(self)
 
-    def initialize_script(
-        self, override_variables: Dict[str, str], unresolvable: Set[str]
-    ) -> "Entry":
+    def _add_entry_kwargs_to_script(self) -> None:
+        # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
+        self.unresolvable.remove(VARIABLES.entry_metadata.variable_name)
+        self.script.add({VARIABLES.entry_metadata.variable_name: f"{{{json.dumps(self._kwargs)}}}"})
+        self.update_script()
+
+    def initialize_script(self, other: Optional[Scriptable] = None) -> "Entry":
         # TODO: CLEAN THIS SHIT UP
         # Overrides contains added variables that are unresolvable, add them here
-        self.unresolvable |= unresolvable
+        if other:
+            self.script = copy.deepcopy(other.script)
+            self.unresolvable = copy.deepcopy(other.unresolvable)
 
-        # Remove the entry variable
-        self.unresolvable.remove(VARIABLES.entry_metadata.variable_name)
-
-        # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
-        self.script.add({VARIABLES.entry_metadata.variable_name: f"{{{json.dumps(self._kwargs)}}}"})
-        self.script.add(
-            {
-                unresolved: f"{{%throw('Variable {unresolved} has not been resolved yet')}}"
-                for unresolved in self.unresolvable
-            }
-        )
-
-        # use .add here to get sanitized
-        self.add(override_variables)
-        self.update_script()
+        self._add_entry_kwargs_to_script()
         return self
 
     def get(self, variable: Variable, expected_type: Type[TType]) -> TType:

@@ -7,7 +7,11 @@ from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 class TestEntry(object):
     def test_entry_to_dict(self, mock_entry, mock_entry_to_dict):
         out = mock_entry.to_dict()
-        del out["entry_metadata"]
+        del out[v.entry_metadata.variable_name]
+        del out[v.ytdl_sub_input_url.variable_name]
+        del out[v.playlist_metadata.variable_name]
+        del out[v.source_metadata.variable_name]
+        del out[v.sibling_metadata.variable_name]
         assert out == mock_entry_to_dict
 
     def test_entry_missing_kwarg(self, mock_entry):
@@ -37,9 +41,7 @@ class TestEntry(object):
     ):
 
         mock_entry_kwargs["upload_date"] = upload_date
-        entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script(
-            override_variables={}, unresolvable=set()
-        )
+        entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script()
         assert entry.get_int(v.upload_year_truncated_reversed) == year_rev
         assert entry.get_int(v.upload_month_reversed) == month_rev
         assert entry.get_int(v.upload_day_reversed) == day_rev
@@ -57,9 +59,7 @@ class TestEntry(object):
         self, mock_entry_kwargs, upload_date, day_year, day_year_rev, day_year_pad, day_year_rev_pad
     ):
         mock_entry_kwargs["upload_date"] = upload_date
-        entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script(
-            override_variables={}, unresolvable=set()
-        )
+        entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script()
 
         assert entry.get_int(v.upload_day_of_year) == day_year
         assert entry.get_int(v.upload_day_of_year_reversed) == day_year_rev

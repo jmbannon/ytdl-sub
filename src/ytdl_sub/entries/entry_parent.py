@@ -60,7 +60,7 @@ class EntryParent(BaseEntry):
             parents = [self]
 
         kwargs_to_add: Dict[str, Any] = {
-            v.sibling_entry_metadata.metadata_key: self._sibling_entry_metadata()
+            v.sibling_metadata.metadata_key: self._sibling_entry_metadata()
         }
         if len(parents) >= 1:
             kwargs_to_add[v.playlist_metadata.metadata_key] = parents[-1]._kwargs

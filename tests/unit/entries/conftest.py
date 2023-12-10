@@ -178,7 +178,4 @@ def mock_entry_kwargs(
 
 @pytest.fixture
 def mock_entry(mock_entry_kwargs):
-    return Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script(
-        override_variables={},
-        unresolvable=set(),
-    )
+    return Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script()

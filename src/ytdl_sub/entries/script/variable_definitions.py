@@ -56,8 +56,8 @@ class _Variables:
         return RelativeMetadata("source_metadata", metadata_key="source_metadata")
 
     @property
-    def sibling_entry_metadata(self) -> SiblingMetadata:
-        return SiblingMetadata("sibling_entry_metadata", metadata_key="sibling_entry_metadata")
+    def sibling_metadata(self) -> SiblingMetadata:
+        return SiblingMetadata("sibling_metadata", metadata_key="sibling_metadata")
 
     @property
     def uid(self) -> MetadataVariable:
