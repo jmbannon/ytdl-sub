@@ -71,7 +71,7 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
         Downloads and moves channel avatar and banner images to the output directory.
         """
         for thumbnail_info in thumbnail_list_info.list:
-            thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name, entry=entry)
+            thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name)
             thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
 
             # If the thumbnail name is an empty string, completely ignore trying to download it
@@ -176,7 +176,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
         """
         # COLLECTION_URL is a recent variable that may not exist for old entries when updating.
         # Try to use source_webpage_url if it does not exist
-        entry_collection_url = entry.get_str(v.ytdl_sub_input_url)
+        entry_collection_url = self.overrides.get_str(v.ytdl_sub_input_url)
 
         # If the collection URL cannot find its mapping, use the last URL
         collection_url = (
@@ -459,15 +459,16 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             for entry in self._iterate_entries(
                 url_validator=collection_url, parents=parents, orphans=orphan_entries
             ):
-                entry.initialize_script(
-                    override_variables=self.overrides.dict_with_format_strings,
-                    unresolvable=self.overrides.unresolvable,
-                ).add(
-                    {
-                        v.ytdl_sub_input_url.variable_name: self.overrides.apply_formatter(
-                            collection_url.url
-                        )
-                    }
+
+                self.overrides.add(
+                    dict(
+                        entry._kwargs,
+                        **{
+                            v.ytdl_sub_input_url.variable_name: self.overrides.apply_formatter(
+                                collection_url.url
+                            )
+                        },
+                    )
                 )
                 yield entry
 

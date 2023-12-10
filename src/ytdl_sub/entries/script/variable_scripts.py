@@ -118,7 +118,7 @@ ENTRY_HARDCODED_VARIABLES: Dict[Variable, str] = {
 ENTRY_RELATIVE_VARIABLES: Dict[MetadataVariable, str] = {
     v.playlist_metadata: entry_get(v.playlist_metadata, {}),
     v.source_metadata: entry_get(v.source_metadata, {}),
-    v.sibling_entry_metadata: entry_get(v.sibling_entry_metadata, "{ [] }"),
+    v.sibling_entry_metadata: entry_get(v.sibling_entry_metadata, []),
 }
 
 ENTRY_REQUIRED_VARIABLES: Dict[MetadataVariable, str] = {
@@ -279,6 +279,11 @@ mergedeep.merge(
 VARIABLE_SCRIPTS: Dict[str, str] = {
     var.variable_name: script for var, script in _VARIABLE_SCRIPTS.items()
 }
-UNRESOLVED_VARIABLES: Set[str] = {var.variable_name for var in ENTRY_INJECTED_VARIABLES}
 
+UNRESOLVED_VARIABLES: Set[str] = {
+    var.variable_name
+    for var in list(ENTRY_EMPTY_METADATA.keys())
+    + list(ENTRY_INJECTED_VARIABLES.keys())
+    + list(ENTRY_RELATIVE_VARIABLES.keys())
+}
 CustomFunctions.register()

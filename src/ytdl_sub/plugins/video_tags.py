@@ -76,7 +76,7 @@ class VideoTagsPlugin(Plugin[VideoTagsOptions]):
 
         tags_to_write: Dict[str, str] = {}
         for tag_name, tag_formatter in self.plugin_options.tags.dict.items():
-            tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
+            tag_value = self.overrides.apply_formatter(formatter=tag_formatter)
             tags_to_write[tag_name] = tag_value
 
         # write the actual tags if its not a dry run

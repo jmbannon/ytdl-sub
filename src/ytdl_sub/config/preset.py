@@ -361,12 +361,7 @@ class Preset(_PresetShell):
         # values from multiple validators
         self.__recursive_preset_validate()
 
-        self.overrides.initialize_script(
-            unresolved_variables={
-                var_name: f"{{%throw('Plugin variable {var_name} has not been created yet')}}"
-                for var_name in self._added_variables
-            }
-        )
+        self.overrides.initialize_script(unresolved_variables=set(list(self._added_variables.keys())))
 
     @property
     def name(self) -> str:

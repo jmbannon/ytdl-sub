@@ -58,7 +58,7 @@ class ViewPlugin(Plugin[ViewOptions]):
         """
         Adds all source variables to the entry
         """
-        source_var_dict = copy.deepcopy(entry.to_dict())
+        source_var_dict = self.overrides.to_dict()
         for key in source_var_dict.keys():
             source_var_dict[key] = self._truncate_value(source_var_dict[key])
 

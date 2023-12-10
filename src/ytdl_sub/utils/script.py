@@ -36,6 +36,8 @@ class ScriptUtils:
             out = f"{{%float({value})}}"
         elif isinstance(value, bool):
             out = f"{{%bool({value})}}"
+        elif isinstance(value, dict):
+            out = f"{{ {json.dumps(value)} }}"
         else:
             out = json.dumps(value)
 
