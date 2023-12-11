@@ -104,8 +104,16 @@ def _is_numeric_start(char: str) -> bool:
     return char.isnumeric() or char == "-"
 
 
-def _is_string_start(char: str) -> bool:
+def _is_string_start_single_char(char: Optional[str]) -> bool:
     return char in ["'", '"']
+
+
+def _is_string_start_multi_char(string: Optional[str]) -> bool:
+    return string in ["'''", '"""']
+
+
+def _is_null(string: Optional[str]) -> bool:
+    return string and string.lower() == "null"
 
 
 def _is_breakable(char: str) -> bool:
@@ -118,10 +126,6 @@ def _is_boolean_true(string: Optional[str]) -> bool:
 
 def _is_boolean_false(string: Optional[str]) -> bool:
     return string and string.lower() == "false"
-
-
-def _is_null(string: Optional[str]) -> bool:
-    return string and string.lower() == "null"
 
 
 def _is_custom_function_argument_start(char: str) -> bool:
@@ -273,28 +277,25 @@ class _Parser:
 
         return Float(value=numeric_float)
 
-    def _parse_string(self) -> String:
+    def _parse_string(self, str_open_token: str) -> String:
         """
         Begin parsing a string, including the quotation value
         """
         self._set_highlight_position()
         string_value = ""
-        open_quotation_char = self._read()
 
-        if not _is_string_start(open_quotation_char):
+        if not _is_string_start_single_char(str_open_token) and not _is_string_start_multi_char(
+            str_open_token
+        ):
             raise UNREACHABLE
 
-        is_escaped = False
-        while ch := self._read():
-            if ch == open_quotation_char and not is_escaped:
+        while ch := self._read(increment_pos=False):
+            if self._read(increment_pos=False, length=len(str_open_token)) == str_open_token:
+                self._pos += len(str_open_token)
                 return String(value=string_value)
 
-            if ch == "\\" and not is_escaped:
-                is_escaped = True
-                continue
-
+            self._pos += 1
             string_value += ch
-            is_escaped = False
 
         raise STRINGS_NOT_CLOSED
 
@@ -313,8 +314,12 @@ class _Parser:
         if _is_null(self._read(increment_pos=False, length=4)):
             self._pos += 4
             return String(value="")
-        if _is_string_start(self._read(increment_pos=False)):
-            return self._parse_string()
+        if _is_string_start_multi_char(str_open_token := self._read(increment_pos=False, length=3)):
+            self._pos += 3
+            return self._parse_string(str_open_token)
+        if _is_string_start_single_char(str_open_token := self._read(increment_pos=False)):
+            self._pos += 1
+            return self._parse_string(str_open_token)
         if self._read(increment_pos=False) == "[":
             self._pos += 1
             return self._parse_array()
@@ -535,7 +540,11 @@ class _Parser:
                     self._ast.append(self._parse_variable())
                 elif _is_numeric_start(ch1):
                     raise NUMERICS_ONLY_ARGS
-                elif _is_string_start(ch1) or _is_null(self._read(increment_pos=False, length=4)):
+                elif (
+                    _is_string_start_single_char(ch1)
+                    or _is_string_start_multi_char(self._read(increment_pos=False, length=3))
+                    or _is_null(self._read(increment_pos=False, length=4))
+                ):
                     raise STRINGS_ONLY_ARGS
                 elif _is_boolean_true(
                     self._read(increment_pos=False, length=4)

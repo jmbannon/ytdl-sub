@@ -31,6 +31,7 @@ class TestString:
         [
             ("{%string('')}", ""),
             ('{%string("")}', ""),
+            ('{%string("\\")}', "\\"),
             ("{%string('323')}", "323"),
             ('{%string(  "4253"  )}', "4253"),
             ('{%string("hi")}', "hi"),
@@ -41,9 +42,9 @@ class TestString:
             ("{%string('in function')} out of function", "in function out of function"),
             ("{%string('supports \" in string')}", 'supports " in string'),
             ('{%string("supports \' in string")}', "supports ' in string"),
-            ('{%string("\\" in string with open \\"")}', '" in string with open "'),
-            ("{%string('\\' in string with open \\'')}", "' in string with open '"),
-            ("{%string('backslash \\\\')}", "backslash \\"),
+            ("{%string('backslash \\\\')}", "backslash \\\\"),
+            ("{%string('''triple quote with \" ' \\''')}", "triple quote with \" ' \\"),
+            ('{%string("""triple quote with " \' \\""")}', "triple quote with \" ' \\"),
         ],
     )
     def test_string(self, string: str, expected_string: str):
