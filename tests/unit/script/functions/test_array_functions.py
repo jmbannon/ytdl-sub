@@ -44,6 +44,10 @@ class TestArrayFunctions:
         output = single_variable_output("{%array_reverse(['a', 'b', 'c'])}")
         assert output == ["c", "b", "a"]
 
+    def test_array_product(self):
+        output = single_variable_output("{%array_product(['a', 'b', 'c'], ['arg'])}")
+        assert output == [["a", "arg"], ["b", "arg"], ["c", "arg"]]
+
     def test_array_apply(self):
         output = single_variable_output("{%array_apply(['a', 'b', 'c'], %capitalize)}")
         assert output == ["A", "B", "C"]

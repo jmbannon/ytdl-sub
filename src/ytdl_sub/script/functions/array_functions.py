@@ -1,3 +1,4 @@
+import itertools
 from typing import List
 from typing import Optional
 
@@ -84,6 +85,17 @@ class ArrayFunctions:
         Reverse an Array.
         """
         return Array(list(reversed(array.value)))
+
+    @staticmethod
+    def array_product(*arrays: Array) -> Array:
+        """
+        Returns the Cartesian product of elements from different arrays
+        """
+        out: List[Resolvable] = []
+        for combo in itertools.product(*[arr.value for arr in arrays]):
+            out.append(Array(combo))
+
+        return Array(out)
 
     # pylint: disable=unused-argument
 
