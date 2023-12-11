@@ -48,6 +48,10 @@ class TestArrayFunctions:
         output = single_variable_output("{%array_apply(['a', 'b', 'c'], %capitalize)}")
         assert output == ["A", "B", "C"]
 
+    def test_array_reduce(self):
+        output = single_variable_output("{%array_reduce([1, 2, 3, 4], %add)}")
+        assert output == 10
+
     def test_array_enumerate(self):
         output = (
             Script(

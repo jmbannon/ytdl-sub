@@ -14,6 +14,7 @@ from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import FutureResolvable
 from ytdl_sub.script.types.resolvable import Lambda
+from ytdl_sub.script.types.resolvable import LambdaReduce
 from ytdl_sub.script.types.resolvable import LambdaThree
 from ytdl_sub.script.types.resolvable import LambdaTwo
 from ytdl_sub.script.types.resolvable import NamedType
@@ -163,13 +164,25 @@ class FunctionSpec:
         return 0  # varargs can take any number
 
     @property
-    def is_lambda_function(self) -> Optional[Type[TLambda]]:
+    def is_lambda_reduce_function(self) -> Optional[Type[LambdaReduce]]:
+        return LambdaReduce if LambdaReduce in (self.args or []) else None
+
+    @property
+    def is_lambda_function(self) -> Optional[Type[Lambda | LambdaTwo | LambdaThree]]:
         if LambdaThree in (self.args or []):
             return LambdaThree
         if LambdaTwo in (self.args or []):
             return LambdaTwo
         if Lambda in (self.args or []):
             return Lambda
+        return None
+
+    @property
+    def is_lambda_like(self) -> Optional[Type[TLambda]]:
+        if l_type := self.is_lambda_reduce_function:
+            return l_type
+        if l_type := self.is_lambda_function:
+            return l_type
         return None
 
     @classmethod

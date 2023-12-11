@@ -12,16 +12,12 @@ from resources import copy_file_fixture
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR_KEY
-from ytdl_sub.entries.variables.kwargs import IE_KEY
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_TITLE
 from ytdl_sub.entries.variables.kwargs import TITLE
 from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE
@@ -66,21 +62,21 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         entry_dict = {
             UID: uid,
             EPOCH: 1596878400,
-            PLAYLIST_TITLE: playlist_title,
-            PLAYLIST_INDEX: playlist_index,
-            PLAYLIST_COUNT: playlist_count,
+            v.playlist_title.metadata_key: playlist_title,
+            v.playlist_index.metadata_key: playlist_index,
+            v.playlist_count.metadata_key: playlist_count,
             EXTRACTOR: "mock-entry-dict",
             EXTRACTOR_KEY: "mock-extractor-key",
             TITLE: f"Mock Entry {uid}",
             EXT: "mp4",
             UPLOAD_DATE: upload_date,
             WEBPAGE_URL: f"https://{uid}.com",
-            PLAYLIST_ENTRY: {"thumbnails": []},
+            v.playlist_metadata.metadata_key: {"thumbnails": []},
             DESCRIPTION: "The Description",
         }
 
         if is_youtube_channel:
-            entry_dict[PLAYLIST_ENTRY]["thumbnails"] = [
+            entry_dict[v.playlist_metadata.metadata_key]["thumbnails"] = [
                 {
                     "id": "avatar_uncropped",
                     "url": "https://avatar_uncropped.com",

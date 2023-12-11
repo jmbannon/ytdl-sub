@@ -149,7 +149,7 @@ class Script:
         for name, definition in definitions.items():
             for function in definition.built_in_functions:
                 spec = FunctionSpec.from_callable(Functions.get(function.name))
-                if lambda_type := spec.is_lambda_function:
+                if lambda_type := spec.is_lambda_like:
 
                     lambda_function_names = set(
                         [

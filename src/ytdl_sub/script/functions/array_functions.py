@@ -6,6 +6,7 @@ from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Lambda
+from ytdl_sub.script.types.resolvable import LambdaReduce
 from ytdl_sub.script.types.resolvable import LambdaTwo
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
@@ -101,4 +102,10 @@ class ArrayFunctions:
         """
         return Array([Array([Integer(idx), val]) for idx, val in enumerate(array.value)])
 
-    # pylint: enable=unused-argument
+    @staticmethod
+    def array_reduce(array: Array, lambda_reduce_function: LambdaReduce) -> AnyArgument:
+        """
+        Apply a reduce function on pairs of elements in the Array, until one element remains.
+        Executes using the left-most and reduces in the right direction.
+        """
+        return array

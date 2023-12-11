@@ -194,3 +194,8 @@ class LambdaThree(Lambda):
     @classmethod
     def num_input_args(cls) -> int:
         return 3
+
+
+@dataclass(frozen=True)
+class LambdaReduce(LambdaTwo):
+    pass

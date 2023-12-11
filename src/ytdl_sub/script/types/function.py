@@ -107,6 +107,14 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             return arg.output_type()
         return type(arg)
 
+    @classmethod
+    def _instantiate_lambda(cls, lambda_function_name: str, args: List[Argument]) -> Function:
+        return (
+            BuiltInFunction(name=lambda_function_name, args=args)
+            if Functions.is_built_in(lambda_function_name)
+            else CustomFunction(name=lambda_function_name, args=args)
+        )
+
     def _output_type(self, union_args: List[Type[Argument]]) -> Type[Resolvable]:
         union_types_list = set()
         for union_type in union_args:
@@ -160,12 +168,56 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         return self._resolve_argument_type(
             arg=UnresolvedArray(
                 [
-                    BuiltInFunction(name=lambda_function_name, args=lambda_arg.value)
-                    if Functions.is_built_in(lambda_function_name)
-                    else CustomFunction(name=lambda_function_name, args=lambda_arg.value)
+                    self._instantiate_lambda(
+                        lambda_function_name=lambda_function_name, args=lambda_arg.value
+                    )
                     for lambda_arg in lambda_args.value
                 ]
             ),
+            resolved_variables=resolved_variables,
+            custom_functions=custom_functions,
+        )
+
+    def _resolve_lambda_reduce_function(
+        self,
+        resolved_arguments: List[Resolvable | Lambda],
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Resolvable:
+        """
+        Resolve the lambda reduce function by
+            1. Preemptively create the 'reduce-like' call-stack as unresolvable
+            2. Resolve it like any other syntax
+        """
+        function_input_lambda_args = [arg for arg in resolved_arguments if isinstance(arg, Lambda)]
+        if not self.function_spec.is_lambda_reduce_function or len(function_input_lambda_args) != 1:
+            raise UNREACHABLE
+
+        lambda_function_name = function_input_lambda_args[0].value
+
+        try:
+            lambda_array = self.callable(*resolved_arguments)
+        except Exception as exc:
+            raise FunctionRuntimeException(
+                f"Runtime error occurred when executing the function %{self.name}: {str(exc)}"
+            ) from exc
+
+        assert isinstance(lambda_array, Array)
+
+        if len(lambda_array.value) == 1:
+            return lambda_array.value[0]
+
+        reduced = self._instantiate_lambda(
+            lambda_function_name=lambda_function_name,
+            args=[lambda_array.value[0], lambda_array.value[1]],
+        )
+        for idx in range(2, len(lambda_array.value)):
+            reduced = self._instantiate_lambda(
+                lambda_function_name=lambda_function_name, args=[reduced, lambda_array.value[idx]]
+            )
+
+        return self._resolve_argument_type(
+            arg=reduced,
             resolved_variables=resolved_variables,
             custom_functions=custom_functions,
         )
@@ -188,6 +240,14 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         # If a lambda is in a function's arg, resolve it differently
         if self.function_spec.is_lambda_function:
             return self._resolve_lambda_function(
+                resolved_arguments=resolved_arguments,
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        # If a lambda is in a function's arg, resolve it differently
+        if self.function_spec.is_lambda_reduce_function:
+            return self._resolve_lambda_reduce_function(
                 resolved_arguments=resolved_arguments,
                 resolved_variables=resolved_variables,
                 custom_functions=custom_functions,
