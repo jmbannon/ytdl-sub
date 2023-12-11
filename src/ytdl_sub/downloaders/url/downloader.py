@@ -23,8 +23,6 @@ from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
-from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
@@ -114,22 +112,18 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
         """
-        if entry.kwargs_contains(PLAYLIST_ENTRY):
+        if playlist_metadata := entry.get(v.playlist_metadata, dict):
             self._download_parent_thumbnails(
                 thumbnail_list_info=collection_url.playlist_thumbnails,
                 entry=entry,
-                parent=EntryParent(
-                    entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
-                ),
+                parent=EntryParent(playlist_metadata, working_directory=self.working_directory),
             )
 
-        if entry.kwargs_contains(SOURCE_ENTRY):
+        if source_metadata := entry.get(v.source_metadata, dict):
             self._download_parent_thumbnails(
                 thumbnail_list_info=collection_url.source_thumbnails,
                 entry=entry,
-                parent=EntryParent(
-                    entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
-                ),
+                parent=EntryParent(source_metadata, working_directory=self.working_directory),
             )
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
