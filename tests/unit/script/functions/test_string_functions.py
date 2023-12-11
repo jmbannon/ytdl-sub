@@ -1,9 +1,6 @@
 import pytest
 from unit.script.conftest import single_variable_output
 
-from ytdl_sub.script.script import Script
-
-
 class TestNumericFunctions:
     @pytest.mark.parametrize(
         "values, expected_output",

@@ -33,7 +33,10 @@ class Entry(BaseEntry, Scriptable):
     def _add_entry_kwargs_to_script(self) -> None:
         # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
         self.unresolvable.remove(VARIABLES.entry_metadata.variable_name)
-        self.script.add({VARIABLES.entry_metadata.variable_name: f"{{{json.dumps(self._kwargs)}}}"})
+        single_quote = "'"
+        replace_single_quote = "\\'"
+        entry_metadata_variable = f"{{%from_json('{json.dumps(self._kwargs, ensure_ascii=False).replace(single_quote, replace_single_quote)}')}}"
+        self.script.add({VARIABLES.entry_metadata.variable_name: entry_metadata_variable})
         self.update_script()
 
     def initialize_script(self, other: Optional[Scriptable] = None) -> "Entry":
