@@ -71,8 +71,10 @@ UNREACHABLE = _UnreachableSyntaxException(
 class RuntimeException(ValueError, ABC):
     """Exception thrown at runtime during resolution"""
 
+
 class ScriptVariableNotResolved(RuntimeException):
     """Tried to get a variable's resolved value from a script, but has not resolved yet"""
+
 
 class FunctionRuntimeException(RuntimeException):
     """Exception thrown when a ytdl-sub function has an error occur at runtime"""

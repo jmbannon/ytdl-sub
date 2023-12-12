@@ -127,7 +127,6 @@ ENTRY_REQUIRED_VARIABLES: Dict[MetadataVariable, str] = {
 }
 
 ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
-    v.playlist_index: playlist_get_int(v.playlist_index, 1),
     v.title: entry_get_str(v.title, v.uid),
     v.extractor: entry_get_str(v.extractor, v.extractor_key),
     v.description: entry_get_str(v.description, ""),
@@ -139,6 +138,11 @@ ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
     v.channel: entry_get_str(v.channel, v.uploader),
     v.creator: entry_get_str(v.creator, v.channel),
     v.channel_id: entry_get_str(v.channel_id, v.uploader_id),
+    v.playlist_index: entry_get_int(v.playlist_index, 1),
+    v.playlist_count: entry_get_int(v.playlist_count, 1),
+    v.playlist_uid: entry_get_str(v.playlist_uid, v.uid),
+    v.playlist_title: entry_get_str(v.playlist_title, v.title),
+    v.playlist_uploader_id: entry_get_str(v.playlist_uploader_id, v.uploader_id),
 }
 
 # MARK AS UNRESOLVABLE UNTIL THEY ARE ADDED
@@ -164,6 +168,12 @@ ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.upload_date_index_padded: pad_int(v.upload_date_index, 2),
     v.upload_date_index_reversed: f"{{%sub(100, {v.upload_date_index.variable_name})}}",
     v.upload_date_index_reversed_padded: pad_int(v.upload_date_index_reversed, 2),
+    v.playlist_title_sanitized: sanitized(v.playlist_title),
+    v.playlist_index_reversed: f"{{%sub({v.playlist_count.variable_name}, {v.playlist_index.variable_name}, -1)}}",
+    v.playlist_index_padded: pad_int(v.playlist_index, 2),
+    v.playlist_index_reversed_padded: pad_int(v.playlist_index_reversed, 2),
+    v.playlist_index_padded6: pad_int(v.playlist_index, 6),
+    v.playlist_index_reversed_padded6: pad_int(v.playlist_index_reversed, 6),
 }
 
 ENTRY_UPLOAD_DATE_VARIABLES: Dict[Variable, str] = {
@@ -209,23 +219,13 @@ ENTRY_RELEASE_DATE_VARIABLES: Dict[Variable, str] = {
 }
 
 PLAYLIST_VARIABLES: Dict[Variable, str] = {
-    v.playlist_uid: playlist_get_str(v.playlist_uid, v.uid),
-    v.playlist_title: playlist_get_str(v.playlist_title, v.title),
     v.playlist_webpage_url: playlist_get_str(v.playlist_webpage_url, v.webpage_url),
-    v.playlist_count: playlist_get_int(v.playlist_count, 1),
     v.playlist_description: playlist_get_str(v.playlist_description, v.description),
-    v.playlist_uploader_id: playlist_get_str(v.playlist_uploader_id, v.uploader_id),
     v.playlist_uploader: playlist_get_str(v.playlist_uploader, v.uploader),
     v.playlist_uploader_url: playlist_get_str(v.playlist_uploader_url, v.playlist_webpage_url),
 }
 
 PLAYLIST_DERIVED_VARIABLES: Dict[Variable, str] = {
-    v.playlist_title_sanitized: sanitized(v.playlist_title),
-    v.playlist_index_reversed: f"{{%sub({v.playlist_count.variable_name}, {v.playlist_index.variable_name}, -1)}}",
-    v.playlist_index_padded: pad_int(v.playlist_index, 2),
-    v.playlist_index_reversed_padded: pad_int(v.playlist_index_reversed, 2),
-    v.playlist_index_padded6: pad_int(v.playlist_index, 6),
-    v.playlist_index_reversed_padded6: pad_int(v.playlist_index_reversed, 6),
     v.playlist_uploader_sanitized: sanitized(v.playlist_uploader),
 }
 

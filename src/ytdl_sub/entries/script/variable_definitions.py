@@ -323,7 +323,7 @@ class _Variables:
         str
             The playlist unique ID if it exists, otherwise return Variable("")
         """
-        return MetadataVariable(variable_name="playlist_uid", metadata_key=self.uid.metadata_key)
+        return MetadataVariable(variable_name="playlist_uid", metadata_key="playlist_id")
 
     @property
     def playlist_title(self) -> MetadataVariable:
@@ -333,9 +333,7 @@ class _Variables:
         str
             Name of its parent playlist/channel if it exists, otherwise returns its title.
         """
-        return MetadataVariable(
-            variable_name="playlist_title", metadata_key=self.title.metadata_key
-        )
+        return MetadataVariable(variable_name="playlist_title", metadata_key="playlist_title")
 
     @property
     def playlist_title_sanitized(self) -> Variable:
@@ -488,7 +486,7 @@ class _Variables:
         str
             The playlist uploader id if it exists, otherwise returns the entry uploader ID.
         """
-        return MetadataVariable("playlist_uploader_id", metadata_key=self.uploader_id.metadata_key)
+        return MetadataVariable("playlist_uploader_id", metadata_key="playlist_uploader_id")
 
     @property
     def playlist_uploader(self) -> MetadataVariable:

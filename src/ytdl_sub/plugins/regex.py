@@ -4,20 +4,15 @@ from typing import List
 from typing import Optional
 from typing import Set
 
-from yt_dlp.utils import sanitize_filename
-
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.exceptions import RegexNoMatchException
-from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.regex_validator import RegexListValidator
 from ytdl_sub.validators.source_variable_validator import SourceVariableNameListValidator
@@ -358,10 +353,10 @@ class RegexPlugin(Plugin[RegexOptions]):
                         return self._try_skip_entry(entry=entry, variable_name=variable_name)
 
                     # add both the default...
-                    entry.add({
+                    entry.add(
+                        {
                             regex_options.capture_group_names[i]: self.overrides.apply_formatter(
-                                formatter=default,
-                                entry=entry
+                                formatter=default, entry=entry
                             )
                             for i, default in enumerate(regex_options.capture_group_defaults)
                         }
@@ -369,10 +364,12 @@ class RegexPlugin(Plugin[RegexOptions]):
                 # There is a capture, add the source variables to the entry as
                 # {source_var}_capture_1, {source_var}_capture_2, ...
                 else:
-                    entry.add({
-                        regex_options.capture_group_names[i]: capture
-                        for i, capture in enumerate(maybe_capture)
-                    })
+                    entry.add(
+                        {
+                            regex_options.capture_group_names[i]: capture
+                            for i, capture in enumerate(maybe_capture)
+                        }
+                    )
 
         return entry
 
