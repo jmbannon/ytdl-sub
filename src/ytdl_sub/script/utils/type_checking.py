@@ -17,6 +17,7 @@ from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import LambdaReduce
 from ytdl_sub.script.types.resolvable import LambdaThree
 from ytdl_sub.script.types.resolvable import LambdaTwo
+from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import Variable
@@ -55,8 +56,8 @@ def get_optional_type(optional_type: Type) -> Type[NamedType]:
     return [arg for arg in optional_type.__args__ if arg != type(None)][0]
 
 
-def is_type_compatible(
-    arg: NamedType,
+def _is_type_compatible(
+    arg_type: Type[NamedType],
     expected_arg_type: Type[Resolvable | Optional[Resolvable]],
 ) -> bool:
     """
@@ -64,16 +65,6 @@ def is_type_compatible(
     -------
     True if arg is compatible with expected_arg_type. False otherwise.
     """
-    arg_type: Type[NamedType] = arg.__class__
-    if isinstance(arg, BuiltInFunctionType):
-        arg_type = arg.output_type()  # built-in function
-
-    if isinstance(arg, FutureResolvable):
-        arg_type = arg.future_resolvable_type()
-    elif isinstance(arg, FunctionType):
-        return True  # custom-function, can be anything, so pass for now
-    elif isinstance(arg, Variable):
-        return True  # unresolved variables can be anything, so pass for now
     if is_union(expected_arg_type):
         # See if the arg is a valid against the union
         valid_type = False
@@ -94,9 +85,12 @@ def is_type_compatible(
     # each possible union input is compatible with the expected type
     elif is_union(arg_type):
         for union_type in arg_type.__args__:
-            if not issubclass(union_type, expected_arg_type):
+            if not _is_type_compatible(union_type, expected_arg_type):
                 return False
-
+    elif issubclass(arg_type, NamedCustomFunction):
+        return True  # custom-function, can be anything, so pass for now
+    elif issubclass(arg_type, Variable):
+        return True  # unresolved variables can be anything, so pass for now
     elif issubclass(arg_type, Lambda) and issubclass(expected_arg_type, arg_type):
         # lambda, check if expected_arg_type is a subclass
         # Do not return on just that to also allow lambdas to be returned as
@@ -107,6 +101,19 @@ def is_type_compatible(
         return False
 
     return True
+
+
+def is_type_compatible(
+    arg: NamedType,
+    expected_arg_type: Type[Resolvable | Optional[Resolvable]],
+) -> bool:
+    arg_type: Type[NamedType] = arg.__class__
+    if isinstance(arg, BuiltInFunctionType):
+        arg_type = arg.output_type()  # built-in function
+    elif isinstance(arg, FutureResolvable):
+        arg_type = arg.future_resolvable_type()
+
+    return _is_type_compatible(arg_type, expected_arg_type)
 
 
 @dataclass(frozen=True)
