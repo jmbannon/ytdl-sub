@@ -2,12 +2,15 @@ import os
 from typing import Any
 from typing import Dict
 from typing import Optional
+from typing import Set
 
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import EXT
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
@@ -16,6 +19,7 @@ from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.audo_codec_validator import FileTypeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
 class FileConvertWithValidator(StringSelectValidator):
@@ -115,6 +119,11 @@ class FileConvertOptions(OptionsDictValidator):
         """
         return self._ffmpeg_post_process_args
 
+    def added_source_variables(
+        self, unresolved_variables: Set[str]
+    ) -> Dict[PluginOperation, Set[str]]:
+        return {PluginOperation.MODIFY_ENTRY: {v.ext.variable_name}}
+
 
 class FileConvertPlugin(Plugin[FileConvertOptions]):
     plugin_options_type = FileConvertOptions
@@ -122,6 +131,20 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
     priority: PluginPriority = PluginPriority(
         modify_entry=PluginPriority.MODIFY_ENTRY_AFTER_SPLIT + 1
     )
+
+    def __init__(
+        self,
+        options: FileConvertOptions,
+        overrides: Overrides,
+        enhanced_download_archive: EnhancedDownloadArchive,
+    ):
+        super().__init__(
+            options=options,
+            overrides=overrides,
+            enhanced_download_archive=enhanced_download_archive,
+        )
+        # Lookup of entry id to what it was converted from for logging
+        self._converted_from_lookup: Dict[str, str] = {}
 
     def ytdl_options(self) -> Optional[Dict]:
         """
@@ -198,13 +221,9 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
                 FileHandler.delete(tmp_output_file)
 
         if original_ext != new_ext:
-            entry.add_kwargs(
-                {
-                    "__converted_from": original_ext,
-                }
-            )
+            self._converted_from_lookup[entry.ytdl_uid()] = original_ext
 
-        entry.add_kwargs({EXT: new_ext})
+        entry.add({v.ext.variable_name: new_ext})
 
         return entry
 
@@ -212,7 +231,7 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
         """
         Add metadata about conversion if it happened
         """
-        if converted_from := entry.kwargs_get("__converted_from"):
+        if converted_from := self._converted_from_lookup.get(entry.ytdl_uid()):
             return FileMetadata(f"Converted from {converted_from}")
 
         return None

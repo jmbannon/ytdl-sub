@@ -15,7 +15,6 @@ from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
-from ytdl_sub.entries.variables.kwargs import EXT
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR_KEY
 from ytdl_sub.entries.variables.kwargs import TITLE
@@ -68,7 +67,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             EXTRACTOR: "mock-entry-dict",
             EXTRACTOR_KEY: "mock-extractor-key",
             TITLE: f"Mock Entry {uid}",
-            EXT: "mp4",
+            "ext": "mp4",
             UPLOAD_DATE: upload_date,
             WEBPAGE_URL: f"https://{uid}.com",
             v.playlist_metadata.metadata_key: {"thumbnails": []},

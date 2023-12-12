@@ -4,14 +4,14 @@ import os
 from pathlib import Path
 from typing import Dict
 from typing import Optional
-from typing import Set
 from typing import Type
 from typing import TypeVar
 from typing import final
 
 from ytdl_sub.entries.base_entry import BaseEntry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.script.variable_definitions import Variable
+from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
@@ -33,10 +33,8 @@ class Entry(BaseEntry, Scriptable):
 
     def _add_entry_kwargs_to_script(self) -> None:
         # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
-        self.unresolvable.remove(VARIABLES.entry_metadata.variable_name)
-        self.script.add(
-            {VARIABLES.entry_metadata.variable_name: ScriptUtils.to_script(self._kwargs)}
-        )
+        self.unresolvable.remove(v.entry_metadata.variable_name)
+        self.script.add({v.entry_metadata.variable_name: ScriptUtils.to_script(self._kwargs)})
         self.update_script()
 
     def initialize_script(self, other: Optional[Scriptable] = None) -> "Entry":
@@ -53,6 +51,12 @@ class Entry(BaseEntry, Scriptable):
         out = self.script.resolve(unresolvable=self.unresolvable).get_native(variable.variable_name)
         return expected_type(out)
 
+    def try_get(self, variable: Variable, expected_type: Type[TType]) -> Optional[TType]:
+        try:
+            return self.get(variable=variable, expected_type=expected_type)
+        except ScriptVariableNotResolved:
+            return None
+
     def get_str(self, variable: Variable) -> str:
         return self.get(variable, str)
 
@@ -66,7 +70,7 @@ class Entry(BaseEntry, Scriptable):
         This is not reflected in the entry. See if the mkv file exists and return "mkv" if so,
         otherwise, return the original extension.
         """
-        ext = self.get_str(VARIABLES.ext)
+        ext = self.try_get(v.ext, str) or self.kwargs(key=v.ext.metadata_key)
         for possible_ext in [ext, "mkv"]:
             file_path = str(Path(self.working_directory()) / f"{self.uid}.{possible_ext}")
             if os.path.isfile(file_path):
@@ -92,7 +96,7 @@ class Entry(BaseEntry, Scriptable):
         -------
         The download thumbnail's file name
         """
-        return f"{self.get_str(VARIABLES.uid)}.{self.get_str(VARIABLES.thumbnail_ext)}"
+        return f"{self.get_str(v.uid)}.{self.get_str(v.thumbnail_ext)}"
 
     def get_download_thumbnail_path(self) -> str:
         """Returns the entry's thumbnail's file path to where it was downloaded"""
