@@ -37,6 +37,6 @@ class ScriptUtils:
         elif isinstance(value, bool):
             out = f"{{%bool({value})}}"
         else:
-            out = json.dumps(value)
+            out = f"{{%from_json('''{json.dumps(value, ensure_ascii=False)}''')}}"
 
         return out

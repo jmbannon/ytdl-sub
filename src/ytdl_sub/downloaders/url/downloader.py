@@ -509,9 +509,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 v.sponsorblock_chapters.variable_name: download_entry.kwargs_get(
                     v.sponsorblock_chapters.metadata_key
                 ),
-                v.comments.variable_name: download_entry.kwargs_get(
-                    v.sponsorblock_chapters.metadata_key
-                ),
+                v.comments.variable_name: download_entry.kwargs_get(v.comments.metadata_key),
             }
         )
 

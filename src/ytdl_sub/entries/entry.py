@@ -12,6 +12,7 @@ from typing import final
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import Variable
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
@@ -33,10 +34,9 @@ class Entry(BaseEntry, Scriptable):
     def _add_entry_kwargs_to_script(self) -> None:
         # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
         self.unresolvable.remove(VARIABLES.entry_metadata.variable_name)
-        entry_metadata_variable = (
-            f"{{%from_json('''{json.dumps(self._kwargs, ensure_ascii=False)}''')}}"
+        self.script.add(
+            {VARIABLES.entry_metadata.variable_name: ScriptUtils.to_script(self._kwargs)}
         )
-        self.script.add({VARIABLES.entry_metadata.variable_name: entry_metadata_variable})
         self.update_script()
 
     def initialize_script(self, other: Optional[Scriptable] = None) -> "Entry":
