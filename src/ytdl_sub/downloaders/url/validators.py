@@ -1,14 +1,11 @@
 import copy
 from typing import Any
 from typing import Dict
-from typing import List
 from typing import Optional
 from typing import Set
 
 from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import PluginOperation
-from ytdl_sub.script.script import Script
-from ytdl_sub.script.script import ScriptBuilder
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator

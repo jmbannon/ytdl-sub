@@ -180,7 +180,7 @@ class Preset(_PresetShell):
 
         return added_variables
 
-    def __validate_and_get_plugins(self) -> PresetPlugins:
+    def _validate_and_get_plugins(self) -> PresetPlugins:
         preset_plugins = PresetPlugins()
 
         for key in self._keys:
@@ -194,7 +194,7 @@ class Preset(_PresetShell):
 
         return preset_plugins
 
-    def _validate_added_variables(self) -> Script:
+    def _validate_variable_usage(self) -> None:
         """
         Validate variables resolve as plugins are executed, and return
         a mock script which contains actualized added variables from the plugins
@@ -216,77 +216,100 @@ class Preset(_PresetShell):
             added_variables = plugin_options.added_source_variables(
                 unresolved_variables=unresolved_variables
             ).get(PluginOperation.MODIFY_ENTRY_METADATA, set())
-            script.add(ScriptUtils.add_dummy_variables(added_variables))
-            unresolved_variables -= added_variables
 
+            if added_variables:
+                script.add(ScriptUtils.add_dummy_variables(added_variables))
+                unresolved_variables -= added_variables
+
+        _ = script.resolve(unresolvable=unresolved_variables, update=True)
         for _, plugin_options in sorted(
             self.plugins.zipped(), key=lambda pl: pl[0].priority.modify_entry
         ):
             added_variables = plugin_options.added_source_variables(
                 unresolved_variables=unresolved_variables
             ).get(PluginOperation.MODIFY_ENTRY, set())
-            script.add(ScriptUtils.add_dummy_variables(added_variables))
-            unresolved_variables -= added_variables
+
+            if added_variables:
+                script.add(ScriptUtils.add_dummy_variables(added_variables))
+                unresolved_variables -= added_variables
+
+                _ = script.resolve(unresolvable=unresolved_variables, update=True)
+
+            # Validate that any formatter in the plugin options can resolve
+            self._validate_formatters(
+                mock_script=script,
+                unresolved_variables=unresolved_variables,
+                validator=plugin_options,
+            )
+
+        self._validate_formatters(
+            mock_script=script,
+            unresolved_variables=unresolved_variables,
+            validator=self.output_options,
+        )
 
         assert not unresolved_variables
-        _ = script.resolve(update=True)
+
         return script
 
-    @functools.cache
-    def _get_unresolvable_variables(
-        self,
-        formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
-    ) -> Optional[Set[str]]:
-        unresolvable = (
-            self._added_variables.union([VARIABLES.entry_metadata.variable_name])
-            if isinstance(formatter_validator, OverridesStringFormatterValidator)
-            else None
-        )
-        return unresolvable
-
-    def __validate_override_string_formatter_validator(
+    def _validate_string_formatter_validator(
         self,
         mock_script: Script,
+        unresolved_variables: Set[str],
         formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
     ) -> None:
         try:
+            unresolvable = unresolved_variables
+            if isinstance(formatter_validator, OverridesStringFormatterValidator):
+                unresolvable = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
+
             mock_script.resolve_once(
                 {"tmp_var": formatter_validator.format_string},
-                unresolvable=self._get_unresolvable_variables(formatter_validator),
+                unresolvable=unresolvable,
             )
         except VariableDoesNotExist as exc:
             raise StringFormattingVariableNotFoundException(exc) from exc
 
-    def __recursive_preset_validate(
+    def _validate_formatters(
         self,
         mock_script: Script,
-        validator: Optional[Validator] = None,
+        unresolved_variables: Set[str],
+        validator: Validator,
     ) -> None:
         """
         Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
         and resolve.
         """
-        if validator is None:
-            validator = self
-
         if isinstance(validator, DictValidator):
             # pylint: disable=protected-access
             # Usage of protected variables in other validators is fine. The reason to keep
             # them protected is for readability when using them in subscriptions.
             for validator_value in validator._validator_dict.values():
-                self.__recursive_preset_validate(mock_script=mock_script, validator=validator_value)
+                self._validate_formatters(
+                    mock_script=mock_script,
+                    unresolved_variables=unresolved_variables,
+                    validator=validator_value,
+                )
             # pylint: enable=protected-access
         elif isinstance(validator, ListValidator):
             for list_value in validator.list:
-                self.__recursive_preset_validate(mock_script=mock_script, validator=list_value)
+                self._validate_formatters(
+                    mock_script=mock_script,
+                    unresolved_variables=unresolved_variables,
+                    validator=list_value,
+                )
         elif isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
-            self.__validate_override_string_formatter_validator(
-                mock_script=mock_script, formatter_validator=validator
+            self._validate_string_formatter_validator(
+                mock_script=mock_script,
+                unresolved_variables=unresolved_variables,
+                formatter_validator=validator,
             )
         elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
             for validator_value in validator.dict.values():
-                self.__validate_override_string_formatter_validator(
-                    mock_script=mock_script, formatter_validator=validator_value
+                self._validate_string_formatter_validator(
+                    mock_script=mock_script,
+                    unresolved_variables=unresolved_variables,
+                    formatter_validator=validator_value,
                 )
 
     def _get_presets_to_merge(
@@ -364,7 +387,7 @@ class Preset(_PresetShell):
             key="ytdl_options", validator=YTDLOptions, default={}
         )
 
-        self.plugins: PresetPlugins = self.__validate_and_get_plugins()
+        self.plugins: PresetPlugins = self._validate_and_get_plugins()
         self.overrides = self._validate_key(
             key="overrides", validator=Overrides, default={}
         ).initialize_script(
@@ -374,11 +397,7 @@ class Preset(_PresetShell):
             }
         )
 
-        mock_script = self._validate_added_variables()
-
-        # After all options are initialized, perform a recursive post-validate that requires
-        # values from multiple validators
-        self.__recursive_preset_validate(mock_script=mock_script)
+        self._validate_variable_usage()
 
     @property
     def name(self) -> str:
