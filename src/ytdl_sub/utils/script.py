@@ -9,11 +9,11 @@ from ytdl_sub.script.types.resolvable import String
 
 class ScriptUtils:
     @classmethod
-    def add_dummy_variables(cls, variables: Iterable[str]) -> Dict[str, Resolvable]:
-        dummy_variables: Dict[str, Resolvable] = {}
+    def add_dummy_variables(cls, variables: Iterable[str]) -> Dict[str, str]:
+        dummy_variables: Dict[str, str] = {}
         for var in variables:
-            dummy_variables[var] = String("dummy_string")
-            dummy_variables[f"{var}_sanitized"] = String("dummy_string")
+            dummy_variables[var] = ""
+            dummy_variables[f"{var}_sanitized"] = ""
 
         return dummy_variables
 

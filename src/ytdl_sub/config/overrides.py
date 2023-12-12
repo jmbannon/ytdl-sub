@@ -67,10 +67,11 @@ class Overrides(DictFormatterValidator, Scriptable):
         )
         return ScriptUtils.add_sanitized_variables(initial_variables)
 
-    def initialize_script(self, unresolved_variables: Dict[str, str]) -> None:
+    def initialize_script(self, unresolved_variables: Dict[str, str]) -> "Overrides":
         self.script.add(self.initial_variables(unresolved_variables=unresolved_variables))
         self.unresolvable.update(set(unresolved_variables.keys()))
         self.update_script()
+        return self
 
     @property
     def subscription_name(self) -> str:

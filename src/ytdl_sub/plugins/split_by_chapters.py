@@ -1,14 +1,17 @@
 import copy
 from pathlib import Path
 from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 from typing import Tuple
 
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.plugin import SplitPlugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import CHAPTERS
 from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
@@ -81,14 +84,18 @@ class SplitByChaptersOptions(OptionsDictValidator):
             key="when_no_chapters", validator=WhenNoChaptersValidator
         ).value
 
-    def added_source_variables(self) -> List[str]:
-        return [
-            "chapter_title",
-            "chapter_title_sanitized",
-            "chapter_index",
-            "chapter_index_padded",
-            "chapter_count",
-        ]
+    def added_source_variables(
+        self, unresolved_variables: Set[str]
+    ) -> Dict[PluginOperation, Set[str]]:
+        return {
+            PluginOperation.MODIFY_ENTRY: {
+                "chapter_title",
+                "chapter_title_sanitized",
+                "chapter_index",
+                "chapter_index_padded",
+                "chapter_count",
+            }
+        }
 
     @property
     def when_no_chapters(self) -> str:

@@ -3,8 +3,10 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 
 from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script import ScriptBuilder
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -245,31 +247,12 @@ class MultiUrlValidator(OptionsValidator):
         # keep for readthedocs documentation
         return self._urls.list[0].variables
 
-    def added_source_variables(self) -> List[str]:
+    def added_source_variables(
+        self, unresolved_variables: Set[str]
+    ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns
         -------
         List of variables added. The first collection url always contains all the variables.
         """
-        return list(self._urls.list[0].variables.keys)
-
-    def validate_with_variables(self, script: Script) -> None:
-        """
-        Ensures new variables added are not existing variables
-        """
-        # Apply formatting to each new source variable, ensure it resolves
-        for collection_url in self.urls.list:
-            script.resolve_once(collection_url.variables.dict_with_format_strings)
-
-        # Ensure at least URL is non-empty
-        has_non_empty_url = False
-        url_variables = {
-            f"tmp_var_url_{idx}": url_validator.url.format_string
-            for idx, url_validator in enumerate(self.urls.list)
-        }
-        output = script.resolve_once(url_variables)
-        for out in output.values():
-            has_non_empty_url |= bool(str(out))
-
-        if not output or not has_non_empty_url:
-            raise self._validation_exception("Must contain at least one url that is non-empty")
+        return {PluginOperation.DOWNLOADER: set(self._urls.list[0].variables.keys)}

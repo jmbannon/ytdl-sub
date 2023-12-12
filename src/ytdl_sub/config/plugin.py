@@ -1,5 +1,6 @@
 from abc import ABC
 from abc import abstractmethod
+from enum import Enum
 from typing import Dict
 from typing import Generic
 from typing import List
@@ -19,6 +20,8 @@ class PluginPriority:
     """
     Defines priority for plugins, 0 is highest priority
     """
+
+    MODIFY_ENTRY_SPLIT = 9
 
     # If modify_entry priority is >= to this value, run after split
     MODIFY_ENTRY_AFTER_SPLIT = 10
@@ -143,6 +146,8 @@ class SplitPlugin(Plugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
     """
     Plugin that splits entries into zero or more entries
     """
+
+    priority = PluginPriority(modify_entry_metadata=PluginPriority.MODIFY_ENTRY_SPLIT)
 
     @abstractmethod
     def split(self, entry: Entry) -> List[Tuple[Entry, FileMetadata]]:

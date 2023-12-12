@@ -2,9 +2,11 @@ from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileHandler
@@ -113,13 +115,15 @@ class SubtitleOptions(OptionsDictValidator):
         """
         return self._allow_auto_generated_subtitles
 
-    def added_source_variables(self) -> List[str]:
+    def added_source_variables(
+        self, unresolved_variables: Set[str]
+    ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns
         -------
         List of new source variables created by using the subtitles plugin
         """
-        return ["lang", "subtitles_ext"]
+        return {PluginOperation.MODIFY_ENTRY: {"lang", "subtitles_ext"}}
 
 
 class SubtitlesPlugin(Plugin[SubtitleOptions]):

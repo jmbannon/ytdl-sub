@@ -1,12 +1,13 @@
 from abc import ABC
+from enum import Enum
 from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 from typing import TypeVar
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
-from ytdl_sub.script.script import Script
-from ytdl_sub.script.script import ScriptBuilder
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
@@ -18,6 +19,12 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import Validator
+
+
+class PluginOperation(Enum):
+    DOWNLOADER = -1
+    MODIFY_ENTRY_METADATA = 0
+    MODIFY_ENTRY = 1
 
 
 # pylint: disable=no-self-use
@@ -44,7 +51,9 @@ class OptionsValidator(Validator, ABC):
         """
         return self._validation_exception(error_message=error_message)
 
-    def added_source_variables(self) -> List[str]:
+    def added_source_variables(
+        self, unresolved_variables: Set[str]
+    ) -> Dict[PluginOperation, Set[str]]:
         """
         If the plugin adds source variables, list them here.
 
@@ -52,18 +61,7 @@ class OptionsValidator(Validator, ABC):
         -------
         List of added source variables this plugin creates
         """
-        return []
-
-    def validate_with_variables(self, script: Script) -> None:
-        """
-        Optional validation after init with the session's source and override variables.
-
-        Parameters
-        ----------
-        script
-            Script containing all current variables
-        """
-        return None
+        return {}
 
 
 TOptionsValidator = TypeVar("TOptionsValidator", bound=OptionsValidator)

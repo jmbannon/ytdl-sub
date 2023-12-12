@@ -2,15 +2,18 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
+from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
@@ -211,27 +214,6 @@ class RegexOptions(OptionsDictValidator):
         """
         return self._skip_if_match_fails
 
-    def validate_with_variables(self, script: Script) -> None:
-        for key, regex_options in self.source_variable_capture_dict.items():
-            # Ensure each variable getting captured is a source variable
-            if key not in script._variables:
-                raise self._validation_exception(
-                    f"cannot regex capture '{key}' because it is not a source or override variable"
-                )
-
-            # Ensure the capture group names are not existing source/override variables
-            for capture_group_name in regex_options.capture_group_names:
-                if capture_group_name in VARIABLE_SCRIPTS:
-                    raise self._validation_exception(
-                        f"'{capture_group_name}' cannot be used as a capture group name because it "
-                        f"is a source variable"
-                    )
-                if capture_group_name in script._variables:
-                    raise self._validation_exception(
-                        f"'{capture_group_name}' cannot be used as a capture group name because it "
-                        f"is an override variable"
-                    )
-
     @property
     def source_variable_capture_dict(self) -> Dict[str, VariableRegex]:
         """
@@ -241,19 +223,39 @@ class RegexOptions(OptionsDictValidator):
         """
         return self._from.variable_capture_dict
 
-    def added_source_variables(self) -> List[str]:
+    def _is_evaluatable_at_metadata_time(
+        self, unresolved_variables: Set[str], input_variable_name: str, regex_options: VariableRegex
+    ) -> bool:
+        if input_variable_name in unresolved_variables:
+            return False
+        for capture_group_default in regex_options.capture_group_defaults:
+            parsed_default = parse(capture_group_default.format_string)
+            if parsed_default.variables.issubset(unresolved_variables):
+                return False
+        return True
+
+    def added_source_variables(
+        self, unresolved_variables: Set[str]
+    ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns
         -------
         List of new source variables created via regex capture
         """
-        added_source_vars: List[str] = []
-        for regex_options in self.source_variable_capture_dict.values():
-            added_source_vars.extend(regex_options.capture_group_names)
-            added_source_vars.extend(
-                f"{capture_group_name}_sanitized"
-                for capture_group_name in regex_options.capture_group_names
-            )
+        added_source_vars: Dict[PluginOperation, Set[str]] = {
+            PluginOperation.MODIFY_ENTRY_METADATA: set(),
+            PluginOperation.MODIFY_ENTRY: set(),
+        }
+        for input_variable_name, regex_options in self.source_variable_capture_dict.items():
+            key = PluginOperation.MODIFY_ENTRY
+            if self._is_evaluatable_at_metadata_time(
+                unresolved_variables=unresolved_variables,
+                input_variable_name=input_variable_name,
+                regex_options=regex_options,
+            ):
+                key = PluginOperation.MODIFY_ENTRY_METADATA
+
+            added_source_vars[key] |= set(regex_options.capture_group_names)
 
         return added_source_vars
 
