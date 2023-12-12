@@ -15,7 +15,6 @@ from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import CHAPTERS
 from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
-from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
 from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
@@ -137,8 +136,6 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
 
         if entry.kwargs_contains(CHAPTERS):
             del entry._kwargs[CHAPTERS]
-        if entry.kwargs_contains(SPONSORBLOCK_CHAPTERS):
-            del entry._kwargs[SPONSORBLOCK_CHAPTERS]
         # pylint: enable=protected-access
 
         timestamp_begin = chapters.timestamps[idx].readable_str
