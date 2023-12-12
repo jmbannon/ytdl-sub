@@ -20,13 +20,13 @@ from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 
 class TestMap:
     def test_return(self):
-        assert Script({"map": "{{'a': 3.14}}"}).resolve() == ScriptOutput(
-            {"map": Map({String("a"): Float(3.14)})}
+        assert Script({"dict": "{{'a': 3.14}}"}).resolve() == ScriptOutput(
+            {"dict": Map({String("a"): Float(3.14)})}
         )
 
     def test_return_as_str(self):
-        assert Script({"map": "json: {{'a': 3.14}}"}).resolve() == ScriptOutput(
-            {"map": String('json: {"a": 3.14}')}
+        assert Script({"dict": "json: {{'a': 3.14}}"}).resolve() == ScriptOutput(
+            {"dict": String('json: {"a": 3.14}')}
         )
 
     def test_nested_map(self):
@@ -45,9 +45,9 @@ class TestMap:
             }
         }"""
 
-        assert Script({"map": map_str}).resolve() == ScriptOutput(
+        assert Script({"dict": map_str}).resolve() == ScriptOutput(
             {
-                "map": Map(
+                "dict": Map(
                     {
                         String("level1"): Map(
                             {
@@ -78,7 +78,7 @@ class TestMap:
         ],
     )
     def test_empty_map(self, empty_map: str):
-        assert Script({"map": empty_map}).resolve() == ScriptOutput({"map": Map({})})
+        assert Script({"dict": empty_map}).resolve() == ScriptOutput({"dict": Map({})})
 
     @pytest.mark.parametrize(
         "map",
@@ -93,7 +93,7 @@ class TestMap:
     )
     def test_map_not_closed(self, map: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(BRACKET_NOT_CLOSED))):
-            Script({"map": map}).resolve()
+            Script({"dict": map}).resolve()
 
     @pytest.mark.parametrize(
         "value",
@@ -108,7 +108,7 @@ class TestMap:
     )
     def test_key_has_no_value(self, value: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_KEY_WITH_NO_VALUE))):
-            Script({"map": value}).resolve()
+            Script({"dict": value}).resolve()
 
     @pytest.mark.parametrize(
         "value",
@@ -124,7 +124,7 @@ class TestMap:
             InvalidSyntaxException,
             match=re.escape(str(_UNEXPECTED_COMMA_ARGUMENT(ParsedArgType.MAP_KEY))),
         ):
-            Script({"map": value}).resolve()
+            Script({"dict": value}).resolve()
 
     @pytest.mark.parametrize(
         "value",
@@ -136,7 +136,7 @@ class TestMap:
     )
     def test_map_multiple_keys(self, value: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_KEY_MULTIPLE_VALUES))):
-            Script({"map": value}).resolve()
+            Script({"dict": value}).resolve()
 
     @pytest.mark.parametrize(
         "value",
@@ -148,7 +148,7 @@ class TestMap:
     )
     def test_map_missing_key(self, value: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_MISSING_KEY))):
-            Script({"map": value}).resolve()
+            Script({"dict": value}).resolve()
 
     @pytest.mark.parametrize(
         "value",
@@ -161,18 +161,18 @@ class TestMap:
     )
     def test_map_key_not_hashable(self, value: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_KEY_NOT_HASHABLE))):
-            Script({"map": value}).resolve()
+            Script({"dict": value}).resolve()
 
     def test_map_key_is_hashable_variable(self):
         assert Script(
             {
-                "map": "{{key_variable : 'value' }}",
+                "dict": "{{key_variable : 'value' }}",
                 "key_variable": "hashable",
             }
         ).resolve() == ScriptOutput(
             {
                 "key_variable": String("hashable"),
-                "map": Map({String("hashable"): String("value")}),
+                "dict": Map({String("hashable"): String("value")}),
             }
         )
 
@@ -183,7 +183,7 @@ class TestMap:
         ):
             Script(
                 {
-                    "map": "{{key_variable : 'value' }}",
+                    "dict": "{{key_variable : 'value' }}",
                     "key_variable": "{['non-hashable']}",
                 }
             ).resolve()

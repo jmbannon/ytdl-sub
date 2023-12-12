@@ -15,21 +15,21 @@ from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 class TestArray:
     def test_return(self):
-        assert Script({"array": "{['a', 3.14]}"}).resolve() == ScriptOutput(
-            {"array": Array([String("a"), Float(3.14)])}
+        assert Script({"arr": "{['a', 3.14]}"}).resolve() == ScriptOutput(
+            {"arr": Array([String("a"), Float(3.14)])}
         )
 
     def test_return_as_str(self):
-        assert Script({"array": "str: {['a', 3.14]}"}).resolve() == ScriptOutput(
-            {"array": String('str: ["a", 3.14]')}
+        assert Script({"arr": "str: {['a', 3.14]}"}).resolve() == ScriptOutput(
+            {"arr": String('str: ["a", 3.14]')}
         )
 
     def test_nested_array(self):
         assert Script(
-            {"array": "{['level1', ['level2', ['level3', 'level3'], 'level2'], 'level1']}"}
+            {"arr": "{['level1', ['level2', ['level3', 'level3'], 'level2'], 'level1']}"}
         ).resolve() == ScriptOutput(
             {
-                "array": Array(
+                "arr": Array(
                     [
                         String("level1"),
                         Array(
@@ -55,7 +55,7 @@ class TestArray:
         ],
     )
     def test_empty(self, array: str):
-        assert Script({"array": array}).resolve() == ScriptOutput({"array": Array([])})
+        assert Script({"arr": array}).resolve() == ScriptOutput({"arr": Array([])})
 
     @pytest.mark.parametrize(
         "array",
@@ -73,7 +73,7 @@ class TestArray:
             InvalidSyntaxException,
             match=re.escape(str(_UNEXPECTED_COMMA_ARGUMENT(ParsedArgType.ARRAY))),
         ):
-            Script({"array": array}).resolve()
+            Script({"arr": array}).resolve()
 
     @pytest.mark.parametrize(
         "array",
@@ -90,7 +90,7 @@ class TestArray:
             InvalidSyntaxException,
             match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ParsedArgType.ARRAY))),
         ):
-            assert Script({"array": array}).resolve()
+            assert Script({"arr": array}).resolve()
 
     @pytest.mark.parametrize(
         "array",
@@ -104,7 +104,7 @@ class TestArray:
             InvalidSyntaxException,
             match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ParsedArgType.SCRIPT))),
         ):
-            assert Script({"array": array}).resolve()
+            assert Script({"arr": array}).resolve()
 
     def test_custom_function(self):
         assert Script(

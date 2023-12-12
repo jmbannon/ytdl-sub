@@ -12,9 +12,22 @@ from ytdl_sub.script.types.resolvable import LambdaTwo
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import ArrayValueDoesNotExist
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 
 
 class ArrayFunctions:
+    @staticmethod
+    def array(maybe_array: AnyArgument) -> Array:
+        if not isinstance(maybe_array, Array):
+            raise FunctionRuntimeException(
+                f"Tried and failed to cast {maybe_array.type_name()} as an Array"
+            )
+        return maybe_array
+
+    @staticmethod
+    def array_size(array: Array) -> Integer:
+        return Integer(len(array.value))
+
     @staticmethod
     def array_extend(*arrays: Array) -> Array:
         """
@@ -27,7 +40,7 @@ class ArrayFunctions:
         return Array(output)
 
     @staticmethod
-    def array_at(array: Array, idx: Integer) -> Resolvable:
+    def array_at(array: Array, idx: Integer) -> AnyArgument:
         """
         Return the element in the Array at index ``idx``.
         """

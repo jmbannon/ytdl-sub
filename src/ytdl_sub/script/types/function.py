@@ -14,6 +14,7 @@ from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
+from ytdl_sub.script.types.resolvable import FutureResolvable
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -105,6 +106,8 @@ class BuiltInFunction(Function, BuiltInFunctionType):
     def _arg_output_type(cls, arg: Argument) -> Type[Argument]:
         if isinstance(arg, BuiltInFunction):
             return arg.output_type()
+        if isinstance(arg, FutureResolvable):
+            return arg.future_resolvable_type()
         return type(arg)
 
     @classmethod

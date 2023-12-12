@@ -17,3 +17,15 @@ class ConditionalFunctions:
         if condition.value:
             return true
         return false
+
+    @staticmethod
+    def if_passthrough(
+        maybe_true_arg: ReturnableArgumentA, else_arg: ReturnableArgumentB
+    ) -> Union[ReturnableArgumentA, ReturnableArgumentB]:
+        """
+        Conditional ``if`` statement that returns the ``maybe_true_arg`` if it evaluates to True,
+        otherwise returns ``else_arg``.
+        """
+        if bool(maybe_true_arg.value):
+            return maybe_true_arg
+        return else_arg

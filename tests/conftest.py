@@ -19,7 +19,7 @@ from resources import file_fixture_path
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.entries.script.function_scripts import CustomFunctions
+from ytdl_sub.entries.script.custom_functions import CustomFunctions
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger

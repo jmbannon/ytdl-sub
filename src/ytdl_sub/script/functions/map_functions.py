@@ -9,17 +9,45 @@ from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import LambdaThree
 from ytdl_sub.script.types.resolvable import LambdaTwo
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import KeyDoesNotExistRuntimeException
+from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 
 
 class MapFunctions:
     @staticmethod
-    def map_get(mapping: Map, key: Hashable, default: Optional[AnyArgument] = None) -> AnyArgument:
+    def map(maybe_mapping: AnyArgument) -> Map:
+        if not isinstance(maybe_mapping, Map):
+            raise FunctionRuntimeException(
+                f"Tried and failed to cast {maybe_mapping.type_name()} as a Map"
+            )
+        return maybe_mapping
+
+    @staticmethod
+    def map_size(mapping: Map) -> Integer:
+        return Integer(len(mapping.value))
+
+    @staticmethod
+    def map_contains(mapping: Map, key: AnyArgument) -> Boolean:
+        """
+        Returns True if the key is in the Map. False otherwise.
+        """
+        if not isinstance(key, Hashable):
+            raise KeyNotHashableRuntimeException(
+                f"Tried to use {key.type_name()} as a Map key, but it is not hashable."
+            )
+
+        return Boolean(key in mapping.value)
+
+    @staticmethod
+    def map_get(
+        mapping: Map, key: AnyArgument, default: Optional[AnyArgument] = None
+    ) -> AnyArgument:
         """
         Return ``key``'s value within the Map. If ``key`` does not exist, and ``default`` is
         provided, it will return ``default``. Otherwise, will error.
         """
-        if key not in mapping.value:
+        if not MapFunctions.map_contains(mapping=mapping, key=key).value:
             if default is not None:
                 return default
 
@@ -29,7 +57,7 @@ class MapFunctions:
         return mapping.value[key]
 
     @staticmethod
-    def map_get_non_empty(mapping: Map, key: Hashable, default: AnyArgument) -> AnyArgument:
+    def map_get_non_empty(mapping: Map, key: AnyArgument, default: AnyArgument) -> AnyArgument:
         """
         Return ``key``'s value within the Map. If ``key`` does not exist or is an empty string,
         return ``default``. Otherwise, will error.
@@ -38,13 +66,6 @@ class MapFunctions:
         if isinstance(output, String) and output.value == "":
             return default
         return output
-
-    @staticmethod
-    def map_contains(mapping: Map, key: Hashable) -> Boolean:
-        """
-        Returns True if the key is in the Map. False otherwise.
-        """
-        return Boolean(key in mapping.value)
 
     # pylint: disable=unused-argument
 

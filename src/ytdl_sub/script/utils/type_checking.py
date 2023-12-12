@@ -67,7 +67,8 @@ def is_type_compatible(
     arg_type: Type[NamedType] = arg.__class__
     if isinstance(arg, BuiltInFunctionType):
         arg_type = arg.output_type()  # built-in function
-    elif isinstance(arg, FutureResolvable):
+
+    if isinstance(arg, FutureResolvable):
         arg_type = arg.future_resolvable_type()
     elif isinstance(arg, FunctionType):
         return True  # custom-function, can be anything, so pass for now

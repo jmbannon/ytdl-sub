@@ -40,7 +40,7 @@ class TestFunction:
         with pytest.raises(
             IncompatibleFunctionArguments,
             match=_incompatible_arguments_match(
-                expected="Map, Hashable, Optional[AnyArgument]",
+                expected="Map, AnyArgument, Optional[AnyArgument]",
                 recieved="%if(...)->Union[Array, Map], String",
             ),
         ):
