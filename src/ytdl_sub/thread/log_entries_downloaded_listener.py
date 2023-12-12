@@ -42,7 +42,7 @@ class LogEntriesDownloadedListener(threading.Thread):
             # swallow the error since this is only printing logs
             return None
 
-        return file_json.get_str("title")
+        return file_json.get("title")
 
     @classmethod
     def _is_info_json(cls, path: Path) -> bool:

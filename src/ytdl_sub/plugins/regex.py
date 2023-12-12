@@ -15,6 +15,7 @@ from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.logger import Logger
@@ -290,33 +291,15 @@ class RegexPlugin(Plugin[RegexOptions]):
         # Otherwise, error
         raise RegexNoMatchException(f"Regex failed to match '{variable_name}' from '{entry.title}'")
 
-    def _can_process_at_metadata_stage(self, entry: Entry, variable_name: str) -> bool:
-        # If the variable is an override...
-        if variable_name in self.overrides.dict:
-            # Try to see if it can resolve
-            try:
-                self.overrides.apply_formatter(
-                    formatter=self.overrides.dict[variable_name],
-                    entry=entry,
-                )
-            # If it can not from missing variables (from post-metadata stage), return False
-            except StringFormattingVariableNotFoundException:
-                return False
-        # If it is a source variable and not present, return false
-        elif variable_name not in entry.to_dict():
+    @classmethod
+    def _can_process_at_metadata_stage(cls, entry: Entry, variable_name: str) -> bool:
+        # Try to see if it can resolve
+        try:
+            _ = entry.script.get(variable_name)
+            return True
+        # If it can not from missing variables (from post-metadata stage), return False
+        except ScriptVariableNotResolved:
             return False
-
-        return True
-
-    def _get_regex_input_string(self, entry: Entry, variable_name: str) -> str:
-        # Apply override formatter if it's an override
-        if variable_name in self.overrides.dict:
-            return self.overrides.apply_formatter(
-                formatter=self.overrides.dict[variable_name],
-                entry=entry,
-            )
-        # Otherwise pluck from the entry's source variable
-        return entry.to_dict()[variable_name]
 
     def _modify_entry_metadata(self, entry: Entry, is_metadata_stage: bool) -> Optional[Entry]:
         """
@@ -356,10 +339,7 @@ class RegexPlugin(Plugin[RegexOptions]):
 
             self._add_processed_regex_variable_name(entry, variable_name)
 
-            regex_input_str = self._get_regex_input_string(
-                entry=entry,
-                variable_name=variable_name,
-            )
+            regex_input_str = str(entry.script.get(variable_name))
 
             if (
                 regex_options.exclude is not None
@@ -377,50 +357,22 @@ class RegexPlugin(Plugin[RegexOptions]):
                     if not regex_options.has_defaults:
                         return self._try_skip_entry(entry=entry, variable_name=variable_name)
 
-                    # otherwise, use defaults (apply them using the original entry source dict)
-                    source_variables_and_overrides_dict = dict(
-                        entry.to_dict(), **self.overrides.dict_with_format_strings
-                    )
-
                     # add both the default...
-                    entry.add_variables(
-                        variables_to_add={
-                            regex_options.capture_group_names[i]: default.apply_formatter(
-                                variable_dict=source_variables_and_overrides_dict
+                    entry.add({
+                            regex_options.capture_group_names[i]: self.overrides.apply_formatter(
+                                formatter=default,
+                                entry=entry
                             )
                             for i, default in enumerate(regex_options.capture_group_defaults)
-                        },
-                    )
-                    # and sanitized default
-                    entry.add_variables(
-                        variables_to_add={
-                            f"{regex_options.capture_group_names[i]}_sanitized": sanitize_filename(
-                                default.apply_formatter(
-                                    variable_dict=source_variables_and_overrides_dict
-                                )
-                            )
-                            for i, default in enumerate(regex_options.capture_group_defaults)
-                        },
+                        }
                     )
                 # There is a capture, add the source variables to the entry as
                 # {source_var}_capture_1, {source_var}_capture_2, ...
                 else:
-                    # Add the value...
-                    entry.add_variables(
-                        variables_to_add={
-                            regex_options.capture_group_names[i]: capture
-                            for i, capture in enumerate(maybe_capture)
-                        },
-                    )
-                    # And the sanitized value
-                    entry.add_variables(
-                        variables_to_add={
-                            f"{regex_options.capture_group_names[i]}_sanitized": sanitize_filename(
-                                capture
-                            )
-                            for i, capture in enumerate(maybe_capture)
-                        },
-                    )
+                    entry.add({
+                        regex_options.capture_group_names[i]: capture
+                        for i, capture in enumerate(maybe_capture)
+                    })
 
         return entry
 
