@@ -448,7 +448,17 @@ class _Variables:
         )
 
     @property
-    def playlist_max_upload_year(self) -> MetadataVariable:
+    def playlist_max_upload_date(self) -> Variable:
+        """
+        Returns
+        -------
+            Max upload_date for all entries in this entry's playlist if it exists, otherwise returns
+            ``upload_date``
+        """
+        return Variable("playlist_max_upload_date")
+
+    @property
+    def playlist_max_upload_year(self) -> Variable:
         """
         Returns
         -------
@@ -457,9 +467,7 @@ class _Variables:
             ``upload_year``
         """
         # override in EntryParent
-        return MetadataVariable(
-            variable_name="playlist_max_upload_year", metadata_key="playlist_max_upload_year"
-        )
+        return Variable("playlist_max_upload_year")
 
     @property
     def playlist_max_upload_year_truncated(self) -> Variable:

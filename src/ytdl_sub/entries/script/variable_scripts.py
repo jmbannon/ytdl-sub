@@ -248,11 +248,11 @@ SOURCE_DERIVED_VARIABLES: Dict[Variable, str] = {
 }
 
 SIBLING_VARIABLES: Dict[Variable, str] = {
-    v.playlist_max_upload_year: f"""{{
+    v.playlist_max_upload_date: f"""{{
         %array_reduce(
             %if_passthrough(
-                %extract_field_from_siblings('{v.upload_year.variable_name}'),
-                [{v.upload_year.variable_name}]
+                %extract_field_from_siblings('{v.upload_date.variable_name}'),
+                [{v.upload_date.variable_name}]
             ),
             %max
         )
@@ -260,7 +260,10 @@ SIBLING_VARIABLES: Dict[Variable, str] = {
 }
 
 SIBLING_DERIVED_VARIABLES: Dict[Variable, str] = {
-    v.playlist_max_upload_year_truncated: f"{{%int(%slice(%string({v.playlist_max_upload_year.variable_name}), 2))}}",
+    v.playlist_max_upload_year: date_metadata(v.playlist_max_upload_date, "year"),
+    v.playlist_max_upload_year_truncated: date_metadata(
+        v.playlist_max_upload_date, "year_truncated"
+    ),
 }
 
 _VARIABLE_SCRIPTS: Dict[Variable, str] = {}
