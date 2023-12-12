@@ -18,7 +18,6 @@ def _(key: str, backend: bool = False) -> str:
 
 CHAPTERS = _("chapters", backend=True)
 YTDL_SUB_CUSTOM_CHAPTERS = _("ytdl_sub_custom_chapters", backend=True)
-YTDL_SUB_REGEX_SOURCE_VARS = _("ytdl_sub_regex_source_vars", backend=True)
 SPONSORBLOCK_CHAPTERS = _("sponsorblock_chapters", backend=True)
 SPLIT_BY_CHAPTERS_PARENT_ENTRY = _("split_by_chapters_parent_entry", backend=True)
 COMMENTS = _("comments", backend=True)

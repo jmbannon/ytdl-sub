@@ -1,15 +1,16 @@
+from collections import defaultdict
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Set
 
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin import PluginPriority
 from ytdl_sub.config.preset_options import OptionsDictValidator
 from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import YTDL_SUB_REGEX_SOURCE_VARS
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.exceptions import RegexNoMatchException
@@ -21,6 +22,7 @@ from ytdl_sub.validators.string_formatter_validators import ListFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import DictValidator
+from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get(name="regex")
 
@@ -219,8 +221,9 @@ class RegexOptions(OptionsDictValidator):
         """
         return self._from.variable_capture_dict
 
-    def _is_evaluatable_at_metadata_time(
-        self, unresolved_variables: Set[str], input_variable_name: str, regex_options: VariableRegex
+    @classmethod
+    def _can_evaluate_at_metadata_time(
+        cls, unresolved_variables: Set[str], input_variable_name: str, regex_options: VariableRegex
     ) -> bool:
         if input_variable_name in unresolved_variables:
             return False
@@ -244,7 +247,7 @@ class RegexOptions(OptionsDictValidator):
         }
         for input_variable_name, regex_options in self.source_variable_capture_dict.items():
             key = PluginOperation.MODIFY_ENTRY
-            if self._is_evaluatable_at_metadata_time(
+            if self._can_evaluate_at_metadata_time(
                 unresolved_variables=unresolved_variables,
                 input_variable_name=input_variable_name,
                 regex_options=regex_options,
@@ -262,16 +265,19 @@ class RegexPlugin(Plugin[RegexOptions]):
         modify_entry=PluginPriority.MODIFY_ENTRY_AFTER_SPLIT + 0,
     )
 
-    @classmethod
-    def _add_processed_regex_variable_name(cls, entry: Entry, source_var: str) -> None:
-        if not entry.kwargs_contains(YTDL_SUB_REGEX_SOURCE_VARS):
-            entry.add_kwargs({YTDL_SUB_REGEX_SOURCE_VARS: []})
-
-        entry.kwargs(YTDL_SUB_REGEX_SOURCE_VARS).append(source_var)
-
-    @classmethod
-    def _contains_processed_regex_variable(cls, entry: Entry, variable_name: str) -> bool:
-        return variable_name in entry.kwargs_get(YTDL_SUB_REGEX_SOURCE_VARS, [])
+    def __init__(
+        self,
+        options: RegexOptions,
+        overrides: Overrides,
+        enhanced_download_archive: EnhancedDownloadArchive,
+    ):
+        super().__init__(
+            options=options,
+            overrides=overrides,
+            enhanced_download_archive=enhanced_download_archive,
+        )
+        # Lookup of entry id to processed regex variables
+        self._processed_regex_vars: Dict[str, Set[str]] = defaultdict(set)
 
     def _try_skip_entry(self, entry: Entry, variable_name: str) -> None:
         # Skip the entry if toggled
@@ -323,7 +329,7 @@ class RegexPlugin(Plugin[RegexOptions]):
             # Record which regex source variables are processed, to
             # process as many variables as possible in the metadata stage, then the rest
             # after the media file has been downloaded.
-            if self._contains_processed_regex_variable(entry, variable_name):
+            if variable_name in self._processed_regex_vars[entry.ytdl_uid()]:
                 continue
 
             # If it's the metadata stage, and it can't be processed, skip until post-metadata
@@ -332,8 +338,7 @@ class RegexPlugin(Plugin[RegexOptions]):
             ):
                 continue
 
-            self._add_processed_regex_variable_name(entry, variable_name)
-
+            self._processed_regex_vars[entry.ytdl_uid()].add(variable_name)
             regex_input_str = str(entry.script.get(variable_name))
 
             if (
