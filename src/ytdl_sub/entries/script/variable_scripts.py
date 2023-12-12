@@ -150,7 +150,7 @@ ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
     v.download_index: "{%int(1)}",
     v.upload_date_index: "{%int(1)}",
     v.comments: "",
-    v.requested_subtitles: "",
+    v.requested_subtitles: "{ {} }",
     v.sponsorblock_chapters: "",
     v.ytdl_sub_input_url: f"{{{v.source_webpage_url.variable_name}}}",
 }
