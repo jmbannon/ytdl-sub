@@ -257,7 +257,6 @@ def test_subscription_file_value_applies_sub_file_takes_precedence(
     assert value_sub.get("test_file_subscription_value") == "is_overwritten"
     assert value_sub.get("test_config_subscription_value") == "original"
     assert value_sub.get("subscription_name") == "test_value"
-    assert value_sub.get("subscription_name_sanitized") == "test_value"
     assert value_sub.get("subscription_value") == "is_overwritten"
     assert value_sub.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
@@ -276,7 +275,6 @@ def test_subscription_file_value_applies_from_config(
     assert value_sub.get("test_file_subscription_value") == "original"
     assert value_sub.get("test_config_subscription_value") == "is_overwritten"
     assert value_sub.get("subscription_name") == "test_value"
-    assert value_sub.get("subscription_name_sanitized") == "test_value"
     assert value_sub.get("subscription_value") == "is_overwritten"
     assert value_sub.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
@@ -297,13 +295,11 @@ def test_subscription_file_value_applies_from_config_and_nested(
 
     assert sub_1.get("test_config_subscription_value") == "is_1_overwritten"
     assert sub_1.get("subscription_name") == "test_1"
-    assert sub_1.get("subscription_name_sanitized") == "test_1"
     assert sub_1.get("subscription_value") == "is_1_overwritten"
     assert sub_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
     assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_name") == "test_2_1"
-    assert sub_2_1.get("subscription_name_sanitized") == "test_2_1"
     assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("current_override") == "__preset__"  # ensure __preset__ takes precedence
 
@@ -322,7 +318,6 @@ def test_subscription_list(
     sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.dict_with_format_strings
 
     assert sub_2_1.get("subscription_name") == "test_2_1"
-    assert sub_2_1.get("subscription_name_sanitized") == "test_2_1"
     assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_value_1") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_value_2") == "is_2_1_list_2"
@@ -343,7 +338,6 @@ def test_subscription_overrides_tilda(
     sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.dict_with_format_strings
 
     assert sub_2_1.get("subscription_name") == "test_2_1"
-    assert sub_2_1.get("subscription_name_sanitized") == "test_2_1"
     assert sub_2_1.get("current_override") == "test_2_1"  # tilda sub takes precedence
 
 
@@ -371,7 +365,6 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
 
     assert sub_1.get("test_config_subscription_value") == "is_1_overwritten"
     assert sub_1.get("subscription_name") == "test_1"
-    assert sub_1.get("subscription_name_sanitized") == "test_1"
     assert sub_1.get("subscription_value") == "is_1_overwritten"
     assert sub_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_1.get("subscription_indent_2") == "INDENT_2"
@@ -379,7 +372,6 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
 
     assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_name") == "test_2_1"
-    assert sub_2_1.get("subscription_name_sanitized") == "test_2_1"
     assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_2_1.get("subscription_indent_2") == "original_2"
@@ -417,7 +409,6 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
 
     assert sub_1.get("test_config_subscription_value") == "is_1_overwritten"
     assert sub_1.get("subscription_name") == "test_1"
-    assert sub_1.get("subscription_name_sanitized") == "test_1"
     assert sub_1.get("subscription_value") == "is_1_overwritten"
     assert sub_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_1.get("subscription_indent_2") == "INDENT_2"
@@ -426,7 +417,6 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
 
     assert sub_2_1.get("test_config_subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_name") == "test_2_1"
-    assert sub_2_1.get("subscription_name_sanitized") == "test_2_1"
     assert sub_2_1.get("subscription_value") == "is_2_1_overwritten"
     assert sub_2_1.get("subscription_indent_1") == "INDENT_1"
     assert sub_2_1.get("subscription_indent_2") == "original_2"
@@ -499,7 +489,6 @@ def test_tv_show_subscriptions(config_file: ConfigFile, tv_show_subscriptions_pa
     jake_train_overrides = subs[3].overrides.dict_with_format_strings
 
     assert jake_train_overrides["subscription_name"] == "Jake Trains"
-    assert jake_train_overrides["subscription_name_sanitized"] == "Jake Trains"
     assert jake_train_overrides["subscription_value"] == "https://www.youtube.com/@JakeTrains"
     assert jake_train_overrides["subscription_indent_1"] == "Kids"
     assert jake_train_overrides["subscription_indent_2"] == "TV-Y"
@@ -517,7 +506,6 @@ def test_advanced_tv_show_subscriptions(
     jake_train_overrides = subs[3].overrides.dict_with_format_strings
 
     assert jake_train_overrides["subscription_name"] == "Jake Trains"
-    assert jake_train_overrides["subscription_name_sanitized"] == "Jake Trains"
     assert jake_train_overrides["subscription_value"] == "https://www.youtube.com/@JakeTrains"
     assert jake_train_overrides["subscription_indent_1"] == "Kids"
     assert jake_train_overrides["subscription_indent_2"] == "TV-Y"
@@ -526,10 +514,6 @@ def test_advanced_tv_show_subscriptions(
     overrides = subs[5].overrides
 
     assert overrides.apply_formatter(overrides.dict["subscription_name"]) == "Gardening with Ciscoe"
-    assert (
-        overrides.apply_formatter(overrides.dict["subscription_name_sanitized"])
-        == "Gardening with Ciscoe"
-    )
     assert (
         overrides.apply_formatter(overrides.dict["url"])
         == "https://www.youtube.com/@gardeningwithciscoe4430"
@@ -550,7 +534,6 @@ def test_music_subscriptions(default_config: ConfigFile, music_subscriptions_pat
     monk = subs[2].overrides.dict_with_format_strings
 
     assert monk["subscription_name"] == "Stan Getz"
-    assert monk["subscription_name_sanitized"] == "Stan Getz"
     assert monk["subscription_value"] == "https://www.youtube.com/@stangetzofficial/releases"
     assert monk["subscription_indent_1"] == "Jazz"
 
@@ -565,7 +548,6 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
     monk = subs[1].overrides.dict_with_format_strings
 
     assert monk["subscription_name"] == "Michael Jackson"
-    assert monk["subscription_name_sanitized"] == "Michael Jackson"
     assert (
         monk["subscription_value"]
         == "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
