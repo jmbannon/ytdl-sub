@@ -38,6 +38,7 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import validate_formatters
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringListValidator
@@ -202,7 +203,7 @@ class Preset(_PresetShell):
         script = copy.deepcopy(self.overrides.script).add(
             ScriptUtils.add_dummy_variables(self._source_variables)
         )
-        unresolved_variables = copy.deepcopy(self._added_variables)
+        unresolved_variables = self._added_variables
 
         added_variables: Set[str] = self.downloader_options.added_source_variables(
             unresolved_variables
@@ -236,14 +237,14 @@ class Preset(_PresetShell):
                 _ = script.resolve(unresolvable=unresolved_variables, update=True)
 
             # Validate that any formatter in the plugin options can resolve
-            self._validate_formatters(
-                mock_script=script,
+            validate_formatters(
+                script=script,
                 unresolved_variables=unresolved_variables,
                 validator=plugin_options,
             )
 
-        self._validate_formatters(
-            mock_script=script,
+        validate_formatters(
+            script=script,
             unresolved_variables=unresolved_variables,
             validator=self.output_options,
         )
@@ -251,66 +252,6 @@ class Preset(_PresetShell):
         assert not unresolved_variables
 
         return script
-
-    def _validate_string_formatter_validator(
-        self,
-        mock_script: Script,
-        unresolved_variables: Set[str],
-        formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
-    ) -> None:
-        try:
-            unresolvable = unresolved_variables
-            if isinstance(formatter_validator, OverridesStringFormatterValidator):
-                unresolvable = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
-
-            mock_script.resolve_once(
-                {"tmp_var": formatter_validator.format_string},
-                unresolvable=unresolvable,
-            )
-        except VariableDoesNotExist as exc:
-            raise StringFormattingVariableNotFoundException(exc) from exc
-
-    def _validate_formatters(
-        self,
-        mock_script: Script,
-        unresolved_variables: Set[str],
-        validator: Validator,
-    ) -> None:
-        """
-        Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
-        and resolve.
-        """
-        if isinstance(validator, DictValidator):
-            # pylint: disable=protected-access
-            # Usage of protected variables in other validators is fine. The reason to keep
-            # them protected is for readability when using them in subscriptions.
-            for validator_value in validator._validator_dict.values():
-                self._validate_formatters(
-                    mock_script=mock_script,
-                    unresolved_variables=unresolved_variables,
-                    validator=validator_value,
-                )
-            # pylint: enable=protected-access
-        elif isinstance(validator, ListValidator):
-            for list_value in validator.list:
-                self._validate_formatters(
-                    mock_script=mock_script,
-                    unresolved_variables=unresolved_variables,
-                    validator=list_value,
-                )
-        elif isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
-            self._validate_string_formatter_validator(
-                mock_script=mock_script,
-                unresolved_variables=unresolved_variables,
-                formatter_validator=validator,
-            )
-        elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
-            for validator_value in validator.dict.values():
-                self._validate_string_formatter_validator(
-                    mock_script=mock_script,
-                    unresolved_variables=unresolved_variables,
-                    formatter_validator=validator_value,
-                )
 
     def _get_presets_to_merge(
         self, parent_presets: str | List[str], seen_presets: List[str], config: ConfigValidator
@@ -349,7 +290,7 @@ class Preset(_PresetShell):
 
         return presets_to_merge
 
-    def __merge_parent_preset_dicts_if_present(self, config: ConfigValidator):
+    def _merge_parent_preset_dicts_if_present(self, config: ConfigValidator):
         parent_preset_validator = self._validate_key_if_present(
             key="preset", validator=StringListValidator
         )
@@ -372,7 +313,7 @@ class Preset(_PresetShell):
         super().__init__(name=name, value=value)
 
         # Perform the merge of parent presets before validating any keys
-        self.__merge_parent_preset_dicts_if_present(config=config)
+        self._merge_parent_preset_dicts_if_present(config=config)
 
         self.downloader_options: MultiUrlValidator = self._validate_key(
             key="download", validator=MultiUrlValidator

@@ -3,6 +3,8 @@ from collections import OrderedDict
 from keyword import iskeyword
 from typing import Dict
 from typing import List
+from typing import Set
+from typing import Union
 from typing import final
 
 from yt_dlp.utils import sanitize_filename
@@ -12,9 +14,11 @@ from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.utils.exceptions import UserException
+from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
@@ -172,3 +176,63 @@ class OverridesDictFormatterValidator(DictFormatterValidator):
     """
 
     _key_validator = OverridesStringFormatterValidator
+
+
+def _validate_formatter(
+    mock_script: Script,
+    unresolved_variables: Set[str],
+    formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
+) -> None:
+    try:
+        unresolvable = unresolved_variables
+        if isinstance(formatter_validator, OverridesStringFormatterValidator):
+            unresolvable = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
+
+        mock_script.resolve_once(
+            {"tmp_var": formatter_validator.format_string},
+            unresolvable=unresolvable,
+        )
+    except VariableDoesNotExist as exc:
+        raise StringFormattingVariableNotFoundException(exc) from exc
+
+
+def validate_formatters(
+    script: Script,
+    unresolved_variables: Set[str],
+    validator: Validator,
+) -> None:
+    """
+    Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
+    and resolve.
+    """
+    if isinstance(validator, DictValidator):
+        # pylint: disable=protected-access
+        # Usage of protected variables in other validators is fine. The reason to keep
+        # them protected is for readability when using them in subscriptions.
+        for validator_value in validator._validator_dict.values():
+            validate_formatters(
+                script=script,
+                unresolved_variables=unresolved_variables,
+                validator=validator_value,
+            )
+        # pylint: enable=protected-access
+    elif isinstance(validator, ListValidator):
+        for list_value in validator.list:
+            validate_formatters(
+                script=script,
+                unresolved_variables=unresolved_variables,
+                validator=list_value,
+            )
+    elif isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
+        _validate_formatter(
+            mock_script=script,
+            unresolved_variables=unresolved_variables,
+            formatter_validator=validator,
+        )
+    elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
+        for validator_value in validator.dict.values():
+            _validate_formatter(
+                mock_script=script,
+                unresolved_variables=unresolved_variables,
+                formatter_validator=validator_value,
+            )

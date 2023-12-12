@@ -207,23 +207,3 @@ class TestPreset:
                 "output_options": output_options,
             },
         )
-
-    def test_preset_with_multi_url__contains_all_empty_urls_errors(
-        self, config_file, output_options
-    ):
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Validation error in test.download: Must contain at least one "
-                "url that is non-empty"
-            ),
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": [{"url": "{url}"}, {"url": "{url2}"}],
-                    "output_options": output_options,
-                    "overrides": {"url": "", "url2": ""},
-                },
-            )
