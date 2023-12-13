@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member

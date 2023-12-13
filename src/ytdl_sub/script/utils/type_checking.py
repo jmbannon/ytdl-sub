@@ -11,7 +11,6 @@ from typing import get_origin
 
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
-from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import FutureResolvable
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import LambdaReduce

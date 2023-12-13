@@ -151,8 +151,9 @@ class PluginMapping:
             return [
                 plugin for plugin in ordered_plugins if not cls._is_modified_after_split(plugin)
             ]
-        else:  # before_split is False
-            return [plugin for plugin in ordered_plugins if cls._is_modified_after_split(plugin)]
+
+        # before_split is False
+        return [plugin for plugin in ordered_plugins if cls._is_modified_after_split(plugin)]
 
     @classmethod
     def plugins(cls) -> List[str]:

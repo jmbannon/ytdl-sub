@@ -7,7 +7,7 @@ v: VariableDefinitions = VARIABLES
 
 CUSTOM_FUNCTION_SCRIPTS: Dict[str, str] = {
     "%extract_field_from_metadata_array_getter": "{ %map_get( %map(%array_at($0, 0)), %array_at($0, 1) ) }",
-    "%extract_field_from_metadata_array": f"""{{
+    "%extract_field_from_metadata_array": """{
         %if(
             %bool($0),
             %array_extend(
@@ -21,7 +21,7 @@ CUSTOM_FUNCTION_SCRIPTS: Dict[str, str] = {
             ),
             []
         )   
-    }}""",
+    }""",
     "%extract_field_from_siblings": f"""{{
         %if(
             %bool({v.sibling_metadata.variable_name}),

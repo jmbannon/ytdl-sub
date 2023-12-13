@@ -71,7 +71,7 @@ class StringFunctions:
         """
         Concatenate multiple Strings into a single String.
         """
-        return String("".join(list([val.value for val in values])))
+        return String("".join(val.value for val in values))
 
     @staticmethod
     def pad(string: String, length: Integer, char: String) -> String:

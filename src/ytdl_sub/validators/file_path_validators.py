@@ -2,10 +2,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.resolvable import String
-from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import StringValidator

@@ -22,7 +22,7 @@ v: VariableDefinitions = VARIABLES
 
 YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
 
-TType = TypeVar("TType")
+TypeT = TypeVar("TypeT")
 
 
 class Entry(BaseEntry, Scriptable):
@@ -50,11 +50,11 @@ class Entry(BaseEntry, Scriptable):
         self._add_entry_kwargs_to_script()
         return self
 
-    def get(self, variable: Variable, expected_type: Type[TType]) -> TType:
+    def get(self, variable: Variable, expected_type: Type[TypeT]) -> TypeT:
         out = self.script.resolve(unresolvable=self.unresolvable).get_native(variable.variable_name)
         return expected_type(out)
 
-    def try_get(self, variable: Variable, expected_type: Type[TType]) -> Optional[TType]:
+    def try_get(self, variable: Variable, expected_type: Type[TypeT]) -> Optional[TypeT]:
         try:
             return self.get(variable=variable, expected_type=expected_type)
         except ScriptVariableNotResolved:

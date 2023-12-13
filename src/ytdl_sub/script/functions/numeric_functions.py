@@ -1,12 +1,9 @@
 import math
-from typing import Union
 
 from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Numeric
-from ytdl_sub.script.types.resolvable import String
 
 
 def _to_numeric(value: int | float) -> Numeric:

@@ -1,12 +1,7 @@
-import copy
-from collections import defaultdict
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Set
-from typing import Tuple
-
-from mergedeep import mergedeep
 
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
@@ -17,12 +12,9 @@ from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
-from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 from ytdl_sub.script.utils.exceptions import RuntimeException
-from ytdl_sub.script.utils.exceptions import ScriptBuilderMissingDefinitions
-from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 from ytdl_sub.script.utils.type_checking import FunctionSpec
 

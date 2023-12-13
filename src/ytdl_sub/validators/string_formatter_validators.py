@@ -1,22 +1,15 @@
 import re
-from collections import OrderedDict
-from keyword import iskeyword
 from typing import Dict
-from typing import List
 from typing import Set
 from typing import Union
 from typing import final
 
-from yt_dlp.utils import sanitize_filename
-
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
-from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator

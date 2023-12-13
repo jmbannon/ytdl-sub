@@ -3,9 +3,6 @@ from typing import Any
 from typing import Dict
 from typing import Iterable
 
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import String
-
 
 class ScriptUtils:
     @classmethod

@@ -6,7 +6,6 @@ from typing import Dict
 from typing import List
 from typing import Type
 
-from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import FutureResolvable
 from ytdl_sub.script.types.resolvable import Hashable

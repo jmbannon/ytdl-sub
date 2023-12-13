@@ -21,7 +21,7 @@ from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
-TType = TypeVar("TType")
+TypeT = TypeVar("TypeT")
 
 
 @dataclass(frozen=True)
@@ -31,8 +31,8 @@ class VariableDependency(ABC):
     def _iterable_arguments(self) -> List[Argument]:
         pass
 
-    def _recurse_get(self, ttype: Type[TType], subclass: bool = False) -> List[TType]:
-        output: List[TType] = []
+    def _recurse_get(self, ttype: Type[TypeT], subclass: bool = False) -> List[TypeT]:
+        output: List[TypeT] = []
         for arg in self._iterable_arguments:
             if subclass and issubclass(type(arg), ttype):
                 output.append(arg)
