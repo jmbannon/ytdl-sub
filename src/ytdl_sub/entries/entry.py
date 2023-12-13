@@ -59,12 +59,6 @@ class Entry(BaseEntry, Scriptable):
         except ScriptVariableNotResolved:
             return None
 
-    def get_str(self, variable: Variable) -> str:
-        return self.get(variable, str)
-
-    def get_int(self, variable: Variable) -> int:
-        return self.get(variable, int)
-
     @property
     def ext(self) -> str:
         """
@@ -98,7 +92,7 @@ class Entry(BaseEntry, Scriptable):
         -------
         The download thumbnail's file name
         """
-        return f"{self.uid}.{self.get_str(v.thumbnail_ext)}"
+        return f"{self.uid}.{self.get(v.thumbnail_ext, str)}"
 
     def get_download_thumbnail_path(self) -> str:
         """Returns the entry's thumbnail's file path to where it was downloaded"""

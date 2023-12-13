@@ -136,7 +136,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         """
         Tags the entry's audio file using values defined in the metadata options
         """
-        if (ext := entry.get_str(v.ext)) not in AUDIO_CODEC_EXTS:
+        if (ext := entry.get(v.ext, str)) not in AUDIO_CODEC_EXTS:
             raise self.plugin_options.validation_exception(
                 f"music_tags plugin received a video with the extension '{ext}'. Only audio "
                 f"files are supported for setting music tags. Ensure you are converting the video "

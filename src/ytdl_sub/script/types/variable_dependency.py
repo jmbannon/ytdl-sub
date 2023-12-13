@@ -46,26 +46,51 @@ class VariableDependency(ABC):
     @final
     @property
     def variables(self) -> Set[Variable]:
+        """
+        Returns
+        -------
+        All Variables that this depends on.
+        """
         return set(self._recurse_get(Variable))
 
     @final
     @property
     def built_in_functions(self) -> List[BuiltInFunctionType]:
+        """
+        Returns
+        -------
+        All BuiltInFunctions that this depends on.
+        """
         return self._recurse_get(BuiltInFunctionType)
 
     @final
     @property
     def function_arguments(self) -> Set[FunctionArgument]:
+        """
+        Returns
+        -------
+        All FunctionArguments that this depends on.
+        """
         return set(self._recurse_get(FunctionArgument))
 
     @final
     @property
     def lambdas(self) -> Set[Lambda]:
+        """
+        Returns
+        -------
+        All Lambdas that this depends on.
+        """
         return set(self._recurse_get(Lambda, subclass=True))
 
     @final
     @property
     def custom_functions(self) -> Set[ParsedCustomFunction]:
+        """
+        Returns
+        -------
+        All CustomFunctions that this depends on.
+        """
         output: Set[ParsedCustomFunction] = set()
         for arg in self._iterable_arguments:
             if isinstance(arg, NamedCustomFunction):
@@ -86,6 +111,18 @@ class VariableDependency(ABC):
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
+        """
+        Parameters
+        ----------
+        resolved_variables
+            Lookup of variables that have been resolved
+        custom_functions
+            Lookup of any custom functions that have been parsed
+
+        Returns
+        -------
+        Resolved value
+        """
         pass
 
     @classmethod
@@ -114,10 +151,15 @@ class VariableDependency(ABC):
         """
         Returns
         -------
-        True if variable dependency. False otherwise.
+        True if it contains all input variables as a dependency. False otherwise.
         """
         return not self.variables.issubset(variables)
 
     @final
     def contains(self, variables: Iterable[Variable]) -> bool:
+        """
+        Returns
+        -------
+        True if it contains any of the input variables. False otherwise.
+        """
         return len(self.variables.intersection(variables)) > 0

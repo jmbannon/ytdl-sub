@@ -123,7 +123,7 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
             )
             entries.append(entry)
 
-        for entry in sorted(entries, key=lambda ent: ent.get_str(v.download_index)):
+        for entry in sorted(entries, key=lambda ent: ent.get(v.download_index, int)):
             # Remove each entry from the live download archive since it will get re-added
             # unless it is filtered
             self._enhanced_download_archive.mapping.remove_entry(entry.uid)

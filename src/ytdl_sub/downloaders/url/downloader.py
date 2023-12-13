@@ -136,7 +136,7 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
         if not self.is_dry_run:
             try_convert_download_thumbnail(entry=entry)
 
-        if (input_url := entry.get_str(v.ytdl_sub_input_url)) in self._collection_url_mapping:
+        if (input_url := entry.get(v.ytdl_sub_input_url, str)) in self._collection_url_mapping:
             self._download_url_thumbnails(
                 collection_url=self._collection_url_mapping[input_url],
                 entry=entry,
@@ -168,7 +168,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
         """
         # COLLECTION_URL is a recent variable that may not exist for old entries when updating.
         # Try to use source_webpage_url if it does not exist
-        entry_collection_url = entry.get_str(v.ytdl_sub_input_url)
+        entry_collection_url = entry.get(v.ytdl_sub_input_url, str)
 
         # If the collection URL cannot find its mapping, use the last URL
         collection_url = (
@@ -488,7 +488,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             return None
 
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
-            upload_date_standardized=entry.get_str(v.upload_date_standardized)
+            upload_date_standardized=entry.get(v.upload_date_standardized, str)
         )
         download_idx = self._enhanced_download_archive.num_entries
         entry.add(

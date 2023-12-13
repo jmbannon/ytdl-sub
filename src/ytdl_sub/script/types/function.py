@@ -82,6 +82,9 @@ class CustomFunction(Function, NamedCustomFunction):
 
 class BuiltInFunction(Function, BuiltInFunctionType):
     def validate_args(self) -> "BuiltInFunction":
+        """
+        Ensures the args are compatible with the BuiltInFunction.
+        """
         if not self.function_spec.is_compatible(input_args=self.args):
             raise FunctionArgumentsExceptionFormatter(
                 input_spec=self.function_spec,
@@ -92,6 +95,11 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
     @property
     def callable(self) -> Callable[..., Resolvable]:
+        """
+        Returns
+        -------
+        The actual callable of the BuiltInFunction
+        """
         try:
             return Functions.get(self.name)
         except Exception as exc:
@@ -100,6 +108,11 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
     @functools.cached_property
     def function_spec(self) -> FunctionSpec:
+        """
+        Returns
+        -------
+        The FunctionSpec of the BuiltInFunction
+        """
         return FunctionSpec.from_callable(self.callable)
 
     @classmethod
@@ -134,6 +147,11 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         return Union[tuple(union_types_list)]
 
     def output_type(self) -> Type[Resolvable]:
+        """
+        Returns
+        -------
+        The BuiltInFunction's true output type.
+        """
         if is_union(self.function_spec.return_type):
             return self._output_type(self.function_spec.return_type.__args__)
 

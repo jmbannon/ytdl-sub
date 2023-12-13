@@ -75,8 +75,8 @@ class DownloadMapping:
         DownloadMapping for the entry
         """
         return DownloadMapping(
-            upload_date=entry.get_str(v.upload_date_standardized),
-            extractor=entry.get_str(v.extractor),
+            upload_date=entry.get(v.upload_date_standardized, str),
+            extractor=entry.get(v.extractor, str),
             file_names=set(),
         )
 

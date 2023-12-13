@@ -146,7 +146,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
         )
 
         timestamp_begin = chapters.timestamps[idx].readable_str
-        timestamp_end = Timestamp(new_entry.get_int(v.duration)).readable_str
+        timestamp_end = Timestamp(new_entry.get(v.duration, int)).readable_str
         if idx + 1 < len(chapters.timestamps):
             timestamp_end = chapters.timestamps[idx + 1].readable_str
 
@@ -220,7 +220,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
                     FileHandler.copy(
                         src_file_path=entry.get_download_thumbnail_path(),
                         dst_file_path=Path(self.working_directory)
-                        / f"{new_uid}.{entry.get_str(v.thumbnail_ext)}",
+                        / f"{new_uid}.{entry.get(v.thumbnail_ext, str)}",
                     )
 
             # Format the split video

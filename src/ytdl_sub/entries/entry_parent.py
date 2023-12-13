@@ -18,6 +18,7 @@ v: VariableDefinitions = VARIABLES
 
 # pylint: disable=protected-access
 
+
 def _sort_entries(entries: List[TBaseEntry]) -> List[TBaseEntry]:
     """Try sorting by playlist_id first, then fall back to uid"""
     return sorted(
@@ -202,8 +203,6 @@ class EntryParent(BaseEntry):
             parent._set_child_variables()
 
         return parents
-
-    # pylint: enable=protected-access
 
     @classmethod
     def from_entry_dicts_with_no_parents(

@@ -43,11 +43,11 @@ class TestEntry(object):
 
         mock_entry_kwargs["upload_date"] = upload_date
         entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script()
-        assert entry.get_int(v.upload_year_truncated_reversed) == year_rev
-        assert entry.get_int(v.upload_month_reversed) == month_rev
-        assert entry.get_int(v.upload_day_reversed) == day_rev
-        assert entry.get_str(v.upload_month_reversed_padded) == month_rev_pad
-        assert entry.get_str(v.upload_day_reversed_padded) == day_rev_pad
+        assert entry.get(v.upload_year_truncated_reversed, int) == year_rev
+        assert entry.get(v.upload_month_reversed, int) == month_rev
+        assert entry.get(v.upload_day_reversed, int) == day_rev
+        assert entry.get(v.upload_month_reversed_padded, str) == month_rev_pad
+        assert entry.get(v.upload_day_reversed_padded, str) == day_rev_pad
 
     @pytest.mark.parametrize(
         "upload_date, day_year, day_year_rev, day_year_pad, day_year_rev_pad",
@@ -62,7 +62,7 @@ class TestEntry(object):
         mock_entry_kwargs["upload_date"] = upload_date
         entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script()
 
-        assert entry.get_int(v.upload_day_of_year) == day_year
-        assert entry.get_int(v.upload_day_of_year_reversed) == day_year_rev
-        assert entry.get_str(v.upload_day_of_year_padded) == day_year_pad
-        assert entry.get_str(v.upload_day_of_year_reversed_padded) == day_year_rev_pad
+        assert entry.get(v.upload_day_of_year, int) == day_year
+        assert entry.get(v.upload_day_of_year_reversed, int) == day_year_rev
+        assert entry.get(v.upload_day_of_year_padded, str) == day_year_pad
+        assert entry.get(v.upload_day_of_year_reversed_padded, str) == day_year_rev_pad

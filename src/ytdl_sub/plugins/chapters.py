@@ -327,7 +327,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                     set_ffmpeg_metadata_chapters(
                         file_path=entry.get_download_file_path(),
                         chapters=chapters,
-                        file_duration_sec=entry.get_int(v.duration),
+                        file_duration_sec=entry.get(v.duration, int),
                     )
 
         if not has_chapters_from_comments:
