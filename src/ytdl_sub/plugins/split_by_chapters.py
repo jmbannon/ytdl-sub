@@ -146,7 +146,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
         )
 
         timestamp_begin = chapters.timestamps[idx].readable_str
-        timestamp_end = Timestamp(new_entry.kwargs("duration")).readable_str
+        timestamp_end = Timestamp(new_entry.get_int(v.duration)).readable_str
         if idx + 1 < len(chapters.timestamps):
             timestamp_end = chapters.timestamps[idx + 1].readable_str
 

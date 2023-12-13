@@ -138,6 +138,7 @@ ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
     v.channel: entry_get_str(v.channel, v.uploader),
     v.creator: entry_get_str(v.creator, v.channel),
     v.channel_id: entry_get_str(v.channel_id, v.uploader_id),
+    v.duration: entry_get_int(v.duration, 0),
     v.playlist_index: entry_get_int(v.playlist_index, 1),
     v.playlist_count: entry_get_int(v.playlist_count, 1),
     v.playlist_uid: entry_get_str(v.playlist_uid, v.uid),

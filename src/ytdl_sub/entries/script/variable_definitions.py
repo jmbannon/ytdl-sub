@@ -69,6 +69,10 @@ class VariableDefinitions:
         return MetadataVariable(metadata_key="id", variable_name="uid")
 
     @property
+    def duration(self) -> MetadataVariable:
+        return MetadataVariable("duration", metadata_key="duration")
+
+    @property
     def uid_sanitized_plex(self) -> Variable:
         """
         Returns
