@@ -15,6 +15,7 @@ from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
+from ytdl_sub.validators.validators import Validator
 
 _fields_validator = re.compile(r"{([a-z][a-z0-9_]*?)}")
 
@@ -122,15 +123,15 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 class OverridesIntegerFormatterValidator(StringFormatterValidator):
     _expected_value_type_name = "integer"
 
-    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
-        output = super().apply_formatter(variable_dict)
+    def post_process(self, resolved: str) -> str:
         try:
-            int(output)
+            int(resolved)
         except Exception as exc:
             raise self._validation_exception(
-                f"Expected an integer, but received '{output}'"
+                f"Expected an integer, but received '{resolved}'"
             ) from exc
-        return output
+
+        return resolved
 
 
 class ListFormatterValidator(ListValidator[StringFormatterValidator]):
