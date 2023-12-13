@@ -145,15 +145,15 @@ ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
     v.playlist_uploader_id: entry_get_str(v.playlist_uploader_id, v.uploader_id),
 }
 
-# MARK AS UNRESOLVABLE UNTIL THEY ARE ADDED
-ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
+# MARK AS UNRESOLVABLE UNTIL THEY ARE ADDED IN THE DOWNLOADER
+DOWNLOADER_INJECTED_VARIABLES: Dict[Variable, str] = {
     v.download_index: "{%int(1)}",
     v.upload_date_index: "{%int(1)}",
-    v.comments: "",
+    v.comments: "{ [] }",
     v.requested_subtitles: "{ {} }",
-    v.sponsorblock_chapters: "",
+    v.chapters: "{ [] }",
+    v.sponsorblock_chapters: "{ [] }",
     v.ytdl_sub_input_url: f"{{{v.source_webpage_url.variable_name}}}",
-    v.ytdl_sub_split_entry_parent_uid: "",
 }
 
 ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {
@@ -265,7 +265,7 @@ mergedeep.merge(
     ENTRY_RELATIVE_VARIABLES,
     ENTRY_REQUIRED_VARIABLES,
     ENTRY_DEFAULT_VARIABLES,
-    ENTRY_INJECTED_VARIABLES,
+    DOWNLOADER_INJECTED_VARIABLES,
     ENTRY_DERIVED_VARIABLES,
     ENTRY_UPLOAD_DATE_VARIABLES,
     ENTRY_RELEASE_DATE_VARIABLES,
@@ -290,7 +290,7 @@ def _keys(*variables: Dict[Variable, str]) -> Set[str]:
 
 UNRESOLVED_VARIABLES: Set[str] = _keys(
     ENTRY_EMPTY_METADATA,
-    ENTRY_INJECTED_VARIABLES,
+    DOWNLOADER_INJECTED_VARIABLES,
 )
 
 CustomFunctions.register()

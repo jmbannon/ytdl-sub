@@ -502,6 +502,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 v.requested_subtitles.variable_name: download_entry.kwargs_get(
                     v.requested_subtitles.metadata_key
                 ),
+                v.chapters.variable_name: download_entry.kwargs_get(v.chapters.metadata_key),
                 v.sponsorblock_chapters.variable_name: download_entry.kwargs_get(
                     v.sponsorblock_chapters.metadata_key
                 ),

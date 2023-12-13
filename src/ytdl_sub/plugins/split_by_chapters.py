@@ -12,8 +12,7 @@ from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.entries.variables.kwargs import CHAPTERS
-from ytdl_sub.utils.chapters import Chapters
+from ytdl_sub.utils.chapters import Chapters, ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
@@ -105,7 +104,7 @@ class SplitByChaptersOptions(OptionsDictValidator):
         return {
             PluginOperation.MODIFY_ENTRY: {
                 v.uid.variable_name,
-                v.ytdl_sub_split_entry_parent_uid.variable_name,
+                ytdl_sub_split_by_chapters_parent_uid.variable_name,
             }
         }
 
@@ -121,7 +120,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
                 "chapter_index_padded": "01",
                 "chapter_count": 1,
                 v.uid.variable_name: entry.uid,
-                v.ytdl_sub_split_entry_parent_uid.variable_name: entry.uid,
+                ytdl_sub_split_by_chapters_parent_uid.variable_name: entry.uid,
             }
         )
         return entry
@@ -140,11 +139,6 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
                 "chapter_count": len(chapters.timestamps),
             }
         )
-
-        # pylint: disable=protected-access
-        if new_entry.kwargs_contains(CHAPTERS):
-            del new_entry._kwargs[CHAPTERS]
-        # pylint: enable=protected-access
 
         timestamp_begin = chapters.timestamps[idx].readable_str
         timestamp_end = Timestamp(new_entry.kwargs("duration")).readable_str
@@ -195,7 +189,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
             new_entry.add(
                 {
                     v.uid.variable_name: new_uid,
-                    v.ytdl_sub_split_entry_parent_uid.variable_name: entry.uid,
+                    ytdl_sub_split_by_chapters_parent_uid.variable_name: entry.uid,
                 }
             )
             new_entry.add_kwargs({v.uid.metadata_key: new_uid})

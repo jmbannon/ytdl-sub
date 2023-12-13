@@ -6,12 +6,13 @@ from typing import Optional
 from typing import Set
 
 from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
-from ytdl_sub.utils.chapters import Chapters
+from ytdl_sub.utils.chapters import Chapters, ytdl_sub_chapters_from_comments, \
+    ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.regex_validator import RegexListValidator
@@ -33,9 +34,7 @@ SPONSORBLOCK_CATEGORIES: Set[str] = SPONSORBLOCK_HIGHLIGHT_CATEGORIES | {
 
 
 def _chapters(entry: Entry) -> List[Dict]:
-    if entry.kwargs_contains("chapters"):
-        return entry.kwargs("chapters") or []
-    return []
+    return entry.get(v.chapters, list)
 
 
 def _sponsorblock_chapters(entry: Entry) -> List[Dict]:
@@ -193,6 +192,13 @@ class ChaptersOptions(OptionsDictValidator):
         """
         return self._force_key_frames
 
+    def added_variables(
+        self, resolved_variables: Set[str], unresolved_variables: Set[str]
+    ) -> Dict[PluginOperation, Set[str]]:
+        return {
+            PluginOperation.MODIFY_ENTRY: {"ytdl_sub_chapters_from_comments"}
+        }
+
 
 class ChaptersPlugin(Plugin[ChaptersOptions]):
     plugin_options_type = ChaptersOptions
@@ -298,6 +304,8 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         -------
         entry
         """
+        has_chapters_from_comments = False
+
         # If there are no embedded chapters, and comment chapters are allowed...
         if not _contains_any_chapters(entry) and self.plugin_options.allow_chapters_from_comments:
             chapters = Chapters.from_empty()
@@ -310,7 +318,14 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
 
             # If some are actually found, add a special kwarg and embed them
             if chapters.contains_any_chapters():
-                entry.add_kwargs({YTDL_SUB_CUSTOM_CHAPTERS: chapters.to_file_metadata_dict()})
+                has_chapters_from_comments = True
+                entry.add(
+                    {
+                        ytdl_sub_chapters_from_comments.variable_name: (
+                            chapters.to_yt_dlp_chapter_metadata()
+                        )
+                    }
+                )
 
                 if not self.is_dry_run:
                     set_ffmpeg_metadata_chapters(
@@ -318,6 +333,9 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                         chapters=chapters,
                         file_duration_sec=entry.kwargs("duration"),
                     )
+
+        if not has_chapters_from_comments:
+            entry.add({ytdl_sub_chapters_from_comments.variable_name: []})
 
         return entry
 
@@ -332,12 +350,9 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         -------
         FileMetadata outlining which chapters/SponsorBlock segments got removed
         """
-        if custom_chapters_metadata := entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS):
-            title: str = "Chapters from comments"
-            return FileMetadata.from_dict(
-                value_dict=custom_chapters_metadata,
-                title=title,
-                sort_dict=False,  # timestamps + titles are already sorted
+        if custom_chapters := entry.get(ytdl_sub_chapters_from_comments, list):
+            return Chapters.from_yt_dlp_chapters(custom_chapters).to_file_metadata(
+                title="Chapters from comments"
             )
 
         if self.plugin_options.embed_chapters:
@@ -354,9 +369,10 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
             if removed_sponsorblock:
                 metadata_dict["Removed SponsorBlock Category Count(s)"] = removed_sponsorblock
 
-            # TODO: check if file actually has embedded chapters
-            return FileMetadata.from_dict(
-                value_dict=metadata_dict, title="Embedded Chapters", sort_dict=False
-            )
+            # If the entry wasn't split on embedded chapters, report it in the file metadata
+            if not entry.try_get(ytdl_sub_split_by_chapters_parent_uid, str):
+                return FileMetadata.from_dict(
+                    value_dict=metadata_dict, title="Embedded Chapters", sort_dict=False
+                )
 
         return None

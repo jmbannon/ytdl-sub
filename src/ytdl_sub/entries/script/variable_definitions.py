@@ -566,6 +566,10 @@ class VariableDefinitions:
         return MetadataVariable("comments", "comments")
 
     @property
+    def chapters(self) -> MetadataVariable:
+        return MetadataVariable("chapters", "chapters")
+
+    @property
     def sponsorblock_chapters(self) -> MetadataVariable:
         return MetadataVariable("sponsorblock_chapters", "sponsorblock_chapters")
 
@@ -577,9 +581,6 @@ class VariableDefinitions:
     def ytdl_sub_input_url(self) -> Variable:
         return Variable("ytdl_sub_input_url")
 
-    @property
-    def ytdl_sub_split_entry_parent_uid(self) -> Variable:
-        return Variable("ytdl_sub_split_entry_parent_uid")
 
     @property
     def download_index(self) -> Variable:

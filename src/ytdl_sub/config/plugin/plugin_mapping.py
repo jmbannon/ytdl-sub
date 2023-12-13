@@ -64,6 +64,7 @@ class PluginMapping:
         UrlDownloaderThumbnailPlugin,
         AudioExtractPlugin,
         FileConvertPlugin,
+        ChaptersPlugin,
         SplitByChaptersPlugin,
         RegexPlugin,
         # add all others

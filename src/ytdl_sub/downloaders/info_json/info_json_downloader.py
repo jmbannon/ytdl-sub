@@ -13,7 +13,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.entries.script.variable_scripts import ENTRY_INJECTED_VARIABLES
+from ytdl_sub.entries.script.variable_scripts import DOWNLOADER_INJECTED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
@@ -115,7 +115,7 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
                         inj.variable_name,
                         VARIABLE_SCRIPTS[inj.variable_name],
                     )
-                    for inj in ENTRY_INJECTED_VARIABLES
+                    for inj in DOWNLOADER_INJECTED_VARIABLES
                 }
             )
             entries.append(entry)
