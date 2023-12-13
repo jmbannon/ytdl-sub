@@ -184,6 +184,10 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         file_metadata: Optional[FileMetadata] = None
         langs = list(requested_subtitles.keys())
 
+        # HACK to maintain order of languages for fixtures
+        if len(langs) == len(self.plugin_options.languages):
+            langs = self.plugin_options.languages
+
         if self.plugin_options.embed_subtitles:
             file_metadata = FileMetadata(f"Embedded subtitles with lang(s) {', '.join(langs)}")
         if self.plugin_options.subtitles_name:
