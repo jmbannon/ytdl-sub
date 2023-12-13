@@ -1,7 +1,10 @@
 import pytest
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+
+v: VariableDefinitions = VARIABLES
 
 
 class TestEntry(object):

@@ -9,13 +9,16 @@ from typing import TypeVar
 from typing import final
 
 from ytdl_sub.entries.base_entry import BaseEntry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import Variable
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
+
+v: VariableDefinitions = VARIABLES
 
 YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
 

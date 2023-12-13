@@ -7,10 +7,13 @@ from typing import Optional
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import TBaseEntry
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import MetadataVariable
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.entries.script.variable_scripts import ENTRY_DEFAULT_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import ENTRY_REQUIRED_VARIABLES
+
+v: VariableDefinitions = VARIABLES
 
 
 def _sort_entries(entries: List[TBaseEntry]) -> List[TBaseEntry]:

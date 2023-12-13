@@ -12,7 +12,8 @@ from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.entries.script.variable_scripts import DOWNLOADER_INJECTED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.utils.exceptions import ValidationException
@@ -20,6 +21,8 @@ from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+
+v: VariableDefinitions = VARIABLES
 
 
 class InfoJsonDownloaderOptions(OptionsDictValidator):

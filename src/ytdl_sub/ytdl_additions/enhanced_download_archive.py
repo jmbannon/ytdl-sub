@@ -14,7 +14,8 @@ from yt_dlp import DateRange
 from yt_dlp.utils import make_archive_id
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.chapters import ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
@@ -22,6 +23,8 @@ from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get("archive")
+
+v: VariableDefinitions = VARIABLES
 
 
 @dataclass
