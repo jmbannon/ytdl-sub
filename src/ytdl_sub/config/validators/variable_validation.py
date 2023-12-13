@@ -2,6 +2,7 @@ import copy
 from typing import List
 from typing import Optional
 from typing import Set
+from typing import Tuple
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
@@ -12,15 +13,16 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.script.script import Script
-from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
 
-def _get_added_variables(
+def _get_added_and_modified_variables(
     plugins: PresetPlugins, downloader_options: MultiUrlValidator, resolved_variables: Set[str]
-) -> Set[str]:
+) -> Tuple[Set[str], Set[str]]:
     added_variables: Set[str] = set()
+    modified_variables: Set[str] = set()
+
     options: List[OptionsValidator] = plugins.plugin_options
     options.append(downloader_options)
 
@@ -31,7 +33,10 @@ def _get_added_variables(
         ).values():
             added_variables |= set(plugin_added_variables)
 
-    return added_variables
+        for plugin_modified_variables in plugin_options.modified_variables().values():
+            modified_variables |= plugin_modified_variables
+
+    return added_variables, modified_variables
 
 
 def _override_variables(overrides: Overrides) -> Set[str]:
@@ -59,19 +64,25 @@ class VariableValidation:
 
     def initialize_overrides(self, overrides: Overrides) -> "VariableValidation":
         entry_variables = _entry_variables()
-        self.resolved_variables = entry_variables.union(_override_variables(overrides))
+        override_variables = _override_variables(overrides)
 
-        # Set unresolved as variables that are added but do not exist as entry/override variables
-        self.unresolved_variables = (
-            _get_added_variables(
-                plugins=self.plugins,
-                downloader_options=self.downloader_options,
-                resolved_variables=self.resolved_variables,
-            )
-            - self.resolved_variables
+        # Set resolved variables as all entry + override variables
+        # at this point to generate every possible added/modified variable
+        self.resolved_variables = entry_variables | override_variables
+        added_variables, modified_variables = _get_added_and_modified_variables(
+            plugins=self.plugins,
+            downloader_options=self.downloader_options,
+            resolved_variables=self.resolved_variables,
         )
 
-        # Initialize overrides with unresolved variables to throw an error
+        # Set unresolved as variables that are added but do not exist as entry/override variables
+        # Then update resolved variables to reflect that
+        self.unresolved_variables = added_variables | modified_variables
+        self.resolved_variables -= self.unresolved_variables
+
+        # Initialize overrides with unresolved variables + modified variables to throw an error.
+        # For modified variables, this is to prevent a resolve(update=True) to setting any
+        # dependencies until it has been explicitly added
         overrides = overrides.initialize_script(
             unresolved_variables={
                 var_name: f"{{%throw('Plugin variable {var_name} has not been created yet')}}"
@@ -94,17 +105,20 @@ class VariableValidation:
             resolved_variables=self.resolved_variables,
             unresolved_variables=self.unresolved_variables,
         ).get(plugin_op, set())
+        modified_variables = options.modified_variables().get(plugin_op, set())
 
         if added_variables:
             for added_variable in added_variables:
                 if added_variable in self.resolved_variables:
-                    raise ValidationException(
+                    raise options._validation_exception(
                         f"Tried added the variable '{added_variable}', but it already "
                         f"exists as a defined variable."
                     )
 
-            self.script.add(ScriptUtils.add_dummy_variables(added_variables))
-            self.unresolved_variables -= added_variables
+        resolved_variables = added_variables | modified_variables
+
+        self.script.add(ScriptUtils.add_dummy_variables(resolved_variables))
+        self.unresolved_variables -= resolved_variables
 
         return added_variables
 

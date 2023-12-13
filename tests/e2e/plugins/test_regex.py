@@ -313,7 +313,7 @@ class TestRegex:
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "Tried added the variable 'uid', but it already exists as a defined variable"
+                "cannot use 'uid' as a capture group name because it is a defined variable"
             ),
         ):
             _ = Subscription.from_dict(
@@ -333,8 +333,8 @@ class TestRegex:
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "Tried added the variable 'contains_regex_default', but it already exists "
-                "as a defined variable"
+                "cannot use 'contains_regex_default' as a capture group name because it is a "
+                "defined variable"
             ),
         ):
             _ = Subscription.from_dict(

@@ -260,6 +260,12 @@ class RegexOptions(OptionsDictValidator):
             ):
                 key = PluginOperation.MODIFY_ENTRY_METADATA
 
+            for capture_group_name in regex_options.capture_group_names:
+                if capture_group_name in resolved_variables:
+                    raise self._validation_exception(
+                        f"cannot use '{capture_group_name}' as a capture group name because it is "
+                        f"a defined variable"
+                    )
             added_source_vars[key] |= set(regex_options.capture_group_names)
 
         return added_source_vars
