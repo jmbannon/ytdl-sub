@@ -41,7 +41,6 @@ class Entry(BaseEntry, Scriptable):
         self.update_script()
 
     def initialize_script(self, other: Optional[Scriptable] = None) -> "Entry":
-        # TODO: CLEAN THIS SHIT UP
         # Overrides contains added variables that are unresolvable, add them here
         if other:
             self.script = copy.deepcopy(other.script)

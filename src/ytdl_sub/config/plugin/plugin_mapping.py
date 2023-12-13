@@ -108,6 +108,11 @@ class PluginMapping:
     def order_options_by(
         cls, zipped: List[Tuple[Type[Plugin], OptionsValidator]], operation: PluginOperation
     ) -> List[OptionsValidator]:
+        """
+        Returns
+        -------
+        Ordered plugin options with respect to the PluginOperation.
+        """
         ordered_types: List[Type[Plugin]] = cls._order_by(
             plugin_types=[val[0] for val in zipped], operation=operation
         )
@@ -131,6 +136,12 @@ class PluginMapping:
     def order_plugins_by(
         cls, plugins: List[Plugin], operation: PluginOperation, before_split: Optional[bool] = None
     ) -> List[Plugin]:
+        """
+        Returns
+        -------
+        Ordered plugins with respect to the PluginOperation. Optionally only return plugins
+        before/after a split plugin.
+        """
         ordered_types: List[Type[Plugin]] = cls._order_by(
             plugin_types=[type(plugin) for plugin in plugins], operation=operation
         )

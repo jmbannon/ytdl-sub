@@ -16,6 +16,8 @@ from ytdl_sub.entries.script.variable_scripts import ENTRY_REQUIRED_VARIABLES
 v: VariableDefinitions = VARIABLES
 
 
+# pylint: disable=protected-access
+
 def _sort_entries(entries: List[TBaseEntry]) -> List[TBaseEntry]:
     """Try sorting by playlist_id first, then fall back to uid"""
     return sorted(

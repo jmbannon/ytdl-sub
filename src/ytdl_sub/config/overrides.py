@@ -28,7 +28,7 @@ class Overrides(DictFormatterValidator, Scriptable):
          my_example_preset:
            overrides:
              output_directory: "/path/to/media"
-             custom_file_name: "{upload_year}.{upload_month_padded}.{upload_day_padded}.{title_sanitized}"
+             custom_file_name: "{upload_date_standardized}.{title_sanitized}"
 
            # Then use the override variables in the output options
            output_options:
@@ -55,19 +55,36 @@ class Overrides(DictFormatterValidator, Scriptable):
 
         self.unresolvable.add(VARIABLES.entry_metadata.variable_name)
 
-    def initial_variables(self, unresolved_variables: Dict[str, str]) -> Dict[str, str]:
+    def initial_variables(
+        self, unresolved_variables: Optional[Dict[str, str]] = None
+    ) -> Dict[str, str]:
+        """
+        Returns
+        -------
+        Variables and format strings for all Override variables + additional variables (Optional)
+        """
         initial_variables: Dict[str, str] = {}
         mergedeep.merge(
             initial_variables,
             self.dict_with_format_strings,
-            unresolved_variables,
+            unresolved_variables if unresolved_variables else {},
             {SUBSCRIPTION_NAME: self.subscription_name},
         )
         return ScriptUtils.add_sanitized_variables(initial_variables)
 
-    def initialize_script(self, unresolved_variables: Dict[str, str]) -> "Overrides":
-        self.script.add(self.initial_variables(unresolved_variables=unresolved_variables))
-        self.unresolvable.update(set(unresolved_variables.keys()))
+    def initialize_script(self, unresolved_variables: Set[str]) -> "Overrides":
+        """
+        Initialize the override script with override variables + any unresolved variables
+        """
+        self.script.add(
+            self.initial_variables(
+                unresolved_variables={
+                    var_name: f"{{%throw('Plugin variable {var_name} has not been created yet')}}"
+                    for var_name in unresolved_variables
+                }
+            )
+        )
+        self.unresolvable.update(unresolved_variables)
         self.update_script()
         return self
 

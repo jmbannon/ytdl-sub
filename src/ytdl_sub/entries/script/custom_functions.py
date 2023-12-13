@@ -23,24 +23,46 @@ _days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 class CustomFunctions:
     @staticmethod
     def legacy_bracket_safety(value: ReturnableArgument) -> ReturnableArgument:
+        """
+        ytdl-sub used to replace brackets ('{', '}') with unicode brackets ('｛', '｝') to not
+        interfere with its legacy variable scripting system. This function replicates that
+        behavior.
+        """
         if isinstance(value, String):
             value = String(value.value.replace("{", "｛").replace("}", "｝"))
         return value
 
     @staticmethod
     def to_native_filepath(filepath: String) -> String:
+        """
+        Convert any unix-based path separators ('/') with the OS's native
+        separator.
+        """
         return String(filepath.value.replace(posixpath.sep, os.sep))
 
     @staticmethod
     def truncate_filepath_if_too_long(filepath: String) -> String:
+        """
+        If a file-path is too long for the OS, this function will truncate it while preserving
+        the extension.
+        """
         return String(FilePathTruncater.maybe_truncate_file_path(filepath.value))
 
     @staticmethod
     def sanitize(value: AnyArgument) -> String:
+        """
+        Sanitize a string using yt-dlp's ``sanitize_filename`` method to ensure it's safe to use
+        for file/directory names on any OS.
+        """
         return String(sanitize_filename(str(value)))
 
     @staticmethod
     def sanitize_plex_episode(string: String) -> String:
+        """
+        Sanitize a string using ``sanitize`` and replace numerics with their respective fixed-width
+        numbers. This is used to have Plex avoid scraping numbers like ``4x4`` as the
+        season and/or episode.
+        """
         sanitized_string = CustomFunctions.sanitize(string).value
         out = ""
         for char in sanitized_string:
@@ -71,6 +93,27 @@ class CustomFunctions:
 
     @staticmethod
     def to_date_metadata(yyyymmdd: String) -> Map:
+        """
+        Takes a date in the form of YYYYMMDD and returns a Map containing:
+
+        - date (String, YYYYMMDD)
+        - date_standardized (String, YYYY-MM-DD)
+        - year (Integer)
+        - month (Integer)
+        - day (Integer)
+        - year_truncated (String, YY from YY[YY])
+        - month_padded (String)
+        - day_padded (String)
+        - year_truncated_reversed (Integer, 100 - year_truncated)
+        - month_reversed (Integer, 13 - month)
+        - month_reversed_padded (String)
+        - day_reversed (Integer, total_days_in_month + 1 - day)
+        - day_reversed_padded (String)
+        - day_of_year (Integer)
+        - day_of_year_padded (String, padded 3)
+        - day_of_year_reversed (Integer, total_days_in_year + 1 - day_of_year)
+        - day_of_year_reversed_padded (String, padded 3)
+        """
         date_str = yyyymmdd.value
         if not (date_str.isnumeric() and len(date_str) == 8):
             raise RuntimeException(
@@ -123,6 +166,9 @@ class CustomFunctions:
 
     @staticmethod
     def register():
+        """
+        Register Custom functions once and only once
+        """
         if not Functions.is_built_in("sanitize"):
             Functions.register_function(CustomFunctions.legacy_bracket_safety)
             Functions.register_function(CustomFunctions.truncate_filepath_if_too_long)

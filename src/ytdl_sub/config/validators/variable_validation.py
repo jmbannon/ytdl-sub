@@ -50,7 +50,7 @@ def _get_added_and_modified_variables(
 
 
 def _override_variables(overrides: Overrides) -> Set[str]:
-    return set(list(overrides.initial_variables(unresolved_variables={}).keys()))
+    return set(list(overrides.initial_variables().keys()))
 
 
 def _entry_variables() -> Set[str]:
@@ -73,6 +73,9 @@ class VariableValidation:
         self.unresolved_variables: Set[str] = set()
 
     def initialize_overrides(self, overrides: Overrides) -> "VariableValidation":
+        """
+        Do some gymnastics to initialize the Overrides script.
+        """
         entry_variables = _entry_variables()
         override_variables = _override_variables(overrides)
 
@@ -93,12 +96,7 @@ class VariableValidation:
         # Initialize overrides with unresolved variables + modified variables to throw an error.
         # For modified variables, this is to prevent a resolve(update=True) to setting any
         # dependencies until it has been explicitly added
-        overrides = overrides.initialize_script(
-            unresolved_variables={
-                var_name: f"{{%throw('Plugin variable {var_name} has not been created yet')}}"
-                for var_name in self.unresolved_variables
-            }
-        )
+        overrides = overrides.initialize_script(unresolved_variables=self.unresolved_variables)
 
         # copy the script and mock entry variables
         self.script = copy.deepcopy(overrides.script).add(_add_dummy_variables(entry_variables))
