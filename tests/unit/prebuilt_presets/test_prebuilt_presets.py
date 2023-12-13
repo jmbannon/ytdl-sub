@@ -5,7 +5,6 @@ from typing import Optional
 from typing import Tuple
 
 import pytest
-import yappi
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
@@ -66,8 +65,6 @@ class TestPrebuiltTVShowPresets:
         media_player_preset: str,
         tv_show_structure_preset: str,
     ):
-        # yappi.set_clock_type("cpu")  # Use set_clock_type("wall") for wall time
-        # yappi.start()
         parent_presets = _tv_show_by_date_parent_presets(
             all_in_one_preset, media_player_preset, tv_show_structure_preset
         )
@@ -84,7 +81,6 @@ class TestPrebuiltTVShowPresets:
                 },
             },
         )
-        # yappi.get_func_stats().print_all()
 
     def test_compilation_many_urls(
         self,
@@ -153,8 +149,6 @@ class TestPrebuiltTVShowPresets:
         is_youtube_channel: bool,
         is_many_urls: bool,
     ):
-        # yappi.set_clock_type("wall")  # Use set_clock_type("wall") for wall time
-        # yappi.start()
 
         expected_summary_name = "unit/{}/{}/is_yt_{}{}".format(
             media_player_preset,
@@ -227,8 +221,6 @@ class TestPrebuiltTVShowPresets:
         )
 
         reformatted_transaction_log = reformatted_subscription.update_with_info_json(dry_run=False)
-        # yappi.get_func_stats().print_all()
-        #
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=reformatted_transaction_log,
