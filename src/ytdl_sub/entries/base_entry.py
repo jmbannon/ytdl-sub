@@ -34,8 +34,6 @@ class BaseEntry(ABC):
         self._working_directory = working_directory
         self._kwargs = entry_dict
 
-        self._additional_variables: Dict[str, str | int] = {}
-
     @property
     def uid(self: "BaseEntry") -> str:
         """

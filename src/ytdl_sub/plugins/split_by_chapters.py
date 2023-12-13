@@ -12,8 +12,9 @@ from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.utils.chapters import Chapters, ytdl_sub_split_by_chapters_parent_uid
+from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
+from ytdl_sub.utils.chapters import ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler

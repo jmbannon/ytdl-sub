@@ -11,8 +11,9 @@ from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.utils.chapters import Chapters, ytdl_sub_chapters_from_comments, \
-    ytdl_sub_split_by_chapters_parent_uid
+from ytdl_sub.utils.chapters import Chapters
+from ytdl_sub.utils.chapters import ytdl_sub_chapters_from_comments
+from ytdl_sub.utils.chapters import ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.regex_validator import RegexListValidator
@@ -195,9 +196,7 @@ class ChaptersOptions(OptionsDictValidator):
     def added_variables(
         self, resolved_variables: Set[str], unresolved_variables: Set[str]
     ) -> Dict[PluginOperation, Set[str]]:
-        return {
-            PluginOperation.MODIFY_ENTRY: {"ytdl_sub_chapters_from_comments"}
-        }
+        return {PluginOperation.MODIFY_ENTRY: {"ytdl_sub_chapters_from_comments"}}
 
 
 class ChaptersPlugin(Plugin[ChaptersOptions]):

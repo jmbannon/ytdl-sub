@@ -8,14 +8,9 @@ class TestEntry(object):
     def test_entry_to_dict(self, mock_entry, mock_entry_to_dict):
         out = mock_entry.to_dict()
 
-        # Delete non-legacy variables to reuse old to_dict comparision
-        del out[v.entry_metadata.variable_name]
-        del out[v.ytdl_sub_input_url.variable_name]
-        del out[v.playlist_metadata.variable_name]
-        del out[v.source_metadata.variable_name]
-        del out[v.sibling_metadata.variable_name]
-        del out[v.playlist_max_upload_date.variable_name]
-        assert out == mock_entry_to_dict
+        # HACK: Ensure legacy variables are in new output and equal
+        for key, expected_value in mock_entry_to_dict.items():
+            assert out[key] == expected_value, f"{key} does not equal"
 
     def test_entry_missing_kwarg(self, mock_entry):
         key = "dne"

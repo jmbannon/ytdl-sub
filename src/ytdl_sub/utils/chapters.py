@@ -4,7 +4,8 @@ from typing import List
 from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES, Variable
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import Variable
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileMetadata
 
@@ -231,8 +232,9 @@ class Chapters:
         # If more than 3 timestamps were parsed, return it
         if len(timestamps) >= 3:
             return Chapters(timestamps=timestamps, titles=titles)
+
         # Otherwise return empty chapters
-        return Chapters(timestamps=[], titles=[])
+        return cls.from_empty()
 
     @classmethod
     def from_yt_dlp_chapters(cls, chapters: List[Dict[str, str | float]]):
@@ -258,11 +260,11 @@ class Chapters:
         Chapters object
         """
         if chapters := (
-            entry.get(ytdl_sub_chapters_from_comments, list) or entry.get(v.chapters, list)
+            entry.try_get(ytdl_sub_chapters_from_comments, list) or entry.get(v.chapters, list)
         ):
             return cls.from_yt_dlp_chapters(chapters)
 
-        return Chapters(timestamps=[], titles=[])
+        return cls.from_empty()
 
     @classmethod
     def from_empty(cls) -> "Chapters":
