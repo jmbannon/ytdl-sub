@@ -238,6 +238,9 @@ class Chapters:
 
     @classmethod
     def from_yt_dlp_chapters(cls, chapters: List[Dict[str, str | float]]):
+        """
+        Create a Chapters object from the raw ``chapters`` metadata returned in an info.json
+        """
         timestamps: List[Timestamp] = []
         titles: List[str] = []
 

@@ -42,6 +42,8 @@ def validate_custom_function_name(custom_function_name: str) -> None:
     """
     Raises
     ------
+    InvalidFunctionName
+        If the function name is invalid
     InvalidVariableName
         if the variable name is invalid
     """

@@ -1,4 +1,6 @@
 import copy
+from typing import Dict
+from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Set
@@ -13,8 +15,16 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.script.script import Script
-from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
+
+
+def _add_dummy_variables(variables: Iterable[str]) -> Dict[str, str]:
+    dummy_variables: Dict[str, str] = {}
+    for var in variables:
+        dummy_variables[var] = ""
+        dummy_variables[f"{var}_sanitized"] = ""
+
+    return dummy_variables
 
 
 def _get_added_and_modified_variables(
@@ -91,9 +101,7 @@ class VariableValidation:
         )
 
         # copy the script and mock entry variables
-        self.script = copy.deepcopy(overrides.script).add(
-            ScriptUtils.add_dummy_variables(entry_variables)
-        )
+        self.script = copy.deepcopy(overrides.script).add(_add_dummy_variables(entry_variables))
 
         return self
 
@@ -117,7 +125,7 @@ class VariableValidation:
 
         resolved_variables = added_variables | modified_variables
 
-        self.script.add(ScriptUtils.add_dummy_variables(resolved_variables))
+        self.script.add(_add_dummy_variables(resolved_variables))
         self.unresolved_variables -= resolved_variables
 
         return added_variables

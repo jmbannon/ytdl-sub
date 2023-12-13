@@ -1,5 +1,3 @@
-from typing import Dict
-
 from yt_dlp.utils import datetime_from_str
 
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator

@@ -6,15 +6,6 @@ from typing import Iterable
 
 class ScriptUtils:
     @classmethod
-    def add_dummy_variables(cls, variables: Iterable[str]) -> Dict[str, str]:
-        dummy_variables: Dict[str, str] = {}
-        for var in variables:
-            dummy_variables[var] = ""
-            dummy_variables[f"{var}_sanitized"] = ""
-
-        return dummy_variables
-
-    @classmethod
     def add_sanitized_variables(cls, variables: Dict[str, str]) -> Dict[str, str]:
         sanitized_variables = {
             f"{name}_sanitized": f"{{%sanitize({name})}}" for name in variables.keys()
