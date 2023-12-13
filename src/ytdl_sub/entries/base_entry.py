@@ -1,5 +1,4 @@
 from abc import ABC
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -8,233 +7,15 @@ from typing import Type
 from typing import TypeVar
 from typing import final
 
-from yt_dlp.utils import sanitize_filename
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 
-from ytdl_sub.entries.variables.kwargs import DESCRIPTION
-from ytdl_sub.entries.variables.kwargs import EPOCH
-from ytdl_sub.entries.variables.kwargs import EXTRACTOR
-from ytdl_sub.entries.variables.kwargs import IE_KEY
-from ytdl_sub.entries.variables.kwargs import TITLE
-from ytdl_sub.entries.variables.kwargs import UID
-from ytdl_sub.entries.variables.kwargs import UPLOADER
-from ytdl_sub.entries.variables.kwargs import UPLOADER_ID
-from ytdl_sub.entries.variables.kwargs import UPLOADER_URL
-from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
-
-# pylint: disable=no-member
-
-
-def _sanitize_plex(string: str) -> str:
-    out = ""
-    for char in string:
-        match char:
-            case "0":
-                out += "０"
-            case "1":
-                out += "１"
-            case "2":
-                out += "２"
-            case "3":
-                out += "３"
-            case "4":
-                out += "４"
-            case "5":
-                out += "５"
-            case "6":
-                out += "６"
-            case "7":
-                out += "７"
-            case "8":
-                out += "８"
-            case "9":
-                out += "９"
-            case _:
-                out += char
-    return out
-
-
-class BaseEntryVariables:
-    """
-    Source variables are ``{variables}`` that contain metadata from downloaded media.
-    These variables can be used with fields that expect
-    :class:`~ytdl_sub.validators.string_formatter_validators.StringFormatterValidator`,
-    but not
-    :class:`~ytdl_sub.validators.string_formatter_validators.OverridesStringFormatterValidator`.
-    """
-
-    @property
-    def uid(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The entry's unique ID
-        """
-        return str(self.kwargs(UID))
-
-    @property
-    def uid_sanitized(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The sanitized uid of the entry, which is safe to use for Unix and Windows file names.
-        """
-        return sanitize_filename(self.uid)
-
-    @property
-    def uid_sanitized_plex(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The sanitized uid with additional sanitizing for Plex. Replaces numbers with
-            fixed-width numbers so Plex does not recognize them as season or episode numbers.
-        """
-        return _sanitize_plex(self.uid_sanitized)
-
-    @property
-    def extractor(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The ytdl extractor name
-        """
-        # pylint: disable=line-too-long
-        # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
-        # pylint: enable=line-too-long
-        return self.kwargs_get(EXTRACTOR) or self.kwargs(IE_KEY)
-
-    @property
-    def epoch(self: "BaseEntry") -> int:
-        """
-        Returns
-        -------
-        int
-            The unix epoch of when the metadata was scraped by yt-dlp.
-        """
-        return self.kwargs(EPOCH)
-
-    @property
-    def epoch_date(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The epoch's date, in YYYYMMDD format.
-        """
-        return datetime.utcfromtimestamp(self.epoch).strftime("%Y%m%d")
-
-    @property
-    def epoch_hour(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The epoch's hour, padded
-        """
-        return datetime.utcfromtimestamp(self.epoch).strftime("%H")
-
-    @property
-    def title(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The title of the entry. If a title does not exist, returns its unique ID.
-        """
-        return self.kwargs_get(TITLE, self.uid)
-
-    @property
-    def title_sanitized(self) -> str:
-        """
-        Returns
-        -------
-        str
-            The sanitized title of the entry, which is safe to use for Unix and Windows file names.
-        """
-        return sanitize_filename(self.title)
-
-    @property
-    def title_sanitized_plex(self) -> str:
-        """
-        Returns
-        -------
-        str
-            The sanitized title with additional sanitizing for Plex. Replaces numbers with
-            fixed-width numbers so Plex does not recognize them as season or episode numbers.
-        """
-        return _sanitize_plex(self.title_sanitized)
-
-    @property
-    def webpage_url(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The url to the webpage.
-        """
-        return self.kwargs(WEBPAGE_URL)
-
-    @property
-    def info_json_ext(self) -> str:
-        """
-        Returns
-        -------
-        str
-            The "info.json" extension
-        """
-        return "info.json"
-
-    @property
-    def description(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The description if it exists. Otherwise, returns an emtpy string.
-        """
-        return self.kwargs_get(DESCRIPTION, "")
-
-    @property
-    def uploader_id(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The uploader id if it exists, otherwise return the unique ID.
-        """
-        return self.kwargs_get(UPLOADER_ID, self.uid)
-
-    @property
-    def uploader(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The uploader if it exists, otherwise return the uploader ID.
-        """
-        return self.kwargs_get(UPLOADER, self.uploader_id)
-
-    @property
-    def uploader_url(self: "BaseEntry") -> str:
-        """
-        Returns
-        -------
-        str
-            The uploader url if it exists, otherwise returns the webpage_url.
-        """
-        return self.kwargs_get(UPLOADER_URL, self.webpage_url)
-
-
-# pylint: enable=no-member
-
+v: VariableDefinitions = VARIABLES
 
 TBaseEntry = TypeVar("TBaseEntry", bound="BaseEntry")
 
 
-class BaseEntry(BaseEntryVariables, ABC):
+class BaseEntry(ABC):
     """
     Abstract entry object to represent anything download from ytdl (playlist metadata, media, etc).
     """
@@ -254,6 +35,52 @@ class BaseEntry(BaseEntryVariables, ABC):
         self._kwargs = entry_dict
 
         self._additional_variables: Dict[str, str | int] = {}
+
+    @property
+    def uid(self: "BaseEntry") -> str:
+        """
+        Returns
+        -------
+        str
+            The entry's unique ID
+        """
+        return str(self.kwargs(v.uid.metadata_key))
+
+    @property
+    def extractor(self: "BaseEntry") -> str:
+        """
+        The ytdl extractor name
+        """
+        # pylint: disable=line-too-long
+        # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
+        # pylint: enable=line-too-long
+        return self.kwargs_get(v.extractor_key.metadata_key) or self.kwargs(v.ie_key.metadata_key)
+
+    @property
+    def title(self: "BaseEntry") -> str:
+        """
+        The title of the entry. If a title does not exist, returns its unique ID.
+        """
+        return self.kwargs_get(v.title.metadata_key, self.uid)
+
+    @property
+    def webpage_url(self: "BaseEntry") -> str:
+        """
+        The url to the webpage.
+        """
+        return self.kwargs(v.webpage_url.metadata_key)
+
+    @property
+    def info_json_ext(self) -> str:
+        """The "info.json" extension"""
+        return "info.json"
+
+    @property
+    def uploader_id(self: "BaseEntry") -> str:
+        """
+        The uploader id if it exists, otherwise return the unique ID.
+        """
+        return self.kwargs_get(v.uploader_id.metadata_key, self.uid)
 
     def kwargs_contains(self, key: str) -> bool:
         """Returns whether internal kwargs contains the specified key"""

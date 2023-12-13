@@ -12,15 +12,10 @@ from resources import copy_file_fixture
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
-from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.entries.variables.kwargs import DESCRIPTION
-from ytdl_sub.entries.variables.kwargs import EPOCH
-from ytdl_sub.entries.variables.kwargs import EXTRACTOR
-from ytdl_sub.entries.variables.kwargs import EXTRACTOR_KEY
-from ytdl_sub.entries.variables.kwargs import TITLE
-from ytdl_sub.entries.variables.kwargs import UID
-from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE
-from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+
+v: VariableDefinitions = VARIABLES
 
 
 @pytest.fixture
@@ -59,19 +54,19 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         is_extracted_audio: bool = False,
     ) -> Dict:
         entry_dict = {
-            UID: uid,
-            EPOCH: 1596878400,
+            v.uid.metadata_key: uid,
+            v.epoch.metadata_key: 1596878400,
             v.playlist_title.metadata_key: playlist_title,
             v.playlist_index.metadata_key: playlist_index,
             v.playlist_count.metadata_key: playlist_count,
-            EXTRACTOR: "mock-entry-dict",
-            EXTRACTOR_KEY: "mock-extractor-key",
-            TITLE: f"Mock Entry {uid}",
-            "ext": "mp4",
-            UPLOAD_DATE: upload_date,
-            WEBPAGE_URL: f"https://{uid}.com",
+            v.extractor.metadata_key: "mock-entry-dict",
+            v.extractor_key.metadata_key: "mock-extractor-key",
+            v.title.metadata_key: f"Mock Entry {uid}",
+            v.ext.metadata_key: "mp4",
+            v.upload_date.metadata_key: upload_date,
+            v.webpage_url.metadata_key: f"https://{uid}.com",
             v.playlist_metadata.metadata_key: {"thumbnails": []},
-            DESCRIPTION: "The Description",
+            v.description.metadata_key: "The Description",
         }
 
         if is_youtube_channel:

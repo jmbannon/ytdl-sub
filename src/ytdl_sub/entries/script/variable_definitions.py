@@ -36,7 +36,7 @@ class SiblingMetadata(MetadataVariable):
     pass
 
 
-class _Variables:
+class VariableDefinitions:
     @property
     def entry_metadata(self) -> Metadata:
         """
@@ -70,16 +70,6 @@ class _Variables:
         return MetadataVariable(metadata_key="id", variable_name="uid")
 
     @property
-    def uid_sanitized(self) -> Variable:
-        """
-        Returns
-        -------
-        str
-            The sanitized uid of the entry, which is safe to use for Unix and Windows file names.
-        """
-        return Variable("uid_sanitized")
-
-    @property
     def uid_sanitized_plex(self) -> Variable:
         """
         Returns
@@ -89,6 +79,16 @@ class _Variables:
             fixed-width numbers so Plex does not recognize them as season or episode numbers.
         """
         return Variable("uid_sanitized_plex")
+
+    @property
+    def ie_key(self) -> MetadataVariable:
+        """
+        Returns
+        -------
+        str
+            The info-extractor key
+        """
+        return MetadataVariable(metadata_key="ie_key", variable_name="ie_key")
 
     @property
     def extractor_key(self) -> MetadataVariable:
@@ -149,16 +149,6 @@ class _Variables:
             The title of the entry. If a title does not exist, returns its unique ID.
         """
         return MetadataVariable(variable_name="title", metadata_key="title")
-
-    @property
-    def title_sanitized(self) -> Variable:
-        """
-        Returns
-        -------
-        str
-            The sanitized title of the entry, which is safe to use for Unix and Windows file names.
-        """
-        return Variable("title_sanitized")
 
     @property
     def title_sanitized_plex(self) -> Variable:
@@ -243,16 +233,6 @@ class _Variables:
         return MetadataVariable("source_title", metadata_key=self.title.metadata_key)
 
     @property
-    def source_title_sanitized(self) -> Variable:
-        """
-        Returns
-        -------
-        str
-            The source title, sanitized
-        """
-        return Variable("source_title_sanitized")
-
-    @property
     def source_uid(self) -> MetadataVariable:
         """
         Returns
@@ -334,16 +314,6 @@ class _Variables:
             Name of its parent playlist/channel if it exists, otherwise returns its title.
         """
         return MetadataVariable(variable_name="playlist_title", metadata_key="playlist_title")
-
-    @property
-    def playlist_title_sanitized(self) -> Variable:
-        """
-        Returns
-        -------
-        str
-            The playlist name, sanitized
-        """
-        return Variable("playlist_title_sanitized")
 
     @property
     def playlist_index(self) -> MetadataVariable:
@@ -499,16 +469,6 @@ class _Variables:
         return MetadataVariable("playlist_uploader", metadata_key=self.uploader.metadata_key)
 
     @property
-    def playlist_uploader_sanitized(self) -> Variable:
-        """
-        Returns
-        -------
-        str
-            The playlist uploader, sanitized.
-        """
-        return Variable("playlist_uploader_sanitized")
-
-    @property
     def playlist_uploader_url(self) -> MetadataVariable:
         """
         Returns
@@ -561,16 +521,6 @@ class _Variables:
         return MetadataVariable(variable_name="creator", metadata_key="creator")
 
     @property
-    def creator_sanitized(self) -> Variable:
-        """
-        Returns
-        -------
-        str
-            The creator name, sanitized
-        """
-        return Variable("creator_sanitized")
-
-    @property
     def channel(self) -> MetadataVariable:
         """
         Returns
@@ -579,16 +529,6 @@ class _Variables:
             The channel name if it exists, otherwise returns the uploader.
         """
         return MetadataVariable(variable_name="channel", metadata_key="channel")
-
-    @property
-    def channel_sanitized(self) -> Variable:
-        """
-        Returns
-        -------
-        str
-            The channel name, sanitized.
-        """
-        return Variable("channel_sanitized")
 
     @property
     def channel_id(self) -> MetadataVariable:
@@ -1051,4 +991,4 @@ class _Variables:
 
 
 # Singleton to use externally
-VARIABLES = _Variables()
+VARIABLES: VariableDefinitions = VariableDefinitions()

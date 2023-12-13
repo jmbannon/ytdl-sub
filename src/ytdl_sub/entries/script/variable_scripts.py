@@ -6,21 +6,20 @@ from typing import Set
 import mergedeep
 
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
-from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import Metadata
 from ytdl_sub.entries.script.variable_definitions import MetadataVariable
 from ytdl_sub.entries.script.variable_definitions import Variable
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 
 ###############################################################################################
 # Helpers
 
+v: VariableDefinitions = VARIABLES
+
 
 def pad_int(key: Variable, pad: int) -> str:
     return f"{{%pad_zero({key.variable_name}, {pad})}}"
-
-
-def sanitized(key: Variable) -> str:
-    return f"{{%sanitize({key.variable_name})}}"
 
 
 def sanitized_plex(key: Variable) -> str:
@@ -130,6 +129,7 @@ ENTRY_DEFAULT_VARIABLES: Dict[MetadataVariable, str] = {
     v.title: entry_get_str(v.title, v.uid),
     v.extractor: entry_get_str(v.extractor, v.extractor_key),
     v.description: entry_get_str(v.description, ""),
+    v.ie_key: entry_get_str(v.ie_key, v.extractor_key),
     v.uploader_id: entry_get_str(v.uploader_id, v.uid),
     v.uploader: entry_get_str(v.uploader, v.uploader_id),
     v.uploader_url: entry_get_str(v.uploader_url, v.webpage_url),
@@ -157,19 +157,14 @@ ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
 }
 
 ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {
-    v.uid_sanitized: sanitized(v.uid),
     v.uid_sanitized_plex: sanitized_plex(v.uid),
-    v.title_sanitized: sanitized(v.title),
     v.title_sanitized_plex: sanitized_plex(v.title),
     v.epoch_date: f"{{%datetime_strftime({v.epoch.variable_name}, '%Y%m%d')}}",
     v.epoch_hour: f"{{%datetime_strftime({v.epoch.variable_name}, '%H')}}",
-    v.channel_sanitized: sanitized(v.channel),
-    v.creator_sanitized: sanitized(v.creator),
     v.download_index_padded6: pad_int(v.download_index, 6),
     v.upload_date_index_padded: pad_int(v.upload_date_index, 2),
     v.upload_date_index_reversed: f"{{%sub(100, {v.upload_date_index.variable_name})}}",
     v.upload_date_index_reversed_padded: pad_int(v.upload_date_index_reversed, 2),
-    v.playlist_title_sanitized: sanitized(v.playlist_title),
     v.playlist_index_reversed: f"{{%sub({v.playlist_count.variable_name}, {v.playlist_index.variable_name}, -1)}}",
     v.playlist_index_padded: pad_int(v.playlist_index, 2),
     v.playlist_index_reversed_padded: pad_int(v.playlist_index_reversed, 2),
@@ -226,10 +221,6 @@ PLAYLIST_VARIABLES: Dict[Variable, str] = {
     v.playlist_uploader_url: playlist_get_str(v.playlist_uploader_url, v.playlist_webpage_url),
 }
 
-PLAYLIST_DERIVED_VARIABLES: Dict[Variable, str] = {
-    v.playlist_uploader_sanitized: sanitized(v.playlist_uploader),
-}
-
 
 SOURCE_VARIABLES: Dict[Variable, str] = {
     v.source_uid: source_get_str(v.source_uid, v.playlist_uid),
@@ -244,7 +235,6 @@ SOURCE_VARIABLES: Dict[Variable, str] = {
 }
 
 SOURCE_DERIVED_VARIABLES: Dict[Variable, str] = {
-    v.source_title_sanitized: sanitized(v.source_title),
     v.source_index_padded: pad_int(v.source_index, 2),
 }
 
@@ -282,7 +272,6 @@ mergedeep.merge(
     SIBLING_VARIABLES,
     SIBLING_DERIVED_VARIABLES,
     PLAYLIST_VARIABLES,
-    PLAYLIST_DERIVED_VARIABLES,
     SOURCE_VARIABLES,
     SOURCE_DERIVED_VARIABLES,
 )
