@@ -1,48 +1,25 @@
 import copy
-import functools
 from typing import Any
 from typing import Dict
-from typing import Iterable
 from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
-from typing import Type
-from typing import Union
 
 from mergedeep import mergedeep
 
 from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin_mapping import PluginMapping
-from ytdl_sub.config.plugin_operation import PluginOperation
-from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
+from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
-from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.config.preset_options import YTDLOptions
+from ytdl_sub.config.validators.variable_validation import VariableValidation
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
-from ytdl_sub.script.script import Script
-from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
-from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import validate_formatters
-from ytdl_sub.validators.validators import DictValidator
-from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringListValidator
-from ytdl_sub.validators.validators import Validator
 from ytdl_sub.validators.validators import validation_exception
 
 PRESET_KEYS = {
@@ -68,44 +45,6 @@ def _parent_preset_error_message(
         f"Available prebuilt presets: {', '.join(sorted(PUBLISHED_PRESET_NAMES))}\n"
         f"Your presets: {', '.join(sorted(user_defined_presets))}",
     )
-
-
-class PresetPlugins:
-    def __init__(self):
-        self.plugin_types: List[Type[Plugin]] = []
-        self.plugin_options: List[OptionsValidator] = []
-
-    def add(self, plugin_type: Type[Plugin], plugin_options: OptionsValidator) -> "PresetPlugins":
-        """
-        Add a pair of plugin type and options to the list
-        """
-        self.plugin_types.append(plugin_type)
-        self.plugin_options.append(plugin_options)
-        return self
-
-    def zipped(self) -> List[Tuple[Type[Plugin], OptionsValidator]]:
-        """
-        Returns
-        -------
-        Plugin and PluginOptions zipped
-        """
-        return list(zip(self.plugin_types, self.plugin_options))
-
-    def get(self, plugin_type: Type[TOptionsValidator]) -> Optional[TOptionsValidator]:
-        """
-        Parameters
-        ----------
-        plugin_type
-            Fetch the plugin options for this type
-
-        Returns
-        -------
-        Options of this plugin if they exit. Otherwise, return None.
-        """
-        plugin_option_types = [type(plugin_options) for plugin_options in self.plugin_options]
-        if plugin_type in plugin_option_types:
-            return self.plugin_options[plugin_option_types.index(plugin_type)]
-        return None
 
 
 class _PresetShell(StrictDictValidator):
@@ -163,24 +102,6 @@ class Preset(_PresetShell):
                 validator=PluginMapping.get(plugin_name).plugin_options_type,
             )
 
-    @property
-    def _source_variables(self) -> List[str]:
-        return list(VARIABLE_SCRIPTS.keys())
-
-    @property
-    def _added_variables(self) -> Set[str]:
-        added_variables: Set[str] = set()
-        options: List[OptionsValidator] = self.plugins.plugin_options
-        options.append(self.downloader_options)
-
-        for plugin_options in options:
-            for plugin_added_variables in plugin_options.added_source_variables(
-                unresolved_variables=set()
-            ).values():
-                added_variables |= set(plugin_added_variables)
-
-        return added_variables
-
     def _validate_and_get_plugins(self) -> PresetPlugins:
         preset_plugins = PresetPlugins()
 
@@ -194,64 +115,6 @@ class Preset(_PresetShell):
             preset_plugins.add(plugin_type=plugin, plugin_options=plugin_options)
 
         return preset_plugins
-
-    def _validate_variable_usage(self) -> None:
-        """
-        Validate variables resolve as plugins are executed, and return
-        a mock script which contains actualized added variables from the plugins
-        """
-        script = copy.deepcopy(self.overrides.script).add(
-            ScriptUtils.add_dummy_variables(self._source_variables)
-        )
-        unresolved_variables = self._added_variables
-
-        added_variables: Set[str] = self.downloader_options.added_source_variables(
-            unresolved_variables
-        ).get(PluginOperation.DOWNLOADER, set())
-        script.add(ScriptUtils.add_dummy_variables(added_variables))
-        unresolved_variables -= added_variables
-
-        for plugin_options in PluginMapping.order_options_by(
-            self.plugins.zipped(), PluginOperation.MODIFY_ENTRY_METADATA
-        ):
-            added_variables = plugin_options.added_source_variables(
-                unresolved_variables=unresolved_variables
-            ).get(PluginOperation.MODIFY_ENTRY_METADATA, set())
-
-            if added_variables:
-                script.add(ScriptUtils.add_dummy_variables(added_variables))
-                unresolved_variables -= added_variables
-
-        _ = script.resolve(unresolvable=unresolved_variables, update=True)
-        for plugin_options in PluginMapping.order_options_by(
-            self.plugins.zipped(), PluginOperation.MODIFY_ENTRY
-        ):
-            added_variables = plugin_options.added_source_variables(
-                unresolved_variables=unresolved_variables
-            ).get(PluginOperation.MODIFY_ENTRY, set())
-
-            if added_variables:
-                script.add(ScriptUtils.add_dummy_variables(added_variables))
-                unresolved_variables -= added_variables
-
-                _ = script.resolve(unresolvable=unresolved_variables, update=True)
-
-            # Validate that any formatter in the plugin options can resolve
-            validate_formatters(
-                script=script,
-                unresolved_variables=unresolved_variables,
-                validator=plugin_options,
-            )
-
-        validate_formatters(
-            script=script,
-            unresolved_variables=unresolved_variables,
-            validator=self.output_options,
-        )
-
-        assert not unresolved_variables
-
-        return script
 
     def _get_presets_to_merge(
         self, parent_presets: str | List[str], seen_presets: List[str], config: ConfigValidator
@@ -329,16 +192,13 @@ class Preset(_PresetShell):
         )
 
         self.plugins: PresetPlugins = self._validate_and_get_plugins()
-        self.overrides = self._validate_key(
-            key="overrides", validator=Overrides, default={}
-        ).initialize_script(
-            unresolved_variables={
-                var_name: f"{{%throw('Plugin variable {var_name} has not been created yet')}}"
-                for var_name in self._added_variables
-            }
-        )
+        self.overrides = self._validate_key(key="overrides", validator=Overrides, default={})
 
-        self._validate_variable_usage()
+        VariableValidation(
+            downloader_options=self.downloader_options,
+            output_options=self.output_options,
+            plugins=self.plugins,
+        ).initialize_overrides(overrides=self.overrides).ensure_proper_usage()
 
     @property
     def name(self) -> str:

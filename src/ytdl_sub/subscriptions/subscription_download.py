@@ -7,10 +7,10 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin import SplitPlugin
-from ytdl_sub.config.plugin_mapping import PluginMapping
-from ytdl_sub.config.plugin_operation import PluginOperation
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.plugin.plugin import SplitPlugin
+from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
 from ytdl_sub.downloaders.source_plugin import SourcePlugin

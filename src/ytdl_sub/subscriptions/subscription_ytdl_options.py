@@ -7,7 +7,7 @@ from typing import TypeVar
 
 from yt_dlp import match_filter_func
 
-from ytdl_sub.config.plugin import Plugin
+from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin

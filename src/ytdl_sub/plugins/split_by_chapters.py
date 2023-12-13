@@ -9,9 +9,9 @@ from typing import Tuple
 
 from yt_dlp.utils import sanitize_filename
 
-from ytdl_sub.config.plugin import SplitPlugin
-from ytdl_sub.config.plugin_operation import PluginOperation
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import SplitPlugin
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.variables.kwargs import CHAPTERS
 from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY

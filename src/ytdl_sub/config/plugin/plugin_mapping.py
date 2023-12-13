@@ -1,15 +1,13 @@
-import copy
 from typing import Dict
-from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Type
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin import SplitPlugin
-from ytdl_sub.config.plugin_operation import PluginOperation
-from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.plugin.plugin import SplitPlugin
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin

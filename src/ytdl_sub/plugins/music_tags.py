@@ -6,8 +6,8 @@ from typing import List
 
 import mediafile
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.utils.file_handler import FileMetadata

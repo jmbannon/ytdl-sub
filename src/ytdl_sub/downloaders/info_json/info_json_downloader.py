@@ -7,7 +7,7 @@ from typing import List
 from typing import Optional
 
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY

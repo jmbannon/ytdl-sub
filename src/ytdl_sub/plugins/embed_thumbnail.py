@@ -3,8 +3,8 @@ from typing import Optional
 
 import mediafile
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler

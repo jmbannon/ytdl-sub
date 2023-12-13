@@ -402,3 +402,7 @@ class Script:
             return resolvable
 
         raise RuntimeException(f"Tried to get unresolved variable {variable_name}")
+
+    @property
+    def variable_names(self) -> Set[str]:
+        return set(list(self._variables.keys()))

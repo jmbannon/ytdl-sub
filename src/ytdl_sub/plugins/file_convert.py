@@ -5,9 +5,9 @@ from typing import Optional
 from typing import Set
 
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin_operation import PluginOperation
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
@@ -118,9 +118,7 @@ class FileConvertOptions(OptionsDictValidator):
         """
         return self._ffmpeg_post_process_args
 
-    def added_source_variables(
-        self, unresolved_variables: Set[str]
-    ) -> Dict[PluginOperation, Set[str]]:
+    def modified_variables(self) -> Dict[PluginOperation, Set[str]]:
         return {PluginOperation.MODIFY_ENTRY: {v.ext.variable_name}}
 
 

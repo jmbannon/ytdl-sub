@@ -5,8 +5,8 @@ from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
