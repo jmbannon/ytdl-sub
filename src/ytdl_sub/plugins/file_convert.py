@@ -6,9 +6,8 @@ from typing import Set
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin import PluginPriority
+from ytdl_sub.config.plugin_operation import PluginOperation
 from ytdl_sub.config.preset_options import OptionsDictValidator
-from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
@@ -127,10 +126,6 @@ class FileConvertOptions(OptionsDictValidator):
 
 class FileConvertPlugin(Plugin[FileConvertOptions]):
     plugin_options_type = FileConvertOptions
-    # Perform this after regex
-    priority: PluginPriority = PluginPriority(
-        modify_entry=PluginPriority.MODIFY_ENTRY_AFTER_SPLIT + 1
-    )
 
     def __init__(
         self,

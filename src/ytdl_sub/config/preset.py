@@ -16,9 +16,9 @@ from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin import Plugin
 from ytdl_sub.config.plugin_mapping import PluginMapping
+from ytdl_sub.config.plugin_operation import PluginOperation
 from ytdl_sub.config.preset_options import OptionsValidator
 from ytdl_sub.config.preset_options import OutputOptions
-from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.config.preset_options import TOptionsValidator
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
@@ -83,13 +83,13 @@ class PresetPlugins:
         self.plugin_options.append(plugin_options)
         return self
 
-    def zipped(self) -> Iterable[Tuple[Type[Plugin], OptionsValidator]]:
+    def zipped(self) -> List[Tuple[Type[Plugin], OptionsValidator]]:
         """
         Returns
         -------
         Plugin and PluginOptions zipped
         """
-        return zip(self.plugin_types, self.plugin_options)
+        return list(zip(self.plugin_types, self.plugin_options))
 
     def get(self, plugin_type: Type[TOptionsValidator]) -> Optional[TOptionsValidator]:
         """
@@ -211,8 +211,8 @@ class Preset(_PresetShell):
         script.add(ScriptUtils.add_dummy_variables(added_variables))
         unresolved_variables -= added_variables
 
-        for _, plugin_options in sorted(
-            self.plugins.zipped(), key=lambda pl: pl[0].priority.modify_entry_metadata
+        for plugin_options in PluginMapping.order_options_by(
+            self.plugins.zipped(), PluginOperation.MODIFY_ENTRY_METADATA
         ):
             added_variables = plugin_options.added_source_variables(
                 unresolved_variables=unresolved_variables
@@ -223,8 +223,8 @@ class Preset(_PresetShell):
                 unresolved_variables -= added_variables
 
         _ = script.resolve(unresolvable=unresolved_variables, update=True)
-        for _, plugin_options in sorted(
-            self.plugins.zipped(), key=lambda pl: pl[0].priority.modify_entry
+        for plugin_options in PluginMapping.order_options_by(
+            self.plugins.zipped(), PluginOperation.MODIFY_ENTRY
         ):
             added_variables = plugin_options.added_source_variables(
                 unresolved_variables=unresolved_variables

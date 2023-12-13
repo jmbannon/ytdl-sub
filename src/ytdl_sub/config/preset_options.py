@@ -1,13 +1,12 @@
 from abc import ABC
-from enum import Enum
 from typing import Any
 from typing import Dict
-from typing import List
 from typing import Optional
 from typing import Set
 from typing import TypeVar
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
+from ytdl_sub.config.plugin_operation import PluginOperation
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
@@ -19,12 +18,6 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import Validator
-
-
-class PluginOperation(Enum):
-    DOWNLOADER = -1
-    MODIFY_ENTRY_METADATA = 0
-    MODIFY_ENTRY = 1
 
 
 # pylint: disable=no-self-use

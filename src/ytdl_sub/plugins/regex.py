@@ -7,9 +7,8 @@ from typing import Set
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin import PluginPriority
+from ytdl_sub.config.plugin_operation import PluginOperation
 from ytdl_sub.config.preset_options import OptionsDictValidator
-from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
@@ -227,7 +226,7 @@ class RegexOptions(OptionsDictValidator):
     ) -> bool:
         if input_variable_name in unresolved_variables:
             return False
-        for capture_group_default in regex_options.capture_group_defaults:
+        for capture_group_default in regex_options.capture_group_defaults or []:
             parsed_default = parse(capture_group_default.format_string)
             if parsed_default.variables.issubset(unresolved_variables):
                 return False
@@ -261,9 +260,6 @@ class RegexOptions(OptionsDictValidator):
 
 class RegexPlugin(Plugin[RegexOptions]):
     plugin_options_type = RegexOptions
-    priority = PluginPriority(
-        modify_entry=PluginPriority.MODIFY_ENTRY_AFTER_SPLIT + 0,
-    )
 
     def __init__(
         self,

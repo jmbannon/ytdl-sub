@@ -1,6 +1,5 @@
 from abc import ABC
 from abc import abstractmethod
-from enum import Enum
 from typing import Dict
 from typing import Generic
 from typing import List
@@ -15,39 +14,6 @@ from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-
-class PluginPriority:
-    """
-    Defines priority for plugins, 0 is highest priority
-    """
-
-    MODIFY_ENTRY_SPLIT = 9
-
-    # If modify_entry priority is >= to this value, run after split
-    MODIFY_ENTRY_AFTER_SPLIT = 10
-
-    # if post_process is >= to this value, run after file_convert
-    POST_PROCESS_AFTER_FILE_CONVERT = 10
-
-    MODIFY_ENTRY_FIRST = 0
-
-    def __init__(
-        self, modify_entry_metadata: int = 5, modify_entry: int = 5, post_process: int = 5
-    ):
-        self.modify_entry_metadata = modify_entry_metadata
-        self.modify_entry = modify_entry
-        self.post_process = post_process
-
-    @property
-    def modify_entry_after_split(self) -> bool:
-        """
-        Returns
-        -------
-        True if the plugin should modify an entry after a potential split. False otherwise.
-        """
-        return self.modify_entry >= PluginPriority.MODIFY_ENTRY_AFTER_SPLIT
-
-
 # pylint: disable=no-self-use,unused-argument
 
 
@@ -56,7 +22,6 @@ class BasePlugin(DownloadArchiver, Generic[TOptionsValidator], ABC):
     Shared code amongst all SourcePlugins (downloaders) and Plugins (post-download modification)
     """
 
-    priority: PluginPriority = PluginPriority()
     plugin_options_type: Type[TOptionsValidator]
 
     def __init__(
@@ -146,8 +111,6 @@ class SplitPlugin(Plugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
     """
     Plugin that splits entries into zero or more entries
     """
-
-    priority = PluginPriority(modify_entry_metadata=PluginPriority.MODIFY_ENTRY_SPLIT)
 
     @abstractmethod
     def split(self, entry: Entry) -> List[Tuple[Entry, FileMetadata]]:

@@ -4,8 +4,8 @@ from typing import Dict
 from typing import Optional
 from typing import Set
 
+from ytdl_sub.config.plugin_operation import PluginOperation
 from ytdl_sub.config.preset_options import OptionsValidator
-from ytdl_sub.config.preset_options import PluginOperation
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
