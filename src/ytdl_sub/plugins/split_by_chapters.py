@@ -113,7 +113,7 @@ class SplitByChaptersOptions(OptionsDictValidator):
 class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
     plugin_options_type = SplitByChaptersOptions
 
-    def modify_entry(self, entry: Entry) -> Optional[Entry]:
+    def _non_split_entry(self, entry: Entry) -> Entry:
         entry.add(
             {
                 "chapter_title": f"{{ {v.title.variable_name} }}",
@@ -178,7 +178,8 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
         # If no chapters, do not split anything
         if not chapters.contains_any_chapters():
             if self.plugin_options.when_no_chapters == "pass":
-                return [(entry, FileMetadata())]
+                # Modify the entry t
+                return [(self._non_split_entry(entry), FileMetadata())]
 
             if self.plugin_options.when_no_chapters == "drop":
                 return []
