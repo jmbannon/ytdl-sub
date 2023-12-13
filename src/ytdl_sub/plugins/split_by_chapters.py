@@ -7,15 +7,12 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
-from yt_dlp.utils import sanitize_filename
-
 from ytdl_sub.config.plugin.plugin import SplitPlugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.entries.variables.kwargs import CHAPTERS
-from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
-from ytdl_sub.entries.variables.kwargs import UID
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
 from ytdl_sub.utils.exceptions import ValidationException
@@ -104,22 +101,40 @@ class SplitByChaptersOptions(OptionsDictValidator):
         """
         return self._when_no_chapters
 
+    def modified_variables(self) -> Dict[PluginOperation, Set[str]]:
+        return {
+            PluginOperation.MODIFY_ENTRY: {
+                v.uid.variable_name,
+                v.ytdl_sub_split_entry_parent_uid.variable_name,
+            }
+        }
+
 
 class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
     plugin_options_type = SplitByChaptersOptions
 
+    def modify_entry(self, entry: Entry) -> Optional[Entry]:
+        entry.add(
+            {
+                "chapter_title": f"{{ {v.title.variable_name} }}",
+                "chapter_index": 1,
+                "chapter_index_padded": "01",
+                "chapter_count": 1,
+                v.uid.variable_name: entry.uid,
+                v.ytdl_sub_split_entry_parent_uid.variable_name: entry.uid,
+            }
+        )
+        return entry
+
     def _create_split_entry(
-        self, source_entry: Entry, title: str, idx: int, chapters: Chapters
+        self, new_entry: Entry, title: str, idx: int, chapters: Chapters
     ) -> Tuple[Entry, FileMetadata]:
         """
         Runs ffmpeg to create the split video
         """
-        entry = copy.deepcopy(source_entry)
-
-        entry.add_variables(
+        new_entry.add(
             {
                 "chapter_title": title,
-                "chapter_title_sanitized": sanitize_filename(title),
                 "chapter_index": idx + 1,
                 "chapter_index_padded": f"{(idx + 1):02d}",
                 "chapter_count": len(chapters.timestamps),
@@ -127,19 +142,12 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
         )
 
         # pylint: disable=protected-access
-        entry.add_kwargs(
-            {
-                UID: _split_video_uid(source_uid=entry.uid, idx=idx),
-                SPLIT_BY_CHAPTERS_PARENT_ENTRY: source_entry._kwargs,
-            }
-        )
-
-        if entry.kwargs_contains(CHAPTERS):
-            del entry._kwargs[CHAPTERS]
+        if new_entry.kwargs_contains(CHAPTERS):
+            del new_entry._kwargs[CHAPTERS]
         # pylint: enable=protected-access
 
         timestamp_begin = chapters.timestamps[idx].readable_str
-        timestamp_end = Timestamp(entry.kwargs("duration")).readable_str
+        timestamp_end = Timestamp(new_entry.kwargs("duration")).readable_str
         if idx + 1 < len(chapters.timestamps):
             timestamp_end = chapters.timestamps[idx + 1].readable_str
 
@@ -149,7 +157,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
                 "Warning"
             ] = "Dry-run assumes embedded chapters with no modifications"
 
-        metadata_value_dict["Source Title"] = entry.title
+        metadata_value_dict["Source Title"] = new_entry.title
         metadata_value_dict["Segment"] = f"{timestamp_begin} - {timestamp_end}"
 
         metadata = FileMetadata.from_dict(
@@ -158,7 +166,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
             sort_dict=False,
         )
 
-        return entry, metadata
+        return new_entry, metadata
 
     def split(self, entry: Entry) -> Optional[List[Tuple[Entry, FileMetadata]]]:
         """
@@ -170,15 +178,8 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
         # If no chapters, do not split anything
         if not chapters.contains_any_chapters():
             if self.plugin_options.when_no_chapters == "pass":
-                entry.add_variables(
-                    {
-                        "chapter_title": entry.title,
-                        "chapter_index": 1,
-                        "chapter_index_padded": "01",
-                        "chapter_count": 1,
-                    }
-                )
                 return [(entry, FileMetadata())]
+
             if self.plugin_options.when_no_chapters == "drop":
                 return []
 
@@ -187,7 +188,16 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
             )
 
         for idx, title in enumerate(chapters.titles):
+            new_entry = copy.deepcopy(entry)
             new_uid = _split_video_uid(source_uid=entry.uid, idx=idx)
+
+            new_entry.add(
+                {
+                    v.uid.variable_name: new_uid,
+                    v.ytdl_sub_split_entry_parent_uid.variable_name: entry.uid,
+                }
+            )
+            new_entry.add_kwargs({v.uid.metadata_key: new_uid})
 
             if not self.is_dry_run:
                 # Get the input/output file paths
@@ -210,13 +220,13 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
                     FileHandler.copy(
                         src_file_path=entry.get_download_thumbnail_path(),
                         dst_file_path=Path(self.working_directory)
-                        / f"{new_uid}.{entry.thumbnail_ext}",
+                        / f"{new_uid}.{entry.get_str(v.thumbnail_ext)}",
                     )
 
             # Format the split video
             split_videos_and_metadata.append(
                 self._create_split_entry(
-                    source_entry=entry,
+                    new_entry=new_entry,
                     title=title,
                     idx=idx,
                     chapters=chapters,

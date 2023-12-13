@@ -8,6 +8,8 @@ from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.plugin.plugin import SplitPlugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsValidator
+from ytdl_sub.downloaders.url.downloader import UrlDownloaderCollectionVariablePlugin
+from ytdl_sub.downloaders.url.downloader import UrlDownloaderThumbnailPlugin
 from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin
@@ -53,11 +55,13 @@ class PluginMapping:
     # All other plugins are added after the defined ordered ones
     _ORDER_MODIFY_ENTRY_METADATA: List[Type[Plugin]] = [
         ThrottleProtectionPlugin,
+        UrlDownloaderCollectionVariablePlugin,
         SubtitlesPlugin,
         # add all others
     ]
 
     _ORDER_MODIFY_ENTRY: List[Type[Plugin]] = [
+        UrlDownloaderThumbnailPlugin,
         AudioExtractPlugin,
         FileConvertPlugin,
         SplitByChaptersPlugin,
@@ -142,11 +146,11 @@ class PluginMapping:
         ordered_plugins = [
             plugin for plugin in ordered_plugins if not isinstance(plugin, SplitPlugin)
         ]
-        if before_split is False:
+        if before_split:
             return [
                 plugin for plugin in ordered_plugins if not cls._is_modified_after_split(plugin)
             ]
-        else:  # before_split is True
+        else:  # before_split is False
             return [plugin for plugin in ordered_plugins if cls._is_modified_after_split(plugin)]
 
     @classmethod

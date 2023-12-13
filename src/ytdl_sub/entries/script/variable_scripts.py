@@ -153,6 +153,7 @@ ENTRY_INJECTED_VARIABLES: Dict[Variable, str] = {
     v.requested_subtitles: "{ {} }",
     v.sponsorblock_chapters: "",
     v.ytdl_sub_input_url: f"{{{v.source_webpage_url.variable_name}}}",
+    v.ytdl_sub_split_entry_parent_uid: "",
 }
 
 ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {

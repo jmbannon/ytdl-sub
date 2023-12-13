@@ -11,7 +11,7 @@ from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
+from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.utils.exceptions import RegexNoMatchException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.regex_validator import RegexListValidator
@@ -308,7 +308,7 @@ class RegexPlugin(Plugin[RegexOptions]):
             _ = entry.script.get(variable_name)
             return True
         # If it can not from missing variables (from post-metadata stage), return False
-        except ScriptVariableNotResolved:
+        except RuntimeException:
             return False
 
     def _modify_entry_metadata(self, entry: Entry, is_metadata_stage: bool) -> Optional[Entry]:

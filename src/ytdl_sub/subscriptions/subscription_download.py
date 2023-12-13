@@ -289,7 +289,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
                 self._cleanup_entry_files(split_entry)
 
-        self._cleanup_entry_files(entry)
+        # Have the split_plugin modify the parent entry before sending it to deletion
+        # This is needed to resolve any variables that may be needed to delete
+        self._cleanup_entry_files(split_plugin.modify_entry(entry))
 
     def _process_subscription(
         self,

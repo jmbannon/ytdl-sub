@@ -638,6 +638,10 @@ class _Variables:
         return Variable("ytdl_sub_input_url")
 
     @property
+    def ytdl_sub_split_entry_parent_uid(self) -> Variable:
+        return Variable("ytdl_sub_split_entry_parent_uid")
+
+    @property
     def download_index(self) -> Variable:
         """
         Returns

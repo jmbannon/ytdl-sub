@@ -23,6 +23,7 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.utils.file_handler import FileHandler
+from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
 from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail

@@ -96,7 +96,7 @@ class Entry(BaseEntry, Scriptable):
         -------
         The download thumbnail's file name
         """
-        return f"{self.get_str(v.uid)}.{self.get_str(v.thumbnail_ext)}"
+        return f"{self.uid}.{self.get_str(v.thumbnail_ext)}"
 
     def get_download_thumbnail_path(self) -> str:
         """Returns the entry's thumbnail's file path to where it was downloaded"""
