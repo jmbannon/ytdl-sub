@@ -14,7 +14,9 @@ from ytdl_sub.utils.script import ScriptUtils
 class Scriptable(ABC):
     def __init__(self):
         self.script = Script(
-            dict(copy.deepcopy(VARIABLE_SCRIPTS), **copy.deepcopy(CUSTOM_FUNCTION_SCRIPTS))
+            ScriptUtils.add_sanitized_variables(
+                dict(copy.deepcopy(VARIABLE_SCRIPTS), **copy.deepcopy(CUSTOM_FUNCTION_SCRIPTS))
+            )
         )
         self.unresolvable: Set[str] = copy.deepcopy(UNRESOLVED_VARIABLES)
 
