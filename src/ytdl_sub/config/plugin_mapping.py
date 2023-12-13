@@ -69,6 +69,7 @@ class PluginMapping:
 
     _ORDER_POST_PROCESS: List[Type[Plugin]] = [
         AudioExtractPlugin,
+        SubtitlesPlugin,
         MusicTagsPlugin,
         VideoTagsPlugin,
         NfoTagsPlugin,
