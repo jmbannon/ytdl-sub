@@ -302,32 +302,39 @@ class TestRegex:
                 preset_dict=regex_subscription_dict,
             )
 
-    def test_regex_fails_capture_group_is_source_variable(
+    def test_regex_fails_capture_group_is_entry_variable(
         self, regex_subscription_dict, default_config
     ):
-        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"][0] = "uid"
+        regex_subscription_dict["regex"]["from"]["playlist_id"] = {
+            "match": [".*http:\\/\\/(.+).com.*"],
+            "capture_group_names": ["uid"],
+        }
+
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "'uid' cannot be used as a capture group name because it is a source variable"
+                "Tried added the variable 'uid', but it already exists as a defined variable"
             ),
         ):
             _ = Subscription.from_dict(
                 config=default_config,
-                preset_name="test_regex_fails_capture_group_is_source_variable",
+                preset_name="test_regex_fails_capture_group_is_entry_variable",
                 preset_dict=regex_subscription_dict,
             )
 
     def test_regex_fails_capture_group_is_override_variable(
         self, regex_subscription_dict, default_config
     ):
-        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"][
-            0
-        ] = "in_regex_default"
+        regex_subscription_dict["regex"]["from"]["playlist_id"] = {
+            "match": [".*http:\\/\\/(.+).com.*"],
+            "capture_group_names": ["contains_regex_default"],
+        }
+
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "'in_regex_default' cannot be used as a capture group name because it is an override variable"
+                "Tried added the variable 'contains_regex_default', but it already exists "
+                "as a defined variable"
             ),
         ):
             _ = Subscription.from_dict(
