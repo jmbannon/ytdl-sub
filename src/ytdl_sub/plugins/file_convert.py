@@ -219,7 +219,7 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
         if original_ext != new_ext:
             self._converted_from_lookup[entry.ytdl_uid()] = original_ext
 
-        entry.add({v.ext.variable_name: new_ext})
+        entry.add({v.ext: new_ext})
 
         return entry
 

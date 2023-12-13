@@ -124,8 +124,8 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
                 "chapter_index": 1,
                 "chapter_index_padded": "01",
                 "chapter_count": 1,
-                v.uid.variable_name: entry.uid,
-                ytdl_sub_split_by_chapters_parent_uid.variable_name: entry.uid,
+                v.uid: entry.uid,
+                ytdl_sub_split_by_chapters_parent_uid: entry.uid,
             }
         )
         return entry

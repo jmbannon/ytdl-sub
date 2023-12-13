@@ -452,11 +452,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 url_validator=collection_url, parents=parents, orphans=orphan_entries
             ):
                 entry.initialize_script(self.overrides).add(
-                    {
-                        v.ytdl_sub_input_url.variable_name: self.overrides.apply_formatter(
-                            collection_url.url
-                        )
-                    }
+                    {v.ytdl_sub_input_url: self.overrides.apply_formatter(collection_url.url)}
                 )
                 yield entry
 
@@ -498,17 +494,17 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         entry.add(
             {
                 # Tracks number of entries downloaded
-                v.download_index.variable_name: download_idx + 1,
+                v.download_index: download_idx + 1,
                 # Tracks number of entries with the same upload date to make them unique
-                v.upload_date_index.variable_name: upload_date_idx + 1,
-                v.requested_subtitles.variable_name: download_entry.kwargs_get(
+                v.upload_date_index: upload_date_idx + 1,
+                v.requested_subtitles: download_entry.kwargs_get(
                     v.requested_subtitles.metadata_key
                 ),
-                v.chapters.variable_name: download_entry.kwargs_get(v.chapters.metadata_key),
-                v.sponsorblock_chapters.variable_name: download_entry.kwargs_get(
+                v.chapters: download_entry.kwargs_get(v.chapters.metadata_key),
+                v.sponsorblock_chapters: download_entry.kwargs_get(
                     v.sponsorblock_chapters.metadata_key
                 ),
-                v.comments.variable_name: download_entry.kwargs_get(v.comments.metadata_key),
+                v.comments: download_entry.kwargs_get(v.comments.metadata_key),
             }
         )
 

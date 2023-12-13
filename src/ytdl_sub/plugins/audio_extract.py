@@ -137,7 +137,7 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
             new_ext = AUDIO_CODEC_TYPES_EXTENSION_MAPPING[self.plugin_options.codec]
             extracted_audio_file = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
 
-        entry.add({v.ext.variable_name: new_ext})
+        entry.add({v.ext: new_ext})
 
         if not self.is_dry_run:
             if not os.path.isfile(extracted_audio_file):

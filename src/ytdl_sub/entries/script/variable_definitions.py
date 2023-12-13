@@ -39,128 +39,107 @@ class VariableDefinitions:
     @property
     def entry_metadata(self) -> Metadata:
         """
-        Returns
-        -------
-        dict
-            The entry's info.json in dict form
+        The entry's info.json
         """
         return Metadata("entry_metadata")
 
     @property
     def playlist_metadata(self) -> RelativeMetadata:
+        """
+        Metadata from the playlist (i.e. the parent metadata, like playlist -> entry)
+        """
         return RelativeMetadata("playlist_metadata", metadata_key="playlist_metadata")
 
     @property
     def source_metadata(self) -> RelativeMetadata:
+        """
+        Metadata from the source (i.e. the grandparent metadata, like channel -> playlist -> entry)
+        """
         return RelativeMetadata("source_metadata", metadata_key="source_metadata")
 
     @property
     def sibling_metadata(self) -> SiblingMetadata:
+        """
+        Metadata from any sibling entries that reside in the same playlist as this entry.
+        """
         return SiblingMetadata("sibling_metadata", metadata_key="sibling_metadata")
 
     @property
     def uid(self) -> MetadataVariable:
         """
-        Returns
-        -------
-        str
-            The entry's unique ID
+        The entry's unique ID
         """
         return MetadataVariable(metadata_key="id", variable_name="uid")
 
     @property
     def duration(self) -> MetadataVariable:
+        """
+        The duration of the entry in seconds
+        """
         return MetadataVariable("duration", metadata_key="duration")
 
     @property
     def uid_sanitized_plex(self) -> Variable:
         """
-        Returns
-        -------
-        str
-            The sanitized uid with additional sanitizing for Plex. Replaces numbers with
-            fixed-width numbers so Plex does not recognize them as season or episode numbers.
+        The sanitized uid with additional sanitizing for Plex. Replaces numbers with
+        fixed-width numbers so Plex does not recognize them as season or episode numbers.
         """
         return Variable("uid_sanitized_plex")
 
     @property
     def ie_key(self) -> MetadataVariable:
         """
-        Returns
-        -------
-        str
-            The info-extractor key
+        The ie_key, used in legacy yt-dlp things as the 'info-extractor key'
         """
         return MetadataVariable(metadata_key="ie_key", variable_name="ie_key")
 
     @property
     def extractor_key(self) -> MetadataVariable:
         """
-        Returns
-        -------
-        str
-            The info-extractor key
+        The yt-dlp extractor key
         """
         return MetadataVariable(metadata_key="extractor_key", variable_name="extractor_key")
 
     @property
     def extractor(self) -> MetadataVariable:
         """
-        Returns
-        -------
-        str
-            The ytdl extractor name
+        The yt-dlp extractor name
         """
         return MetadataVariable(variable_name="extractor", metadata_key="extractor")
 
     @property
     def epoch(self) -> MetadataVariable:
         """
-        Returns
-        -------
-        int
-            The unix epoch of when the metadata was scraped by yt-dlp.
+        The unix epoch of when the metadata was scraped by yt-dlp.
         """
         return MetadataVariable(metadata_key="epoch", variable_name="epoch")
 
     @property
     def epoch_date(self) -> Variable:
         """
-        Returns
-        -------
-        str
-            The epoch's date, in YYYYMMDD format.
+        The epoch's date, in YYYYMMDD format.
         """
         return Variable("epoch_date")
 
     @property
     def epoch_hour(self) -> Variable:
         """
-        Returns
-        -------
-        str
-            The epoch's hour, padded
+        The epoch's hour
         """
         return Variable("epoch_hour")
 
     @property
     def title(self) -> MetadataVariable:
         """
-        Returns
-        -------
-        str
-            The title of the entry. If a title does not exist, returns its unique ID.
+        The title of the entry. If a title does not exist, returns its unique ID.
         """
         return MetadataVariable(variable_name="title", metadata_key="title")
 
     @property
     def title_sanitized_plex(self) -> Variable:
         """
-        Returns
-        -------
-        str
-            The sanitized title with additional sanitizing for Plex. Replaces numbers with
-            fixed-width numbers so Plex does not recognize them as season or episode numbers.
+        The sanitized title with additional sanitizing for Plex. It replaces numbers with
+        fixed-width numbers so Plex does not recognize them as season or episode numbers.
         """
         return Variable("title_sanitized_plex")
 

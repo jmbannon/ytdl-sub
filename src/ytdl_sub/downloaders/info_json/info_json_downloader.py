@@ -114,7 +114,7 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
 
             entry.initialize_script(self.overrides).add(
                 {
-                    inj.variable_name: prior_variables.get(
+                    inj: prior_variables.get(
                         inj.variable_name,
                         VARIABLE_SCRIPTS[inj.variable_name],
                     )

@@ -1,12 +1,14 @@
 import json
 from typing import Any
 from typing import Dict
-from typing import Iterable
 
 
 class ScriptUtils:
     @classmethod
     def add_sanitized_variables(cls, variables: Dict[str, str]) -> Dict[str, str]:
+        """
+        Helper to add sanitized variables to a Script
+        """
         sanitized_variables = {
             f"{name}_sanitized": f"{{%sanitize({name})}}" for name in variables.keys()
         }
@@ -14,6 +16,9 @@ class ScriptUtils:
 
     @classmethod
     def to_script(cls, value: Any) -> str:
+        """
+        Converts a python value to a script value
+        """
         if value is None:
             out = ""
         elif isinstance(value, str):

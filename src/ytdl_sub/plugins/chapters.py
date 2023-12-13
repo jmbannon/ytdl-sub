@@ -321,13 +321,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
             # If some are actually found, add a special kwarg and embed them
             if chapters.contains_any_chapters():
                 has_chapters_from_comments = True
-                entry.add(
-                    {
-                        ytdl_sub_chapters_from_comments.variable_name: (
-                            chapters.to_yt_dlp_chapter_metadata()
-                        )
-                    }
-                )
+                entry.add({ytdl_sub_chapters_from_comments: chapters.to_yt_dlp_chapter_metadata()})
 
                 if not self.is_dry_run:
                     set_ffmpeg_metadata_chapters(
@@ -337,7 +331,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                     )
 
         if not has_chapters_from_comments:
-            entry.add({ytdl_sub_chapters_from_comments.variable_name: []})
+            entry.add({ytdl_sub_chapters_from_comments: []})
 
         return entry
 
