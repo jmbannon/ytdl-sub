@@ -17,14 +17,17 @@ from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
 
-def _get_added_variables(plugins: PresetPlugins, downloader_options: MultiUrlValidator) -> Set[str]:
+def _get_added_variables(
+    plugins: PresetPlugins, downloader_options: MultiUrlValidator, resolved_variables: Set[str]
+) -> Set[str]:
     added_variables: Set[str] = set()
     options: List[OptionsValidator] = plugins.plugin_options
     options.append(downloader_options)
 
     for plugin_options in options:
-        for plugin_added_variables in plugin_options.added_source_variables(
-            unresolved_variables=set()
+        for plugin_added_variables in plugin_options.added_variables(
+            resolved_variables=resolved_variables,
+            unresolved_variables=set(),
         ).values():
             added_variables |= set(plugin_added_variables)
 
@@ -55,14 +58,17 @@ class VariableValidation:
         self.unresolved_variables: Set[str] = set()
 
     def initialize_overrides(self, overrides: Overrides) -> "VariableValidation":
-        override_variables = _override_variables(overrides)
         entry_variables = _entry_variables()
+        self.resolved_variables = entry_variables.union(_override_variables(overrides))
 
         # Set unresolved as variables that are added but do not exist as entry/override variables
         self.unresolved_variables = (
-            _get_added_variables(plugins=self.plugins, downloader_options=self.downloader_options)
-            - override_variables
-            - entry_variables
+            _get_added_variables(
+                plugins=self.plugins,
+                downloader_options=self.downloader_options,
+                resolved_variables=self.resolved_variables,
+            )
+            - self.resolved_variables
         )
 
         # Initialize overrides with unresolved variables to throw an error
@@ -77,7 +83,6 @@ class VariableValidation:
         self.script = copy.deepcopy(overrides.script).add(
             ScriptUtils.add_dummy_variables(entry_variables)
         )
-        self.resolved_variables = self.script.variable_names - self.unresolved_variables
 
         return self
 
@@ -85,8 +90,9 @@ class VariableValidation:
         _ = self.script.resolve(unresolvable=self.unresolved_variables, update=True)
 
     def _add_variables(self, plugin_op: PluginOperation, options: OptionsValidator) -> Set[str]:
-        added_variables = options.added_source_variables(
-            unresolved_variables=self.unresolved_variables
+        added_variables = options.added_variables(
+            resolved_variables=self.resolved_variables,
+            unresolved_variables=self.unresolved_variables,
         ).get(plugin_op, set())
 
         if added_variables:

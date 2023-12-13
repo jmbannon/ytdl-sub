@@ -116,8 +116,8 @@ class SubtitleOptions(OptionsDictValidator):
         """
         return self._allow_auto_generated_subtitles
 
-    def added_source_variables(
-        self, unresolved_variables: Set[str]
+    def added_variables(
+        self, resolved_variables: Set[str], unresolved_variables: Set[str]
     ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns

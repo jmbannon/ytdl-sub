@@ -244,8 +244,8 @@ class MultiUrlValidator(OptionsValidator):
         # keep for readthedocs documentation
         return self._urls.list[0].variables
 
-    def added_source_variables(
-        self, unresolved_variables: Set[str]
+    def added_variables(
+        self, resolved_variables: Set[str], unresolved_variables: Set[str]
     ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns

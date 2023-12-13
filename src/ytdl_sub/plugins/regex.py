@@ -232,8 +232,8 @@ class RegexOptions(OptionsDictValidator):
                 return False
         return True
 
-    def added_source_variables(
-        self, unresolved_variables: Set[str]
+    def added_variables(
+        self, resolved_variables: Set[str], unresolved_variables: Set[str]
     ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns
@@ -245,6 +245,13 @@ class RegexOptions(OptionsDictValidator):
             PluginOperation.MODIFY_ENTRY: set(),
         }
         for input_variable_name, regex_options in self.source_variable_capture_dict.items():
+
+            if input_variable_name not in resolved_variables:
+                raise self._validation_exception(
+                    f"cannot regex capture '{input_variable_name}' because it is not a "
+                    f"defined variable"
+                )
+
             key = PluginOperation.MODIFY_ENTRY
             if self._can_evaluate_at_metadata_time(
                 unresolved_variables=unresolved_variables,

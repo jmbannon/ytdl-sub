@@ -40,8 +40,8 @@ class OptionsValidator(Validator, ABC):
         """
         return {}
 
-    def added_source_variables(
-        self, unresolved_variables: Set[str]
+    def added_variables(
+        self, resolved_variables: Set[str], unresolved_variables: Set[str]
     ) -> Dict[PluginOperation, Set[str]]:
         """
         If the plugin adds source variables, list them here.

@@ -305,7 +305,7 @@ class TestRegex:
     def test_regex_fails_capture_group_is_entry_variable(
         self, regex_subscription_dict, default_config
     ):
-        regex_subscription_dict["regex"]["from"]["playlist_id"] = {
+        regex_subscription_dict["regex"]["from"]["playlist_uid"] = {
             "match": [".*http:\\/\\/(.+).com.*"],
             "capture_group_names": ["uid"],
         }
@@ -325,7 +325,7 @@ class TestRegex:
     def test_regex_fails_capture_group_is_override_variable(
         self, regex_subscription_dict, default_config
     ):
-        regex_subscription_dict["regex"]["from"]["playlist_id"] = {
+        regex_subscription_dict["regex"]["from"]["playlist_uid"] = {
             "match": [".*http:\\/\\/(.+).com.*"],
             "capture_group_names": ["contains_regex_default"],
         }
@@ -351,9 +351,7 @@ class TestRegex:
         )
         with pytest.raises(
             ValidationException,
-            match=re.escape(
-                "cannot regex capture 'dne' because it is not a source or override variable"
-            ),
+            match=re.escape("cannot regex capture 'dne' because it is not a defined variable"),
         ):
             _ = Subscription.from_dict(
                 config=default_config,
