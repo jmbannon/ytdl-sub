@@ -148,6 +148,10 @@ class _Parser:
         self._error_highlight_pos = 0
         self._ast: List[Argument] = []
 
+        self._bracket_counter_pos_stack: List[int] = []
+        self._bracket_counter = 0
+        self._literal_str = ""
+
         try:
             self._syntax_tree = self._parse()
         except UserException as exc:
@@ -499,74 +503,79 @@ class _Parser:
             else:
                 raise UNREACHABLE
 
-    def _parse(self) -> SyntaxTree:
-        bracket_counter_pos_stack: List[int] = []
-        bracket_counter = 0
-        literal_str = ""
-        while ch := self._read():
-            if ch == "}":
-                if bracket_counter == 0:
-                    raise BRACKET_NOT_CLOSED
+    def _parse_main_loop(self, ch: str) -> bool:
+        if ch == "}":
+            if self._bracket_counter == 0:
+                raise BRACKET_NOT_CLOSED
 
-                del bracket_counter_pos_stack[-1]
-                bracket_counter -= 1
-                continue
-            if ch == "{":
-                bracket_counter_pos_stack.append(self._pos - 1)  # pos incremented when read
-                bracket_counter += 1
-                if literal_str:
-                    self._ast.append(String(value=literal_str))
-                    literal_str = ""
+            del self._bracket_counter_pos_stack[-1]
+            self._bracket_counter -= 1
+            return True
+        if ch == "{":
+            self._bracket_counter_pos_stack.append(self._pos - 1)  # pos incremented when read
+            self._bracket_counter += 1
+            if self._literal_str:
+                self._ast.append(String(value=self._literal_str))
+                self._literal_str = ""
 
-                # Allow whitespace after bracket opening
-                while ch1 := self._read(increment_pos=False):
-                    if not ch1.isspace():
-                        break
-                    self._pos += 1
+            # Allow whitespace after bracket opening
+            while ch1 := self._read(increment_pos=False):
+                if not ch1.isspace():
+                    break
+                self._pos += 1
 
-                if ch1 is None:
-                    break  # will hit closing bracket error
+            if ch1 is None:
+                return False  # will hit closing bracket error
 
-                if ch1 == "%":
-                    self._pos += 1
-                    self._ast.append(self._parse_function())
-                elif ch1 == "[":
-                    self._pos += 1
-                    self._ast.append(self._parse_array())
-                elif ch1 == "{":
-                    self._pos += 1
-                    self._ast.append(self._parse_map())
-                elif _is_variable_start(ch1):
-                    self._ast.append(self._parse_variable())
-                elif _is_numeric_start(ch1):
-                    raise NUMERICS_ONLY_ARGS
-                elif (
-                    _is_string_start_single_char(ch1)
-                    or _is_string_start_multi_char(self._read(increment_pos=False, length=3))
-                    or _is_null(self._read(increment_pos=False, length=4))
-                ):
-                    raise STRINGS_ONLY_ARGS
-                elif _is_boolean_true(
-                    self._read(increment_pos=False, length=4)
-                ) or _is_boolean_false(self._read(increment_pos=False, length=5)):
-                    raise BOOLEAN_ONLY_ARGS
-                elif _is_custom_function_argument_start(self._read(increment_pos=False)):
-                    raise CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS
-                else:
-                    raise _UNEXPECTED_CHAR_ARGUMENT(arg_type=ParsedArgType.SCRIPT)
-            elif bracket_counter == 0:
-                # Only accumulate literal str if not in brackets
-                literal_str += ch
+            if ch1 == "%":
+                self._pos += 1
+                self._ast.append(self._parse_function())
+            elif ch1 == "[":
+                self._pos += 1
+                self._ast.append(self._parse_array())
+            elif ch1 == "{":
+                self._pos += 1
+                self._ast.append(self._parse_map())
+            elif _is_variable_start(ch1):
+                self._ast.append(self._parse_variable())
+            elif _is_numeric_start(ch1):
+                raise NUMERICS_ONLY_ARGS
+            elif (
+                _is_string_start_single_char(ch1)
+                or _is_string_start_multi_char(self._read(increment_pos=False, length=3))
+                or _is_null(self._read(increment_pos=False, length=4))
+            ):
+                raise STRINGS_ONLY_ARGS
+            elif _is_boolean_true(self._read(increment_pos=False, length=4)) or _is_boolean_false(
+                self._read(increment_pos=False, length=5)
+            ):
+                raise BOOLEAN_ONLY_ARGS
+            elif _is_custom_function_argument_start(self._read(increment_pos=False)):
+                raise CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS
             else:
-                # Should only be possible to get here if it's a space
-                assert ch.isspace()
+                raise _UNEXPECTED_CHAR_ARGUMENT(arg_type=ParsedArgType.SCRIPT)
+        elif self._bracket_counter == 0:
+            # Only accumulate literal str if not in brackets
+            self._literal_str += ch
+        else:
+            # Should only be possible to get here if it's a space
+            assert ch.isspace()
 
-        if bracket_counter != 0:
-            self._error_highlight_pos = bracket_counter_pos_stack[-1]
+        return True
+
+    def _parse(self) -> SyntaxTree:
+
+        while ch := self._read():
+            continue_parse = self._parse_main_loop(ch)
+            if not continue_parse:
+                break
+
+        if self._bracket_counter != 0:
+            self._error_highlight_pos = self._bracket_counter_pos_stack[-1]
             raise BRACKET_NOT_CLOSED
 
-        if literal_str:
-            self._ast.append(String(value=literal_str))
+        if self._literal_str:
+            self._ast.append(String(value=self._literal_str))
 
         return SyntaxTree(ast=self._ast)
 
