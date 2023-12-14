@@ -105,7 +105,7 @@ class BaseEntryVariables:
         # pylint: disable=line-too-long
         # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
         # pylint: enable=line-too-long
-        return self.kwargs(IE_KEY) #yt-dlp is comparing the extractor in ytdl-sub's info.json to its extractor key, so we need to save the extractor key instead
+        return self.kwargs(EXTRACTOR) or self.kwargs(IE_KEY)
 
     @property
     def epoch(self: "BaseEntry") -> int:
