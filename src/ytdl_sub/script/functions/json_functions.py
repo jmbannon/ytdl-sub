@@ -13,6 +13,7 @@ from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
 
 def _from_json(out: Any) -> Resolvable:
+    # pylint: disable=too-many-return-statements
     if out is None:
         return String("")
     if isinstance(out, int):

@@ -44,7 +44,8 @@ def _get(
         # TODO: assert with good error message if key DNE
         out = f"%map_get({metadata.variable_name}, '{key.metadata_key}')"
     elif isinstance(default, Variable):
-        out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', {default.variable_name})"
+        args = f"{metadata.variable_name}, '{key.metadata_key}', {default.variable_name}"
+        out = f"%map_get_non_empty({args})"
     elif isinstance(default, str):
         out = f"%map_get_non_empty({metadata.variable_name}, '{key.metadata_key}', '{default}')"
     elif isinstance(default, dict):

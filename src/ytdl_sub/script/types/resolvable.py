@@ -100,7 +100,7 @@ class Hashable(Resolvable, ABC):
 
 
 @dataclass(frozen=True)
-class NonHashable(ABC):
+class NonHashable(NamedType, ABC):
     pass
 
 
@@ -166,6 +166,7 @@ class BuiltInFunctionType(FunctionType, ABC):
 class Lambda(Resolvable):
     value: str
 
+    @property
     def native(self) -> Any:
         return f"%{self.value}"
 

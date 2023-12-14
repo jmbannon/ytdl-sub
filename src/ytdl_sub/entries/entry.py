@@ -41,6 +41,10 @@ class Entry(BaseEntry, Scriptable):
         self.update_script()
 
     def initialize_script(self, other: Optional[Scriptable] = None) -> "Entry":
+        """
+        Initializes the entry script using the Overrides script, then adding
+        its kwargs to the entry metadata variable
+        """
         # Overrides contains added variables that are unresolvable, add them here
         if other:
             self.script = copy.deepcopy(other.script)
@@ -50,10 +54,16 @@ class Entry(BaseEntry, Scriptable):
         return self
 
     def get(self, variable: Variable, expected_type: Type[TypeT]) -> TypeT:
+        """
+        Gets a variable of an expected type. Will error if it does not exist or is not resolved.
+        """
         out = self.script.resolve(unresolvable=self.unresolvable).get_native(variable.variable_name)
         return expected_type(out)
 
     def try_get(self, variable: Variable, expected_type: Type[TypeT]) -> Optional[TypeT]:
+        """
+        Gets a variable of an expected type. Returns None if it does not exist or is not resolved.
+        """
         try:
             return self.get(variable=variable, expected_type=expected_type)
         except ScriptVariableNotResolved:

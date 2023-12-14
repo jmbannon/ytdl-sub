@@ -545,22 +545,37 @@ class VariableDefinitions:
 
     @property
     def comments(self) -> MetadataVariable:
+        """
+        Comments if they are requested
+        """
         return MetadataVariable("comments", "comments")
 
     @property
     def chapters(self) -> MetadataVariable:
+        """
+        Chapters if they exist
+        """
         return MetadataVariable("chapters", "chapters")
 
     @property
     def sponsorblock_chapters(self) -> MetadataVariable:
+        """
+        Sponsorblock Chapters if they are requested and exist
+        """
         return MetadataVariable("sponsorblock_chapters", "sponsorblock_chapters")
 
     @property
     def requested_subtitles(self) -> MetadataVariable:
+        """
+        Subtitles if they are requested and exist
+        """
         return MetadataVariable("requested_subtitles", "requested_subtitles")
 
     @property
     def ytdl_sub_input_url(self) -> Variable:
+        """
+        The input URL used in ytdl-sub to create this entry.
+        """
         return Variable("ytdl_sub_input_url")
 
     @property

@@ -116,6 +116,7 @@ class VariableValidation:
         if added_variables:
             for added_variable in added_variables:
                 if added_variable in self.resolved_variables:
+                    # pylint: disable=protected-access
                     raise options._validation_exception(
                         f"Tried added the variable '{added_variable}', but it already "
                         f"exists as a defined variable."

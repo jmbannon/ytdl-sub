@@ -123,7 +123,6 @@ class VariableDependency(ABC):
         -------
         Resolved value
         """
-        pass
 
     @classmethod
     def _resolve_argument_type(

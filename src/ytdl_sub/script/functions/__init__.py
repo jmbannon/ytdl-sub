@@ -48,6 +48,7 @@ class Functions(
     def register_function(cls, function: Callable[..., Resolvable]) -> None:
         if cls.is_built_in(function.__name__):
             raise ValueError(
-                f"Cannot register a function with name {function.__name__} because it already exists"
+                f"Cannot register a function with name {function.__name__} "
+                f"because it already exists"
             )
         cls._custom_functions[function.__name__] = function

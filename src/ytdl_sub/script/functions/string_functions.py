@@ -1,7 +1,5 @@
 from typing import Optional
 
-from yt_dlp.utils import sanitize_filename
-
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Numeric
