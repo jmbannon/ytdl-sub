@@ -15,13 +15,6 @@ class TestEntry(object):
         for key, expected_value in mock_entry_to_dict.items():
             assert out[key] == expected_value, f"{key} does not equal"
 
-    def test_entry_missing_kwarg(self, mock_entry):
-        key = "dne"
-        expected_error_msg = f"Expected '{key}' in Entry but does not exist."
-
-        with pytest.raises(KeyError, match=expected_error_msg):
-            mock_entry.kwargs(key)
-
     @pytest.mark.parametrize(
         "upload_date, year_rev, month_rev, day_rev, month_rev_pad, day_rev_pad",
         [

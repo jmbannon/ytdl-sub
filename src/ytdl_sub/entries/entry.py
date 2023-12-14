@@ -22,6 +22,8 @@ from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
 v: VariableDefinitions = VARIABLES
 
 _YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
+ytdl_sub_chapters_from_comments = Variable("ytdl_sub_chapters_from_comments")
+ytdl_sub_split_by_chapters_parent_uid = Variable("ytdl_sub_split_by_chapters_parent_uid")
 
 TypeT = TypeVar("TypeT")
 
@@ -70,6 +72,27 @@ class Entry(BaseEntry, Scriptable):
         except ScriptVariableNotResolved:
             return None
 
+    def add_injected_variables(
+        self, download_entry: "Entry", download_idx: int, upload_date_idx: int
+    ) -> "Entry":
+        self.add(
+            {
+                # Tracks number of entries downloaded
+                v.download_index: download_idx + 1,
+                # Tracks number of entries with the same upload date to make them unique
+                v.upload_date_index: upload_date_idx + 1,
+                v.requested_subtitles: download_entry._kwargs_get(
+                    v.requested_subtitles.metadata_key, []
+                ),
+                v.chapters: download_entry._kwargs_get(v.chapters.metadata_key, []),
+                v.sponsorblock_chapters: download_entry._kwargs_get(
+                    v.sponsorblock_chapters.metadata_key, []
+                ),
+                v.comments: download_entry._kwargs_get(v.comments.metadata_key, []),
+            }
+        )
+        return self
+
     @property
     def ext(self) -> str:
         """
@@ -77,7 +100,7 @@ class Entry(BaseEntry, Scriptable):
         This is not reflected in the entry. See if the mkv file exists and return "mkv" if so,
         otherwise, return the original extension.
         """
-        ext = self.try_get(v.ext, str) or self.kwargs(key=v.ext.metadata_key)
+        ext = self.try_get(v.ext, str) or self._kwargs[v.ext.metadata_key]
         for possible_ext in [ext, "mkv"]:
             file_path = str(Path(self.working_directory()) / f"{self.uid}.{possible_ext}")
             if os.path.isfile(file_path):
@@ -114,7 +137,7 @@ class Entry(BaseEntry, Scriptable):
         The source `thumbnail` value and the actual downloaded thumbnail extension sometimes do
         not match. Return the actual downloaded thumbnail path.
         """
-        thumbnails = self.kwargs_get("thumbnails", [])
+        thumbnails = self._kwargs_get("thumbnails", [])
         possible_thumbnail_exts = {"jpg", "webp"}  # Always check for jpg and webp thumbs
 
         for thumbnail in thumbnails:
@@ -195,3 +218,18 @@ class Entry(BaseEntry, Scriptable):
         Dictionary containing all variables
         """
         return self.script.resolve().as_native()
+
+    @classmethod
+    def create_split_entry(cls, entry: "Entry", new_uid: str) -> "Entry":
+        """
+        Creates a copy of an entry with a new uid to use as the starting point for a split entry
+        """
+        new_entry = copy.deepcopy(entry)
+        new_entry._kwargs[v.uid.metadata_key] = new_uid
+        new_entry.add(
+            {
+                v.uid.variable_name: new_uid,
+                ytdl_sub_split_by_chapters_parent_uid.variable_name: entry.uid,
+            }
+        )
+        return new_entry

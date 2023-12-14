@@ -491,21 +491,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             upload_date_standardized=entry.get(v.upload_date_standardized, str)
         )
         download_idx = self._enhanced_download_archive.num_entries
-        entry.add(
-            {
-                # Tracks number of entries downloaded
-                v.download_index: download_idx + 1,
-                # Tracks number of entries with the same upload date to make them unique
-                v.upload_date_index: upload_date_idx + 1,
-                v.requested_subtitles: download_entry.kwargs_get(
-                    v.requested_subtitles.metadata_key
-                ),
-                v.chapters: download_entry.kwargs_get(v.chapters.metadata_key),
-                v.sponsorblock_chapters: download_entry.kwargs_get(
-                    v.sponsorblock_chapters.metadata_key
-                ),
-                v.comments: download_entry.kwargs_get(v.comments.metadata_key),
-            }
-        )
 
-        return entry
+        return entry.add_injected_variables(
+            download_entry=download_entry,
+            download_idx=download_idx,
+            upload_date_idx=upload_date_idx,
+        )

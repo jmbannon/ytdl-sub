@@ -1,5 +1,3 @@
-import copy
-from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import List
@@ -11,11 +9,11 @@ from ytdl_sub.config.plugin.plugin import SplitPlugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.entry import ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.chapters import Timestamp
-from ytdl_sub.utils.chapters import ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.file_handler import FileHandler
@@ -188,27 +186,16 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
             )
 
         for idx, title in enumerate(chapters.titles):
-            new_entry = copy.deepcopy(entry)
-            new_uid = _split_video_uid(source_uid=entry.uid, idx=idx)
-
-            new_entry.add(
-                {
-                    v.uid.variable_name: new_uid,
-                    ytdl_sub_split_by_chapters_parent_uid.variable_name: entry.uid,
-                }
+            new_entry = Entry.create_split_entry(
+                entry=entry, new_uid=_split_video_uid(source_uid=entry.uid, idx=idx)
             )
-            new_entry.add_kwargs({v.uid.metadata_key: new_uid})
 
             if not self.is_dry_run:
-                # Get the input/output file paths
-                input_file = entry.get_download_file_path()
-                output_file = str(Path(self.working_directory) / f"{new_uid}.{entry.ext}")
-
                 # Run ffmpeg to create the split the video
                 FFMPEG.run(
                     _split_video_ffmpeg_cmd(
-                        input_file=input_file,
-                        output_file=output_file,
+                        input_file=entry.get_download_file_path(),
+                        output_file=new_entry.get_download_file_path(),
                         timestamps=chapters.timestamps,
                         idx=idx,
                     )
@@ -219,8 +206,7 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
                 if entry.is_thumbnail_downloaded():
                     FileHandler.copy(
                         src_file_path=entry.get_download_thumbnail_path(),
-                        dst_file_path=Path(self.working_directory)
-                        / f"{new_uid}.{entry.get(v.thumbnail_ext, str)}",
+                        dst_file_path=new_entry.get_download_thumbnail_path(),
                     )
 
             # Format the split video

@@ -10,11 +10,11 @@ from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.entry import ytdl_sub_chapters_from_comments
+from ytdl_sub.entries.entry import ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.chapters import Chapters
-from ytdl_sub.utils.chapters import ytdl_sub_chapters_from_comments
-from ytdl_sub.utils.chapters import ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.regex_validator import RegexListValidator

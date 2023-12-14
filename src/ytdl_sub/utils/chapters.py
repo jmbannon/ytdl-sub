@@ -4,15 +4,12 @@ from typing import List
 from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.entry import ytdl_sub_chapters_from_comments
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import Variable
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileMetadata
 
 v: VariableDefinitions = VARIABLES
-
-ytdl_sub_chapters_from_comments = Variable("ytdl_sub_chapters_from_comments")
-ytdl_sub_split_by_chapters_parent_uid = Variable("ytdl_sub_split_by_chapters_parent_uid")
 
 
 class Timestamp:

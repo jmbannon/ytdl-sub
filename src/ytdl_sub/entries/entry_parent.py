@@ -19,14 +19,15 @@ v: VariableDefinitions = VARIABLES
 # pylint: disable=protected-access
 
 
-def _sort_entries(entries: List[TBaseEntry]) -> List[TBaseEntry]:
-    """Try sorting by playlist_id first, then fall back to uid"""
-    return sorted(
-        entries, key=lambda ent: (ent.kwargs_get(v.playlist_index.metadata_key, math.inf), ent.uid)
-    )
-
-
 class EntryParent(BaseEntry):
+    @classmethod
+    def _sort_entries(cls, entries: List[TBaseEntry]) -> List[TBaseEntry]:
+        """Try sorting by playlist_id first, then fall back to uid"""
+        return sorted(
+            entries,
+            key=lambda ent: (ent._kwargs_get(v.playlist_index.metadata_key, math.inf), ent.uid),
+        )
+
     def __init__(self, entry_dict: Dict, working_directory: str):
         super().__init__(entry_dict=entry_dict, working_directory=working_directory)
         self._parent_children: List["EntryParent"] = []
@@ -57,7 +58,7 @@ class EntryParent(BaseEntry):
         )
         for entry in self.entry_children():
             sibling_entry_metadata.append(
-                {var.metadata_key: entry.kwargs_get(var.metadata_key) for var in variable_filter}
+                {var.metadata_key: entry._kwargs_get(var.metadata_key) for var in variable_filter}
             )
         return sibling_entry_metadata
 
@@ -79,7 +80,7 @@ class EntryParent(BaseEntry):
             )
 
         for entry_child in self.entry_children():
-            entry_child.add_kwargs(kwargs_to_add)
+            entry_child._kwargs = dict(entry_child._kwargs, **kwargs_to_add)
 
         for parent_child in self.parent_children():
             parent_child._set_child_variables(parents=parents + [parent_child])
@@ -99,8 +100,10 @@ class EntryParent(BaseEntry):
             if entry_dict in self
         ]
 
-        self._parent_children = _sort_entries([ent for ent in entries if self.is_entry_parent(ent)])
-        self._entry_children = _sort_entries(
+        self._parent_children = self._sort_entries(
+            [ent for ent in entries if self.is_entry_parent(ent)]
+        )
+        self._entry_children = self._sort_entries(
             [ent.to_type(Entry) for ent in entries if self.is_entry(ent)]
         )
 
@@ -119,7 +122,7 @@ class EntryParent(BaseEntry):
         -------
         Desired thumbnail url if it exists. None if it does not.
         """
-        for thumbnail in self.kwargs_get("thumbnails", []):
+        for thumbnail in self._kwargs_get("thumbnails", []):
             if thumbnail["id"] == thumbnail_id:
                 return thumbnail["url"]
         return None
@@ -129,7 +132,7 @@ class EntryParent(BaseEntry):
         if isinstance(item, dict):
             playlist_id = item.get("playlist_id")
         elif isinstance(item, BaseEntry):
-            playlist_id = item.kwargs_get("playlist_id")
+            playlist_id = item._kwargs_get("playlist_id")
 
         if not playlist_id:
             return False

@@ -42,7 +42,7 @@ class BaseEntry(ABC):
         str
             The entry's unique ID
         """
-        return str(self.kwargs(v.uid.metadata_key))
+        return str(self._kwargs[v.uid.metadata_key])
 
     @property
     def extractor(self: "BaseEntry") -> str:
@@ -52,21 +52,25 @@ class BaseEntry(ABC):
         # pylint: disable=line-too-long
         # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
         # pylint: enable=line-too-long
-        return self.kwargs_get(v.extractor_key.metadata_key) or self.kwargs(v.ie_key.metadata_key)
+        return (
+            self._kwargs_get(v.extractor_key.metadata_key)
+            or self._kwargs_get(v.ie_key.metadata_key)
+            or "NO_EXTRACTOR"
+        )
 
     @property
     def title(self: "BaseEntry") -> str:
         """
         The title of the entry. If a title does not exist, returns its unique ID.
         """
-        return self.kwargs_get(v.title.metadata_key, self.uid)
+        return self._kwargs_get(v.title.metadata_key, self.uid)
 
     @property
     def webpage_url(self: "BaseEntry") -> str:
         """
         The url to the webpage.
         """
-        return self.kwargs(v.webpage_url.metadata_key)
+        return self._kwargs[v.webpage_url.metadata_key]
 
     @property
     def info_json_ext(self) -> str:
@@ -78,21 +82,15 @@ class BaseEntry(ABC):
         """
         The uploader id if it exists, otherwise return the unique ID.
         """
-        return self.kwargs_get(v.uploader_id.metadata_key, self.uid)
+        return self._kwargs_get(v.uploader_id.metadata_key, self.uid)
 
-    def kwargs(self, key) -> Any:
-        """Returns an internal kwarg value supplied from ytdl"""
-        if key not in self._kwargs:
-            raise KeyError(f"Expected '{key}' in {self.__class__.__name__} but does not exist.")
-        return self._kwargs[key]
-
-    def kwargs_get(self, key: str, default: Optional[Any] = None) -> Any:
+    def _kwargs_get(self, key: str, default: Optional[Any] = None) -> Any:
         """
         Dict get on kwargs
         """
-        if key not in self._kwargs or self.kwargs(key) is None:
+        if (out := self._kwargs.get(key)) is None:
             return default
-        return self.kwargs(key)
+        return out
 
     def working_directory(self) -> str:
         """
@@ -153,7 +151,7 @@ class BaseEntry(ABC):
         """
         entry_type: Optional[str] = None
         if isinstance(entry_dict, cls):
-            entry_type = entry_dict.kwargs_get("_type")
+            entry_type = entry_dict._kwargs_get("_type")
         if isinstance(entry_dict, dict):
             entry_type = entry_dict.get("_type")
 
@@ -168,7 +166,7 @@ class BaseEntry(ABC):
         """
         entry_ext: Optional[str] = None
         if isinstance(entry_dict, cls):
-            entry_ext = entry_dict.kwargs_get("ext")
+            entry_ext = entry_dict._kwargs_get("ext")
         if isinstance(entry_dict, dict):
             entry_ext = entry_dict.get("ext")
 
