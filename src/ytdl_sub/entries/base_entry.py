@@ -14,6 +14,7 @@ from yt_dlp.utils import sanitize_filename
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
 from ytdl_sub.entries.variables.kwargs import EXTRACTOR
+from ytdl_sub.entries.variables.kwargs import EXTRACTOR_KEY
 from ytdl_sub.entries.variables.kwargs import IE_KEY
 from ytdl_sub.entries.variables.kwargs import TITLE
 from ytdl_sub.entries.variables.kwargs import UID
@@ -100,12 +101,13 @@ class BaseEntryVariables:
         Returns
         -------
         str
-            The ytdl extractor name
+            The ytdl extractor key
         """
         # pylint: disable=line-too-long
         # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
         # pylint: enable=line-too-long
-        return self.kwargs(EXTRACTOR) or self.kwargs(IE_KEY)
+        # return EXTRACTOR_KEY, or IE_KEY if EXTRACTOR_KEY not present. EXTRACTOR is present but not used in yt-dlp code
+        return self.kwargs_get(EXTRACTOR_KEY) or self.kwargs(IE_KEY)
 
     @property
     def epoch(self: "BaseEntry") -> int:
