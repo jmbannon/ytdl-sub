@@ -80,26 +80,17 @@ class BaseEntry(ABC):
         """
         return self.kwargs_get(v.uploader_id.metadata_key, self.uid)
 
-    def kwargs_contains(self, key: str) -> bool:
-        """Returns whether internal kwargs contains the specified key"""
-        return key in self._kwargs
-
     def kwargs(self, key) -> Any:
         """Returns an internal kwarg value supplied from ytdl"""
-        if not self.kwargs_contains(key):
+        if key not in self._kwargs:
             raise KeyError(f"Expected '{key}' in {self.__class__.__name__} but does not exist.")
-        output = self._kwargs[key]
-
-        # Replace curly braces with unicode version to avoid variable shenanigans
-        if isinstance(output, str):
-            return output.replace("{", "｛").replace("}", "｝")
-        return output
+        return self._kwargs[key]
 
     def kwargs_get(self, key: str, default: Optional[Any] = None) -> Any:
         """
         Dict get on kwargs
         """
-        if not self.kwargs_contains(key) or self.kwargs(key) is None:
+        if key not in self._kwargs or self.kwargs(key) is None:
             return default
         return self.kwargs(key)
 

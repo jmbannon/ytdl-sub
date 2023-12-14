@@ -10,7 +10,6 @@ from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
-from ytdl_sub.entries.entry import YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
@@ -107,10 +106,7 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
 
             # See if prior variables exist. If so, delete them from metadata
             # to avoid saving them recursively on multiple updates
-            prior_variables = {}
-            if entry.kwargs_contains(YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY):
-                prior_variables = entry.kwargs(YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY)
-                del entry._kwargs[YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY]
+            prior_variables = entry.maybe_get_prior_variables()
 
             entry.initialize_script(self.overrides).add(
                 {

@@ -19,7 +19,6 @@ class TestEntry(object):
         key = "dne"
         expected_error_msg = f"Expected '{key}' in Entry but does not exist."
 
-        assert mock_entry.kwargs_contains(key) is False
         with pytest.raises(KeyError, match=expected_error_msg):
             mock_entry.kwargs(key)
 

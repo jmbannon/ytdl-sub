@@ -2,6 +2,7 @@ import copy
 import json
 import os
 from pathlib import Path
+from typing import Any
 from typing import Dict
 from typing import Optional
 from typing import Type
@@ -20,7 +21,7 @@ from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
 
 v: VariableDefinitions = VARIABLES
 
-YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
+_YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
 
 TypeT = TypeVar("TypeT")
 
@@ -131,7 +132,7 @@ class Entry(BaseEntry, Scriptable):
         Write the entry's _kwargs back into the info.json file as well as its source variables
         """
         kwargs_dict = copy.deepcopy(self._kwargs)
-        kwargs_dict["ytdl_sub_entry_variables"] = self.to_dict()
+        kwargs_dict[_YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY] = self.to_dict()
         kwargs_json = json.dumps(kwargs_dict, ensure_ascii=False, sort_keys=True, indent=2)
 
         with open(self.get_download_info_json_path(), "w", encoding="utf-8") as file:
@@ -173,6 +174,18 @@ class Entry(BaseEntry, Scriptable):
                     break
 
         return file_exists
+
+    def maybe_get_prior_variables(self) -> Dict[str, Any]:
+        """
+        If variables exist in the .info.json from a prior run, delete them
+        from kwargs (to prevent nested writes) and return them
+        """
+        maybe_prior_variables: Dict[str, Any] = {}
+        if _YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY in self._kwargs:
+            maybe_prior_variables = self._kwargs[_YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY]
+            del self._kwargs[_YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY]
+
+        return maybe_prior_variables
 
     @final
     def to_dict(self) -> Dict[str, str]:

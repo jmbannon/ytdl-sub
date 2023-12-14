@@ -163,7 +163,9 @@ ENTRY_DERIVED_VARIABLES: Dict[Variable, str] = {
     v.upload_date_index_padded: _pad_int(v.upload_date_index, 2),
     v.upload_date_index_reversed: f"{{%sub(100, {v.upload_date_index.variable_name})}}",
     v.upload_date_index_reversed_padded: _pad_int(v.upload_date_index_reversed, 2),
-    v.playlist_index_reversed: f"{{%sub({v.playlist_count.variable_name}, {v.playlist_index.variable_name}, -1)}}",
+    v.playlist_index_reversed: (
+        f"{{%sub({v.playlist_count.variable_name}, {v.playlist_index.variable_name}, -1)}}"
+    ),
     v.playlist_index_padded: _pad_int(v.playlist_index, 2),
     v.playlist_index_reversed_padded: _pad_int(v.playlist_index_reversed, 2),
     v.playlist_index_padded6: _pad_int(v.playlist_index, 6),
