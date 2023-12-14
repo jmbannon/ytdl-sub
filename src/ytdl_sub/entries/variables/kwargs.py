@@ -52,7 +52,7 @@ SPLIT_BY_CHAPTERS_PARENT_ENTRY = _("split_by_chapters_parent_entry", backend=Tru
 COMMENTS = _("comments", backend=True)
 UID = _("id")
 EXTRACTOR = _("extractor")
-IE_KEY = _("ie_key")
+IE_KEY = _("extractor_key") #IE_KEY is saved in the info.json as extractor_key
 EPOCH = _("epoch")
 CHANNEL = _("channel")
 CHANNEL_ID = _("channel_id")
