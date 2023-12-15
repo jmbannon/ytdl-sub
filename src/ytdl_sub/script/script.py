@@ -1,3 +1,4 @@
+# pylint: disable=missing-raises-doc
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -17,8 +18,6 @@ from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 from ytdl_sub.script.utils.type_checking import FunctionSpec
-
-# pylint: disable=missing-raises-doc
 
 
 def _is_function(override_name: str):
@@ -421,7 +420,8 @@ class Script:
 
         Returns
         -------
-        Dict containing the variable names to their resolved values.
+        Dict[str, Resolvable]
+            Dict containing the variable names to their resolved values.
         """
         try:
             self.add(variable_definitions)
@@ -436,6 +436,22 @@ class Script:
                     del self._variables[name]
 
     def get(self, variable_name: str) -> Resolvable:
+        """
+        Parameters
+        ----------
+        variable_name
+            Name of the resolved variable to get.
+
+        Returns
+        -------
+        Resolvable
+            The resolved variable of the given name.
+
+        Raises
+        ------
+        RuntimeException
+            If the variable has not been resolved yet in the Script.
+        """
         if variable_name not in self._variables:
             raise RuntimeException(
                 f"Tried to get resolved variable {variable_name}, but it does not exist"
@@ -448,4 +464,10 @@ class Script:
 
     @property
     def variable_names(self) -> Set[str]:
+        """
+        Returns
+        -------
+        Set[str]
+            Names of all the variables within the Script.
+        """
         return set(list(self._variables.keys()))

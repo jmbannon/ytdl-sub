@@ -105,7 +105,9 @@ class FutureResolvable(AnyArgument, ABC):
 
     @abstractmethod
     def future_resolvable_type(self) -> Type[Resolvable]:
-        pass
+        """
+        The resolvable type that this type is known to turn into
+        """
 
 
 @dataclass(frozen=True)
@@ -197,7 +199,11 @@ class FunctionType(NamedArgument, ABC):
 class BuiltInFunctionType(FunctionType, ABC):
     @abstractmethod
     def output_type(self) -> Type[Resolvable]:
-        pass
+        """
+        Returns
+        -------
+        The known Resolvable type that a BuiltInFunction will output
+        """
 
 
 @dataclass(frozen=True)
@@ -210,6 +216,11 @@ class Lambda(Resolvable):
 
     @classmethod
     def num_input_args(cls) -> int:
+        """
+        Returns
+        -------
+        The number of input args the Lambda function takes
+        """
         return 1
 
 
