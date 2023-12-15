@@ -93,6 +93,8 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
         return self
 
+    # pylint: disable=missing-raises-doc
+
     @property
     def callable(self) -> Callable[..., Resolvable]:
         """
@@ -105,6 +107,8 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         except Exception as exc:
             # Should be validated in the parser
             raise UNREACHABLE from exc
+
+    # pylint: enable=missing-raises-doc
 
     @functools.cached_property
     def function_spec(self) -> FunctionSpec:

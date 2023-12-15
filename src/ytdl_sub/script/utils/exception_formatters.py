@@ -130,11 +130,10 @@ class FunctionArgumentsExceptionFormatter:
         for arg in self._input_args:
             if isinstance(arg, BuiltInFunctionType):
                 if is_union(arg.output_type()):
-                    received_type_names.append(
-                        f"%{arg.name}(...)->Union["
-                        f"{', '.join(sorted(type_.type_name() for type_ in arg.output_type().__args__))}"
-                        f"]"
+                    readable_type_names = ", ".join(
+                        sorted(type_.type_name() for type_ in arg.output_type().__args__)
                     )
+                    received_type_names.append(f"%{arg.name}(...)->Union[{readable_type_names}]")
                 else:
                     received_type_names.append(f"%{arg.name}(...)->{arg.output_type().type_name()}")
             else:

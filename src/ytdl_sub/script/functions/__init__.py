@@ -68,6 +68,11 @@ class Functions(
         ----------
         function
             A static function whose name will be used as the offered function name.
+
+        Raises
+        ------
+        ValueError
+            If the name already exists as a function.
         """
         if cls.is_built_in(function.__name__):
             raise ValueError(

@@ -143,6 +143,11 @@ class FunctionSpec:
         return True
 
     def _is_varargs_compatible(self, input_args: List[Argument]) -> bool:
+        """
+        Returns
+        -------
+        True if the input args are compatible with the spec's varargs. False otherwise.
+        """
         assert self.varargs is not None
 
         for input_arg in input_args:
@@ -165,22 +170,42 @@ class FunctionSpec:
         raise UNREACHABLE  # TODO: functions with no args
 
     def is_num_args_compatible(self, num_input_args: int) -> bool:
+        """
+        Returns
+        -------
+        True if the number of input args is compatible with the function spec. False otherwise.
+        """
         if self.args is not None:
             return self.num_required_args <= num_input_args <= len(self.args)
         return True  # varargs can take any number
 
     @property
     def num_required_args(self) -> int:
+        """
+        Returns
+        -------
+        The minimum number of args required to call the function.
+        """
         if self.args is not None:
             return sum(1 for arg in self.args if not is_optional(arg))
         return 0  # varargs can take any number
 
     @property
     def is_lambda_reduce_function(self) -> Optional[Type[LambdaReduce]]:
+        """
+        Returns
+        -------
+        True if the function is a Lambda-reduce function. False otherwise.
+        """
         return LambdaReduce if LambdaReduce in (self.args or []) else None
 
     @property
     def is_lambda_function(self) -> Optional[Type[Lambda | LambdaTwo | LambdaThree]]:
+        """
+        Returns
+        -------
+        True if the function is a Lambda function (excluding reduce). False otherwise.
+        """
         if LambdaThree in (self.args or []):
             return LambdaThree
         if LambdaTwo in (self.args or []):
@@ -191,6 +216,11 @@ class FunctionSpec:
 
     @property
     def is_lambda_like(self) -> Optional[Type[TLambda]]:
+        """
+        Returns
+        -------
+        True if the function is a Lambda type (including reduce).
+        """
         if l_type := self.is_lambda_reduce_function:
             return l_type
         if l_type := self.is_lambda_function:
@@ -199,6 +229,11 @@ class FunctionSpec:
 
     @classmethod
     def from_callable(cls, callable_ref: Callable[..., Resolvable]) -> "FunctionSpec":
+        """
+        Returns
+        -------
+        FunctionSpec from a built-in function.
+        """
         arg_spec: FullArgSpec = inspect.getfullargspec(callable_ref)
         if arg_spec.varargs:
             return FunctionSpec(

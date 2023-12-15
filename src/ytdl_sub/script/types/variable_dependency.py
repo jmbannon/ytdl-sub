@@ -39,7 +39,9 @@ class VariableDependency(ABC):
                 output.append(arg)
 
             if isinstance(arg, VariableDependency):
+                # pylint: disable=protected-access
                 output.extend(arg._recurse_get(ttype))
+                # pylint: enable=protected-access
 
         return output
 
@@ -83,6 +85,8 @@ class VariableDependency(ABC):
         """
         return set(self._recurse_get(Lambda, subclass=True))
 
+    # pylint: disable=missing-raises-doc
+
     @final
     @property
     def custom_functions(self) -> Set[ParsedCustomFunction]:
@@ -104,6 +108,8 @@ class VariableDependency(ABC):
                 output.update(arg.custom_functions)
 
         return output
+
+    # pylint: enable=missing-raises-doc
 
     @abstractmethod
     def resolve(

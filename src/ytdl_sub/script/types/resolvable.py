@@ -114,16 +114,12 @@ class Hashable(Resolvable, ABC):
     Resolvable type that can be used as hashes (i.e. in Maps)
     """
 
-    pass
-
 
 @dataclass(frozen=True)
 class NonHashable(NamedType, ABC):
     """
     Type that is known to never be hashable.
     """
-
-    pass
 
 
 @dataclass(frozen=True)
@@ -151,32 +147,40 @@ class Numeric(ResolvableT[NumericT], ABC, Generic[NumericT]):
     Resolvable numeric types (int/float)
     """
 
-    pass
-
 
 @dataclass(frozen=True)
 class Integer(Numeric[int], Argument):
-    pass
+    """
+    Resolved Integer type
+    """
 
 
 @dataclass(frozen=True)
 class Float(Numeric[float], Argument):
-    pass
+    """
+    Resolved float type
+    """
 
 
 @dataclass(frozen=True)
 class Boolean(ResolvableT[bool], Argument):
-    pass
+    """
+    Resolved bool type
+    """
 
 
 @dataclass(frozen=True)
 class String(ResolvableT[str], Argument):
-    pass
+    """
+    Resolved String type
+    """
 
 
 @dataclass(frozen=True)
 class NamedCustomFunction(NamedArgument, ABC):
-    pass
+    """
+    A custom function with a defined name (but unknown args)
+    """
 
 
 @dataclass(frozen=True)
@@ -236,5 +240,3 @@ class LambdaReduce(LambdaTwo):
     """
     Type-hinting for functions that apply a reduce-operation using a lambda (two arguments)
     """
-
-    pass

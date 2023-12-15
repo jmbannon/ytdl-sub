@@ -405,6 +405,24 @@ class Script:
         resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
     ) -> Dict[str, Resolvable]:
+        """
+        Given a new set of variable definitions, resolve them using the Script, but do not
+        add them to the Script itself.
+
+        Parameters
+        ----------
+        variable_definitions
+            Variables to resolve, but not store in the Script
+        resolved
+            Optional. Pre-resolved variables that should be used instead of what is in the script.
+        unresolvable
+            Optional. Unresolvable variables that will be ignored in resolution, including all
+            variables with a dependency to them.
+
+        Returns
+        -------
+        Dict containing the variable names to their resolved values.
+        """
         try:
             self.add(variable_definitions)
             return self._resolve(

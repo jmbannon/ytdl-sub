@@ -17,6 +17,12 @@ class FunctionArgument(Variable):
 
     @classmethod
     def from_idx(cls, idx: int, custom_function_name: Optional[str]) -> "FunctionArgument":
+        """
+        Returns
+        -------
+        FunctionArgument whose variable name is the index, and optionally contains the custom
+        function name its defined in as a prefix.
+        """
         if custom_function_name:
             return FunctionArgument(name=f"${custom_function_name}___{idx}", index=idx)
         return FunctionArgument(name=f"${idx}", index=idx)
