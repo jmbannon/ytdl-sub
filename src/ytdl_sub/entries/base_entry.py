@@ -105,7 +105,7 @@ class BaseEntryVariables:
         # pylint: disable=line-too-long
         # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
         # pylint: enable=line-too-long
-        return self.kwargs_get(EXTRACTOR) or self.kwargs(IE_KEY)
+        return self.kwargs_get("extractor_key") or self.kwargs("ie_key")
 
     @property
     def epoch(self: "BaseEntry") -> int:

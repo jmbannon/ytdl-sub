@@ -1,7 +1,9 @@
 import pytest
+from conftest import assert_logs
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
+from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -48,3 +50,19 @@ class TestSoundcloudDiscography:
             dry_run=dry_run,
             expected_download_summary_file_name="soundcloud/test_soundcloud_discography.json",
         )
+
+        # Ensure another invocation will hit ExistingVideoReached
+        if not dry_run:
+            with assert_logs(
+                logger=YTDLP.logger,
+                expected_message="ExistingVideoReached, stopping additional downloads",
+                log_level="debug",
+            ):
+                transaction_log = discography_subscription.download()
+
+            assert transaction_log.is_empty
+            assert_expected_downloads(
+                output_directory=output_directory,
+                dry_run=dry_run,
+                expected_download_summary_file_name="soundcloud/test_soundcloud_discography.json",
+            )
