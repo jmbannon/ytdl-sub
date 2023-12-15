@@ -13,7 +13,6 @@ from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.variables.kwargs import DESCRIPTION
 from ytdl_sub.entries.variables.kwargs import EPOCH
-from ytdl_sub.entries.variables.kwargs import EXTRACTOR
 from ytdl_sub.entries.variables.kwargs import IE_KEY
 from ytdl_sub.entries.variables.kwargs import TITLE
 from ytdl_sub.entries.variables.kwargs import UID
@@ -105,7 +104,7 @@ class BaseEntryVariables:
         # pylint: disable=line-too-long
         # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
         # pylint: enable=line-too-long
-        return self.kwargs_get("extractor_key") or self.kwargs("ie_key")
+        return self.kwargs_get("extractor_key") or self.kwargs(IE_KEY)
 
     @property
     def epoch(self: "BaseEntry") -> int:
