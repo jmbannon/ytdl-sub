@@ -68,6 +68,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             PLAYLIST_INDEX: playlist_index,
             PLAYLIST_COUNT: playlist_count,
             EXTRACTOR: "mock-entry-dict",
+            "extractor_key": "mock-entry-dict",
             TITLE: f"Mock Entry {uid}",
             EXT: "mp4",
             UPLOAD_DATE: upload_date,

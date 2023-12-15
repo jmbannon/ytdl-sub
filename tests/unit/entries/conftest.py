@@ -163,6 +163,7 @@ def mock_entry_kwargs(
         "id": uid,
         "epoch": 1596878400,
         "extractor": extractor,
+        "extractor_key": extractor,
         "title": title,
         "ext": ext,
         "upload_date": upload_date,
