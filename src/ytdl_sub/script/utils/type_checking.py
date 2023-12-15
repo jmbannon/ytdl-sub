@@ -106,6 +106,11 @@ def is_type_compatible(
     arg: NamedType,
     expected_arg_type: Type[Resolvable | Optional[Resolvable]],
 ) -> bool:
+    """
+    Returns
+    -------
+    True if arg is compatible with expected_arg_type. False otherwise.
+    """
     arg_type: Type[NamedType] = arg.__class__
     if isinstance(arg, BuiltInFunctionType):
         arg_type = arg.output_type()  # built-in function

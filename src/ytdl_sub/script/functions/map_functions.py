@@ -17,6 +17,14 @@ from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 class MapFunctions:
     @staticmethod
     def map(maybe_mapping: AnyArgument) -> Map:
+        """
+        Tries to cast an unknown variable type to a Map.
+
+        Raises
+        ------
+        FunctionRuntimeException
+            If the input type is not actually a Map.
+        """
         if not isinstance(maybe_mapping, Map):
             raise FunctionRuntimeException(
                 f"Tried and failed to cast {maybe_mapping.type_name()} as a Map"
@@ -25,6 +33,9 @@ class MapFunctions:
 
     @staticmethod
     def map_size(mapping: Map) -> Integer:
+        """
+        Returns the size of a Map.
+        """
         return Integer(len(mapping.value))
 
     @staticmethod

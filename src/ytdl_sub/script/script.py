@@ -144,11 +144,9 @@ class Script:
                 if lambda_type := spec.is_lambda_like:
 
                     lambda_function_names = set(
-                        [
-                            lamb.value
-                            for lamb in SyntaxTree(function.args).lambdas
-                            if isinstance(lamb, Lambda)
-                        ]
+                        lamb.value
+                        for lamb in SyntaxTree(function.args).lambdas
+                        if isinstance(lamb, Lambda)
                     )
 
                     # Only case len(lambda_function_names) > 1 is when used in if-statements
@@ -342,11 +340,46 @@ class Script:
         unresolvable: Optional[Set[str]] = None,
         update: bool = False,
     ) -> ScriptOutput:
+        """
+        Resolves the script
+
+        Parameters
+        ----------
+        resolved
+            Optional. Pre-resolved variables that should be used instead of what is in the script.
+        unresolvable
+            Optional. Unresolvable variables that will be ignored in resolution, including all
+            variables with a dependency to them.
+        update
+            Whether to update the script's internal values with the resolved variables instead of
+            their original definition. This helps avoid re-evaluated the same variables repeatedly.
+
+        Returns
+        -------
+        ScriptOutput
+            Containing all resolved variables.
+        """
         return self._resolve(
             pre_resolved=resolved, unresolvable=unresolvable, update=update, output_filter=None
         )
 
     def add(self, variables: Dict[str, str], unresolvable: Optional[Set[str]] = None) -> "Script":
+        """
+        Adds parses and adds new variables to the script.
+
+        Parameters
+        ----------
+        variables
+            Mapping containing variable name to definition.
+        unresolvable
+            Optional. Set of unresolved variables that the new variables may contain, but the
+            script does not (yet).
+
+        Returns
+        -------
+        Script
+            self
+        """
         added_variables_to_validate: Set[str] = set()
         for variable_name, variable_definition in variables.items():
             self._variables[variable_name] = parse(

@@ -31,10 +31,25 @@ class Functions(
 
     @classmethod
     def is_built_in(cls, name: str) -> bool:
+        """
+        Returns
+        -------
+        True if the name exists as a built-in function or custom function. False otherwise.
+        """
         return hasattr(cls, name) or hasattr(cls, f"{name}_") or name in cls._custom_functions
 
     @classmethod
     def get(cls, name: str) -> Callable[..., Resolvable]:
+        """
+        Returns
+        -------
+        The actual Python callable for the function of the given name.
+
+        Raises
+        ------
+        FunctionDoesNotExistRuntimeException
+            If the function does not exist.
+        """
         if hasattr(cls, name):
             return getattr(cls, name)
         if hasattr(cls, f"{name}_"):
@@ -46,6 +61,14 @@ class Functions(
 
     @classmethod
     def register_function(cls, function: Callable[..., Resolvable]) -> None:
+        """
+        Adds a function to the suite of offered functions.
+
+        Parameters
+        ----------
+        function
+            A static function whose name will be used as the offered function name.
+        """
         if cls.is_built_in(function.__name__):
             raise ValueError(
                 f"Cannot register a function with name {function.__name__} "

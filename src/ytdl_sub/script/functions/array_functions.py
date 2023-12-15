@@ -18,6 +18,14 @@ from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 class ArrayFunctions:
     @staticmethod
     def array(maybe_array: AnyArgument) -> Array:
+        """
+        Tries to cast an unknown variable type to an Array.
+
+        Raises
+        ------
+        FunctionRuntimeException
+            If the input type is not actually an Array.
+        """
         if not isinstance(maybe_array, Array):
             raise FunctionRuntimeException(
                 f"Tried and failed to cast {maybe_array.type_name()} as an Array"
@@ -26,6 +34,9 @@ class ArrayFunctions:
 
     @staticmethod
     def array_size(array: Array) -> Integer:
+        """
+        Returns the size of an Array.
+        """
         return Integer(len(array.value))
 
     @staticmethod

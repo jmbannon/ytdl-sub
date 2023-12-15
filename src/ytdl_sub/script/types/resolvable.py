@@ -73,22 +73,36 @@ class ReturnableArgumentB(ValueArgument, NamedType, ABC):
 @dataclass(frozen=True)
 class AnyArgument(ReturnableArgument, ReturnableArgumentA, ReturnableArgumentB, ABC):
     """
-    Human-readable name for FutureResolvable
+    Human-readable name for Resolvable
     """
 
 
 @dataclass(frozen=True)
 class Resolvable(AnyArgument, ABC):
+    """
+    A type that is resolved into a native Python type (and have no dependencies to other types).
+    """
+
     def __str__(self) -> str:
         return str(self.value)
 
     @property
     def native(self) -> Any:
+        """
+        Returns
+        -------
+        The resolvable in its native form
+        """
         return self.value
 
 
 @dataclass(frozen=True)
 class FutureResolvable(AnyArgument, ABC):
+    """
+    Used when parsing, it is an unresolved type that will eventually resolve to a known type
+    (i.e. Maps, Arrays)
+    """
+
     @abstractmethod
     def future_resolvable_type(self) -> Type[Resolvable]:
         pass
@@ -96,27 +110,47 @@ class FutureResolvable(AnyArgument, ABC):
 
 @dataclass(frozen=True)
 class Hashable(Resolvable, ABC):
+    """
+    Resolvable type that can be used as hashes (i.e. in Maps)
+    """
+
     pass
 
 
 @dataclass(frozen=True)
 class NonHashable(NamedType, ABC):
+    """
+    Type that is known to never be hashable.
+    """
+
     pass
 
 
 @dataclass(frozen=True)
 class ResolvableToJson(Resolvable, ABC):
+    """
+    Types whose string values should be resolved to JSON (i.e. Maps, Arrays)
+    """
+
     def __str__(self):
         return json.dumps(self.native)
 
 
 @dataclass(frozen=True)
 class ResolvableT(Hashable, ABC, Generic[T]):
+    """
+    Resolvable types that resolve to the generic T
+    """
+
     value: T
 
 
 @dataclass(frozen=True)
-class Numeric(ResolvableT[NumericT], Hashable, ABC, Generic[NumericT]):
+class Numeric(ResolvableT[NumericT], ABC, Generic[NumericT]):
+    """
+    Resolvable numeric types (int/float)
+    """
+
     pass
 
 
@@ -131,12 +165,12 @@ class Float(Numeric[float], Argument):
 
 
 @dataclass(frozen=True)
-class Boolean(ResolvableT[bool], Hashable, Argument):
+class Boolean(ResolvableT[bool], Argument):
     pass
 
 
 @dataclass(frozen=True)
-class String(ResolvableT[str], Hashable, Argument):
+class String(ResolvableT[str], Argument):
     pass
 
 
@@ -199,4 +233,8 @@ class LambdaThree(Lambda):
 
 @dataclass(frozen=True)
 class LambdaReduce(LambdaTwo):
+    """
+    Type-hinting for functions that apply a reduce-operation using a lambda (two arguments)
+    """
+
     pass

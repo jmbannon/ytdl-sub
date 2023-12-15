@@ -42,6 +42,11 @@ class SyntaxTree(VariableDependency):
 
     @property
     def maybe_resolvable(self) -> Optional[Resolvable]:
+        """
+        Returns
+        -------
+        A resolvable if the AST contains a single type that is resolvable. None otherwise.
+        """
         if len(self.ast) == 1 and isinstance(self.ast[0], Resolvable):
             return self.ast[0]
         return None

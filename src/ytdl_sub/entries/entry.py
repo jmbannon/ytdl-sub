@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 import copy
 import json
 import os
@@ -75,6 +76,10 @@ class Entry(BaseEntry, Scriptable):
     def add_injected_variables(
         self, download_entry: "Entry", download_idx: int, upload_date_idx: int
     ) -> "Entry":
+        """
+        Adds variables that get injected into the Entry script that aren't available at
+        metadata scrape time (only after the actual download).
+        """
         self.add(
             {
                 # Tracks number of entries downloaded
@@ -211,7 +216,7 @@ class Entry(BaseEntry, Scriptable):
         return maybe_prior_variables
 
     @final
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> Dict[str, Any]:
         """
         Returns
         -------

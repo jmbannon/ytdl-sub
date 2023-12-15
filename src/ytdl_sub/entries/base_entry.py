@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 from abc import ABC
 from pathlib import Path
 from typing import Any
@@ -35,7 +36,7 @@ class BaseEntry(ABC):
         self._kwargs = entry_dict
 
     @property
-    def uid(self: "BaseEntry") -> str:
+    def uid(self) -> str:
         """
         Returns
         -------
@@ -45,7 +46,7 @@ class BaseEntry(ABC):
         return str(self._kwargs[v.uid.metadata_key])
 
     @property
-    def download_archive_extractor(self: "BaseEntry") -> str:
+    def download_archive_extractor(self) -> str:
         """
         The extractor name used in yt-dlp download archives
         """
@@ -59,14 +60,14 @@ class BaseEntry(ABC):
         ).lower()
 
     @property
-    def title(self: "BaseEntry") -> str:
+    def title(self) -> str:
         """
         The title of the entry. If a title does not exist, returns its unique ID.
         """
         return self._kwargs_get(v.title.metadata_key, self.uid)
 
     @property
-    def webpage_url(self: "BaseEntry") -> str:
+    def webpage_url(self) -> str:
         """
         The url to the webpage.
         """
@@ -78,7 +79,7 @@ class BaseEntry(ABC):
         return "info.json"
 
     @property
-    def uploader_id(self: "BaseEntry") -> str:
+    def uploader_id(self) -> str:
         """
         The uploader id if it exists, otherwise return the unique ID.
         """
