@@ -45,9 +45,9 @@ class BaseEntry(ABC):
         return str(self._kwargs[v.uid.metadata_key])
 
     @property
-    def extractor(self: "BaseEntry") -> str:
+    def download_archive_extractor(self: "BaseEntry") -> str:
         """
-        The ytdl extractor name
+        The extractor name used in yt-dlp download archives
         """
         # pylint: disable=line-too-long
         # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
@@ -178,4 +178,4 @@ class BaseEntry(ABC):
         -------
         extractor + uid, making this a unique hash for any entry
         """
-        return self.extractor + self.uid
+        return self.download_archive_extractor + self.uid
