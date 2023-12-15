@@ -99,12 +99,12 @@ class BaseEntryVariables:
         Returns
         -------
         str
-            The ytdl extractor name
+            The ytdl extractor name used in the download archive
         """
         # pylint: disable=line-too-long
         # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
         # pylint: enable=line-too-long
-        return self.kwargs_get("extractor_key") or self.kwargs(IE_KEY)
+        return str(self.kwargs_get("extractor_key") or self.kwargs(IE_KEY)).lower()
 
     @property
     def epoch(self: "BaseEntry") -> int:
