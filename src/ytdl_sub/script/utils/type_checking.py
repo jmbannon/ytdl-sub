@@ -1,3 +1,4 @@
+# pylint: disable=missing-raises-doc
 import inspect
 from dataclasses import dataclass
 from inspect import FullArgSpec
@@ -21,9 +22,6 @@ from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
-
-# pylint: disable=missing-raises-doc
-
 
 TLambda = TypeVar("TLambda", bound=Lambda)
 
@@ -86,10 +84,8 @@ def _is_type_compatible(
         for union_type in arg_type.__args__:
             if not _is_type_compatible(union_type, expected_arg_type):
                 return False
-    elif issubclass(arg_type, NamedCustomFunction):
-        return True  # custom-function, can be anything, so pass for now
-    elif issubclass(arg_type, Variable):
-        return True  # unresolved variables can be anything, so pass for now
+    elif issubclass(arg_type, (NamedCustomFunction, Variable)):
+        return True  # custom-function/variable can be anything, so pass for now
     elif issubclass(arg_type, Lambda) and issubclass(expected_arg_type, arg_type):
         # lambda, check if expected_arg_type is a subclass
         # Do not return on just that to also allow lambdas to be returned as
