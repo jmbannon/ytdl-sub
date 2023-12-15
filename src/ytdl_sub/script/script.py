@@ -118,71 +118,64 @@ class Script:
                 )
 
     def _ensure_custom_function_usage_num_input_arguments_valid(
-        self, definitions: Dict[str, SyntaxTree], prefix: str
+        self, prefix: str, name: str, definition: SyntaxTree
     ):
-        for name, definition in definitions.items():
-            for nested_custom_function in definition.custom_functions:
-                if nested_custom_function.num_input_args != (
-                    expected_num_args := len(
-                        self._functions[nested_custom_function.name].function_arguments
-                    )
-                ):
-                    raise InvalidCustomFunctionArguments(
-                        f"{prefix}{name} has invalid usage of the custom "
-                        f"function %{nested_custom_function.name}: Expects {expected_num_args} "
-                        f"argument{'s' if expected_num_args > 1 else ''} but received "
-                        f"{nested_custom_function.num_input_args}"
-                    )
+        for nested_custom_function in definition.custom_functions:
+            if nested_custom_function.num_input_args != (
+                expected_num_args := len(
+                    self._functions[nested_custom_function.name].function_arguments
+                )
+            ):
+                raise InvalidCustomFunctionArguments(
+                    f"{prefix}{name} has invalid usage of the custom "
+                    f"function %{nested_custom_function.name}: Expects {expected_num_args} "
+                    f"argument{'s' if expected_num_args > 1 else ''} but received "
+                    f"{nested_custom_function.num_input_args}"
+                )
 
     def _ensure_lambda_usage_num_input_arguments_valid(
-        self, definitions: Dict[str, SyntaxTree], prefix: str
+        self, prefix: str, name: str, definition: SyntaxTree
     ):
-        for name, definition in definitions.items():
-            for function in definition.built_in_functions:
-                spec = FunctionSpec.from_callable(Functions.get(function.name))
-                if lambda_type := spec.is_lambda_like:
+        for function in definition.built_in_functions:
+            spec = FunctionSpec.from_callable(Functions.get(function.name))
+            if not (lambda_type := spec.is_lambda_like):
+                return
 
-                    lambda_function_names = set(
-                        lamb.value
-                        for lamb in SyntaxTree(function.args).lambdas
-                        if isinstance(lamb, Lambda)
+            lambda_function_names = set(
+                lamb.value for lamb in SyntaxTree(function.args).lambdas if isinstance(lamb, Lambda)
+            )
+
+            # Only case len(lambda_function_names) > 1 is when used in if-statements
+            for lambda_function_name in lambda_function_names:
+                if Functions.is_built_in(lambda_function_name):
+                    lambda_spec = FunctionSpec.from_callable(Functions.get(lambda_function_name))
+                    if not lambda_spec.is_num_args_compatible(lambda_type.num_input_args()):
+                        expected_args_str = str(lambda_spec.num_required_args)
+                        if lambda_spec.num_required_args != len(lambda_spec.args):
+                            expected_args_str = f"{expected_args_str} - {len(lambda_spec.args)}"
+
+                        raise IncompatibleFunctionArguments(
+                            f"{prefix}{name} has invalid usage of the "
+                            f"function %{lambda_function_name} as a lambda: "
+                            f"Expects {expected_args_str} "
+                            f"argument{'s' if expected_args_str != '1' else ''} but will "
+                            f"receive {lambda_type.num_input_args()}."
+                        )
+                else:  # is custom function
+                    if lambda_function_name not in self._functions:
+                        raise UNREACHABLE  # Custom function should have been validated
+
+                    expected_num_arguments = len(
+                        self._functions[lambda_function_name].function_arguments
                     )
-
-                    # Only case len(lambda_function_names) > 1 is when used in if-statements
-                    for lambda_function_name in lambda_function_names:
-                        if Functions.is_built_in(lambda_function_name):
-                            lambda_spec = FunctionSpec.from_callable(
-                                Functions.get(lambda_function_name)
-                            )
-                            if not lambda_spec.is_num_args_compatible(lambda_type.num_input_args()):
-                                expected_args_str = str(lambda_spec.num_required_args)
-                                if lambda_spec.num_required_args != len(lambda_spec.args):
-                                    expected_args_str = (
-                                        f"{expected_args_str} - {len(lambda_spec.args)}"
-                                    )
-
-                                raise IncompatibleFunctionArguments(
-                                    f"{prefix}{name} has invalid usage of the "
-                                    f"function %{lambda_function_name} as a lambda: "
-                                    f"Expects {expected_args_str} "
-                                    f"argument{'s' if expected_args_str != '1' else ''} but will "
-                                    f"receive {lambda_type.num_input_args()}."
-                                )
-                        else:  # is custom function
-                            if lambda_function_name not in self._functions:
-                                raise UNREACHABLE  # Custom function should have been validated
-
-                            expected_num_arguments = len(
-                                self._functions[lambda_function_name].function_arguments
-                            )
-                            if lambda_type.num_input_args() != expected_num_arguments:
-                                raise IncompatibleFunctionArguments(
-                                    f"{prefix}{name} has invalid usage of the custom "
-                                    f"function %{lambda_function_name} as a lambda: "
-                                    f"Expects {expected_num_arguments} "
-                                    f"argument{'s' if expected_num_arguments > 1 else ''} but will "
-                                    f"receive {lambda_type.num_input_args()}."
-                                )
+                    if lambda_type.num_input_args() != expected_num_arguments:
+                        raise IncompatibleFunctionArguments(
+                            f"{prefix}{name} has invalid usage of the custom "
+                            f"function %{lambda_function_name} as a lambda: "
+                            f"Expects {expected_num_arguments} "
+                            f"argument{'s' if expected_num_arguments > 1 else ''} but will "
+                            f"receive {lambda_type.num_input_args()}."
+                        )
 
     def _validate(self, added_variables: Optional[Set[str]] = None) -> None:
         variables = self._variables
@@ -202,12 +195,13 @@ class Script:
             to_validate.append(("Custom function %", self._functions))
 
         for prefix, definitions in to_validate:
-            self._ensure_custom_function_usage_num_input_arguments_valid(
-                prefix=prefix, definitions=definitions
-            )
-            self._ensure_lambda_usage_num_input_arguments_valid(
-                prefix=prefix, definitions=definitions
-            )
+            for name, definition in definitions.items():
+                self._ensure_custom_function_usage_num_input_arguments_valid(
+                    prefix=prefix, name=name, definition=definition
+                )
+                self._ensure_lambda_usage_num_input_arguments_valid(
+                    prefix=prefix, name=name, definition=definition
+                )
 
     def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
