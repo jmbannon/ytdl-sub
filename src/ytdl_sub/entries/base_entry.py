@@ -52,11 +52,11 @@ class BaseEntry(ABC):
         # pylint: disable=line-too-long
         # Taken from https://github.com/yt-dlp/yt-dlp/blob/e6ab678e36c40ded0aae305bbb866cdab554d417/yt_dlp/YoutubeDL.py#L3514
         # pylint: enable=line-too-long
-        return (
+        return str(
             self._kwargs_get(v.extractor_key.metadata_key)
             or self._kwargs_get(v.ie_key.metadata_key)
             or "NO_EXTRACTOR"
-        )
+        ).lower()
 
     @property
     def title(self: "BaseEntry") -> str:
