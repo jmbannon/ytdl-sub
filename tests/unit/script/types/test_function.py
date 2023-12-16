@@ -47,12 +47,21 @@ class TestFunction:
             Script({"func": function_str}).resolve()
 
     @pytest.mark.parametrize(
-        "function_str", ["{%array_at({'a': 'dict?'}, 1)}" "{%array_extend('not', 'array')}"]
+        "function_str, expected_types, received_types",
+        [
+            ("{%array_at({'a': 'dict?'}, 1)}", "Array, Integer", "Map, Integer"),
+            ("{%array_extend('not', 'array')}", "Array, ...", "String, String"),
+            (
+                "{%replace('hi mom', 'mom', 'dad', 1, 0)}",
+                "String, String, String, Optional[Integer]",
+                "String, String, String, Integer, Integer",
+            ),
+        ],
     )
-    def test_incompatible_types(self, function_str):
+    def test_incompatible_types(self, function_str: str, expected_types: str, received_types: str):
         with pytest.raises(
             IncompatibleFunctionArguments,
-            match=_incompatible_arguments_match(expected="Array, Integer", recieved="Map, Integer"),
+            match=_incompatible_arguments_match(expected=expected_types, recieved=received_types),
         ):
             Script({"func": function_str}).resolve()
 
