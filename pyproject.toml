@@ -44,3 +44,8 @@ ignore = [
 include = [
     "src/*"
 ]
+
+[tool.coverage.report]
+exclude_also = [
+    "raise UNREACHABLE.*",
+]
