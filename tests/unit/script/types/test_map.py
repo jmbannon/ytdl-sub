@@ -101,6 +101,7 @@ class TestMap:
             "{{'key': }}",
             "{{'key':}}",
             "{{'key': 'value', 'key2':}}",
+            "{{'key1': 'value1','value2'}}",
             "{{'key': 'value', 'key2': }}",
             "{{    'key': 'value', 'key2':\n}}",
             "{{    'key': ,\n}}",
@@ -137,6 +138,16 @@ class TestMap:
     def test_map_multiple_keys(self, value: str):
         with pytest.raises(InvalidSyntaxException, match=re.escape(str(MAP_KEY_MULTIPLE_VALUES))):
             Script({"dict": value}).resolve()
+
+    @pytest.mark.parametrize(
+        "value",
+        [
+            "{{'key1': 'value1',}}",
+            "{{'key1': 'value1' , }}",
+        ],
+    )
+    def test_map_trailing_comma_okay(self, value: str):
+        assert Script({"dict": value}).resolve().get_native("dict") == {"key1": "value1"}
 
     @pytest.mark.parametrize(
         "value",

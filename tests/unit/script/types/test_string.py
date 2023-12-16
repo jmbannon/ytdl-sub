@@ -50,6 +50,9 @@ class TestString:
     def test_string(self, string: str, expected_string: str):
         assert Script({"out": string}).resolve() == ScriptOutput({"out": String(expected_string)})
 
+    def test_null_is_empty_string(self):
+        assert Script({"out": "{%string(null)}"}).resolve() == ScriptOutput({"out": String("")})
+
     @pytest.mark.parametrize(
         "string",
         [

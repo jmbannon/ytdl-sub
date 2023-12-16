@@ -219,3 +219,17 @@ class TestCustomFunction:
                     "output": "{%mul(%func1(1), 1)}",
                 }
             ).resolve()
+
+    def test_function_argument_errors_has_spaces(self):
+        with pytest.raises(
+            InvalidCustomFunctionArgumentName,
+            match=re.escape(
+                "Custom function arguments, denoted by $, cannot have a space proceeding it."
+            ),
+        ):
+            Script(
+                {
+                    "%func1": "{%mul($ 1, $0)}",
+                    "output": "{%mul(%func1(1), 1)}",
+                }
+            )

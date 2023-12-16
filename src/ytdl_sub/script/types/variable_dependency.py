@@ -28,7 +28,11 @@ class VariableDependency(ABC):
     @property
     @abstractmethod
     def _iterable_arguments(self) -> List[Argument]:
-        pass
+        """
+        Returns
+        -------
+        Any arguments in the VariableDependency that may or may not need to be resolved.
+        """
 
     def _recurse_get(self, ttype: Type[TypeT], subclass: bool = False) -> List[TypeT]:
         output: List[TypeT] = []

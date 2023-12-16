@@ -101,7 +101,7 @@ def _is_function_name_char(char: str) -> bool:
 
 
 def _is_numeric_start(char: str) -> bool:
-    return char.isnumeric() or char == "-"
+    return char.isnumeric() or char in (".", "-")
 
 
 def _is_string_start_single_char(char: Optional[str]) -> bool:
@@ -222,8 +222,9 @@ class _Parser:
         variable_start_pos = self._pos
         while ch := self._read(increment_pos=False):
             if ch.isspace() and not var_name:
-                self._pos += 1
-                continue
+                raise InvalidCustomFunctionArgumentName(
+                    "Custom function arguments, denoted by $, cannot have a space proceeding it."
+                )
             if _is_breakable(ch):
                 break
 
@@ -457,7 +458,7 @@ class _Parser:
         while ch := self._read(increment_pos=False):
             if ch == "}":
                 if key is not None:
-                    raise MAP_KEY_WITH_NO_VALUE
+                    raise MAP_KEY_WITH_NO_VALUE  # key args are parsed immediately
 
                 self._pos += 1
                 return UnresolvedMap(value=output)
@@ -466,7 +467,7 @@ class _Parser:
                 if in_comma:
                     raise _UNEXPECTED_COMMA_ARGUMENT(ParsedArgType.MAP_KEY)
                 if key is not None:
-                    raise MAP_KEY_WITH_NO_VALUE
+                    raise MAP_KEY_WITH_NO_VALUE  # key args are parsed immediately
                 if not output:
                     raise _UNEXPECTED_COMMA_ARGUMENT(ParsedArgType.MAP_KEY)
                 in_comma = True
@@ -496,7 +497,7 @@ class _Parser:
                 if isinstance(key, NonHashable):
                     raise MAP_KEY_NOT_HASHABLE
                 if len(value_args) > 1:
-                    raise UNREACHABLE
+                    raise MAP_KEY_MULTIPLE_VALUES
 
                 output[key] = value_args[0]
                 key = None

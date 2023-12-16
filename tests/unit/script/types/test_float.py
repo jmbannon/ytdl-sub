@@ -6,7 +6,6 @@ from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR
 from ytdl_sub.script.parser import NUMERICS_ONLY_ARGS
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
-from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
@@ -37,6 +36,8 @@ class TestFloat:
             ("{%float(   -1.535   )}", -1.535),
             ("{%float(0001.)}", 1.0),
             ("{%float(  0001.   )}", 1.0),
+            ("{%float(.2)}", 0.2),
+            ("{%float(-.1)}", -0.1),
         ],
     )
     def test_float(self, float_: str, expected_float: int):
@@ -56,6 +57,7 @@ class TestFloat:
             "{%add(0,   -1.0.   )}",
             "{%add(0,0001.a)}",
             "{%add(0,  0001.-   )}",
+            "{%add(0, ..3)}",
         ],
     )
     def test_invalid_float(self, float_: str):
