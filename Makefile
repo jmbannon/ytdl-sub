@@ -41,14 +41,14 @@ executable: clean
 	pyinstaller ytdl-sub.spec
 	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}
 docs:
-	sphinx-build -a -b html docs docs/_html
+	sphinx-build -M html docs/source/ docs/build/
 clean:
 	rm -rf \
 		.pytest_cache/ \
 		build/ \
 		dist/ \
 		src/ytdl_sub.egg-info/ \
-		docs/_html/ \
+		docs/build/ \
 		.coverage \
 		docker/root/*.whl \
 		docker/root/defaults/examples \
