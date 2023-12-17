@@ -31,6 +31,13 @@ def _function_name(function_key: str) -> str:
     return function_key[1:]
 
 
+def _to_function_definition_name(function_key: str) -> str:
+    """
+    Add % in %custom_function
+    """
+    return f"%{function_key}"
+
+
 class Script:
     """
     Takes a dictionary of both
@@ -455,3 +462,23 @@ class Script:
             return resolvable
 
         raise RuntimeException(f"Tried to get unresolved variable {variable_name}")
+
+    @property
+    def variable_names(self) -> Set[str]:
+        """
+        Returns
+        -------
+        Set[str]
+            Names of all the variables within the Script.
+        """
+        return set(list(self._variables.keys()))
+
+    @property
+    def function_names(self) -> Set[str]:
+        """
+        Returns
+        -------
+        Set[str]
+            Names of all functions within the Script.
+        """
+        return set(_to_function_definition_name(name) for name in self._functions.keys())

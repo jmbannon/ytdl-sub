@@ -207,3 +207,84 @@ class TestPreset:
                 "output_options": output_options,
             },
         )
+
+    @pytest.mark.parametrize(
+        "override_variable_name", ["subscription_name", "subscription_value_3", "subscription_map"]
+    )
+    def test_preset_error_override_variable_collides_with_override(
+        self, config_file, output_options, youtube_video, override_variable_name: str
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                f"Override variable with name {override_variable_name} cannot be used since"
+                " it is a built-in ytdl-sub override variable name."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
+                    "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
+                    "overrides": {override_variable_name: "fail"},
+                },
+            )
+
+    @pytest.mark.parametrize(
+        "entry_variable_name",
+        [
+            "title",
+            "playlist_uid",
+            "source_title",
+            "playlist_max_upload_year",
+        ],
+    )
+    def test_preset_error_override_variable_collides_with_entry_variable(
+        self, config_file, output_options, youtube_video, entry_variable_name: str
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                f"Override variable with name {entry_variable_name} cannot be used since"
+                " it is a built-in ytdl-sub entry variable name."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
+                    "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
+                    "overrides": {entry_variable_name: "fail"},
+                },
+            )
+
+    @pytest.mark.parametrize(
+        "function_name",
+        [
+            "%extract_field_from_siblings",
+            "%extract_field_from_metadata_array",
+            "%sanitize",
+            "%array"
+        ],
+    )
+    def test_preset_error_override_variable_collides_with_custom_function(
+        self, config_file, output_options, youtube_video, function_name: str
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                f"Override function definition with name {function_name} cannot be used since"
+                " it is a built-in ytdl-sub function name."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
+                    "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
+                    "overrides": {function_name: "fail"},
+                },
+            )

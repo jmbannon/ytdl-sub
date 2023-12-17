@@ -8,6 +8,8 @@ import mergedeep
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
+from ytdl_sub.entries.variables.override_variables import OverrideVariables
+from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.utils.script import ScriptUtils
@@ -52,6 +54,28 @@ class Overrides(DictFormatterValidator, Scriptable):
     def __init__(self, name, value):
         DictFormatterValidator.__init__(self, name, value)
         Scriptable.__init__(self)
+
+        for key in self._keys:
+            if OverrideVariables.is_override_variable_name(key):
+                raise self._validation_exception(
+                    f"Override variable with name {key} cannot be used since it is a"
+                    " built-in ytdl-sub override variable name."
+                )
+
+            if key in self.script.variable_names:
+                raise self._validation_exception(
+                    f"Override variable with name {key} cannot be used since it is a"
+                    " built-in ytdl-sub entry variable name."
+                )
+
+            if key in self.script.function_names or (
+                key.startswith("%") and Functions.is_built_in(key[1:])
+            ):
+                raise self._validation_exception(
+                    f"Override function definition with name {key} cannot be used since it is a"
+                    " built-in ytdl-sub function name."
+                )
+
 
         self.unresolvable.add(VARIABLES.entry_metadata.variable_name)
 

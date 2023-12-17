@@ -1,5 +1,9 @@
+import re
+
 SUBSCRIPTION_NAME = "subscription_name"
 SUBSCRIPTION_VALUE = "subscription_value"
+SUBSCRIPTION_MAP = "subscription_map"
+SUBSCRIPTION_ARRAY = "subscription_array"
 
 
 class OverrideVariables:
@@ -55,3 +59,26 @@ class OverrideVariables:
         ``subscription_value``.
         """
         return f"subscription_value_{index + 1}"
+
+    @classmethod
+    def is_override_variable_name(cls, variable_name: str):
+        """
+        Returns
+        -------
+        True of a variable name collides with an override variable name. False otherwise.
+        """
+        if variable_name in (
+            SUBSCRIPTION_NAME,
+            SUBSCRIPTION_VALUE,
+            SUBSCRIPTION_MAP,
+            SUBSCRIPTION_ARRAY,
+        ):
+            return True
+
+        if re.fullmatch(r"^subscription_value_(\d+)$", variable_name):
+            return True
+
+        if re.fullmatch(r"^subscription_indent_(\d+)$", variable_name):
+            return True
+
+        return False
