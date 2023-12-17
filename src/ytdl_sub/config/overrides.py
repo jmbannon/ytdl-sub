@@ -76,7 +76,6 @@ class Overrides(DictFormatterValidator, Scriptable):
                     " built-in ytdl-sub function name."
                 )
 
-
         self.unresolvable.add(VARIABLES.entry_metadata.variable_name)
 
     def initial_variables(

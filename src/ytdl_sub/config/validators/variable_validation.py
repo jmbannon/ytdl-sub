@@ -88,6 +88,15 @@ class VariableValidation:
             resolved_variables=self.resolved_variables,
         )
 
+        for added_variable in added_variables:
+            if added_variable in overrides.keys:
+                # pylint: disable=protected-access
+                raise overrides._validation_exception(
+                    f"Override variable with name {added_variable} cannot be used since it is a"
+                    " built-in ytdl-sub variable added by a plugin."
+                )
+                # pylint: enable=protected-access
+
         # Set unresolved as variables that are added but do not exist as entry/override variables
         # Then update resolved variables to reflect that
         self.unresolved_variables = added_variables | modified_variables
@@ -112,15 +121,6 @@ class VariableValidation:
             unresolved_variables=self.unresolved_variables,
         ).get(plugin_op, set())
         modified_variables = options.modified_variables().get(plugin_op, set())
-
-        if added_variables:
-            for added_variable in added_variables:
-                if added_variable in self.resolved_variables:
-                    # pylint: disable=protected-access
-                    raise options._validation_exception(
-                        f"Tried added the variable '{added_variable}', but it already "
-                        f"exists as a defined variable."
-                    )
 
         resolved_variables = added_variables | modified_variables
 

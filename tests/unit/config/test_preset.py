@@ -260,13 +260,36 @@ class TestPreset:
                 },
             )
 
+    def test_preset_error_override_variable_collides_added_variable(
+        self, config_file, output_options, youtube_video
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                f"Override variable with name subtitles_ext cannot be used since"
+                " it is a built-in ytdl-sub variable added by a plugin."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
+                    "output_options": {"output_directory": "dir", "file_name": "ack"},
+                    "subtitles": {
+                        "embed_subtitles": True,
+                    },
+                    "overrides": {"subtitles_ext": "collide"},
+                },
+            )
+
     @pytest.mark.parametrize(
         "function_name",
         [
             "%extract_field_from_siblings",
             "%extract_field_from_metadata_array",
             "%sanitize",
-            "%array"
+            "%array",
         ],
     )
     def test_preset_error_override_variable_collides_with_custom_function(
