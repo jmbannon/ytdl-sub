@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Any
 from typing import Dict
 
@@ -30,6 +31,10 @@ class ScriptUtils:
         elif isinstance(value, bool):
             out = f"{{%bool({value})}}"
         else:
-            out = f"{{%from_json('''{json.dumps(value, ensure_ascii=False, sort_keys=True)}''')}}"
+            dumped_json = json.dumps(value, ensure_ascii=False, sort_keys=True)
+            # Remove triple-single-quotes from JSON to avoid parsing issues
+            dumped_json = re.sub("'{3,}", "'", dumped_json)
+
+            out = f"{{%from_json('''{dumped_json}''')}}"
 
         return out
