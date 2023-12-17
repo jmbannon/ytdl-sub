@@ -7,9 +7,9 @@ ytdl-sub User Guide
    guides/index
    faq/index
    config
-   deprecation_notices
    presets
    usage
+   deprecation_notices
 
 .. note:: End goal similar to: https://picard-docs.musicbrainz.org/en/functions/list_by_type.html
    Initial plans:

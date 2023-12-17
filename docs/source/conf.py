@@ -16,6 +16,8 @@ release = "2023.12.15"
 
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosectionlabel",
+    "sphinx.ext.extlinks",
     "sphinx_copybutton",
     "sphinx_design",
 ]
@@ -45,9 +47,15 @@ html_theme_options = {
         },
     ],
     "announcement": (
-        "Migration to <a href='~/build/index.html'>beautiful subscriptions</a> is now live"
+        "Migration to <a href='https://ytdl-sub--841.org.readthedocs.build/en/841/config.html#beautifying-subscriptions'>beautiful subscriptions</a> is now live"
     ),
 }
 
-
 html_static_path = ["_static"]
+
+
+# Make sure the all autosectionlabel targets are unique
+autosectionlabel_prefix_document = True
+
+
+extlinks = {"yt-dlp": ("https://github.com/yt-dlp/yt-dlp/%s", "yt-dlp%s")}

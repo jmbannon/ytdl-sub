@@ -22,7 +22,7 @@ If you wish to represent paths like Windows, you will need to ``C:\\double\\bash
 in order to escape the backslash character.
 
 configuration
-^^^^^^^^^^^^^
+~~~~~~~~~~~~~
 The ``configuration`` section contains app-wide configs applied to all presets
 and subscriptions.
 
@@ -50,7 +50,7 @@ Log files are stored as
   :member-order: bysource
 
 presets
-^^^^^^^
+~~~~~~~
 ``presets`` define a `formula` for how to format downloaded media and metadata.
 
 download_strategy
@@ -307,10 +307,8 @@ custom variables: ``{output_directory}``, ``{playlist_name}``, and ``{url}``. Th
 the `parent preset`_ to ``playlist_preset_ex``, and must define the variables ``{playlist_name}``
 and ``{url}`` since the preset did not.
 
-.. _beautifying subscriptions:
-
 Beautifying Subscriptions
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 Subscriptions support using presets as keys, and using keys to set override variables as values.
 For example:
 
@@ -368,8 +366,8 @@ parent preset:
 .. _subscription value:
 
 File Preset
-^^^^^^^^^^^
-NOTE: This is deprecated in favor of using the method in :ref:`beautifying subscriptions`.
+~~~~~~~~~~~
+NOTE: This is deprecated in favor of using the method in :ref:`config:beautifying subscriptions`.
 
 You can apply a preset to all subscriptions in the ``subscription.yaml`` file
 by using the file-wide ``__preset__``:
@@ -390,8 +388,8 @@ subscriptions automatically set ``__preset__`` as a `parent preset`_.
 
 
 Subscription Value
-^^^^^^^^^^^^^^^^^^^
-NOTE: This is deprecated in favor of using the method in :ref:`beautifying subscriptions`.
+~~~~~~~~~~~~~~~~~~~
+NOTE: This is deprecated in favor of using the method in :ref:`config:beautifying subscriptions`.
 
 With a clever config and use of ``__preset__``, your subscriptions can typically boil
 down to a name and url. You can set ``__value__`` to the name of an override variable,

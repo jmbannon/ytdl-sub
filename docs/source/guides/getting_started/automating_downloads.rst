@@ -1,11 +1,14 @@
 Automating Downloads
 ====================
 
-:ref:`docker-unraid-setup`
+One of the key capabilities of ``ytdl-sub`` is how well it runs without user input, but to take advantage of this you must set up scheduling to execute the commands at some interval. How you set up this scheduling depends on which version of ``ytdl-sub`` you downloaded.
 
-:ref:`linux-setup`
 
-:ref:`windows-setup`
+:ref:`Guide for Docker and Unraid Containers <guides/getting_started/automating_downloads:docker and unraid>`
+
+:ref:`Guide for Linux <guides/getting_started/automating_downloads:linux>`
+
+:ref:`Guide for Windows <guides/getting_started/automating_downloads:windows>`
 
 .. _cron tab manpage: https://man7.org/linux/man-pages/man5/crontab.5.html#EXAMPLE_CRON_FILE
 
@@ -117,6 +120,12 @@ Docker and Unraid
 
 Linux 
 -----
+
+.. code-block:: shell
+
+    crontab -e
+    0     */6     *       *       *       /config/run_cron
+
 
 
 

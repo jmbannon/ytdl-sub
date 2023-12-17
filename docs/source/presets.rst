@@ -85,15 +85,15 @@ Two main use cases of a collection are:
    2. Organize one or more YouTube channels/playlists, where each season
       represents a separate channel/playlist.
 
-Player Presets
-""""""""""""""
+Player Presets 2
+""""""""""""""""
 
 * ``kodi_tv_show_collection``
 * ``jellyfin_tv_show_collection``
 * ``plex_tv_show_collection``
 
-Episode Formatting Presets
-""""""""""""""""""""""""""
+Episode Formatting Presets 2
+""""""""""""""""""""""""""""
 
 * ``season_by_collection__episode_by_year_month_day``
 * ``season_by_collection__episode_by_year_month_day_reversed``

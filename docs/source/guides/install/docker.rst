@@ -13,15 +13,15 @@ and install ytdl-sub on top. There are two flavors to choose from.
 For automating ``subscriptions.yaml`` downloads to pull new media, see
 :doc:`/guides/getting_started/automating_downloads` on how to set up a cron job in any of the docker containers.
 
-GUI
-^^^^
+GUI Image
+~~~~~~~~~
 
 The GUI image uses LSIO's
 `code-server <https://hub.docker.com/r/linuxserver/code-server>`_
 for its base image. More info on other code-server environment variables
 can be found within its documentation. This is the recommended way to use ``ytdl-sub``.
 
-After starting, code-server will be running at http://localhost:8443/
+After starting, code-server will be running at http://localhost:8443/, which is how you will access and interact with ``ytdl-sub``.
 
 .. code-block:: yaml
 
@@ -43,8 +43,8 @@ After starting, code-server will be running at http://localhost:8443/
          - 8443:8443
        restart: unless-stopped
 
-Headless
-^^^^^^^^^^
+Headless Image
+~~~~~~~~~~~~~~
 
 The headless image uses LSIO's
 `baseimage-alpine <https://github.com/linuxserver/docker-baseimage-alpine>`_
@@ -54,6 +54,8 @@ via exec'ing into the image using the command:
 .. code-block:: bash
 
    docker exec -u abc -it ytdl-sub /bin/bash
+
+This is how you will access and interact with ``ytdl-sub``.
 
 
 .. code-block:: yaml
@@ -76,14 +78,14 @@ via exec'ing into the image using the command:
        restart: unless-stopped
 
 CPU/GPU Passthrough
-^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~
 For CPU or GPU passthrough, you must use either the GUI image or the headless Ubuntu image
 ``ghcr.io/jmbannon/ytdl-sub:ubuntu-latest``.
 
 The docker-compose examples use the GUI image.
 
 CPU
-____
+^^^
 
 .. code-block:: yaml
 
@@ -108,7 +110,7 @@ ____
        restart: unless-stopped
 
 GPU
-____
+^^^
 
 .. code-block:: yaml
 
@@ -138,7 +140,8 @@ ____
        restart: unless-stopped
 
 Docker CLI
---------------
+----------
+
 .. code-block:: bash
 
    docker run -d \
