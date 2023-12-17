@@ -1,4 +1,6 @@
-import re
+from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
+from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
+from ytdl_sub.script.functions import Functions
 
 SUBSCRIPTION_NAME = "subscription_name"
 SUBSCRIPTION_VALUE = "subscription_value"
@@ -61,24 +63,21 @@ class OverrideVariables:
         return f"subscription_value_{index + 1}"
 
     @classmethod
-    def is_override_variable_name(cls, variable_name: str):
+    def is_entry_variable_name(cls, name: str) -> bool:
         """
         Returns
         -------
-        True of a variable name collides with an override variable name. False otherwise.
+        True if the name is an entry variable name. False otherwise.
         """
-        if variable_name in (
-            SUBSCRIPTION_NAME,
-            SUBSCRIPTION_VALUE,
-            SUBSCRIPTION_MAP,
-            SUBSCRIPTION_ARRAY,
-        ):
-            return True
+        return name in VARIABLE_SCRIPTS
 
-        if re.fullmatch(r"^subscription_value_(\d+)$", variable_name):
-            return True
-
-        if re.fullmatch(r"^subscription_indent_(\d+)$", variable_name):
-            return True
-
+    @classmethod
+    def is_function_name(cls, name: str) -> bool:
+        """
+        Returns
+        -------
+        True if the name is a function name (either built-in or script). False otherwise.
+        """
+        if name.startswith("%"):
+            return name in CUSTOM_FUNCTION_SCRIPTS or Functions.is_built_in(name[1:])
         return False

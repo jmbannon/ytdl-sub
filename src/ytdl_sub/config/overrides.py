@@ -9,9 +9,9 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.entries.variables.override_variables import OverrideVariables
-from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
@@ -56,27 +56,47 @@ class Overrides(DictFormatterValidator, Scriptable):
         Scriptable.__init__(self)
 
         for key in self._keys:
-            if OverrideVariables.is_override_variable_name(key):
-                raise self._validation_exception(
-                    f"Override variable with name {key} cannot be used since it is a"
-                    " built-in ytdl-sub override variable name."
-                )
-
-            if key in self.script.variable_names:
-                raise self._validation_exception(
-                    f"Override variable with name {key} cannot be used since it is a"
-                    " built-in ytdl-sub entry variable name."
-                )
-
-            if key in self.script.function_names or (
-                key.startswith("%") and Functions.is_built_in(key[1:])
-            ):
-                raise self._validation_exception(
-                    f"Override function definition with name {key} cannot be used since it is a"
-                    " built-in ytdl-sub function name."
-                )
+            self.ensure_variable_name_valid(key)
 
         self.unresolvable.add(VARIABLES.entry_metadata.variable_name)
+
+    def ensure_added_plugin_variable_valid(self, added_variable: str) -> bool:
+        """
+        Returns False if the variable exists as a non-override.
+
+        Raises
+        ------
+        ValidationException
+            If the variable is already added as an override variable.
+        """
+        try:
+            self.ensure_variable_name_valid(added_variable)
+        except ValidationException:
+            return False
+
+        if added_variable in self.keys:
+            raise self._validation_exception(
+                f"Override variable with name {added_variable} cannot be used since it is"
+                " added by a plugin."
+            )
+
+        return True
+
+    def ensure_variable_name_valid(self, name: str) -> None:
+        """
+        Ensures the variable name does not collide with any entry variables or built-in functions.
+        """
+        if OverrideVariables.is_entry_variable_name(name):
+            raise self._validation_exception(
+                f"Override variable with name {name} cannot be used since it is a"
+                " built-in ytdl-sub entry variable name."
+            )
+
+        if OverrideVariables.is_function_name(name):
+            raise self._validation_exception(
+                f"Override function definition with name {name} cannot be used since it is"
+                " a built-in ytdl-sub function name."
+            )
 
     def initial_variables(
         self, unresolved_variables: Optional[Dict[str, str]] = None

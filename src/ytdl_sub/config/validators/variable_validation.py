@@ -29,14 +29,17 @@ def _add_dummy_variables(variables: Iterable[str]) -> Dict[str, str]:
 
 def _get_added_and_modified_variables(
     plugins: PresetPlugins, downloader_options: MultiUrlValidator, resolved_variables: Set[str]
-) -> Tuple[Set[str], Set[str]]:
-    added_variables: Set[str] = set()
-    modified_variables: Set[str] = set()
-
+) -> Iterable[Tuple[OptionsValidator, Set[str], Set[str]]]:
+    """
+    Iterates and returns the plugin options, added variables, modified variables
+    """
     options: List[OptionsValidator] = plugins.plugin_options
     options.append(downloader_options)
 
     for plugin_options in options:
+        added_variables: Set[str] = set()
+        modified_variables: Set[str] = set()
+
         for plugin_added_variables in plugin_options.added_variables(
             resolved_variables=resolved_variables,
             unresolved_variables=set(),
@@ -44,9 +47,9 @@ def _get_added_and_modified_variables(
             added_variables |= set(plugin_added_variables)
 
         for plugin_modified_variables in plugin_options.modified_variables().values():
-            modified_variables |= plugin_modified_variables
+            modified_variables = plugin_modified_variables
 
-    return added_variables, modified_variables
+        yield plugin_options, added_variables, modified_variables
 
 
 def _override_variables(overrides: Overrides) -> Set[str]:
@@ -82,24 +85,31 @@ class VariableValidation:
         # Set resolved variables as all entry + override variables
         # at this point to generate every possible added/modified variable
         self.resolved_variables = entry_variables | override_variables
-        added_variables, modified_variables = _get_added_and_modified_variables(
+
+        for (
+            plugin_options,
+            added_variables,
+            modified_variables,
+        ) in _get_added_and_modified_variables(
             plugins=self.plugins,
             downloader_options=self.downloader_options,
             resolved_variables=self.resolved_variables,
-        )
+        ):
 
-        for added_variable in added_variables:
-            if added_variable in overrides.keys:
-                # pylint: disable=protected-access
-                raise overrides._validation_exception(
-                    f"Override variable with name {added_variable} cannot be used since it is a"
-                    " built-in ytdl-sub variable added by a plugin."
-                )
-                # pylint: enable=protected-access
+            for added_variable in added_variables:
+                if not overrides.ensure_added_plugin_variable_valid(added_variable=added_variable):
+                    # pylint: disable=protected-access
+                    raise plugin_options._validation_exception(
+                        f"Cannot use the variable name {added_variable} because it exists as a"
+                        " built-in ytdl-sub variable name."
+                    )
+                    # pylint: enable=protected-access
 
-        # Set unresolved as variables that are added but do not exist as entry/override variables
+            # Set unresolved as variables that are added but do not exist as
+            # entry/override variables since they are created at run-time
+            self.unresolved_variables |= added_variables | modified_variables
+
         # Then update resolved variables to reflect that
-        self.unresolved_variables = added_variables | modified_variables
         self.resolved_variables -= self.unresolved_variables
 
         # Initialize overrides with unresolved variables + modified variables to throw an error.

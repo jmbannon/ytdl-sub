@@ -209,29 +209,6 @@ class TestPreset:
         )
 
     @pytest.mark.parametrize(
-        "override_variable_name", ["subscription_name", "subscription_value_3", "subscription_map"]
-    )
-    def test_preset_error_override_variable_collides_with_override(
-        self, config_file, output_options, youtube_video, override_variable_name: str
-    ):
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                f"Override variable with name {override_variable_name} cannot be used since"
-                " it is a built-in ytdl-sub override variable name."
-            ),
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": youtube_video,
-                    "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
-                    "overrides": {override_variable_name: "fail"},
-                },
-            )
-
-    @pytest.mark.parametrize(
         "entry_variable_name",
         [
             "title",
@@ -267,7 +244,7 @@ class TestPreset:
             ValidationException,
             match=re.escape(
                 f"Override variable with name subtitles_ext cannot be used since"
-                " it is a built-in ytdl-sub variable added by a plugin."
+                " it is added by a plugin."
             ),
         ):
             _ = Preset(
@@ -309,5 +286,50 @@ class TestPreset:
                     "download": youtube_video,
                     "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
                     "overrides": {function_name: "fail"},
+                },
+            )
+
+    def test_preset_error_override_added_variable_collides_with_built_in(
+        self, config_file, output_options
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "Cannot use the variable name title because it exists as a "
+                "built-in ytdl-sub variable name."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": {
+                        "url": "youtube.com/watch?v=123abc",
+                        "variables": {"title": "nope"},
+                    },
+                    "output_options": {"output_directory": "dir", "file_name": "acjk"},
+                },
+            )
+
+    def test_preset_error_override_added_variable_collides_with_override(
+        self, config_file, output_options
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "Override variable with name the_bad_one cannot be used since "
+                "it is added by a plugin."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": {
+                        "url": "youtube.com/watch?v=123abc",
+                        "variables": {"the_bad_one": "should error"},
+                    },
+                    "output_options": {"output_directory": "dir", "file_name": "acjk"},
+                    "overrides": {"the_bad_one": "ack"},
                 },
             )
