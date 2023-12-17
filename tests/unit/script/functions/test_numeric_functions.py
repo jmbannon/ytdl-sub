@@ -1,8 +1,6 @@
 import pytest
 from unit.script.conftest import single_variable_output
 
-from ytdl_sub.script.script import Script
-
 
 class TestNumericFunctions:
     @pytest.mark.parametrize(
@@ -65,4 +63,16 @@ class TestNumericFunctions:
     )
     def test_min(self, values: str, expected_output: int):
         output = single_variable_output(f"{{%min({values})}}")
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "values, expected_output",
+        [
+            ("2, 2", 2**2),
+            ("9, 0.5", 9**0.5),
+            ("4.4, 2.2", 4.4**2.2),
+        ],
+    )
+    def test_pow(self, values: str, expected_output: float):
+        output = single_variable_output(f"{{ %pow({values}) }}")
         assert output == expected_output
