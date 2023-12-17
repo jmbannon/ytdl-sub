@@ -6,21 +6,22 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'ytdl-sub'
-copyright = '2023, Jesse Bannon'
-author = 'Jesse Bannon'
-release = '2023.12.15'
+project = "ytdl-sub"
+copyright = "2023, Jesse Bannon"
+author = "Jesse Bannon"
+release = "2023.12.15"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
     "sphinx.ext.autodoc",
-    ]
+    "sphinx_copybutton",
+    "sphinx_design",
+]
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = []
-
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -48,12 +49,5 @@ html_theme_options = {
     ),
 }
 
-html_sidebars ={
-    # "**": [
-        # "globaltoc.html",
-        # "sourcelink.html",
-        # "searchbox.html"
-    # ],
-}
 
-html_static_path = ['_static']
+html_static_path = ["_static"]

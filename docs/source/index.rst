@@ -1,21 +1,19 @@
-.. ytdl-sub documentation master file, created by
-   sphinx-quickstart on Fri Dec 15 21:08:10 2023.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to ytdl-sub's documentation!
-====================================
+ytdl-sub User Guide
+===================
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
+   introduction
    guides/index
+   faq/index
    config
    deprecation_notices
    presets
    usage
 
-.. note:: End goal: https://picard-docs.musicbrainz.org/en/functions/list_by_type.html
-   
+.. note:: End goal similar to: https://picard-docs.musicbrainz.org/en/functions/list_by_type.html
+   Initial plans:
+
    - step-by-step noob install instructions for each platform
    - pages for each prebuilt preset, showing which variables that can be overridden to do different things (i.e. episode_title)
    - new wiki walkthrough that uses the README config as a starting point, and gradually adds custom changes

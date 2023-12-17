@@ -1,15 +1,17 @@
 Docker
 ======
 
+
 Docker Compose
 --------------
+.. _LSIO-based images: https://www.linuxserver.io/
+
 The ytdl-sub Docker images use
-`LSIO-based images <https://www.linuxserver.io/>`_
-and installs ytdl-sub on top. There are a few flavors to choose from.
+`LSIO-based images`_
+and install ytdl-sub on top. There are two flavors to choose from.
 
 For automating ``subscriptions.yaml`` downloads to pull new media, see
-`this guide <https://github.com/jmbannon/ytdl-sub/wiki/7.-Automate-Downloading-New-Content-Using-Your-Configs/>`_
-on how set up a cron job in any of the docker containers.
+:doc:`/guides/getting_started/automating_downloads` on how to set up a cron job in any of the docker containers.
 
 GUI
 ^^^^
