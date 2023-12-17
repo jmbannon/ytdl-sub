@@ -117,7 +117,7 @@ def _is_null(string: Optional[str]) -> bool:
 
 
 def _is_breakable(char: str) -> bool:
-    return char in ["}", ",", ")", "]"] or char.isspace()
+    return char in ["}", ",", ")", "]", ":"] or char.isspace()
 
 
 def _is_boolean_true(string: Optional[str]) -> bool:

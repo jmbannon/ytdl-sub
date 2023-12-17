@@ -1,6 +1,8 @@
+import pytest
 from unit.script.conftest import single_variable_output
 
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 
 
 class TestArrayFunctions:
@@ -70,3 +72,27 @@ class TestArrayFunctions:
             .native
         )
         assert output == [[0, "a"], [1, "b"], [2, "c"]]
+
+    def test_cast_array(self):
+        output = (
+            Script(
+                {
+                    "map_test": "{ {'key': [1, 2, 3]} }",
+                    "output": "{ %array( %map_get(map_test, 'key') )}",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == [1, 2, 3]
+
+    def test_array_size(self):
+        output = single_variable_output("{%array_size([1, 2, 3])}")
+        assert output == 3
+
+    def test_cast_array_errors_cannot_cast(self):
+        with pytest.raises(
+            FunctionRuntimeException, match="Tried and failed to cast Integer as an Array"
+        ):
+            single_variable_output("{%array(1)}")

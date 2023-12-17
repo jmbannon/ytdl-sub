@@ -1,9 +1,12 @@
 import re
 
 import pytest
+from unit.script.conftest import single_variable_output
 
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 from ytdl_sub.script.utils.exceptions import KeyDoesNotExistRuntimeException
+from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 
 
 class TestMapFunctions:
@@ -44,6 +47,19 @@ class TestMapFunctions:
                 {
                     "input_map": "{{'key': 'value'}}",
                     "output": "{%map_get(input_map, 'dne')}",
+                }
+            ).resolve()
+
+    def test_map_get_errors_key_not_hashable(self):
+        with pytest.raises(
+            KeyNotHashableRuntimeException,
+            match=re.escape("Tried to use Array as a Map key, but it is not hashable."),
+        ):
+            Script(
+                {
+                    "non_hashable_key": "{%array([1, 2, ['nest']])}",
+                    "input_map": "{{'key': 'value'}}",
+                    "output": "{ %map_get( input_map, %array_at(non_hashable_key, 2)) }",
                 }
             ).resolve()
 
@@ -98,3 +114,27 @@ class TestMapFunctions:
             .native
         )
         assert output == [[0, "KEY1", "value1"], [1, "KEY2", "value2"]]
+
+    def test_map_size(self):
+        output = single_variable_output("{%map_size({'key': 'value', 1: 3})}")
+        assert output == 2
+
+    def test_cast_map(self):
+        output = (
+            Script(
+                {
+                    "array_test": "{ [1, 2, {'key': 'value'}] }",
+                    "output": "{ %map( %array_at(array_test, 2) )}",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == {"key": "value"}
+
+    def test_cast_map_errors_cannot_cast(self):
+        with pytest.raises(
+            FunctionRuntimeException, match="Tried and failed to cast Integer as a Map"
+        ):
+            single_variable_output("{%map(1)}")
