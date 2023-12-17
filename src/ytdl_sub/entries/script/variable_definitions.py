@@ -283,7 +283,7 @@ class VariableDefinitions:
         Returns
         -------
         str
-            The playlist unique ID if it exists, otherwise return Variable("")
+            The playlist unique ID if it exists, otherwise return the entry unique ID.
         """
         return MetadataVariable(variable_name="playlist_uid", metadata_key="playlist_id")
 
@@ -446,7 +446,7 @@ class VariableDefinitions:
         Returns
         -------
         str
-            The playlist uploader if it exists, otherwise return Variable("")
+            The playlist uploader if it exists, otherwise return the entry uploader.
         """
         return MetadataVariable("playlist_uploader", metadata_key=self.uploader.metadata_key)
 
@@ -478,7 +478,7 @@ class VariableDefinitions:
         Returns
         -------
         str
-            The source uploader if it exists, otherwise return Variable("")
+            The source uploader if it exists, otherwise return the playlist_uploader
         """
         return MetadataVariable("source_uploader", metadata_key=self.uploader.metadata_key)
 
@@ -645,7 +645,7 @@ class VariableDefinitions:
         Returns
         -------
         str
-            The entry's uploaded date, in YYYYMMDD format. If not present, return Variable("")
+            The entry’s uploaded date, in YYYYMMDD format. If not present, return today’s date.
         """
         return MetadataVariable(variable_name="upload_date", metadata_key="upload_date")
 
@@ -818,7 +818,7 @@ class VariableDefinitions:
         Returns
         -------
         str
-            The entry's release date, in YYYYMMDD format. If not present, return Variable("")
+            The entry’s release date, in YYYYMMDD format. If not present, return the upload date.
         """
         return MetadataVariable(variable_name="release_date", metadata_key="release_date")
 
