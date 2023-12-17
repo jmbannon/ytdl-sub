@@ -199,7 +199,7 @@ class ChaptersOptions(OptionsDictValidator):
     def added_variables(
         self, resolved_variables: Set[str], unresolved_variables: Set[str]
     ) -> Dict[PluginOperation, Set[str]]:
-        return {PluginOperation.MODIFY_ENTRY: {"ytdl_sub_chapters_from_comments"}}
+        return {PluginOperation.MODIFY_ENTRY: {ytdl_sub_chapters_from_comments.variable_name}}
 
 
 class ChaptersPlugin(Plugin[ChaptersOptions]):
