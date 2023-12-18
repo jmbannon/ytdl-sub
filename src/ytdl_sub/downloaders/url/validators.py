@@ -263,7 +263,7 @@ class MultiUrlValidator(OptionsValidator):
                     if unresolved := used_variables & unresolved_variables:
                         raise self._validation_exception(
                             f"variable {variable_name} cannot use the variables "
-                            f"{', '.join(sorted(list(unresolved)))} because they depend on other"
+                            f"{', '.join(sorted(list(unresolved)))} because it depends on other"
                             " variables that are computed later in execution"
                         )
 
