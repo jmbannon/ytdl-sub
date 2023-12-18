@@ -231,7 +231,7 @@ class RegexOptions(OptionsDictValidator):
             return False
         for capture_group_default in regex_options.capture_group_defaults or []:
             parsed_default = parse(capture_group_default.format_string)
-            if parsed_default.variables.issubset(unresolved_variables):
+            if parsed_default.variables and parsed_default.variables.issubset(unresolved_variables):
                 return False
         return True
 

@@ -313,7 +313,8 @@ class TestRegex:
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "cannot use 'uid' as a capture group name because it is a defined variable"
+                "Cannot use the variable name uid because it exists as a built-in "
+                "ytdl-sub variable name."
             ),
         ):
             _ = Subscription.from_dict(
@@ -333,8 +334,8 @@ class TestRegex:
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "cannot use 'contains_regex_default' as a capture group name because it is a "
-                "defined variable"
+                "Override variable with name contains_regex_default cannot be used since it is "
+                "added by a plugin."
             ),
         ):
             _ = Subscription.from_dict(
