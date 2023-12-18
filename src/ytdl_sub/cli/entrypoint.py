@@ -221,6 +221,7 @@ def main() -> List[Subscription]:
                     "full backup before usage. You have been warned!",
                 )
 
+            logger.info("Validating subscriptions...")
             subscriptions = _download_subscriptions_from_yaml_files(
                 config=config,
                 subscription_paths=args.subscription_paths,
@@ -230,6 +231,7 @@ def main() -> List[Subscription]:
 
         # One-off download
         elif args.subparser == "dl":
+            logger.info("Validating presets...")
             subscriptions.append(
                 _download_subscription_from_cli(
                     config=config, dry_run=args.dry_run, extra_args=extra_args
