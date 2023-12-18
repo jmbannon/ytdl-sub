@@ -28,7 +28,7 @@ def _add_dummy_variables(variables: Iterable[str]) -> Dict[str, str]:
 
 
 def _get_added_and_modified_variables(
-    plugins: PresetPlugins, downloader_options: MultiUrlValidator, resolved_variables: Set[str]
+    plugins: PresetPlugins, downloader_options: MultiUrlValidator
 ) -> Iterable[Tuple[OptionsValidator, Set[str], Set[str]]]:
     """
     Iterates and returns the plugin options, added variables, modified variables
@@ -41,8 +41,9 @@ def _get_added_and_modified_variables(
         modified_variables: Set[str] = set()
 
         for plugin_added_variables in plugin_options.added_variables(
-            resolved_variables=resolved_variables,
+            resolved_variables=set(),
             unresolved_variables=set(),
+            plugin_op=PluginOperation.ANY,
         ).values():
             added_variables |= set(plugin_added_variables)
 
@@ -93,7 +94,6 @@ class VariableValidation:
         ) in _get_added_and_modified_variables(
             plugins=self.plugins,
             downloader_options=self.downloader_options,
-            resolved_variables=self.resolved_variables,
         ):
 
             for added_variable in added_variables:
@@ -129,12 +129,14 @@ class VariableValidation:
         added_variables = options.added_variables(
             resolved_variables=self.resolved_variables,
             unresolved_variables=self.unresolved_variables,
+            plugin_op=plugin_op,
         ).get(plugin_op, set())
         modified_variables = options.modified_variables().get(plugin_op, set())
 
         resolved_variables = added_variables | modified_variables
 
         self.script.add(_add_dummy_variables(resolved_variables))
+        self.resolved_variables |= resolved_variables
         self.unresolved_variables -= resolved_variables
 
         return added_variables

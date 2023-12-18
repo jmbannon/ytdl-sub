@@ -203,6 +203,9 @@ class RegexOptions(OptionsDictValidator):
             key="skip_if_match_fails", validator=BoolValidator, default=True
         ).value
 
+        # Variables added by the regex plugin
+        self._added_variable_names: Set[str] = set()
+
     @property
     def skip_if_match_fails(self) -> Optional[bool]:
         """
@@ -221,7 +224,7 @@ class RegexOptions(OptionsDictValidator):
         return self._from.variable_capture_dict
 
     @classmethod
-    def _can_evaluate_at_metadata_time(
+    def _can_resolve(
         cls, unresolved_variables: Set[str], input_variable_name: str, regex_options: VariableRegex
     ) -> bool:
         if input_variable_name in unresolved_variables:
@@ -233,7 +236,10 @@ class RegexOptions(OptionsDictValidator):
         return True
 
     def added_variables(
-        self, resolved_variables: Set[str], unresolved_variables: Set[str]
+        self,
+        resolved_variables: Set[str],
+        unresolved_variables: Set[str],
+        plugin_op: PluginOperation,
     ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns
@@ -245,28 +251,43 @@ class RegexOptions(OptionsDictValidator):
             PluginOperation.MODIFY_ENTRY: set(),
         }
         for input_variable_name, regex_options in self.source_variable_capture_dict.items():
+            variables_to_add = set(regex_options.capture_group_names)
 
-            if input_variable_name not in resolved_variables:
+            if plugin_op != PluginOperation.ANY and input_variable_name not in (
+                resolved_variables | unresolved_variables
+            ):
                 raise self._validation_exception(
-                    f"cannot regex capture '{input_variable_name}' because it is not a "
-                    f"defined variable"
+                    f"cannot regex capture '{input_variable_name}' because it is not a"
+                    " defined variable."
+                )
+            if (
+                plugin_op.value >= PluginOperation.MODIFY_ENTRY.value
+                and input_variable_name in unresolved_variables
+            ):
+                raise self._validation_exception(
+                    f"cannot regex capture '{input_variable_name}' because it is not "
+                    f"computed until later in execution."
                 )
 
-            key = PluginOperation.MODIFY_ENTRY
-            if self._can_evaluate_at_metadata_time(
+            if plugin_op == PluginOperation.ANY:
+                added_source_vars[PluginOperation.MODIFY_ENTRY_METADATA] |= variables_to_add
+                self._added_variable_names |= variables_to_add
+                continue
+
+            if not self._can_resolve(
                 unresolved_variables=unresolved_variables,
                 input_variable_name=input_variable_name,
                 regex_options=regex_options,
             ):
-                key = PluginOperation.MODIFY_ENTRY_METADATA
+                continue
 
             for capture_group_name in regex_options.capture_group_names:
-                if capture_group_name in resolved_variables:
+                if capture_group_name in (resolved_variables - self._added_variable_names):
                     raise self._validation_exception(
                         f"cannot use '{capture_group_name}' as a capture group name because it is "
-                        f"a defined variable"
+                        f"an already defined variable."
                     )
-            added_source_vars[key] |= set(regex_options.capture_group_names)
+            added_source_vars[plugin_op] |= set(regex_options.capture_group_names)
 
         return added_source_vars
 

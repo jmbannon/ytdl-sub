@@ -6,6 +6,7 @@ from typing import Set
 
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsValidator
+from ytdl_sub.script.parser import parse
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -245,11 +246,25 @@ class MultiUrlValidator(OptionsValidator):
         return self._urls.list[0].variables
 
     def added_variables(
-        self, resolved_variables: Set[str], unresolved_variables: Set[str]
+        self,
+        resolved_variables: Set[str],
+        unresolved_variables: Set[str],
+        plugin_op: PluginOperation,
     ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns
         -------
         List of variables added. The first collection url always contains all the variables.
         """
+        if plugin_op != PluginOperation.ANY:
+            for url in self._urls.list:
+                for variable_name, definition in url.variables.dict_with_format_strings.items():
+                    used_variables = set(var.name for var in parse(definition).variables)
+                    if unresolved := used_variables & unresolved_variables:
+                        raise self._validation_exception(
+                            f"variable {variable_name} cannot use the variables "
+                            f"{', '.join(sorted(list(unresolved)))} because they depend on other"
+                            " variables that are computed later in execution"
+                        )
+
         return {PluginOperation.DOWNLOADER: set(self._urls.list[0].variables.keys)}
