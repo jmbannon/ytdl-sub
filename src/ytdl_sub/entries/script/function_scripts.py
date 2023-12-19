@@ -50,19 +50,20 @@ CUSTOM_FUNCTION_SCRIPTS: Dict[str, str] = {
                         %regex_capture_groups
                     ),
                     %array_size($2),
-                    %eq
+                    %lte
                 ),
                 %and
             ),
-            %array_first(
+            %array_overlay(
                 %array_apply_fixed(
                     %array($1),
                     %string($0),
                     %regex_search
                 ),
-                %array_extend( ['dummy'], $2 )
+                %array_extend( ['using all defaults'], $2 ),
+                True
             ),
-            'Number of regex capture groups must be the same for every input regex'
+            'Number of regex capture groups must be less than or equal to the number of defaults'
         )
     }""",
 }

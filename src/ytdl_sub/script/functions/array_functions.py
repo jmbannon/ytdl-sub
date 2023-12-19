@@ -51,6 +51,25 @@ class ArrayFunctions:
         return Array(output)
 
     @staticmethod
+    def array_overlay(
+        array: Array, overlap: Array, only_missing: Optional[Boolean] = None
+    ) -> Array:
+        """
+        Overlaps ``overlap`` onto ``array``. Can optionally only overlay missing indices.
+        """
+        output: List[Resolvable] = []
+        output.extend(array.value)
+
+        overlap_only_missing = only_missing and only_missing.value
+
+        for idx, overlap_value in enumerate(overlap.value):
+            if overlap_only_missing and idx < len(array.value):
+                continue
+            output.insert(idx, overlap_value)
+
+        return Array(output)
+
+    @staticmethod
     def array_at(array: Array, idx: Integer) -> AnyArgument:
         """
         Return the element in the Array at index ``idx``.
