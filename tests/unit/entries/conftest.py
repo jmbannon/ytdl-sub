@@ -163,7 +163,7 @@ def mock_entry_kwargs(
         "id": uid,
         "epoch": 1596878400,
         "extractor": extractor,
-        "extractor_key": extractor,
+        "extractor_key": "test_extractor_key",
         "title": title,
         "ext": ext,
         "upload_date": upload_date,
@@ -174,20 +174,4 @@ def mock_entry_kwargs(
 
 @pytest.fixture
 def mock_entry(mock_entry_kwargs):
-    return Entry(entry_dict=mock_entry_kwargs, working_directory=".")
-
-
-@pytest.fixture
-def validate_entry_dict_contains_valid_formatters():
-    def _validate_entry_dict_contains_valid_formatters(entry: Entry):
-        for key, value in entry.to_dict().items():
-            expected_string = f"test {value} formatting works"
-            formatter = StringFormatterValidator(
-                name="test", value=f"test {{{key}}} formatting works"
-            )
-
-            assert formatter.apply_formatter(entry.to_dict()) == expected_string
-
-        return True
-
-    return _validate_entry_dict_contains_valid_formatters
+    return Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script()

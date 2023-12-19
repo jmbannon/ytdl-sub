@@ -1,13 +1,15 @@
 import re
 from typing import Dict
 from typing import List
-from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import CHAPTERS
-from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
+from ytdl_sub.entries.entry import ytdl_sub_chapters_from_comments
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileMetadata
+
+v: VariableDefinitions = VARIABLES
 
 
 class Timestamp:
@@ -157,6 +159,17 @@ class Chapters:
         """
         return self.timestamps[0].timestamp_sec == 0
 
+    def to_yt_dlp_chapter_metadata(self) -> List[Dict[str, str | float]]:
+        """
+        Returns
+        -------
+        Metadata dict
+        """
+        return [
+            {"start_time": ts.timestamp_sec, "title": title}
+            for ts, title in zip(self.timestamps, self.titles)
+        ]
+
     def to_file_metadata_dict(self) -> Dict:
         """
         Returns
@@ -165,7 +178,7 @@ class Chapters:
         """
         return {ts.readable_str: title for ts, title in zip(self.timestamps, self.titles)}
 
-    def to_file_metadata(self, title: Optional[str] = None) -> FileMetadata:
+    def to_file_metadata(self, title: str) -> FileMetadata:
         """
         Parameters
         ----------
@@ -216,8 +229,23 @@ class Chapters:
         # If more than 3 timestamps were parsed, return it
         if len(timestamps) >= 3:
             return Chapters(timestamps=timestamps, titles=titles)
+
         # Otherwise return empty chapters
-        return Chapters(timestamps=[], titles=[])
+        return cls.from_empty()
+
+    @classmethod
+    def from_yt_dlp_chapters(cls, chapters: List[Dict[str, str | float]]):
+        """
+        Create a Chapters object from the raw ``chapters`` metadata returned in an info.json
+        """
+        timestamps: List[Timestamp] = []
+        titles: List[str] = []
+
+        for chapter in chapters:
+            timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
+            titles.append(chapter["title"])
+
+        return Chapters(timestamps=timestamps, titles=titles)
 
     @classmethod
     def from_entry_chapters(cls, entry: Entry) -> "Chapters":
@@ -231,19 +259,12 @@ class Chapters:
         -------
         Chapters object
         """
-        timestamps: List[Timestamp] = []
-        titles: List[str] = []
+        if chapters := (
+            entry.try_get(ytdl_sub_chapters_from_comments, list) or entry.get(v.chapters, list)
+        ):
+            return cls.from_yt_dlp_chapters(chapters)
 
-        if entry.kwargs_contains(CHAPTERS):
-            for chapter in entry.kwargs_get(CHAPTERS, []):
-                timestamps.append(Timestamp.from_seconds(int(float(chapter["start_time"]))))
-                titles.append(chapter["title"])
-        elif entry.kwargs_contains(YTDL_SUB_CUSTOM_CHAPTERS):
-            for start_time, title in entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS, {}).items():
-                timestamps.append(Timestamp.from_str(start_time))
-                titles.append(title)
-
-        return Chapters(timestamps=timestamps, titles=titles)
+        return cls.from_empty()
 
     @classmethod
     def from_empty(cls) -> "Chapters":

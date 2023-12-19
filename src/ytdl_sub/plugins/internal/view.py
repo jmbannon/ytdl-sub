@@ -1,10 +1,9 @@
 import copy
 from typing import Optional
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin import PluginPriority
-from ytdl_sub.config.preset_options import OptionsDictValidator
-from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.overrides import Overrides
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -20,7 +19,6 @@ class ViewOptions(OptionsDictValidator):
 
 class ViewPlugin(Plugin[ViewOptions]):
     plugin_options_type = ViewOptions
-    priority: PluginPriority = PluginPriority(modify_entry=PluginPriority.MODIFY_ENTRY_AFTER_SPLIT)
 
     _MAX_LINE_WIDTH: int = 80
 

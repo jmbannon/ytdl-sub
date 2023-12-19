@@ -1,8 +1,8 @@
 from typing import Dict
 from typing import Optional
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.validators.validators import StringValidator
 
 

@@ -3,7 +3,7 @@ from typing import Optional
 from yt_dlp import DateRange
 from yt_dlp.utils import datetime_from_str
 
-from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 
 

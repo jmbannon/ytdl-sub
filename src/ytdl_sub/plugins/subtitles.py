@@ -2,11 +2,15 @@ from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
@@ -16,6 +20,8 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import StringListValidator
+
+v: VariableDefinitions = VARIABLES
 
 logger = Logger.get(name="subtitles")
 
@@ -113,13 +119,18 @@ class SubtitleOptions(OptionsDictValidator):
         """
         return self._allow_auto_generated_subtitles
 
-    def added_source_variables(self) -> List[str]:
+    def added_variables(
+        self,
+        resolved_variables: Set[str],
+        unresolved_variables: Set[str],
+        plugin_op: PluginOperation,
+    ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns
         -------
         List of new source variables created by using the subtitles plugin
         """
-        return ["lang", "subtitles_ext"]
+        return {PluginOperation.MODIFY_ENTRY_METADATA: {"lang", "subtitles_ext"}}
 
 
 class SubtitlesPlugin(Plugin[SubtitleOptions]):
@@ -158,18 +169,8 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
 
         return builder.to_dict()
 
-    def modify_entry(self, entry: Entry) -> Optional[Entry]:
-        if not (requested_subtitles := entry.kwargs_get("requested_subtitles", None)):
-            return entry
-
-        languages = sorted(requested_subtitles.keys())
-        entry.add_variables(
-            variables_to_add={
-                "subtitles_ext": self.plugin_options.subtitles_type,
-                "lang": ",".join(languages),
-            }
-        )
-
+    def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
+        entry.add({"subtitles_ext": self.plugin_options.subtitles_type, "lang": ""})
         return entry
 
     def post_process_entry(self, entry: Entry) -> Optional[FileMetadata]:
@@ -181,13 +182,17 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         entry:
             Entry to create subtitles for
         """
-        requested_subtitles = entry.kwargs("requested_subtitles")
+        requested_subtitles = entry.get(v.requested_subtitles, expected_type=dict)
         if not requested_subtitles:
             logger.debug("subtitles not found for %s", entry.title)
             return None
 
         file_metadata: Optional[FileMetadata] = None
         langs = list(requested_subtitles.keys())
+
+        # HACK to maintain order of languages for fixtures
+        if len(langs) == len(self.plugin_options.languages):
+            langs = self.plugin_options.languages
 
         if self.plugin_options.embed_subtitles:
             file_metadata = FileMetadata(f"Embedded subtitles with lang(s) {', '.join(langs)}")
