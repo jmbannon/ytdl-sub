@@ -17,7 +17,7 @@ class YTDLOptionsBuilder:
         self,
         *ytdl_option_dicts: Optional[Dict],
         before: bool = False,
-        strategy: mergedeep.Strategy = mergedeep.Strategy.TYPESAFE_ADDITIVE
+        strategy: mergedeep.Strategy = mergedeep.Strategy.TYPESAFE_ADDITIVE,
     ) -> "YTDLOptionsBuilder":
         """
         Parameters

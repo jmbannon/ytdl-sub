@@ -95,7 +95,7 @@ ytdl_options
 
 overrides
 """""""""
-.. autoclass:: ytdl_sub.config.preset_options.Overrides()
+.. autoclass:: ytdl_sub.config.overrides.Overrides()
 
 .. _parent preset:
 
@@ -421,7 +421,7 @@ Traditional subscriptions that can override presets will still work when using `
 Source Variables
 ----------------
 
-.. autoclass:: ytdl_sub.entries.variables.entry_variables.EntryVariables
+.. autoclass:: ytdl_sub.entries.script.variable_definitions.VariableDefinitions()
    :members:
    :inherited-members:
    :undoc-members:

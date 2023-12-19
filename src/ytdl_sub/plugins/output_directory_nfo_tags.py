@@ -1,4 +1,4 @@
-from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.plugins.nfo_tags import NfoTagsValidator
 from ytdl_sub.plugins.nfo_tags import SharedNfoTagsOptions

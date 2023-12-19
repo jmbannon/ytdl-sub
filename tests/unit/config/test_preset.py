@@ -129,7 +129,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Format variable 'dne_var' does not exist",
+            match="Variable dne_var does not exist.",
         ):
             _ = Preset(
                 config=config_file,
@@ -145,7 +145,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Override variable 'dne_var' does not exist",
+            match="Variable dne_var does not exist",
         ):
             _ = Preset(
                 config=config_file,
@@ -161,7 +161,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Format variable 'dne_var' does not exist",
+            match="Variable dne_var does not exist",
         ):
             _ = Preset(
                 config=config_file,
@@ -182,7 +182,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Format variable 'dne_var' does not exist",
+            match="Variable dne_var does not exist",
         ):
             _ = Preset(
                 config=config_file,
@@ -208,22 +208,178 @@ class TestPreset:
             },
         )
 
-    def test_preset_with_multi_url__contains_all_empty_urls_errors(
-        self, config_file, output_options
+    @pytest.mark.parametrize(
+        "entry_variable_name",
+        [
+            "title",
+            "playlist_uid",
+            "source_title",
+            "playlist_max_upload_year",
+        ],
+    )
+    def test_preset_error_override_variable_collides_with_entry_variable(
+        self, config_file, output_options, youtube_video, entry_variable_name: str
     ):
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "Validation error in test.download: Must contain at least one "
-                "url that is non-empty"
+                f"Override variable with name {entry_variable_name} cannot be used since"
+                " it is a built-in ytdl-sub entry variable name."
             ),
         ):
             _ = Preset(
                 config=config_file,
                 name="test",
                 value={
-                    "download": [{"url": "{url}"}, {"url": "{url2}"}],
+                    "download": youtube_video,
+                    "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
+                    "overrides": {entry_variable_name: "fail"},
+                },
+            )
+
+    def test_preset_error_override_variable_collides_added_variable(
+        self, config_file, output_options, youtube_video
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                f"Override variable with name subtitles_ext cannot be used since"
+                " it is added by a plugin."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
+                    "output_options": {"output_directory": "dir", "file_name": "ack"},
+                    "subtitles": {
+                        "embed_subtitles": True,
+                    },
+                    "overrides": {"subtitles_ext": "collide"},
+                },
+            )
+
+    @pytest.mark.parametrize(
+        "function_name",
+        [
+            "%extract_field_from_siblings",
+            "%extract_field_from_metadata_array",
+            "%sanitize",
+            "%array",
+        ],
+    )
+    def test_preset_error_override_variable_collides_with_custom_function(
+        self, config_file, output_options, youtube_video, function_name: str
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                f"Override function definition with name {function_name} cannot be used since"
+                " it is a built-in ytdl-sub function name."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
+                    "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
+                    "overrides": {function_name: "fail"},
+                },
+            )
+
+    def test_preset_error_override_added_variable_collides_with_built_in(
+        self, config_file, output_options
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "Cannot use the variable name title because it exists as a "
+                "built-in ytdl-sub variable name."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": {
+                        "url": "youtube.com/watch?v=123abc",
+                        "variables": {"title": "nope"},
+                    },
+                    "output_options": {"output_directory": "dir", "file_name": "acjk"},
+                },
+            )
+
+    def test_preset_error_override_added_variable_collides_with_override(
+        self, config_file, output_options
+    ):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "Override variable with name the_bad_one cannot be used since "
+                "it is added by a plugin."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": {
+                        "url": "youtube.com/watch?v=123abc",
+                        "variables": {"the_bad_one": "should error"},
+                    },
+                    "output_options": {"output_directory": "dir", "file_name": "acjk"},
+                    "overrides": {"the_bad_one": "ack"},
+                },
+            )
+
+    @pytest.mark.parametrize(
+        "name", ["!ack", "*asfsaf", "1234352", "--234asdf", "___asdf", "1asdfasdfasd"]
+    )
+    @pytest.mark.parametrize("is_function", [True, False])
+    def test_preset_error_overrides_invalid_variable_name(
+        self, config_file, youtube_video, output_options, name: str, is_function: bool
+    ):
+        name_type = "function" if is_function else "variable"
+        name = f"%{name}" if is_function else name
+
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                f"Override {name_type} with name {name} is invalid."
+                " Names must be lower_snake_cased and begin with a letter."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
                     "output_options": output_options,
-                    "overrides": {"url": "", "url2": ""},
+                    "overrides": {name: "ack"},
+                },
+            )
+
+    def test_preset_error_added_url_variable_cannot_resolve(self, config_file, output_options):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "variable the_bad_one cannot use the variables subtitles_ext because it "
+                "depends on other variables that are computed later in execution"
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": {
+                        "url": "youtube.com/watch?v=123abc",
+                        "variables": {"the_bad_one": "{subtitles_ext}"},
+                    },
+                    "subtitles": {
+                        "embed_subtitles": True,
+                    },
+                    "output_options": {"output_directory": "dir", "file_name": "acjk"},
                 },
             )

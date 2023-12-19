@@ -5,6 +5,7 @@ force_single_line = true
 
 [tool.black]
 line_length = 100
+target-version = ["py310"]
 
 [tool.pylint.MASTER]
 disable = [
@@ -42,4 +43,9 @@ ignore = [
 [tool.coverage.run]
 include = [
     "src/*"
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "raise UNREACHABLE.*",
 ]

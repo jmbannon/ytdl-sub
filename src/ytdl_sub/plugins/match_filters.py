@@ -3,8 +3,8 @@ from typing import Any
 from typing import List
 from typing import Tuple
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.validators import StringListValidator
 

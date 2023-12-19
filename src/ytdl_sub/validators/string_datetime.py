@@ -1,5 +1,3 @@
-from typing import Dict
-
 from yt_dlp.utils import datetime_from_str
 
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -21,10 +19,9 @@ class StringDatetimeValidator(OverridesStringFormatterValidator):
 
     _expected_value_type_name = "datetime string"
 
-    def apply_formatter(self, variable_dict: Dict[str, str]) -> str:
-        output = super().apply_formatter(variable_dict)
+    def post_process(self, resolved: str) -> str:
         try:
-            _ = datetime_from_str(output)
+            _ = datetime_from_str(resolved)
         except Exception as exc:
             raise self._validation_exception(f"Invalid datetime string: {str(exc)}")
-        return output
+        return resolved

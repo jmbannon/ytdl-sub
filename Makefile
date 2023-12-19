@@ -17,12 +17,10 @@ lint:
 	@-isort .
 	@-black .
 	@-pylint src/
-	@-pydocstyle src/*
 check_lint:
 	isort . --check-only --diff  \
 		&& black . --check  \
-		&& pylint src/  \
-		&& pydocstyle src/*
+		&& pylint src/
 wheel: clean
 	$(shell echo "__pypi_version__ = \"$(PYPI_VERSION)\"\n__local_version__ = \"$(LOCAL_VERSION)\"" > src/ytdl_sub/__init__.py)
 	cat src/ytdl_sub/__init__.py
