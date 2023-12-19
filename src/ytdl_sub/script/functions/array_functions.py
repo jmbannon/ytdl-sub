@@ -58,6 +58,18 @@ class ArrayFunctions:
         return array.value[idx.value]
 
     @staticmethod
+    def array_first(array: Array, fallback: AnyArgument) -> AnyArgument:
+        """
+        Returns the first element whose boolean conversion is True. Returns fallback
+        if all elements evaluate to False.
+        """
+        for val in array.value:
+            if bool(val.value):
+                return val
+
+        return fallback
+
+    @staticmethod
     def array_contains(array: Array, value: AnyArgument) -> Boolean:
         """
         Return True if the value exists in the Array. False otherwise.
@@ -129,6 +141,16 @@ class ArrayFunctions:
         Apply a lambda function on every element in the Array.
         """
         return Array([Array([val]) for val in array.value])
+
+    @staticmethod
+    def array_apply_fixed(
+        array: Array, fixed_argument: AnyArgument, lambda2_function: LambdaTwo
+    ) -> Array:
+        """
+        Apply a lambda function on every element in the Array, with ``fixed_argument``
+        passed as a second argument to every invocation.
+        """
+        return Array([Array([val, fixed_argument]) for val in array.value])
 
     @staticmethod
     def array_enumerate(array: Array, lambda_function: LambdaTwo) -> Array:

@@ -21,3 +21,15 @@ class ErrorFunctions:
         if not bool(value.value):
             raise UserThrownRuntimeError(assert_message)
         return value
+
+    @staticmethod
+    def assert_then(
+        value: AnyArgument, ret: ReturnableArgument, assert_message: String
+    ) -> ReturnableArgument:
+        """
+        Explicitly throw an error with the provided assert message if ``value`` evaluates to False.
+        If it evaluates to True, it will return ``ret``.
+        """
+        if not bool(value.value):
+            raise UserThrownRuntimeError(assert_message)
+        return ret
