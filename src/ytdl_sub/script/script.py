@@ -11,7 +11,7 @@ from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
-from ytdl_sub.script.utils.exceptions import UNREACHABLE
+from ytdl_sub.script.utils.exceptions import UNREACHABLE, ScriptVariableNotResolved
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
@@ -269,6 +269,11 @@ class Script:
         Returns
         -------
         Dict of resolved values
+
+        Raises
+        ------
+        ScriptVariableNotResolved
+            If specifying a filter of variable to resolve, and one of them does not.
         """
         resolved: Dict[Variable, Resolvable] = {
             Variable(name): value for name, value in (pre_resolved or {}).items()
@@ -322,7 +327,7 @@ class Script:
         if output_filter:
             for name in output_filter:
                 if name not in resolved_variables:
-                    raise ValueError(f"Specified {name} to resolve, but it did not")
+                    raise ScriptVariableNotResolved(f"Specified {name} to resolve, but it did not")
 
             return ScriptOutput(
                 {

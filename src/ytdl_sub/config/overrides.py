@@ -11,7 +11,8 @@ from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.entries.variables.override_variables import OverrideVariables
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
-from ytdl_sub.utils.exceptions import InvalidVariableNameException
+from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
+from ytdl_sub.utils.exceptions import InvalidVariableNameException, StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
@@ -177,11 +178,19 @@ class Overrides(DictFormatterValidator, Scriptable):
             script = entry.script
             unresolvable = entry.unresolvable
 
-        return formatter.post_process(
-            str(
-                script.resolve_once(
-                    dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
-                    unresolvable=unresolvable,
-                )["tmp_var"]
+        try:
+            return formatter.post_process(
+                str(
+                    script.resolve_once(
+                        dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
+                        unresolvable=unresolvable,
+                    )["tmp_var"]
+                )
             )
-        )
+        except ScriptVariableNotResolved as exc:
+            raise StringFormattingException(
+                "Tried to resolve the following script, but could not due to unresolved "
+                f"variables:\n {formatter.format_string}\n"
+                "This is most likely due to circular dependencies in variables. "
+                "If you think otherwise, please file a bug on GitHub and post your config. Thanks!"
+            ) from exc
