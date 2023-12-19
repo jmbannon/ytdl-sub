@@ -12,18 +12,10 @@ from resources import copy_file_fixture
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
-from ytdl_sub.entries.variables.kwargs import DESCRIPTION
-from ytdl_sub.entries.variables.kwargs import EPOCH
-from ytdl_sub.entries.variables.kwargs import EXT
-from ytdl_sub.entries.variables.kwargs import EXTRACTOR
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_COUNT
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_INDEX
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_TITLE
-from ytdl_sub.entries.variables.kwargs import TITLE
-from ytdl_sub.entries.variables.kwargs import UID
-from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE
-from ytdl_sub.entries.variables.kwargs import WEBPAGE_URL
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+
+v: VariableDefinitions = VARIABLES
 
 
 @pytest.fixture
@@ -62,23 +54,23 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         is_extracted_audio: bool = False,
     ) -> Dict:
         entry_dict = {
-            UID: uid,
-            EPOCH: 1596878400,
-            PLAYLIST_TITLE: playlist_title,
-            PLAYLIST_INDEX: playlist_index,
-            PLAYLIST_COUNT: playlist_count,
-            EXTRACTOR: "mock-entry-dict",
-            "extractor_key": "mock-entry-dict",
-            TITLE: f"Mock Entry {uid}",
-            EXT: "mp4",
-            UPLOAD_DATE: upload_date,
-            WEBPAGE_URL: f"https://{uid}.com",
-            PLAYLIST_ENTRY: {"thumbnails": []},
-            DESCRIPTION: "The Description",
+            v.uid.metadata_key: uid,
+            v.epoch.metadata_key: 1596878400,
+            v.playlist_title.metadata_key: playlist_title,
+            v.playlist_index.metadata_key: playlist_index,
+            v.playlist_count.metadata_key: playlist_count,
+            v.extractor.metadata_key: "mock-entry-extractor",
+            v.extractor_key.metadata_key: "mock-entry-dict",
+            v.title.metadata_key: f"Mock Entry {uid}",
+            v.ext.metadata_key: "mp4",
+            v.upload_date.metadata_key: upload_date,
+            v.webpage_url.metadata_key: f"https://{uid}.com",
+            v.playlist_metadata.metadata_key: {"thumbnails": []},
+            v.description.metadata_key: "The Description",
         }
 
         if is_youtube_channel:
-            entry_dict[PLAYLIST_ENTRY]["thumbnails"] = [
+            entry_dict[v.playlist_metadata.metadata_key]["thumbnails"] = [
                 {
                     "id": "avatar_uncropped",
                     "url": "https://avatar_uncropped.com",

@@ -6,16 +6,22 @@ from typing import Iterable
 from typing import List
 from typing import Optional
 
-from ytdl_sub.config.preset_options import OptionsDictValidator
-from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.overrides import Overrides
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_scripts import DOWNLOADER_INJECTED_VARIABLES
+from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import get_file_extension
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+
+v: VariableDefinitions = VARIABLES
 
 
 class InfoJsonDownloaderOptions(OptionsDictValidator):
@@ -97,14 +103,26 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
 
         for download_mapping in self._enhanced_download_archive.mapping.entry_mappings.values():
             entry = self._get_entry_from_download_mapping(download_mapping)
+
+            # See if prior variables exist. If so, delete them from metadata
+            # to avoid saving them recursively on multiple updates
+            prior_variables = entry.maybe_get_prior_variables()
+
+            entry.initialize_script(self.overrides).add(
+                {
+                    inj: prior_variables.get(
+                        inj.variable_name,
+                        VARIABLE_SCRIPTS[inj.variable_name],
+                    )
+                    for inj in DOWNLOADER_INJECTED_VARIABLES
+                }
+            )
             entries.append(entry)
 
-        # Remove each entry from the live download archive since it will get re-added
-        # unless it is filtered
-        for entry in entries:
+        for entry in sorted(entries, key=lambda ent: ent.get(v.download_index, int)):
+            # Remove each entry from the live download archive since it will get re-added
+            # unless it is filtered
             self._enhanced_download_archive.mapping.remove_entry(entry.uid)
-
-        for entry in sorted(entries, key=lambda ent: ent.download_index):
             yield entry
 
             # If the original entry file_path is no longer maintained in the new mapping, then

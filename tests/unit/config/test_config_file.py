@@ -5,7 +5,7 @@ from typing import Optional
 import pytest
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.config.plugin_mapping import PluginMapping
+from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
 from ytdl_sub.config.preset import PRESET_KEYS
 from ytdl_sub.utils.exceptions import ValidationException
 

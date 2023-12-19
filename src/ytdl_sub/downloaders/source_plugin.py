@@ -8,10 +8,10 @@ from typing import Optional
 from typing import Type
 from typing import final
 
-from ytdl_sub.config.plugin import BasePlugin
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import Overrides
-from ytdl_sub.config.preset_options import TOptionsValidator
+from ytdl_sub.config.overrides import Overrides
+from ytdl_sub.config.plugin.plugin import BasePlugin
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import TOptionsValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive

@@ -2,17 +2,23 @@ import os.path
 from typing import Any
 from typing import Dict
 from typing import Optional
+from typing import Set
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_TYPES_EXTENSION_MAPPING
 from ytdl_sub.validators.audo_codec_validator import AudioTypeValidator
 from ytdl_sub.validators.validators import FloatValidator
+
+v: VariableDefinitions = VARIABLES
 
 
 class AudioExtractOptions(OptionsDictValidator):
@@ -64,6 +70,12 @@ class AudioExtractOptions(OptionsDictValidator):
         if self._quality is not None:
             return self._quality.value
         return None
+
+    def modified_variables(self) -> Dict[PluginOperation, Set[str]]:
+        """
+        Possibly changes ``ext``, so do not resolve until this has run
+        """
+        return {PluginOperation.MODIFY_ENTRY: {v.ext.variable_name}}
 
 
 class AudioExtractPlugin(Plugin[AudioExtractOptions]):
@@ -125,7 +137,7 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
             new_ext = AUDIO_CODEC_TYPES_EXTENSION_MAPPING[self.plugin_options.codec]
             extracted_audio_file = entry.get_download_file_path().removesuffix(entry.ext) + new_ext
 
-        entry.add_kwargs({"ext": new_ext})
+        entry.add({v.ext: new_ext})
 
         if not self.is_dry_run:
             if not os.path.isfile(extracted_audio_file):

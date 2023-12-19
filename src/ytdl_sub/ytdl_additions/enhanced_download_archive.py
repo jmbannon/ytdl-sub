@@ -14,13 +14,17 @@ from yt_dlp import DateRange
 from yt_dlp.utils import make_archive_id
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
+from ytdl_sub.entries.entry import ytdl_sub_split_by_chapters_parent_uid
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get("archive")
+
+v: VariableDefinitions = VARIABLES
 
 
 @dataclass
@@ -71,8 +75,8 @@ class DownloadMapping:
         DownloadMapping for the entry
         """
         return DownloadMapping(
-            upload_date=entry.upload_date_standardized,
-            extractor=entry.extractor,
+            upload_date=entry.get(v.upload_date_standardized, str),
+            extractor=entry.download_archive_extractor,
             file_names=set(),
         )
 
@@ -219,10 +223,14 @@ class DownloadMappings:
         -------
         self
         """
-        if entry.uid not in self.entry_ids:
-            self._entry_mappings[entry.uid] = DownloadMapping.from_entry(entry=entry)
+        uid = entry.uid
+        if parent_uid := entry.try_get(ytdl_sub_split_by_chapters_parent_uid, str):
+            uid = parent_uid
 
-        self._entry_mappings[entry.uid].file_names.add(entry_file_path)
+        if uid not in self.entry_ids:
+            self._entry_mappings[uid] = DownloadMapping.from_entry(entry=entry)
+
+        self._entry_mappings[uid].file_names.add(entry_file_path)
         return self
 
     def remove_entry(self, entry_id: str) -> "DownloadMappings":
@@ -646,15 +654,7 @@ class EnhancedDownloadArchive:
         if output_file_name is None:
             output_file_name = file_name
 
-        # If the entry is created from splitting via chapters, store it to the mapping
-        # using its parent entry
-        if entry and entry.kwargs_contains(SPLIT_BY_CHAPTERS_PARENT_ENTRY):
-            parent_entry = Entry(
-                entry_dict=entry.kwargs(SPLIT_BY_CHAPTERS_PARENT_ENTRY),
-                working_directory=entry.working_directory(),
-            )
-            self.mapping.add_entry(parent_entry, entry_file_path=output_file_name)
-        elif entry:
+        if entry:
             self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
 
         is_modified = self._file_handler.move_file_to_output_directory(

@@ -6,8 +6,8 @@ from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.utils.exceptions import FileNotFoundException
 from ytdl_sub.utils.ffmpeg import FFMPEG
+from ytdl_sub.utils.file_path import FilePathTruncater
 from ytdl_sub.utils.yaml import load_yaml
-from ytdl_sub.validators.file_path_validators import FilePathValidatorMixin
 
 
 class ConfigFile(ConfigValidator):
@@ -36,7 +36,7 @@ class ConfigFile(ConfigValidator):
             ffprobe_path=self.config_options.ffprobe_path,
         )
 
-        FilePathValidatorMixin.set_max_file_name_bytes(
+        FilePathTruncater.set_max_file_name_bytes(
             max_file_name_bytes=self.config_options.file_name_max_bytes
         )
 
