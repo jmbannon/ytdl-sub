@@ -77,7 +77,7 @@ def regex_subscription_dict(regex_subscription_dict_base, output_directory):
             },
             "overrides": {
                 "title_capture_list": f"""{{
-                    %regex_capture(
+                    %regex_capture_many_with_defaults(
                         title,
                         [
                             "should not cap (.+) - (.+)",

@@ -41,7 +41,8 @@ CUSTOM_FUNCTION_SCRIPTS: Dict[str, str] = {
     #   $0 - input variable
     #   $1 - regex array
     #   $2 - defaults
-    "%regex_capture": """{
+    #   $3 - error message
+    "%regex_capture_inner": """{
         %assert_then(
             %array_reduce(
                 %array_apply_fixed(
@@ -63,7 +64,35 @@ CUSTOM_FUNCTION_SCRIPTS: Dict[str, str] = {
                 %array_extend( ['using all defaults'], $2 ),
                 True
             ),
-            'Number of regex capture groups must be less than or equal to the number of defaults'
+            $3
+        )
+    }""",
+    "%regex_capture_many_required": """{
+        %assert_ne(
+            %regex_capture_inner(
+                $0, $1, ['', '', '', '', '', '', '', '', '', ''],
+                'When using %regex_capture_many, number of regex capture groups must be less than or equal to the number of defaults'
+            ),
+            ['using all defaults', '', '', '', '', '', '', '', '', '', ''],
+            'When running %regex_capture_many_required, no regex strings captured'
+        )
+    }""",
+    "%regex_capture_many_with_defaults": """{
+        %regex_capture_inner(
+            $0, $1, $2,
+            'When using %regex_capture_with_defaults, number of regex capture groups must be less than or equal to the number of defaults'
+        )
+    }""",
+    "%regex_search_any": """{
+        %ne(
+            %array_at(
+                %regex_capture_inner(
+                    $0, $1, [],
+                    'When using %regex_search_many, all regex strings must contain no capture groups'
+                ),
+                0
+            ),
+            'using all defaults'
         )
     }""",
 }
