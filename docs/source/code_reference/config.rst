@@ -367,7 +367,7 @@ parent preset:
 
 File Preset
 ~~~~~~~~~~~
-NOTE: This is deprecated in favor of using the method in :ref:`config:beautifying subscriptions`.
+NOTE: This is deprecated in favor of using the method in :ref:`code_reference/config:beautifying subscriptions`.
 
 You can apply a preset to all subscriptions in the ``subscription.yaml`` file
 by using the file-wide ``__preset__``:
@@ -389,7 +389,7 @@ subscriptions automatically set ``__preset__`` as a `parent preset`_.
 
 Subscription Value
 ~~~~~~~~~~~~~~~~~~~
-NOTE: This is deprecated in favor of using the method in :ref:`config:beautifying subscriptions`.
+NOTE: This is deprecated in favor of using the method in :ref:`code_reference/config:beautifying subscriptions`.
 
 With a clever config and use of ``__preset__``, your subscriptions can typically boil
 down to a name and url. You can set ``__value__`` to the name of an override variable,

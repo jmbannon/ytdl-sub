@@ -65,6 +65,8 @@ Now that you have installed ``ytdl-sub``, checked your skills, and gotten a bit 
 
 :doc:`Step 4: Automating Downloads <automating_downloads>`
 
+:doc:`Advanced Configuration <advanced_configuration>`
+
 Other docs that may be of use:
 
 :doc:`prebuilt_presets`
@@ -80,5 +82,6 @@ Other docs that may be of use:
     first_sub
     first_download
     automating_downloads
+    advanced_configuration
     prebuilt_presets
     examples

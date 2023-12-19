@@ -6,7 +6,7 @@ ytdl-sub User Guide
    introduction
    guides/index
    faq/index
-   config
+   code_reference/index
    presets
    usage
    deprecation_notices

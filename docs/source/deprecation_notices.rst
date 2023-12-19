@@ -7,7 +7,7 @@ Oct 2023
 subscription preset and value
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The use of ``__value__`` will go away in Dec 2023 in favor of the method found in
-:ref:`config:beautifying subscriptions`. ``__preset__`` will still be supported for the time being.
+:ref:`code_reference/config:beautifying subscriptions`. ``__preset__`` will still be supported for the time being.
 
 July 2023
 ---------
