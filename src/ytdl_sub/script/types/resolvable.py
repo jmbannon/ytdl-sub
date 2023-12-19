@@ -170,6 +170,10 @@ class Boolean(ResolvableT[bool], Argument):
     Resolved bool type
     """
 
+    def __str__(self):
+        # makes it JSON friendly
+        return str(self.value).lower()
+
 
 @dataclass(frozen=True)
 class String(ResolvableT[str], Argument):

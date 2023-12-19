@@ -56,10 +56,15 @@ CUSTOM_FUNCTION_SCRIPTS: Dict[str, str] = {
                 %and
             ),
             %array_overlay(
-                %array_apply_fixed(
-                    %array($1),
-                    %string($0),
-                    %regex_search
+                %array(
+                    %array_first(
+                        %array_apply_fixed(
+                            %array($1),
+                            %string($0),
+                            %regex_search
+                        ),
+                        []
+                    )
                 ),
                 %array_extend( ['using all defaults'], $2 ),
                 True
@@ -74,7 +79,7 @@ CUSTOM_FUNCTION_SCRIPTS: Dict[str, str] = {
                 'When using %regex_capture_many, number of regex capture groups must be less than or equal to the number of defaults'
             ),
             ['using all defaults', '', '', '', '', '', '', '', '', '', ''],
-            'When running %regex_capture_many_required, no regex strings captured'
+            'When running %regex_capture_many_required, no regex strings were captured'
         )
     }""",
     "%regex_capture_many_with_defaults": """{
