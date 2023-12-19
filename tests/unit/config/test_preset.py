@@ -334,6 +334,33 @@ class TestPreset:
                 },
             )
 
+    @pytest.mark.parametrize(
+        "name", ["!ack", "*asfsaf", "1234352", "--234asdf", "___asdf", "1asdfasdfasd"]
+    )
+    @pytest.mark.parametrize("is_function", [True, False])
+    def test_preset_error_overrides_invalid_variable_name(
+        self, config_file, youtube_video, output_options, name: str, is_function: bool
+    ):
+        name_type = "function" if is_function else "variable"
+        name = f"%{name}" if is_function else name
+
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                f"Override {name_type} with name {name} is invalid."
+                " Names must be lower_snake_cased and begin with a letter."
+            ),
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
+                    "output_options": output_options,
+                    "overrides": {name: "ack"},
+                },
+            )
+
     def test_preset_error_added_url_variable_cannot_resolve(self, config_file, output_options):
         with pytest.raises(
             ValidationException,

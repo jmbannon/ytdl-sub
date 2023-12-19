@@ -11,6 +11,7 @@ from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.entries.variables.override_variables import OverrideVariables
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
+from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
@@ -86,16 +87,26 @@ class Overrides(DictFormatterValidator, Scriptable):
         """
         Ensures the variable name does not collide with any entry variables or built-in functions.
         """
+        if not OverrideVariables.is_valid_name(name):
+            override_type = "function" if name.startswith("%") else "variable"
+            raise self._validation_exception(
+                f"Override {override_type} with name {name} is invalid. Names must be"
+                " lower_snake_cased and begin with a letter.",
+                exception_class=InvalidVariableNameException,
+            )
+
         if OverrideVariables.is_entry_variable_name(name):
             raise self._validation_exception(
                 f"Override variable with name {name} cannot be used since it is a"
-                " built-in ytdl-sub entry variable name."
+                " built-in ytdl-sub entry variable name.",
+                exception_class=InvalidVariableNameException,
             )
 
         if OverrideVariables.is_function_name(name):
             raise self._validation_exception(
                 f"Override function definition with name {name} cannot be used since it is"
-                " a built-in ytdl-sub function name."
+                " a built-in ytdl-sub function name.",
+                exception_class=InvalidVariableNameException,
             )
 
     def initial_variables(
