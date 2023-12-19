@@ -1,4 +1,3 @@
-import re
 from typing import Dict
 from typing import Set
 from typing import Union
@@ -9,45 +8,12 @@ from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
-from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
-
-_fields_validator = re.compile(r"{([a-z][a-z0-9_]*?)}")
-
-_fields_validator_exception_message: str = (
-    "{variable_names} must start with a lowercase letter, should only contain lowercase letters, "
-    "numbers, underscores, and have a single open and close bracket."
-)
-
-
-def is_valid_source_variable_name(input_str: str, raise_exception: bool = False) -> bool:
-    """
-    Parameters
-    ----------
-    input_str
-        String to see if it can be a source variable
-    raise_exception
-        Raise InvalidVariableNameException False.
-
-    Returns
-    -------
-    True if it is. False otherwise.
-
-    Raises
-    ------
-    InvalidVariableNameException
-        If raise_exception and output is False
-    """
-    # Add brackets around it to pretend its a StringFormatter, see if it captures
-    is_source_variable_name = len(re.findall(_fields_validator, f"{{{input_str}}}")) > 0
-    if not is_source_variable_name and raise_exception:
-        raise InvalidVariableNameException(_fields_validator_exception_message)
-    return is_source_variable_name
 
 
 class StringFormatterValidator(StringValidator):

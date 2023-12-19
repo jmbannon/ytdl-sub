@@ -1,5 +1,5 @@
+from ytdl_sub.script.utils.name_validation import is_valid_name
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
-from ytdl_sub.validators.string_formatter_validators import is_valid_source_variable_name
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import StringValidator
 
@@ -9,10 +9,13 @@ class SourceVariableNameValidator(StringValidator):
 
     def __init__(self, name, value):
         super().__init__(name, value)
-        try:
-            _ = is_valid_source_variable_name(self.value, raise_exception=True)
-        except InvalidVariableNameException as exc:
-            raise self._validation_exception(exc) from exc
+
+        if not is_valid_name(value):
+            raise self._validation_exception(
+                f"Variable with name {name} is invalid. Names must be"
+                " lower_snake_cased and begin with a letter.",
+                exception_class=InvalidVariableNameException,
+            )
 
 
 class SourceVariableNameListValidator(ListValidator[SourceVariableNameValidator]):
