@@ -1,6 +1,7 @@
 from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.script.functions import Functions
+from ytdl_sub.script.utils.name_validation import is_valid_name
 
 SUBSCRIPTION_NAME = "subscription_name"
 SUBSCRIPTION_VALUE = "subscription_value"
@@ -81,3 +82,15 @@ class OverrideVariables:
         if name.startswith("%"):
             return name in CUSTOM_FUNCTION_SCRIPTS or Functions.is_built_in(name[1:])
         return False
+
+    @classmethod
+    def is_valid_name(cls, name: str) -> bool:
+        """
+        Returns
+        -------
+        True if the override name itself is valid. False otherwise.
+        """
+        if name.startswith("%"):
+            return is_valid_name(name=name[1:])
+
+        return is_valid_name(name=name)
