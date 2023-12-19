@@ -12,7 +12,8 @@ from ytdl_sub.entries.variables.override_variables import OverrideVariables
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
-from ytdl_sub.utils.exceptions import InvalidVariableNameException, StringFormattingException
+from ytdl_sub.utils.exceptions import InvalidVariableNameException
+from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
@@ -171,6 +172,11 @@ class Overrides(DictFormatterValidator, Scriptable):
         Returns
         -------
         The format_string after .format has been called
+
+        Raises
+        ------
+        StringFormattingException
+            If the formatter that is trying to be resolved cannot
         """
         script: Script = self.script
         unresolvable: Set[str] = self.unresolvable

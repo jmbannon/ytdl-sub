@@ -11,11 +11,12 @@ from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
-from ytdl_sub.script.utils.exceptions import UNREACHABLE, ScriptVariableNotResolved
+from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 from ytdl_sub.script.utils.exceptions import RuntimeException
+from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 from ytdl_sub.script.utils.type_checking import FunctionSpec
 

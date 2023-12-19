@@ -9,6 +9,8 @@ from ytdl_sub.entries.script.variable_definitions import Variable
 from ytdl_sub.entries.script.variable_scripts import UNRESOLVED_VARIABLES
 from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.utils.exceptions import RuntimeException
+from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.script import ScriptUtils
 
 
@@ -37,15 +39,28 @@ class Scriptable(ABC):
         Add new values to the script
         """
         values_as_str: Dict[str, str] = {
-            (key.variable_name if isinstance(key, Variable) else key): val
-            for key, val in values.items()
+            (var.variable_name if isinstance(var, Variable) else var): definition
+            for var, definition in values.items()
         }
 
         self.unresolvable -= set(list(values_as_str.keys()))
         self.script.add(
             ScriptUtils.add_sanitized_variables(
-                {name: ScriptUtils.to_script(value) for name, value in values_as_str.items()}
+                {
+                    name: ScriptUtils.to_script(definition)
+                    for name, definition in values_as_str.items()
+                }
             ),
             unresolvable=self.unresolvable,
         )
         self.update_script()
+
+        for name, definition in values_as_str.items():
+            try:
+                _ = self.script.get(variable_name=name)
+            except RuntimeException as exc:
+                raise StringFormattingException(
+                    f"Tried to create the variable with name {name} and definition:\n"
+                    f"{definition}\n"
+                    f"But could not because it has variable dependencies that are not resolved yet"
+                ) from exc
