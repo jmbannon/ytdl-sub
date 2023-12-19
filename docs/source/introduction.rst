@@ -1,3 +1,4 @@
+=================
 What is ytdl-sub?
 =================
 
@@ -10,21 +11,25 @@ What is ytdl-sub?
 ``ytdl-sub`` is a command-line tool that downloads media via `yt-dlp`_ and prepares it for your favorite media player (`Kodi`_, `Jellyfin`_, `Plex`_, `Emby`_, modern music players).
 
 Visual examples
----------------
+===============
 
 .. figure:: https://user-images.githubusercontent.com/10107080/182677243-b4184e51-9780-4094-bd40-ea4ff58555d0.PNG
+    :alt: The Jellyfin web interface, showing the thumbnails of various YouTube shows.
 
     Youtube channels as TV shows in Jellyfin
 
 .. figure:: https://user-images.githubusercontent.com/10107080/182677256-43aeb029-0c3f-4648-9fd2-352b9666b262.PNG
+    :alt: The Jellyfin web interace, showing the thumbnails of various music videos starring the Red Hot Chili Peppers
 
     Music videos and concerts in Jellyfin
 
 .. figure:: https://user-images.githubusercontent.com/10107080/182677268-d1bf2ff0-9b9c-4a04-98ec-443a67ada734.png
+    :alt: The Kodi app interface, showing a list of artists available to watch under the "Music videos" heading
 
     Music videos and concerts in Kodi
 
 .. figure:: https://user-images.githubusercontent.com/10107080/182685415-06adf477-3dd3-475d-bbcd-53b0152b9f0a.PNG
+    :alt: The MusicBee app interface, showing a list of album artists and the thumbnails of all downloaded songs produced by the currently selected artist
 
     SoundCloud albums and singles in MusicBee
 
