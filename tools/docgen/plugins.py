@@ -2,6 +2,8 @@ import inspect
 from typing import Dict
 from typing import Type
 
+from tools.docgen.utils import get_property_docs
+from tools.docgen.utils import properties
 from tools.docgen.utils import section
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
@@ -21,22 +23,16 @@ def should_filter_property(property_name: str) -> bool:
     )
 
 
-def generate_plugin_docs(name: str, options: Type[OptionsValidator], offset: int):
+def generate_plugin_docs(name: str, options: Type[OptionsValidator], offset: int) -> str:
     docs = ""
     docs += section(name, level=offset + 0)
 
     docs += inspect.cleandoc(options.__doc__)
     docs += "\n"
 
-    property_names = [
-        prop
-        for prop in dir(options)
-        if isinstance(getattr(options, prop), property) and not should_filter_property(prop)
-    ]
+    property_names = [prop for prop in properties(options) if not should_filter_property(prop)]
     for property_name in sorted(property_names):
-        docs += section(property_name, level=offset + 1)
-        docs += inspect.cleandoc(getattr(options, property_name).__doc__)
-        docs += "\n"
+        docs += get_property_docs(property_name=property_name, obj=options, level=offset + 1)
 
     return docs
 
