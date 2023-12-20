@@ -18,103 +18,103 @@ Docker and Unraid
 -----------------
 
 .. tab-set::
+  
+  .. tab-item:: GUI Image
     
-    .. tab-item:: GUI Image
-        
-        The script that will execute automatically is located at ``/config/ytdl-sub-configs/run-cron``. 
+    The script that will execute automatically is located at ``/config/ytdl-sub-configs/run-cron``. 
 
-        Access your container at http://localhost:8443/, then in the GUI terminal run these commands:
+    Access your container at http://localhost:8443/, then in the GUI terminal run these commands:
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            echo '#!/bin/bash' > /config/ytdl-sub-configs/run_cron
-            echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /config/ytdl-sub-configs/run_cron
-            echo "echo 'Cron started, running ytdl-sub...'" >> /config/ytdl-sub-configs/run_cron
-            echo "cd /config/ytdl-sub-configs" >> /config/ytdl-sub-configs/run_cron
-            echo "ytdl-sub --config=config.yaml sub subscriptions.yaml" >> /config/ytdl-sub-configs/run_cron
-            chmod +x /config/ytdl-sub-configs/run_cron
-            chown abc:abc /config/ytdl-sub-configs/run_cron
+      echo '#!/bin/bash' > /config/ytdl-sub-configs/run_cron
+      echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /config/ytdl-sub-configs/run_cron
+      echo "echo 'Cron started, running ytdl-sub...'" >> /config/ytdl-sub-configs/run_cron
+      echo "cd /config/ytdl-sub-configs" >> /config/ytdl-sub-configs/run_cron
+      echo "ytdl-sub --config=config.yaml sub subscriptions.yaml" >> /config/ytdl-sub-configs/run_cron
+      chmod +x /config/ytdl-sub-configs/run_cron
+      chown abc:abc /config/ytdl-sub-configs/run_cron
 
-        You can test the newly created script by running: 
+    You can test the newly created script by running: 
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            /config/ytdl-sub-configs/run_cron
+      /config/ytdl-sub-configs/run_cron
 
-        To create the cron definition, run the following command:
+    To create the cron definition, run the following command:
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
-            echo "  0     */6     *       *       *       /config/ytdl-sub-configs/run_cron" >> /config/crontabs/abc
+      echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
+      echo "  0     */6     *       *       *       /config/ytdl-sub-configs/run_cron" >> /config/crontabs/abc
 
-        This will run the script every 6 hours. To run every hour, change ``*/6`` to ``*/1``, or to run once a day, change the same value to the hour (in 24hr format) that you want it to run at. See the `cron tab manpage`_ for more options.
+    This will run the script every 6 hours. To run every hour, change ``*/6`` to ``*/1``, or to run once a day, change the same value to the hour (in 24hr format) that you want it to run at. See the `cron tab manpage`_ for more options.
 
-    .. tab-item:: Headless Image
+  .. tab-item:: Headless Image
 
-        .. _LinuxServer's Universal Cron mod: https://github.com/linuxserver/docker-mods/tree/universal-cron
+    .. _LinuxServer's Universal Cron mod: https://github.com/linuxserver/docker-mods/tree/universal-cron
 
-        The first step is to ensure you have `LinuxServer's Universal Cron mod`_ enabled via the environment variable. For the GUI image, this is already included (no need to add it).
+    The first step is to ensure you have `LinuxServer's Universal Cron mod`_ enabled via the environment variable. For the GUI image, this is already included (no need to add it).
 
-        .. code-block:: yaml
+    .. code-block:: yaml
 
-            services:
-                ytdl-sub:
-                    image: ghcr.io/jmbannon/ytdl-sub:latest
-                    container_name: ytdl-sub
-                    environment:
-                        - PUID=1000
-                        - PGID=1000
-                        - TZ=America/Los_Angeles
-                        - DOCKER_MODS=linuxserver/mods:universal-cron  # <-- Make sure you have this!
-                    volumes:
-                        # ensure directories have user permissions
-                        - </path/to/ytdl-sub/config>:/config
-                        - </path/to/ytdl-sub/tv_shows>:/tv_shows
-                    restart: unless-stopped
+      services:
+        ytdl-sub:
+          image: ghcr.io/jmbannon/ytdl-sub:latest
+          container_name: ytdl-sub
+          environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+            - DOCKER_MODS=linuxserver/mods:universal-cron  # <-- Make sure you have this!
+          volumes:
+            # ensure directories have user permissions
+            - </path/to/ytdl-sub/config>:/config
+            - </path/to/ytdl-sub/tv_shows>:/tv_shows
+          restart: unless-stopped
 
-        This line will tell your container to install and enable cron on start.
+    This line will tell your container to install and enable cron on start.
 
-        If you had to add this line, you will need to restart your container.
+    If you had to add this line, you will need to restart your container.
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            docker compose restart
+      docker compose restart
 
-        The script that will execute automatically is located at ``/config/run-cron``. 
+    The script that will execute automatically is located at ``/config/run-cron``. 
 
-        Access your container from the terminal by running:
+    Access your container from the terminal by running:
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            docker exec -itu abc ytdl-sub /bin/bash
+      docker exec -itu abc ytdl-sub /bin/bash
 
-        then in the terminal run these commands:
+    then in the terminal run these commands:
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            echo '#!/bin/bash' > /config/ytdl-sub-configs/run_cron
-            echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /config/ytdl-sub-configs/run_cron
-            echo "echo 'Cron started, running ytdl-sub...'" >> /config/ytdl-sub-configs/run_cron
-            echo "cd /config/ytdl-sub-configs" >> /config/ytdl-sub-configs/run_cron
-            echo "ytdl-sub --config=config.yaml sub subscriptions.yaml" >> /config/ytdl-sub-configs/run_cron
-            chmod +x /config/ytdl-sub-configs/run_cron
-            chown abc:abc /config/ytdl-sub-configs/run_cron
+      echo '#!/bin/bash' > /config/ytdl-sub-configs/run_cron
+      echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /config/ytdl-sub-configs/run_cron
+      echo "echo 'Cron started, running ytdl-sub...'" >> /config/ytdl-sub-configs/run_cron
+      echo "cd /config/ytdl-sub-configs" >> /config/ytdl-sub-configs/run_cron
+      echo "ytdl-sub --config=config.yaml sub subscriptions.yaml" >> /config/ytdl-sub-configs/run_cron
+      chmod +x /config/ytdl-sub-configs/run_cron
+      chown abc:abc /config/ytdl-sub-configs/run_cron
 
-        You can test the newly created script by running: 
+    You can test the newly created script by running: 
 
-        .. code-block:: 
+    .. code-block:: 
 
-            /config/run_cron
+      /config/run_cron
 
-        To create the cron definition, run the following command:
+    To create the cron definition, run the following command:
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
-            echo "  0     */6     *       *       *       /config/run_cron" >> /config/crontabs/abc
-        
-        This will run the script every 6 hours. To run every hour, change ``*/6`` to ``*/1``, or to run once a day, change the same value to the hour (in 24hr format) that you want it to run at. See the `cron tab manpage`_ for more options.
+      echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
+      echo "  0     */6     *       *       *       /config/run_cron" >> /config/crontabs/abc
+    
+    This will run the script every 6 hours. To run every hour, change ``*/6`` to ``*/1``, or to run once a day, change the same value to the hour (in 24hr format) that you want it to run at. See the `cron tab manpage`_ for more options.
 
 .. _linux-setup:
 
@@ -123,8 +123,8 @@ Linux
 
 .. code-block:: shell
 
-    crontab -e
-    0     */6     *       *       *       /config/run_cron
+  crontab -e
+  0     */6     *       *       *       /config/run_cron
 
 
 
@@ -137,4 +137,4 @@ To be tested (please contact code owner or join the discord server if you can te
 
 .. code-block:: powershell
 
-    ytdl-sub.exe --config \path\to\config\config.yaml sub \path\to\config\subscriptions.yaml
+  ytdl-sub.exe --config \path\to\config\config.yaml sub \path\to\config\subscriptions.yaml

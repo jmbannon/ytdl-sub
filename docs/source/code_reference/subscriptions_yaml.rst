@@ -17,25 +17,25 @@ Below is an example that downloads a YouTube playlist:
 .. code-block:: yaml
   :caption: config.yaml
 
-   presets:
-     playlist_preset_ex:
-       download:
-         download_strategy: "url"
-         url: "{url}"
-       output_options:
-         output_directory: "{output_directory}/{playlist_name}"
-         file_name: "{playlist_name}.{title}.{ext}"
-       overrides:
-         output_directory: "/path/to/ytdl-sub-videos"
+  presets:
+    playlist_preset_ex:
+      download:
+        download_strategy: "url"
+        url: "{url}"
+      output_options:
+        output_directory: "{output_directory}/{playlist_name}"
+        file_name: "{playlist_name}.{title}.{ext}"
+      overrides:
+        output_directory: "/path/to/ytdl-sub-videos"
 
 .. code-block:: yaml
   :caption: subscription.yaml
 
-   my_subscription_name:
-     preset: "playlist_preset_ex"
-     overrides:
-       playlist_name: "diy-playlist"
-       url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+  my_subscription_name:
+    preset: "playlist_preset_ex"
+    overrides:
+      playlist_name: "diy-playlist"
+      url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
 
 Our preset ``playlist_preset_ex`` defines three
 custom variables: ``{output_directory}``, ``{playlist_name}``, and ``{url}``. The subscription sets
@@ -50,13 +50,13 @@ For example:
 .. code-block:: yaml
   :caption: subscription.yaml
 
-   TV Show Full Archive:
-     = News:
-         "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
+  TV Show Full Archive:
+    = News:
+        "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
 
-   TV Show Only Recent:
-     = Tech | TV-Y:
-       "Two Minute Papers": "https://www.youtube.com/@TwoMinutePapers"
+  TV Show Only Recent:
+    = Tech | TV-Y:
+      "Two Minute Papers": "https://www.youtube.com/@TwoMinutePapers"
 
 Will create two subscriptions named "Breaking News" and "Two Minute Papers", equivalent to:
 
@@ -110,13 +110,13 @@ by using the file-wide ``__preset__``:
 .. code-block:: yaml
   :caption: subscription.yaml
 
-   __preset__:
-     preset: "playlist_preset_ex"
+  __preset__:
+    preset: "playlist_preset_ex"
 
-   my_subscription_name:
-     overrides:
-       url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
-       playlist_name: "diy-playlist"
+  my_subscription_name:
+    overrides:
+      url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+      playlist_name: "diy-playlist"
 
 This ``subscription.yaml`` is equivalent to the one above it because all
 subscriptions automatically set ``__preset__`` as a ``parent preset``.
@@ -134,17 +134,17 @@ Using the example above, we can do:
 .. code-block:: yaml
   :caption: subscription.yaml
 
-   __preset__:
-     preset:
-       - "tv_show"
-     overrides:
-       tv_show_name: "{subscription_name}"
+  __preset__:
+    preset:
+      - "tv_show"
+    overrides:
+      tv_show_name: "{subscription_name}"
 
-   __value__: "url"
+  __value__: "url"
 
-   # single-line subscription, sets "Brandon Acker" and the subscription value
-   # to the override variables tv_show_name and url
-   "Brandon Acker": "https://www.youtube.com/@brandonacker"
+  # single-line subscription, sets "Brandon Acker" and the subscription value
+  # to the override variables tv_show_name and url
+  "Brandon Acker": "https://www.youtube.com/@brandonacker"
 
 Traditional subscriptions that can override presets will still work when using ``__value__``.
 ``__value__`` can also be set within a :ref:`code_reference/config_yaml:config.yaml`.

@@ -44,31 +44,31 @@ and overriding the following variables:
 
 .. code-block:: yaml
 
-   rick_a_tv_show_by_date:
-     preset:
-       - "jellyfin_tv_show_by_date"
-       - "season_by_year__episode_by_month_day"
-     overrides:
-       # required
-       tv_show_name: "Rick A"
-       tv_show_directory: "/path/to/youtube_shows"
-       url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-       # can be modified from their default value
-       # tv_show_genre: "ytdl-sub"
-       # tv_show_content_rating: "TV-14"
-       # episode_title: "{upload_date_standardized} - {title}"
-       # episode_description: "{webpage_url}"
+  rick_a_tv_show_by_date:
+    preset:
+      - "jellyfin_tv_show_by_date"
+      - "season_by_year__episode_by_month_day"
+    overrides:
+      # required
+      tv_show_name: "Rick A"
+      tv_show_directory: "/path/to/youtube_shows"
+      url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+      # can be modified from their default value
+      # tv_show_genre: "ytdl-sub"
+      # tv_show_content_rating: "TV-14"
+      # episode_title: "{upload_date_standardized} - {title}"
+      # episode_description: "{webpage_url}"
 
 In addition, you can add additional URLs to create a single TV by using the override variables
 ``url2``, ``url3``, ..., ``url20``:
 
 .. code-block:: yaml
 
-     overrides:
-       tv_show_name: "Rick A"
-       tv_show_directory: "/path/to/youtube_shows"
-       url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-       url2: "https://www.youtube.com/@just.rick_6"
+    overrides:
+      tv_show_name: "Rick A"
+      tv_show_directory: "/path/to/youtube_shows"
+      url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+      url2: "https://www.youtube.com/@just.rick_6"
 
 
 TV Show Collection
@@ -121,24 +121,24 @@ one or more season presets, with the following override variables:
 
 .. code-block:: yaml
 
-   rick_a_tv_show_collection:
-     preset:
-       - "jellyfin_tv_show_collection"
-       - "season_by_collection__episode_by_year_month_day_reversed"
-       - "collection_season_1"
-       - "collection_season_2"
-     overrides:
-       # required
-       tv_show_name: "Rick A"
-       tv_show_directory: "/path/to/youtube_shows"
-       collection_season_1_url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-       collection_season_1_name: "All Videos"
-       collection_season_2_url: "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
-       collection_season_2_name: "Official Music Videos"
-       # can be modified from their default value
-       # tv_show_genre: "ytdl-sub"
-       # episode_title: "{upload_date_standardized} - {title}"
-       # episode_description: "{webpage_url}"
+  rick_a_tv_show_collection:
+    preset:
+      - "jellyfin_tv_show_collection"
+      - "season_by_collection__episode_by_year_month_day_reversed"
+      - "collection_season_1"
+      - "collection_season_2"
+    overrides:
+      # required
+      tv_show_name: "Rick A"
+      tv_show_directory: "/path/to/youtube_shows"
+      collection_season_1_url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+      collection_season_1_name: "All Videos"
+      collection_season_2_url: "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
+      collection_season_2_name: "Official Music Videos"
+      # can be modified from their default value
+      # tv_show_genre: "ytdl-sub"
+      # episode_title: "{upload_date_standardized} - {title}"
+      # episode_description: "{webpage_url}"
 
 Common
 ------
@@ -175,8 +175,8 @@ change this number by setting:
 
 .. code-block:: yaml
 
-   ytdl_options:
-     max_downloads: 30  # Desired number to download per invocation
+  ytdl_options:
+    max_downloads: 30  # Desired number to download per invocation
 
 Once the entire channel is downloaded, remove this preset. Then it will pull metadata from newest to
 oldest again, and stop pulling additional metadata once it reaches a video that has already been

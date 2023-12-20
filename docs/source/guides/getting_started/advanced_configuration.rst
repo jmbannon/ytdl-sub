@@ -10,11 +10,11 @@ The layout of the ``config.yaml`` file is relatively straightforward:
 
 .. code-block:: yaml
 
-    presets:
+  presets:
 
-        preset_name:
-            plugin1:
-                plugin1_option1: value1
+    preset_name:
+      plugin1:
+        plugin1_option1: value1
 
 
 Modifying an Existing Preset

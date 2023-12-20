@@ -5,26 +5,26 @@ Once you have the ``config.yaml`` and ``subscriptions.yaml`` files created and f
 
 .. tab-set:: 
 
-    .. tab-item:: Dry run
+  .. tab-item:: Dry run
 
-        A dry run lets you check that your configuration doesn't throw any errors and what the expected output files of actually doing the download are, without actually downloading the full media.
+    A dry run lets you check that your configuration doesn't throw any errors and what the expected output files of actually doing the download are, without actually downloading the full media.
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            ytdl-sub --dry-run sub
+      ytdl-sub --dry-run sub
 
-    .. tab-item:: Normal run
+  .. tab-item:: Normal run
 
-        A normal run will download all files as determined by your ``presets`` and, once processing is finished, move the downloaded and processed files to your ``output_directory``.
+    A normal run will download all files as determined by your ``presets`` and, once processing is finished, move the downloaded and processed files to your ``output_directory``.
 
-        .. code-block:: shell
+    .. code-block:: shell
 
-            ytdl-sub sub
+      ytdl-sub sub
 
-    .. tab-item:: One-time download
+  .. tab-item:: One-time download
 
-        Sometimes you may only want to download media once, in which case adding them to your ``subscriptions.yaml`` file is unneccessary. As an example, the below code will download the same videos as our subscription file:
+    Sometimes you may only want to download media once, in which case adding them to your ``subscriptions.yaml`` file is unneccessary. As an example, the below code will download the same videos as our subscription file:
 
-        .. code-block:: shell
-            
-            ytdl-sub dl --preset "My Favorite YouTube Channels" --overrides.subscription_name "Rick Astley" --overrides.subscription_value "https://www.youtube.com/@RickAstleyYT/videos"
+    .. code-block:: shell
+      
+      ytdl-sub dl --preset "My Favorite YouTube Channels" --overrides.subscription_name "Rick Astley" --overrides.subscription_value "https://www.youtube.com/@RickAstleyYT/videos"

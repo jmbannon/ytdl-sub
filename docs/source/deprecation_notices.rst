@@ -20,20 +20,20 @@ Music tags are getting simplified. ``tags`` will now reside directly under music
 
 .. code-block:: yaml
 
-   my_example_preset:
-     music_tags:
-       embed_thumbnail: True
-       tags:
-         artist: "Elvis Presley"
+  my_example_preset:
+    music_tags:
+      embed_thumbnail: True
+      tags:
+        artist: "Elvis Presley"
 
 To the following:
 
 .. code-block:: yaml
 
-   my_example_preset:
-     embed_thumbnail: True
-     music_tags:
-       artist: "Elvis Presley"
+  my_example_preset:
+    embed_thumbnail: True
+    music_tags:
+      artist: "Elvis Presley"
 
 The old format will be removed in October 2023.
 
@@ -45,15 +45,15 @@ Convert from:
 
 .. code-block:: yaml
 
-   my_example_preset:
-     video_tags:
-       tags:
-         title: "Elvis Presley Documentary"
+  my_example_preset:
+    video_tags:
+      tags:
+        title: "Elvis Presley Documentary"
 
 To the following:
 
 .. code-block:: yaml
 
-   my_example_preset:
-     video_tags:
-       title: "Elvis Presley Documentary"
+  my_example_preset:
+    video_tags:
+      title: "Elvis Presley Documentary"

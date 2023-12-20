@@ -19,8 +19,8 @@ to download your YouTube cookie, then add it to your
 
 .. code-block:: yaml
 
-   ytdl_options:
-     cookiefile: "/path/to/cookies/file.txt"
+  ytdl_options:
+    cookiefile: "/path/to/cookies/file.txt"
 
 ...automate my downloads?
 '''''''''''''''''''''''''
@@ -35,8 +35,8 @@ Your preset most likely has ``break_on_existing`` set to True, which will stop d
 
 .. code-block:: yaml
 
-   ytdl_options:
-     break_on_existing: False
+  ytdl_options:
+    break_on_existing: False
 
 After your download your new date_range duration, re-enable ``break_on_existing`` to speed up successive downloads.
 
@@ -46,11 +46,11 @@ Most likely the video has a non-English language set to its 'native' language. Y
 
 .. code-block:: yaml
 
-   ytdl_options:
-     extractor_args:
-       youtube:
-         lang:
-           - "en"
+  ytdl_options:
+    extractor_args:
+      youtube:
+        lang:
+          - "en"
 
 ...Plex is not showing my TV shows correctly
 ''''''''''''''''''''''''''''''''''''''''''''

@@ -6,9 +6,9 @@ and perform a dry-run using
 
 .. code-block:: bash
 
-   ytdl-sub \
-     --dry-run \
-     --config path/to/config.yaml \
-     sub path/to/subscriptions.yaml
+  ytdl-sub \
+   --dry-run \
+   --config path/to/config.yaml \
+   sub path/to/subscriptions.yaml
 
 This will simulate what a download will look like.

@@ -9,7 +9,7 @@ Both ffmpeg and Python 3.10 or greater are required.
 
 .. code-block:: bash
 
-   python3 -m pip install -U ytdl-sub
+  python3 -m pip install -U ytdl-sub
 
 Local Install
 --------------
@@ -17,10 +17,10 @@ With a Python 3.10 virtual environment, you can clone and install the repo.
 
 .. code-block:: bash
 
-   git clone https://github.com/jmbannon/ytdl-sub.git
-   cd ytdl-sub
+  git clone https://github.com/jmbannon/ytdl-sub.git
+  cd ytdl-sub
 
-   pip install -e .
+  pip install -e .
 
 Local Docker Build
 -------------------
@@ -29,7 +29,7 @@ will build the python wheel and install it in the Dockerfile.
 
 .. code-block:: bash
 
-   git clone https://github.com/jmbannon/ytdl-sub.git
-   cd ytdl-sub
+  git clone https://github.com/jmbannon/ytdl-sub.git
+  cd ytdl-sub
 
-   make docker
+  make docker

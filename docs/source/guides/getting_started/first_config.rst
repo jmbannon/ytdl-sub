@@ -4,19 +4,19 @@ Initial Configuration
 Your first configuration will look pretty simple:
 
 .. code-block:: yaml
-    :linenos:
+  :linenos:
 
-    configuration:
-        working_directory: '.ytdl-sub-downloads'
+  configuration:
+    working_directory: '.ytdl-sub-downloads'
 
-    presets:
-        "My Favorite YouTube Channels":
-            preset:
-                - "Jellyfin TV Show by Date"
-                - "Only Recent"
+  presets:
+    "My Favorite YouTube Channels":
+      preset:
+        - "Jellyfin TV Show by Date"
+        - "Only Recent"
 
-            overrides:
-                tv_show_directory: "/tv_shows/youtube"
+      overrides:
+        tv_show_directory: "/tv_shows/youtube"
 
 
 The first two lines in this ``config.yaml`` file are the ``configuration``, and define the ``working_directory``, which is described near the bottom of :ref:`this section <guides/getting_started/index:quick overview of \`\`ytdl-sub\`\`>`

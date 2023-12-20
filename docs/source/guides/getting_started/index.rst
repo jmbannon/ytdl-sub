@@ -74,14 +74,14 @@ Other docs that may be of use:
 :doc:`examples`
 
 .. toctree::
-    :hidden:
-    :caption: Getting Started Guide
-    :maxdepth: 1
+  :hidden:
+  :caption: Getting Started Guide
+  :maxdepth: 1
 
-    first_config
-    first_sub
-    first_download
-    automating_downloads
-    advanced_configuration
-    prebuilt_presets
-    examples
+  first_config
+  first_sub
+  first_download
+  automating_downloads
+  advanced_configuration
+  prebuilt_presets
+  examples
