@@ -1,4 +1,3 @@
-import copy
 import re
 from typing import Any
 from typing import Dict
@@ -10,8 +9,6 @@ from expected_transaction_log import assert_transaction_log_matches
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.exceptions import RegexNoMatchException
-from ytdl_sub.utils.exceptions import ValidationException
 
 
 @pytest.fixture
@@ -227,7 +224,7 @@ def playlist_subscription_match_and_exclude(
     )
 
 
-class TestRegex:
+class TestFilter:
     def test_regex_success(self, playlist_subscription, output_directory):
         # Only dry run is needed to see if capture variables are created
         transaction_log = playlist_subscription.download(dry_run=True)
@@ -275,86 +272,28 @@ class TestRegex:
         ):
             _ = playlist_subscription_no_match_fails.download(dry_run=True)
 
-    def test_regex_fails_capture_group_is_entry_variable(
-        self, regex_subscription_dict, default_config
-    ):
-        regex_subscription_dict["regex"]["from"]["playlist_uid"] = {
-            "match": [".*http:\\/\\/(.+).com.*"],
-            "capture_group_names": ["uid"],
-        }
-
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Cannot use the variable name uid because it exists as a built-in "
-                "ytdl-sub variable name."
-            ),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_capture_group_is_entry_variable",
-                preset_dict=regex_subscription_dict,
-            )
-
-    def test_regex_fails_capture_group_is_override_variable(
-        self, regex_subscription_dict, default_config
-    ):
-        regex_subscription_dict["regex"]["from"]["playlist_uid"] = {
-            "match": [".*http:\\/\\/(.+).com.*"],
-            "capture_group_names": ["contains_regex_default"],
-        }
-
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Override variable with name contains_regex_default cannot be used since it is "
-                "added by a plugin."
-            ),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_capture_group_is_override_variable",
-                preset_dict=regex_subscription_dict,
-            )
-
-    def test_regex_fails_source_variable_does_not_exist(
-        self, regex_subscription_dict, default_config
-    ):
-        regex_subscription_dict["regex"]["from"]["dne"] = copy.deepcopy(
-            regex_subscription_dict["regex"]["from"]["title"]
-        )
-        with pytest.raises(
-            ValidationException,
-            match=re.escape("cannot regex capture 'dne' because it is not a defined variable"),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_source_variable_does_not_exist",
-                preset_dict=regex_subscription_dict,
-            )
-
     def test_regex_fails_unequal_defaults(self, regex_subscription_dict, default_config):
-        regex_subscription_dict["regex"]["from"]["title"]["capture_group_defaults"] = ["1 != 2"]
-        with pytest.raises(
-            ValidationException,
-            match=re.escape("number of defaults must match number of capture groups, 1 != 2"),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_unequal_defaults",
-                preset_dict=regex_subscription_dict,
+        regex_subscription_dict["overrides"][
+            "title_capture_list"
+        ] = """{
+            %regex_capture_many_with_defaults(
+                title,
+                [ "should not cap (.+) - (.+)", ".*\\[(.+) - (Feb.+)]" ],
+                [ "one default, expects >= 2" ]
             )
+        }"""
 
-    def test_regex_fails_unequal_capture_group_names(self, regex_subscription_dict, default_config):
-        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"].append("unequal")
+        subscription = Subscription.from_dict(
+            config=default_config,
+            preset_name="regex_capture_playlist_test",
+            preset_dict=regex_subscription_dict,
+        )
+
         with pytest.raises(
-            ValidationException,
+            UserThrownRuntimeError,
             match=re.escape(
-                "number of capture group names must match number of capture groups, 3 != 2"
+                "When using %regex_capture_with_defaults, number of regex capture groups must "
+                "be less than or equal to the number of defaults"
             ),
         ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_unequal_capture_group_names",
-                preset_dict=regex_subscription_dict,
-            )
+            _ = subscription.download(dry_run=True)
