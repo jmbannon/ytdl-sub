@@ -146,167 +146,240 @@ class VariableDefinitions:
     @property
     def webpage_url(self) -> MetadataVariable:
         """
-        The url to the webpage.
+        Returns
+        -------
+        str
+            The url to the webpage.
         """
         return MetadataVariable(metadata_key="webpage_url", variable_name="webpage_url")
 
     @property
     def info_json_ext(self) -> Variable:
         """
-        The "info.json" extension
+        Returns
+        -------
+        str
+            The "info.json" extension
         """
         return Variable("info_json_ext")
 
     @property
     def description(self) -> MetadataVariable:
         """
-        The description if it exists. Otherwise, returns an emtpy string.
+        Returns
+        -------
+        str
+            The description if it exists. Otherwise, returns an emtpy string.
         """
         return MetadataVariable(variable_name="description", metadata_key="description")
 
     @property
     def uploader_id(self) -> MetadataVariable:
         """
-        The uploader id if it exists, otherwise return the unique ID.
+        Returns
+        -------
+        str
+            The uploader id if it exists, otherwise return the unique ID.
         """
         return MetadataVariable(variable_name="uploader_id", metadata_key="uploader_id")
 
     @property
     def uploader(self) -> MetadataVariable:
         """
-        The uploader if it exists, otherwise return the uploader ID.
+        Returns
+        -------
+        str
+            The uploader if it exists, otherwise return the uploader ID.
         """
         return MetadataVariable(variable_name="uploader", metadata_key="uploader")
 
     @property
     def uploader_url(self) -> MetadataVariable:
         """
-        The uploader url if it exists, otherwise returns the webpage_url.
+        Returns
+        -------
+        str
+            The uploader url if it exists, otherwise returns the webpage_url.
         """
         return MetadataVariable("uploader_url", metadata_key="uploader_url")
 
     @property
     def source_title(self) -> MetadataVariable:
         """
-        Name of the source (i.e. channel with multiple playlists) if it exists, otherwise returns its playlist_title.
+        Returns
+        -------
+        str
+            Name of the source (i.e. channel with multiple playlists) if it exists, otherwise
+            returns its playlist_title.
         """
         return MetadataVariable("source_title", metadata_key=self.title.metadata_key)
 
     @property
     def source_uid(self) -> MetadataVariable:
         """
-        The source unique id if it exists, otherwise returns the playlist unique ID.
+        Returns
+        -------
+        str
+            The source unique id if it exists, otherwise returns the playlist unique ID.
         """
         return MetadataVariable("source_uid", metadata_key=self.uid.metadata_key)
 
     @property
     def source_index(self) -> MetadataVariable:
         """
-        Source index if it exists, otherwise returns ``1``.
+        Returns
+        -------
+        int
+            Source index if it exists, otherwise returns ``1``.
 
-        It is recommended to not use this unless you know the source will never add new content (it is easy for this value to change).
+            It is recommended to not use this unless you know the source will never add new content
+            (it is easy for this value to change).
         """
         return MetadataVariable("source_index", metadata_key=self.playlist_index.metadata_key)
 
     @property
     def source_index_padded(self) -> Variable:
         """
-        The source index, padded.
+        Returns
+        -------
+        int
+            The source index, padded.
         """
         return Variable("source_index_padded")
 
     @property
     def source_count(self) -> MetadataVariable:
         """
-        The source count if it exists, otherwise returns the playlist count.
+        Returns
+        -------
+        int
+            The source count if it exists, otherwise returns the playlist count.
         """
         return MetadataVariable("source_count", metadata_key=self.playlist_count.metadata_key)
 
     @property
     def source_webpage_url(self) -> MetadataVariable:
         """
-        The source webpage url if it exists, otherwise returns the playlist webpage url.
+        Returns
+        -------
+        str
+            The source webpage url if it exists, otherwise returns the playlist webpage url.
         """
         return MetadataVariable("source_webpage_url", metadata_key=self.webpage_url.metadata_key)
 
     @property
     def source_description(self) -> MetadataVariable:
         """
-        The source description if it exists, otherwise returns the playlist description.
+        Returns
+        -------
+        str
+            The source description if it exists, otherwise returns the playlist description.
         """
         return MetadataVariable("source_description", metadata_key=self.description.metadata_key)
 
     @property
     def playlist_uid(self) -> MetadataVariable:
         """
-        The playlist unique ID if it exists, otherwise return the entry unique ID.
+        Returns
+        -------
+        str
+            The playlist unique ID if it exists, otherwise return the entry unique ID.
         """
         return MetadataVariable(variable_name="playlist_uid", metadata_key="playlist_id")
 
     @property
     def playlist_title(self) -> MetadataVariable:
         """
-        Name of its parent playlist/channel if it exists, otherwise returns its title.
+        Returns
+        -------
+        str
+            Name of its parent playlist/channel if it exists, otherwise returns its title.
         """
         return MetadataVariable(variable_name="playlist_title", metadata_key="playlist_title")
 
     @property
     def playlist_index(self) -> MetadataVariable:
         """
-        Playlist index if it exists, otherwise returns ``1``.
+        Returns
+        -------
+        int
+            Playlist index if it exists, otherwise returns ``1``.
 
-        Note that for channels/playlists, any change (i.e. adding or removing a video) will make this value change. Use with caution.
+            Note that for channels/playlists, any change (i.e. adding or removing a video) will make
+            this value change. Use with caution.
         """
         return MetadataVariable(metadata_key="playlist_index", variable_name="playlist_index")
 
     @property
     def playlist_index_reversed(self) -> Variable:
         """
-        Playlist index reversed via ``playlist_count - playlist_index + 1``
+        Returns
+        -------
+        int
+            Playlist index reversed via ``playlist_count - playlist_index + 1``
         """
         return Variable("playlist_index_reversed")
 
     @property
     def playlist_index_padded(self) -> Variable:
         """
-        playlist_index padded two digits
+        Returns
+        -------
+        str
+            playlist_index padded two digits
         """
         return Variable("playlist_index_padded")
 
     @property
     def playlist_index_reversed_padded(self) -> Variable:
         """
-        playlist_index_reversed padded two digits
+        Returns
+        -------
+        str
+            playlist_index_reversed padded two digits
         """
         return Variable("playlist_index_reversed_padded")
 
     @property
     def playlist_index_padded6(self) -> Variable:
         """
-        playlist_index padded six digits.
+        Returns
+        -------
+        str
+            playlist_index padded six digits.
         """
         return Variable("playlist_index_padded6")
 
     @property
     def playlist_index_reversed_padded6(self) -> Variable:
         """
-        playlist_index_reversed padded six digits.
+        Returns
+        -------
+        str
+            playlist_index_reversed padded six digits.
         """
         return Variable("playlist_index_reversed_padded6")
 
     @property
     def playlist_count(self) -> MetadataVariable:
         """
-        Playlist count if it exists, otherwise returns ``1``.
+        Returns
+        -------
+        int
+            Playlist count if it exists, otherwise returns ``1``.
 
-        Note that for channels/playlists, any change (i.e. adding or removing a video) will make this value change. Use with caution.
+            Note that for channels/playlists, any change (i.e. adding or removing a video) will make
+            this value change. Use with caution.
         """
         return MetadataVariable(variable_name="playlist_count", metadata_key="playlist_count")
 
     @property
     def playlist_description(self) -> MetadataVariable:
         """
-        The playlist description if it exists, otherwise returns the entry's description.
+        Returns
+        -------
+        str
+            The playlist description if it exists, otherwise returns the entry's description.
         """
         return MetadataVariable(
             variable_name="playlist_description", metadata_key=self.description.metadata_key
@@ -315,7 +388,10 @@ class VariableDefinitions:
     @property
     def playlist_webpage_url(self) -> MetadataVariable:
         """
-        The playlist webpage url if it exists. Otherwise, returns the entry webpage url.
+        Returns
+        -------
+        str
+            The playlist webpage url if it exists. Otherwise, returns the entry webpage url.
         """
         return MetadataVariable(
             variable_name="playlist_webpage_url", metadata_key=self.webpage_url.metadata_key
@@ -324,14 +400,21 @@ class VariableDefinitions:
     @property
     def playlist_max_upload_date(self) -> Variable:
         """
-        Max upload_date for all entries in this entry's playlist if it exists, otherwise returns ``upload_date``
+        Returns
+        -------
+            Max upload_date for all entries in this entry's playlist if it exists, otherwise returns
+            ``upload_date``
         """
         return Variable("playlist_max_upload_date")
 
     @property
     def playlist_max_upload_year(self) -> Variable:
         """
-        Max upload_year for all entries in this entry's playlist if it exists, otherwise returns ``upload_year``
+        Returns
+        -------
+        int
+            Max upload_year for all entries in this entry's playlist if it exists, otherwise returns
+            ``upload_year``
         """
         # override in EntryParent
         return Variable("playlist_max_upload_year")
@@ -339,28 +422,41 @@ class VariableDefinitions:
     @property
     def playlist_max_upload_year_truncated(self) -> Variable:
         """
-        The max playlist truncated upload year for all entries in this entry's playlist if it exists, otherwise returns ``upload_year_truncated``.
+        Returns
+        -------
+        int
+            The max playlist truncated upload year for all entries in this entry's playlist if it
+            exists, otherwise returns ``upload_year_truncated``.
         """
         return Variable("playlist_max_upload_year_truncated")
 
     @property
     def playlist_uploader_id(self) -> MetadataVariable:
         """
-        The playlist uploader id if it exists, otherwise returns the entry uploader ID.
+        Returns
+        -------
+        str
+            The playlist uploader id if it exists, otherwise returns the entry uploader ID.
         """
         return MetadataVariable("playlist_uploader_id", metadata_key="playlist_uploader_id")
 
     @property
     def playlist_uploader(self) -> MetadataVariable:
         """
-        The playlist uploader if it exists, otherwise return the entry uploader.
+        Returns
+        -------
+        str
+            The playlist uploader if it exists, otherwise return the entry uploader.
         """
         return MetadataVariable("playlist_uploader", metadata_key=self.uploader.metadata_key)
 
     @property
     def playlist_uploader_url(self) -> MetadataVariable:
         """
-        The playlist uploader url if it exists, otherwise returns the playlist webpage_url.
+        Returns
+        -------
+        str
+            The playlist uploader url if it exists, otherwise returns the playlist webpage_url.
         """
         return MetadataVariable(
             "playlist_uploader_url", metadata_key=self.uploader_url.metadata_key
@@ -369,56 +465,81 @@ class VariableDefinitions:
     @property
     def source_uploader_id(self) -> MetadataVariable:
         """
-        The source uploader id if it exists, otherwise returns the playlist_uploader_id
+        Returns
+        -------
+        str
+            The source uploader id if it exists, otherwise returns the playlist_uploader_id
         """
         return MetadataVariable("source_uploader_id", metadata_key=self.uploader_id.metadata_key)
 
     @property
     def source_uploader(self) -> MetadataVariable:
         """
-        The source uploader if it exists, otherwise return the playlist_uploader
+        Returns
+        -------
+        str
+            The source uploader if it exists, otherwise return the playlist_uploader
         """
         return MetadataVariable("source_uploader", metadata_key=self.uploader.metadata_key)
 
     @property
     def source_uploader_url(self) -> MetadataVariable:
         """
-        The source uploader url if it exists, otherwise returns the source webpage_url.
+        Returns
+        -------
+        str
+            The source uploader url if it exists, otherwise returns the source webpage_url.
         """
         return MetadataVariable("source_uploader_url", metadata_key=self.uploader_url.metadata_key)
 
     @property
     def creator(self) -> MetadataVariable:
         """
-        The creator name if it exists, otherwise returns the channel.
+        Returns
+        -------
+        str
+            The creator name if it exists, otherwise returns the channel.
         """
         return MetadataVariable(variable_name="creator", metadata_key="creator")
 
     @property
     def channel(self) -> MetadataVariable:
         """
-        The channel name if it exists, otherwise returns the uploader.
+        Returns
+        -------
+        str
+            The channel name if it exists, otherwise returns the uploader.
         """
         return MetadataVariable(variable_name="channel", metadata_key="channel")
 
     @property
     def channel_id(self) -> MetadataVariable:
         """
-        The channel id if it exists, otherwise returns the entry uploader ID.
+        Returns
+        -------
+        str
+            The channel id if it exists, otherwise returns the entry uploader ID.
         """
         return MetadataVariable(variable_name="channel_id", metadata_key="channel_id")
 
     @property
     def ext(self) -> MetadataVariable:
         """
-        The downloaded entry's file extension
+        Returns
+        -------
+        str
+            The downloaded entry's file extension
         """
         return MetadataVariable(variable_name="ext", metadata_key="ext")
 
     @property
     def thumbnail_ext(self) -> Variable:
         """
-        The download entry's thumbnail extension. Will always return 'jpg'. Until there is a need to support other image types, we always convert to jpg.
+        Returns
+        -------
+        str
+            The download entry's thumbnail extension. Will always return 'jpg'. Until there is a
+            need to support other image types, we always convert to jpg.
         """
         return Variable("thumbnail_ext")
 
@@ -460,280 +581,408 @@ class VariableDefinitions:
     @property
     def download_index(self) -> Variable:
         """
-        The i'th entry downloaded. NOTE that this is fetched dynamically from the download archive.
+        Returns
+        -------
+        int
+            The i'th entry downloaded. NOTE that this is fetched dynamically from the download
+            archive.
         """
         return Variable(variable_name="download_index")
 
     @property
     def download_index_padded6(self) -> Variable:
         """
-        The download_index padded six digits
+        Returns
+        -------
+        str
+            The download_index padded six digits
         """
         return Variable("download_index_padded6")
 
     @property
     def upload_date_index(self) -> Variable:
         """
-        The i'th entry downloaded with this upload date.
+        Returns
+        -------
+        int
+            The i'th entry downloaded with this upload date.
         """
         return Variable(variable_name="upload_date_index")
 
     @property
     def upload_date_index_padded(self) -> Variable:
         """
-        The upload_date_index padded two digits
+        Returns
+        -------
+        int
+            The upload_date_index padded two digits
         """
         return Variable("upload_date_index_padded")
 
     @property
     def upload_date_index_reversed(self) -> Variable:
         """
-        100 - upload_date_index
+        Returns
+        -------
+        int
+            100 - upload_date_index
         """
         return Variable("upload_date_index_reversed")
 
     @property
     def upload_date_index_reversed_padded(self) -> Variable:
         """
-        The upload_date_index padded two digits
+        Returns
+        -------
+        int
+            The upload_date_index padded two digits
         """
         return Variable("upload_date_index_reversed_padded")
 
     @property
     def upload_date(self) -> MetadataVariable:
         """
-        The entry's uploaded date, in YYYYMMDD format. If not present, return today's date.
+        Returns
+        -------
+        str
+            The entry’s uploaded date, in YYYYMMDD format. If not present, return today’s date.
         """
         return MetadataVariable(variable_name="upload_date", metadata_key="upload_date")
 
     @property
     def upload_year(self) -> Variable:
         """
-        The entry's upload year
+        Returns
+        -------
+        int
+            The entry's upload year
         """
         return Variable("upload_year")
 
     @property
     def upload_year_truncated(self) -> Variable:
         """
-        The last two digits of the upload year, i.e. 22 in 2022
+        Returns
+        -------
+        int
+            The last two digits of the upload year, i.e. 22 in 2022
         """
         return Variable("upload_year_truncated")
 
     @property
     def upload_year_truncated_reversed(self) -> Variable:
         """
-        The upload year truncated, but reversed using ``100 - {upload_year_truncated}``, i.e. 2022 returns ``100 - 22`` = ``78``
+        Returns
+        -------
+        int
+            The upload year truncated, but reversed using ``100 - {upload_year_truncated}``, i.e.
+            2022 returns ``100 - 22`` = ``78``
         """
         return Variable("upload_year_truncated_reversed")
 
     @property
     def upload_month_reversed(self) -> Variable:
         """
-        The upload month, but reversed using ``13 - {upload_month}``, i.e. March returns ``10``
+        Returns
+        -------
+        int
+            The upload month, but reversed using ``13 - {upload_month}``, i.e. March returns ``10``
         """
         return Variable("upload_month_reversed")
 
     @property
     def upload_month_reversed_padded(self) -> Variable:
         """
-        The reversed upload month, but padded. i.e. November returns "02"
+        Returns
+        -------
+        str
+            The reversed upload month, but padded. i.e. November returns "02"
         """
         return Variable("upload_month_reversed_padded")
 
     @property
     def upload_month_padded(self) -> Variable:
         """
-        The entry's upload month padded to two digits, i.e. March returns "03"
+        Returns
+        -------
+        str
+            The entry's upload month padded to two digits, i.e. March returns "03"
         """
         return Variable("upload_month_padded")
 
     @property
     def upload_day_padded(self) -> Variable:
         """
-        The entry's upload day padded to two digits, i.e. the fifth returns "05"
+        Returns
+        -------
+        str
+            The entry's upload day padded to two digits, i.e. the fifth returns "05"
         """
         return Variable("upload_day_padded")
 
     @property
     def upload_month(self) -> Variable:
         """
-        The upload month as an integer (no padding).
+        Returns
+        -------
+        int
+            The upload month as an integer (no padding).
         """
         return Variable("upload_month")
 
     @property
     def upload_day(self) -> Variable:
         """
-        The upload day as an integer (no padding).
+        Returns
+        -------
+        int
+            The upload day as an integer (no padding).
         """
         return Variable("upload_day")
 
     @property
     def upload_day_reversed(self) -> Variable:
         """
-        The upload day, but reversed using ``{total_days_in_month} + 1 - {upload_day}``, i.e. August 8th would have upload_day_reversed of ``31 + 1 - 8`` = ``24``
+        Returns
+        -------
+        int
+            The upload day, but reversed using ``{total_days_in_month} + 1 - {upload_day}``,
+            i.e. August 8th would have upload_day_reversed of ``31 + 1 - 8`` = ``24``
         """
         return Variable("upload_day_reversed")
 
     @property
     def upload_day_reversed_padded(self) -> Variable:
         """
-        The reversed upload day, but padded. i.e. August 30th returns "02".
+        Returns
+        -------
+        str
+            The reversed upload day, but padded. i.e. August 30th returns "02".
         """
         return Variable("upload_day_reversed_padded")
 
     @property
     def upload_day_of_year(self) -> Variable:
         """
-        The day of the year, i.e. February 1st returns ``32``
+        Returns
+        -------
+        int
+            The day of the year, i.e. February 1st returns ``32``
         """
         return Variable("upload_day_of_year")
 
     @property
     def upload_day_of_year_padded(self) -> Variable:
         """
-        The upload day of year, but padded i.e. February 1st returns "032"
+        Returns
+        -------
+        str
+            The upload day of year, but padded i.e. February 1st returns "032"
         """
         return Variable("upload_day_of_year_padded")
 
     @property
     def upload_day_of_year_reversed(self) -> Variable:
         """
-        The upload day, but reversed using ``{total_days_in_year} + 1 - {upload_day}``, i.e. February 2nd would have upload_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
+        Returns
+        -------
+        int
+            The upload day, but reversed using ``{total_days_in_year} + 1 - {upload_day}``,
+            i.e. February 2nd would have upload_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
         """
         return Variable("upload_day_of_year_reversed")
 
     @property
     def upload_day_of_year_reversed_padded(self) -> Variable:
         """
-        The reversed upload day of year, but padded i.e. December 31st returns "001"
+        Returns
+        -------
+        str
+            The reversed upload day of year, but padded i.e. December 31st returns "001"
         """
         return Variable("upload_day_of_year_reversed_padded")
 
     @property
     def upload_date_standardized(self) -> Variable:
         """
-        The uploaded date formatted as YYYY-MM-DD
+        Returns
+        -------
+        str
+            The uploaded date formatted as YYYY-MM-DD
         """
         return Variable("upload_date_standardized")
 
     @property
     def release_date(self) -> MetadataVariable:
         """
-        The entry's release date, in YYYYMMDD format. If not present, return the upload date.
+        Returns
+        -------
+        str
+            The entry’s release date, in YYYYMMDD format. If not present, return the upload date.
         """
         return MetadataVariable(variable_name="release_date", metadata_key="release_date")
 
     @property
     def release_year(self) -> Variable:
         """
-        The entry's release year
+        Returns
+        -------
+        int
+            The entry's release year
         """
         return Variable("release_year")
 
     @property
     def release_year_truncated(self) -> Variable:
         """
-        The last two digits of the release year, i.e. 22 in 2022
+        Returns
+        -------
+        int
+            The last two digits of the release year, i.e. 22 in 2022
         """
         return Variable("release_year_truncated")
 
     @property
     def release_year_truncated_reversed(self) -> Variable:
         """
-        The release year truncated, but reversed using ``100 - {release_year_truncated}``, i.e. 2022 returns ``100 - 22`` = ``78``
+        Returns
+        -------
+        int
+            The release year truncated, but reversed using ``100 - {release_year_truncated}``, i.e.
+            2022 returns ``100 - 22`` = ``78``
         """
         return Variable("release_year_truncated_reversed")
 
     @property
     def release_month_reversed(self) -> Variable:
         """
-        The release month, but reversed using ``13 - {release_month}``, i.e. March returns ``10``
+        Returns
+        -------
+        int
+            The release month, but reversed
+            using ``13 - {release_month}``, i.e. March returns ``10``
         """
         return Variable("release_month_reversed")
 
     @property
     def release_month_reversed_padded(self) -> Variable:
         """
-        The reversed release month, but padded. i.e. November returns "02"
+        Returns
+        -------
+        str
+            The reversed release month, but padded. i.e. November returns "02"
         """
         return Variable("release_month_reversed_padded")
 
     @property
     def release_month_padded(self) -> Variable:
         """
-        The entry's release month padded to two digits, i.e. March returns "03"
+        Returns
+        -------
+        str
+            The entry's release month padded to two digits, i.e. March returns "03"
         """
         return Variable("release_month_padded")
 
     @property
     def release_day_padded(self) -> Variable:
         """
-        The entry's release day padded to two digits, i.e. the fifth returns "05"
+        Returns
+        -------
+        str
+            The entry's release day padded to two digits, i.e. the fifth returns "05"
         """
         return Variable("release_day_padded")
 
     @property
     def release_month(self) -> Variable:
         """
-        The release month as an integer (no padding).
+        Returns
+        -------
+        int
+            The release month as an integer (no padding).
         """
         return Variable("release_month")
 
     @property
     def release_day(self) -> Variable:
         """
-        The release day as an integer (no padding).
+        Returns
+        -------
+        int
+            The release day as an integer (no padding).
         """
         return Variable("release_day")
 
     @property
     def release_day_reversed(self) -> Variable:
         """
-        The release day, but reversed using ``{total_days_in_month} + 1 - {release_day}``, i.e. August 8th would have release_day_reversed of ``31 + 1 - 8`` = ``24``
+        Returns
+        -------
+        int
+            The release day, but reversed using ``{total_days_in_month} + 1 - {release_day}``,
+            i.e. August 8th would have release_day_reversed of ``31 + 1 - 8`` = ``24``
         """
         return Variable("release_day_reversed")
 
     @property
     def release_day_reversed_padded(self) -> Variable:
         """
-        The reversed release day, but padded. i.e. August 30th returns "02".
+        Returns
+        -------
+        str
+            The reversed release day, but padded. i.e. August 30th returns "02".
         """
         return Variable("release_day_reversed_padded")
 
     @property
     def release_day_of_year(self) -> Variable:
         """
-        The day of the year, i.e. February 1st returns ``32``
+        Returns
+        -------
+        int
+            The day of the year, i.e. February 1st returns ``32``
         """
         return Variable("release_day_of_year")
 
     @property
     def release_day_of_year_padded(self) -> Variable:
         """
-        The release day of year, but padded i.e. February 1st returns "032"
+        Returns
+        -------
+        str
+            The release day of year, but padded i.e. February 1st returns "032"
         """
         return Variable("release_day_of_year_padded")
 
     @property
     def release_day_of_year_reversed(self) -> Variable:
         """
-        The release day, but reversed using ``{total_days_in_year} + 1 - {release_day}``, i.e. February 2nd would have release_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
+        Returns
+        -------
+        int
+            The release day, but reversed using ``{total_days_in_year} + 1 - {release_day}``,
+            i.e. February 2nd would have release_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
         """
         return Variable("release_day_of_year_reversed")
 
     @property
     def release_day_of_year_reversed_padded(self) -> Variable:
         """
-        The reversed release day of year, but padded i.e. December 31st returns "001"
+        Returns
+        -------
+        str
+            The reversed release day of year, but padded i.e. December 31st returns "001"
         """
         return Variable("release_day_of_year_reversed_padded")
 
     @property
     def release_date_standardized(self) -> Variable:
         """
-        The release date formatted as YYYY-MM-DD
+        Returns
+        -------
+        str
+            The release date formatted as YYYY-MM-DD
         """
         return Variable("release_date_standardized")
 
