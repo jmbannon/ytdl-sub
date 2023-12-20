@@ -149,3 +149,5 @@ docker/testing/volumes
 
 ffmpeg.exe
 ffprobe.exe
+
+tools/docgen/out
