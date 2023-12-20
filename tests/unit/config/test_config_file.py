@@ -54,6 +54,8 @@ class TestConfigFilePartiallyValidatesPresets:
         excluded_plugins = [
             "embed_thumbnail",  # value is bool, not dict
             "format",  # value is string, not dict
+            "filter_include",  # is list
+            "filter_exclude",  # is list
         ]
         if plugin not in excluded_plugins:
             self._partial_validate({plugin: {}})

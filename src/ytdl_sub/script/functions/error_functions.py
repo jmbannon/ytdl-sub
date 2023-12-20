@@ -21,3 +21,39 @@ class ErrorFunctions:
         if not bool(value.value):
             raise UserThrownRuntimeError(assert_message)
         return value
+
+    @staticmethod
+    def assert_then(
+        value: AnyArgument, ret: ReturnableArgument, assert_message: String
+    ) -> ReturnableArgument:
+        """
+        Explicitly throw an error with the provided assert message if ``value`` evaluates to False.
+        If it evaluates to True, it will return ``ret``.
+        """
+        if not bool(value.value):
+            raise UserThrownRuntimeError(assert_message)
+        return ret
+
+    @staticmethod
+    def assert_eq(
+        value: ReturnableArgument, equals: AnyArgument, assert_message: String
+    ) -> ReturnableArgument:
+        """
+        Explicitly throw an error with the provided assert message if ``value`` does not equal
+        ``equals``. If they do equal, then return ``value``.
+        """
+        if not value.value == equals.value:
+            raise UserThrownRuntimeError(assert_message)
+        return value
+
+    @staticmethod
+    def assert_ne(
+        value: ReturnableArgument, equals: AnyArgument, assert_message: String
+    ) -> ReturnableArgument:
+        """
+        Explicitly throw an error with the provided assert message if ``value`` equals
+        ``equals``. If they do equal, then return ``value``.
+        """
+        if value.value == equals.value:
+            raise UserThrownRuntimeError(assert_message)
+        return value

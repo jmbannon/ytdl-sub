@@ -15,6 +15,8 @@ from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.date_range import DateRangePlugin
 from ytdl_sub.plugins.embed_thumbnail import EmbedThumbnailPlugin
 from ytdl_sub.plugins.file_convert import FileConvertPlugin
+from ytdl_sub.plugins.filter_exclude import FilterExcludePlugin
+from ytdl_sub.plugins.filter_include import FilterIncludePlugin
 from ytdl_sub.plugins.format import FormatPlugin
 from ytdl_sub.plugins.internal.view import ViewPlugin
 from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
@@ -50,6 +52,8 @@ class PluginMapping:
         "chapters": ChaptersPlugin,
         "split_by_chapters": SplitByChaptersPlugin,
         "throttle_protection": ThrottleProtectionPlugin,
+        "filter_include": FilterIncludePlugin,
+        "filter_exclude": FilterExcludePlugin,
     }
 
     # All other plugins are added after the defined ordered ones
@@ -57,6 +61,8 @@ class PluginMapping:
         ThrottleProtectionPlugin,
         UrlDownloaderCollectionVariablePlugin,
         SubtitlesPlugin,
+        FilterExcludePlugin,
+        FilterIncludePlugin,
         # add all others
     ]
 
@@ -66,6 +72,8 @@ class PluginMapping:
         FileConvertPlugin,
         ChaptersPlugin,
         SplitByChaptersPlugin,
+        FilterExcludePlugin,
+        FilterIncludePlugin,
         RegexPlugin,
         # add all others
     ]

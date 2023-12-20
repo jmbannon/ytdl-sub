@@ -264,7 +264,6 @@ class TestPreset:
         "function_name",
         [
             "%extract_field_from_siblings",
-            "%extract_field_from_metadata_array",
             "%sanitize",
             "%array",
         ],

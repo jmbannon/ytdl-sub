@@ -51,11 +51,46 @@ class ArrayFunctions:
         return Array(output)
 
     @staticmethod
+    def array_overlay(
+        array: Array, overlap: Array, only_missing: Optional[Boolean] = None
+    ) -> Array:
+        """
+        Overlaps ``overlap`` onto ``array``. Can optionally only overlay missing indices.
+        """
+        output: List[Resolvable] = []
+        output.extend(array.value)
+
+        overlap_only_missing = only_missing and only_missing.value
+
+        for idx, overlap_value in enumerate(overlap.value):
+            if overlap_only_missing and idx < len(array.value):
+                continue
+
+            if idx < len(array.value):
+                output[idx] = overlap_value
+            else:
+                output.append(overlap_value)
+
+        return Array(output)
+
+    @staticmethod
     def array_at(array: Array, idx: Integer) -> AnyArgument:
         """
         Return the element in the Array at index ``idx``.
         """
         return array.value[idx.value]
+
+    @staticmethod
+    def array_first(array: Array, fallback: AnyArgument) -> AnyArgument:
+        """
+        Returns the first element whose boolean conversion is True. Returns fallback
+        if all elements evaluate to False.
+        """
+        for val in array.value:
+            if bool(val.value):
+                return val
+
+        return fallback
 
     @staticmethod
     def array_contains(array: Array, value: AnyArgument) -> Boolean:
@@ -129,6 +164,22 @@ class ArrayFunctions:
         Apply a lambda function on every element in the Array.
         """
         return Array([Array([val]) for val in array.value])
+
+    @staticmethod
+    def array_apply_fixed(
+        array: Array,
+        fixed_argument: AnyArgument,
+        lambda2_function: LambdaTwo,
+        reverse_args: Optional[Boolean] = None,
+    ) -> Array:
+        """
+        Apply a lambda function on every element in the Array, with ``fixed_argument``
+        passed as a second argument to every invocation.
+        """
+        if reverse_args and reverse_args.value:
+            return Array([Array([fixed_argument, val]) for val in array.value])
+
+        return Array([Array([val, fixed_argument]) for val in array.value])
 
     @staticmethod
     def array_enumerate(array: Array, lambda_function: LambdaTwo) -> Array:

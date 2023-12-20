@@ -1,4 +1,3 @@
-import copy
 import re
 from typing import Any
 from typing import Dict
@@ -8,9 +7,8 @@ import pytest
 from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.exceptions import RegexNoMatchException
-from ytdl_sub.utils.exceptions import ValidationException
 
 
 @pytest.fixture
@@ -20,29 +18,27 @@ def regex_subscription_dict_base(output_directory):
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         "format": "best[height<=480]",  # download the worst format so it is fast
-        "regex": {
-            # tests that skip_if_match_fails defaults to True
-            "from": {
-                "description": {
-                    "match": [".*http:\\/\\/(.+).com.*"],
-                    "capture_group_names": ["description_website"],
-                },
-                "upload_date_standardized": {
-                    "match": ["([0-9]+)-([0-9]+)-27"],
-                    "capture_group_names": [
-                        "upload_captured_year",
-                        "upload_captured_month",
-                    ],
-                    "capture_group_defaults": [
-                        "First",
-                        "Second containing {in_regex_default}",
-                    ],
-                },
-            },
-        },
+        "filter_include": ["{%not(%is_null(description_website))}"],
         "overrides": {
             "in_regex_default": "in regex default",
             "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
+            "upload_capture": """{
+                %regex_capture_many_with_defaults(
+                    upload_date_standardized,
+                    ["([0-9]+)-([0-9]+)-27"],
+                    ["First", %concat("Second containing ", in_regex_default)]
+                )
+            }""",
+            "upload_captured_year": "{%array_at(upload_capture, 1)}",
+            "upload_captured_month": "{%array_at(upload_capture, 2)}",
+            "description_capture": """{
+                %regex_capture_many_with_defaults(
+                    description,
+                    [".*http:\\/\\/(.+).com.*"],
+                    [null]
+                )
+            }""",
+            "description_website": "{%array_at(description_capture, 1)}",
         },
     }
 
@@ -52,18 +48,6 @@ def regex_subscription_dict(regex_subscription_dict_base, output_directory):
     return mergedeep.merge(
         regex_subscription_dict_base,
         {
-            "regex": {
-                # tests that skip_if_match_fails defaults to True
-                "from": {
-                    "title": {
-                        "match": [
-                            "should not cap (.+) - (.+)",
-                            ".*\\[(.+) - (Feb.+)]",  # should filter out march video
-                        ],
-                        "capture_group_names": ["title_type", "title_date"],
-                    },
-                },
-            },
             "nfo_tags": {
                 "tags": {
                     "title_cap_1": "{title_type}",
@@ -75,22 +59,17 @@ def regex_subscription_dict(regex_subscription_dict_base, output_directory):
                     "override_with_capture_variable_sanitized": "{contains_regex_sanitized_default}",
                 }
             },
+            "filter_exclude": ["{%is_null(title_type)}"],
             "overrides": {
-                "title_capture_list": f"""{{
+                "title_capture_list": """{
                     %regex_capture_many_with_defaults(
                         title,
-                        [
-                            "should not cap (.+) - (.+)",
-                            ".*\\[(.+) - (Feb.+)]"
-                        ],
-                        [
-                            "ack",
-                            "ack"
-                        ]
+                        [ "should not cap (.+) - (.+)", ".*\\[(.+) - (Feb.+)]" ],
+                        [ null, null ]
                     )
-                }}""",
-                "title_capture_list_1": "{%array_at(title_capture_list, 1)}",
-                "title_capture_list_2": "{%array_at(title_capture_list, 2)}",
+                }""",
+                "title_type": "{%array_at(title_capture_list, 1)}",
+                "title_date": "{%array_at(title_capture_list, 2)}",
                 "contains_regex_default": "contains {title_type}",
                 "contains_regex_sanitized_default": "contains {title_type_sanitized}",
             },
@@ -103,17 +82,14 @@ def regex_subscription_dict_exclude(regex_subscription_dict_base, output_directo
     return mergedeep.merge(
         regex_subscription_dict_base,
         {
-            "regex": {
-                # tests that skip_if_match_fails defaults to True
-                "from": {
-                    "title": {
-                        "exclude": [
-                            "should not cap",
-                            ".*Feb.*",  # should filter out march video
-                        ],
-                    },
-                },
-            },
+            "filter_exclude": [
+                """{
+                    %regex_search_any(
+                        title,
+                        [ "should not cap", ".*Feb.*" ]
+                    )
+                }"""
+            ]
         },
     )
 
@@ -198,7 +174,14 @@ def playlist_subscription(default_config, regex_subscription_dict):
 def playlist_subscription_no_match_fails(
     default_config: ConfigFile, regex_subscription_dict: Dict[str, Any]
 ):
-    regex_subscription_dict["regex"]["skip_if_match_fails"] = False
+    regex_subscription_dict["overrides"][
+        "title_capture_list"
+    ] = """{
+        %regex_capture_many_required(
+            title,
+            [ "should not cap (.+) - (.+)", ".*\\[(.+) - (Feb.+)]" ]
+        )
+    }"""
 
     return Subscription.from_dict(
         config=default_config,
@@ -241,7 +224,7 @@ def playlist_subscription_match_and_exclude(
     )
 
 
-class TestRegex:
+class TestFilter:
     def test_regex_success(self, playlist_subscription, output_directory):
         # Only dry run is needed to see if capture variables are created
         transaction_log = playlist_subscription.download(dry_run=True)
@@ -282,121 +265,35 @@ class TestRegex:
 
     def test_regex_fails_no_match(self, playlist_subscription_no_match_fails, output_directory):
         with pytest.raises(
-            RegexNoMatchException,
+            UserThrownRuntimeError,
             match=re.escape(
-                "Regex failed to match 'title' from 'Jesse's Minecraft Server [Trailer - Mar.21]'"
+                "When running %regex_capture_many_required, no regex strings were captured"
             ),
         ):
             _ = playlist_subscription_no_match_fails.download(dry_run=True)
 
-    def test_regex_fails_capture_group_with_only_excludes(
-        self, regex_subscription_dict_exclude, default_config
-    ):
-        regex_subscription_dict_exclude["regex"]["from"]["title"]["capture_group_names"] = ["uid"]
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "capture group parameters requires at least one `match` to be specified"
-            ),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_capture_group_is_source_variable",
-                preset_dict=regex_subscription_dict_exclude,
-            )
-
-    def test_regex_fails_no_match_or_exclude(self, regex_subscription_dict, default_config):
-        del regex_subscription_dict["regex"]["from"]["title"]["match"]
-        with pytest.raises(
-            ValidationException,
-            match=re.escape("must specify either `match` or `exclude`"),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_capture_group_is_source_variable",
-                preset_dict=regex_subscription_dict,
-            )
-
-    def test_regex_fails_capture_group_is_entry_variable(
-        self, regex_subscription_dict, default_config
-    ):
-        regex_subscription_dict["regex"]["from"]["playlist_uid"] = {
-            "match": [".*http:\\/\\/(.+).com.*"],
-            "capture_group_names": ["uid"],
-        }
-
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Cannot use the variable name uid because it exists as a built-in "
-                "ytdl-sub variable name."
-            ),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_capture_group_is_entry_variable",
-                preset_dict=regex_subscription_dict,
-            )
-
-    def test_regex_fails_capture_group_is_override_variable(
-        self, regex_subscription_dict, default_config
-    ):
-        regex_subscription_dict["regex"]["from"]["playlist_uid"] = {
-            "match": [".*http:\\/\\/(.+).com.*"],
-            "capture_group_names": ["contains_regex_default"],
-        }
-
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Override variable with name contains_regex_default cannot be used since it is "
-                "added by a plugin."
-            ),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_capture_group_is_override_variable",
-                preset_dict=regex_subscription_dict,
-            )
-
-    def test_regex_fails_source_variable_does_not_exist(
-        self, regex_subscription_dict, default_config
-    ):
-        regex_subscription_dict["regex"]["from"]["dne"] = copy.deepcopy(
-            regex_subscription_dict["regex"]["from"]["title"]
-        )
-        with pytest.raises(
-            ValidationException,
-            match=re.escape("cannot regex capture 'dne' because it is not a defined variable"),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_source_variable_does_not_exist",
-                preset_dict=regex_subscription_dict,
-            )
-
     def test_regex_fails_unequal_defaults(self, regex_subscription_dict, default_config):
-        regex_subscription_dict["regex"]["from"]["title"]["capture_group_defaults"] = ["1 != 2"]
-        with pytest.raises(
-            ValidationException,
-            match=re.escape("number of defaults must match number of capture groups, 1 != 2"),
-        ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_unequal_defaults",
-                preset_dict=regex_subscription_dict,
+        regex_subscription_dict["overrides"][
+            "title_capture_list"
+        ] = """{
+            %regex_capture_many_with_defaults(
+                title,
+                [ "should not cap (.+) - (.+)", ".*\\[(.+) - (Feb.+)]" ],
+                [ "one default, expects >= 2" ]
             )
+        }"""
 
-    def test_regex_fails_unequal_capture_group_names(self, regex_subscription_dict, default_config):
-        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"].append("unequal")
+        subscription = Subscription.from_dict(
+            config=default_config,
+            preset_name="regex_capture_playlist_test",
+            preset_dict=regex_subscription_dict,
+        )
+
         with pytest.raises(
-            ValidationException,
+            UserThrownRuntimeError,
             match=re.escape(
-                "number of capture group names must match number of capture groups, 3 != 2"
+                "When using %regex_capture_with_defaults, number of regex capture groups must "
+                "be less than or equal to the number of defaults"
             ),
         ):
-            _ = Subscription.from_dict(
-                config=default_config,
-                preset_name="test_regex_fails_unequal_capture_group_names",
-                preset_dict=regex_subscription_dict,
-            )
+            _ = subscription.download(dry_run=True)

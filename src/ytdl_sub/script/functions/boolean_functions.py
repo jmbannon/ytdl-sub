@@ -1,5 +1,6 @@
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
+from ytdl_sub.script.types.resolvable import String
 
 # pylint: disable=invalid-name
 
@@ -87,3 +88,10 @@ class BooleanFunctions:
         ``not`` operator. Returns the opposite of value.
         """
         return Boolean(not value.value)
+
+    @staticmethod
+    def is_null(value: AnyArgument) -> Boolean:
+        """
+        Returns True if a value is null (i.e. an empty string). False otherwise.
+        """
+        return Boolean(isinstance(value, String) and value.value == "")

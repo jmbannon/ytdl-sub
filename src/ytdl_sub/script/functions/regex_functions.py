@@ -3,6 +3,7 @@ from typing import AnyStr
 from typing import Match
 
 from ytdl_sub.script.types.array import Array
+from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 
 
@@ -40,3 +41,10 @@ class RegexFunctions:
         group as a subsequent element in the Array.
         """
         return _re_output_to_array(re.fullmatch(regex.value, string.value))
+
+    @staticmethod
+    def regex_capture_groups(regex: String) -> Integer:
+        """
+        Returns number of capture groups in regex
+        """
+        return Integer(re.compile(regex.value).groups)
