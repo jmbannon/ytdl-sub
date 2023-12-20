@@ -20,11 +20,6 @@ class ArrayFunctions:
     def array(maybe_array: AnyArgument) -> Array:
         """
         Tries to cast an unknown variable type to an Array.
-
-        Raises
-        ------
-        FunctionRuntimeException
-            If the input type is not actually an Array.
         """
         if not isinstance(maybe_array, Array):
             raise FunctionRuntimeException(

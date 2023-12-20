@@ -2,7 +2,7 @@ import inspect
 from typing import Dict
 from typing import Type
 
-from tools.docgen.utils import get_property_docs
+from tools.docgen.utils import get_function_docs
 from tools.docgen.utils import properties
 from tools.docgen.utils import section
 from ytdl_sub.config.overrides import Overrides
@@ -32,7 +32,7 @@ def generate_plugin_docs(name: str, options: Type[OptionsValidator], offset: int
 
     property_names = [prop for prop in properties(options) if not should_filter_property(prop)]
     for property_name in sorted(property_names):
-        docs += get_property_docs(property_name=property_name, obj=options, level=offset + 1)
+        docs += get_function_docs(function_name=property_name, obj=options, level=offset + 1)
 
     return docs
 

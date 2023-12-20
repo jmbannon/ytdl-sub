@@ -19,11 +19,6 @@ class MapFunctions:
     def map(maybe_mapping: AnyArgument) -> Map:
         """
         Tries to cast an unknown variable type to a Map.
-
-        Raises
-        ------
-        FunctionRuntimeException
-            If the input type is not actually a Map.
         """
         if not isinstance(maybe_mapping, Map):
             raise FunctionRuntimeException(
