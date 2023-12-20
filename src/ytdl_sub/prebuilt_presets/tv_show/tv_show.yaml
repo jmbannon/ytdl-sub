@@ -9,7 +9,7 @@ presets:
     overrides:
       tv_show_poster_file_name: "poster.jpg"
       tv_show_fanart_file_name: "fanart.jpg"
-      season_poster_file_name: "Season {season_number_padded}/Season{season_number_padded}.jpg"
+      season_poster_file_name: "{season_directory_name_sanitized}/Season{season_number_padded}.jpg"
     file_convert:
       convert_to: "mp4"  # webm doesn't play in many plex clients, so use mp4 instead
 
@@ -44,5 +44,6 @@ presets:
   # addition. Each season sets its own `collection_season_number/_padded`
   _tv_show_collection:
     overrides:
+      collection_season_number_padded: "{ %pad_zero(%int(collection_season_number), 2) }"
       season_number: "{collection_season_number}"
       season_number_padded: "{collection_season_number_padded}"
