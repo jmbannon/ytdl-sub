@@ -96,3 +96,50 @@ class TestArrayFunctions:
             FunctionRuntimeException, match="Tried and failed to cast Integer as an Array"
         ):
             single_variable_output("{%array(1)}")
+
+    def test_array_overlay(self):
+        output = single_variable_output("{%array_overlay([1, 2, 3], [4, 5])}")
+        assert output == [4, 5, 3]
+
+        output = single_variable_output("{%array_overlay([1, 2, 3], [4, 5, 6, 7, 8])}")
+        assert output == [4, 5, 6, 7, 8]
+
+        output = single_variable_output("{%array_overlay([1, 2, 3], [4, 5, 6, 7, 8], True)}")
+        assert output == [1, 2, 3, 7, 8]
+
+    def test_array_first(self):
+        output = single_variable_output(
+            "{%array_first(['', false, null, [], {}, 0, 'hi', 'no'], 'fallback')}"
+        )
+        assert output == "hi"
+
+        output = single_variable_output("{%array_first(['', false, null, [], {}, 0], 'fallback')}")
+        assert output == "fallback"
+
+    def test_array_apply_fixed(self):
+        output = (
+            Script(
+                {
+                    "map_test": "{ {'key1': 7, 'key2': 8, 'key3': 9} }",
+                    "output": """{
+                        %array_apply_fixed( ['key1', 'key2', 'key3'], map_test, %map_get, True)
+                    }""",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == [7, 8, 9]
+
+        output = (
+            Script(
+                {
+                    "output": "{%array_apply_fixed( ['key1', 'key2', 'key3'], '3', %contains)}",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == [False, False, True]

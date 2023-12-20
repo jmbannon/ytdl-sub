@@ -1,6 +1,7 @@
 from typing import Optional
 
 from ytdl_sub.script.types.resolvable import AnyArgument
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Numeric
 from ytdl_sub.script.types.resolvable import String
@@ -13,6 +14,13 @@ class StringFunctions:
         Cast to String.
         """
         return String(value=str(value.value))
+
+    @staticmethod
+    def contains(string: String, contains: String) -> Boolean:
+        """
+        Returns True if ``contains`` is in ``string``. False otherwise.
+        """
+        return Boolean(contains.value in string.value)
 
     @staticmethod
     def slice(string: String, start: Integer, end: Optional[Integer] = None) -> String:
