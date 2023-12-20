@@ -1,5 +1,9 @@
 # Configuration file for the Sphinx documentation builder.
-#
+
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../../src'))
+
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
@@ -17,7 +21,9 @@ release = "2023.12.15"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
+    # "sphinx.ext.autosummary",
     "sphinx.ext.extlinks",
+    "sphinx.ext.napoleon",
     "sphinx_copybutton",
     "sphinx_design",
 ]
@@ -49,6 +55,8 @@ html_theme_options = {
     "announcement": (
         "Migration to <a href='https://ytdl-sub--841.org.readthedocs.build/en/841/config.html#beautifying-subscriptions'>beautiful subscriptions</a> is now live"
     ),
+    "navigation_depth": 10,
+    "show_toc_level": 10,
 }
 
 html_static_path = ["_static"]
@@ -59,3 +67,19 @@ autosectionlabel_prefix_document = True
 
 
 extlinks = {"yt-dlp": ("https://github.com/yt-dlp/yt-dlp/%s", "yt-dlp%s")}
+
+# -- Options for autodoc ----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#configuration
+
+# Automatically extract typehints when specified and place them in
+# descriptions of the relevant function/method.
+autodoc_default_options = {
+    "autodoc_typehints_format": "short",
+    "autodoc_class_signature": "separated",
+    "add_module_names": False,
+    # "add_class_names": False,
+}
+
+python_use_unqualified_type_names = True
+napoleon_numpy_docstring = True
+napoleon_use_rtype = False
