@@ -18,7 +18,7 @@ def regex_subscription_dict_base(output_directory):
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         "format": "best[height<=480]",  # download the worst format so it is fast
-        "filter_exclude": ["{%is_null(description_website)}"],
+        "filter_include": ["{%not(%is_null(description_website))}"],
         "overrides": {
             "in_regex_default": "in regex default",
             "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
