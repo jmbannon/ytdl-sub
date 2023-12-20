@@ -10,15 +10,15 @@ SUBSCRIPTION_ARRAY = "subscription_array"
 
 
 class OverrideVariables:
-    @classmethod
-    def subscription_name(cls) -> str:
+    @staticmethod
+    def subscription_name() -> str:
         """
         Name of the subscription
         """
         return SUBSCRIPTION_NAME
 
-    @classmethod
-    def subscription_value(cls) -> str:
+    @staticmethod
+    def subscription_value() -> str:
         """
         For subscriptions in the form of
 
@@ -30,8 +30,8 @@ class OverrideVariables:
         """
         return SUBSCRIPTION_VALUE
 
-    @classmethod
-    def subscription_indent_i(cls, index: int) -> str:
+    @staticmethod
+    def subscription_indent_i(index: int) -> str:
         """
         For subscriptions in the form of
 
@@ -46,8 +46,8 @@ class OverrideVariables:
         """
         return f"subscription_indent_{index + 1}"
 
-    @classmethod
-    def subscription_value_i(cls, index: int) -> str:
+    @staticmethod
+    def subscription_value_i(index: int) -> str:
         """
         For subscriptions in the form of
 
@@ -63,6 +63,8 @@ class OverrideVariables:
         """
         return f"subscription_value_{index + 1}"
 
+
+class OverrideHelpers:
     @classmethod
     def is_entry_variable_name(cls, name: str) -> bool:
         """

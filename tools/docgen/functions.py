@@ -3,6 +3,7 @@ from typing import Dict
 from typing import Optional
 from typing import Type
 
+from tools.docgen.utils import camel_case_to_human
 from tools.docgen.utils import get_function_docs
 from tools.docgen.utils import section
 from tools.docgen.utils import static_methods
@@ -21,7 +22,7 @@ def maybe_get_function_name(function_name: str) -> Optional[str]:
 
 def function_class_to_name(obj: Type[Any]) -> str:
     assert "Functions" in obj.__name__
-    return obj.__name__.replace("Functions", " Functions")
+    return camel_case_to_human(obj.__name__)
 
 
 def generate_function_docs() -> str:

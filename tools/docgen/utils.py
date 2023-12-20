@@ -13,13 +13,24 @@ def section(name: str, level: int) -> str:
 
 
 def properties(obj: Type[Any]) -> List[str]:
-    return [prop for prop in dir(obj) if isinstance(getattr(obj, prop), property)]
+    return sorted(prop for prop in dir(obj) if isinstance(getattr(obj, prop), property))
 
 
 def static_methods(obj: Type[Any]) -> List[str]:
     return sorted(
         name for name in dir(obj) if isinstance(inspect.getattr_static(obj, name), staticmethod)
     )
+
+
+def camel_case_to_human(string: str) -> str:
+    output_str = string[0]
+    for char in string[1:]:
+        if char.islower():
+            output_str += char
+        else:
+            output_str += f" {char}"
+
+    return output_str
 
 
 def get_function_docs(
