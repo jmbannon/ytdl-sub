@@ -65,7 +65,11 @@ class ArrayFunctions:
         for idx, overlap_value in enumerate(overlap.value):
             if overlap_only_missing and idx < len(array.value):
                 continue
-            output.insert(idx, overlap_value)
+
+            if idx < len(array.value):
+                output[idx] = overlap_value
+            else:
+                output.append(overlap_value)
 
         return Array(output)
 
@@ -163,12 +167,18 @@ class ArrayFunctions:
 
     @staticmethod
     def array_apply_fixed(
-        array: Array, fixed_argument: AnyArgument, lambda2_function: LambdaTwo
+        array: Array,
+        fixed_argument: AnyArgument,
+        lambda2_function: LambdaTwo,
+        reverse_args: Optional[Boolean] = None,
     ) -> Array:
         """
         Apply a lambda function on every element in the Array, with ``fixed_argument``
         passed as a second argument to every invocation.
         """
+        if reverse_args and reverse_args.value:
+            return Array([Array([fixed_argument, val]) for val in array.value])
+
         return Array([Array([val, fixed_argument]) for val in array.value])
 
     @staticmethod

@@ -107,3 +107,10 @@ class TestNumericFunctions:
     def test_slice(self, values, expected_output):
         output = single_variable_output(f"{{%slice({values})}}")
         assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "value, expected_output", [("a", True), ("nope", False), ("dog", True)]
+    )
+    def test_contains(self, value, expected_output):
+        output = single_variable_output(f"{{%contains('a brown dog', '{value}')}}")
+        assert output == expected_output
