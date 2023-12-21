@@ -1,3 +1,3 @@
 Unraid
 --------------
-See the `community app <https://unraid.net/community/apps?q=ytdl-sub#r>`_ ``ytdl-sub``. Uses Docker under the hood.
+You can install our :unraid:`unraid community apps <community/apps?q=ytdl-sub#r>` through the  `Unraid Community Apps plugin <https://unraid.net/community/apps>`_. Uses Docker under the hood.
