@@ -1,5 +1,6 @@
+=====
 Linux
---------------
+=====
 Requires ffmpeg as a dependency. Can typically be installed with any Linux package manager.
 
 .. code-block:: bash
@@ -22,7 +23,7 @@ You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is u
   mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe
 
 Linux ARM
---------------
+=========
 Requires ffmpeg as a dependency. Can typically be installed with any Linux package manager.
 
 .. code-block:: bash
