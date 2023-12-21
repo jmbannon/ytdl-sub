@@ -232,20 +232,25 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         if len(lambda_array.value) == 1:
             return lambda_array.value[0]
 
-        reduced = self._instantiate_lambda(
-            lambda_function_name=lambda_function_name,
-            args=[lambda_array.value[0], lambda_array.value[1]],
-        )
-        for idx in range(2, len(lambda_array.value)):
-            reduced = self._instantiate_lambda(
-                lambda_function_name=lambda_function_name, args=[reduced, lambda_array.value[idx]]
-            )
-
-        return self._resolve_argument_type(
-            arg=reduced,
+        reduced: Resolvable = self._resolve_argument_type(
+            arg=self._instantiate_lambda(
+                lambda_function_name=lambda_function_name,
+                args=[lambda_array.value[0], lambda_array.value[1]],
+            ),
             resolved_variables=resolved_variables,
             custom_functions=custom_functions,
         )
+        for idx in range(2, len(lambda_array.value)):
+            reduced = self._resolve_argument_type(
+                arg=self._instantiate_lambda(
+                    lambda_function_name=lambda_function_name,
+                    args=[reduced, lambda_array.value[idx]],
+                ),
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        return reduced
 
     def resolve(
         self,
