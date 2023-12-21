@@ -67,6 +67,8 @@ suppress_warnings = [
 extlinks = {
   "yt-dlp": ("https://github.com/yt-dlp/yt-dlp/%s", "yt-dlp%s"),
   "unraid": ("https://unraid.net/%s", "unraid%s"),
+  "lsio": ("https://www.linuxserver.io/%s", "lsio%s"),
+  "lsio-gh": ("https://github.com/linuxserver/%s", "%s image"),
   }
 
 # -- Options for autodoc ----------------------------------------------------
