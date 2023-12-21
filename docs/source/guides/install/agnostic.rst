@@ -1,5 +1,8 @@
+====================
 Environment Agnostic
 ====================
+
+The PIP install method is not recommended; use of this method may cause unintended requirement conflicts if you have other locally installed apps that depend on ffmpeg.
 
 PIP Install
 --------------
@@ -10,6 +13,11 @@ Both ffmpeg and Python 3.10 or greater are required.
 .. code-block:: bash
 
   python3 -m pip install -U ytdl-sub
+
+Install for Development
+=======================
+
+These environment-agnostic methods of installing ``ytdl-sub`` are meant for local development of ``ytdl-sub``. If you want to contribute your changes, please read :doc:`/guides/development/index`.
 
 Local Install
 --------------
