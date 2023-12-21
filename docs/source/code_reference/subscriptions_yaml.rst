@@ -10,7 +10,7 @@ to define a ``subscription``: something we want to recurrently download such as 
 channel or playlist.
 
 The only difference between a ``subscription`` and ``preset`` is that the subscription
-must have all required fields and ``{variables}`` defined so it can perform a download.
+must have all required fields and ``{override_variables}`` defined so it can perform a download.
 
 Below is an example that downloads a YouTube playlist:
 

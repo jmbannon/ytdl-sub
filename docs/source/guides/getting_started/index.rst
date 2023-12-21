@@ -3,7 +3,7 @@ Getting Started
 
 Now that you've completed your install of ``ytdl-sub``, it's time to get started. This is a 3-step process:
 
-- Create your configuration file (if the :doc:`prebuilt_presets` don't fit your needs)
+- Create your configuration file (if the :doc:`/code_reference/prebuilt_presets` don't fit your needs)
 - Create your subscription file
 - Automate starting YTDL-Sub
 
@@ -57,19 +57,19 @@ Ready to Start?
 
 Now that you have installed ``ytdl-sub``, checked your skills, and gotten a bit of background on how ``ytdl-sub`` functions, read through the articles below to get started:
 
-:doc:`Step 1: Initial Configuration <first_config>`
+:doc:`Step 1: Initial Subscriptions <first_sub>`
 
-:doc:`Step 2: Initial Subscriptions <first_sub>`
+:doc:`Step 2: Your First Download <first_download>`
 
-:doc:`Step 3: Your First Download <first_download>`
+:doc:`Step 3: Automating Downloads <automating_downloads>`
 
-:doc:`Step 4: Automating Downloads <automating_downloads>`
+:doc:`Step 4: Initial Configuration <first_config>`
 
 :doc:`Advanced Configuration <advanced_configuration>`
 
 Other docs that may be of use:
 
-:doc:`prebuilt_presets`
+:doc:`/code_reference/prebuilt_presets`
 
 :doc:`examples`
 
@@ -83,5 +83,4 @@ Other docs that may be of use:
   first_download
   automating_downloads
   advanced_configuration
-  prebuilt_presets
   examples

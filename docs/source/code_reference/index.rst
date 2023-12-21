@@ -10,3 +10,5 @@ This section contains direct references to the code of ``ytdl-sub`` and informat
     entry_variables
     override_variables
     config
+    prebuilt_presets
+    scripting_functions
