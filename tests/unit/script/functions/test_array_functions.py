@@ -58,6 +58,45 @@ class TestArrayFunctions:
         output = single_variable_output("{%array_reduce([1, 2, 3, 4], %add)}")
         assert output == 10
 
+    def test_array_reduce_complex(self):
+        output = (
+            Script(
+                {
+                    "%custom_get": """{
+                        %if(
+                            %bool(siblings_array),
+                            %array_apply_fixed(
+                                siblings_array,
+                                %string($0),
+                                %map_get
+                            )
+                            []
+                        )
+                    }""",
+                    "siblings_array": """{
+                        [
+                            {'upload_date': '20200101'},
+                            {'upload_date': '19940101'}
+                        ]
+                    }""",
+                    "upload_date": "20230101",
+                    "output": """{
+                        %array_reduce(
+                            %if_passthrough(
+                                %custom_get('upload_date'),
+                                [ upload_date ]
+                            ),
+                            %max
+                        )
+                    }""",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == "20200101"
+
     def test_array_enumerate(self):
         output = (
             Script(
