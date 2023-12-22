@@ -1,5 +1,6 @@
-Code Reference
-==============
+================
+Config Reference
+================
 
 This section contains direct references to the code of ``ytdl-sub`` and information on how it functions.
 
@@ -7,8 +8,4 @@ This section contains direct references to the code of ``ytdl-sub`` and informat
     config_yaml
     subscriptions_yaml
     plugins
-    entry_variables
-    override_variables
-    config
-    prebuilt_presets
-    scripting_functions
+    scripting/index

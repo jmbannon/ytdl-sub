@@ -24,7 +24,7 @@ The first two lines in this ``config.yaml`` file are the ``configuration``, and 
 
 Line 4 begins the definition of your custom ``presets``, with line 5 being the name of your first custom ``preset``.
 
-Lines 7 and 8 tell ``ytdl-sub`` which :doc:`/code_reference/prebuilt_presets` to expand on; these ``presets`` already indicate that the downloaded files should be: 
+Lines 7 and 8 tell ``ytdl-sub`` which :doc:`/prebuilt_presets/index` to expand on; these ``presets`` already indicate that the downloaded files should be: 
 
 - in a format usable by, and with metadata accessible to, Jellyfin
 - sorted by upload date, and 

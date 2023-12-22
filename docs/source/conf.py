@@ -48,7 +48,7 @@ html_theme_options = {
     },
   ],
   "announcement": (
-    "Migration to <a href='https://ytdl-sub--841.org.readthedocs.build/en/841/config.html#beautifying-subscriptions'>beautiful subscriptions</a> is now live"
+    "Please excuse our mess as we update these documents"
   ),
   "navigation_depth": 10,
   "show_toc_level": 10,
@@ -69,6 +69,7 @@ extlinks = {
   "unraid": ("https://unraid.net/%s", "unraid%s"),
   "lsio": ("https://www.linuxserver.io/%s", "lsio%s"),
   "lsio-gh": ("https://github.com/linuxserver/%s", "%s image"),
+  "ytdl-sub-gh": ("https://github.com/jmbannon/ytdl-sub/%s","src %s"),
   }
 
 # -- Options for autodoc ----------------------------------------------------

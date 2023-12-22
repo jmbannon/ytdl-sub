@@ -5,7 +5,7 @@ Subscriptions File
 subscriptions.yaml
 ------------------
 
-The ``subscriptions.yaml`` file is where we use our :ref:`code_reference/config_yaml:presets` in the :ref:`code_reference/config_yaml:config.yaml`
+The ``subscriptions.yaml`` file is where we use our :ref:`config_reference/config_yaml:presets` in the :ref:`config_reference/config_yaml:config.yaml`
 to define a ``subscription``: something we want to recurrently download such as a specific
 channel or playlist.
 
@@ -102,7 +102,7 @@ parent preset:
 
 File Preset
 ~~~~~~~~~~~
-NOTE: This is deprecated in favor of using the method in :ref:`code_reference/subscriptions_yaml:beautifying subscriptions`.
+NOTE: This is deprecated in favor of using the method in :ref:`config_reference/subscriptions_yaml:beautifying subscriptions`.
 
 You can apply a preset to all subscriptions in the ``subscription.yaml`` file
 by using the file-wide ``__preset__``:
@@ -124,7 +124,7 @@ subscriptions automatically set ``__preset__`` as a ``parent preset``.
 
 Subscription Value
 ~~~~~~~~~~~~~~~~~~~
-NOTE: This is deprecated in favor of using the method in :ref:`code_reference/subscriptions_yaml:beautifying subscriptions`.
+NOTE: This is deprecated in favor of using the method in :ref:`config_reference/subscriptions_yaml:beautifying subscriptions`.
 
 With a clever config and use of ``__preset__``, your subscriptions can typically boil
 down to a name and url. You can set ``__value__`` to the name of an override variable,
@@ -147,4 +147,4 @@ Using the example above, we can do:
   "Brandon Acker": "https://www.youtube.com/@brandonacker"
 
 Traditional subscriptions that can override presets will still work when using ``__value__``.
-``__value__`` can also be set within a :ref:`code_reference/config_yaml:config.yaml`.
+``__value__`` can also be set within a :ref:`config_reference/config_yaml:config.yaml`.

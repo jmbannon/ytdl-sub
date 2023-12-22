@@ -3,7 +3,7 @@ Getting Started
 
 Now that you've completed your install of ``ytdl-sub``, it's time to get started. This is a 3-step process:
 
-- Create your configuration file (if the :doc:`/code_reference/prebuilt_presets` don't fit your needs)
+- Create your configuration file (if the :doc:`/prebuilt_presets/index` don't fit your needs)
 - Create your subscription file
 - Automate starting YTDL-Sub
 
@@ -69,7 +69,7 @@ Now that you have installed ``ytdl-sub``, checked your skills, and gotten a bit 
 
 Other docs that may be of use:
 
-:doc:`/code_reference/prebuilt_presets`
+:doc:`/prebuilt_presets/index`
 
 :doc:`examples`
 
