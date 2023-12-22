@@ -25,7 +25,7 @@ Kodi
 Plex
 ~~~~
 * :ref:`Special sanitization <config_reference/scripting/entry_variables:title_sanitized_plex>` of numbers so Plex doesn't recognize numbers that are part of the title as the episode number
-
+* Converts all downloaded videos to the mp4 format
 
 
 
