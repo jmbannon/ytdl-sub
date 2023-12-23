@@ -3,7 +3,7 @@ TV Show Presets
 ===============
 
 Player-Specific Presets
------------------------
+=======================
 
 ``ytdl-sub`` provides player-specific versions of certain presets, which apply settings to optimize the downloads for that player.
 
@@ -12,15 +12,13 @@ All of these players will have:
 
 Jellyfin
 ~~~~~~~~
-* Places any season-specific poster art in the show folder
-
+* Places any season-specific poster art in the main show folder
+* Generates NFO tags
 
 Kodi
 ~~~~
+* Everything that the Jellyfin version does
 * Turns on :ref:`config_reference/plugins:kodi_safe`, replacing characters that would break kodi with safer characters
-* 
-
-
 
 Plex
 ~~~~
@@ -28,9 +26,8 @@ Plex
 * Converts all downloaded videos to the mp4 format
 * Places any season-specific poster art into the season folder
 
-
-
-
+Generic Presets
+===============
 
 There are two main methods for downloading and formatting videos as a TV show.
 
