@@ -15,12 +15,12 @@ release = "2023.12.15"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-  "sphinx.ext.autodoc",
-  "sphinx.ext.autosectionlabel",
-  "sphinx.ext.extlinks",
-  "sphinx.ext.napoleon",
-  "sphinx_copybutton",
-  "sphinx_design",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosectionlabel",
+    "sphinx.ext.extlinks",
+    "sphinx.ext.napoleon",
+    "sphinx_copybutton",
+    "sphinx_design",
 ]
 
 templates_path = ["_templates"]
@@ -33,23 +33,23 @@ exclude_patterns = []
 html_theme = "sphinx_book_theme"
 
 html_theme_options = {
-  "icon_links": [
-    {
-      "name": "GitHub",
-      "url": "https://github.com/jmbannon/ytdl-sub",
-      "icon": "fa-brands fa-square-github",
-      "type": "fontawesome",
-    },
-    {
-      "name": "Discord",
-      "url": "https://discord.gg/v8j9RAHb4k",
-      "icon": "https://img.shields.io/discord/994270357957648404?logo=Discord",
-      "type": "url",
-    },
-  ],
-  "announcement": ("Please excuse our mess as we update these documents"),
-  "navigation_depth": 10,
-  "show_toc_level": 10,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/jmbannon/ytdl-sub",
+            "icon": "fa-brands fa-square-github",
+            "type": "fontawesome",
+        },
+        {
+            "name": "Discord",
+            "url": "https://discord.gg/v8j9RAHb4k",
+            "icon": "https://img.shields.io/discord/994270357957648404?logo=Discord",
+            "type": "url",
+        },
+    ],
+    "announcement": ("Please excuse our mess as we update these documents"),
+    "navigation_depth": 10,
+    "show_toc_level": 10,
 }
 
 html_static_path = ["_static"]
@@ -59,15 +59,15 @@ html_static_path = ["_static"]
 autosectionlabel_prefix_document = True
 
 suppress_warnings = [
-  "autosectionlabel.*",
+    "autosectionlabel.*",
 ]
 
 extlinks = {
-  "yt-dlp": ("https://github.com/yt-dlp/yt-dlp/%s", "yt-dlp%s"),
-  "unraid": ("https://unraid.net/%s", "unraid%s"),
-  "lsio": ("https://www.linuxserver.io/%s", "lsio%s"),
-  "lsio-gh": ("https://github.com/linuxserver/%s", "%s image"),
-  "ytdl-sub-gh": ("https://github.com/jmbannon/ytdl-sub/%s", "src %s"),
+    "yt-dlp": ("https://github.com/yt-dlp/yt-dlp/%s", "yt-dlp%s"),
+    "unraid": ("https://unraid.net/%s", "unraid%s"),
+    "lsio": ("https://www.linuxserver.io/%s", "lsio%s"),
+    "lsio-gh": ("https://github.com/linuxserver/%s", "%s image"),
+    "ytdl-sub-gh": ("https://github.com/jmbannon/ytdl-sub/%s", "src %s"),
 }
 
 # -- Options for autodoc ----------------------------------------------------
@@ -76,10 +76,10 @@ extlinks = {
 # Automatically extract typehints when specified and place them in
 # descriptions of the relevant function/method.
 autodoc_default_options = {
-  "autodoc_typehints_format": "short",
-  "autodoc_class_signature": "separated",
-  "add_module_names": False,
-  # "add_class_names": False,
+    "autodoc_typehints_format": "short",
+    "autodoc_class_signature": "separated",
+    "add_module_names": False,
+    # "add_class_names": False,
 }
 
 python_use_unqualified_type_names = True
