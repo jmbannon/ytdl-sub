@@ -102,7 +102,6 @@ parent preset:
 
 File Preset
 ~~~~~~~~~~~
-NOTE: This is deprecated in favor of using the method in :ref:`config_reference/subscriptions_yaml:beautifying subscriptions`.
 
 You can apply a preset to all subscriptions in the ``subscription.yaml`` file
 by using the file-wide ``__preset__``:

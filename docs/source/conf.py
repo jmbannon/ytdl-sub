@@ -47,9 +47,7 @@ html_theme_options = {
       "type": "url",
     },
   ],
-  "announcement": (
-    "Please excuse our mess as we update these documents"
-  ),
+  "announcement": ("Please excuse our mess as we update these documents"),
   "navigation_depth": 10,
   "show_toc_level": 10,
 }
@@ -61,7 +59,7 @@ html_static_path = ["_static"]
 autosectionlabel_prefix_document = True
 
 suppress_warnings = [
-  'autosectionlabel.*',
+  "autosectionlabel.*",
 ]
 
 extlinks = {
@@ -69,8 +67,8 @@ extlinks = {
   "unraid": ("https://unraid.net/%s", "unraid%s"),
   "lsio": ("https://www.linuxserver.io/%s", "lsio%s"),
   "lsio-gh": ("https://github.com/linuxserver/%s", "%s image"),
-  "ytdl-sub-gh": ("https://github.com/jmbannon/ytdl-sub/%s","src %s"),
-  }
+  "ytdl-sub-gh": ("https://github.com/jmbannon/ytdl-sub/%s", "src %s"),
+}
 
 # -- Options for autodoc ----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#configuration

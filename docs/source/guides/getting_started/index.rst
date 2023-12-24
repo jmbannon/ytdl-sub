@@ -63,9 +63,11 @@ Now that you have installed ``ytdl-sub``, checked your skills, and gotten a bit 
 
 :doc:`Step 3: Automating Downloads <automating_downloads>`
 
-:doc:`Step 4: Initial Configuration <first_config>`
+Want to go a step further?
 
-:doc:`Advanced Configuration <advanced_configuration>`
+If you want to use atypical paths or specific configuration options, check out :doc:`Basic Configuration <first_config>`
+
+For tips on creating your own presets when the prebuilt presets aren't cutting it, check out :doc:`Advanced Configuration <advanced_configuration>`
 
 Other docs that may be of use:
 
@@ -78,9 +80,9 @@ Other docs that may be of use:
   :caption: Getting Started Guide
   :maxdepth: 1
 
-  first_config
   first_sub
   first_download
   automating_downloads
+  first_config
   advanced_configuration
   examples

@@ -1,5 +1,6 @@
+=====================
 Using Example Configs
-^^^^^^^^^^^^^^^^^^^^^^
+=====================
 Copy and paste the examples into local yaml files, modify the
 ``working_directory`` and ``output_directory`` with your desired paths,
 and perform a dry-run using
