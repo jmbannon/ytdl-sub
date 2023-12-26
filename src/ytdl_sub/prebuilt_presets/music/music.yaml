@@ -68,12 +68,16 @@ presets:
 
     download:
       - url: "{url}"
-        include_sibling_metadata: True
+        include_sibling_metadata: False
 
 
   _albums_from_playlists:
     preset:
-      - "Single"
+      - "_music_base"
+
+    download:
+      - url: "{url}"
+        include_sibling_metadata: True
 
     overrides:
       track_album: "{playlist_title}"
