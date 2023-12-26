@@ -67,7 +67,8 @@ presets:
       - "_music_base"
 
     download:
-      - "{url}"
+      - url: "{url}"
+        include_sibling_metadata: True
 
 
   _albums_from_playlists:
@@ -107,6 +108,7 @@ presets:
         # The first URL will be all the artist's tracks.
         # Treat these as singles - an album with a single track
         - url: "{url}/tracks"
+          include_sibling_metadata: False
           variables:
             sc_track_album: "{title}"
             sc_track_number: "1"
@@ -117,6 +119,7 @@ presets:
         # to an album and tracks (in the URL above), it will resolve to this
         # URL and include the album metadata we set below.
         - url: "{url}/albums"
+          include_sibling_metadata: True
           variables:
             sc_track_album: "{playlist_title}"
             sc_track_number: "{playlist_index}"

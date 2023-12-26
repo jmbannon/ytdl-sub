@@ -385,7 +385,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             ):
                 yield entry_child
 
-    def _download_url_metadata(self, url: str) -> Tuple[List[EntryParent], List[Entry]]:
+    def _download_url_metadata(
+        self, url: str, include_sibling_metadata: bool
+    ) -> Tuple[List[EntryParent], List[Entry]]:
         """
         Downloads only info.json files and forms EntryParent trees
         """
@@ -401,6 +403,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             url=url,
             entry_dicts=entry_dicts,
             working_directory=self.working_directory,
+            include_sibling_metadata=include_sibling_metadata,
         )
         orphans = EntryParent.from_entry_dicts_with_no_parents(
             parents=parents,
@@ -438,7 +441,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             if not (url := self.overrides.apply_formatter(collection_url.url)):
                 continue
 
-            parents, orphan_entries = self._download_url_metadata(url=url)
+            parents, orphan_entries = self._download_url_metadata(
+                url=url, include_sibling_metadata=collection_url.include_sibling_metadata
+            )
 
             # TODO: Encapsulate this logic into its own class
             self._url_state = URLDownloadState(
