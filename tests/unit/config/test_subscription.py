@@ -58,17 +58,6 @@ def preset_with_subscription_value(preset_with_file_preset: Dict):
 
 
 @pytest.fixture
-def preset_with_subscription_file_value(preset_with_subscription_value: Dict):
-    return dict(
-        preset_with_subscription_value,
-        **{
-            "__value__": "test_file_subscription_value",
-            "test_value": "is_overwritten",
-        },
-    )
-
-
-@pytest.fixture
 def preset_with_subscription_value_nested_presets(preset_with_subscription_value: Dict):
     return dict(
         preset_with_subscription_value,
@@ -236,7 +225,6 @@ def test_subscription_overrides_tilda(
         subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
     assert len(subs) == 3
 
-    # Test __value__ worked correctly from the config
     sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.dict_with_format_strings
 
     assert sub_2_1.get("subscription_name") == "test_2_1"
@@ -253,7 +241,6 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
         subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
     assert len(subs) == 4
 
-    # Test __value__ worked correctly from the config
     sub_test_value = [sub for sub in subs if sub.name == "test_value"][
         0
     ].overrides.dict_with_format_strings
@@ -293,7 +280,6 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
         subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
     assert len(subs) == 4
 
-    # Test __value__ worked correctly from the config
     sub_test_value = [sub for sub in subs if sub.name == "test_value"][
         0
     ].overrides.dict_with_format_strings
@@ -337,9 +323,7 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
 def test_subscription_file_using_conflicting_preset_name(config_file: ConfigFile):
     with mock_load_yaml(
         preset_dict={
-            "= INDENTS_IN_ERR_MSG ": {
-                "=ANOTHER": {"jellyfin_tv_show_by_date": "single value, __value__ not defined"}
-            }
+            "= INDENTS_IN_ERR_MSG ": {"=ANOTHER": {"jellyfin_tv_show_by_date": "single value"}}
         }
     ), pytest.raises(
         ValidationException,

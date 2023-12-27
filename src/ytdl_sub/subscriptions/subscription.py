@@ -72,9 +72,7 @@ class Subscription(SubscriptionDownload):
         cls, config: ConfigFile, subscription_path: str | Path
     ) -> List["Subscription"]:
         """
-        Loads subscriptions from a file and applies ``__preset__`` to all of them if present.
-        If a subscription is in the form of key: value, it will set value to the override
-        variable defined in ``__value__``.
+        Loads subscriptions from a file.
 
         Parameters
         ----------
