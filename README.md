@@ -186,24 +186,24 @@ Any part of this process is modifiable by using custom configs. See our
 on how to build your first config from scratch. Ready-to-use
 [example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
 can be found here alongside our
-[readthedocs](https://ytdl-sub.readthedocs.io/en/latest/config.html#)
+[readthedocs](https://ytdl-sub.readthedocs.io/en/latest/index.html)
 for detailed information on all config fields.
 
 ## Installation
 `ytdl-sub` can be installed on the following platforms.
 
-- [Docker Compose](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker-compose)
-  - [Web-GUI](https://ytdl-sub.readthedocs.io/en/latest/install.html#gui)
-  - [Headless](https://ytdl-sub.readthedocs.io/en/latest/install.html#headless)
-  - [CPU / GPU Passthrough](https://ytdl-sub.readthedocs.io/en/latest/install.html#passthrough)
-- [Docker CLI](https://ytdl-sub.readthedocs.io/en/latest/install.html#docker)
-- [Windows](https://ytdl-sub.readthedocs.io/en/latest/install.html#windows)
-- [Unraid](https://ytdl-sub.readthedocs.io/en/latest/install.html#unraid)
-- [Linux](https://ytdl-sub.readthedocs.io/en/latest/install.html#linux)
-- [Linux ARM](https://ytdl-sub.readthedocs.io/en/latest/install.html#linux-arm)
-- [PIP](https://ytdl-sub.readthedocs.io/en/latest/install.html#pip)
-- [Local Install](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-install)
-- [Local Docker Build](https://ytdl-sub.readthedocs.io/en/latest/install.html#local-docker-build)
+- [Docker Compose](https://ytdl-sub.readthedocs.io/en/latest/guides/install/docker.html#install-with-docker-compose)
+  - [Web-GUI](https://ytdl-sub.readthedocs.io/en/latest/guides/install/docker.html#install-with-docker-compose)
+  - [Headless](https://ytdl-sub.readthedocs.io/en/latest/guides/install/docker.html#install-with-docker-compose)
+  - [CPU / GPU Passthrough](https://ytdl-sub.readthedocs.io/en/latest/guides/install/docker.html#device-passthrough)
+- [Docker CLI](https://ytdl-sub.readthedocs.io/en/latest/guides/install/docker.html#docker-cli)
+- [Windows](https://ytdl-sub.readthedocs.io/en/latest/guides/install/windows.html)
+- [Unraid](https://ytdl-sub.readthedocs.io/en/latest/guides/install/unraid.html)
+- [Linux](https://ytdl-sub.readthedocs.io/en/latest/guides/install/linux.html)
+- [Linux ARM](https://ytdl-sub.readthedocs.io/en/latest/guides/install/linux.html)
+- [PIP](https://ytdl-sub.readthedocs.io/en/latest/guides/install/agnostic.html#pip-install)
+- [Local Install](https://ytdl-sub.readthedocs.io/en/latest/guides/install/agnostic.html#local-install)
+- [Local Docker Build](https://ytdl-sub.readthedocs.io/en/latest/guides/install/agnostic.html#local-docker-build)
 
 ### Docker Installation
 Docker installs can be either headless or use the Web-GUI image, which comprises
@@ -223,5 +223,5 @@ pick up a bug.
 We are pretty active in our
 [Discord channel](https://discord.gg/v8j9RAHb4k)
 if you have any questions. Also see our
-[FAQ](https://github.com/jmbannon/ytdl-sub/wiki/FAQ)
+[FAQ](https://ytdl-sub.readthedocs.io/en/latest/faq/index.html)
 for commonly asked questions.
