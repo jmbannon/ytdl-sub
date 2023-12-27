@@ -53,7 +53,7 @@ else:
                 "colliding with each other. If you get this error, it typically means it tried to "
                 "create the file in a directory that is not a part of the same filesystem that "
                 "ytdl-sub is running on. See "
-                "https://ytdl-sub.readthedocs.io/en/latest/config.html#ytdl_sub.config.config_validator.ConfigOptions.lock_directory "
+                "https://ytdl-sub.readthedocs.io/en/latest/config_reference/config_yaml.html "
                 "on how to change the directory that this lock gets written to."
             ) from exc
             # pylint: enable=line-too-long
