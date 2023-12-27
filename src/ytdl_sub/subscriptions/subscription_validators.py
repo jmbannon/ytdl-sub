@@ -120,7 +120,6 @@ class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
         config: ConfigFile,
         presets: List[str],
         indent_overrides: List[str],
-        subscription_value: Optional[str],
     ):
         super().__init__(
             name=name,
@@ -129,10 +128,6 @@ class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
             presets=presets,
             indent_overrides=indent_overrides,
         )
-
-        # TODO: Eventually delete in favor of {subscription_value}
-        if subscription_value:
-            self._overrides_to_add[subscription_value] = self.value
         self._overrides_to_add[SUBSCRIPTION_VALUE] = self.value
 
 
@@ -234,7 +229,6 @@ class SubscriptionValidator(SubscriptionOutput):
         config: ConfigFile,
         presets: List[str],
         indent_overrides: List[str],
-        subscription_value: Optional[str],
     ):
         super().__init__(name=name, value=value, presets=presets, indent_overrides=indent_overrides)
         self._children: List[SubscriptionOutput] = []
@@ -252,7 +246,6 @@ class SubscriptionValidator(SubscriptionOutput):
                         config=config,
                         presets=presets,
                         indent_overrides=indent_overrides,
-                        subscription_value=subscription_value,
                     )
                 )
             # Subscription defined as
@@ -294,7 +287,6 @@ class SubscriptionValidator(SubscriptionOutput):
                             config=config,
                             presets=presets + preset_indent_key.presets,
                             indent_overrides=indent_overrides + preset_indent_key.indent_overrides,
-                            subscription_value=subscription_value,
                         )
                     )
                 else:
