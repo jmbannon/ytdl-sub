@@ -3,19 +3,16 @@ from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import List
-from typing import Optional
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
 from ytdl_sub.subscriptions.subscription_validators import SubscriptionValidator
-from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import load_yaml
 from ytdl_sub.validators.validators import LiteralDictValidator
 
 FILE_PRESET_APPLY_KEY = "__preset__"
-FILE_SUBSCRIPTION_VALUE_KEY = "__value__"
 
 logger = Logger.get("subscription")
 
@@ -71,28 +68,6 @@ class Subscription(SubscriptionDownload):
         )
 
     @classmethod
-    def _maybe_get_subscription_value(
-        cls, config: ConfigFile, subscription_dict: Dict
-    ) -> Optional[str]:
-        subscription_value_key: Optional[str] = config.config_options.subscription_value
-        if FILE_SUBSCRIPTION_VALUE_KEY in subscription_dict:
-            if not isinstance(subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY], str):
-                raise ValidationException(
-                    f"Using {FILE_SUBSCRIPTION_VALUE_KEY} in a subscription"
-                    f"must be a string that corresponds to an override variable"
-                )
-
-            subscription_value_key = subscription_dict[FILE_SUBSCRIPTION_VALUE_KEY]
-
-        if subscription_value_key is not None:
-            logger.warning(
-                "Using %s in a subscription will eventually be deprecated in favor of writing "
-                "to the override variable `subscription_value`. Please update by Dec 2023.",
-                FILE_SUBSCRIPTION_VALUE_KEY,
-            )
-        return subscription_value_key
-
-    @classmethod
     def from_file_path(
         cls, config: ConfigFile, subscription_path: str | Path
     ) -> List["Subscription"]:
@@ -121,9 +96,6 @@ class Subscription(SubscriptionDownload):
         subscription_dict = load_yaml(file_path=subscription_path)
 
         has_file_preset = FILE_PRESET_APPLY_KEY in subscription_dict
-        file_subscription_value: Optional[str] = cls._maybe_get_subscription_value(
-            config=config, subscription_dict=subscription_dict
-        )
 
         # If a file preset is present...
         if has_file_preset:
@@ -138,9 +110,7 @@ class Subscription(SubscriptionDownload):
             config.presets.dict[FILE_PRESET_APPLY_KEY] = file_preset.dict
 
         subscriptions_dict: Dict[str, Any] = {
-            key: obj
-            for key, obj in subscription_dict.items()
-            if key not in [FILE_PRESET_APPLY_KEY, FILE_SUBSCRIPTION_VALUE_KEY]
+            key: obj for key, obj in subscription_dict.items() if key not in [FILE_PRESET_APPLY_KEY]
         }
 
         subscriptions_dicts = SubscriptionValidator(
@@ -149,7 +119,6 @@ class Subscription(SubscriptionDownload):
             config=config,
             presets=[],
             indent_overrides=[],
-            subscription_value=file_subscription_value,
         ).subscription_dicts(
             global_presets_to_apply=[FILE_PRESET_APPLY_KEY] if has_file_preset else []
         )
