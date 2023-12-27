@@ -3,7 +3,7 @@ Usage
 
 .. code-block::
 
-   ytdl-sub [GENERAL OPTIONS] {sub,dl,view} [COMMAND OPTIONS]
+  ytdl-sub [GENERAL OPTIONS] {sub,dl,view} [COMMAND OPTIONS]
 
 For Windows users, it would be ``ytdl-sub.exe``
 
@@ -43,28 +43,28 @@ Download a single subscription in the form of CLI arguments.
 
 .. code-block::
 
-   ytdl-sub [GENERAL OPTIONS] dl [SUBSCRIPTION ARGUMENTS]
+  ytdl-sub [GENERAL OPTIONS] dl [SUBSCRIPTION ARGUMENTS]
 
 ``SUBSCRIPTION ARGUMENTS`` are exactly the same as YAML arguments, but use periods (``.``) instead
 of indents for specifying YAML from the CLI. For example, you can represent this subscription:
 
 .. code-block:: yaml
 
-   rick_a:
-     preset:
-       - "tv_show"
-     overrides:
-       tv_show_name: "Rick A"
-       url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+  rick_a:
+    preset:
+      - "tv_show"
+    overrides:
+      tv_show_name: "Rick A"
+      url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 
 Using the command:
 
 .. code-block:: bash
 
-   ytdl-sub dl \
-       --preset "tv_show" \
-       --overrides.tv_show_name "Rick A" \
-       --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+  ytdl-sub dl \
+      --preset "tv_show" \
+      --overrides.tv_show_name "Rick A" \
+      --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 
 See how to shorten commands using
 `download aliases <https://ytdl-sub.readthedocs.io/en/latest/config.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
