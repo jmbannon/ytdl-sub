@@ -5,7 +5,6 @@ from typing import Dict
 from unittest.mock import patch
 
 import pytest
-from mergedeep import mergedeep
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
@@ -53,6 +52,16 @@ def preset_with_subscription_value(preset_with_file_preset: Dict):
         preset_with_file_preset,
         **{
             "test_value": "is_overwritten",
+        },
+    )
+
+
+@pytest.fixture
+def subscription_with_period_in_name(preset_with_file_preset: Dict):
+    return dict(
+        preset_with_file_preset,
+        **{
+            "Mr. Beast": "is_overwritten",
         },
     )
 
@@ -229,6 +238,18 @@ def test_subscription_overrides_tilda(
 
     assert sub_2_1.get("subscription_name") == "test_2_1"
     assert sub_2_1.get("current_override") == "test_2_1"  # tilda sub takes precedence
+
+
+def test_subscription_with_period_in_name(
+    config_file: ConfigFile,
+    subscription_with_period_in_name: Dict,
+):
+    with mock_load_yaml(preset_dict=subscription_with_period_in_name):
+        subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
+    assert len(subs) == 2
+
+    assert subs[1].name == "Mr. Beast"
+    assert subs[1].overrides.dict_with_format_strings["subscription_name"] == "Mr. Beast"
 
 
 def test_subscription_file_value_applies_from_config_and_nested_and_indent_variables(
