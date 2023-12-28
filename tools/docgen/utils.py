@@ -43,8 +43,3 @@ def get_function_docs(
     docs += inspect.cleandoc(getattr(obj, function_name).__doc__)
     docs += "\n"
     return docs
-
-
-def to_out_dir(name: str, docs: str) -> None:
-    with open(Path("tools") / "docgen" / "out" / name, "w", encoding="utf-8") as out:
-        out.write(docs)
