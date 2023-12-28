@@ -1,13 +1,14 @@
 import inspect
+from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import Optional
 from typing import Type
 
+from tools.docgen.docgen import DocGen
 from tools.docgen.utils import camel_case_to_human
 from tools.docgen.utils import section
 from tools.docgen.utils import static_methods
-from tools.docgen.utils import to_out_dir
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.utils.type_checking import FunctionSpec
@@ -51,27 +52,29 @@ def get_function_docstring(
     return docs
 
 
-def generate_function_docs() -> str:
-    docs = section("Scripting Functions", level=0)
+class ScriptingFunctionsDocGen(DocGen):
 
-    parent_objs: Dict[str, Type[Any]] = {
-        function_class_to_name(obj): obj for obj in Functions.__bases__
-    }
-    parent_objs["Ytdl-Sub Functions"] = CustomFunctions
+    LOCATION = Path("docs/source/config_reference/scripting/scripting_functions.rst")
 
-    for name in sorted(parent_objs.keys()):
-        docs += section(name, level=1)
+    @classmethod
+    def generate(cls) -> str:
+        docs = section("Scripting Functions", level=0)
 
-        for function_name in static_methods(parent_objs[name]):
-            if display_function_name := maybe_get_function_name(function_name):
-                docs += get_function_docstring(
-                    function_name=function_name,
-                    display_function_name=display_function_name,
-                    function=getattr(parent_objs[name], function_name),
-                    level=2,
-                )
+        parent_objs: Dict[str, Type[Any]] = {
+            function_class_to_name(obj): obj for obj in Functions.__bases__
+        }
+        parent_objs["Ytdl-Sub Functions"] = CustomFunctions
 
-    return docs
+        for name in sorted(parent_objs.keys()):
+            docs += section(name, level=1)
 
+            for function_name in static_methods(parent_objs[name]):
+                if display_function_name := maybe_get_function_name(function_name):
+                    docs += get_function_docstring(
+                        function_name=function_name,
+                        display_function_name=display_function_name,
+                        function=getattr(parent_objs[name], function_name),
+                        level=2,
+                    )
 
-to_out_dir(name="scripting_functions.rst", docs=generate_function_docs())
+        return docs

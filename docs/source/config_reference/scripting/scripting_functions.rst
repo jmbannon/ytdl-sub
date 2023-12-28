@@ -17,6 +17,13 @@ array_apply
 
 Apply a lambda function on every element in the Array.
 
+array_apply_fixed
+~~~~~~~~~~~~~~~~~
+``array_apply_fixed(array: Array, fixed_argument: AnyArgument, lambda2_function: LambdaTwo, reverse_args: Optional[Boolean]) -> Array``
+
+Apply a lambda function on every element in the Array, with ``fixed_argument``
+passed as a second argument to every invocation.
+
 array_at
 ~~~~~~~~
 ``array_at(array: Array, idx: Integer) -> AnyArgument``
@@ -42,6 +49,13 @@ array_extend
 
 Combine multiple Arrays into a single Array.
 
+array_first
+~~~~~~~~~~~
+``array_first(array: Array, fallback: AnyArgument) -> AnyArgument``
+
+Returns the first element whose boolean conversion is True. Returns fallback
+if all elements evaluate to False.
+
 array_flatten
 ~~~~~~~~~~~~~
 ``array_flatten(array: Array) -> Array``
@@ -54,6 +68,12 @@ array_index
 
 Return the index of the value within the Array if it exists. If it does not, it will
 throw an error.
+
+array_overlay
+~~~~~~~~~~~~~
+``array_overlay(array: Array, overlap: Array, only_missing: Optional[Boolean]) -> Array``
+
+Overlaps ``overlap`` onto ``array``. Can optionally only overlay missing indices.
 
 array_product
 ~~~~~~~~~~~~~
@@ -118,6 +138,12 @@ gte
 ``gte(left: AnyArgument, right: AnyArgument) -> Boolean``
 
 ``>=`` operator. Returns True if left >= right. False otherwise.
+
+is_null
+~~~~~~~
+``is_null(value: AnyArgument) -> Boolean``
+
+Returns True if a value is null (i.e. an empty string). False otherwise.
 
 lt
 ~~
@@ -190,6 +216,27 @@ assert
 
 Explicitly throw an error with the provided assert message if ``value`` evaluates to False.
 If it evaluates to True, it will return ``value``.
+
+assert_eq
+~~~~~~~~~
+``assert_eq(value: ReturnableArgument, equals: AnyArgument, assert_message: String) -> ReturnableArgument``
+
+Explicitly throw an error with the provided assert message if ``value`` does not equal
+``equals``. If they do equal, then return ``value``.
+
+assert_ne
+~~~~~~~~~
+``assert_ne(value: ReturnableArgument, equals: AnyArgument, assert_message: String) -> ReturnableArgument``
+
+Explicitly throw an error with the provided assert message if ``value`` equals
+``equals``. If they do equal, then return ``value``.
+
+assert_then
+~~~~~~~~~~~
+``assert_then(value: AnyArgument, ret: ReturnableArgument, assert_message: String) -> ReturnableArgument``
+
+Explicitly throw an error with the provided assert message if ``value`` evaluates to False.
+If it evaluates to True, it will return ``ret``.
 
 throw
 ~~~~~
@@ -321,6 +368,12 @@ sub
 Regex Functions
 ---------------
 
+regex_capture_groups
+~~~~~~~~~~~~~~~~~~~~
+``regex_capture_groups(regex: String) -> Integer``
+
+Returns number of capture groups in regex
+
 regex_fullmatch
 ~~~~~~~~~~~~~~~
 ``regex_fullmatch(regex: String, string: String) -> Array``
@@ -359,6 +412,12 @@ concat
 ``concat(values: String, ...) -> String``
 
 Concatenate multiple Strings into a single String.
+
+contains
+~~~~~~~~
+``contains(string: String, contains: String) -> Boolean``
+
+Returns True if ``contains`` is in ``string``. False otherwise.
 
 lower
 ~~~~~
