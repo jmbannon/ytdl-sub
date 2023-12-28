@@ -27,6 +27,18 @@ def _add_dummy_variables(variables: Iterable[str]) -> Dict[str, str]:
     return dummy_variables
 
 
+def _add_dummy_overrides(overrides: Overrides) -> Dict[str, str]:
+    # Have the dummy override variable contain all variable deps that it uses in the string
+    dummy_overrides: Dict[str, str] = {}
+    for override_name in _override_variables(overrides):
+        dummy_overrides[override_name] = ""
+        # pylint: disable=protected-access
+        for variable_dependency in overrides.script._variables[override_name].variables:
+            dummy_overrides[override_name] += f"{{ {variable_dependency.name } }}"
+        # pylint: enable=protected-access
+    return dummy_overrides
+
+
 def _get_added_and_modified_variables(
     plugins: PresetPlugins, downloader_options: MultiUrlValidator
 ) -> Iterable[Tuple[OptionsValidator, Set[str], Set[str]]]:
@@ -119,6 +131,10 @@ class VariableValidation:
 
         # copy the script and mock entry variables
         self.script = copy.deepcopy(overrides.script).add(_add_dummy_variables(entry_variables))
+        self.script.add(
+            variables=_add_dummy_overrides(overrides=overrides),
+            unresolvable=self.unresolved_variables,
+        )
 
         return self
 

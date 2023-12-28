@@ -62,13 +62,16 @@ class EntryParent(BaseEntry):
             )
         return sibling_entry_metadata
 
-    def _set_child_variables(self, parents: Optional[List["EntryParent"]] = None) -> "EntryParent":
+    def _set_child_variables(
+        self, include_sibling_metadata: bool, parents: Optional[List["EntryParent"]] = None
+    ) -> "EntryParent":
         if parents is None:
             parents = [self]
 
-        kwargs_to_add: Dict[str, Any] = {
-            v.sibling_metadata.metadata_key: self._sibling_entry_metadata()
-        }
+        kwargs_to_add: Dict[str, Any] = {}
+        if include_sibling_metadata:
+            kwargs_to_add[v.sibling_metadata.metadata_key] = self._sibling_entry_metadata()
+
         if len(parents) >= 1:
             kwargs_to_add[v.playlist_metadata.metadata_key] = parents[-1]._kwargs
         if len(parents) >= 2:
@@ -83,7 +86,9 @@ class EntryParent(BaseEntry):
             entry_child._kwargs = dict(entry_child._kwargs, **kwargs_to_add)
 
         for parent_child in self.parent_children():
-            parent_child._set_child_variables(parents=parents + [parent_child])
+            parent_child._set_child_variables(
+                include_sibling_metadata=include_sibling_metadata, parents=parents + [parent_child]
+            )
 
         return self
 
@@ -180,7 +185,11 @@ class EntryParent(BaseEntry):
 
     @classmethod
     def from_entry_dicts(
-        cls, url: str, entry_dicts: List[Dict], working_directory: str
+        cls,
+        url: str,
+        entry_dicts: List[Dict],
+        working_directory: str,
+        include_sibling_metadata: bool,
     ) -> List["EntryParent"]:
         """
         Reads all entry dicts and builds a tree of EntryParents
@@ -203,7 +212,7 @@ class EntryParent(BaseEntry):
             parents = [root_parent]
 
         for parent in parents:
-            parent._set_child_variables()
+            parent._set_child_variables(include_sibling_metadata=include_sibling_metadata)
 
         return parents
 

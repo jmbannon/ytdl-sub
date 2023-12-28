@@ -45,7 +45,13 @@ class UrlThumbnailListValidator(ListValidator[UrlThumbnailValidator]):
 
 class UrlValidator(StrictDictValidator):
     _required_keys = {"url"}
-    _optional_keys = {"variables", "source_thumbnails", "playlist_thumbnails", "download_reverse"}
+    _optional_keys = {
+        "variables",
+        "source_thumbnails",
+        "playlist_thumbnails",
+        "download_reverse",
+        "include_sibling_metadata",
+    }
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
@@ -73,6 +79,9 @@ class UrlValidator(StrictDictValidator):
         )
         self._download_reverse = self._validate_key(
             key="download_reverse", validator=BoolValidator, default=True
+        )
+        self._include_sibling_metadata = self._validate_key(
+            key="include_sibling_metadata", validator=BoolValidator, default=False
         )
 
     @property
@@ -146,6 +155,16 @@ class UrlValidator(StrictDictValidator):
         Defaults to True.
         """
         return self._download_reverse.value
+
+    @property
+    def include_sibling_metadata(self) -> bool:
+        """
+        Optional. Whether to include sibling metadata as an entry variable, which comprises basic
+        metadata from all other entries (including itself) that belong to the same playlist. For
+        channels or large playlists, this becomes memory-intensive since you are storing
+        ``n^2`` metadata. Defaults to False.
+        """
+        return self._include_sibling_metadata.value
 
 
 class UrlStringOrDictValidator(UrlValidator):

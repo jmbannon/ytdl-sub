@@ -46,19 +46,26 @@ class SubscriptionOutput(Validator, ABC):
         Subscriptions in the form of ``{ subscription_name: preset_dict }``
         """
 
-    @property
-    def subscription_name(self) -> str:
-        """
-        Returns
-        -------
-        The name of the subscription
-        """
-        return self._leaf_name
 
-
-class SubscriptionPresetDictValidator(SubscriptionOutput, DictValidator):
-    def __init__(self, name, value, presets: List[str], indent_overrides: List[str]):
+class NamedSubscriptionValidator(SubscriptionOutput, ABC):
+    def __init__(
+        self, name, value, subscription_name: str, presets: List[str], indent_overrides: List[str]
+    ):
         super().__init__(name=name, value=value, presets=presets, indent_overrides=indent_overrides)
+        self.subscription_name = subscription_name
+
+
+class SubscriptionPresetDictValidator(NamedSubscriptionValidator, DictValidator):
+    def __init__(
+        self, name, value, subscription_name: str, presets: List[str], indent_overrides: List[str]
+    ):
+        super().__init__(
+            name=name,
+            value=value,
+            subscription_name=subscription_name,
+            presets=presets,
+            indent_overrides=indent_overrides,
+        )
 
         _ = self._validate_key_if_present(key="preset", validator=StringListValidator, default=[])
         _ = self._validate_key_if_present(key="overrides", validator=Overrides, default={})
@@ -80,16 +87,23 @@ class SubscriptionPresetDictValidator(SubscriptionOutput, DictValidator):
         return {self.subscription_name: output_dict}
 
 
-class SubscriptionLeafValidator(SubscriptionOutput, ABC):
+class SubscriptionLeafValidator(NamedSubscriptionValidator, ABC):
     def __init__(
         self,
         name,
         value,
+        subscription_name: str,
         config: ConfigFile,
         presets: List[str],
         indent_overrides: List[str],
     ):
-        super().__init__(name=name, value=value, presets=presets, indent_overrides=indent_overrides)
+        super().__init__(
+            name=name,
+            value=value,
+            subscription_name=subscription_name,
+            presets=presets,
+            indent_overrides=indent_overrides,
+        )
 
         if self.subscription_name in config.presets.keys:
             raise self._validation_exception(
@@ -117,22 +131,19 @@ class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
         self,
         name,
         value,
+        subscription_name: str,
         config: ConfigFile,
         presets: List[str],
         indent_overrides: List[str],
-        subscription_value: Optional[str],
     ):
         super().__init__(
             name=name,
             value=value,
+            subscription_name=subscription_name,
             config=config,
             presets=presets,
             indent_overrides=indent_overrides,
         )
-
-        # TODO: Eventually delete in favor of {subscription_value}
-        if subscription_value:
-            self._overrides_to_add[subscription_value] = self.value
         self._overrides_to_add[SUBSCRIPTION_VALUE] = self.value
 
 
@@ -141,6 +152,7 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
         self,
         name,
         value,
+        subscription_name: str,
         config: ConfigFile,
         presets: List[str],
         indent_overrides: List[str],
@@ -148,6 +160,7 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
         super().__init__(
             name=name,
             value=value,
+            subscription_name=subscription_name,
             config=config,
             presets=presets,
             indent_overrides=indent_overrides,
@@ -168,6 +181,7 @@ class SubscriptionWithOverridesValidator(SubscriptionLeafValidator, DictFormatte
         self,
         name,
         value,
+        subscription_name: str,
         config: ConfigFile,
         presets: List[str],
         indent_overrides: List[str],
@@ -175,22 +189,13 @@ class SubscriptionWithOverridesValidator(SubscriptionLeafValidator, DictFormatte
         super().__init__(
             name=name,
             value=value,
+            subscription_name=subscription_name,
             config=config,
             presets=presets,
             indent_overrides=indent_overrides,
         )
 
         self._overrides_to_add = dict(self.dict_with_format_strings, **self._overrides_to_add)
-
-    @property
-    def subscription_name(self) -> str:
-        """
-        Returns
-        -------
-        Name of the subscription
-        """
-        # drop the ~ in "~Subscription Name":
-        return super().subscription_name[1:]
 
 
 class SubscriptionValidator(SubscriptionOutput):
@@ -234,7 +239,6 @@ class SubscriptionValidator(SubscriptionOutput):
         config: ConfigFile,
         presets: List[str],
         indent_overrides: List[str],
-        subscription_value: Optional[str],
     ):
         super().__init__(name=name, value=value, presets=presets, indent_overrides=indent_overrides)
         self._children: List[SubscriptionOutput] = []
@@ -249,10 +253,10 @@ class SubscriptionValidator(SubscriptionOutput):
                     SubscriptionValueValidator(
                         name=obj_name,
                         value=obj,
+                        subscription_name=key,
                         config=config,
                         presets=presets,
                         indent_overrides=indent_overrides,
-                        subscription_value=subscription_value,
                     )
                 )
             # Subscription defined as
@@ -264,6 +268,7 @@ class SubscriptionValidator(SubscriptionOutput):
                     SubscriptionListValuesValidator(
                         name=obj_name,
                         value=obj,
+                        subscription_name=key,
                         config=config,
                         presets=presets,
                         indent_overrides=indent_overrides,
@@ -279,6 +284,7 @@ class SubscriptionValidator(SubscriptionOutput):
                         SubscriptionWithOverridesValidator(
                             name=obj_name,
                             value=obj,
+                            subscription_name=key[1:],
                             config=config,
                             presets=presets,
                             indent_overrides=indent_overrides,
@@ -294,7 +300,6 @@ class SubscriptionValidator(SubscriptionOutput):
                             config=config,
                             presets=presets + preset_indent_key.presets,
                             indent_overrides=indent_overrides + preset_indent_key.indent_overrides,
-                            subscription_value=subscription_value,
                         )
                     )
                 else:
@@ -302,6 +307,7 @@ class SubscriptionValidator(SubscriptionOutput):
                         SubscriptionPresetDictValidator(
                             name=obj_name,
                             value=obj,
+                            subscription_name=key,
                             presets=presets,
                             indent_overrides=indent_overrides,
                         )

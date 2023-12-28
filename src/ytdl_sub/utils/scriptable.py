@@ -19,12 +19,14 @@ class Scriptable(ABC):
     Shared class between Entry and Overrides to manage their underlying Script.
     """
 
-    def __init__(self):
-        self.script = Script(
-            ScriptUtils.add_sanitized_variables(
-                dict(copy.deepcopy(VARIABLE_SCRIPTS), **copy.deepcopy(CUSTOM_FUNCTION_SCRIPTS))
-            )
+    _BASE_SCRIPT: Script = Script(
+        ScriptUtils.add_sanitized_variables(
+            dict(copy.deepcopy(VARIABLE_SCRIPTS), **copy.deepcopy(CUSTOM_FUNCTION_SCRIPTS))
         )
+    )
+
+    def __init__(self):
+        self.script = copy.deepcopy(Scriptable._BASE_SCRIPT)
         self.unresolvable: Set[str] = copy.deepcopy(UNRESOLVED_VARIABLES)
 
     def update_script(self) -> None:

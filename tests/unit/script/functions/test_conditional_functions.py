@@ -1,6 +1,5 @@
 import pytest
-
-from ytdl_sub.script.script import Script
+from unit.script.conftest import single_variable_output
 
 
 class TestConditionalFunction:
@@ -12,11 +11,12 @@ class TestConditionalFunction:
         ],
     )
     def test_if_function(self, function_str: str, expected_output: bool):
-        output = Script({"output": function_str}).resolve(update=True).get("output").native
+        output = single_variable_output(function_str)
         assert output == expected_output
 
     def test_nested_if_function(self):
-        function_str = """{
+        output = single_variable_output(
+            """{
             %if(
                 True,
                 %if(
@@ -31,5 +31,5 @@ class TestConditionalFunction:
                 True
             )
         }"""
-        output = Script({"output": function_str}).resolve(update=True).get("output").native
+        )
         assert output == "winner"

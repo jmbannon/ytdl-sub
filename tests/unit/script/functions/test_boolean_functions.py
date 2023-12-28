@@ -126,3 +126,17 @@ class TestBooleanFunctions:
     def test_not(self, value: str, expected_output: bool):
         output = single_variable_output(f"{{%not({value})}}")
         assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "value, expected_output",
+        [
+            ("null", True),
+            ("''", True),
+            ("0", False),
+            ("{}", False),
+            ("'h'", False),
+        ],
+    )
+    def test_is_null(self, value: str, expected_output: bool):
+        output = single_variable_output(f"{{%is_null({value})}}")
+        assert output == expected_output

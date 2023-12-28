@@ -76,6 +76,21 @@ def regex_subscription_dict(regex_subscription_dict_base, output_directory):
                 }
             },
             "overrides": {
+                "title_capture_list": f"""{{
+                    %regex_capture_many_with_defaults(
+                        title,
+                        [
+                            "should not cap (.+) - (.+)",
+                            ".*\\[(.+) - (Feb.+)]"
+                        ],
+                        [
+                            "ack",
+                            "ack"
+                        ]
+                    )
+                }}""",
+                "title_capture_list_1": "{%array_at(title_capture_list, 1)}",
+                "title_capture_list_2": "{%array_at(title_capture_list, 2)}",
                 "contains_regex_default": "contains {title_type}",
                 "contains_regex_sanitized_default": "contains {title_type_sanitized}",
             },
