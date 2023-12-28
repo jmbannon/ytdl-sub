@@ -20,7 +20,7 @@ def _variable_class_to_name(obj: Type[Any]) -> str:
     )
 
 
-class EntryVariableDocGen(DocGen):
+class EntryVariablesDocGen(DocGen):
 
     LOCATION = Path("docs/source/config_reference/scripting/entry_variables.rst")
 

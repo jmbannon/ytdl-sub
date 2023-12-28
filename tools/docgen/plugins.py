@@ -1,7 +1,9 @@
 import inspect
+from pathlib import Path
 from typing import Dict
 from typing import Type
 
+from tools.docgen.docgen import DocGen
 from tools.docgen.utils import get_function_docs
 from tools.docgen.utils import properties
 from tools.docgen.utils import section
@@ -20,6 +22,7 @@ def should_filter_property(property_name: str) -> bool:
         "keys",
         "dict_with_format_strings",
         "subscription_name",
+        "list",
     )
 
 
@@ -37,22 +40,24 @@ def generate_plugin_docs(name: str, options: Type[OptionsValidator], offset: int
     return docs
 
 
-def generate_plugin_rst():
-    options_dict: Dict[str, Type[OptionsValidator]] = {
-        "output_options": OutputOptions,
-        "ytdl_options": YTDLOptions,
-        "overrides": Overrides,
-    }
-    for plugin_name, plugin_type in PluginMapping._MAPPING.items():
-        if plugin_name.startswith("_"):
-            continue
-        options_dict[plugin_name] = plugin_type.plugin_options_type
+class PluginsDocGen(DocGen):
 
-    docs = section("Plugins", level=0)
-    for name in sorted(options_dict.keys()):
-        docs += generate_plugin_docs(name, options_dict[name], offset=1)
+    LOCATION = Path("docs/source/config_reference/plugins.rst")
 
-    return docs
+    @classmethod
+    def generate(cls):
+        options_dict: Dict[str, Type[OptionsValidator]] = {
+            "output_options": OutputOptions,
+            "ytdl_options": YTDLOptions,
+            "overrides": Overrides,
+        }
+        for plugin_name, plugin_type in PluginMapping._MAPPING.items():
+            if plugin_name.startswith("_"):
+                continue
+            options_dict[plugin_name] = plugin_type.plugin_options_type
 
+        docs = section("Plugins", level=0)
+        for name in sorted(options_dict.keys()):
+            docs += generate_plugin_docs(name, options_dict[name], offset=1)
 
-print(generate_plugin_rst())
+        return docs

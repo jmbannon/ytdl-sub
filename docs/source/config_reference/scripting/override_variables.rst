@@ -1,3 +1,4 @@
+
 Override Variables
 ==================
 
@@ -41,4 +42,3 @@ For subscriptions in the form of
 ``subscription_value_1`` and ``subscription_value_2`` get set to ``https://url1.com/...``
 and ``https://url2.com/...``. Note that ``subscription_value_1`` also gets set to
 ``subscription_value``.
-

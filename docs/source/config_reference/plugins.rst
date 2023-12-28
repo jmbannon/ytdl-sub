@@ -1,3 +1,4 @@
+
 Plugins
 =======
 
@@ -174,6 +175,45 @@ form of:
 
 The output file will use the extension specified in ``convert_to``. Post-processing args
 can still be set  with ``convert_with`` set to ``yt-dlp``.
+
+filter_exclude
+--------------
+Applies a conditional OR on any number of filters comprised of either variables or scripts.
+If any filter evaluates to True, the entry will be excluded.
+
+Usage:
+
+.. code-block:: yaml
+
+   presets:
+     my_example_preset:
+       filter_exclude:
+         - { %contains( %lower(title), '#short' ) }
+         - { %contains( %lower(description), '#short' ) }
+
+filter_include
+--------------
+Applies a conditional AND on any number of filters comprised of either variables or scripts.
+If all filters evaluate to True, the entry will be included.
+
+Usage:
+
+.. code-block:: yaml
+
+   presets:
+     my_example_preset:
+       filter_include:
+         - {description}
+         - >-
+           {
+             %regex_search_any(
+                title,
+                [
+                    "Full Episode",
+                    "FULL",
+                ]
+             )
+           }
 
 format
 ------

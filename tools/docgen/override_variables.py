@@ -1,20 +1,25 @@
+from pathlib import Path
+
+from tools.docgen.docgen import DocGen
 from tools.docgen.utils import get_function_docs
 from tools.docgen.utils import section
 from tools.docgen.utils import static_methods
 from ytdl_sub.entries.variables.override_variables import OverrideVariables
 
 
-def generate_override_docs() -> str:
-    docs = section("Override Variables", level=0)
+class OverrideVariablesDocGen(DocGen):
 
-    for name in static_methods(OverrideVariables):
-        docs += get_function_docs(
-            function_name=name,
-            obj=OverrideVariables,
-            level=1,
-        )
+    LOCATION = Path("docs/source/config_reference/scripting/override_variables.rst")
 
-    return docs
+    @classmethod
+    def generate(cls) -> str:
+        docs = section("Override Variables", level=0)
 
+        for name in static_methods(OverrideVariables):
+            docs += get_function_docs(
+                function_name=name,
+                obj=OverrideVariables,
+                level=1,
+            )
 
-print(generate_override_docs())
+        return docs
