@@ -8,7 +8,9 @@ from typing import Type
 LEVEL_CHARS: Dict[int, str] = {0: "=", 1: "-", 2: "~", 3: "^"}
 
 
-def section(name: str, level: int) -> str:
+def section(name: str, level: int, as_code: bool = False) -> str:
+    if as_code:
+        name = f"``{name}``"
     return f"\n{name}\n{len(name) * LEVEL_CHARS[level]}\n"
 
 
@@ -42,3 +44,13 @@ def get_function_docs(
     docs += inspect.cleandoc(getattr(obj, function_name).__doc__)
     docs += "\n"
     return docs
+
+
+def line() -> str:
+    return "\n" + ("-" * 100) + "\n"
+
+
+def line_section(section_idx: int) -> str:
+    if section_idx > 0:
+        return line()
+    return ""

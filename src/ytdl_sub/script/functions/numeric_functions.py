@@ -16,28 +16,32 @@ class NumericFunctions:
     @staticmethod
     def float(value: AnyArgument) -> Float:
         """
-        Cast to Float.
+        :description:
+          Cast to Float.
         """
         return Float(value=float(value.value))
 
     @staticmethod
     def int(value: AnyArgument) -> Integer:
         """
-        Cast to Integer.
+        :description:
+          Cast to Integer.
         """
         return Integer(value=int(value.value))
 
     @staticmethod
     def add(*values: Numeric) -> Numeric:
         """
-        ``+`` operator. Returns the sum of all values.
+        :description:
+          ``+`` operator. Returns the sum of all values.
         """
         return _to_numeric(sum(val.value for val in values))
 
     @staticmethod
     def sub(*values: Numeric) -> Numeric:
         """
-        ``-`` operator. Subtracts all values from left to right.
+        :description:
+          ``-`` operator. Subtracts all values from left to right.
         """
         output = values[0].value
         for val in values[1:]:
@@ -48,41 +52,47 @@ class NumericFunctions:
     @staticmethod
     def mul(*values: Numeric) -> Numeric:
         """
-        ``*`` operator. Returns the product of all values.
+        :description:
+          ``*`` operator. Returns the product of all values.
         """
         return _to_numeric(math.prod([val.value for val in values]))
 
     @staticmethod
     def pow(base: Numeric, exponent: Numeric) -> Numeric:
         """
-        ``**`` operator. Returns the exponential of the base and exponent value.
+        :description:
+          ``**`` operator. Returns the exponential of the base and exponent value.
         """
         return _to_numeric(math.pow(base.value, exponent.value))
 
     @staticmethod
     def div(left: Numeric, right: Numeric) -> Numeric:
         """
-        ``/`` operator. Returns ``left / right``.
+        :description:
+          ``/`` operator. Returns ``left / right``.
         """
         return _to_numeric(left.value / right.value)
 
     @staticmethod
     def mod(left: Numeric, right: Numeric) -> Numeric:
         """
-        ``%`` operator. Returns ``left % right``.
+        :description:
+          ``%`` operator. Returns ``left % right``.
         """
         return _to_numeric(value=left.value % right.value)
 
     @staticmethod
     def max(*values: Numeric) -> Numeric:
         """
-        Returns max of all values.
+        :description:
+          Returns max of all values.
         """
         return _to_numeric(max(val.value for val in values))
 
     @staticmethod
     def min(*values: Numeric) -> Numeric:
         """
-        Returns min of all values.
+        :description:
+          Returns min of all values.
         """
         return _to_numeric(min(val.value for val in values))

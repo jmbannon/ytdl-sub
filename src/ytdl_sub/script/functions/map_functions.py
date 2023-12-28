@@ -18,7 +18,8 @@ class MapFunctions:
     @staticmethod
     def map(maybe_mapping: AnyArgument) -> Map:
         """
-        Tries to cast an unknown variable type to a Map.
+        :description:
+          Tries to cast an unknown variable type to a Map.
         """
         if not isinstance(maybe_mapping, Map):
             raise FunctionRuntimeException(
@@ -29,14 +30,16 @@ class MapFunctions:
     @staticmethod
     def map_size(mapping: Map) -> Integer:
         """
-        Returns the size of a Map.
+        :description:
+          Returns the size of a Map.
         """
         return Integer(len(mapping.value))
 
     @staticmethod
     def map_contains(mapping: Map, key: AnyArgument) -> Boolean:
         """
-        Returns True if the key is in the Map. False otherwise.
+        :description:
+          Returns True if the key is in the Map. False otherwise.
         """
         if not isinstance(key, Hashable):
             raise KeyNotHashableRuntimeException(
@@ -50,8 +53,9 @@ class MapFunctions:
         mapping: Map, key: AnyArgument, default: Optional[AnyArgument] = None
     ) -> AnyArgument:
         """
-        Return ``key``'s value within the Map. If ``key`` does not exist, and ``default`` is
-        provided, it will return ``default``. Otherwise, will error.
+        :description:
+          Return ``key``'s value within the Map. If ``key`` does not exist, and ``default`` is
+          provided, it will return ``default``. Otherwise, will error.
         """
         if not MapFunctions.map_contains(mapping=mapping, key=key).value:
             if default is not None:
@@ -65,8 +69,9 @@ class MapFunctions:
     @staticmethod
     def map_get_non_empty(mapping: Map, key: AnyArgument, default: AnyArgument) -> AnyArgument:
         """
-        Return ``key``'s value within the Map. If ``key`` does not exist or is an empty string,
-        return ``default``. Otherwise, will error.
+        :description:
+          Return ``key``'s value within the Map. If ``key`` does not exist or is an empty string,
+          return ``default``. Otherwise, will error.
         """
         output = MapFunctions.map_get(mapping, key, default)
         if isinstance(output, String) and output.value == "":
@@ -78,16 +83,18 @@ class MapFunctions:
     @staticmethod
     def map_apply(mapping: Map, lambda_function: LambdaTwo) -> Array:
         """
-        Apply a lambda function on the Map, where each arg
-        passed to the lambda function is ``key, value`` as two separate args.
+        :description:
+          Apply a lambda function on the Map, where each arg
+          passed to the lambda function is ``key, value`` as two separate args.
         """
         return Array([Array([key, value]) for key, value in mapping.value.items()])
 
     @staticmethod
     def map_enumerate(mapping: Map, lambda_function: LambdaThree) -> Array:
         """
-        Apply a lambda function on the Map, where each arg
-        passed to the lambda function is ``idx, key, value`` as three separate args.
+        :description:
+          Apply a lambda function on the Map, where each arg
+          passed to the lambda function is ``idx, key, value`` as three separate args.
         """
         return Array(
             [

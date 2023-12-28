@@ -6,7 +6,7 @@ from typing import Optional
 from typing import Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import camel_case_to_human
+from tools.docgen.utils import camel_case_to_human, line_section
 from tools.docgen.utils import section
 from tools.docgen.utils import static_methods
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
@@ -30,7 +30,7 @@ def function_class_to_name(obj: Type[Any]) -> str:
 
 def function_type_hinting(display_function_name: str, function: Any) -> str:
     spec = FunctionSpec.from_callable(function)
-    out = "``"
+    out = ":spec: ``"
     out += display_function_name
     out += spec.human_readable_input_args()
     out += " -> "
@@ -65,7 +65,8 @@ class ScriptingFunctionsDocGen(DocGen):
         }
         parent_objs["Ytdl-Sub Functions"] = CustomFunctions
 
-        for name in sorted(parent_objs.keys()):
+        for idx, name in enumerate(sorted(parent_objs.keys())):
+            docs += line_section(section_idx=idx)
             docs += section(name, level=1)
 
             for function_name in static_methods(parent_objs[name]):

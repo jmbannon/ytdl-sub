@@ -4,7 +4,7 @@ from typing import Dict
 from typing import Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import camel_case_to_human
+from tools.docgen.utils import camel_case_to_human, line_section
 from tools.docgen.utils import get_function_docs
 from tools.docgen.utils import properties
 from tools.docgen.utils import section
@@ -32,7 +32,8 @@ class EntryVariablesDocGen(DocGen):
             _variable_class_to_name(obj): obj for obj in VariableDefinitions.__bases__
         }
 
-        for name in sorted(parent_objs.keys()):
+        for idx, name in enumerate(sorted(parent_objs.keys())):
+            docs += line_section(section_idx=idx)
             docs += section(name, level=1)
 
             for variable_function_name in properties(parent_objs[name]):

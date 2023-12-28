@@ -4,7 +4,7 @@ from typing import Dict
 from typing import Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import get_function_docs
+from tools.docgen.utils import get_function_docs, line_section
 from tools.docgen.utils import properties
 from tools.docgen.utils import section
 from ytdl_sub.config.overrides import Overrides
@@ -57,7 +57,8 @@ class PluginsDocGen(DocGen):
             options_dict[plugin_name] = plugin_type.plugin_options_type
 
         docs = section("Plugins", level=0)
-        for name in sorted(options_dict.keys()):
+        for idx, name in enumerate(sorted(options_dict.keys())):
+            docs += line_section(section_idx=idx)
             docs += generate_plugin_docs(name, options_dict[name], offset=1)
 
         return docs

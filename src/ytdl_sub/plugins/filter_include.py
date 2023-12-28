@@ -26,7 +26,8 @@ class FilterIncludeOptions(ListFormatterValidator, OptionsValidator):
        presets:
          my_example_preset:
            filter_include:
-             - {description}
+             - >-
+               {description}
              - >-
                {
                  %regex_search_any(

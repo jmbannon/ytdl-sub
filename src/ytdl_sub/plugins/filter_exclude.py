@@ -26,8 +26,10 @@ class FilterExcludeOptions(ListFormatterValidator, OptionsValidator):
        presets:
          my_example_preset:
            filter_exclude:
-             - { %contains( %lower(title), '#short' ) }
-             - { %contains( %lower(description), '#short' ) }
+             - >-
+               { %contains( %lower(title), '#short' ) }
+             - >-
+               { %contains( %lower(description), '#short' ) }
     """
 
 

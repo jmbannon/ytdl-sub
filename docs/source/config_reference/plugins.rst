@@ -26,6 +26,8 @@ quality
 Optional. Specify ffmpeg audio quality. Insert a value between ``0`` (better) and ``9``
 (worse) for variable bitrate, or a specific bitrate like ``128`` for 128k.
 
+----------------------------------------------------------------------------------------------------
+
 chapters
 --------
 Embeds chapters to video files if they are present. Additional options to add SponsorBlock
@@ -89,6 +91,8 @@ Optional. List of SponsorBlock categories to embed as chapters. Supports "sponso
 "intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
 "poi_highlight", or "all" to include all categories.
 
+----------------------------------------------------------------------------------------------------
+
 date_range
 ----------
 Only download files uploaded within the specified date range.
@@ -111,6 +115,8 @@ before
 ~~~~~~
 Optional. Only download videos before this datetime.
 
+----------------------------------------------------------------------------------------------------
+
 embed_thumbnail
 ---------------
 Whether to embed thumbnails to the audio/video file or not.
@@ -122,6 +128,8 @@ Usage:
    presets:
      my_example_preset:
        embed_thumbnail: True
+
+----------------------------------------------------------------------------------------------------
 
 file_convert
 ------------
@@ -176,6 +184,8 @@ form of:
 The output file will use the extension specified in ``convert_to``. Post-processing args
 can still be set  with ``convert_with`` set to ``yt-dlp``.
 
+----------------------------------------------------------------------------------------------------
+
 filter_exclude
 --------------
 Applies a conditional OR on any number of filters comprised of either variables or scripts.
@@ -188,8 +198,12 @@ Usage:
    presets:
      my_example_preset:
        filter_exclude:
-         - { %contains( %lower(title), '#short' ) }
-         - { %contains( %lower(description), '#short' ) }
+         - >-
+           { %contains( %lower(title), '#short' ) }
+         - >-
+           { %contains( %lower(description), '#short' ) }
+
+----------------------------------------------------------------------------------------------------
 
 filter_include
 --------------
@@ -203,7 +217,8 @@ Usage:
    presets:
      my_example_preset:
        filter_include:
-         - {description}
+         - >-
+           {description}
          - >-
            {
              %regex_search_any(
@@ -214,6 +229,8 @@ Usage:
                 ]
              )
            }
+
+----------------------------------------------------------------------------------------------------
 
 format
 ------
@@ -231,6 +248,8 @@ Usage:
 format
 ~~~~~~
 yt-dlp format, uses same syntax as yt-dlp.
+
+----------------------------------------------------------------------------------------------------
 
 match_filters
 -------------
@@ -266,6 +285,8 @@ filters
 The filters themselves. If used multiple times, the filter matches if at least one of the
 conditions are met. For logical AND's between match filters, use the ``&`` operator in
 a single match filter. These are applied when gathering metadata.
+
+----------------------------------------------------------------------------------------------------
 
 music_tags
 ----------
@@ -303,6 +324,8 @@ tags
 ~~~~
 Key, values of tag names, tag values. Supports source and override variables.
 Supports lists which will get written to MP3s as id3v2.4 multi-tags.
+
+----------------------------------------------------------------------------------------------------
 
 nfo_tags
 --------
@@ -380,6 +403,8 @@ Which translates to
    <genre>Comedy</genre>
    <genre>Drama</genre>
 
+----------------------------------------------------------------------------------------------------
+
 output_directory_nfo_tags
 -------------------------
 Adds a single NFO file in the output directory. An NFO file is simply an XML file with a
@@ -452,6 +477,8 @@ Which translates to
    <title year="2022">Sweet youtube TV show</season>
    <genre>Comedy</genre>
    <genre>Drama</genre>
+
+----------------------------------------------------------------------------------------------------
 
 output_options
 --------------
@@ -544,6 +571,8 @@ Optional. The file name for the media's thumbnail image. This can include direct
 as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
 directory. Can be set to empty string or `null` to disable thumbnail writes.
 
+----------------------------------------------------------------------------------------------------
+
 overrides
 ---------
 Optional. This section allows you to define variables that can be used in any string formatter.
@@ -570,6 +599,8 @@ and source variables.
 In addition, any override variable defined will automatically create a ``sanitized`` variable
 for use. In the example above, ``output_directory_sanitized`` will exist and perform
 sanitization on the value when used.
+
+----------------------------------------------------------------------------------------------------
 
 regex
 -----
@@ -639,6 +670,8 @@ skip_if_match_fails
 Defaults to True. If True, when any match fails and has no defaults, the entry will be
 skipped. If False, ytdl-sub will error and all downloads will not proceed.
 
+----------------------------------------------------------------------------------------------------
+
 split_by_chapters
 -----------------
 Splits a file by chapters into multiple files. Each file becomes its own entry with the
@@ -664,6 +697,8 @@ when_no_chapters
 ~~~~~~~~~~~~~~~~
 Behavior to perform when no chapters are present. Supports "pass" (continue processing),
 "drop" (exclude it from output), and "error" (stop processing for everything).
+
+----------------------------------------------------------------------------------------------------
 
 subtitles
 ---------
@@ -709,6 +744,8 @@ subtitles_type
 ~~~~~~~~~~~~~~
 Optional. One of the subtitle file types "srt", "vtt", "ass", "lrc". Defaults to "srt"
 
+----------------------------------------------------------------------------------------------------
+
 throttle_protection
 -------------------
 Provides options to make ytdl-sub look more 'human-like' to protect from throttling. For
@@ -752,6 +789,8 @@ Probability to perform any downloads, recomputed for each subscription. This is 
 recommended to set if you run ytdl-sub in a cron-job, that way you are statistically
 guaranteed over time to eventually download the subscription.
 
+----------------------------------------------------------------------------------------------------
+
 video_tags
 ----------
 Adds tags to every downloaded video file using ffmpeg ``-metadata key=value`` args.
@@ -770,6 +809,8 @@ Usage:
 tags
 ~~~~
 Key/values of tag names/values. Supports source and override variables.
+
+----------------------------------------------------------------------------------------------------
 
 ytdl_options
 ------------
