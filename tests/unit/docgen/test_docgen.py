@@ -13,6 +13,14 @@ def _test_doc_gen(doc_gen: Type[DocGen]) -> None:
     expected_md5_hash = get_md5_hash(doc_gen.generate_and_maybe_write_to_file())
     md5_hash = get_file_md5_hash(doc_gen.LOCATION)
 
+    if md5_hash != expected_md5_hash:
+        print("generated")
+        print(doc_gen.generate())
+
+        print("expected")
+        with open(doc_gen.LOCATION, "r", encoding="utf-8") as file_doc:
+            print(file_doc.read())
+
     assert md5_hash == expected_md5_hash
 
 
