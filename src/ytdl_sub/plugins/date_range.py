@@ -22,7 +22,7 @@ class DateRangeOptions(OptionsDictValidator):
     Note that yt-dlp will round times to the closest day, meaning that `day` is the lowest
     granularity possible.
 
-    :usage:
+    :Usage:
 
     .. code-block:: yaml
 

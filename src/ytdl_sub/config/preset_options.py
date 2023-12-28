@@ -15,12 +15,12 @@ from ytdl_sub.validators.validators import LiteralDictValidator
 
 class YTDLOptions(LiteralDictValidator):
     """
-    Optional. This section allows you to add any ytdl argument to ytdl-sub's downloader.
+    Allows you to add any ytdl argument to ytdl-sub's downloader.
     The argument names can differ slightly from the command-line argument names. See
     `this docstring <https://github.com/yt-dlp/yt-dlp/blob/2022.04.08/yt_dlp/YoutubeDL.py#L197>`_
     for more details.
 
-    ytdl_options should be formatted like:
+    :Usage:
 
     .. code-block:: yaml
 
@@ -58,7 +58,7 @@ class OutputOptions(StrictDictValidator):
     """
     Defines where to output files and thumbnails after all post-processing has completed.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
@@ -156,97 +156,119 @@ class OutputOptions(StrictDictValidator):
     @property
     def output_directory(self) -> OverridesStringFormatterValidator:
         """
-        Required. The output directory to store all media files downloaded.
+        :expected type: OverridesFormatter
+        :description:
+          The output directory to store all media files downloaded.
         """
         return self._output_directory
 
     @property
     def file_name(self) -> StringFormatterValidator:
         """
-        Required. The file name for the media file. This can include directories such as
-        ``"Season {upload_year}/{title}.{ext}"``, and will be placed in the output directory.
+        :expected type: EntryFormatter
+        :description:
+          The file name for the media file. This can include directories such as
+          ``"Season {upload_year}/{title}.{ext}"``, and will be placed in the output directory.
         """
         return self._file_name
 
     @property
     def thumbnail_name(self) -> Optional[StringFormatterValidator]:
         """
-        Optional. The file name for the media's thumbnail image. This can include directories such
-        as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
-        directory. Can be set to empty string or `null` to disable thumbnail writes.
+        :expected type: Optional[EntryFormatter]
+        :description:
+          The file name for the media's thumbnail image. This can include directories such
+          as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
+          directory. Can be set to empty string or `null` to disable thumbnail writes.
         """
         return self._thumbnail_name
 
     @property
     def info_json_name(self) -> Optional[StringFormatterValidator]:
         """
-        Optional. The file name for the media's info json file. This can include directories such
-        as ``"Season {upload_year}/{title}.{info_json_ext}"``, and will be placed in the output
-        directory. Can be set to empty string or `null` to disable info json writes.
+        :expected type: Optional[EntryFormatter]
+        :description:
+          The file name for the media's info json file. This can include directories such
+          as ``"Season {upload_year}/{title}.{info_json_ext}"``, and will be placed in the output
+          directory. Can be set to empty string or `null` to disable info json writes.
         """
         return self._info_json_name
 
     @property
     def download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
         """
-        Optional. The file name to store a subscriptions download archive placed relative to
-        the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          The file name to store a subscriptions download archive placed relative to
+          the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
         """
         return self._download_archive_name
 
     @property
     def migrated_download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
         """
-        Optional. Intended to be used if you are migrating a subscription with either a new
-        subscription name or output directory. It will try to load the archive file using this name
-        first, and fallback to ``download_archive_name``. It will always save to this file
-        and remove the original ``download_archive_name``.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Intended to be used if you are migrating a subscription with either a new
+          subscription name or output directory. It will try to load the archive file using this
+          name first, and fallback to ``download_archive_name``. It will always save to this file
+          and remove the original ``download_archive_name``.
         """
         return self._migrated_download_archive_name
 
     @property
     def maintain_download_archive(self) -> bool:
         """
-        Optional. Maintains a download archive file in the output directory for a subscription.
-        It is named ``.ytdl-sub-{subscription_name}-download-archive.json``, stored in the
-        output directory.
+        :expected type: Optional[Boolean]
+        :description:
+          Maintains a download archive file in the output directory for a subscription.
+          It is named ``.ytdl-sub-{subscription_name}-download-archive.json``, stored in the
+          output directory.
 
-        The download archive contains a mapping of ytdl IDs to downloaded files. This is used to
-        create a ytdl download-archive file when invoking a download on a subscription. This will
-        prevent ytdl from redownloading media already downloaded.
+          The download archive contains a mapping of ytdl IDs to downloaded files. This is used to
+          create a ytdl download-archive file when invoking a download on a subscription. This will
+          prevent ytdl from redownloading media already downloaded.
 
-        Defaults to False.
+          Defaults to False.
         """
         return self._maintain_download_archive.value
 
     @property
     def keep_files_before(self) -> Optional[StringDatetimeValidator]:
         """
-        Optional. Requires ``maintain_download_archive`` set to True.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Requires ``maintain_download_archive`` set to True. Uses the same syntax as the
+          ``date_range`` plugin.
 
-        Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
-        files before ``now``, which implies all files. Can be used in conjunction with
-        ``keep_max_files``.
+          Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
+          files before ``now``, which implies all files. Can be used in conjunction with
+          ``keep_max_files``.
         """
         return self._keep_files_before
 
     @property
     def keep_files_after(self) -> Optional[StringDatetimeValidator]:
         """
-        Optional. Requires ``maintain_download_archive`` set to True.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Requires ``maintain_download_archive`` set to True. Uses the same syntax as the
+          ``date_range`` plugin.
 
-        Only keeps files that are uploaded after this datetime. By default, ytdl-sub will keep
-        files after ``19000101``, which implies all files. Can be used in conjunction with
-        ``keep_max_files``.
+          Only keeps files that are uploaded after this datetime. By default, ytdl-sub will keep
+          files after ``19000101``, which implies all files. Can be used in conjunction with
+          ``keep_max_files``.
         """
         return self._keep_files_after
 
     @property
     def keep_max_files(self) -> Optional[OverridesIntegerFormatterValidator]:
         """
-        Optional. Requires ``maintain_download_archive`` set to True.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Requires ``maintain_download_archive`` set to True.
 
-        Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
-        applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
+          Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
+          applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
         """
         return self._keep_max_files

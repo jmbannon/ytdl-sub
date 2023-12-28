@@ -15,9 +15,7 @@ class FormatOptions(OptionsValidator):
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           format: "(bv*[height<=1080]+bestaudio/best[height<=1080])"
+       format: "(bv*[height<=1080]+bestaudio/best[height<=1080])"
     """
 
     def __init__(self, name, value):

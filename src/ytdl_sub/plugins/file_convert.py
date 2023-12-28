@@ -32,29 +32,27 @@ class FileConvertOptions(OptionsDictValidator):
     """
     Converts video files from one extension to another.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           file_convert:
-             convert_to: "mp4"
+       file_convert:
+         convert_to: "mp4"
 
-    Supports custom ffmpeg conversions:
+    Also supports custom ffmpeg conversions:
+
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           file_convert:
-             convert_to: "mkv"
-             convert_with: "ffmpeg"
-             ffmpeg_post_process_args: >
-               -bitexact
-               -vcodec copy
-               -acodec copy
-               -scodec mov_text
+       file_convert:
+         convert_to: "mkv"
+         convert_with: "ffmpeg"
+         ffmpeg_post_process_args: >
+           -bitexact
+           -vcodec copy
+           -acodec copy
+           -scodec mov_text
     """
 
     _required_keys = {"convert_to"}
@@ -89,35 +87,38 @@ class FileConvertOptions(OptionsDictValidator):
     @property
     def convert_to(self) -> str:
         """
-        Convert to a desired file type. Supports:
+        :expected type: String
+        :description:
+          Convert to a desired file type. Supports
 
-        * Video: avi, flv, mkv, mov, mp4, webm
-        * Audio: aac, flac, mp3, m4a, opus, vorbis, wav
+            - Video: avi, flv, mkv, mov, mp4, webm
+            - Audio: aac, flac, mp3, m4a, opus, vorbis, wav
         """
         return self._convert_to
 
     @property
     def convert_with(self) -> Optional[str]:
         """
-        Optional. Supports ``yt-dlp`` and ``ffmpeg``. ``yt-dlp`` will convert files within
-        yt-dlp whereas ``ffmpeg`` specifies it will be converted using a custom command specified
-        with ``ffmpeg_post_process_args``. Defaults to ``yt-dlp``.
-
+        :expected type: Optional[String]
+        :description:
+          Supports ``yt-dlp`` and ``ffmpeg``. ``yt-dlp`` will convert files within
+          yt-dlp whereas ``ffmpeg`` specifies it will be converted using a custom command specified
+          with ``ffmpeg_post_process_args``. Defaults to ``yt-dlp``.
         """
         return self._convert_with
 
     @property
     def ffmpeg_post_process_args(self) -> Optional[OverridesStringFormatterValidator]:
         """
-        Optional. ffmpeg args to post-process an entry file with. The args will be inserted in the
-        form of:
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          ffmpeg args to post-process an entry file with. The args will be inserted in the
+          form of
 
-        .. code-block:: bash
+          ``ffmpeg -i input_file.ext {ffmpeg_post_process_args) output_file.output_ext``.
 
-           ffmpeg -i input_file.ext {ffmpeg_post_process_args) output_file.output_ext
-
-        The output file will use the extension specified in ``convert_to``. Post-processing args
-        can still be set  with ``convert_with`` set to ``yt-dlp``.
+          The output file will use the extension specified in ``convert_to``. Post-processing args
+          can still be set  with ``convert_with`` set to ``yt-dlp``.
         """
         return self._ffmpeg_post_process_args
 

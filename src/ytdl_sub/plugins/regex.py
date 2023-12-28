@@ -122,6 +122,41 @@ class FromSourceVariablesRegex(DictValidator):
 
 class RegexOptions(OptionsDictValidator):
     r"""
+    .. attention::
+
+       This plugin will eventually be deprecated and replaced by scripting functions.
+       You can replicate the example below using the following.
+
+       .. code-block:: yaml
+
+          # Only includes videos with 'Official Video'
+          filter_include:
+            - >-
+              { %contains( %lower(title), "official video" ) }
+
+          # Excludes videos with '#short' in its description
+          filter_exclude:
+            - >-
+              { %contains( %lower(description), '#short' ) }
+
+          # Creates a capture array with defaults, and assigns
+          # each capture group to its own variable
+          overrides:
+            description_date_capture: >-
+              {
+                %regex_capture_many_with_defaults(
+                  description,
+                  [ "([0-9]{4})-([0-9]{2})-([0-9]{2})" ],
+                  [ upload_year, upload_month, upload_day ]
+                )
+              }
+            captured_upload_year: >-
+              { %array_at(description_date_capture, 1) }
+            captured_upload_month: >-
+              { %array_at(description_date_capture, 2) }
+            captured_upload_day: >-
+              { %array_at(description_date_capture, 3) }
+
     Performs regex matching on an entry's source or override variables. Regex can be used to filter
     entries from proceeding with download or capture groups to create new source variables.
 
@@ -137,51 +172,49 @@ class RegexOptions(OptionsDictValidator):
     and using ``title_and_description`` can regex match/exclude from either ``title`` or
     ``description``.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           regex:
-             # By default, if any match fails and has no defaults, the entry will
-             # be skipped. If False, ytdl-sub will error and stop all downloads
-             # from proceeding.
-             skip_if_match_fails: True
+       regex:
+         # By default, if any match fails and has no defaults, the entry will
+         # be skipped. If False, ytdl-sub will error and stop all downloads
+         # from proceeding.
+         skip_if_match_fails: True
 
-             from:
-               # For each entry's `title` value...
-               title:
-                 # Perform this regex match on it to act as a filter.
-                 # This will only download videos with "[Official Video]" in it. Note that we
-                 # double backslash to make YAML happy
-                 match:
-                   - '\\[Official Video\\]'
+         from:
+           # For each entry's `title` value...
+           title:
+             # Perform this regex match on it to act as a filter.
+             # This will only download videos with "[Official Video]" in it. Note that we
+             # double backslash to make YAML happy
+             match:
+               - '\\[Official Video\\]'
 
-               # For each entry's `description` value...
-               description:
-                 # Match with capture groups and defaults.
-                 # This tries to scrape a date from the description and produce new
-                 # source variables
-                 match:
-                   - '([0-9]{4})-([0-9]{2})-([0-9]{2})'
-                 # Exclude any entry where the description contains #short
-                 exclude:
-                   - '#short'
+           # For each entry's `description` value...
+           description:
+             # Match with capture groups and defaults.
+             # This tries to scrape a date from the description and produce new
+             # source variables
+             match:
+               - '([0-9]{4})-([0-9]{2})-([0-9]{2})'
+             # Exclude any entry where the description contains #short
+             exclude:
+               - '#short'
 
-                 # Each capture group creates these new source variables, respectively,
-                 # as well a sanitized version, i.e. `captured_upload_year_sanitized`
-                 capture_group_names:
-                   - "captured_upload_year"
-                   - "captured_upload_month"
-                   - "captured_upload_day"
+             # Each capture group creates these new source variables, respectively,
+             # as well a sanitized version, i.e. `captured_upload_year_sanitized`
+             capture_group_names:
+               - "captured_upload_year"
+               - "captured_upload_month"
+               - "captured_upload_day"
 
-                 # And if the string does not match, use these as respective default
-                 # values for the new source variables.
-                 capture_group_defaults:
-                   - "{upload_year}"
-                   - "{upload_month}"
-                   - "{upload_day}"
+             # And if the string does not match, use these as respective default
+             # values for the new source variables.
+             capture_group_defaults:
+               - "{upload_year}"
+               - "{upload_month}"
+               - "{upload_day}"
     """
 
     _required_keys = {"from"}
@@ -209,8 +242,10 @@ class RegexOptions(OptionsDictValidator):
     @property
     def skip_if_match_fails(self) -> Optional[bool]:
         """
-        Defaults to True. If True, when any match fails and has no defaults, the entry will be
-        skipped. If False, ytdl-sub will error and all downloads will not proceed.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to True. If True, when any match fails and has no defaults, the entry will be
+          skipped. If False, ytdl-sub will error and all downloads will not proceed.
         """
         return self._skip_if_match_fails
 

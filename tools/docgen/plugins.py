@@ -1,6 +1,8 @@
 import inspect
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any
+from typing import Dict
+from typing import Optional
 from typing import Type
 
 from tools.docgen.docgen import DocGen
@@ -12,6 +14,20 @@ from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.config.validators.options import OptionsValidator
+from ytdl_sub.downloaders.url.validators import MultiUrlValidator
+
+
+def should_filter_all_properties(plugin_name: str) -> bool:
+    return plugin_name in (
+        "format",
+        "match_filters",
+        "music_tags",
+        "filter_include",
+        "filter_exclude",
+        "embed_thumbnail",
+        "video_tags",
+        "download",
+    )
 
 
 def should_filter_property(property_name: str) -> bool:
@@ -26,9 +42,7 @@ def should_filter_property(property_name: str) -> bool:
     )
 
 
-def get_function_docs(
-    function_name: str, obj: Any, level: int
-) -> str:
+def get_function_docs(function_name: str, obj: Any, level: int) -> str:
     docs = f"\n``{function_name}``\n\n"
     docs += inspect.cleandoc(getattr(obj, function_name).__doc__)
     docs += "\n\n"
@@ -41,6 +55,9 @@ def generate_plugin_docs(name: str, options: Type[OptionsValidator], offset: int
 
     docs += inspect.cleandoc(options.__doc__)
     docs += "\n"
+
+    if should_filter_all_properties(name):
+        return docs
 
     property_names = [prop for prop in properties(options) if not should_filter_property(prop)]
     for property_name in sorted(property_names):
@@ -59,6 +76,7 @@ class PluginsDocGen(DocGen):
             "output_options": OutputOptions,
             "ytdl_options": YTDLOptions,
             "overrides": Overrides,
+            "download": MultiUrlValidator,
         }
         for plugin_name, plugin_type in PluginMapping._MAPPING.items():
             if plugin_name.startswith("_"):

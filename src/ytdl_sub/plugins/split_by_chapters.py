@@ -48,23 +48,22 @@ class WhenNoChaptersValidator(StringSelectValidator):
 class SplitByChaptersOptions(OptionsDictValidator):
     """
     Splits a file by chapters into multiple files. Each file becomes its own entry with the
-    new source variables ``chapter_title``, ``chapter_title_sanitized``, ``chapter_index``,
-    ``chapter_index_padded``, ``chapter_count``.
+    new variables
 
-    If a file has no chapters, and ``when_no_chapters`` is set to "pass", then ``chapter_title`` is
-    set to the entry's title and ``chapter_index``, ``chapter_count`` are both set to 1.
+      - ``chapter_title``
+      - ``chapter_index``
+      - ``chapter_index_padded``
+      - ``chapter_count``
 
     Note that when using this plugin and performing dry-run, it assumes embedded chapters are being
     used with no modifications.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           split_by_chapters:
-             when_no_chapters: "pass"
+       split_by_chapters:
+         when_no_chapters: "pass"
     """
 
     _required_keys = {"when_no_chapters"}
@@ -100,8 +99,16 @@ class SplitByChaptersOptions(OptionsDictValidator):
     @property
     def when_no_chapters(self) -> str:
         """
-        Behavior to perform when no chapters are present. Supports "pass" (continue processing),
-        "drop" (exclude it from output), and "error" (stop processing for everything).
+        :expected type: String
+        :description:
+          Behavior to perform when no chapters are present. Supports
+
+            - "pass" (continue processing),
+            - "drop" (exclude it from output)
+            - "error" (stop processing for everything).
+
+          If a file has no chapters and is set to "pass", then ``chapter_title`` is
+          set to the entry's title and ``chapter_index``, ``chapter_count`` are both set to 1.
         """
         return self._when_no_chapters
 

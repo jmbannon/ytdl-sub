@@ -215,8 +215,53 @@ class UrlListValidator(ListValidator[UrlStringOrDictValidator]):
 
 class MultiUrlValidator(OptionsValidator):
     """
-    Downloads from multiple URLs. If an entry is returned from more than one URL, it will
-    resolve to the bottom-most URL settings.
+    Sets the URL(s) to download from. Can be used in many forms, including
+
+    :Single URL:
+
+    .. code-block:: yaml
+
+       download: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+    :Multi URL:
+
+    .. code-block:: yaml
+
+       download:
+         - "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+         - "https://www.youtube.com/watch?v=3BFTio5296w"
+
+    :Thumbnails + Variables:
+
+    All variables must be defined for the top-most url. All subsequent URL variables can be either
+    overwritten or default to the top-most value.
+
+    If an entry is returned from more than one URL, it will use the variables in the bottom-most
+    URL.
+
+    .. code-block:: yaml
+
+      download:
+        # required
+        urls:
+          - url: "youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
+            variables:
+              season_index: "1"
+              season_name: "Uploads"
+            playlist_thumbnails:
+              - name: "poster.jpg"
+                uid: "avatar_uncropped"
+              - name: "fanart.jpg"
+                uid: "banner_uncropped"
+              - name: "season{season_index}-poster.jpg"
+                uid: "latest_entry"
+          - url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+            variables:
+              season_index: "2"
+              season_name: "Playlist as Season"
+            playlist_thumbnails:
+              - name: "season{season_index}-poster.jpg"
+                uid: "latest_entry"
     """
 
     @classmethod

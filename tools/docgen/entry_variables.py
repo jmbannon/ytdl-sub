@@ -4,8 +4,9 @@ from typing import Dict
 from typing import Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import camel_case_to_human, line_section
+from tools.docgen.utils import camel_case_to_human
 from tools.docgen.utils import get_function_docs
+from tools.docgen.utils import line_section
 from tools.docgen.utils import properties
 from tools.docgen.utils import section
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions

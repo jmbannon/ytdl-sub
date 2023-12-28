@@ -6,7 +6,8 @@ from typing import Optional
 from typing import Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import camel_case_to_human, line_section
+from tools.docgen.utils import camel_case_to_human
+from tools.docgen.utils import line_section
 from tools.docgen.utils import section
 from tools.docgen.utils import static_methods
 from ytdl_sub.entries.script.custom_functions import CustomFunctions

@@ -64,7 +64,7 @@ class ChaptersOptions(OptionsDictValidator):
     Embeds chapters to video files if they are present. Additional options to add SponsorBlock
     chapters and remove specific ones. Can also remove chapters using regex.
 
-    :usage:
+    :Usage:
 
     .. code-block:: yaml
 

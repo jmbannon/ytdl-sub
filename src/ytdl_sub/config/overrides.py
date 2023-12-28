@@ -23,9 +23,9 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 
 class Overrides(DictFormatterValidator, Scriptable):
     """
-    Optional. This section allows you to define variables that can be used in any string formatter.
-    For example, if you want your file and thumbnail files to match without copy-pasting a large
-    format string, you can define something like:
+    Allows you to define variables that can be used in any EntryFormatter or OverridesFormatter.
+
+    :Usage:
 
     .. code-block:: yaml
 

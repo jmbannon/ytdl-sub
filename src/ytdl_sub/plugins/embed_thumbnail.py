@@ -20,13 +20,11 @@ class EmbedThumbnailOptions(BoolValidator, OptionsValidator):
     """
     Whether to embed thumbnails to the audio/video file or not.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           embed_thumbnail: True
+       embed_thumbnail: True
     """
 
 

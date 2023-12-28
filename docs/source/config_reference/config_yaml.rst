@@ -53,51 +53,7 @@ presets
 ~~~~~~~
 ``presets`` define a `formula` for how to format downloaded media and metadata.
 
-download_strategy
-"""""""""""""""""
-Download strategies dictate what is getting downloaded from a source. Each
-download strategy has its own set of parameters.
-
-.. _url:
-
-url
-'''
-.. autoclass:: ytdl_sub.downloaders.url.url.UrlDownloadOptions()
-  :members: url, playlist_thumbnails, source_thumbnails, download_reverse
-  :member-order: bysource
-
-multi_url
-'''''''''
-.. autoclass:: ytdl_sub.downloaders.url.multi_url.MultiUrlDownloadOptions()
-  :members: urls, variables
-
--------------------------------------------------------------------------------
-
-output_options
-""""""""""""""
-
-.. autoclass:: ytdl_sub.config.preset_options.OutputOptions()
-  :members:
-  :member-order: bysource
-  :exclude-members: get_upload_date_range_to_keep, partial_validate
-
--------------------------------------------------------------------------------
-
-.. _ytdl_options:
-
-ytdl_options
-""""""""""""
-.. autoclass:: ytdl_sub.config.preset_options.YTDLOptions()
-
--------------------------------------------------------------------------------
-
-.. _overrides:
-
-overrides
-"""""""""
-.. autoclass:: ytdl_sub.config.overrides.Overrides()
-
-.. _parent preset:
+This section is work-in-progress!
 
 preset
 """"""
