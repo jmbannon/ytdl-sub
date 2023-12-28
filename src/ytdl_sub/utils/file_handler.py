@@ -33,13 +33,11 @@ def get_file_extension(file_name: Path | str) -> str:
     return file_name.rsplit(".", maxsplit=1)[-1]
 
 
-def get_md5_hash(contents: str | bytes) -> str:
+def get_md5_hash(contents: str) -> str:
     """
     Helper function to compute md5 hash
     """
-    if isinstance(contents, str):
-        contents = contents.encode("utf-8")
-    return hashlib.md5(contents).hexdigest()
+    return hashlib.md5(contents.encode()).hexdigest()
 
 
 def get_file_md5_hash(full_file_path: Path | str) -> str:
@@ -54,7 +52,7 @@ def get_file_md5_hash(full_file_path: Path | str) -> str:
     md5 hash of its contents
     """
     with open(full_file_path, "rb") as file:
-        return get_md5_hash(file.read())
+        return hashlib.md5(file.read()).hexdigest()
 
 
 def files_equal(full_file_path_a: Path | str, full_file_path_b: Path | str) -> bool:
