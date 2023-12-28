@@ -11,16 +11,24 @@ from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 class DateRangeOptions(OptionsDictValidator):
     """
     Only download files uploaded within the specified date range.
+    Dates must adhere to a yt-dlp datetime. From their docs:
 
-    Usage:
+    .. code-block:: Markdown
+
+       A string in the format YYYYMMDD or
+       (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
+
+    Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in this.
+    Note that yt-dlp will round times to the closest day, meaning that `day` is the lowest
+    granularity possible.
+
+    :usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           date_range:
-             before: "now"
-             after: "today-2weeks"
+       date_range:
+         before: "now"
+         after: "today-2weeks"
     """
 
     _optional_keys = {"before", "after"}
@@ -33,14 +41,18 @@ class DateRangeOptions(OptionsDictValidator):
     @property
     def before(self) -> Optional[StringDatetimeValidator]:
         """
-        Optional. Only download videos before this datetime.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Only download videos before this datetime.
         """
         return self._before
 
     @property
     def after(self) -> Optional[StringDatetimeValidator]:
         """
-        Optional. Only download videos after this datetime.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Only download videos before this datetime.
         """
         return self._after
 

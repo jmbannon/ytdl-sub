@@ -6,25 +6,29 @@ audio_extract
 -------------
 Extracts audio from a video file.
 
-Usage:
+:Usage:
 
 .. code-block:: yaml
 
-   presets:
-     my_example_preset:
-       audio_extract:
-         codec: "mp3"
-         quality: 128
+   audio_extract:
+     codec: "mp3"
+     quality: 128
 
-codec
-~~~~~
-The codec to output after extracting the audio. Supported codecs are aac, flac, mp3, m4a,
-opus, vorbis, wav, and best to grab the best possible format at runtime.
+``codec``
 
-quality
-~~~~~~~
-Optional. Specify ffmpeg audio quality. Insert a value between ``0`` (better) and ``9``
-(worse) for variable bitrate, or a specific bitrate like ``128`` for 128k.
+:expected type: String
+:description:
+  The codec to output after extracting the audio. Supported codecs are aac, flac, mp3, m4a,
+  opus, vorbis, wav, and best to grab the best possible format at runtime.
+
+
+``quality``
+
+:expected type: Float
+:description:
+  Optional. Specify ffmpeg audio quality. Insert a value between ``0`` (better) and ``9``
+  (worse) for variable bitrate, or a specific bitrate like ``128`` for 128k.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -33,87 +37,116 @@ chapters
 Embeds chapters to video files if they are present. Additional options to add SponsorBlock
 chapters and remove specific ones. Can also remove chapters using regex.
 
-Usage:
+:usage:
 
 .. code-block:: yaml
 
-   presets:
-     my_example_preset:
-       chapters:
-         # Embedded Chapter Fields
-         embed_chapters: True
-         allow_chapters_from_comments: False
-         remove_chapters_regex:
-           - "Intro"
-           - "Outro"
+   chapters:
+     # Embedded Chapter Fields
+     embed_chapters: True
+     allow_chapters_from_comments: False
+     remove_chapters_regex:
+       - "Intro"
+       - "Outro"
 
-         # Sponsorblock Fields
-         sponsorblock_categories:
-           - "outro"
-           - "selfpromo"
-           - "preview"
-           - "interaction"
-           - "sponsor"
-           - "music_offtopic"
-           - "intro"
-         remove_sponsorblock_categories: "all"
-         force_key_frames: False
+     # Sponsorblock Fields
+     sponsorblock_categories:
+       - "outro"
+       - "selfpromo"
+       - "preview"
+       - "interaction"
+       - "sponsor"
+       - "music_offtopic"
+       - "intro"
+     remove_sponsorblock_categories: "all"
+     force_key_frames: False
 
-allow_chapters_from_comments
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Optional. If chapters do not exist in the video/description itself, attempt to scrape
-comments to find the chapters. Defaults to False.
+``allow_chapters_from_comments``
 
-embed_chapters
-~~~~~~~~~~~~~~
-Optional. Embed chapters into the file. Defaults to True.
+:expected type: Optional[Boolean]
+:description:
+  Defaults to False. If chapters do not exist in the video/description itself, attempt to
+  scrape comments to find the chapters.
 
-force_key_frames
-~~~~~~~~~~~~~~~~
-Optional. Force keyframes at cuts when removing sections. This is slow due to needing a
-re-encode, but the resulting video may have fewer artifacts around the cuts. Defaults to
-False.
 
-remove_chapters_regex
-~~~~~~~~~~~~~~~~~~~~~
-Optional. List of regex patterns to match chapter titles against and remove them from the
-entry.
+``embed_chapters``
 
-remove_sponsorblock_categories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Optional. List of SponsorBlock categories to remove from the output file. Can only remove
-categories that are specified in ``sponsorblock_categories`` or "all", which removes
-everything specified in ``sponsorblock_categories``.
+:expected type: Optional[Boolean]
+:description:
+  Defaults to True. Embed chapters into the file.
 
-sponsorblock_categories
-~~~~~~~~~~~~~~~~~~~~~~~
-Optional. List of SponsorBlock categories to embed as chapters. Supports "sponsor",
-"intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
-"poi_highlight", or "all" to include all categories.
+
+``force_key_frames``
+
+:expected type: Optional[Boolean]
+:description:
+  Defaults to False. Force keyframes at cuts when removing sections. This is slow due to
+  needing a re-encode, but the resulting video may have fewer artifacts around the cuts.
+
+
+``remove_chapters_regex``
+
+:expected type: Optional[List[RegexString]
+:description:
+  List of regex patterns to match chapter titles against and remove them from the
+  entry.
+
+
+``remove_sponsorblock_categories``
+
+:expected type: Optional[List[String]]
+:description:
+  List of SponsorBlock categories to remove from the output file. Can only remove
+  categories that are specified in ``sponsorblock_categories`` or "all", which removes
+  everything specified in ``sponsorblock_categories``.
+
+
+``sponsorblock_categories``
+
+:expected type: Optional[List[String]]
+:description:
+  List of SponsorBlock categories to embed as chapters. Supports "sponsor",
+  "intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
+  "poi_highlight", or "all" to include all categories.
+
 
 ----------------------------------------------------------------------------------------------------
 
 date_range
 ----------
 Only download files uploaded within the specified date range.
+Dates must adhere to a yt-dlp datetime. From their docs:
 
-Usage:
+.. code-block:: Markdown
+
+   A string in the format YYYYMMDD or
+   (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
+
+Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in this.
+Note that yt-dlp will round times to the closest day, meaning that `day` is the lowest
+granularity possible.
+
+:usage:
 
 .. code-block:: yaml
 
-   presets:
-     my_example_preset:
-       date_range:
-         before: "now"
-         after: "today-2weeks"
+   date_range:
+     before: "now"
+     after: "today-2weeks"
 
-after
-~~~~~
-Optional. Only download videos after this datetime.
+``after``
 
-before
-~~~~~~
-Optional. Only download videos before this datetime.
+:expected type: Optional[OverridesFormatter]
+:description:
+  Only download videos before this datetime.
+
+
+``before``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Only download videos before this datetime.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -159,21 +192,23 @@ Supports custom ffmpeg conversions:
            -acodec copy
            -scodec mov_text
 
-convert_to
-~~~~~~~~~~
+``convert_to``
+
 Convert to a desired file type. Supports:
 
 * Video: avi, flv, mkv, mov, mp4, webm
 * Audio: aac, flac, mp3, m4a, opus, vorbis, wav
 
-convert_with
-~~~~~~~~~~~~
+
+``convert_with``
+
 Optional. Supports ``yt-dlp`` and ``ffmpeg``. ``yt-dlp`` will convert files within
 yt-dlp whereas ``ffmpeg`` specifies it will be converted using a custom command specified
 with ``ffmpeg_post_process_args``. Defaults to ``yt-dlp``.
 
-ffmpeg_post_process_args
-~~~~~~~~~~~~~~~~~~~~~~~~
+
+``ffmpeg_post_process_args``
+
 Optional. ffmpeg args to post-process an entry file with. The args will be inserted in the
 form of:
 
@@ -183,6 +218,7 @@ form of:
 
 The output file will use the extension specified in ``convert_to``. Post-processing args
 can still be set  with ``convert_with`` set to ``yt-dlp``.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -245,9 +281,10 @@ Usage:
      my_example_preset:
        format: "(bv*[height<=1080]+bestaudio/best[height<=1080])"
 
-format
-~~~~~~
+``format``
+
 yt-dlp format, uses same syntax as yt-dlp.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -280,11 +317,12 @@ Supports one or multiple filters:
            # - "age_limit<?18"
            # - "availability=?public"
 
-filters
-~~~~~~~
+``filters``
+
 The filters themselves. If used multiple times, the filter matches if at least one of the
 conditions are met. For logical AND's between match filters, use the ``&`` operator in
 a single match filter. These are applied when gathering metadata.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -316,14 +354,16 @@ Usage:
              - "{artist}"
              - "ytdl-sub"
 
-embed_thumbnail
-~~~~~~~~~~~~~~~
+``embed_thumbnail``
+
 Optional. Whether to embed the thumbnail into the audio file.
 
-tags
-~~~~
+
+``tags``
+
 Key, values of tag names, tag values. Supports source and override variables.
 Supports lists which will get written to MP3s as id3v2.4 multi-tags.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -349,18 +389,20 @@ Usage:
          # optional
          kodi_safe: False
 
-kodi_safe
-~~~~~~~~~
+``kodi_safe``
+
 Optional. Kodi does not support > 3-byte unicode characters, which include emojis and some
 foreign language characters. Setting this to True will replace those characters with '□'.
 Defaults to False.
 
-nfo_name
-~~~~~~~~
+
+``nfo_name``
+
 The NFO file name.
 
-nfo_root
-~~~~~~~~
+
+``nfo_root``
+
 The root tag of the NFO's XML. In the usage above, it would look like
 
 .. code-block:: xml
@@ -369,8 +411,9 @@ The root tag of the NFO's XML. In the usage above, it would look like
    <episodedetails>
    </episodedetails>
 
-tags
-~~~~
+
+``tags``
+
 Tags within the nfo_root tag. In the usage above, it would look like
 
 .. code-block:: xml
@@ -403,6 +446,7 @@ Which translates to
    <genre>Comedy</genre>
    <genre>Drama</genre>
 
+
 ----------------------------------------------------------------------------------------------------
 
 output_directory_nfo_tags
@@ -426,18 +470,20 @@ Usage:
          # optional
          kodi_safe: False
 
-kodi_safe
-~~~~~~~~~
+``kodi_safe``
+
 Optional. Kodi does not support > 3-byte unicode characters, which include emojis and some
 foreign language characters. Setting this to True will replace those characters with '□'.
 Defaults to False.
 
-nfo_name
-~~~~~~~~
+
+``nfo_name``
+
 The NFO file name.
 
-nfo_root
-~~~~~~~~
+
+``nfo_root``
+
 The root tag of the NFO's XML. In the usage above, it would look like
 
 .. code-block:: xml
@@ -446,8 +492,9 @@ The root tag of the NFO's XML. In the usage above, it would look like
    <tvshow>
    </tvshow>
 
-tags
-~~~~
+
+``tags``
+
 Tags within the nfo_root tag. In the usage above, it would look like
 
 .. code-block:: xml
@@ -478,6 +525,7 @@ Which translates to
    <genre>Comedy</genre>
    <genre>Drama</genre>
 
+
 ----------------------------------------------------------------------------------------------------
 
 output_options
@@ -503,47 +551,53 @@ Usage:
          keep_files_before: now
          keep_files_after: 19000101
 
-download_archive_name
-~~~~~~~~~~~~~~~~~~~~~
+``download_archive_name``
+
 Optional. The file name to store a subscriptions download archive placed relative to
 the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
 
-file_name
-~~~~~~~~~
+
+``file_name``
+
 Required. The file name for the media file. This can include directories such as
 ``"Season {upload_year}/{title}.{ext}"``, and will be placed in the output directory.
 
-info_json_name
-~~~~~~~~~~~~~~
+
+``info_json_name``
+
 Optional. The file name for the media's info json file. This can include directories such
 as ``"Season {upload_year}/{title}.{info_json_ext}"``, and will be placed in the output
 directory. Can be set to empty string or `null` to disable info json writes.
 
-keep_files_after
-~~~~~~~~~~~~~~~~
+
+``keep_files_after``
+
 Optional. Requires ``maintain_download_archive`` set to True.
 
 Only keeps files that are uploaded after this datetime. By default, ytdl-sub will keep
 files after ``19000101``, which implies all files. Can be used in conjunction with
 ``keep_max_files``.
 
-keep_files_before
-~~~~~~~~~~~~~~~~~
+
+``keep_files_before``
+
 Optional. Requires ``maintain_download_archive`` set to True.
 
 Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
 files before ``now``, which implies all files. Can be used in conjunction with
 ``keep_max_files``.
 
-keep_max_files
-~~~~~~~~~~~~~~
+
+``keep_max_files``
+
 Optional. Requires ``maintain_download_archive`` set to True.
 
 Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
 applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
 
-maintain_download_archive
-~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``maintain_download_archive``
+
 Optional. Maintains a download archive file in the output directory for a subscription.
 It is named ``.ytdl-sub-{subscription_name}-download-archive.json``, stored in the
 output directory.
@@ -554,22 +608,26 @@ prevent ytdl from redownloading media already downloaded.
 
 Defaults to False.
 
-migrated_download_archive_name
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``migrated_download_archive_name``
+
 Optional. Intended to be used if you are migrating a subscription with either a new
 subscription name or output directory. It will try to load the archive file using this name
 first, and fallback to ``download_archive_name``. It will always save to this file
 and remove the original ``download_archive_name``.
 
-output_directory
-~~~~~~~~~~~~~~~~
+
+``output_directory``
+
 Required. The output directory to store all media files downloaded.
 
-thumbnail_name
-~~~~~~~~~~~~~~
+
+``thumbnail_name``
+
 Optional. The file name for the media's thumbnail image. This can include directories such
 as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
 directory. Can be set to empty string or `null` to disable thumbnail writes.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -665,10 +723,11 @@ Usage:
                - "{upload_month}"
                - "{upload_day}"
 
-skip_if_match_fails
-~~~~~~~~~~~~~~~~~~~
+``skip_if_match_fails``
+
 Defaults to True. If True, when any match fails and has no defaults, the entry will be
 skipped. If False, ytdl-sub will error and all downloads will not proceed.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -693,10 +752,11 @@ Usage:
        split_by_chapters:
          when_no_chapters: "pass"
 
-when_no_chapters
-~~~~~~~~~~~~~~~~
+``when_no_chapters``
+
 Behavior to perform when no chapters are present. Supports "pass" (continue processing),
 "drop" (exclude it from output), and "error" (stop processing for everything).
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -719,30 +779,35 @@ Usage:
          languages: "en"  # supports list of multiple languages
          allow_auto_generated_subtitles: False
 
-allow_auto_generated_subtitles
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``allow_auto_generated_subtitles``
+
 Optional. Whether to allow auto generated subtitles. Defaults to False.
 
-embed_subtitles
-~~~~~~~~~~~~~~~
+
+``embed_subtitles``
+
 Optional. Whether to embed the subtitles into the video file. Defaults to False.
 NOTE: webm files can only embed "vtt" subtitle types.
 
-languages
-~~~~~~~~~
+
+``languages``
+
 Optional. Language code(s) to download for subtitles. Supports a single or list of multiple
 language codes. Defaults to "en".
 
-subtitles_name
-~~~~~~~~~~~~~~
+
+``subtitles_name``
+
 Optional. The file name for the media's subtitles if they are present. This can include
 directories such as ``"Season {upload_year}/{title_sanitized}.{lang}.{subtitles_ext}"``, and
 will be placed in the output directory. ``lang`` is dynamic since you can download multiple
 subtitles. It will set the respective language to the correct subtitle file.
 
-subtitles_type
-~~~~~~~~~~~~~~
+
+``subtitles_type``
+
 Optional. One of the subtitle file types "srt", "vtt", "ass", "lrc". Defaults to "srt"
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -770,24 +835,28 @@ Usage:
            max: 36
          subscription_download_probability: 1.0
 
-max_downloads_per_subscription
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``max_downloads_per_subscription``
+
 Number of downloads to perform per subscription.
 
-sleep_per_download_s
-~~~~~~~~~~~~~~~~~~~~
+
+``sleep_per_download_s``
+
 Number in seconds to sleep between each download. Does not include time it takes for
 ytdl-sub to perform post-processing.
 
-sleep_per_subscription_s
-~~~~~~~~~~~~~~~~~~~~~~~~
+
+``sleep_per_subscription_s``
+
 Number in seconds to sleep between each subscription.
 
-subscription_download_probability
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``subscription_download_probability``
+
 Probability to perform any downloads, recomputed for each subscription. This is only
 recommended to set if you run ytdl-sub in a cron-job, that way you are statistically
 guaranteed over time to eventually download the subscription.
+
 
 ----------------------------------------------------------------------------------------------------
 
@@ -806,9 +875,10 @@ Usage:
          date: "{upload_date}"
          description: "{description}"
 
-tags
-~~~~
+``tags``
+
 Key/values of tag names/values. Supports source and override variables.
+
 
 ----------------------------------------------------------------------------------------------------
 

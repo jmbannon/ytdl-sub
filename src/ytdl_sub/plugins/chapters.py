@@ -64,32 +64,29 @@ class ChaptersOptions(OptionsDictValidator):
     Embeds chapters to video files if they are present. Additional options to add SponsorBlock
     chapters and remove specific ones. Can also remove chapters using regex.
 
-    Usage:
+    :usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           chapters:
-             # Embedded Chapter Fields
-             embed_chapters: True
-             allow_chapters_from_comments: False
-             remove_chapters_regex:
-               - "Intro"
-               - "Outro"
+       chapters:
+         # Embedded Chapter Fields
+         embed_chapters: True
+         allow_chapters_from_comments: False
+         remove_chapters_regex:
+           - "Intro"
+           - "Outro"
 
-             # Sponsorblock Fields
-             sponsorblock_categories:
-               - "outro"
-               - "selfpromo"
-               - "preview"
-               - "interaction"
-               - "sponsor"
-               - "music_offtopic"
-               - "intro"
-             remove_sponsorblock_categories: "all"
-             force_key_frames: False
-
+         # Sponsorblock Fields
+         sponsorblock_categories:
+           - "outro"
+           - "selfpromo"
+           - "preview"
+           - "interaction"
+           - "sponsor"
+           - "music_offtopic"
+           - "intro"
+         remove_sponsorblock_categories: "all"
+         force_key_frames: False
     """
 
     _optional_keys = {
@@ -135,23 +132,29 @@ class ChaptersOptions(OptionsDictValidator):
     @property
     def embed_chapters(self) -> Optional[bool]:
         """
-        Optional. Embed chapters into the file. Defaults to True.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to True. Embed chapters into the file.
         """
         return self._embed_chapters
 
     @property
     def allow_chapters_from_comments(self) -> bool:
         """
-        Optional. If chapters do not exist in the video/description itself, attempt to scrape
-        comments to find the chapters. Defaults to False.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to False. If chapters do not exist in the video/description itself, attempt to
+          scrape comments to find the chapters.
         """
         return self._allow_chapters_from_comments
 
     @property
     def remove_chapters_regex(self) -> Optional[List[re.Pattern]]:
         """
-        Optional. List of regex patterns to match chapter titles against and remove them from the
-        entry.
+        :expected type: Optional[List[RegexString]
+        :description:
+          List of regex patterns to match chapter titles against and remove them from the
+          entry.
         """
         if self._remove_chapters_regex:
             return [validator.compiled_regex for validator in self._remove_chapters_regex.list]
@@ -160,9 +163,11 @@ class ChaptersOptions(OptionsDictValidator):
     @property
     def sponsorblock_categories(self) -> Optional[List[str]]:
         """
-        Optional. List of SponsorBlock categories to embed as chapters. Supports "sponsor",
-        "intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
-        "poi_highlight", or "all" to include all categories.
+        :expected type: Optional[List[String]]
+        :description:
+          List of SponsorBlock categories to embed as chapters. Supports "sponsor",
+          "intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
+          "poi_highlight", or "all" to include all categories.
         """
         if self._sponsorblock_categories:
             category_list = [validator.value for validator in self._sponsorblock_categories.list]
@@ -174,9 +179,11 @@ class ChaptersOptions(OptionsDictValidator):
     @property
     def remove_sponsorblock_categories(self) -> Optional[List[str]]:
         """
-        Optional. List of SponsorBlock categories to remove from the output file. Can only remove
-        categories that are specified in ``sponsorblock_categories`` or "all", which removes
-        everything specified in ``sponsorblock_categories``.
+        :expected type: Optional[List[String]]
+        :description:
+          List of SponsorBlock categories to remove from the output file. Can only remove
+          categories that are specified in ``sponsorblock_categories`` or "all", which removes
+          everything specified in ``sponsorblock_categories``.
         """
         if self._remove_sponsorblock_categories:
             category_list = [
@@ -190,9 +197,10 @@ class ChaptersOptions(OptionsDictValidator):
     @property
     def force_key_frames(self) -> bool:
         """
-        Optional. Force keyframes at cuts when removing sections. This is slow due to needing a
-        re-encode, but the resulting video may have fewer artifacts around the cuts. Defaults to
-        False.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to False. Force keyframes at cuts when removing sections. This is slow due to
+          needing a re-encode, but the resulting video may have fewer artifacts around the cuts.
         """
         return self._force_key_frames
 

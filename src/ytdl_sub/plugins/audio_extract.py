@@ -25,15 +25,13 @@ class AudioExtractOptions(OptionsDictValidator):
     """
     Extracts audio from a video file.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           audio_extract:
-             codec: "mp3"
-             quality: 128
+       audio_extract:
+         codec: "mp3"
+         quality: 128
     """
 
     _required_keys = {"codec"}
@@ -56,16 +54,20 @@ class AudioExtractOptions(OptionsDictValidator):
     @property
     def codec(self) -> str:
         """
-        The codec to output after extracting the audio. Supported codecs are aac, flac, mp3, m4a,
-        opus, vorbis, wav, and best to grab the best possible format at runtime.
+        :expected type: String
+        :description:
+          The codec to output after extracting the audio. Supported codecs are aac, flac, mp3, m4a,
+          opus, vorbis, wav, and best to grab the best possible format at runtime.
         """
         return self._codec
 
     @property
     def quality(self) -> Optional[float]:
         """
-        Optional. Specify ffmpeg audio quality. Insert a value between ``0`` (better) and ``9``
-        (worse) for variable bitrate, or a specific bitrate like ``128`` for 128k.
+        :expected type: Float
+        :description:
+          Optional. Specify ffmpeg audio quality. Insert a value between ``0`` (better) and ``9``
+          (worse) for variable bitrate, or a specific bitrate like ``128`` for 128k.
         """
         if self._quality is not None:
             return self._quality.value
