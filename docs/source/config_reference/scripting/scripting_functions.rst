@@ -603,7 +603,7 @@ Takes a date in the form of YYYYMMDD and returns a Map containing:
 - year (Integer)
 - month (Integer)
 - day (Integer)
-- year_truncated (String, YY from YY[YY])
+- year_truncated (Integer, YY from YY[YY])
 - month_padded (String)
 - day_padded (String)
 - year_truncated_reversed (Integer, 100 - year_truncated)
