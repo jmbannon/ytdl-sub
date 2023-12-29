@@ -14,6 +14,7 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
+from ytdl_sub.entries.variables.override_variables import OverrideVariables
 from ytdl_sub.script.script import Script
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
@@ -66,7 +67,7 @@ def _get_added_and_modified_variables(
 
 
 def _override_variables(overrides: Overrides) -> Set[str]:
-    return set(list(overrides.initial_variables().keys()))
+    return set(list(overrides.initial_variables().keys())) | {OverrideVariables.subscription_name()}
 
 
 def _entry_variables() -> Set[str]:
@@ -88,7 +89,9 @@ class VariableValidation:
         self.resolved_variables: Set[str] = set()
         self.unresolved_variables: Set[str] = set()
 
-    def initialize_overrides(self, overrides: Overrides) -> "VariableValidation":
+    def initialize_overrides(
+        self, subscription_name: str, overrides: Overrides
+    ) -> "VariableValidation":
         """
         Do some gymnastics to initialize the Overrides script.
         """
@@ -127,7 +130,9 @@ class VariableValidation:
         # Initialize overrides with unresolved variables + modified variables to throw an error.
         # For modified variables, this is to prevent a resolve(update=True) to setting any
         # dependencies until it has been explicitly added
-        overrides = overrides.initialize_script(unresolved_variables=self.unresolved_variables)
+        overrides = overrides.initialize_script(
+            subscription_name=subscription_name, unresolved_variables=self.unresolved_variables
+        )
 
         # copy the script and mock entry variables
         self.script = copy.deepcopy(overrides.script).add(_add_dummy_variables(entry_variables))

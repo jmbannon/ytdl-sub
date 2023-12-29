@@ -7,8 +7,8 @@ import mergedeep
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
 from ytdl_sub.entries.variables.override_variables import OverrideHelpers
+from ytdl_sub.entries.variables.override_variables import OverrideVariables
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
@@ -124,14 +124,20 @@ class Overrides(DictFormatterValidator, Scriptable):
             initial_variables,
             self.dict_with_format_strings,
             unresolved_variables if unresolved_variables else {},
-            {SUBSCRIPTION_NAME: self.subscription_name},
         )
         return ScriptUtils.add_sanitized_variables(initial_variables)
 
-    def initialize_script(self, unresolved_variables: Set[str]) -> "Overrides":
+    def initialize_script(
+        self, subscription_name: str, unresolved_variables: Set[str]
+    ) -> "Overrides":
         """
         Initialize the override script with override variables + any unresolved variables
         """
+        self.script.add(
+            ScriptUtils.add_sanitized_variables(
+                {OverrideVariables.subscription_name(): subscription_name}
+            )
+        )
         self.script.add(
             self.initial_variables(
                 unresolved_variables={
@@ -143,15 +149,6 @@ class Overrides(DictFormatterValidator, Scriptable):
         self.unresolvable.update(unresolved_variables)
         self.update_script()
         return self
-
-    @property
-    def subscription_name(self) -> str:
-        """
-        Returns
-        -------
-        Name of the subscription
-        """
-        return self._root_name
 
     def apply_formatter(
         self,
