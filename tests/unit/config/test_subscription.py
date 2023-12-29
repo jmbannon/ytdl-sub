@@ -156,8 +156,29 @@ def preset_with_subscription_overrides_tilda(
         preset_with_subscription_value,
         **{
             "parent_preset_2 | parent_preset_1": {
-                "~test_2_1": {
+                "~ test_2_1": {
                     "current_override": "test_2_1",
+                }
+            },
+        },
+    )
+
+
+@pytest.fixture
+def preset_with_subscription_overrides_map(
+    preset_with_subscription_value: Dict,
+):
+    return dict(
+        preset_with_subscription_value,
+        **{
+            "parent_preset_2 | parent_preset_1": {
+                "+ test_2_1": {
+                    "custom_key": "custom_value",
+                    "custom_list": [
+                        "elem1",
+                        "elem2",
+                        "elem3",
+                    ],
                 }
             },
         },
@@ -238,6 +259,27 @@ def test_subscription_overrides_tilda(
 
     assert sub_2_1.get("subscription_name") == "test_2_1"
     assert sub_2_1.get("current_override") == "test_2_1"  # tilda sub takes precedence
+
+
+def test_subscription_overrides_map(
+    config_file: ConfigFile,
+    preset_with_subscription_overrides_map: Dict,
+):
+    with mock_load_yaml(preset_dict=preset_with_subscription_overrides_map):
+        subs = Subscription.from_file_path(config=config_file, subscription_path="mocked")
+    assert len(subs) == 3
+
+    sub_2_1 = [sub for sub in subs if sub.name == "test_2_1"][0].overrides.script
+
+    assert sub_2_1.get("subscription_name").native == "test_2_1"
+    assert sub_2_1.get("subscription_map").native == {
+        "custom_key": "custom_value",
+        "custom_list": [
+            "elem1",
+            "elem2",
+            "elem3",
+        ],
+    }
 
 
 def test_subscription_with_period_in_name(

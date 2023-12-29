@@ -63,6 +63,35 @@ class OverrideVariables:
         """
         return f"subscription_value_{index + 1}"
 
+    @staticmethod
+    def subscription_map() -> str:
+        """
+        For subscriptions in the form of
+
+        .. code-block:: yaml
+
+           + Subscription Name:
+             Music Videos:
+               - "https://url1.com/..."
+             Concerts:
+               - "https://url2.com/..."
+
+        Stores all the contents under the subscription name into the override variable
+        ``subscription_map`` as a Map value. The above example is stored as:
+
+        .. code-block:: python
+
+           {
+             "Music Videos": [
+               "https://url1.com/..."
+             ],
+             "Concerts: [
+               "https://url2.com/..."
+             ]
+           }
+        """
+        return SUBSCRIPTION_MAP
+
 
 class OverrideHelpers:
     @classmethod
