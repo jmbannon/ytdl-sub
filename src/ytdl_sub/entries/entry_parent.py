@@ -3,15 +3,14 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import TBaseEntry
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import MetadataVariable
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
-from ytdl_sub.entries.script.variable_scripts import ENTRY_DEFAULT_VARIABLES
-from ytdl_sub.entries.script.variable_scripts import ENTRY_REQUIRED_VARIABLES
+from ytdl_sub.entries.script.variable_types import MetadataVariable
 
 v: VariableDefinitions = VARIABLES
 
@@ -53,8 +52,8 @@ class EntryParent(BaseEntry):
 
     def _sibling_entry_metadata(self) -> List[Dict[str, Any]]:
         sibling_entry_metadata: List[Dict[str, Any]] = []
-        variable_filter: List[MetadataVariable] = list(ENTRY_REQUIRED_VARIABLES.keys()) + list(
-            ENTRY_DEFAULT_VARIABLES.keys()
+        variable_filter: Set[MetadataVariable] = (
+            v.required_entry_variables() | v.default_entry_variables()
         )
         for entry in self.entry_children():
             sibling_entry_metadata.append(

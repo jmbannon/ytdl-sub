@@ -101,7 +101,7 @@ class CustomFunctions:
         - year (Integer)
         - month (Integer)
         - day (Integer)
-        - year_truncated (String, YY from YY[YY])
+        - year_truncated (Integer, YY from YY[YY])
         - month_padded (String)
         - day_padded (String)
         - year_truncated_reversed (Integer, 100 - year_truncated)
@@ -149,7 +149,7 @@ class CustomFunctions:
                 String("year"): Integer(year),
                 String("month"): Integer(month),
                 String("day"): Integer(day),
-                String("year_truncated"): String(year_truncated),
+                String("year_truncated"): Integer(year_truncated),
                 String("month_padded"): String(month_padded),
                 String("day_padded"): String(day_padded),
                 String("year_truncated_reversed"): Integer(100 - year_truncated),
