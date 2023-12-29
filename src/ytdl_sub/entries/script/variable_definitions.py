@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Dict
 from typing import Set
 
+from ytdl_sub.entries.script.custom_functions import CustomFunctions
 from ytdl_sub.entries.script.variable_types import ArrayMetadataVariable
 from ytdl_sub.entries.script.variable_types import IntegerMetadataVariable
 from ytdl_sub.entries.script.variable_types import IntegerVariable
@@ -15,6 +16,7 @@ from ytdl_sub.entries.script.variable_types import StringVariable
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member
 # pylint: disable=too-many-public-methods
+# pylint: disable=too-many-lines
 
 
 class MetadataVariableDefinitions(ABC):
@@ -62,7 +64,9 @@ class PlaylistVariableDefinitions(ABC):
         """
         The playlist unique ID if it exists, otherwise return the entry unique ID.
         """
-        return StringMetadataVariable.from_playlist(metadata_key="playlist_id", default=self.uid)
+        return StringMetadataVariable.from_playlist(
+            metadata_key="playlist_id", variable_name="playlist_uid", default=self.uid
+        )
 
     @property
     def playlist_title(self: "VariableDefinitions") -> StringMetadataVariable:
@@ -209,7 +213,10 @@ class PlaylistVariableDefinitions(ABC):
         """
         The playlist uploader id if it exists, otherwise returns the entry uploader ID.
         """
-        return StringMetadataVariable.from_entry(metadata_key="playlist_uploader_id")
+        return StringMetadataVariable.from_entry(
+            metadata_key="playlist_uploader_id",
+            default=self.uploader_id,
+        )
 
     @property
     def playlist_uploader(self: "VariableDefinitions") -> StringMetadataVariable:
@@ -296,7 +303,9 @@ class SourceVariableDefinitions(ABC):
         The source webpage url if it exists, otherwise returns the playlist webpage url.
         """
         return StringMetadataVariable.from_source(
-            metadata_key=self.webpage_url.metadata_key, variable_name="source_webpage_url"
+            metadata_key=self.webpage_url.metadata_key,
+            variable_name="source_webpage_url",
+            default=self.playlist_webpage_url,
         )
 
     @property
@@ -740,14 +749,15 @@ class EntryVariableDefinitions(ABC):
         The sanitized uid with additional sanitizing for Plex. Replaces numbers with
         fixed-width numbers so Plex does not recognize them as season or episode numbers.
         """
-        return self.uid.to_sanitized_plex("uid_sanitized_plex")
+        return self.uid.to_sanitized_plex(variable_name="uid_sanitized_plex")
 
     @property
     def ie_key(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The ie_key, used in legacy yt-dlp things as the 'info-extractor key'
+        The ie_key, used in legacy yt-dlp things as the 'info-extractor key'.
+        If it does not exist, return ``extractor_key``
         """
-        return StringMetadataVariable.from_entry(metadata_key="ie_key")
+        return StringMetadataVariable.from_entry(metadata_key="ie_key", default=self.extractor_key)
 
     @property
     def extractor_key(self: "VariableDefinitions") -> StringMetadataVariable:
@@ -962,6 +972,9 @@ class VariableDefinitions(
 ):
     @classmethod
     def scripts(cls) -> Dict[str, str]:
+        """
+        Returns all variables and their scripts in dict form
+        """
         return {
             property_name: getattr(VARIABLES, property_name).definition
             for property_name in [
@@ -971,6 +984,9 @@ class VariableDefinitions(
 
     @classmethod
     def injected_variables(cls) -> Set[MetadataVariable]:
+        """
+        Returns variables that get injected in the download-stage
+        """
         return {
             VARIABLES.download_index,
             VARIABLES.comments,
@@ -982,6 +998,9 @@ class VariableDefinitions(
 
     @classmethod
     def required_entry_variables(cls) -> Set[MetadataVariable]:
+        """
+        Returns variables that the entry requires to exist
+        """
         return {
             VARIABLES.uid,
             VARIABLES.extractor_key,
@@ -992,6 +1011,10 @@ class VariableDefinitions(
 
     @classmethod
     def default_entry_variables(cls) -> Set[MetadataVariable]:
+        """
+        Returns variables that reside on the entry that may or may not exist,
+        but have defaults
+        """
         return {
             VARIABLES.title,
             VARIABLES.extractor,
@@ -1015,6 +1038,9 @@ class VariableDefinitions(
 
     @classmethod
     def unresolvable_static_variables(cls) -> Set[str]:
+        """
+        Returns variables that are not static (i.e. depend on runtime)
+        """
         return {
             VARIABLES.entry_metadata.variable_name,
         } | cls.injected_variables()
@@ -1024,3 +1050,5 @@ class VariableDefinitions(
 VARIABLES: VariableDefinitions = VariableDefinitions()
 VARIABLE_SCRIPTS: Dict[str, str] = VariableDefinitions.scripts()
 UNRESOLVED_VARIABLES: Set[str] = VariableDefinitions.unresolvable_static_variables()
+
+CustomFunctions.register()

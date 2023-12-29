@@ -17,6 +17,7 @@ PLAYLIST_METADATA_VARIABLE_NAME = "playlist_metadata"
 SOURCE_METADATA_VARIABLE_NAME = "source_metadata"
 
 TMetadataVariable = TypeVar("TMetadataVariable", bound="MetadataVariable")
+TVariable = TypeVar("TVariable", bound="Variable")
 
 
 def _get(
@@ -24,7 +25,7 @@ def _get(
     metadata_variable_name: str,
     metadata_key: str,
     variable_name: Optional[str],
-    default: Optional["Variable" | str | int | Dict | List],
+    default: Optional[TVariable | str | int | Dict | List],
     as_type: Type[TMetadataVariable],
 ) -> TMetadataVariable:
     if default is None:
@@ -69,12 +70,18 @@ class StringVariable(Variable):
         return String.__name__
 
     def to_sanitized_plex(self, variable_name: str) -> "StringVariable":
+        """
+        Converts a String variable to be plex sanitized
+        """
         return StringVariable(
             variable_name=variable_name,
             definition=f"{{%sanitize_plex_episode({self.variable_name})}}",
         )
 
     def as_date_variable(self) -> "StringDateVariable":
+        """
+        Converts a String variable to a date variable (which has metadata helpers)
+        """
         return StringDateVariable(
             variable_name=self.variable_name,
             definition=self.definition,
@@ -86,6 +93,9 @@ class StringDateVariable(StringVariable):
     def get_string_date_metadata(
         self, date_metadata_key: str, variable_name: Optional[str] = None
     ) -> StringVariable:
+        """
+        Gets a string-based date metadata variable
+        """
         return StringVariable(
             variable_name=variable_name or date_metadata_key,
             definition=f"""{{
@@ -101,6 +111,9 @@ class StringDateVariable(StringVariable):
     def get_integer_date_metadata(
         self, date_metadata_key: str, variable_name: str
     ) -> "IntegerVariable":
+        """
+        Gets an int-based date metadata variable
+        """
         return IntegerVariable(
             variable_name=variable_name,
             definition=f"""{{
@@ -121,6 +134,9 @@ class IntegerVariable(Variable):
         return Integer.__name__
 
     def to_padded_int(self, variable_name: str, pad: int) -> StringVariable:
+        """
+        Pads an integer
+        """
         return StringVariable(
             variable_name=variable_name, definition=f"{{%pad_zero({self.variable_name}, {pad})}}"
         )
@@ -154,6 +170,9 @@ class MapMetadataVariable(MetadataVariable, MapVariable):
         variable_name: Optional[str] = None,
         default: Optional["MapMetadataVariable" | Dict] = None,
     ) -> "MapMetadataVariable":
+        """
+        Creates a map variable from entry metadata
+        """
         return _get(
             "map",
             metadata_variable_name=ENTRY_METADATA_VARIABLE_NAME,
@@ -173,6 +192,9 @@ class ArrayMetadataVariable(MetadataVariable, ArrayVariable):
         variable_name: Optional[str] = None,
         default: Optional["ArrayMetadataVariable" | List] = None,
     ) -> "ArrayMetadataVariable":
+        """
+        Creates an array variable from entry metadata
+        """
         return _get(
             "array",
             metadata_variable_name=ENTRY_METADATA_VARIABLE_NAME,
@@ -192,6 +214,9 @@ class StringMetadataVariable(MetadataVariable, StringVariable):
         variable_name: Optional[str] = None,
         default: Optional[StringVariable | str] = None,
     ) -> "StringMetadataVariable":
+        """
+        Creates a string variable from entry metadata
+        """
         return _get(
             "string",
             metadata_variable_name=ENTRY_METADATA_VARIABLE_NAME,
@@ -208,6 +233,9 @@ class StringMetadataVariable(MetadataVariable, StringVariable):
         variable_name: Optional[str] = None,
         default: Optional[StringVariable | str] = None,
     ) -> "StringMetadataVariable":
+        """
+        Creates a string variable from playlist metadata
+        """
         return _get(
             "string",
             metadata_variable_name=PLAYLIST_METADATA_VARIABLE_NAME,
@@ -224,6 +252,9 @@ class StringMetadataVariable(MetadataVariable, StringVariable):
         variable_name: Optional[str] = None,
         default: Optional[StringVariable | str] = None,
     ) -> "StringMetadataVariable":
+        """
+        Creates a string variable from source metadata
+        """
         return _get(
             "string",
             metadata_variable_name=SOURCE_METADATA_VARIABLE_NAME,
@@ -243,6 +274,9 @@ class IntegerMetadataVariable(MetadataVariable, IntegerVariable):
         variable_name: Optional[str] = None,
         default: Optional[IntegerVariable | int] = None,
     ) -> "IntegerMetadataVariable":
+        """
+        Creates an int variable from entry metadata
+        """
         return _get(
             "int",
             metadata_variable_name=ENTRY_METADATA_VARIABLE_NAME,
@@ -259,6 +293,9 @@ class IntegerMetadataVariable(MetadataVariable, IntegerVariable):
         variable_name: Optional[str] = None,
         default: Optional[IntegerVariable | int] = None,
     ) -> "IntegerMetadataVariable":
+        """
+        Creates an int variable from playlist metadata
+        """
         return _get(
             "int",
             metadata_variable_name=PLAYLIST_METADATA_VARIABLE_NAME,
