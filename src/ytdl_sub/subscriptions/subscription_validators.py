@@ -219,7 +219,7 @@ class SubscriptionMapValidator(SubscriptionLeafValidator, LiteralDictValidator):
             presets=presets,
             indent_overrides=indent_overrides,
         )
-        self._overrides_to_add = {SUBSCRIPTION_MAP: ScriptUtils.to_script(self.dict)}
+        self._overrides_to_add[SUBSCRIPTION_MAP] = ScriptUtils.to_script(self.dict)
 
 
 class SubscriptionValidator(SubscriptionOutput):
