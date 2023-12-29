@@ -84,7 +84,7 @@ class PlaylistVariableDefinitions(ABC):
         :description:
           Name of its parent playlist/channel if it exists, otherwise returns its title.
         """
-        return StringMetadataVariable.from_playlist(
+        return StringMetadataVariable.from_entry(
             metadata_key="playlist_title", default=self.title
         )
 
