@@ -3,9 +3,7 @@ from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.utils.name_validation import is_valid_name
 
-SUBSCRIPTION_NAME = "subscription_name"
-SUBSCRIPTION_VALUE = "subscription_value"
-SUBSCRIPTION_MAP = "subscription_map"
+# TODO: use this
 SUBSCRIPTION_ARRAY = "subscription_array"
 
 
@@ -15,7 +13,7 @@ class OverrideVariables:
         """
         Name of the subscription
         """
-        return SUBSCRIPTION_NAME
+        return "subscription_name"
 
     @staticmethod
     def subscription_value() -> str:
@@ -28,7 +26,7 @@ class OverrideVariables:
 
         ``subscription_value`` gets set to ``https://...``.
         """
-        return SUBSCRIPTION_VALUE
+        return "subscription_value"
 
     @staticmethod
     def subscription_indent_i(index: int) -> str:
@@ -90,7 +88,7 @@ class OverrideVariables:
              ]
            }
         """
-        return SUBSCRIPTION_MAP
+        return "subscription_map"
 
 
 class OverrideHelpers:

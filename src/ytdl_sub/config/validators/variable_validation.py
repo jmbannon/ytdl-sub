@@ -88,7 +88,9 @@ class VariableValidation:
         self.resolved_variables: Set[str] = set()
         self.unresolved_variables: Set[str] = set()
 
-    def initialize_overrides(self, overrides: Overrides) -> "VariableValidation":
+    def initialize_overrides(
+        self, subscription_name: str, overrides: Overrides
+    ) -> "VariableValidation":
         """
         Do some gymnastics to initialize the Overrides script.
         """
@@ -127,7 +129,9 @@ class VariableValidation:
         # Initialize overrides with unresolved variables + modified variables to throw an error.
         # For modified variables, this is to prevent a resolve(update=True) to setting any
         # dependencies until it has been explicitly added
-        overrides = overrides.initialize_script(unresolved_variables=self.unresolved_variables)
+        overrides = overrides.initialize_script(
+            subscription_name=subscription_name, unresolved_variables=self.unresolved_variables
+        )
 
         # copy the script and mock entry variables
         self.script = copy.deepcopy(overrides.script).add(_add_dummy_variables(entry_variables))

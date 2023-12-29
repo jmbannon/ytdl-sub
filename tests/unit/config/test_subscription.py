@@ -451,7 +451,7 @@ def test_advanced_tv_show_subscriptions(
     assert subs[5].name == "Gardening with Ciscoe"
     overrides = subs[5].overrides
 
-    assert overrides.apply_formatter(overrides.dict["subscription_name"]) == "Gardening with Ciscoe"
+    assert overrides.script.get("subscription_name").native == "Gardening with Ciscoe"
     assert (
         overrides.apply_formatter(overrides.dict["url"])
         == "https://www.youtube.com/@gardeningwithciscoe4430"
