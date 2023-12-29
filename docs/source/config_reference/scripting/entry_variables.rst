@@ -192,7 +192,8 @@ source_metadata
 ~~~~~~~~~~~~~~~
 :type: ``Map``
 :description:
-  Metadata from the source (i.e. the grandparent metadata, like channel -> playlist -> entry)
+  Metadata from the source
+  (i.e. the grandparent metadata, like channel -> playlist -> entry)
 
 ----------------------------------------------------------------------------------------------------
 
