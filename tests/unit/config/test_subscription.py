@@ -172,7 +172,7 @@ def preset_with_subscription_overrides_map(
         preset_with_subscription_value,
         **{
             "parent_preset_2 | parent_preset_1": {
-                "\\ test_2_1": {
+                "+ test_2_1": {
                     "custom_key": "custom_value",
                     "custom_list": [
                         "elem1",

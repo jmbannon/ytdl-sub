@@ -21,7 +21,7 @@ For subscriptions in the form of
 
 .. code-block:: yaml
 
-   \ Subscription Name:
+   + Subscription Name:
      Music Videos:
        - "https://url1.com/..."
      Concerts:

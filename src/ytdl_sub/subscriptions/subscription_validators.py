@@ -317,7 +317,7 @@ class SubscriptionValidator(SubscriptionOutput):
                 # Subscription defined as
                 # "\Sub Name":
                 #   custom_key: "value"
-                elif key.startswith("\\"):
+                elif key.startswith("+"):
                     self._children.append(
                         SubscriptionMapValidator(
                             name=obj_name,

@@ -70,7 +70,7 @@ class OverrideVariables:
 
         .. code-block:: yaml
 
-           \\ Subscription Name:
+           + Subscription Name:
              Music Videos:
                - "https://url1.com/..."
              Concerts:
