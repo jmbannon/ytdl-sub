@@ -5,9 +5,9 @@ from typing import Dict
 from typing import Set
 
 from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
-from ytdl_sub.entries.script.variable_definitions import Variable
-from ytdl_sub.entries.script.variable_scripts import UNRESOLVED_VARIABLES
-from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
+from ytdl_sub.entries.script.variable_definitions import UNRESOLVED_VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
+from ytdl_sub.entries.script.variable_types import Variable
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.utils.exceptions import StringFormattingException

@@ -1,5 +1,5 @@
 from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
-from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
+from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.utils.name_validation import is_valid_name
 

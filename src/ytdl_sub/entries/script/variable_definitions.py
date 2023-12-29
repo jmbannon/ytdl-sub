@@ -1,770 +1,1065 @@
 from abc import ABC
-from dataclasses import dataclass
+from functools import cache
+from functools import cached_property
+from typing import Dict
+from typing import Set
+
+from ytdl_sub.entries.script.custom_functions import CustomFunctions
+from ytdl_sub.entries.script.variable_types import ArrayMetadataVariable
+from ytdl_sub.entries.script.variable_types import IntegerMetadataVariable
+from ytdl_sub.entries.script.variable_types import IntegerVariable
+from ytdl_sub.entries.script.variable_types import MapMetadataVariable
+from ytdl_sub.entries.script.variable_types import MapVariable
+from ytdl_sub.entries.script.variable_types import MetadataVariable
+from ytdl_sub.entries.script.variable_types import StringDateMetadataVariable
+from ytdl_sub.entries.script.variable_types import StringDateVariable
+from ytdl_sub.entries.script.variable_types import StringMetadataVariable
+from ytdl_sub.entries.script.variable_types import StringVariable
+from ytdl_sub.entries.script.variable_types import Variable
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member
 # pylint: disable=too-many-public-methods
-
-
-@dataclass(frozen=True)
-class Variable:
-    variable_name: str
-
-
-@dataclass(frozen=True)
-class InternalVariable(Variable):
-    pass
-
-
-@dataclass(frozen=True)
-class Metadata(Variable):
-    pass
-
-
-@dataclass(frozen=True)
-class MetadataVariable(Variable):
-    metadata_key: str
-
-
-@dataclass(frozen=True)
-class RelativeMetadata(MetadataVariable, Metadata):
-    pass
-
-
-@dataclass(frozen=True)
-class SiblingMetadata(MetadataVariable):
-    pass
+# pylint: disable=too-many-lines
 
 
 class MetadataVariableDefinitions(ABC):
-    @property
-    def entry_metadata(self: "VariableDefinitions") -> Metadata:
+    @cached_property
+    def entry_metadata(self: "VariableDefinitions") -> MapVariable:
         """
-        The entry's info.json
+        :description:
+          The entry's info.json
         """
-        return Metadata("entry_metadata")
+        return MapVariable(variable_name="entry_metadata", definition="{ {} }")
 
-    @property
-    def playlist_metadata(self: "VariableDefinitions") -> RelativeMetadata:
+    @cached_property
+    def playlist_metadata(self: "VariableDefinitions") -> MapMetadataVariable:
         """
-        Metadata from the playlist (i.e. the parent metadata, like playlist -> entry)
+        :description:
+          Metadata from the playlist (i.e. the parent metadata, like playlist -> entry)
         """
-        return RelativeMetadata("playlist_metadata", metadata_key="playlist_metadata")
+        return MapMetadataVariable.from_entry(
+            metadata_key="playlist_metadata",
+            default={},
+        )
 
-    @property
-    def source_metadata(self: "VariableDefinitions") -> RelativeMetadata:
+    @cached_property
+    def source_metadata(self: "VariableDefinitions") -> MapMetadataVariable:
         """
-        Metadata from the source (i.e. the grandparent metadata, like channel -> playlist -> entry)
+        :description:
+          Metadata from the source
+          (i.e. the grandparent metadata, like channel -> playlist -> entry)
         """
-        return RelativeMetadata("source_metadata", metadata_key="source_metadata")
+        return MapMetadataVariable.from_entry(
+            metadata_key="source_metadata",
+            default={},
+        )
 
-    @property
-    def sibling_metadata(self: "VariableDefinitions") -> SiblingMetadata:
+    @cached_property
+    def sibling_metadata(self: "VariableDefinitions") -> ArrayMetadataVariable:
         """
-        Metadata from any sibling entries that reside in the same playlist as this entry.
+        :description:
+          Metadata from any sibling entries that reside in the same playlist as this entry.
         """
-        return SiblingMetadata("sibling_metadata", metadata_key="sibling_metadata")
+        return ArrayMetadataVariable.from_entry(
+            metadata_key="sibling_metadata",
+            default=[],
+        )
 
 
 class PlaylistVariableDefinitions(ABC):
-    @property
-    def playlist_uid(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def playlist_uid(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The playlist unique ID if it exists, otherwise return the entry unique ID.
+        :description:
+          The playlist unique ID if it exists, otherwise return the entry unique ID.
         """
-        return MetadataVariable(variable_name="playlist_uid", metadata_key="playlist_id")
-
-    @property
-    def playlist_title(self: "VariableDefinitions") -> MetadataVariable:
-        """
-        Name of its parent playlist/channel if it exists, otherwise returns its title.
-        """
-        return MetadataVariable(variable_name="playlist_title", metadata_key="playlist_title")
-
-    @property
-    def playlist_index(self: "VariableDefinitions") -> MetadataVariable:
-        """
-        Playlist index if it exists, otherwise returns ``1``.
-
-        Note that for channels/playlists, any change (i.e. adding or removing a video) will make
-        this value change. Use with caution.
-        """
-        return MetadataVariable(metadata_key="playlist_index", variable_name="playlist_index")
-
-    @property
-    def playlist_index_reversed(self: "VariableDefinitions") -> Variable:
-        """
-        Playlist index reversed via ``playlist_count - playlist_index + 1``
-        """
-        return Variable("playlist_index_reversed")
-
-    @property
-    def playlist_index_padded(self: "VariableDefinitions") -> Variable:
-        """
-        playlist_index padded two digits
-        """
-        return Variable("playlist_index_padded")
-
-    @property
-    def playlist_index_reversed_padded(self: "VariableDefinitions") -> Variable:
-        """
-        playlist_index_reversed padded two digits
-        """
-        return Variable("playlist_index_reversed_padded")
-
-    @property
-    def playlist_index_padded6(self: "VariableDefinitions") -> Variable:
-        """
-        playlist_index padded six digits.
-        """
-        return Variable("playlist_index_padded6")
-
-    @property
-    def playlist_index_reversed_padded6(self: "VariableDefinitions") -> Variable:
-        """
-        playlist_index_reversed padded six digits.
-        """
-        return Variable("playlist_index_reversed_padded6")
-
-    @property
-    def playlist_count(self: "VariableDefinitions") -> MetadataVariable:
-        """
-        Playlist count if it exists, otherwise returns ``1``.
-
-        Note that for channels/playlists, any change (i.e. adding or removing a video) will make
-        this value change. Use with caution.
-        """
-        return MetadataVariable(variable_name="playlist_count", metadata_key="playlist_count")
-
-    @property
-    def playlist_description(self: "VariableDefinitions") -> MetadataVariable:
-        """
-        The playlist description if it exists, otherwise returns the entry's description.
-        """
-        return MetadataVariable(
-            variable_name="playlist_description", metadata_key=self.description.metadata_key
+        return StringMetadataVariable.from_playlist(
+            metadata_key="playlist_id", variable_name="playlist_uid", default=self.uid
         )
 
-    @property
-    def playlist_webpage_url(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def playlist_title(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The playlist webpage url if it exists. Otherwise, returns the entry webpage url.
+        :description:
+          Name of its parent playlist/channel if it exists, otherwise returns its title.
         """
-        return MetadataVariable(
-            variable_name="playlist_webpage_url", metadata_key=self.webpage_url.metadata_key
+        return StringMetadataVariable.from_entry(metadata_key="playlist_title", default=self.title)
+
+    @cached_property
+    def playlist_index(self: "VariableDefinitions") -> IntegerMetadataVariable:
+        """
+        :description:
+          Playlist index if it exists, otherwise returns ``1``.
+
+          Note that for channels/playlists, any change (i.e. adding or removing a video) will make
+          this value change. Use with caution.
+        """
+        return IntegerMetadataVariable.from_entry(metadata_key="playlist_index", default=1)
+
+    @cached_property
+    def playlist_index_reversed(self: "VariableDefinitions") -> IntegerVariable:
+        """
+        :description:
+          Playlist index reversed via ``playlist_count - playlist_index + 1``
+        """
+        return IntegerVariable(
+            variable_name="playlist_index_reversed",
+            definition=f"""{{
+                %sub(
+                    {self.playlist_count.variable_name},
+                    {self.playlist_index.variable_name},
+                    -1
+                )
+            }}""",
         )
 
-    @property
-    def playlist_max_upload_date(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def playlist_index_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        Max upload_date for all entries in this entry's playlist if it exists, otherwise returns
-        ``upload_date``
+        :description:
+          playlist_index padded two digits
         """
-        return Variable("playlist_max_upload_date")
+        return self.playlist_index.to_padded_int(variable_name="playlist_index_padded", pad=2)
 
-    @property
-    def playlist_max_upload_year(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def playlist_index_reversed_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        Max upload_year for all entries in this entry's playlist if it exists, otherwise returns
-        ``upload_year``
+        :description:
+          playlist_index_reversed padded two digits
         """
-        # override in EntryParent
-        return Variable("playlist_max_upload_year")
+        return self.playlist_index_reversed.to_padded_int(
+            variable_name="playlist_index_reversed_padded",
+            pad=2,
+        )
 
-    @property
-    def playlist_max_upload_year_truncated(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def playlist_index_padded6(self: "VariableDefinitions") -> StringVariable:
         """
-        The max playlist truncated upload year for all entries in this entry's playlist if it
-        exists, otherwise returns ``upload_year_truncated``.
+        :description:
+          playlist_index padded six digits.
         """
-        return Variable("playlist_max_upload_year_truncated")
+        return self.playlist_index.to_padded_int(variable_name="playlist_index_padded6", pad=6)
 
-    @property
-    def playlist_uploader_id(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def playlist_index_reversed_padded6(self: "VariableDefinitions") -> StringVariable:
         """
-        The playlist uploader id if it exists, otherwise returns the entry uploader ID.
+        :description:
+          playlist_index_reversed padded six digits.
         """
-        return MetadataVariable("playlist_uploader_id", metadata_key="playlist_uploader_id")
+        return self.playlist_index_reversed.to_padded_int(
+            variable_name="playlist_index_reversed_padded6", pad=6
+        )
 
-    @property
-    def playlist_uploader(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def playlist_count(self: "VariableDefinitions") -> IntegerMetadataVariable:
         """
-        The playlist uploader if it exists, otherwise return the entry uploader.
-        """
-        return MetadataVariable("playlist_uploader", metadata_key=self.uploader.metadata_key)
+        :description:
+          Playlist count if it exists, otherwise returns ``1``.
 
-    @property
-    def playlist_uploader_url(self: "VariableDefinitions") -> MetadataVariable:
+          Note that for channels/playlists, any change (i.e. adding or removing a video) will make
+          this value change. Use with caution.
         """
-        The playlist uploader url if it exists, otherwise returns the playlist webpage_url.
+        return IntegerMetadataVariable.from_entry(metadata_key="playlist_count", default=1)
+
+    @cached_property
+    def playlist_description(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        return MetadataVariable(
-            "playlist_uploader_url", metadata_key=self.uploader_url.metadata_key
+        :description:
+          The playlist description if it exists, otherwise returns the entry's description.
+        """
+        return StringMetadataVariable.from_playlist(
+            metadata_key=self.description.metadata_key,
+            variable_name="playlist_description",
+            default=self.description,
+        )
+
+    @cached_property
+    def playlist_webpage_url(self: "VariableDefinitions") -> StringMetadataVariable:
+        """
+        :description:
+          The playlist webpage url if it exists. Otherwise, returns the entry webpage url.
+        """
+        return StringMetadataVariable.from_playlist(
+            metadata_key=self.webpage_url.metadata_key,
+            variable_name="playlist_webpage_url",
+            default=self.webpage_url,
+        )
+
+    @cached_property
+    def playlist_max_upload_date(self: "VariableDefinitions") -> StringDateVariable:
+        """
+        :description:
+          Max upload_date for all entries in this entry's playlist if it exists, otherwise returns
+          ``upload_date``
+        """
+        return StringVariable(
+            variable_name="playlist_max_upload_date",
+            definition=f"""{{
+                %array_reduce(
+                    %if_passthrough(
+                        %extract_field_from_siblings('{self.upload_date.variable_name}'),
+                        [{self.upload_date.variable_name}]
+                    ),
+                    %max
+                )
+            }}""",
+        ).as_date_variable()
+
+    @cached_property
+    def playlist_max_upload_year(self: "VariableDefinitions") -> IntegerVariable:
+        """
+        :description:
+          Max upload_year for all entries in this entry's playlist if it exists, otherwise returns
+          ``upload_year``
+        """
+        return self.playlist_max_upload_date.get_integer_date_metadata(
+            date_metadata_key="year",
+            variable_name="playlist_max_upload_year",
+        )
+
+    @cached_property
+    def playlist_max_upload_year_truncated(self: "VariableDefinitions") -> IntegerVariable:
+        """
+        :description:
+          The max playlist truncated upload year for all entries in this entry's playlist if it
+          exists, otherwise returns ``upload_year_truncated``.
+        """
+        return self.playlist_max_upload_date.get_integer_date_metadata(
+            date_metadata_key="year_truncated", variable_name="playlist_max_upload_year_truncated"
+        )
+
+    @cached_property
+    def playlist_uploader_id(self: "VariableDefinitions") -> StringMetadataVariable:
+        """
+        :description:
+          The playlist uploader id if it exists, otherwise returns the entry uploader ID.
+        """
+        return StringMetadataVariable.from_entry(
+            metadata_key="playlist_uploader_id",
+            default=self.uploader_id,
+        )
+
+    @cached_property
+    def playlist_uploader(self: "VariableDefinitions") -> StringMetadataVariable:
+        """
+        :description:
+          The playlist uploader if it exists, otherwise return the entry uploader.
+        """
+        return StringMetadataVariable.from_playlist(
+            metadata_key=self.uploader.metadata_key,
+            variable_name="playlist_uploader",
+            default=self.uploader,
+        )
+
+    @cached_property
+    def playlist_uploader_url(self: "VariableDefinitions") -> StringMetadataVariable:
+        """
+        :description:
+          The playlist uploader url if it exists, otherwise returns the playlist webpage_url.
+        """
+        return StringMetadataVariable.from_playlist(
+            metadata_key=self.uploader_url.metadata_key,
+            variable_name="playlist_uploader_url",
+            default=self.webpage_url,
         )
 
 
 class SourceVariableDefinitions(ABC):
-    @property
-    def source_title(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_title(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        Name of the source (i.e. channel with multiple playlists) if it exists, otherwise
-        returns its playlist_title.
+        :description:
+          Name of the source (i.e. channel with multiple playlists) if it exists, otherwise
+          returns its playlist_title.
         """
-        return MetadataVariable("source_title", metadata_key=self.title.metadata_key)
+        return StringMetadataVariable.from_source(
+            metadata_key=self.title.metadata_key,
+            variable_name="source_title",
+            default=self.playlist_title,
+        )
 
-    @property
-    def source_uid(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_uid(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The source unique id if it exists, otherwise returns the playlist unique ID.
+        :description:
+          The source unique id if it exists, otherwise returns the playlist unique ID.
         """
-        return MetadataVariable("source_uid", metadata_key=self.uid.metadata_key)
+        return StringMetadataVariable.from_source(
+            metadata_key=self.uid.metadata_key,
+            variable_name="source_uid",
+            default=self.playlist_uid,
+        )
 
-    @property
-    def source_index(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_index(self: "VariableDefinitions") -> IntegerMetadataVariable:
         """
-        Source index if it exists, otherwise returns ``1``.
+        :description:
+          Source index if it exists, otherwise returns ``1``.
 
-        It is recommended to not use this unless you know the source will never add new content
-        (it is easy for this value to change).
+          It is recommended to not use this unless you know the source will never add new content
+          (it is easy for this value to change).
         """
-        return MetadataVariable("source_index", metadata_key=self.playlist_index.metadata_key)
+        return IntegerMetadataVariable.from_playlist(
+            metadata_key=self.playlist_index.metadata_key,
+            variable_name="source_index",
+            default=1,
+        )
 
-    @property
-    def source_index_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def source_index_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The source index, padded.
+        :description:
+          The source index, padded two digits.
         """
-        return Variable("source_index_padded")
+        return self.source_index.to_padded_int(variable_name="source_index_padded", pad=2)
 
-    @property
-    def source_count(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_count(self: "VariableDefinitions") -> IntegerMetadataVariable:
         """
-        The source count if it exists, otherwise returns the playlist count.
+        :description:
+          The source count if it exists, otherwise returns ``1``.
         """
-        return MetadataVariable("source_count", metadata_key=self.playlist_count.metadata_key)
+        return IntegerMetadataVariable.from_playlist(
+            metadata_key=self.playlist_count.metadata_key,
+            variable_name="source_count",
+            default=1,
+        )
 
-    @property
-    def source_webpage_url(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_webpage_url(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The source webpage url if it exists, otherwise returns the playlist webpage url.
+        :description:
+          The source webpage url if it exists, otherwise returns the playlist webpage url.
         """
-        return MetadataVariable("source_webpage_url", metadata_key=self.webpage_url.metadata_key)
+        return StringMetadataVariable.from_source(
+            metadata_key=self.webpage_url.metadata_key,
+            variable_name="source_webpage_url",
+            default=self.playlist_webpage_url,
+        )
 
-    @property
-    def source_description(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_description(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The source description if it exists, otherwise returns the playlist description.
+        :description:
+          The source description if it exists, otherwise returns the playlist description.
         """
-        return MetadataVariable("source_description", metadata_key=self.description.metadata_key)
+        return StringMetadataVariable.from_source(
+            metadata_key=self.description.metadata_key,
+            variable_name="source_description",
+            default=self.playlist_description,
+        )
 
-    @property
-    def source_uploader_id(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_uploader_id(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The source uploader id if it exists, otherwise returns the playlist_uploader_id
+        :description:
+          The source uploader id if it exists, otherwise returns the playlist_uploader_id
         """
-        return MetadataVariable("source_uploader_id", metadata_key=self.uploader_id.metadata_key)
+        return StringMetadataVariable.from_source(
+            metadata_key=self.uploader_id.metadata_key,
+            variable_name="source_uploader_id",
+            default=self.playlist_uploader_id,
+        )
 
-    @property
-    def source_uploader(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_uploader(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The source uploader if it exists, otherwise return the playlist_uploader
+        :description:
+          The source uploader if it exists, otherwise return the playlist_uploader
         """
-        return MetadataVariable("source_uploader", metadata_key=self.uploader.metadata_key)
+        return StringMetadataVariable.from_source(
+            metadata_key=self.uploader.metadata_key,
+            variable_name="source_uploader",
+            default=self.playlist_uploader,
+        )
 
-    @property
-    def source_uploader_url(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def source_uploader_url(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The source uploader url if it exists, otherwise returns the source webpage_url.
+        :description:
+          The source uploader url if it exists, otherwise returns the source webpage_url.
         """
-        return MetadataVariable("source_uploader_url", metadata_key=self.uploader_url.metadata_key)
+        return StringMetadataVariable.from_source(
+            metadata_key=self.uploader_url.metadata_key,
+            variable_name="source_uploader_url",
+            default=self.source_webpage_url,
+        )
 
 
 class UploadDateVariableDefinitions(ABC):
-    @property
-    def upload_date(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def upload_date(self: "VariableDefinitions") -> StringDateMetadataVariable:
         """
-        The entry’s uploaded date, in YYYYMMDD format. If not present, return today’s date.
+        :description:
+          The entry’s uploaded date, in YYYYMMDD format. If not present, return today’s date.
         """
-        return MetadataVariable(variable_name="upload_date", metadata_key="upload_date")
+        return StringDateMetadataVariable.from_entry(metadata_key="upload_date").as_date_variable()
 
-    @property
-    def upload_year(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_year(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The entry's upload year
+        :description:
+          The entry's upload year
         """
-        return Variable("upload_year")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="year", variable_name="upload_year"
+        )
 
-    @property
-    def upload_year_truncated(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_year_truncated(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The last two digits of the upload year, i.e. 22 in 2022
+        :description:
+          The last two digits of the upload year, i.e. 22 in 2022
         """
-        return Variable("upload_year_truncated")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="year_truncated", variable_name="upload_year_truncated"
+        )
 
-    @property
-    def upload_year_truncated_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_year_truncated_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The upload year truncated, but reversed using ``100 - {upload_year_truncated}``, i.e.
-        2022 returns ``100 - 22`` = ``78``
+        :description:
+          The upload year truncated, but reversed using ``100 - {upload_year_truncated}``, i.e.
+          2022 returns ``100 - 22`` = ``78``
         """
-        return Variable("upload_year_truncated_reversed")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="year_truncated_reversed",
+            variable_name="upload_year_truncated_reversed",
+        )
 
-    @property
-    def upload_month_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_month_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The upload month, but reversed using ``13 - {upload_month}``, i.e. March returns ``10``
+        :description:
+          The upload month, but reversed using ``13 - {upload_month}``, i.e. March returns ``10``
         """
-        return Variable("upload_month_reversed")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="month_reversed", variable_name="upload_month_reversed"
+        )
 
-    @property
-    def upload_month_reversed_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_month_reversed_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The reversed upload month, but padded. i.e. November returns "02"
+        :description:
+          The reversed upload month, but padded. i.e. November returns "02"
         """
-        return Variable("upload_month_reversed_padded")
+        return self.upload_date.get_string_date_metadata(
+            date_metadata_key="month_reversed_padded", variable_name="upload_month_reversed_padded"
+        )
 
-    @property
-    def upload_month_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_month_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The entry's upload month padded to two digits, i.e. March returns "03"
+        :description:
+          The entry's upload month padded to two digits, i.e. March returns "03"
         """
-        return Variable("upload_month_padded")
+        return self.upload_date.get_string_date_metadata(
+            date_metadata_key="month_padded", variable_name="upload_month_padded"
+        )
 
-    @property
-    def upload_day_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_day_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The entry's upload day padded to two digits, i.e. the fifth returns "05"
+        :description:
+          The entry's upload day padded to two digits, i.e. the fifth returns "05"
         """
-        return Variable("upload_day_padded")
+        return self.upload_date.get_string_date_metadata(
+            date_metadata_key="day_padded", variable_name="upload_day_padded"
+        )
 
-    @property
-    def upload_month(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_month(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The upload month as an integer (no padding).
+        :description:
+          The upload month as an integer (no padding).
         """
-        return Variable("upload_month")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="month", variable_name="upload_month"
+        )
 
-    @property
-    def upload_day(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_day(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The upload day as an integer (no padding).
+        :description:
+          The upload day as an integer (no padding).
         """
-        return Variable("upload_day")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="day", variable_name="upload_day"
+        )
 
-    @property
-    def upload_day_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_day_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The upload day, but reversed using ``{total_days_in_month} + 1 - {upload_day}``,
-        i.e. August 8th would have upload_day_reversed of ``31 + 1 - 8`` = ``24``
+        :description:
+          The upload day, but reversed using ``{total_days_in_month} + 1 - {upload_day}``,
+          i.e. August 8th would have upload_day_reversed of ``31 + 1 - 8`` = ``24``
         """
-        return Variable("upload_day_reversed")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="day_reversed", variable_name="upload_day_reversed"
+        )
 
-    @property
-    def upload_day_reversed_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_day_reversed_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The reversed upload day, but padded. i.e. August 30th returns "02".
+        :description:
+          The reversed upload day, but padded. i.e. August 30th returns "02".
         """
-        return Variable("upload_day_reversed_padded")
+        return self.upload_date.get_string_date_metadata(
+            date_metadata_key="day_reversed_padded", variable_name="upload_day_reversed_padded"
+        )
 
-    @property
-    def upload_day_of_year(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_day_of_year(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The day of the year, i.e. February 1st returns ``32``
+        :description:
+          The day of the year, i.e. February 1st returns ``32``
         """
-        return Variable("upload_day_of_year")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="day_of_year", variable_name="upload_day_of_year"
+        )
 
-    @property
-    def upload_day_of_year_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_day_of_year_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The upload day of year, but padded i.e. February 1st returns "032"
+        :description:
+          The upload day of year, but padded i.e. February 1st returns "032"
         """
-        return Variable("upload_day_of_year_padded")
+        return self.upload_date.get_string_date_metadata(
+            date_metadata_key="day_of_year_padded", variable_name="upload_day_of_year_padded"
+        )
 
-    @property
-    def upload_day_of_year_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_day_of_year_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The upload day, but reversed using ``{total_days_in_year} + 1 - {upload_day}``,
-        i.e. February 2nd would have upload_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
+        :description:
+          The upload day, but reversed using ``{total_days_in_year} + 1 - {upload_day}``,
+          i.e. February 2nd would have upload_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
         """
-        return Variable("upload_day_of_year_reversed")
+        return self.upload_date.get_integer_date_metadata(
+            date_metadata_key="day_of_year_reversed", variable_name="upload_day_of_year_reversed"
+        )
 
-    @property
-    def upload_day_of_year_reversed_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_day_of_year_reversed_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The reversed upload day of year, but padded i.e. December 31st returns "001"
+        :description:
+          The reversed upload day of year, but padded i.e. December 31st returns "001"
         """
-        return Variable("upload_day_of_year_reversed_padded")
+        return self.upload_date.get_string_date_metadata(
+            date_metadata_key="day_of_year_reversed_padded",
+            variable_name="upload_day_of_year_reversed_padded",
+        )
 
-    @property
-    def upload_date_standardized(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_date_standardized(self: "VariableDefinitions") -> StringVariable:
         """
-        The uploaded date formatted as YYYY-MM-DD
+        :description:
+          The uploaded date formatted as YYYY-MM-DD
         """
-        return Variable("upload_date_standardized")
+        return self.upload_date.get_string_date_metadata(
+            date_metadata_key="date_standardized", variable_name="upload_date_standardized"
+        )
 
 
 class ReleaseDateVariableDefinitions(ABC):
-    @property
-    def release_date(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def release_date(self: "VariableDefinitions") -> StringDateMetadataVariable:
         """
-        The entry’s release date, in YYYYMMDD format. If not present, return the upload date.
+        :description:
+          The entry’s release date, in YYYYMMDD format. If not present, return the upload date.
         """
-        return MetadataVariable(variable_name="release_date", metadata_key="release_date")
+        return StringMetadataVariable.from_entry(
+            metadata_key="release_date", default=self.upload_date
+        ).as_date_variable()
 
-    @property
-    def release_year(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_year(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The entry's release year
+        :description:
+          The entry's upload year
         """
-        return Variable("release_year")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="year", variable_name="release_year"
+        )
 
-    @property
-    def release_year_truncated(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_year_truncated(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The last two digits of the release year, i.e. 22 in 2022
+        :description:
+          The last two digits of the upload year, i.e. 22 in 2022
         """
-        return Variable("release_year_truncated")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="year_truncated", variable_name="release_year_truncated"
+        )
 
-    @property
-    def release_year_truncated_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_year_truncated_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The release year truncated, but reversed using ``100 - {release_year_truncated}``, i.e.
-        2022 returns ``100 - 22`` = ``78``
+        :description:
+          The upload year truncated, but reversed using ``100 - {release_year_truncated}``, i.e.
+          2022 returns ``100 - 22`` = ``78``
         """
-        return Variable("release_year_truncated_reversed")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="year_truncated_reversed",
+            variable_name="release_year_truncated_reversed",
+        )
 
-    @property
-    def release_month_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_month_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The release month, but reversed
-        using ``13 - {release_month}``, i.e. March returns ``10``
+        :description:
+          The upload month, but reversed using ``13 - {release_month}``, i.e. March returns ``10``
         """
-        return Variable("release_month_reversed")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="month_reversed", variable_name="release_month_reversed"
+        )
 
-    @property
-    def release_month_reversed_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_month_reversed_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The reversed release month, but padded. i.e. November returns "02"
+        :description:
+          The reversed upload month, but padded. i.e. November returns "02"
         """
-        return Variable("release_month_reversed_padded")
+        return self.release_date.get_string_date_metadata(
+            date_metadata_key="month_reversed_padded", variable_name="release_month_reversed_padded"
+        )
 
-    @property
-    def release_month_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_month_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The entry's release month padded to two digits, i.e. March returns "03"
+        :description:
+          The entry's upload month padded to two digits, i.e. March returns "03"
         """
-        return Variable("release_month_padded")
+        return self.release_date.get_string_date_metadata(
+            date_metadata_key="month_padded", variable_name="release_month_padded"
+        )
 
-    @property
-    def release_day_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_day_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The entry's release day padded to two digits, i.e. the fifth returns "05"
+        :description:
+          The entry's upload day padded to two digits, i.e. the fifth returns "05"
         """
-        return Variable("release_day_padded")
+        return self.release_date.get_string_date_metadata(
+            date_metadata_key="day_padded", variable_name="release_day_padded"
+        )
 
-    @property
-    def release_month(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_month(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The release month as an integer (no padding).
+        :description:
+          The upload month as an integer (no padding).
         """
-        return Variable("release_month")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="month", variable_name="release_month"
+        )
 
-    @property
-    def release_day(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_day(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The release day as an integer (no padding).
+        :description:
+          The upload day as an integer (no padding).
         """
-        return Variable("release_day")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="day", variable_name="release_day"
+        )
 
-    @property
-    def release_day_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_day_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The release day, but reversed using ``{total_days_in_month} + 1 - {release_day}``,
-        i.e. August 8th would have release_day_reversed of ``31 + 1 - 8`` = ``24``
+        :description:
+          The upload day, but reversed using ``{total_days_in_month} + 1 - {release_day}``,
+          i.e. August 8th would have release_day_reversed of ``31 + 1 - 8`` = ``24``
         """
-        return Variable("release_day_reversed")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="day_reversed", variable_name="release_day_reversed"
+        )
 
-    @property
-    def release_day_reversed_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_day_reversed_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The reversed release day, but padded. i.e. August 30th returns "02".
+        :description:
+          The reversed upload day, but padded. i.e. August 30th returns "02".
         """
-        return Variable("release_day_reversed_padded")
+        return self.release_date.get_string_date_metadata(
+            date_metadata_key="day_reversed_padded", variable_name="release_day_reversed_padded"
+        )
 
-    @property
-    def release_day_of_year(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_day_of_year(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The day of the year, i.e. February 1st returns ``32``
+        :description:
+          The day of the year, i.e. February 1st returns ``32``
         """
-        return Variable("release_day_of_year")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="day_of_year", variable_name="release_day_of_year"
+        )
 
-    @property
-    def release_day_of_year_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_day_of_year_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The release day of year, but padded i.e. February 1st returns "032"
+        :description:
+          The upload day of year, but padded i.e. February 1st returns "032"
         """
-        return Variable("release_day_of_year_padded")
+        return self.release_date.get_string_date_metadata(
+            date_metadata_key="day_of_year_padded", variable_name="release_day_of_year_padded"
+        )
 
-    @property
-    def release_day_of_year_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_day_of_year_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The release day, but reversed using ``{total_days_in_year} + 1 - {release_day}``,
-        i.e. February 2nd would have release_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
+        :description:
+          The upload day, but reversed using ``{total_days_in_year} + 1 - {release_day}``,
+          i.e. February 2nd would have release_day_of_year_reversed of ``365 + 1 - 32`` = ``334``
         """
-        return Variable("release_day_of_year_reversed")
+        return self.release_date.get_integer_date_metadata(
+            date_metadata_key="day_of_year_reversed", variable_name="release_day_of_year_reversed"
+        )
 
-    @property
-    def release_day_of_year_reversed_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_day_of_year_reversed_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The reversed release day of year, but padded i.e. December 31st returns "001"
+        :description:
+          The reversed upload day of year, but padded i.e. December 31st returns "001"
         """
-        return Variable("release_day_of_year_reversed_padded")
+        return self.release_date.get_string_date_metadata(
+            date_metadata_key="day_of_year_reversed_padded",
+            variable_name="release_day_of_year_reversed_padded",
+        )
 
-    @property
-    def release_date_standardized(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def release_date_standardized(self: "VariableDefinitions") -> StringVariable:
         """
-        The release date formatted as YYYY-MM-DD
+        :description:
+          The uploaded date formatted as YYYY-MM-DD
         """
-        return Variable("release_date_standardized")
+        return self.release_date.get_string_date_metadata(
+            date_metadata_key="date_standardized", variable_name="release_date_standardized"
+        )
 
 
 class YtdlSubVariableDefinitions(ABC):
-    @property
-    def ytdl_sub_input_url(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def ytdl_sub_input_url(self: "VariableDefinitions") -> StringVariable:
         """
-        The input URL used in ytdl-sub to create this entry.
+        :description:
+          The input URL used in ytdl-sub to create this entry.
         """
-        return Variable("ytdl_sub_input_url")
+        return StringVariable(variable_name="ytdl_sub_input_url", definition="{ %string('') }")
 
-    @property
-    def download_index(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def download_index(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The i'th entry downloaded. NOTE that this is fetched dynamically from the download
-        archive.
+        :description:
+          The i'th entry downloaded. NOTE that this is fetched dynamically from the download
+          archive.
         """
-        return Variable(variable_name="download_index")
+        return IntegerVariable(variable_name="download_index", definition="{ %int(1) }")
 
-    @property
-    def download_index_padded6(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def download_index_padded6(self: "VariableDefinitions") -> StringVariable:
         """
-        The download_index padded six digits
+        :description:
+          The download_index padded six digits
         """
-        return Variable("download_index_padded6")
+        return self.download_index.to_padded_int(variable_name="download_index_padded6", pad=6)
 
-    @property
-    def upload_date_index(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_date_index(self: "VariableDefinitions") -> IntegerVariable:
         """
-        The i'th entry downloaded with this upload date.
+        :description:
+          The i'th entry downloaded with this upload date.
         """
-        return Variable(variable_name="upload_date_index")
+        return IntegerVariable(variable_name="upload_date_index", definition="{ %int(1) }")
 
-    @property
-    def upload_date_index_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_date_index_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The upload_date_index padded two digits
+        :description:
+          The upload_date_index padded two digits
         """
-        return Variable("upload_date_index_padded")
+        return self.upload_date_index.to_padded_int(variable_name="upload_date_index_padded", pad=2)
 
-    @property
-    def upload_date_index_reversed(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_date_index_reversed(self: "VariableDefinitions") -> IntegerVariable:
         """
-        100 - upload_date_index
+        :description:
+          100 - upload_date_index
         """
-        return Variable("upload_date_index_reversed")
+        return IntegerVariable(
+            variable_name="upload_date_index_reversed",
+            definition=f"{{%sub(100, {self.upload_date_index.variable_name})}}",
+        )
 
-    @property
-    def upload_date_index_reversed_padded(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def upload_date_index_reversed_padded(self: "VariableDefinitions") -> StringVariable:
         """
-        The upload_date_index padded two digits
+        :description:
+          The upload_date_index padded two digits
         """
-        return Variable("upload_date_index_reversed_padded")
+        return self.upload_date_index_reversed.to_padded_int(
+            variable_name="upload_date_index_reversed_padded", pad=2
+        )
 
 
 class EntryVariableDefinitions(ABC):
-    @property
-    def uid(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def uid(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The entry's unique ID
+        :description:
+          The entry's unique ID
         """
-        return MetadataVariable(metadata_key="id", variable_name="uid")
+        return StringMetadataVariable.from_entry(metadata_key="id", variable_name="uid")
 
-    @property
-    def duration(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def duration(self: "VariableDefinitions") -> IntegerMetadataVariable:
         """
-        The duration of the entry in seconds
+        :description:
+          The duration of the entry in seconds if it exists. Defaults to zero otherwise.
         """
-        return MetadataVariable("duration", metadata_key="duration")
+        return IntegerMetadataVariable.from_entry(metadata_key="duration", default=0)
 
-    @property
-    def uid_sanitized_plex(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def uid_sanitized_plex(self: "VariableDefinitions") -> StringVariable:
         """
-        The sanitized uid with additional sanitizing for Plex. Replaces numbers with
-        fixed-width numbers so Plex does not recognize them as season or episode numbers.
+        :description:
+          The sanitized uid with additional sanitizing for Plex. Replaces numbers with
+          fixed-width numbers so Plex does not recognize them as season or episode numbers.
         """
-        return Variable("uid_sanitized_plex")
+        return self.uid.to_sanitized_plex(variable_name="uid_sanitized_plex")
 
-    @property
-    def ie_key(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def ie_key(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The ie_key, used in legacy yt-dlp things as the 'info-extractor key'
+        :description:
+          The ie_key, used in legacy yt-dlp things as the 'info-extractor key'.
+          If it does not exist, return ``extractor_key``
         """
-        return MetadataVariable(metadata_key="ie_key", variable_name="ie_key")
+        return StringMetadataVariable.from_entry(metadata_key="ie_key", default=self.extractor_key)
 
-    @property
-    def extractor_key(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def extractor_key(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The yt-dlp extractor key
+        :description:
+          The yt-dlp extractor key
         """
-        return MetadataVariable(metadata_key="extractor_key", variable_name="extractor_key")
+        return StringMetadataVariable.from_entry(metadata_key="extractor_key")
 
-    @property
-    def extractor(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def extractor(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The yt-dlp extractor name
+        :description:
+          The yt-dlp extractor name
         """
-        return MetadataVariable(variable_name="extractor", metadata_key="extractor")
+        return StringMetadataVariable.from_entry(metadata_key="extractor")
 
-    @property
-    def epoch(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def epoch(self: "VariableDefinitions") -> IntegerMetadataVariable:
         """
-        The unix epoch of when the metadata was scraped by yt-dlp.
+        :description:
+          The unix epoch of when the metadata was scraped by yt-dlp.
         """
-        return MetadataVariable(metadata_key="epoch", variable_name="epoch")
+        return IntegerMetadataVariable.from_entry(metadata_key="epoch")
 
-    @property
-    def epoch_date(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def epoch_date(self: "VariableDefinitions") -> StringVariable:
         """
-        The epoch's date, in YYYYMMDD format.
+        :description:
+          The epoch's date, in YYYYMMDD format.
         """
-        return Variable("epoch_date")
+        return StringVariable(
+            variable_name="epoch_date",
+            definition=f"{{%datetime_strftime({self.epoch.variable_name}, '%Y%m%d')}}",
+        )
 
-    @property
-    def epoch_hour(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def epoch_hour(self: "VariableDefinitions") -> StringVariable:
         """
-        The epoch's hour
+        :description:
+          The epoch's hour
         """
-        return Variable("epoch_hour")
+        return StringVariable(
+            variable_name="epoch_hour",
+            definition=f"{{%datetime_strftime({self.epoch.variable_name}, '%H')}}",
+        )
 
-    @property
-    def title(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def title(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The title of the entry. If a title does not exist, returns its unique ID.
+        :description:
+          The title of the entry. If a title does not exist, returns its unique ID.
         """
-        return MetadataVariable(variable_name="title", metadata_key="title")
+        return StringMetadataVariable.from_entry(metadata_key="title", default=self.uid)
 
-    @property
-    def title_sanitized_plex(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def title_sanitized_plex(self: "VariableDefinitions") -> StringVariable:
         """
-        The sanitized title with additional sanitizing for Plex. It replaces numbers with
-        fixed-width numbers so Plex does not recognize them as season or episode numbers.
+        :description:
+          The sanitized title with additional sanitizing for Plex. It replaces numbers with
+          fixed-width numbers so Plex does not recognize them as season or episode numbers.
         """
-        return Variable("title_sanitized_plex")
+        return self.title.to_sanitized_plex(variable_name="title_sanitized_plex")
 
-    @property
-    def webpage_url(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def webpage_url(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The url to the webpage.
+        :description:
+          The url to the webpage.
         """
-        return MetadataVariable(metadata_key="webpage_url", variable_name="webpage_url")
+        return StringMetadataVariable.from_entry(metadata_key="webpage_url")
 
-    @property
-    def info_json_ext(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def info_json_ext(self: "VariableDefinitions") -> StringVariable:
         """
-        The "info.json" extension
+        :description:
+          The "info.json" extension
         """
-        return Variable("info_json_ext")
+        return StringVariable(
+            variable_name="info_json_ext",
+            definition="info.json",
+        )
 
-    @property
-    def description(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def description(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The description if it exists. Otherwise, returns an emtpy string.
+        :description:
+          The description if it exists. Otherwise, returns an emtpy string.
         """
-        return MetadataVariable(variable_name="description", metadata_key="description")
+        return StringMetadataVariable.from_entry(
+            metadata_key="description",
+            default="",
+        )
 
-    @property
-    def uploader_id(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def uploader_id(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The uploader id if it exists, otherwise return the unique ID.
+        :description:
+          The uploader id if it exists, otherwise return the unique ID.
         """
-        return MetadataVariable(variable_name="uploader_id", metadata_key="uploader_id")
+        return StringMetadataVariable.from_entry(
+            metadata_key="uploader_id",
+            default=self.uid,
+        )
 
-    @property
-    def uploader(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def uploader(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The uploader if it exists, otherwise return the uploader ID.
+        :description:
+          The uploader if it exists, otherwise return the uploader ID.
         """
-        return MetadataVariable(variable_name="uploader", metadata_key="uploader")
+        return StringMetadataVariable.from_entry(
+            metadata_key="uploader",
+            default=self.uploader_id,
+        )
 
-    @property
-    def uploader_url(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def uploader_url(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The uploader url if it exists, otherwise returns the webpage_url.
+        :description:
+          The uploader url if it exists, otherwise returns the webpage_url.
         """
-        return MetadataVariable("uploader_url", metadata_key="uploader_url")
+        return StringMetadataVariable.from_entry(
+            metadata_key="uploader_url",
+            default=self.webpage_url,
+        )
 
-    @property
-    def creator(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def creator(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The creator name if it exists, otherwise returns the channel.
+        :description:
+          The creator name if it exists, otherwise returns the channel.
         """
-        return MetadataVariable(variable_name="creator", metadata_key="creator")
+        return StringMetadataVariable.from_entry(
+            metadata_key="creator",
+            default=self.channel,
+        )
 
-    @property
-    def channel(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def channel(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The channel name if it exists, otherwise returns the uploader.
+        :description:
+          The channel name if it exists, otherwise returns the uploader.
         """
-        return MetadataVariable(variable_name="channel", metadata_key="channel")
+        return StringMetadataVariable.from_entry(
+            metadata_key="channel",
+            default=self.uploader,
+        )
 
-    @property
-    def channel_id(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def channel_id(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The channel id if it exists, otherwise returns the entry uploader ID.
+        :description:
+          The channel id if it exists, otherwise returns the entry uploader ID.
         """
-        return MetadataVariable(variable_name="channel_id", metadata_key="channel_id")
+        return StringMetadataVariable.from_entry(
+            metadata_key="channel_id",
+            default=self.uploader_id,
+        )
 
-    @property
-    def ext(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def ext(self: "VariableDefinitions") -> StringMetadataVariable:
         """
-        The downloaded entry's file extension
+        :description:
+          The downloaded entry's file extension
         """
-        return MetadataVariable(variable_name="ext", metadata_key="ext")
+        return StringMetadataVariable.from_entry(metadata_key="ext")
 
-    @property
-    def thumbnail_ext(self: "VariableDefinitions") -> Variable:
+    @cached_property
+    def thumbnail_ext(self: "VariableDefinitions") -> StringVariable:
         """
-        The download entry's thumbnail extension. Will always return 'jpg'. Until there is a
-        need to support other image types, we always convert to jpg.
+        :description:
+          The download entry's thumbnail extension. Will always return 'jpg'. Until there is a
+          need to support other image types, we always convert to jpg.
         """
-        return Variable("thumbnail_ext")
+        return StringVariable(
+            variable_name="thumbnail_ext",
+            definition="jpg",
+        )
 
-    @property
-    def comments(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def comments(self: "VariableDefinitions") -> ArrayMetadataVariable:
         """
-        Comments if they are requested
+        :description:
+          Comments if they are requested
         """
-        return MetadataVariable("comments", "comments")
+        return ArrayMetadataVariable(
+            metadata_key="comments", variable_name="comments", definition="{ [] }"
+        )
 
-    @property
-    def chapters(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def chapters(self: "VariableDefinitions") -> ArrayMetadataVariable:
         """
-        Chapters if they exist
+        :description:
+          Chapters if they exist
         """
-        return MetadataVariable("chapters", "chapters")
+        return ArrayMetadataVariable(
+            metadata_key="chapters", variable_name="chapters", definition="{ [] }"
+        )
 
-    @property
-    def sponsorblock_chapters(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def sponsorblock_chapters(self: "VariableDefinitions") -> ArrayMetadataVariable:
         """
-        Sponsorblock Chapters if they are requested and exist
+        :description:
+          Sponsorblock Chapters if they are requested and exist
         """
-        return MetadataVariable("sponsorblock_chapters", "sponsorblock_chapters")
+        return ArrayMetadataVariable(
+            metadata_key="sponsorblock_chapters",
+            variable_name="sponsorblock_chapters",
+            definition="{ [] }",
+        )
 
-    @property
-    def requested_subtitles(self: "VariableDefinitions") -> MetadataVariable:
+    @cached_property
+    def requested_subtitles(self: "VariableDefinitions") -> MapMetadataVariable:
         """
-        Subtitles if they are requested and exist
+        :description:
+          Subtitles if they are requested and exist
         """
-        return MetadataVariable("requested_subtitles", "requested_subtitles")
+        return MapMetadataVariable(
+            metadata_key="requested_subtitles",
+            variable_name="requested_subtitles",
+            definition="{ {} }",
+        )
 
 
 class VariableDefinitions(
@@ -776,8 +1071,90 @@ class VariableDefinitions(
     ReleaseDateVariableDefinitions,
     YtdlSubVariableDefinitions,
 ):
-    pass
+    @cache
+    def scripts(self) -> Dict[str, str]:
+        """
+        Returns all variables and their scripts in dict form
+        """
+        return {
+            var.variable_name: var.definition
+            for var in [
+                getattr(self, attr)
+                for attr in dir(self)
+                if isinstance(getattr(self, attr), Variable)
+            ]
+        }
+
+    @cache
+    def injected_variables(self) -> Set[MetadataVariable]:
+        """
+        Returns variables that get injected in the download-stage
+        """
+        return {
+            self.download_index,
+            self.upload_date_index,
+            self.comments,
+            self.requested_subtitles,
+            self.chapters,
+            self.sponsorblock_chapters,
+            self.ytdl_sub_input_url,
+        }
+
+    @cache
+    def required_entry_variables(self) -> Set[MetadataVariable]:
+        """
+        Returns variables that the entry requires to exist
+        """
+        return {
+            self.uid,
+            self.extractor_key,
+            self.epoch,
+            self.webpage_url,
+            self.ext,
+        }
+
+    @cache
+    def default_entry_variables(self) -> Set[MetadataVariable]:
+        """
+        Returns variables that reside on the entry that may or may not exist,
+        but have defaults
+        """
+        return {
+            self.title,
+            self.extractor,
+            self.description,
+            self.ie_key,
+            self.uploader_id,
+            self.uploader,
+            self.uploader_url,
+            self.upload_date,
+            self.release_date,
+            self.channel,
+            self.creator,
+            self.channel_id,
+            self.duration,
+            self.playlist_index,
+            self.playlist_count,
+            self.playlist_uid,
+            self.playlist_title,
+            self.playlist_uploader_id,
+        }
+
+    @cache
+    def unresolvable_static_variables(self) -> Set[Variable]:
+        """
+        Returns variables that are not static (i.e. depend on runtime)
+        """
+        return {
+            VARIABLES.entry_metadata,
+        } | self.injected_variables()
 
 
-# Singleton to use externally
+# Singletons to use externally
 VARIABLES: VariableDefinitions = VariableDefinitions()
+VARIABLE_SCRIPTS: Dict[str, str] = VARIABLES.scripts()
+UNRESOLVED_VARIABLES: Set[str] = {
+    var.variable_name for var in VARIABLES.unresolvable_static_variables()
+}
+
+CustomFunctions.register()

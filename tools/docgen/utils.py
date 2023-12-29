@@ -1,4 +1,5 @@
 import inspect
+from functools import cached_property
 from typing import Any
 from typing import Dict
 from typing import List
@@ -16,6 +17,10 @@ def section(name: str, level: int, as_code: bool = False) -> str:
 
 def properties(obj: Type[Any]) -> List[str]:
     return sorted(prop for prop in dir(obj) if isinstance(getattr(obj, prop), property))
+
+
+def cached_properties(obj: Type[Any]) -> List[str]:
+    return sorted(prop for prop in dir(obj) if isinstance(getattr(obj, prop), cached_property))
 
 
 def static_methods(obj: Type[Any]) -> List[str]:
@@ -36,11 +41,16 @@ def camel_case_to_human(string: str) -> str:
 
 
 def get_function_docs(
-    function_name: str, obj: Any, level: int, display_function_name: Optional[str] = None
+    function_name: str,
+    obj: Any,
+    level: int,
+    display_function_name: Optional[str] = None,
+    pre_docstring: Optional[str] = None,
 ) -> str:
     display_function_name = display_function_name if display_function_name else function_name
 
     docs = section(display_function_name, level=level)
+    docs += pre_docstring or ""
     docs += inspect.cleandoc(getattr(obj, function_name).__doc__)
     docs += "\n"
     return docs
