@@ -4,11 +4,12 @@ from typing import Dict
 from typing import Type
 
 from tools.docgen.docgen import DocGen
+from tools.docgen.utils import cached_properties
 from tools.docgen.utils import camel_case_to_human
 from tools.docgen.utils import get_function_docs
 from tools.docgen.utils import line_section
-from tools.docgen.utils import properties
 from tools.docgen.utils import section
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 
 
@@ -37,10 +38,11 @@ class EntryVariablesDocGen(DocGen):
             docs += line_section(section_idx=idx)
             docs += section(name, level=1)
 
-            for variable_function_name in properties(parent_objs[name]):
+            for variable_function_name in cached_properties(parent_objs[name]):
                 docs += get_function_docs(
                     function_name=variable_function_name,
                     obj=parent_objs[name],
+                    pre_docstring=f":type: ``{getattr(VARIABLES, variable_function_name).human_readable_type()}``\n",
                     level=2,
                 )
 

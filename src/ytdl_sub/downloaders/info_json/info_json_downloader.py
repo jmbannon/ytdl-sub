@@ -11,10 +11,9 @@ from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
-from ytdl_sub.entries.script.variable_scripts import DOWNLOADER_INJECTED_VARIABLES
-from ytdl_sub.entries.script.variable_scripts import VARIABLE_SCRIPTS
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import get_file_extension
@@ -114,7 +113,7 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
                         inj.variable_name,
                         VARIABLE_SCRIPTS[inj.variable_name],
                     )
-                    for inj in DOWNLOADER_INJECTED_VARIABLES
+                    for inj in v.injected_variables()
                 }
             )
             entries.append(entry)
