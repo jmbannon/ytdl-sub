@@ -14,6 +14,7 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
+from ytdl_sub.entries.variables.override_variables import OverrideVariables
 from ytdl_sub.script.script import Script
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
@@ -66,7 +67,7 @@ def _get_added_and_modified_variables(
 
 
 def _override_variables(overrides: Overrides) -> Set[str]:
-    return set(list(overrides.initial_variables().keys()))
+    return set(list(overrides.initial_variables().keys())) | {OverrideVariables.subscription_name()}
 
 
 def _entry_variables() -> Set[str]:
