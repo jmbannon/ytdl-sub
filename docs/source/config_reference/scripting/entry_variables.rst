@@ -1,3 +1,4 @@
+
 Entry Variables
 ===============
 
@@ -111,6 +112,8 @@ webpage_url
 ~~~~~~~~~~~
 The url to the webpage.
 
+----------------------------------------------------------------------------------------------------
+
 Metadata Variables
 ------------------
 
@@ -129,6 +132,8 @@ Metadata from any sibling entries that reside in the same playlist as this entry
 source_metadata
 ~~~~~~~~~~~~~~~
 Metadata from the source (i.e. the grandparent metadata, like channel -> playlist -> entry)
+
+----------------------------------------------------------------------------------------------------
 
 Playlist Variables
 ------------------
@@ -210,6 +215,8 @@ playlist_webpage_url
 ~~~~~~~~~~~~~~~~~~~~
 The playlist webpage url if it exists. Otherwise, returns the entry webpage url.
 
+----------------------------------------------------------------------------------------------------
+
 Release Date Variables
 ----------------------
 
@@ -285,6 +292,8 @@ release_year_truncated_reversed
 The release year truncated, but reversed using ``100 - {release_year_truncated}``, i.e.
 2022 returns ``100 - 22`` = ``78``
 
+----------------------------------------------------------------------------------------------------
+
 Source Variables
 ----------------
 
@@ -331,6 +340,8 @@ The source uploader url if it exists, otherwise returns the source webpage_url.
 source_webpage_url
 ~~~~~~~~~~~~~~~~~~
 The source webpage url if it exists, otherwise returns the playlist webpage url.
+
+----------------------------------------------------------------------------------------------------
 
 Upload Date Variables
 ---------------------
@@ -405,6 +416,8 @@ upload_year_truncated_reversed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The upload year truncated, but reversed using ``100 - {upload_year_truncated}``, i.e.
 2022 returns ``100 - 22`` = ``78``
+
+----------------------------------------------------------------------------------------------------
 
 Ytdl-Sub Variables
 ------------------

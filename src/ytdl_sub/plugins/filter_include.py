@@ -19,24 +19,23 @@ class FilterIncludeOptions(ListFormatterValidator, OptionsValidator):
     Applies a conditional AND on any number of filters comprised of either variables or scripts.
     If all filters evaluate to True, the entry will be included.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           filter_include:
-             - {description}
-             - >-
-               {
-                 %regex_search_any(
-                    title,
-                    [
-                        "Full Episode",
-                        "FULL",
-                    ]
-                 )
-               }
+       filter_include:
+         - >-
+           {description}
+         - >-
+           {
+             %regex_search_any(
+                title,
+                [
+                    "Full Episode",
+                    "FULL",
+                ]
+             )
+           }
     """
 
 

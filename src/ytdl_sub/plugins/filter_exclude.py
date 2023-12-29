@@ -19,15 +19,15 @@ class FilterExcludeOptions(ListFormatterValidator, OptionsValidator):
     Applies a conditional OR on any number of filters comprised of either variables or scripts.
     If any filter evaluates to True, the entry will be excluded.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           filter_exclude:
-             - { %contains( %lower(title), '#short' ) }
-             - { %contains( %lower(description), '#short' ) }
+       filter_exclude:
+         - >-
+           { %contains( %lower(title), '#short' ) }
+         - >-
+           { %contains( %lower(description), '#short' ) }
     """
 
 

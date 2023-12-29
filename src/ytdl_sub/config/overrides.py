@@ -8,7 +8,7 @@ import mergedeep
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
-from ytdl_sub.entries.variables.override_variables import OverrideVariables
+from ytdl_sub.entries.variables.override_variables import OverrideHelpers
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
@@ -23,9 +23,9 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 
 class Overrides(DictFormatterValidator, Scriptable):
     """
-    Optional. This section allows you to define variables that can be used in any string formatter.
-    For example, if you want your file and thumbnail files to match without copy-pasting a large
-    format string, you can define something like:
+    Allows you to define variables that can be used in any EntryFormatter or OverridesFormatter.
+
+    :Usage:
 
     .. code-block:: yaml
 
@@ -89,7 +89,7 @@ class Overrides(DictFormatterValidator, Scriptable):
         """
         Ensures the variable name does not collide with any entry variables or built-in functions.
         """
-        if not OverrideVariables.is_valid_name(name):
+        if not OverrideHelpers.is_valid_name(name):
             override_type = "function" if name.startswith("%") else "variable"
             raise self._validation_exception(
                 f"Override {override_type} with name {name} is invalid. Names must be"
@@ -97,14 +97,14 @@ class Overrides(DictFormatterValidator, Scriptable):
                 exception_class=InvalidVariableNameException,
             )
 
-        if OverrideVariables.is_entry_variable_name(name):
+        if OverrideHelpers.is_entry_variable_name(name):
             raise self._validation_exception(
                 f"Override variable with name {name} cannot be used since it is a"
                 " built-in ytdl-sub entry variable name.",
                 exception_class=InvalidVariableNameException,
             )
 
-        if OverrideVariables.is_function_name(name):
+        if OverrideHelpers.is_function_name(name):
             raise self._validation_exception(
                 f"Override function definition with name {name} cannot be used since it is"
                 " a built-in ytdl-sub function name.",

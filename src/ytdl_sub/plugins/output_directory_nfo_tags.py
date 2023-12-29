@@ -37,48 +37,52 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
     @property
     def nfo_root(self) -> StringFormatterValidator:
         """
-        The root tag of the NFO's XML. In the usage above, it would look like
+        :expected type: EntryFormatter
+        :description:
+          The root tag of the NFO's XML. In the usage above, it would look like
 
-        .. code-block:: xml
+          .. code-block:: xml
 
-           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-           <tvshow>
-           </tvshow>
+             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+             <tvshow>
+             </tvshow>
         """
         return self._nfo_root
 
     @property
     def tags(self) -> NfoTagsValidator:
         """
-        Tags within the nfo_root tag. In the usage above, it would look like
+        :expected type: NfoTags
+        :description:
+          Tags within the nfo_root tag. In the usage above, it would look like
 
-        .. code-block:: xml
+          .. code-block:: xml
 
-           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-           <tvshow>
-             <title>Sweet youtube TV show</title>
-           </tvshow>
+             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+             <tvshow>
+               <title>Sweet youtube TV show</title>
+             </tvshow>
 
-        Also supports xml attributes and duplicate keys:
+          Also supports xml attributes and duplicate keys:
 
-        .. code-block:: yaml
+          .. code-block:: yaml
 
-           tags:
-             named_season:
-               - tag: "{source_title}"
-                 attributes:
-                   number: "{collection_index}"
-             genre:
-               - "Comedy"
-               - "Drama"
+             tags:
+               named_season:
+                 - tag: "{source_title}"
+                   attributes:
+                     number: "{collection_index}"
+               genre:
+                 - "Comedy"
+                 - "Drama"
 
-        Which translates to
+          Which translates to
 
-        .. code-block:: xml
+          .. code-block:: xml
 
-           <title year="2022">Sweet youtube TV show</season>
-           <genre>Comedy</genre>
-           <genre>Drama</genre>
+             <title year="2022">Sweet youtube TV show</season>
+             <genre>Comedy</genre>
+             <genre>Drama</genre>
         """
         return self._tags
 

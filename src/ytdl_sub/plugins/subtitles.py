@@ -37,18 +37,18 @@ class SubtitleOptions(OptionsDictValidator):
     ``lang`` and ``subtitles_ext``. ``lang`` is dynamic since you can download multiple subtitles.
     It will set the respective language to the correct subtitle file.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           subtitles:
-             subtitles_name: "{title_sanitized}.{lang}.{subtitles_ext}"
-             subtitles_type: "srt"
-             embed_subtitles: False
-             languages: "en"  # supports list of multiple languages
-             allow_auto_generated_subtitles: False
+       subtitles:
+         subtitles_name: "{title_sanitized}.{lang}.{subtitles_ext}"
+         subtitles_type: "srt"
+         embed_subtitles: False
+         languages:
+           - "en"  # supports multiple languages
+           - "de"
+         allow_auto_generated_subtitles: False
     """
 
     _optional_keys = {
@@ -82,40 +82,50 @@ class SubtitleOptions(OptionsDictValidator):
     @property
     def subtitles_name(self) -> Optional[StringFormatterValidator]:
         """
-        Optional. The file name for the media's subtitles if they are present. This can include
-        directories such as ``"Season {upload_year}/{title_sanitized}.{lang}.{subtitles_ext}"``, and
-        will be placed in the output directory. ``lang`` is dynamic since you can download multiple
-        subtitles. It will set the respective language to the correct subtitle file.
+        :expected type: Optional[EntryFormatter]
+        :description:
+          The file name for the media's subtitles if they are present. This can include
+          directories such as ``"Season {upload_year}/{title_sanitized}.{lang}.{subtitles_ext}"``,
+          and will be placed in the output directory. ``lang`` is dynamic since you can download
+          multiple subtitles. It will set the respective language to the correct subtitle file.
         """
         return self._subtitles_name
 
     @property
     def subtitles_type(self) -> Optional[str]:
         """
-        Optional. One of the subtitle file types "srt", "vtt", "ass", "lrc". Defaults to "srt"
+        :expected type: Optional[String]
+        :description:
+          Defaults to "srt". One of the subtitle file types "srt", "vtt", "ass", "lrc".
         """
         return self._subtitles_type
 
     @property
     def embed_subtitles(self) -> Optional[bool]:
         """
-        Optional. Whether to embed the subtitles into the video file. Defaults to False.
-        NOTE: webm files can only embed "vtt" subtitle types.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to False. Whether to embed the subtitles into the video file. Note that
+          webm files can only embed "vtt" subtitle types.
         """
         return self._embed_subtitles
 
     @property
     def languages(self) -> Optional[List[str]]:
         """
-        Optional. Language code(s) to download for subtitles. Supports a single or list of multiple
-        language codes. Defaults to "en".
+        :expected type: Optional[List[String]]
+        :description:
+          Language code(s) to download for subtitles. Supports a single or list of multiple
+          language codes. Defaults to only "en".
         """
         return [lang.value for lang in self._languages]
 
     @property
     def allow_auto_generated_subtitles(self) -> Optional[bool]:
         """
-        Optional. Whether to allow auto generated subtitles. Defaults to False.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to False. Whether to allow auto generated subtitles.
         """
         return self._allow_auto_generated_subtitles
 
