@@ -264,6 +264,21 @@ class StringMetadataVariable(MetadataVariable, StringVariable):
             as_type=StringMetadataVariable,
         )
 
+    def as_date_variable(self) -> "StringDateMetadataVariable":
+        """
+        Converts a String variable to a date variable (which has metadata helpers)
+        """
+        return StringDateMetadataVariable(
+            metadata_key=self.metadata_key,
+            variable_name=self.variable_name,
+            definition=self.definition,
+        )
+
+
+@dataclass(frozen=True)
+class StringDateMetadataVariable(StringMetadataVariable, StringDateVariable):
+    pass
+
 
 @dataclass(frozen=True)
 class IntegerMetadataVariable(MetadataVariable, IntegerVariable):
