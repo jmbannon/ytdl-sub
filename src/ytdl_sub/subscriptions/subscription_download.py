@@ -7,8 +7,10 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.plugin import SplitPlugin
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.plugin.plugin import SplitPlugin
+from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
 from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
@@ -145,8 +147,18 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 after=self.output_options.keep_files_after,
                 overrides=self.overrides,
             )
-            if date_range_to_keep:
-                self._enhanced_download_archive.remove_stale_files(date_range=date_range_to_keep)
+
+            keep_max_files: Optional[int] = None
+            if self.output_options.keep_max_files:
+                # validated it can be cast to int within the validator
+                keep_max_files = int(
+                    self.overrides.apply_formatter(self.output_options.keep_max_files)
+                )
+
+            if date_range_to_keep or self.output_options.keep_max_files is not None:
+                self._enhanced_download_archive.remove_stale_files(
+                    date_range=date_range_to_keep, keep_max_files=keep_max_files
+                )
 
             self._enhanced_download_archive.save_download_mappings()
             FileHandler.delete(self._enhanced_download_archive.working_file_path)
@@ -196,7 +208,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
     @classmethod
     def _preprocess_entry(cls, plugins: List[Plugin], entry: Entry) -> Optional[Entry]:
         maybe_entry: Optional[Entry] = entry
-        for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.modify_entry_metadata):
+        for plugin in PluginMapping.order_plugins_by(
+            plugins, PluginOperation.MODIFY_ENTRY_METADATA
+        ):
             if (maybe_entry := plugin.modify_entry_metadata(maybe_entry)) is None:
                 return None
 
@@ -206,7 +220,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
     ):
         # Post-process the entry with all plugins
-        for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.post_process):
+        for plugin in PluginMapping.order_plugins_by(plugins, PluginOperation.POST_PROCESS):
             optional_plugin_entry_metadata = plugin.post_process_entry(entry)
             if optional_plugin_entry_metadata:
                 entry_metadata.extend(optional_plugin_entry_metadata)
@@ -226,7 +240,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         entry_: Optional[Entry] = entry
 
         # First, modify the entry with all plugins
-        for plugin in sorted(plugins, key=lambda _plugin: _plugin.priority.modify_entry):
+        for plugin in PluginMapping.order_plugins_by(plugins, PluginOperation.MODIFY_ENTRY):
             # Break if it is None, it is indicated to not process any further
             if (entry_ := plugin.modify_entry(entry_)) is None:
                 break
@@ -243,18 +257,10 @@ class SubscriptionDownload(BaseSubscription, ABC):
     ) -> None:
         entry_: Optional[Entry] = entry
 
-        plugins_pre_split = sorted(
-            [plugin for plugin in plugins if not plugin.priority.modify_entry_after_split],
-            key=lambda _plugin: _plugin.priority.modify_entry,
-        )
-
-        plugins_post_split = sorted(
-            [plugin for plugin in plugins if plugin.priority.modify_entry_after_split],
-            key=lambda _plugin: _plugin.priority.modify_entry,
-        )
-
         # First, modify the entry with pre_split plugins
-        for plugin in plugins_pre_split:
+        for plugin in PluginMapping.order_plugins_by(
+            plugins, PluginOperation.MODIFY_ENTRY, before_split=True
+        ):
             # Break if it is None, it is indicated to not process any further
             if (entry_ := plugin.modify_entry(entry_)) is None:
                 break
@@ -264,7 +270,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
             for split_entry, split_entry_metadata in split_plugin.split(entry=entry_):
                 split_entry_: Optional[Entry] = split_entry
 
-                for plugin in plugins_post_split:
+                for plugin in PluginMapping.order_plugins_by(
+                    plugins, PluginOperation.MODIFY_ENTRY, before_split=False
+                ):
                     # Return if it is None, it is indicated to not process any further.
                     # Break out of the plugin loop
                     if (split_entry_ := plugin.modify_entry(split_entry_)) is None:

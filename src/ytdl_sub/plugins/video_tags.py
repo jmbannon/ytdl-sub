@@ -2,8 +2,8 @@ import copy
 from typing import Any
 from typing import Dict
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import add_ffmpeg_metadata_key_values
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -17,16 +17,14 @@ class VideoTagsOptions(OptionsDictValidator):
     """
     Adds tags to every downloaded video file using ffmpeg ``-metadata key=value`` args.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           video_tags:
-             title: "{title}"
-             date: "{upload_date}"
-             description: "{description}"
+       video_tags:
+         title: "{title}"
+         date: "{upload_date}"
+         description: "{description}"
     """
 
     _optional_keys = {"tags"}

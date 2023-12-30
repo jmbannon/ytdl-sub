@@ -7,8 +7,8 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -60,7 +60,9 @@ class SharedNfoTagsOptions(OptionsDictValidator):
     @property
     def nfo_name(self) -> StringFormatterFileNameValidator:
         """
-        The NFO file name.
+        :expected type: EntryFormatter
+        :description:
+          The NFO file name.
         """
         return self._nfo_name
 
@@ -81,9 +83,11 @@ class SharedNfoTagsOptions(OptionsDictValidator):
     @property
     def kodi_safe(self) -> Optional[bool]:
         """
-        Optional. Kodi does not support > 3-byte unicode characters, which include emojis and some
-        foreign language characters. Setting this to True will replace those characters with '□'.
-        Defaults to False.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to False. Kodi does not support > 3-byte unicode characters, which include
+          emojis and some foreign language characters. Setting this to True will replace those
+          characters with '□'.
         """
         return self._kodi_safe
 
@@ -97,16 +101,18 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
         nfo_tags: Dict[str, List[XmlElement]] = defaultdict(list)
 
         for key, string_tags in self.plugin_options.tags.string_tags.items():
-            nfo_tags[key].extend(
+            tags = [
                 XmlElement(
                     text=self.overrides.apply_formatter(formatter=string_tag, entry=entry),
                     attributes={},
                 )
                 for string_tag in string_tags
-            )
+            ]
+            # Do not add tags with empty text
+            nfo_tags[key].extend(tag for tag in tags if tag.text)
 
         for key, attribute_tags in self.plugin_options.tags.attribute_tags.items():
-            nfo_tags[key].extend(
+            tags = [
                 XmlElement(
                     text=self.overrides.apply_formatter(formatter=attribute_tag.tag, entry=entry),
                     attributes={
@@ -117,9 +123,12 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
                     },
                 )
                 for attribute_tag in attribute_tags
-            )
+            ]
+            # Do not add tags with empty text
+            nfo_tags[key].extend(tag for tag in tags if tag.text)
 
-        return nfo_tags
+        # Do not add tags with empty lists
+        return {key: tags for key, tags in nfo_tags.items() if len(tags) > 0}
 
     def _create_nfo(self, entry: Entry, save_to_entry: bool = True) -> None:
         # Write the nfo tags to XML with the nfo_root
@@ -127,6 +136,10 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
             formatter=self.plugin_options.nfo_root, entry=entry
         )
         nfo_tags = self._get_xml_element_dict(entry=entry)
+
+        # If the nfo tags are empty, then stop continuing
+        if not nfo_tags:
+            return
 
         if self.plugin_options.kodi_safe:
             nfo_root = to_max_3_byte_utf8_string(nfo_root)
@@ -181,22 +194,18 @@ class NfoTagsOptions(SharedNfoTagsOptions):
     Adds an NFO file for every download file. An NFO file is simply an XML file
     with a ``.nfo`` extension. You can add any values into the NFO.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           nfo_tags:
-             # required
-             nfo_name: "{title_sanitized}.nfo"
-             nfo_root: "episodedetails"
-             tags:
-               title: "{title}"
-               season: "{upload_year}"
-               episode: "{upload_month}{upload_day_padded}"
-             # optional
-             kodi_safe: False
+       nfo_tags:
+         nfo_name: "{title_sanitized}.nfo"
+         nfo_root: "episodedetails"
+         tags:
+           title: "{title}"
+           season: "{upload_year}"
+           episode: "{upload_month}{upload_day_padded}"
+         kodi_safe: False
     """
 
     _formatter_validator = StringFormatterValidator
@@ -206,50 +215,54 @@ class NfoTagsOptions(SharedNfoTagsOptions):
     @property
     def nfo_root(self) -> StringFormatterValidator:
         """
-        The root tag of the NFO's XML. In the usage above, it would look like
+        :expected type: EntryFormatter
+        :description:
+          The root tag of the NFO's XML. In the usage above, it would look like
 
-        .. code-block:: xml
+          .. code-block:: xml
 
-           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-           <episodedetails>
-           </episodedetails>
+             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+             <episodedetails>
+             </episodedetails>
         """
         return self._nfo_root
 
     @property
     def tags(self) -> NfoTagsValidator:
         """
-        Tags within the nfo_root tag. In the usage above, it would look like
+        :expected type: NfoTags
+        :description:
+          Tags within the nfo_root tag. In the usage above, it would look like
 
-        .. code-block:: xml
+          .. code-block:: xml
 
-           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-           <episodedetails>
-             <title>Awesome Youtube Video</title>
-             <season>2022</season>
-             <episode>502</episode>
-           </episodedetails>
+             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+             <episodedetails>
+               <title>Awesome Youtube Video</title>
+               <season>2022</season>
+               <episode>502</episode>
+             </episodedetails>
 
-        Also supports xml attributes and duplicate keys:
+          Also supports xml attributes and duplicate keys:
 
-        .. code-block:: yaml
+          .. code-block:: yaml
 
-           tags:
-             season:
-               attributes:
-                 name: "Best Year"
-               tag: "{upload_year}"
-             genre:
-               - "Comedy"
-               - "Drama"
+             tags:
+               season:
+                 attributes:
+                   name: "Best Year"
+                 tag: "{upload_year}"
+               genre:
+                 - "Comedy"
+                 - "Drama"
 
-        Which translates to
+          Which translates to
 
-        .. code-block:: xml
+          .. code-block:: xml
 
-           <season name="Best Year">2022</season>
-           <genre>Comedy</genre>
-           <genre>Drama</genre>
+             <season name="Best Year">2022</season>
+             <genre>Comedy</genre>
+             <genre>Drama</genre>
         """
         return self._tags
 

@@ -76,6 +76,21 @@ def regex_subscription_dict(regex_subscription_dict_base, output_directory):
                 }
             },
             "overrides": {
+                "title_capture_list": f"""{{
+                    %regex_capture_many_with_defaults(
+                        title,
+                        [
+                            "should not cap (.+) - (.+)",
+                            ".*\\[(.+) - (Feb.+)]"
+                        ],
+                        [
+                            "ack",
+                            "ack"
+                        ]
+                    )
+                }}""",
+                "title_capture_list_1": "{%array_at(title_capture_list, 1)}",
+                "title_capture_list_2": "{%array_at(title_capture_list, 2)}",
                 "contains_regex_default": "contains {title_type}",
                 "contains_regex_sanitized_default": "contains {title_type_sanitized}",
             },
@@ -302,32 +317,40 @@ class TestRegex:
                 preset_dict=regex_subscription_dict,
             )
 
-    def test_regex_fails_capture_group_is_source_variable(
+    def test_regex_fails_capture_group_is_entry_variable(
         self, regex_subscription_dict, default_config
     ):
-        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"][0] = "uid"
+        regex_subscription_dict["regex"]["from"]["playlist_uid"] = {
+            "match": [".*http:\\/\\/(.+).com.*"],
+            "capture_group_names": ["uid"],
+        }
+
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "'uid' cannot be used as a capture group name because it is a source variable"
+                "Cannot use the variable name uid because it exists as a built-in "
+                "ytdl-sub variable name."
             ),
         ):
             _ = Subscription.from_dict(
                 config=default_config,
-                preset_name="test_regex_fails_capture_group_is_source_variable",
+                preset_name="test_regex_fails_capture_group_is_entry_variable",
                 preset_dict=regex_subscription_dict,
             )
 
     def test_regex_fails_capture_group_is_override_variable(
         self, regex_subscription_dict, default_config
     ):
-        regex_subscription_dict["regex"]["from"]["title"]["capture_group_names"][
-            0
-        ] = "in_regex_default"
+        regex_subscription_dict["regex"]["from"]["playlist_uid"] = {
+            "match": [".*http:\\/\\/(.+).com.*"],
+            "capture_group_names": ["contains_regex_default"],
+        }
+
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                "'in_regex_default' cannot be used as a capture group name because it is an override variable"
+                "Override variable with name contains_regex_default cannot be used since it is "
+                "added by a plugin."
             ),
         ):
             _ = Subscription.from_dict(
@@ -344,9 +367,7 @@ class TestRegex:
         )
         with pytest.raises(
             ValidationException,
-            match=re.escape(
-                "cannot regex capture 'dne' because it is not a source or override variable"
-            ),
+            match=re.escape("cannot regex capture 'dne' because it is not a defined variable"),
         ):
             _ = Subscription.from_dict(
                 config=default_config,

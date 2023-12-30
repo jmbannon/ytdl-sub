@@ -1,10 +1,12 @@
 import copy
 from typing import Any
 from typing import Dict
-from typing import List
 from typing import Optional
+from typing import Set
 
-from ytdl_sub.config.preset_options import OptionsValidator
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.validators.options import OptionsValidator
+from ytdl_sub.script.parser import parse
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
@@ -43,7 +45,13 @@ class UrlThumbnailListValidator(ListValidator[UrlThumbnailValidator]):
 
 class UrlValidator(StrictDictValidator):
     _required_keys = {"url"}
-    _optional_keys = {"variables", "source_thumbnails", "playlist_thumbnails", "download_reverse"}
+    _optional_keys = {
+        "variables",
+        "source_thumbnails",
+        "playlist_thumbnails",
+        "download_reverse",
+        "include_sibling_metadata",
+    }
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
@@ -71,6 +79,9 @@ class UrlValidator(StrictDictValidator):
         )
         self._download_reverse = self._validate_key(
             key="download_reverse", validator=BoolValidator, default=True
+        )
+        self._include_sibling_metadata = self._validate_key(
+            key="include_sibling_metadata", validator=BoolValidator, default=False
         )
 
     @property
@@ -145,6 +156,16 @@ class UrlValidator(StrictDictValidator):
         """
         return self._download_reverse.value
 
+    @property
+    def include_sibling_metadata(self) -> bool:
+        """
+        Optional. Whether to include sibling metadata as an entry variable, which comprises basic
+        metadata from all other entries (including itself) that belong to the same playlist. For
+        channels or large playlists, this becomes memory-intensive since you are storing
+        ``n^2`` metadata. Defaults to False.
+        """
+        return self._include_sibling_metadata.value
+
 
 class UrlStringOrDictValidator(UrlValidator):
     """
@@ -194,8 +215,53 @@ class UrlListValidator(ListValidator[UrlStringOrDictValidator]):
 
 class MultiUrlValidator(OptionsValidator):
     """
-    Downloads from multiple URLs. If an entry is returned from more than one URL, it will
-    resolve to the bottom-most URL settings.
+    Sets the URL(s) to download from. Can be used in many forms, including
+
+    :Single URL:
+
+    .. code-block:: yaml
+
+       download: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+    :Multi URL:
+
+    .. code-block:: yaml
+
+       download:
+         - "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+         - "https://www.youtube.com/watch?v=3BFTio5296w"
+
+    :Thumbnails + Variables:
+
+    All variables must be defined for the top-most url. All subsequent URL variables can be either
+    overwritten or default to the top-most value.
+
+    If an entry is returned from more than one URL, it will use the variables in the bottom-most
+    URL.
+
+    .. code-block:: yaml
+
+      download:
+        # required
+        urls:
+          - url: "youtube.com/channel/UCsvn_Po0SmunchJYtttWpOxMg"
+            variables:
+              season_index: "1"
+              season_name: "Uploads"
+            playlist_thumbnails:
+              - name: "poster.jpg"
+                uid: "avatar_uncropped"
+              - name: "fanart.jpg"
+                uid: "banner_uncropped"
+              - name: "season{season_index}-poster.jpg"
+                uid: "latest_entry"
+          - url: "https://www.youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
+            variables:
+              season_index: "2"
+              season_name: "Playlist as Season"
+            playlist_thumbnails:
+              - name: "season{season_index}-poster.jpg"
+                uid: "latest_entry"
     """
 
     @classmethod
@@ -243,45 +309,26 @@ class MultiUrlValidator(OptionsValidator):
         # keep for readthedocs documentation
         return self._urls.list[0].variables
 
-    def added_source_variables(self) -> List[str]:
+    def added_variables(
+        self,
+        resolved_variables: Set[str],
+        unresolved_variables: Set[str],
+        plugin_op: PluginOperation,
+    ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns
         -------
         List of variables added. The first collection url always contains all the variables.
         """
-        return list(self._urls.list[0].variables.keys)
+        if plugin_op != PluginOperation.ANY:
+            for url in self._urls.list:
+                for variable_name, definition in url.variables.dict_with_format_strings.items():
+                    used_variables = set(var.name for var in parse(definition).variables)
+                    if unresolved := used_variables & unresolved_variables:
+                        raise self._validation_exception(
+                            f"variable {variable_name} cannot use the variables "
+                            f"{', '.join(sorted(list(unresolved)))} because it depends on other"
+                            " variables that are computed later in execution"
+                        )
 
-    def validate_with_variables(
-        self, source_variables: List[str], override_variables: Dict[str, str]
-    ) -> None:
-        """
-        Ensures new variables added are not existing variables
-        """
-        for source_var_name in self.added_source_variables():
-            if source_var_name in source_variables:
-                raise self._validation_exception(
-                    f"'{source_var_name}' cannot be used as a variable name because it "
-                    f"is an existing source variable"
-                )
-
-        base_variables = dict(
-            override_variables, **{source_var: "dummy_string" for source_var in source_variables}
-        )
-
-        # Apply formatting to each new source variable, ensure it resolves
-        for collection_url in self.urls.list:
-            for (
-                source_var_name,
-                source_var_formatter_str,
-            ) in collection_url.variables.dict_with_format_strings.items():
-                _ = StringFormatterValidator(
-                    name=f"{self._name}.{source_var_name}", value=source_var_formatter_str
-                ).apply_formatter(base_variables)
-
-        # Ensure at least URL is non-empty
-        has_non_empty_url = False
-        for url_validator in self.urls.list:
-            has_non_empty_url |= bool(url_validator.url.apply_formatter(override_variables))
-
-        if not has_non_empty_url:
-            raise self._validation_exception("Must contain at least one url that is non-empty")
+        return {PluginOperation.DOWNLOADER: set(self._urls.list[0].variables.keys)}

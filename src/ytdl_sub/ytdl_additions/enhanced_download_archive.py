@@ -14,13 +14,17 @@ from yt_dlp import DateRange
 from yt_dlp.utils import make_archive_id
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import SPLIT_BY_CHAPTERS_PARENT_ENTRY
+from ytdl_sub.entries.entry import ytdl_sub_split_by_chapters_parent_uid
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get("archive")
+
+v: VariableDefinitions = VARIABLES
 
 
 @dataclass
@@ -71,8 +75,8 @@ class DownloadMapping:
         DownloadMapping for the entry
         """
         return DownloadMapping(
-            upload_date=entry.upload_date_standardized,
-            extractor=entry.extractor,
+            upload_date=entry.get(v.upload_date_standardized, str),
+            extractor=entry.download_archive_extractor,
             file_names=set(),
         )
 
@@ -219,10 +223,14 @@ class DownloadMappings:
         -------
         self
         """
-        if entry.uid not in self.entry_ids:
-            self._entry_mappings[entry.uid] = DownloadMapping.from_entry(entry=entry)
+        uid = entry.uid
+        if parent_uid := entry.try_get(ytdl_sub_split_by_chapters_parent_uid, str):
+            uid = parent_uid
 
-        self._entry_mappings[entry.uid].file_names.add(entry_file_path)
+        if uid not in self.entry_ids:
+            self._entry_mappings[uid] = DownloadMapping.from_entry(entry=entry)
+
+        self._entry_mappings[uid].file_names.add(entry_file_path)
         return self
 
     def remove_entry(self, entry_id: str) -> "DownloadMappings":
@@ -537,7 +545,16 @@ class EnhancedDownloadArchive:
 
         return self
 
-    def remove_stale_files(self, date_range: DateRange) -> "EnhancedDownloadArchive":
+    def _remove_entry(self, uid: str, mapping: DownloadMapping) -> None:
+        for file_name in mapping.file_names:
+            self._file_handler.delete_file_from_output_directory(file_name=file_name)
+
+        self.mapping.remove_entry(entry_id=uid)
+        self.num_entries_removed += 1
+
+    def remove_stale_files(
+        self, date_range: Optional[DateRange], keep_max_files: Optional[int]
+    ) -> "EnhancedDownloadArchive":
         """
         Checks all entries within the mappings. If any entries' upload dates are not within the
         provided date range, delete them.
@@ -545,22 +562,32 @@ class EnhancedDownloadArchive:
         Parameters
         ----------
         date_range
-            Date range the upload date must be in to not get deleted
+            Optional. Date range the upload date must be in to not get deleted
+        keep_max_files
+            Optional. Max number of files to keep
 
         Returns
         -------
         self
         """
-        stale_mappings: Dict[str, DownloadMapping] = self.mapping.get_entries_out_of_range(
-            date_range=date_range
-        )
+        if date_range is not None:
+            stale_mappings: Dict[str, DownloadMapping] = self.mapping.get_entries_out_of_range(
+                date_range=date_range
+            )
 
-        for uid, mapping in stale_mappings.items():
-            for file_name in mapping.file_names:
-                self._file_handler.delete_file_from_output_directory(file_name=file_name)
+            for uid, mapping in stale_mappings.items():
+                self._remove_entry(uid=uid, mapping=mapping)
 
-            self.mapping.remove_entry(entry_id=uid)
-            self.num_entries_removed += 1
+        if keep_max_files is not None and keep_max_files > 0:
+            num_files = 0
+            for uid, mapping in sorted(
+                self.mapping.entry_mappings.items(),
+                key=lambda kv_: kv_[1].upload_date,
+                reverse=True,
+            ):
+                num_files += 1
+                if num_files > keep_max_files:
+                    self._remove_entry(uid=uid, mapping=mapping)
 
         return self
 
@@ -627,15 +654,7 @@ class EnhancedDownloadArchive:
         if output_file_name is None:
             output_file_name = file_name
 
-        # If the entry is created from splitting via chapters, store it to the mapping
-        # using its parent entry
-        if entry and entry.kwargs_contains(SPLIT_BY_CHAPTERS_PARENT_ENTRY):
-            parent_entry = Entry(
-                entry_dict=entry.kwargs(SPLIT_BY_CHAPTERS_PARENT_ENTRY),
-                working_directory=entry.working_directory(),
-            )
-            self.mapping.add_entry(parent_entry, entry_file_path=output_file_name)
-        elif entry:
+        if entry:
             self.mapping.add_entry(entry=entry, entry_file_path=output_file_name)
 
         is_modified = self._file_handler.move_file_to_output_directory(

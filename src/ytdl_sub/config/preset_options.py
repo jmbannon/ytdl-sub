@@ -1,97 +1,26 @@
-from abc import ABC
 from typing import Any
-from typing import Dict
-from typing import List
 from typing import Optional
-from typing import TypeVar
-
-from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
-from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
-from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesIntegerFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import Validator
-
-
-# pylint: disable=no-self-use
-# pylint: disable=unused-argument
-class OptionsValidator(Validator, ABC):
-    """
-    Abstract class that validates options for preset sections (plugins, downloaders)
-    """
-
-    def validation_exception(
-        self,
-        error_message: str | Exception,
-    ) -> ValidationException:
-        """
-        Parameters
-        ----------
-        error_message
-            Error message to include in the validation exception
-
-        Returns
-        -------
-        Validation exception that points to the location in the config. To be used to throw good
-        validation exceptions at runtime from code outside this class.
-        """
-        return self._validation_exception(error_message=error_message)
-
-    def added_source_variables(self) -> List[str]:
-        """
-        If the plugin adds source variables, list them here.
-
-        Returns
-        -------
-        List of added source variables this plugin creates
-        """
-        return []
-
-    def validate_with_variables(
-        self, source_variables: List[str], override_variables: Dict[str, str]
-    ) -> None:
-        """
-        Optional validation after init with the session's source and override variables.
-
-        Parameters
-        ----------
-        source_variables
-            Available source variables when running the plugin
-        override_variables
-            Available override variables when running the plugin
-        """
-        return None
-
-
-TOptionsValidator = TypeVar("TOptionsValidator", bound=OptionsValidator)
-
-
-class OptionsDictValidator(StrictDictValidator, OptionsValidator, ABC):
-    pass
-
-
-# pylint: enable=no-self-use
-# pylint: enable=unused-argument
 
 
 class YTDLOptions(LiteralDictValidator):
     """
-    Optional. This section allows you to add any ytdl argument to ytdl-sub's downloader.
+    Allows you to add any ytdl argument to ytdl-sub's downloader.
     The argument names can differ slightly from the command-line argument names. See
     `this docstring <https://github.com/yt-dlp/yt-dlp/blob/2022.04.08/yt_dlp/YoutubeDL.py#L197>`_
     for more details.
 
-    ytdl_options should be formatted like:
+    :Usage:
 
     .. code-block:: yaml
 
@@ -123,108 +52,13 @@ class YTDLOptions(LiteralDictValidator):
 
 # Disable for proper docstring formatting
 # pylint: disable=line-too-long
-class Overrides(DictFormatterValidator):
-    """
-    Optional. This section allows you to define variables that can be used in any string formatter.
-    For example, if you want your file and thumbnail files to match without copy-pasting a large
-    format string, you can define something like:
-
-    .. code-block:: yaml
-
-       presets:
-         my_example_preset:
-           overrides:
-             output_directory: "/path/to/media"
-             custom_file_name: "{upload_year}.{upload_month_padded}.{upload_day_padded}.{title_sanitized}"
-
-           # Then use the override variables in the output options
-           output_options:
-             output_directory: "{output_directory}"
-             file_name: "{custom_file_name}.{ext}"
-             thumbnail_name: "{custom_file_name}.{thumbnail_ext}"
-
-    Override variables can contain explicit values and other variables, including both override
-    and source variables.
-
-    In addition, any override variable defined will automatically create a ``sanitized`` variable
-    for use. In the example above, ``output_directory_sanitized`` will exist and perform
-    sanitization on the value when used.
-    """
-
-    # pylint: enable=line-too-long
-
-    def _add_override_variable(self, key_name: str, format_string: str, sanitize: bool = False):
-        if sanitize:
-            key_name = f"{key_name}_sanitized"
-            format_string = sanitize_filename(format_string)
-
-        self._value[key_name] = StringFormatterValidator(
-            name="__should_never_fail__",
-            value=format_string,
-        )
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-
-        # Add sanitized overrides
-        for key in self._keys:
-            self._add_override_variable(
-                key_name=key,
-                format_string=self._value[key].format_string,
-                sanitize=True,
-            )
-
-        if SUBSCRIPTION_NAME not in self._value:
-            for sanitized in [True, False]:
-                self._add_override_variable(
-                    key_name=SUBSCRIPTION_NAME,
-                    format_string=self.subscription_name,
-                    sanitize=sanitized,
-                )
-
-    @property
-    def subscription_name(self) -> str:
-        """
-        Returns
-        -------
-        Name of the subscription
-        """
-        return self._root_name
-
-    def apply_formatter(
-        self,
-        formatter: StringFormatterValidator,
-        entry: Optional[Entry] = None,
-        function_overrides: Dict[str, str] = None,
-    ) -> str:
-        """
-        Parameters
-        ----------
-        formatter
-            Formatter to apply
-        entry
-            Optional. Entry to add source variables to the formatter
-        function_overrides
-            Optional. Explicit values to override the overrides themselves and source variables
-
-        Returns
-        -------
-        The format_string after .format has been called
-        """
-        variable_dict = self.dict_with_format_strings
-        if entry:
-            variable_dict = dict(entry.to_dict(), **variable_dict)
-        if function_overrides:
-            variable_dict = dict(variable_dict, **function_overrides)
-
-        return formatter.apply_formatter(variable_dict)
 
 
 class OutputOptions(StrictDictValidator):
     """
     Defines where to output files and thumbnails after all post-processing has completed.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
@@ -253,6 +87,7 @@ class OutputOptions(StrictDictValidator):
         "maintain_download_archive",
         "keep_files_before",
         "keep_files_after",
+        "keep_max_files",
     }
 
     @classmethod
@@ -307,96 +142,133 @@ class OutputOptions(StrictDictValidator):
         self._keep_files_after = self._validate_key_if_present(
             "keep_files_after", StringDatetimeValidator
         )
+        self._keep_max_files = self._validate_key_if_present(
+            "keep_max_files", OverridesIntegerFormatterValidator
+        )
 
         if (
-            self._keep_files_before or self._keep_files_after
+            self._keep_files_before or self._keep_files_after or self._keep_max_files
         ) and not self.maintain_download_archive:
             raise self._validation_exception(
-                "keep_files requires maintain_download_archive set to True"
+                "keep_files/keep_max requires maintain_download_archive set to True"
             )
 
     @property
     def output_directory(self) -> OverridesStringFormatterValidator:
         """
-        Required. The output directory to store all media files downloaded.
+        :expected type: OverridesFormatter
+        :description:
+          The output directory to store all media files downloaded.
         """
         return self._output_directory
 
     @property
     def file_name(self) -> StringFormatterValidator:
         """
-        Required. The file name for the media file. This can include directories such as
-        ``"Season {upload_year}/{title}.{ext}"``, and will be placed in the output directory.
+        :expected type: EntryFormatter
+        :description:
+          The file name for the media file. This can include directories such as
+          ``"Season {upload_year}/{title}.{ext}"``, and will be placed in the output directory.
         """
         return self._file_name
 
     @property
     def thumbnail_name(self) -> Optional[StringFormatterValidator]:
         """
-        Optional. The file name for the media's thumbnail image. This can include directories such
-        as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
-        directory. Can be set to empty string or `null` to disable thumbnail writes.
+        :expected type: Optional[EntryFormatter]
+        :description:
+          The file name for the media's thumbnail image. This can include directories such
+          as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
+          directory. Can be set to empty string or `null` to disable thumbnail writes.
         """
         return self._thumbnail_name
 
     @property
     def info_json_name(self) -> Optional[StringFormatterValidator]:
         """
-        Optional. The file name for the media's info json file. This can include directories such
-        as ``"Season {upload_year}/{title}.{info_json_ext}"``, and will be placed in the output
-        directory. Can be set to empty string or `null` to disable info json writes.
+        :expected type: Optional[EntryFormatter]
+        :description:
+          The file name for the media's info json file. This can include directories such
+          as ``"Season {upload_year}/{title}.{info_json_ext}"``, and will be placed in the output
+          directory. Can be set to empty string or `null` to disable info json writes.
         """
         return self._info_json_name
 
     @property
     def download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
         """
-        Optional. The file name to store a subscriptions download archive placed relative to
-        the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          The file name to store a subscriptions download archive placed relative to
+          the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
         """
         return self._download_archive_name
 
     @property
     def migrated_download_archive_name(self) -> Optional[OverridesStringFormatterValidator]:
         """
-        Optional. Intended to be used if you are migrating a subscription with either a new
-        subscription name or output directory. It will try to load the archive file using this name
-        first, and fallback to ``download_archive_name``. It will always save to this file
-        and remove the original ``download_archive_name``.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Intended to be used if you are migrating a subscription with either a new
+          subscription name or output directory. It will try to load the archive file using this
+          name first, and fallback to ``download_archive_name``. It will always save to this file
+          and remove the original ``download_archive_name``.
         """
         return self._migrated_download_archive_name
 
     @property
     def maintain_download_archive(self) -> bool:
         """
-        Optional. Maintains a download archive file in the output directory for a subscription.
-        It is named ``.ytdl-sub-{subscription_name}-download-archive.json``, stored in the
-        output directory.
+        :expected type: Optional[Boolean]
+        :description:
+          Maintains a download archive file in the output directory for a subscription.
+          It is named ``.ytdl-sub-{subscription_name}-download-archive.json``, stored in the
+          output directory.
 
-        The download archive contains a mapping of ytdl IDs to downloaded files. This is used to
-        create a ytdl download-archive file when invoking a download on a subscription. This will
-        prevent ytdl from redownloading media already downloaded.
+          The download archive contains a mapping of ytdl IDs to downloaded files. This is used to
+          create a ytdl download-archive file when invoking a download on a subscription. This will
+          prevent ytdl from redownloading media already downloaded.
 
-        Defaults to False.
+          Defaults to False.
         """
         return self._maintain_download_archive.value
 
     @property
     def keep_files_before(self) -> Optional[StringDatetimeValidator]:
         """
-        Optional. Requires ``maintain_download_archive`` set to True.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Requires ``maintain_download_archive`` set to True. Uses the same syntax as the
+          ``date_range`` plugin.
 
-        Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
-        files before ``now``, which implies all files.
+          Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
+          files before ``now``, which implies all files. Can be used in conjunction with
+          ``keep_max_files``.
         """
         return self._keep_files_before
 
     @property
     def keep_files_after(self) -> Optional[StringDatetimeValidator]:
         """
-        Optional. Requires ``maintain_download_archive`` set to True.
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Requires ``maintain_download_archive`` set to True. Uses the same syntax as the
+          ``date_range`` plugin.
 
-        Only keeps files that are uploaded after this datetime. By default, ytdl-sub will keep
-        files after ``19000101``, which implies all files.
+          Only keeps files that are uploaded after this datetime. By default, ytdl-sub will keep
+          files after ``19000101``, which implies all files. Can be used in conjunction with
+          ``keep_max_files``.
         """
         return self._keep_files_after
+
+    @property
+    def keep_max_files(self) -> Optional[OverridesIntegerFormatterValidator]:
+        """
+        :expected type: Optional[OverridesFormatter]
+        :description:
+          Requires ``maintain_download_archive`` set to True.
+
+          Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
+          applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
+        """
+        return self._keep_max_files

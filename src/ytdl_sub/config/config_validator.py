@@ -10,7 +10,6 @@ from ytdl_sub.config.defaults import DEFAULT_FFPROBE_PATH
 from ytdl_sub.config.defaults import DEFAULT_LOCK_DIRECTORY
 from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
-from ytdl_sub.subscriptions.utils import SUBSCRIPTION_VALUE_CONFIG_KEY
 from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
 from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -107,7 +106,6 @@ class ConfigOptions(StrictDictValidator):
         "ffprobe_path",
         "file_name_max_bytes",
         "experimental",
-        SUBSCRIPTION_VALUE_CONFIG_KEY,
     }
 
     def __init__(self, name: str, value: Any):
@@ -141,9 +139,6 @@ class ConfigOptions(StrictDictValidator):
         )
         self._file_name_max_bytes = self._validate_key(
             key="file_name_max_bytes", validator=IntValidator, default=MAX_FILE_NAME_BYTES
-        )
-        self._subscription_value = self._validate_key_if_present(
-            key=SUBSCRIPTION_VALUE_CONFIG_KEY, validator=StringValidator
         )
 
     @property
@@ -236,14 +231,6 @@ class ConfigOptions(StrictDictValidator):
         ``ffprobe.exe`` for Windows (in the same directory as ytdl-sub).
         """
         return self._ffprobe_path.value
-
-    @property
-    def subscription_value(self) -> Optional[str]:
-        """
-        Sets the :ref:`subscription value` for subscription
-        files that use this config.
-        """
-        return self._subscription_value.value if self._subscription_value else None
 
 
 class ConfigValidator(StrictDictValidator):

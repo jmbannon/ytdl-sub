@@ -5,12 +5,15 @@ from typing import List
 from typing import Optional
 from typing import Set
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.kwargs import COMMENTS
-from ytdl_sub.entries.variables.kwargs import YTDL_SUB_CUSTOM_CHAPTERS
+from ytdl_sub.entries.entry import ytdl_sub_chapters_from_comments
+from ytdl_sub.entries.entry import ytdl_sub_split_by_chapters_parent_uid
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.ffmpeg import set_ffmpeg_metadata_chapters
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -18,6 +21,8 @@ from ytdl_sub.validators.regex_validator import RegexListValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import ListValidator
+
+v: VariableDefinitions = VARIABLES
 
 SPONSORBLOCK_HIGHLIGHT_CATEGORIES: Set[str] = {"poi_highlight"}
 SPONSORBLOCK_CATEGORIES: Set[str] = SPONSORBLOCK_HIGHLIGHT_CATEGORIES | {
@@ -33,15 +38,11 @@ SPONSORBLOCK_CATEGORIES: Set[str] = SPONSORBLOCK_HIGHLIGHT_CATEGORIES | {
 
 
 def _chapters(entry: Entry) -> List[Dict]:
-    if entry.kwargs_contains("chapters"):
-        return entry.kwargs("chapters") or []
-    return []
+    return entry.get(v.chapters, list)
 
 
 def _sponsorblock_chapters(entry: Entry) -> List[Dict]:
-    if entry.kwargs_contains("sponsorblock_chapters"):
-        return entry.kwargs("sponsorblock_chapters") or []
-    return []
+    return entry.get(v.sponsorblock_chapters, list)
 
 
 def _contains_any_chapters(entry: Entry) -> bool:
@@ -63,32 +64,29 @@ class ChaptersOptions(OptionsDictValidator):
     Embeds chapters to video files if they are present. Additional options to add SponsorBlock
     chapters and remove specific ones. Can also remove chapters using regex.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           chapters:
-             # Embedded Chapter Fields
-             embed_chapters: True
-             allow_chapters_from_comments: False
-             remove_chapters_regex:
-               - "Intro"
-               - "Outro"
+       chapters:
+         # Embedded Chapter Fields
+         embed_chapters: True
+         allow_chapters_from_comments: False
+         remove_chapters_regex:
+           - "Intro"
+           - "Outro"
 
-             # Sponsorblock Fields
-             sponsorblock_categories:
-               - "outro"
-               - "selfpromo"
-               - "preview"
-               - "interaction"
-               - "sponsor"
-               - "music_offtopic"
-               - "intro"
-             remove_sponsorblock_categories: "all"
-             force_key_frames: False
-
+         # Sponsorblock Fields
+         sponsorblock_categories:
+           - "outro"
+           - "selfpromo"
+           - "preview"
+           - "interaction"
+           - "sponsor"
+           - "music_offtopic"
+           - "intro"
+         remove_sponsorblock_categories: "all"
+         force_key_frames: False
     """
 
     _optional_keys = {
@@ -134,23 +132,29 @@ class ChaptersOptions(OptionsDictValidator):
     @property
     def embed_chapters(self) -> Optional[bool]:
         """
-        Optional. Embed chapters into the file. Defaults to True.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to True. Embed chapters into the file.
         """
         return self._embed_chapters
 
     @property
     def allow_chapters_from_comments(self) -> bool:
         """
-        Optional. If chapters do not exist in the video/description itself, attempt to scrape
-        comments to find the chapters. Defaults to False.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to False. If chapters do not exist in the video/description itself, attempt to
+          scrape comments to find the chapters.
         """
         return self._allow_chapters_from_comments
 
     @property
     def remove_chapters_regex(self) -> Optional[List[re.Pattern]]:
         """
-        Optional. List of regex patterns to match chapter titles against and remove them from the
-        entry.
+        :expected type: Optional[List[RegexString]
+        :description:
+          List of regex patterns to match chapter titles against and remove them from the
+          entry.
         """
         if self._remove_chapters_regex:
             return [validator.compiled_regex for validator in self._remove_chapters_regex.list]
@@ -159,9 +163,11 @@ class ChaptersOptions(OptionsDictValidator):
     @property
     def sponsorblock_categories(self) -> Optional[List[str]]:
         """
-        Optional. List of SponsorBlock categories to embed as chapters. Supports "sponsor",
-        "intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
-        "poi_highlight", or "all" to include all categories.
+        :expected type: Optional[List[String]]
+        :description:
+          List of SponsorBlock categories to embed as chapters. Supports "sponsor",
+          "intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
+          "poi_highlight", or "all" to include all categories.
         """
         if self._sponsorblock_categories:
             category_list = [validator.value for validator in self._sponsorblock_categories.list]
@@ -173,9 +179,11 @@ class ChaptersOptions(OptionsDictValidator):
     @property
     def remove_sponsorblock_categories(self) -> Optional[List[str]]:
         """
-        Optional. List of SponsorBlock categories to remove from the output file. Can only remove
-        categories that are specified in ``sponsorblock_categories`` or "all", which removes
-        everything specified in ``sponsorblock_categories``.
+        :expected type: Optional[List[String]]
+        :description:
+          List of SponsorBlock categories to remove from the output file. Can only remove
+          categories that are specified in ``sponsorblock_categories`` or "all", which removes
+          everything specified in ``sponsorblock_categories``.
         """
         if self._remove_sponsorblock_categories:
             category_list = [
@@ -189,11 +197,20 @@ class ChaptersOptions(OptionsDictValidator):
     @property
     def force_key_frames(self) -> bool:
         """
-        Optional. Force keyframes at cuts when removing sections. This is slow due to needing a
-        re-encode, but the resulting video may have fewer artifacts around the cuts. Defaults to
-        False.
+        :expected type: Optional[Boolean]
+        :description:
+          Defaults to False. Force keyframes at cuts when removing sections. This is slow due to
+          needing a re-encode, but the resulting video may have fewer artifacts around the cuts.
         """
         return self._force_key_frames
+
+    def added_variables(
+        self,
+        resolved_variables: Set[str],
+        unresolved_variables: Set[str],
+        plugin_op: PluginOperation,
+    ) -> Dict[PluginOperation, Set[str]]:
+        return {PluginOperation.MODIFY_ENTRY: {ytdl_sub_chapters_from_comments.variable_name}}
 
 
 class ChaptersPlugin(Plugin[ChaptersOptions]):
@@ -300,26 +317,32 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         -------
         entry
         """
-        chapters = Chapters.from_empty()
+        has_chapters_from_comments = False
 
         # If there are no embedded chapters, and comment chapters are allowed...
         if not _contains_any_chapters(entry) and self.plugin_options.allow_chapters_from_comments:
+            chapters = Chapters.from_empty()
+
             # Try to get chapters from comments
-            for comment in entry.kwargs_get(COMMENTS, []):
+            for comment in entry.get(v.comments, list):
                 chapters = Chapters.from_string(comment.get("text", ""))
                 if chapters.contains_any_chapters():
                     break
 
             # If some are actually found, add a special kwarg and embed them
             if chapters.contains_any_chapters():
-                entry.add_kwargs({YTDL_SUB_CUSTOM_CHAPTERS: chapters.to_file_metadata_dict()})
+                has_chapters_from_comments = True
+                entry.add({ytdl_sub_chapters_from_comments: chapters.to_yt_dlp_chapter_metadata()})
 
                 if not self.is_dry_run:
                     set_ffmpeg_metadata_chapters(
                         file_path=entry.get_download_file_path(),
                         chapters=chapters,
-                        file_duration_sec=entry.kwargs("duration"),
+                        file_duration_sec=entry.get(v.duration, int),
                     )
+
+        if not has_chapters_from_comments:
+            entry.add({ytdl_sub_chapters_from_comments: []})
 
         return entry
 
@@ -334,12 +357,9 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
         -------
         FileMetadata outlining which chapters/SponsorBlock segments got removed
         """
-        if custom_chapters_metadata := entry.kwargs_get(YTDL_SUB_CUSTOM_CHAPTERS):
-            title: str = "Chapters from comments"
-            return FileMetadata.from_dict(
-                value_dict=custom_chapters_metadata,
-                title=title,
-                sort_dict=False,  # timestamps + titles are already sorted
+        if custom_chapters := entry.get(ytdl_sub_chapters_from_comments, list):
+            return Chapters.from_yt_dlp_chapters(custom_chapters).to_file_metadata(
+                title="Chapters from comments"
             )
 
         if self.plugin_options.embed_chapters:
@@ -356,9 +376,10 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
             if removed_sponsorblock:
                 metadata_dict["Removed SponsorBlock Category Count(s)"] = removed_sponsorblock
 
-            # TODO: check if file actually has embedded chapters
-            return FileMetadata.from_dict(
-                value_dict=metadata_dict, title="Embedded Chapters", sort_dict=False
-            )
+            # If the entry wasn't split on embedded chapters, report it in the file metadata
+            if not entry.try_get(ytdl_sub_split_by_chapters_parent_uid, str):
+                return FileMetadata.from_dict(
+                    value_dict=metadata_dict, title="Embedded Chapters", sort_dict=False
+                )
 
         return None

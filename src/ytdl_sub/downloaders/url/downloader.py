@@ -11,8 +11,7 @@ from typing import Tuple
 
 from yt_dlp.utils import RejectedVideoReached
 
-from ytdl_sub.config.plugin import PluginPriority
-from ytdl_sub.config.preset_options import Overrides
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.source_plugin import SourcePluginExtension
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
@@ -22,20 +21,16 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
-from ytdl_sub.entries.variables.kwargs import COLLECTION_URL
-from ytdl_sub.entries.variables.kwargs import COMMENTS
-from ytdl_sub.entries.variables.kwargs import DOWNLOAD_INDEX
-from ytdl_sub.entries.variables.kwargs import PLAYLIST_ENTRY
-from ytdl_sub.entries.variables.kwargs import REQUESTED_SUBTITLES
-from ytdl_sub.entries.variables.kwargs import SOURCE_ENTRY
-from ytdl_sub.entries.variables.kwargs import SPONSORBLOCK_CHAPTERS
-from ytdl_sub.entries.variables.kwargs import UPLOAD_DATE_INDEX
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
 from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
 from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+
+v: VariableDefinitions = VARIABLES
 
 download_logger = Logger.get(name="downloader")
 
@@ -47,8 +42,6 @@ class URLDownloadState:
 
 
 class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
-    priority = PluginPriority(modify_entry=0)
-
     def __init__(
         self,
         options: MultiUrlValidator,
@@ -119,22 +112,18 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
         """
-        if entry.kwargs_contains(PLAYLIST_ENTRY):
+        if playlist_metadata := entry.get(v.playlist_metadata, dict):
             self._download_parent_thumbnails(
                 thumbnail_list_info=collection_url.playlist_thumbnails,
                 entry=entry,
-                parent=EntryParent(
-                    entry.kwargs(PLAYLIST_ENTRY), working_directory=self.working_directory
-                ),
+                parent=EntryParent(playlist_metadata, working_directory=self.working_directory),
             )
 
-        if entry.kwargs_contains(SOURCE_ENTRY):
+        if source_metadata := entry.get(v.source_metadata, dict):
             self._download_parent_thumbnails(
                 thumbnail_list_info=collection_url.source_thumbnails,
                 entry=entry,
-                parent=EntryParent(
-                    entry.kwargs(SOURCE_ENTRY), working_directory=self.working_directory
-                ),
+                parent=EntryParent(source_metadata, working_directory=self.working_directory),
             )
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
@@ -147,17 +136,15 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
         if not self.is_dry_run:
             try_convert_download_thumbnail(entry=entry)
 
-        if entry.kwargs_get(COLLECTION_URL) in self._collection_url_mapping:
+        if (input_url := entry.get(v.ytdl_sub_input_url, str)) in self._collection_url_mapping:
             self._download_url_thumbnails(
-                collection_url=self._collection_url_mapping[entry.kwargs(COLLECTION_URL)],
+                collection_url=self._collection_url_mapping[input_url],
                 entry=entry,
             )
         return entry
 
 
 class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
-    priority = PluginPriority(modify_entry_metadata=0)
-
     def __init__(
         self,
         options: MultiUrlValidator,
@@ -181,7 +168,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
         """
         # COLLECTION_URL is a recent variable that may not exist for old entries when updating.
         # Try to use source_webpage_url if it does not exist
-        entry_collection_url = entry.kwargs_get(COLLECTION_URL, entry.source_webpage_url)
+        entry_collection_url = entry.get(v.ytdl_sub_input_url, str)
 
         # If the collection URL cannot find its mapping, use the last URL
         collection_url = (
@@ -189,7 +176,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
             or list(self._collection_url_mapping.values())[-1]
         )
 
-        entry.add_variables(variables_to_add=collection_url.variables.dict_with_format_strings)
+        entry.add(collection_url.variables.dict_with_format_strings)
 
         return entry
 
@@ -356,7 +343,10 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             else entry.is_thumbnail_downloaded_via_ytdlp,
             url=entry.webpage_url,
         )
-        return Entry(download_entry_dict, working_directory=self.working_directory)
+        return Entry(
+            download_entry_dict,
+            working_directory=self.working_directory,
+        )
 
     def _iterate_child_entries(
         self, url_validator: UrlValidator, entries: List[Entry]
@@ -395,7 +385,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             ):
                 yield entry_child
 
-    def _download_url_metadata(self, url: str) -> Tuple[List[EntryParent], List[Entry]]:
+    def _download_url_metadata(
+        self, url: str, include_sibling_metadata: bool
+    ) -> Tuple[List[EntryParent], List[Entry]]:
         """
         Downloads only info.json files and forms EntryParent trees
         """
@@ -411,9 +403,12 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             url=url,
             entry_dicts=entry_dicts,
             working_directory=self.working_directory,
+            include_sibling_metadata=include_sibling_metadata,
         )
         orphans = EntryParent.from_entry_dicts_with_no_parents(
-            parents=parents, entry_dicts=entry_dicts, working_directory=self.working_directory
+            parents=parents,
+            entry_dicts=entry_dicts,
+            working_directory=self.working_directory,
         )
 
         return parents, orphans
@@ -446,7 +441,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             if not (url := self.overrides.apply_formatter(collection_url.url)):
                 continue
 
-            parents, orphan_entries = self._download_url_metadata(url=url)
+            parents, orphan_entries = self._download_url_metadata(
+                url=url, include_sibling_metadata=collection_url.include_sibling_metadata
+            )
 
             # TODO: Encapsulate this logic into its own class
             self._url_state = URLDownloadState(
@@ -459,9 +456,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             for entry in self._iterate_entries(
                 url_validator=collection_url, parents=parents, orphans=orphan_entries
             ):
-                # Add the collection URL to the info_dict to trace where it came from
-                entry.add_kwargs(
-                    {COLLECTION_URL: self.overrides.apply_formatter(collection_url.url)}
+                entry.initialize_script(self.overrides).add(
+                    {v.ytdl_sub_input_url: self.overrides.apply_formatter(collection_url.url)}
                 )
                 yield entry
 
@@ -497,22 +493,12 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             return None
 
         upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
-            upload_date_standardized=entry.upload_date_standardized
+            upload_date_standardized=entry.get(v.upload_date_standardized, str)
         )
         download_idx = self._enhanced_download_archive.num_entries
 
-        entry.add_kwargs(
-            {
-                # Subtitles are not downloaded in metadata run, only here, so move over
-                REQUESTED_SUBTITLES: download_entry.kwargs_get(REQUESTED_SUBTITLES),
-                # Same with sponsorblock chapters
-                SPONSORBLOCK_CHAPTERS: download_entry.kwargs_get(SPONSORBLOCK_CHAPTERS),
-                COMMENTS: download_entry.kwargs_get(COMMENTS),
-                # Tracks number of entries downloaded
-                DOWNLOAD_INDEX: download_idx,
-                # Tracks number of entries with the same upload date to make them unique
-                UPLOAD_DATE_INDEX: upload_date_idx,
-            }
+        return entry.add_injected_variables(
+            download_entry=download_entry,
+            download_idx=download_idx,
+            upload_date_idx=upload_date_idx,
         )
-
-        return entry

@@ -3,8 +3,8 @@ from typing import Any
 from typing import List
 from typing import Tuple
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.validators import StringListValidator
 
@@ -58,32 +58,20 @@ def combine_filters(filters: List[str], to_combine: List[str]) -> List[str]:
 
 class MatchFiltersOptions(OptionsDictValidator):
     """
-    Set ``--match-filters``` to pass into yt-dlp to filter entries from being downloaded.
-    Uses the same syntax as yt-dlp.
+    Set ``--match-filters`` to pass into yt-dlp to filter entries from being downloaded.
+    Uses the same syntax as yt-dlp. An entry will be downloaded if any one of the filters are met.
+    For logical AND's between match filters, use the ``&`` operator in a single match filter.
 
-    Usage:
-
-    .. code-block:: yaml
-
-       presets:
-         my_example_preset:
-           match_filters:
-             filters: "original_url!*=/shorts/"
-
-    Supports one or multiple filters:
+    :Usage:
 
     .. code-block:: yaml
 
-       presets:
-         my_example_preset:
-           match_filters:
-             filters:
-               - "age_limit<?18"
-               - "like_count>?100"
-               # Other common match-filters
-               # - "original_url!*=/shorts/ & !is_live"
-               # - "age_limit<?18"
-               # - "availability=?public"
+       match_filters:
+         filters:
+           - "age_limit<?18 & like_count>?100"
+           # Other common match-filters
+           # - "original_url!*=/shorts/ & !is_live"
+           # - "availability=?public"
     """
 
     _optional_keys = {"filters"}

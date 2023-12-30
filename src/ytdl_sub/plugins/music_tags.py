@@ -6,9 +6,11 @@ from typing import List
 
 import mediafile
 
-from ytdl_sub.config.plugin import Plugin
-from ytdl_sub.config.preset_options import OptionsDictValidator
+from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
@@ -16,6 +18,8 @@ from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
+
+v: VariableDefinitions = VARIABLES
 
 logger = Logger.get("music_tags")
 
@@ -71,23 +75,22 @@ class MusicTagsOptions(OptionsDictValidator):
     a full list of tags for various file types in MediaFile's
     `source code <https://github.com/beetbox/mediafile/blob/v0.9.0/mediafile.py#L1770>`_.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
        presets:
          my_example_preset:
            music_tags:
-             tags:
-               artist: "{artist}"
-               album: "{album}"
-               # Supports id3v2.4 multi-tags
-               genres:
-                 - "{genre}"
-                 - "ytdl-sub"
-               albumartists:
-                 - "{artist}"
-                 - "ytdl-sub"
+             artist: "{artist}"
+             album: "{album}"
+             # Supports id3v2.4 multi-tags
+             genres:
+               - "{genre}"
+               - "ytdl-sub"
+             albumartists:
+               - "{artist}"
+               - "ytdl-sub"
     """
 
     _optional_keys = {"tags", "embed_thumbnail"}
@@ -132,9 +135,9 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
         """
         Tags the entry's audio file using values defined in the metadata options
         """
-        if entry.ext not in AUDIO_CODEC_EXTS:
+        if (ext := entry.get(v.ext, str)) not in AUDIO_CODEC_EXTS:
             raise self.plugin_options.validation_exception(
-                f"music_tags plugin received a video with the extension '{entry.ext}'. Only audio "
+                f"music_tags plugin received a video with the extension '{ext}'. Only audio "
                 f"files are supported for setting music tags. Ensure you are converting the video "
                 f"to audio using the audio_extract plugin."
             )

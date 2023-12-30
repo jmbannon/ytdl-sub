@@ -17,12 +17,10 @@ lint:
 	@-isort .
 	@-black .
 	@-pylint src/
-	@-pydocstyle src/*
 check_lint:
 	isort . --check-only --diff  \
 		&& black . --check  \
-		&& pylint src/  \
-		&& pydocstyle src/*
+		&& pylint src/
 wheel: clean
 	$(shell echo "__pypi_version__ = \"$(PYPI_VERSION)\"\n__local_version__ = \"$(LOCAL_VERSION)\"" > src/ytdl_sub/__init__.py)
 	cat src/ytdl_sub/__init__.py
@@ -41,14 +39,14 @@ executable: clean
 	pyinstaller ytdl-sub.spec
 	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}
 docs:
-	sphinx-build -a -b html docs docs/_html
+	sphinx-build -M html docs/source/ docs/build/
 clean:
 	rm -rf \
 		.pytest_cache/ \
 		build/ \
 		dist/ \
 		src/ytdl_sub.egg-info/ \
-		docs/_html/ \
+		docs/build/ \
 		.coverage \
 		docker/root/*.whl \
 		docker/root/defaults/examples \
