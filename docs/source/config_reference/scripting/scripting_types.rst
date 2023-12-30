@@ -62,7 +62,7 @@ Strings are a series of characters surrounded by quotes and can be defined in a 
 
 .. note::
 
-   For non-String types, they must be defined using scripting functions. This is because
+   For non-String types, they must be defined as parameters to scripting functions. This is because
    anything in a variable definition that is not within curly-braces gets evaluated as a String.
 
 Integer
@@ -216,12 +216,17 @@ case-insensitive.
       null_variable: "{ %string(null) }"
 
 
-Union Types
------------
+Function Type-Hints
+-------------------
 
 AnyArgument
 ~~~~~~~~~~~
 AnyArgument means any of the above Types are valid as input or output to a scripting function.
+
+.. note::
+
+   Strict typing is enforced. For functions that return ``AnyArgument`` need to be casted before
+   passing into functions that expect a particular type.
 
 Numeric
 ~~~~~~~
@@ -230,27 +235,85 @@ Numeric refers to either an Integer or Float.
 Optional
 ~~~~~~~~
 Optional means a particular scripting function argument can be either provided or not included.
+For example, the function
+`map_get <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#map-get>`_
+has an optional default value. Both of these usages are valid:
 
-Lambdas
--------
+.. tab-set::
+
+  .. tab-item:: Map Get
+
+    .. code-block:: yaml
+
+       will_throw_key_does_not_exist_error: "{ %map_get( {}, 'key' ) }"
+
+  .. tab-item:: Map Get with Optional Default Value
+
+    .. code-block:: yaml
+
+      will_return_default: "{ %map_get( {}, 'key', 'default value' ) }"
 
 Lambda
 ~~~~~~
-WIP
+Lambda parameters are a reference to a function, and will call that lambda function
+on the input. In this example,
 
-LambdaTwo
-~~~~~~~~~
+.. code-block:: yaml
 
-LambdaThree
-~~~~~~~~~~~
+   lambda_array_numeric_to_string: >-
+     {
+       %array_apply( [ 1, 2, 3, 4], %string )
+     }
+
+We apply ``%string`` as a lambda function to
+`array_apply <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-apply>`_,
+which is called on every element in the input array. The output becomes ``["1", "2", "3", "4"]``.
+
+This example has one input-argument being passed into the lambda. For other lambda-based functions
+like `array_enumerate <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-enumerate>`_,
+it expects the lambda function to have two input arguments. These are denoted using
+``LambdaTwo``, ``LambdaThree``, etc within the function spec.
 
 LambdaReduce
 ~~~~~~~~~~~~
+LambdaReduce is special type of lambda that reduces an Array to a single value by calling the
+LabmdaReduce function repeatedly on two elements in the Array until it is reduced to a single value.
+
+In this example,
+
+.. code-block:: yaml
+
+   lambda_reduce_sum: >-
+     {
+       %array_reduce( [ 1, 2, 3, 4], %add )
+     }
+
+We call
+`array_reduce <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-reduce>`_
+on the input array, using
+`add <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#add>`_
+as the LambdaReduce function. This will reduce the Array to a single value by internally calling
+
+.. code-block::
+
+   - %add(1, 2) = 3
+   - %add(3, 3) = 6
+   - %add(6, 4) = 10
+
+And evaluate to ``10``.
 
 ReturnableArguments
--------------------
+~~~~~~~~~~~~~~~~~~~
 
-Returnable arguments are used in conditional functions like ``%if``, which implies the argument
-passed into the function is the function's output.
+Returnable arguments are used in conditional functions like
+`if <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#if>`_,
+which implies the argument passed into the function is the function's output. For example,
 
+.. code-block:: yaml
 
+   conditional_function: >-
+     {
+       %if( True, "Return this if True", "Return this if False" )
+     }
+
+is going to return ``"Return this if True"`` since the condition parameter is ``True``.
