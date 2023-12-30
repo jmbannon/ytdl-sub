@@ -9,11 +9,11 @@ from typing import final
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_NAME
-from ytdl_sub.entries.variables.override_variables import SUBSCRIPTION_VALUE
 from ytdl_sub.entries.variables.override_variables import OverrideVariables
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
+from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringListValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
@@ -82,7 +82,6 @@ class SubscriptionPresetDictValidator(NamedSubscriptionValidator, DictValidator)
         output_dict["overrides"] = dict(
             output_dict.get("overrides", {}),
             **self._indent_overrides_dict(),
-            **{SUBSCRIPTION_NAME: self.subscription_name},
         )
         return {self.subscription_name: output_dict}
 
@@ -111,7 +110,7 @@ class SubscriptionLeafValidator(NamedSubscriptionValidator, ABC):
                 f"used as a subscription name"
             )
 
-        self._overrides_to_add: Dict[str, str] = {SUBSCRIPTION_NAME: self.subscription_name}
+        self._overrides_to_add: Dict[str, str] = {}
 
     @final
     def subscription_dicts(self, global_presets_to_apply: List[str]) -> Dict[str, Dict]:
@@ -144,7 +143,7 @@ class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
             presets=presets,
             indent_overrides=indent_overrides,
         )
-        self._overrides_to_add[SUBSCRIPTION_VALUE] = self.value
+        self._overrides_to_add[OverrideVariables.subscription_value()] = self.value
 
 
 class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValidator):
@@ -169,7 +168,7 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
         for idx, list_value in enumerate(self.list):
             # Write the first list value into subscription_value as well
             if idx == 0:
-                self._overrides_to_add[SUBSCRIPTION_VALUE] = list_value.value
+                self._overrides_to_add[OverrideVariables.subscription_value()] = list_value.value
 
             self._overrides_to_add[
                 OverrideVariables.subscription_value_i(index=idx)
@@ -196,6 +195,29 @@ class SubscriptionWithOverridesValidator(SubscriptionLeafValidator, DictFormatte
         )
 
         self._overrides_to_add = dict(self.dict_with_format_strings, **self._overrides_to_add)
+
+
+class SubscriptionMapValidator(SubscriptionLeafValidator, LiteralDictValidator):
+    def __init__(
+        self,
+        name,
+        value,
+        subscription_name: str,
+        config: ConfigFile,
+        presets: List[str],
+        indent_overrides: List[str],
+    ):
+        super().__init__(
+            name=name,
+            value=value,
+            subscription_name=subscription_name,
+            config=config,
+            presets=presets,
+            indent_overrides=indent_overrides,
+        )
+        self._overrides_to_add[OverrideVariables.subscription_map()] = ScriptUtils.to_script(
+            self.dict
+        )
 
 
 class SubscriptionValidator(SubscriptionOutput):
@@ -284,7 +306,21 @@ class SubscriptionValidator(SubscriptionOutput):
                         SubscriptionWithOverridesValidator(
                             name=obj_name,
                             value=obj,
-                            subscription_name=key[1:],
+                            subscription_name=key[1:].lstrip(),
+                            config=config,
+                            presets=presets,
+                            indent_overrides=indent_overrides,
+                        )
+                    )
+                # Subscription defined as
+                # "\Sub Name":
+                #   custom_key: "value"
+                elif key.startswith("+"):
+                    self._children.append(
+                        SubscriptionMapValidator(
+                            name=obj_name,
+                            value=obj,
+                            subscription_name=key[1:].lstrip(),
                             config=config,
                             presets=presets,
                             indent_overrides=indent_overrides,

@@ -8,15 +8,17 @@ class ErrorFunctions:
     @staticmethod
     def throw(error_message: String) -> AnyArgument:
         """
-        Explicitly throw an error with the provided error message.
+        :description:
+          Explicitly throw an error with the provided error message.
         """
         raise UserThrownRuntimeError(error_message)
 
     @staticmethod
     def assert_(value: ReturnableArgument, assert_message: String) -> ReturnableArgument:
         """
-        Explicitly throw an error with the provided assert message if ``value`` evaluates to False.
-        If it evaluates to True, it will return ``value``.
+        :description:
+          Explicitly throw an error with the provided assert message if ``value`` evaluates to
+          False. If it evaluates to True, it will return ``value``.
         """
         if not bool(value.value):
             raise UserThrownRuntimeError(assert_message)
@@ -27,8 +29,9 @@ class ErrorFunctions:
         value: AnyArgument, ret: ReturnableArgument, assert_message: String
     ) -> ReturnableArgument:
         """
-        Explicitly throw an error with the provided assert message if ``value`` evaluates to False.
-        If it evaluates to True, it will return ``ret``.
+        :description:
+          Explicitly throw an error with the provided assert message if ``value`` evaluates to
+          False. If it evaluates to True, it will return ``ret``.
         """
         if not bool(value.value):
             raise UserThrownRuntimeError(assert_message)
@@ -39,8 +42,9 @@ class ErrorFunctions:
         value: ReturnableArgument, equals: AnyArgument, assert_message: String
     ) -> ReturnableArgument:
         """
-        Explicitly throw an error with the provided assert message if ``value`` does not equal
-        ``equals``. If they do equal, then return ``value``.
+        :description:
+          Explicitly throw an error with the provided assert message if ``value`` does not equal
+          ``equals``. If they do equal, then return ``value``.
         """
         if not value.value == equals.value:
             raise UserThrownRuntimeError(assert_message)
@@ -51,8 +55,9 @@ class ErrorFunctions:
         value: ReturnableArgument, equals: AnyArgument, assert_message: String
     ) -> ReturnableArgument:
         """
-        Explicitly throw an error with the provided assert message if ``value`` equals
-        ``equals``. If they do equal, then return ``value``.
+        :description:
+          Explicitly throw an error with the provided assert message if ``value`` equals
+          ``equals``. If they do equal, then return ``value``.
         """
         if value.value == equals.value:
             raise UserThrownRuntimeError(assert_message)

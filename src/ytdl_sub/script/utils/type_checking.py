@@ -119,6 +119,7 @@ def is_type_compatible(
 @dataclass(frozen=True)
 class FunctionSpec:
     return_type: Type[Resolvable]
+    arg_names: List[str]
     args: Optional[List[Type[Resolvable | Optional[Resolvable]]]] = None
     varargs: Optional[Type[Resolvable]] = None
 
@@ -224,6 +225,42 @@ class FunctionSpec:
         return None
 
     @classmethod
+    def _to_human_readable_name(cls, python_type: Type[NamedType] | Type[Union[NamedType]]) -> str:
+        if is_optional(python_type):
+            return f"Optional[{cls._to_human_readable_name(get_optional_type(python_type))}]"
+        if is_union(python_type):
+            args = ", ".join(
+                sorted(cls._to_human_readable_name(arg) for arg in python_type.__args__)
+            )
+            return f"Union[{args}]"
+        return python_type.type_name()
+
+    def human_readable_input_args(self) -> str:
+        """
+        Returns
+        -------
+        input arg string in human-readable format
+        """
+        if self.args is not None:
+            args = ", ".join(
+                f"{name}: {self._to_human_readable_name(type_)}"
+                for name, type_ in zip(self.arg_names, self.args)
+            )
+        elif self.varargs is not None:
+            args = f"{self.arg_names[0]}: {self._to_human_readable_name(self.varargs)}, ..."
+        else:
+            args = ""
+        return f"({args})"
+
+    def human_readable_output_type(self) -> str:
+        """
+        Returns
+        -------
+        output type string in human-readable format
+        """
+        return self._to_human_readable_name(self.return_type)
+
+    @classmethod
     def from_callable(cls, callable_ref: Callable[..., Resolvable]) -> "FunctionSpec":
         """
         Returns
@@ -234,10 +271,12 @@ class FunctionSpec:
         if arg_spec.varargs:
             return FunctionSpec(
                 return_type=arg_spec.annotations["return"],
+                arg_names=[arg_spec.varargs],
                 varargs=arg_spec.annotations[arg_spec.varargs],
             )
 
         return FunctionSpec(
             return_type=arg_spec.annotations["return"],
+            arg_names=arg_spec.args,
             args=[arg_spec.annotations[arg_name] for arg_name in arg_spec.args],
         )

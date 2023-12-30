@@ -11,8 +11,9 @@ class ConditionalFunctions:
         condition: Boolean, true: ReturnableArgumentA, false: ReturnableArgumentB
     ) -> Union[ReturnableArgumentA, ReturnableArgumentB]:
         """
-        Conditional ``if`` statement that returns the ``true`` or ``false`` parameter
-        depending on the ``condition`` value.
+        :description:
+          Conditional ``if`` statement that returns the ``true`` or ``false`` parameter
+          depending on the ``condition`` value.
         """
         if condition.value:
             return true
@@ -23,8 +24,9 @@ class ConditionalFunctions:
         maybe_true_arg: ReturnableArgumentA, else_arg: ReturnableArgumentB
     ) -> Union[ReturnableArgumentA, ReturnableArgumentB]:
         """
-        Conditional ``if`` statement that returns the ``maybe_true_arg`` if it evaluates to True,
-        otherwise returns ``else_arg``.
+        :description:
+          Conditional ``if`` statement that returns the ``maybe_true_arg`` if it evaluates to True,
+          otherwise returns ``else_arg``.
         """
         if bool(maybe_true_arg.value):
             return maybe_true_arg

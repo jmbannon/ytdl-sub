@@ -40,7 +40,7 @@ class TestFunction:
         with pytest.raises(
             IncompatibleFunctionArguments,
             match=_incompatible_arguments_match(
-                expected="Map, AnyArgument, Optional[AnyArgument]",
+                expected="mapping: Map, key: AnyArgument, default: Optional[AnyArgument]",
                 recieved="%if(...)->Union[Array, Map], String",
             ),
         ):
@@ -49,11 +49,11 @@ class TestFunction:
     @pytest.mark.parametrize(
         "function_str, expected_types, received_types",
         [
-            ("{%array_at({'a': 'dict?'}, 1)}", "Array, Integer", "Map, Integer"),
-            ("{%array_extend('not', 'array')}", "Array, ...", "String, String"),
+            ("{%array_at({'a': 'dict?'}, 1)}", "array: Array, idx: Integer", "Map, Integer"),
+            ("{%array_extend('not', 'array')}", "arrays: Array, ...", "String, String"),
             (
                 "{%replace('hi mom', 'mom', 'dad', 1, 0)}",
-                "String, String, String, Optional[Integer]",
+                "string: String, old: String, new: String, count: Optional[Integer]",
                 "String, String, String, Integer, Integer",
             ),
         ],

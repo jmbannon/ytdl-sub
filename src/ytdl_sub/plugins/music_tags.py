@@ -75,23 +75,22 @@ class MusicTagsOptions(OptionsDictValidator):
     a full list of tags for various file types in MediaFile's
     `source code <https://github.com/beetbox/mediafile/blob/v0.9.0/mediafile.py#L1770>`_.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
        presets:
          my_example_preset:
            music_tags:
-             tags:
-               artist: "{artist}"
-               album: "{album}"
-               # Supports id3v2.4 multi-tags
-               genres:
-                 - "{genre}"
-                 - "ytdl-sub"
-               albumartists:
-                 - "{artist}"
-                 - "ytdl-sub"
+             artist: "{artist}"
+             album: "{album}"
+             # Supports id3v2.4 multi-tags
+             genres:
+               - "{genre}"
+               - "ytdl-sub"
+             albumartists:
+               - "{artist}"
+               - "ytdl-sub"
     """
 
     _optional_keys = {"tags", "embed_thumbnail"}

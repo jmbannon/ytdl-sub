@@ -33,6 +33,13 @@ def get_file_extension(file_name: Path | str) -> str:
     return file_name.rsplit(".", maxsplit=1)[-1]
 
 
+def get_md5_hash(contents: str) -> str:
+    """
+    Helper function to compute md5 hash
+    """
+    return hashlib.md5(contents.encode()).hexdigest()
+
+
 def get_file_md5_hash(full_file_path: Path | str) -> str:
     """
     Parameters

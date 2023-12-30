@@ -18,7 +18,7 @@ Jellyfin
 Kodi
 ~~~~
 * Everything that the Jellyfin version does
-* Turns on :ref:`config_reference/plugins:kodi_safe`, replacing characters that would break kodi with safer characters
+* Enables ``kodi_safe`` NFOs, replacing 4-byte unicode characters that break kodi with ``□``
 
 Plex
 ~~~~

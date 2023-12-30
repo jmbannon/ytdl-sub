@@ -1,16 +1,11 @@
 import sys
 from typing import List
-from typing import Type
 from typing import TypeVar
-from typing import Union
 
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
-from ytdl_sub.script.types.resolvable import NamedType
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.type_checking import FunctionSpec
-from ytdl_sub.script.utils.type_checking import get_optional_type
-from ytdl_sub.script.utils.type_checking import is_optional
 from ytdl_sub.script.utils.type_checking import is_union
 
 TUserException = TypeVar("TUserException", bound=UserException)
@@ -103,27 +98,9 @@ class FunctionArgumentsExceptionFormatter:
         input_spec: FunctionSpec,
         function_instance: BuiltInFunctionType,
     ):
-        self._args = input_spec.args
-        self._varargs = input_spec.varargs
+        self._input_spec = input_spec
         self._name = function_instance.name
         self._input_args = function_instance.args
-
-    @classmethod
-    def _to_human_readable_name(cls, python_type: Type[NamedType] | Type[Union[NamedType]]) -> str:
-        if is_optional(python_type):
-            return f"Optional[{cls._to_human_readable_name(get_optional_type(python_type))}]"
-        if is_union(python_type):
-            return ", ".join(
-                sorted(cls._to_human_readable_name(arg) for arg in python_type.__args__)
-            )
-        return python_type.type_name()
-
-    def _expected_args_str(self) -> str:
-        if self._args is not None:
-            return f"({', '.join([self._to_human_readable_name(type_) for type_ in self._args])})"
-        if self._varargs is not None:
-            return f"({self._to_human_readable_name(self._varargs)}, ...)"
-        return "()"
 
     def _received_args_str(self) -> str:
         received_type_names: List[str] = []
@@ -149,5 +126,6 @@ class FunctionArgumentsExceptionFormatter:
         """
         return IncompatibleFunctionArguments(
             f"Incompatible arguments passed to function {self._name}.\n"
-            f"Expected {self._expected_args_str()}\nReceived {self._received_args_str()}"
+            f"Expected {self._input_spec.human_readable_input_args()}\n"
+            f"Received {self._received_args_str()}"
         )

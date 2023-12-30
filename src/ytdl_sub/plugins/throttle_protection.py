@@ -65,7 +65,7 @@ class ThrottleProtectionOptions(OptionsDictValidator):
     range-based values, a random number will be chosen within the range to avoid sleeps looking
     scripted.
 
-    Usage:
+    :Usage:
 
     .. code-block:: yaml
 
@@ -110,31 +110,39 @@ class ThrottleProtectionOptions(OptionsDictValidator):
     @property
     def sleep_per_download_s(self) -> Optional[RandomizedRangeValidator]:
         """
-        Number in seconds to sleep between each download. Does not include time it takes for
-        ytdl-sub to perform post-processing.
+        :expected type: Optional[Range]
+        :description:
+          Number in seconds to sleep between each download. Does not include time it takes for
+          ytdl-sub to perform post-processing.
         """
         return self._sleep_per_download_s
 
     @property
     def sleep_per_subscription_s(self) -> Optional[RandomizedRangeValidator]:
         """
-        Number in seconds to sleep between each subscription.
+        :expected type: Optional[Range]
+        :description:
+          Number in seconds to sleep between each subscription.
         """
         return self._sleep_per_subscription_s
 
     @property
     def max_downloads_per_subscription(self) -> Optional[RandomizedRangeValidator]:
         """
-        Number of downloads to perform per subscription.
+        :expected type: Optional[Range]
+        :description:
+          Number of downloads to perform per subscription.
         """
         return self._max_downloads_per_subscription
 
     @property
     def subscription_download_probability(self) -> Optional[ProbabilityValidator]:
         """
-        Probability to perform any downloads, recomputed for each subscription. This is only
-        recommended to set if you run ytdl-sub in a cron-job, that way you are statistically
-        guaranteed over time to eventually download the subscription.
+        :expected type: Optional[Float]
+        :description:
+          Probability to perform any downloads, recomputed for each subscription. This is only
+          recommended to set if you run ytdl-sub in a cron-job, that way you are statistically
+          guaranteed over time to eventually download the subscription.
         """
         return self._subscription_download_probability
 

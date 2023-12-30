@@ -19,12 +19,8 @@ class ArrayFunctions:
     @staticmethod
     def array(maybe_array: AnyArgument) -> Array:
         """
-        Tries to cast an unknown variable type to an Array.
-
-        Raises
-        ------
-        FunctionRuntimeException
-            If the input type is not actually an Array.
+        :description:
+          Tries to cast an unknown variable type to an Array.
         """
         if not isinstance(maybe_array, Array):
             raise FunctionRuntimeException(
@@ -35,14 +31,16 @@ class ArrayFunctions:
     @staticmethod
     def array_size(array: Array) -> Integer:
         """
-        Returns the size of an Array.
+        :description:
+          Returns the size of an Array.
         """
         return Integer(len(array.value))
 
     @staticmethod
     def array_extend(*arrays: Array) -> Array:
         """
-        Combine multiple Arrays into a single Array.
+        :description:
+          Combine multiple Arrays into a single Array.
         """
         output: List[Resolvable] = []
         for array in arrays:
@@ -55,7 +53,8 @@ class ArrayFunctions:
         array: Array, overlap: Array, only_missing: Optional[Boolean] = None
     ) -> Array:
         """
-        Overlaps ``overlap`` onto ``array``. Can optionally only overlay missing indices.
+        :description:
+          Overlaps ``overlap`` onto ``array``. Can optionally only overlay missing indices.
         """
         output: List[Resolvable] = []
         output.extend(array.value)
@@ -76,15 +75,17 @@ class ArrayFunctions:
     @staticmethod
     def array_at(array: Array, idx: Integer) -> AnyArgument:
         """
-        Return the element in the Array at index ``idx``.
+        :description:
+          Return the element in the Array at index ``idx``.
         """
         return array.value[idx.value]
 
     @staticmethod
     def array_first(array: Array, fallback: AnyArgument) -> AnyArgument:
         """
-        Returns the first element whose boolean conversion is True. Returns fallback
-        if all elements evaluate to False.
+        :description:
+          Returns the first element whose boolean conversion is True. Returns fallback
+          if all elements evaluate to False.
         """
         for val in array.value:
             if bool(val.value):
@@ -95,15 +96,17 @@ class ArrayFunctions:
     @staticmethod
     def array_contains(array: Array, value: AnyArgument) -> Boolean:
         """
-        Return True if the value exists in the Array. False otherwise.
+        :description:
+          Return True if the value exists in the Array. False otherwise.
         """
         return Boolean(value in array.value)
 
     @staticmethod
     def array_index(array: Array, value: AnyArgument) -> Integer:
         """
-        Return the index of the value within the Array if it exists. If it does not, it will
-        throw an error.
+        :description:
+          Return the index of the value within the Array if it exists. If it does not, it will
+          throw an error.
         """
         if not ArrayFunctions.array_contains(array=array, value=value):
             raise ArrayValueDoesNotExist(
@@ -118,7 +121,8 @@ class ArrayFunctions:
     @staticmethod
     def array_slice(array: Array, start: Integer, end: Optional[Integer] = None) -> Array:
         """
-        Returns the slice of the Array.
+        :description:
+          Returns the slice of the Array.
         """
         if end is not None:
             return Array(array.value[start.value : end.value])
@@ -127,7 +131,8 @@ class ArrayFunctions:
     @staticmethod
     def array_flatten(array: Array) -> Array:
         """
-        Flatten any nested Arrays into a single-dimensional Array.
+        :description:
+          Flatten any nested Arrays into a single-dimensional Array.
         """
         output: List[Resolvable] = []
         for elem in array.value:
@@ -141,14 +146,16 @@ class ArrayFunctions:
     @staticmethod
     def array_reverse(array: Array) -> Array:
         """
-        Reverse an Array.
+        :description:
+          Reverse an Array.
         """
         return Array(list(reversed(array.value)))
 
     @staticmethod
     def array_product(*arrays: Array) -> Array:
         """
-        Returns the Cartesian product of elements from different arrays
+        :description:
+          Returns the Cartesian product of elements from different arrays
         """
         out: List[Resolvable] = []
         for combo in itertools.product(*[arr.value for arr in arrays]):
@@ -161,7 +168,17 @@ class ArrayFunctions:
     @staticmethod
     def array_apply(array: Array, lambda_function: Lambda) -> Array:
         """
-        Apply a lambda function on every element in the Array.
+        :description:
+          Apply a lambda function on every element in the Array.
+        :usage:
+
+        .. code-block:: python
+
+           {
+             %array_apply( [1, 2, 3] , %string )
+           }
+
+           # ["1", "2", "3"]
         """
         return Array([Array([val]) for val in array.value])
 
@@ -173,8 +190,9 @@ class ArrayFunctions:
         reverse_args: Optional[Boolean] = None,
     ) -> Array:
         """
-        Apply a lambda function on every element in the Array, with ``fixed_argument``
-        passed as a second argument to every invocation.
+        :description:
+          Apply a lambda function on every element in the Array, with ``fixed_argument``
+          passed as a second argument to every invocation.
         """
         if reverse_args and reverse_args.value:
             return Array([Array([fixed_argument, val]) for val in array.value])
@@ -184,15 +202,17 @@ class ArrayFunctions:
     @staticmethod
     def array_enumerate(array: Array, lambda_function: LambdaTwo) -> Array:
         """
-        Apply a lambda function on every element in the Array, where each arg
-        passed to the lambda function is ``idx, element`` as two separate args.
+        :description:
+          Apply a lambda function on every element in the Array, where each arg
+          passed to the lambda function is ``idx, element`` as two separate args.
         """
         return Array([Array([Integer(idx), val]) for idx, val in enumerate(array.value)])
 
     @staticmethod
     def array_reduce(array: Array, lambda_reduce_function: LambdaReduce) -> AnyArgument:
         """
-        Apply a reduce function on pairs of elements in the Array, until one element remains.
-        Executes using the left-most and reduces in the right direction.
+        :description:
+          Apply a reduce function on pairs of elements in the Array, until one element remains.
+          Executes using the left-most and reduces in the right direction.
         """
         return array

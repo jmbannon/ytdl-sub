@@ -35,6 +35,7 @@ class JsonFunctions:
     @staticmethod
     def from_json(argument: String) -> AnyArgument:
         """
-        Converts a JSON string into an actual type.
+        :description:
+          Converts a JSON string into an actual type.
         """
         return _from_json(json.loads(argument.value))
