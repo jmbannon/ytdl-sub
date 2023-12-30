@@ -11,6 +11,7 @@ contain reference documentation for each built-in variable and scripting functio
   entry_variables
   override_variables
   scripting_functions
+  scripting_types
 
 How it Works
 ------------
@@ -42,7 +43,7 @@ We can use this instead of hard-coding it above:
    output_options:
      output_directory: "{subscription_name}"
 
-The syntax for variable usage is brackets with the variable name within it. Assuming
+The syntax for variable usage is curly-braces with the variable name within it. Assuming
 our subscription is actually named "Custom YTDL-SUB TV Show", then ``ytdl-sub``
 will actually write to that directory.
 
@@ -67,25 +68,6 @@ title in its name. We can do that using entry variables:
      file_name: "{title}.{ext}"
      thumbnail_name: "{title}.{thumbnail_ext}"
 
-Sanitizing Variables
-~~~~~~~~~~~~~~~~~~~~
-
-For experienced ``yt-dlp`` scrapers, you may be thinking:
-
-- "what if the title has characters that do not play nice with my operating system?"
-
-``ytdl-sub`` is able to *sanitize* any variable, meaning it strips any bad characters out
-and can be used for file names. We can ensure our file names and directories by using:
-
-.. code-block:: yaml
-
-   output_options:
-     output_directory: "{subscription_name_sanitized}"
-     file_name: "{title_sanitized}.{ext}"
-     thumbnail_name: "{title_sanitized}.{thumbnail_ext}"
-
-Simply add a ``_sanitized`` suffix to any variable name to make it sanitized.
-
 Creating Custom Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -101,6 +83,27 @@ a ``custom_file_name`` variable to use for the entry file and thumbnail fields:
 .. code-block:: yaml
 
    output_options:
+     output_directory: "{subscription_name}"
+     file_name: "{custom_file_name}.{ext}"
+     thumbnail_name: "{custom_file_name}.{thumbnail_ext}"
+
+   overrides:
+     custom_file_name: "{upload_date_standardized} {title}"
+
+Sanitizing Variables
+~~~~~~~~~~~~~~~~~~~~
+
+For experienced ``yt-dlp`` scrapers, you may be thinking:
+
+- What if the title has characters that do not play nice with my operating system?
+
+``ytdl-sub`` is able to *sanitize* any variable, meaning it replaces any problematic characters
+with safe alternatives that can be used in file names. We can ensure our file names and directories
+are safe by using:
+
+.. code-block:: yaml
+
+   output_options:
      output_directory: "{subscription_name_sanitized}"
      file_name: "{custom_file_name}.{ext}"
      thumbnail_name: "{custom_file_name}.{thumbnail_ext}"
@@ -108,12 +111,21 @@ a ``custom_file_name`` variable to use for the entry file and thumbnail fields:
    overrides:
      custom_file_name: "{upload_date_standardized} {title_sanitized}"
 
+Simply add a ``_sanitized`` suffix to any variable name to make it sanitized.
+
+.. note::
+
+   Make sure you do not sanitize custom variables that intentionally create directories, otherwise
+   they will... be sanitized and not resolve to directories!
+
+
 Using Scripting Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Let's suppose you are an avid command-line user, and like all of your file names to be
-``snake_cased_with_no_spaces``. We can use *scripting functions* to create and use a snake-cased
-title.
+``snake_cased_with_no_spaces``. We can use the
+`replace <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#replace>`_
+*scripting function* to create and use a snake-cased title.
 
 .. code-block:: yaml
 
@@ -127,6 +139,24 @@ title.
        {
          %replace( title, ' ', '_' )
        }
-     custom_file_name: "{upload_date_standardized} {snake_cased_title_sanitized}"
+     custom_file_name: "{upload_date_standardized}_{snake_cased_title_sanitized}"
 
-You will notice that we use `>-`. This is YAML's way to say "allow a string to be multi-lined
+Scripting functions are similar to variables - they must be used within curly-braces.
+It is good practice to use ``>-`` when defining variables that use functions. It is YAML's way of
+saying:
+
+- Allow a string to be multi-lined, and do not include newlines before or after it.
+
+See for yourself `here <https://yaml-online-parser.appspot.com/?yaml=output_options%3A%0A%20%20output_directory%3A%20%22%7Bsubscription_name_sanitized%7D%22%0A%20%20file_name%3A%20%22%7Bcustom_file_name%7D.%7Bext%7D%22%0A%20%20thumbnail_name%3A%20%22%7Bcustom_file_name%7D.%7Bthumbnail_ext%7D%22%0A%0Aoverrides%3A%0A%20%20snake_cased_title%3A%20%3E-%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%25replace%28%20title%2C%20%27%20%27%2C%20%27_%27%20%29%0A%20%20%20%20%7D%0A%20%20custom_file_name%3A%20%22%7Bupload_date_standardized%7D%20%7Bsnake_cased_title_sanitized%7D%22&type=canonical_yaml>`_.
+Any whitespace within curly-braces is okay since it will be parsed out. This is needed to make
+scripting function usage readable.
+
+.. important::
+
+   It is important to use ``>-`` over other YAML new-line directives like ``>`` because they
+   add newlines before or after curly-braces, and will be included in your variable's output string.
+
+Advanced Scripting
+------------------
+
+WIP!
