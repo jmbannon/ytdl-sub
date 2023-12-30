@@ -1,5 +1,6 @@
 presets:
 
+  
   _music_base:
     output_options:
       output_directory: "{music_directory}"
@@ -71,36 +72,6 @@ presets:
         include_sibling_metadata: False
 
 
-  _albums_from_playlists:
-    preset:
-      - "_music_base"
-
-    download:
-      - url: "{url}"
-        include_sibling_metadata: True
-
-    overrides:
-      track_album: "{playlist_title}"
-      track_number: "{playlist_index}"
-      track_number_padded: "{playlist_index_padded}"
-      track_total: "{playlist_count}"
-      track_year: "{playlist_max_upload_year}"
-
-
-  _albums_from_chapters:
-    preset: "Single"
-
-    chapters:
-      embed_chapters: True
-    split_by_chapters:
-      when_no_chapters: "pass"
-
-    overrides:
-      track_title: "{chapter_title}"  # Chapter title is the track title
-      track_album: "{title}"  # Video's title is the album title
-      track_number: "{chapter_index}"
-      track_number_padded: "{chapter_index_padded}"
-      track_total: "{chapter_count}"
 
   "SoundCloud Discography":
     preset: "_music_base"
@@ -139,25 +110,3 @@ presets:
       track_total: "{sc_track_total}"
       track_year: "{sc_track_year}"
 
-  "YouTube Releases":
-    preset:
-      - "_albums_from_playlists"
-
-  "YouTube Full Albums":
-    preset:
-      - "_albums_from_chapters"
-
-  "Bandcamp":
-    preset:
-      - "_albums_from_playlists"
-    regex:
-      from:
-        title:
-          match:
-            - ".*? - (.*)"  # Captures 'Some - Song' from 'Emily Hopkins - Some - Song'
-          capture_group_names:
-            - "captured_track_title"
-          capture_group_defaults:
-            - "{title}"
-    overrides:
-      track_title: "{captured_track_title}"
