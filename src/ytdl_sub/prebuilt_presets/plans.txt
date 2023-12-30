@@ -1,0 +1,2 @@
+Rename presets to "Name Here"
+Have new name for presets inheret the old ones
