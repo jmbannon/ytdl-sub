@@ -18,7 +18,7 @@ Strings are a series of characters surrounded by quotes and can be defined in a 
 
       string_variable: "This is a String variable"
 
-  .. tab-item:: In-Line
+  .. tab-item:: Same-Line
 
     .. code-block:: yaml
 
@@ -72,7 +72,7 @@ Integers are whole numbers with no decimal.
 
 .. tab-set::
 
-  .. tab-item:: Literal
+  .. tab-item:: Multi-Line
 
     .. code-block:: yaml
 
@@ -81,7 +81,15 @@ Integers are whole numbers with no decimal.
            %int(2022)
          }
 
-  .. tab-item:: In-Line
+  .. tab-item:: New-Line
+
+    .. code-block:: yaml
+
+       int_variable: >-
+         { %int(2022) }
+
+
+  .. tab-item:: Same-Line
 
     .. code-block:: yaml
 
@@ -94,7 +102,7 @@ Floats are floating-point decimals numbers.
 
 .. tab-set::
 
-  .. tab-item:: Literal
+  .. tab-item:: Multi-Line
 
     .. code-block:: yaml
 
@@ -103,7 +111,14 @@ Floats are floating-point decimals numbers.
            %float(3.14)
          }
 
-  .. tab-item:: In-Line
+  .. tab-item:: New-Line
+
+    .. code-block:: yaml
+
+       float_variable: >-
+         { %float(3.14) }
+
+  .. tab-item:: Same-Line
 
     .. code-block:: yaml
 
@@ -116,7 +131,7 @@ A type is considered boolean if it spells out ``True`` or ``False``, case-insens
 
 .. tab-set::
 
-  .. tab-item:: Literal
+  .. tab-item:: Multi-Line
 
     .. code-block:: yaml
 
@@ -125,7 +140,14 @@ A type is considered boolean if it spells out ``True`` or ``False``, case-insens
            %bool(True)
          }
 
-  .. tab-item:: In-Line
+  .. tab-item:: New-Line
+
+    .. code-block:: yaml
+
+       bool_variable: >-
+         { %bool(True) }
+
+  .. tab-item:: Same-Line
 
     .. code-block:: yaml
 
@@ -139,7 +161,7 @@ Arrays are defined using brackets (``[ ]``), and are accessed using zero-based i
 
 .. tab-set::
 
-  .. tab-item:: Literal
+  .. tab-item:: Multi-Line
 
     .. code-block:: yaml
 
@@ -157,7 +179,16 @@ Arrays are defined using brackets (``[ ]``), and are accessed using zero-based i
            %array_at(array_variable, 0)
          }
 
-  .. tab-item:: In-Line
+  .. tab-item:: New-Line
+
+    .. code-block:: yaml
+
+       array_variable: >-
+         { ["element with index 0", 1, 2.0, ["Nested Array 3"]] }
+       element_0: >-
+         { %array_at(array_variable, 0) }
+
+  .. tab-item:: Same-Line
 
     .. code-block:: yaml
 
@@ -172,7 +203,7 @@ Maps are defined using curley-braces (``{ }``), and are accessed using their key
 
 .. tab-set::
 
-  .. tab-item:: Literal
+  .. tab-item:: Multi-Line
 
     .. code-block:: yaml
 
@@ -189,7 +220,16 @@ Maps are defined using curley-braces (``{ }``), and are accessed using their key
            %map_get(map_variable, "string_key")
          }
 
-  .. tab-item:: In-Line
+  .. tab-item:: New-Line
+
+    .. code-block:: yaml
+
+       map_variable: >-
+         { {"string_key": "string_value", 1: "int_key", "list_value": ["elem0", 1, 2.0]} }
+       string_value: >-
+         { %map_get(map_variable, "string_key") }
+
+  .. tab-item:: Same-Line
 
     .. code-block:: yaml
 
@@ -209,7 +249,14 @@ case-insensitive.
 
        null_variable: ""
 
-  .. tab-item:: In-Line
+  .. tab-item:: New-Line
+
+    .. code-block:: yaml
+
+      null_variable: >-
+        { %string(null) }
+
+  .. tab-item:: Same-Line
 
     .. code-block:: yaml
 
