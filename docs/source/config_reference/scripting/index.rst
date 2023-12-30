@@ -159,4 +159,14 @@ scripting function usage readable.
 Advanced Scripting
 ------------------
 
-WIP!
+Accessing ``info.json`` Fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WIP
+
+Creating Custom Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~
+WIP
+
+Parsing Maps and Arrays
+~~~~~~~~~~~~~~~~~~~~~~~
+WIP
