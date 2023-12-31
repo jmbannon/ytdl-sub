@@ -8,23 +8,22 @@ Types
 String
 ~~~~~~
 
-Strings are a series of characters surrounded by quotes and can be defined in a few ways, including:
+Strings are a series of characters surrounded by quotes.
+
+.. code-block:: yaml
+
+   string_variable: "This is a String variable"
+
+.. note::
+
+   For non-String types, they must be defined as parameters to scripting functions. This is because
+   anything in a variable definition that is not within curly-braces gets evaluated as a String.
+
+We can define Strings within curly-braces by setting them as parameters to a function:
 
 .. tab-set::
 
-  .. tab-item:: Literal
-
-    .. code-block:: yaml
-
-      string_variable: "This is a String variable"
-
-  .. tab-item:: Same-Line
-
-    .. code-block:: yaml
-
-      string_variable: "{ %string('This is a String variable') }"
-
-  .. tab-item:: Single Quote
+  .. tab-item:: Multi-Line Single Quote
 
     .. code-block:: yaml
 
@@ -33,7 +32,7 @@ Strings are a series of characters surrounded by quotes and can be defined in a 
           %string('This is a String variable')
         }
 
-  .. tab-item:: Double Quote
+  .. tab-item:: Multi-Line Double Quote
 
     .. code-block:: yaml
 
@@ -42,13 +41,42 @@ Strings are a series of characters surrounded by quotes and can be defined in a 
           %string("This is a String variable")
         }
 
-  .. tab-item:: Triple Quote
+There are a few ways to make variables that use curly braces more compact, including:
+
+.. tab-set::
+
+  .. tab-item:: New-Line Single Quote
+
+    .. code-block:: yaml
+
+      string_variable: >-
+        { %string('This is a String variable') }
+
+  .. tab-item:: New-Line Double Quote
+
+    .. code-block:: yaml
+
+      string_variable: >-
+        { %string("This is a String variable") }
+
+  .. tab-item:: Same-Line
+
+    .. code-block:: yaml
+
+      string_variable: "{ %string('This is a String variable') }"
+
+In the case that you want to define a string variable that contains both single and double quotes,
+triple-quotes can be used to avoid *closing* the String.
+
+.. tab-set::
+
+  .. tab-item:: Triple-Single Quote
 
     .. code-block:: yaml
 
       string_variable: >-
         {
-          %string('''This is a String variable''')
+          %string('''This has both " and ' in it.''')
         }
 
   .. tab-item:: Triple-Double Quote
@@ -57,13 +85,8 @@ Strings are a series of characters surrounded by quotes and can be defined in a 
 
       string_variable: >-
         {
-          %string("""This is a String variable""")
+          %string("""This has both " and ' in it.""")
         }
-
-.. note::
-
-   For non-String types, they must be defined as parameters to scripting functions. This is because
-   anything in a variable definition that is not within curly-braces gets evaluated as a String.
 
 Integer
 ~~~~~~~
@@ -199,7 +222,7 @@ Map
 ~~~
 
 A Map is a key-value store, containing mappings between keys and values.
-Maps are defined using curley-braces (``{ }``), and are accessed using their keys.
+Maps are defined using curly-braces (``{ }``), and are accessed using their keys.
 
 .. tab-set::
 
@@ -323,8 +346,9 @@ it expects the lambda function to have two input arguments. These are denoted us
 
 LambdaReduce
 ~~~~~~~~~~~~
-LambdaReduce is special type of lambda that reduces an Array to a single value by calling the
-LabmdaReduce function repeatedly on two elements in the Array until it is reduced to a single value.
+LambdaReduce parameters are a reference to a function that will perform a *reduce* - an operation
+that reduces an Array to a single value by calling the LambdaReduce function repeatedly on two
+elements in the Array until it is reduced to a single value.
 
 In this example,
 
@@ -341,11 +365,9 @@ on the input array, using
 `add <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#add>`_
 as the LambdaReduce function. This will reduce the Array to a single value by internally calling
 
-.. code-block::
-
-   - %add(1, 2) = 3
-   - %add(3, 3) = 6
-   - %add(6, 4) = 10
+- *reduce-call 1*: ``%add(1, 2) = 3`` (first two elements)
+- *reduce-call 2*: ``%add(3, 3) = 6`` (output from first two and third element)
+- *reduce-call 3*: ``%add(6, 4) = 10`` (output from first three elements and fourth element)
 
 And evaluate to ``10``.
 
