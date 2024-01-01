@@ -1,9 +1,12 @@
 
-Override Variables
-==================
+Static Variables
+================
+
+Subscription Variables
+----------------------
 
 subscription_indent_i
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 For subscriptions in the form of
 
 .. code-block:: yaml
@@ -16,7 +19,7 @@ For subscriptions in the form of
 ``Indent Value 1`` and ``Indent Value 2``.
 
 subscription_map
-----------------
+~~~~~~~~~~~~~~~~
 For subscriptions in the form of
 
 .. code-block:: yaml
@@ -42,11 +45,12 @@ Stores all the contents under the subscription name into the override variable
    }
 
 subscription_name
------------------
-Name of the subscription
+~~~~~~~~~~~~~~~~~
+Name of the subscription. For subscriptions types that use a prefix (``~``, ``+``),
+the prefix and all whitespace afterwards is stripped from the subscription name.
 
 subscription_value
-------------------
+~~~~~~~~~~~~~~~~~~
 For subscriptions in the form of
 
 .. code-block:: yaml
@@ -56,7 +60,7 @@ For subscriptions in the form of
 ``subscription_value`` gets set to ``https://...``.
 
 subscription_value_i
---------------------
+~~~~~~~~~~~~~~~~~~~~
 For subscriptions in the form of
 
 .. code-block:: yaml

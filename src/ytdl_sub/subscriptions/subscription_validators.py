@@ -9,7 +9,7 @@ from typing import final
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.entries.variables.override_variables import OverrideVariables
+from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
@@ -32,7 +32,7 @@ class SubscriptionOutput(Validator, ABC):
         indent overrides to merge with the preset dict's overrides
         """
         return {
-            OverrideVariables.subscription_indent_i(i): self._indent_overrides[i]
+            SubscriptionVariables.subscription_indent_i(i): self._indent_overrides[i]
             for i in range(len(self._indent_overrides))
         }
 
@@ -143,7 +143,7 @@ class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
             presets=presets,
             indent_overrides=indent_overrides,
         )
-        self._overrides_to_add[OverrideVariables.subscription_value()] = self.value
+        self._overrides_to_add[SubscriptionVariables.subscription_value()] = self.value
 
 
 class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValidator):
@@ -168,10 +168,12 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
         for idx, list_value in enumerate(self.list):
             # Write the first list value into subscription_value as well
             if idx == 0:
-                self._overrides_to_add[OverrideVariables.subscription_value()] = list_value.value
+                self._overrides_to_add[
+                    SubscriptionVariables.subscription_value()
+                ] = list_value.value
 
             self._overrides_to_add[
-                OverrideVariables.subscription_value_i(index=idx)
+                SubscriptionVariables.subscription_value_i(index=idx)
             ] = list_value.value
 
 
@@ -215,7 +217,7 @@ class SubscriptionMapValidator(SubscriptionLeafValidator, LiteralDictValidator):
             presets=presets,
             indent_overrides=indent_overrides,
         )
-        self._overrides_to_add[OverrideVariables.subscription_map()] = ScriptUtils.to_script(
+        self._overrides_to_add[SubscriptionVariables.subscription_map()] = ScriptUtils.to_script(
             self.dict
         )
 

@@ -9,7 +9,7 @@ contain reference documentation for each built-in variable and scripting functio
   :maxdepth: 1
 
   entry_variables
-  override_variables
+  static_variables
   scripting_functions
   scripting_types
 
@@ -162,12 +162,41 @@ Advanced Scripting
 
 Accessing ``info.json`` Fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-WIP
+The entirety of an entry's ``info.json`` file resides in the
+`Map <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_types.html#map>`_
+variable
+`entry_metadata <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/entry_variables.html#entry-metadata>`_.
+
+Any field can be accessed by using the
+`map_get <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#map-get>`_
+function like so:
+
+.. code-block:: yaml
+  :caption: Fetches the 'artist' value from the .info.json, returns null if it does not exist.
+
+   artist: >-
+     { %map_get( entry_metadata, "artist", null ) }
 
 Creating Custom Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-WIP
+Custom functions can be created in the overrides section using the following syntax:
 
-Parsing Maps and Arrays
-~~~~~~~~~~~~~~~~~~~~~~~
-WIP
+.. code-block:: yaml
+
+   overrides:
+     "%get_entry_metadata_field": >-
+       { %map_get( entry_metadata, $0, null ) }
+
+Custom function definitions must have ``%`` as a prefix to the function name, be surrounded by
+quotes to make YAML parsing happy, and can support arguments using ``$0``, ``$1``, ... to indicate
+their first argument, second argument, etc.
+
+Using our new custom function, we can simply the ``artist`` variable definition above to:
+
+.. code-block:: yaml
+
+   overrides:
+     "%get_entry_metadata_field": >-
+       { %map_get( entry_metadata, $0, null ) }
+     artist: >-
+       { get_entry_metadata_field("artist") }
