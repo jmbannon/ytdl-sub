@@ -9,7 +9,7 @@ contain reference documentation for each built-in variable and scripting functio
   :maxdepth: 1
 
   entry_variables
-  override_variables
+  static_variables
   scripting_functions
   scripting_types
 
@@ -30,7 +30,7 @@ considered *static* because it does not depend on anything from an entry.
 .. code-block:: yaml
 
    output_options:
-     output_directory: "Custom YTDL-SUB TV Show"
+     output_directory: "/path/to/tv_shows/Custom YTDL-SUB TV Show"
 
 Static Variables
 ~~~~~~~~~~~~~~~~
@@ -41,7 +41,7 @@ We can use this instead of hard-coding it above:
 .. code-block:: yaml
 
    output_options:
-     output_directory: "{subscription_name}"
+     output_directory: "/path/to/tv_shows/{subscription_name}"
 
 The syntax for variable usage is curly-braces with the variable name within it. Assuming
 our subscription is actually named "Custom YTDL-SUB TV Show", then ``ytdl-sub``
@@ -64,7 +64,7 @@ title in its name. We can do that using entry variables:
 .. code-block:: yaml
 
    output_options:
-     output_directory: "{subscription_name}"
+     output_directory: "/path/to/tv_shows/{subscription_name}"
      file_name: "{title}.{ext}"
      thumbnail_name: "{title}.{thumbnail_ext}"
 
@@ -83,7 +83,7 @@ a ``custom_file_name`` variable to use for the entry file and thumbnail fields:
 .. code-block:: yaml
 
    output_options:
-     output_directory: "{subscription_name}"
+     output_directory: "/path/to/tv_shows/{subscription_name}"
      file_name: "{custom_file_name}.{ext}"
      thumbnail_name: "{custom_file_name}.{thumbnail_ext}"
 
@@ -104,7 +104,7 @@ are safe by using:
 .. code-block:: yaml
 
    output_options:
-     output_directory: "{subscription_name_sanitized}"
+     output_directory: "/path/to/tv_shows/{subscription_name_sanitized}"
      file_name: "{custom_file_name}.{ext}"
      thumbnail_name: "{custom_file_name}.{thumbnail_ext}"
 
@@ -115,8 +115,9 @@ Simply add a ``_sanitized`` suffix to any variable name to make it sanitized.
 
 .. note::
 
-   Make sure you do not sanitize custom variables that intentionally create directories, otherwise
-   they will... be sanitized and not resolve to directories!
+   Make sure you do not sanitize custom variables that intentionally create directories,
+   (i.e. sanitizing ``/path/to/tv_shows/``) otherwise they will... be sanitized and not resolve to
+   directories!
 
 
 Using Scripting Functions
@@ -130,7 +131,7 @@ Let's suppose you are an avid command-line user, and like all of your file names
 .. code-block:: yaml
 
    output_options:
-     output_directory: "{subscription_name_sanitized}"
+     output_directory: "/path/to/tv_shows/{subscription_name_sanitized}"
      file_name: "{custom_file_name}.{ext}"
      thumbnail_name: "{custom_file_name}.{thumbnail_ext}"
 
@@ -147,7 +148,7 @@ saying:
 
 - Allow a string to be multi-lined, and do not include newlines before or after it.
 
-See for yourself `here <https://yaml-online-parser.appspot.com/?yaml=output_options%3A%0A%20%20output_directory%3A%20%22%7Bsubscription_name_sanitized%7D%22%0A%20%20file_name%3A%20%22%7Bcustom_file_name%7D.%7Bext%7D%22%0A%20%20thumbnail_name%3A%20%22%7Bcustom_file_name%7D.%7Bthumbnail_ext%7D%22%0A%0Aoverrides%3A%0A%20%20snake_cased_title%3A%20%3E-%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%25replace%28%20title%2C%20%27%20%27%2C%20%27_%27%20%29%0A%20%20%20%20%7D%0A%20%20custom_file_name%3A%20%22%7Bupload_date_standardized%7D%20%7Bsnake_cased_title_sanitized%7D%22&type=canonical_yaml>`_.
+See for yourself `here <https://yaml-online-parser.appspot.com/?yaml=output_options%3A%0A%20%20output_directory%3A%20%22%7Bsubscription_name_sanitized%7D%22%0A%20%20file_name%3A%20%22%7Bcustom_file_name%7D.%7Bext%7D%22%0A%20%20thumbnail_name%3A%20%22%7Bcustom_file_name%7D.%7Bthumbnail_ext%7D%22%0A%0Aoverrides%3A%0A%20%20snake_cased_title%3A%20%3E-%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%25replace%28%20title%2C%20%27%20%27%2C%20%27_%27%20%29%0A%20%20%20%20%7D%0A%20%20custom_file_name%3A%20%22%7Bupload_date_standardized%7D%20%7Bsnake_cased_title_sanitized%7D%22&type=json>`_.
 Any whitespace within curly-braces is okay since it will be parsed out. This is needed to make
 scripting function usage readable.
 
@@ -161,12 +162,41 @@ Advanced Scripting
 
 Accessing ``info.json`` Fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-WIP
+The entirety of an entry's ``info.json`` file resides in the
+`Map <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_types.html#map>`_
+variable
+`entry_metadata <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/entry_variables.html#entry-metadata>`_.
+
+Any field can be accessed by using the
+`map_get <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#map-get>`_
+function like so:
+
+.. code-block:: yaml
+  :caption: Fetches the 'artist' value from the .info.json, returns null if it does not exist.
+
+   artist: >-
+     { %map_get( entry_metadata, "artist", null ) }
 
 Creating Custom Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-WIP
+Custom functions can be created in the overrides section using the following syntax:
 
-Parsing Maps and Arrays
-~~~~~~~~~~~~~~~~~~~~~~~
-WIP
+.. code-block:: yaml
+
+   overrides:
+     "%get_entry_metadata_field": >-
+       { %map_get( entry_metadata, $0, null ) }
+
+Custom function definitions must have ``%`` as a prefix to the function name, be surrounded by
+quotes to make YAML parsing happy, and can support arguments using ``$0``, ``$1``, ... to indicate
+their first argument, second argument, etc.
+
+Using our new custom function, we can simply the ``artist`` variable definition above to:
+
+.. code-block:: yaml
+
+   overrides:
+     "%get_entry_metadata_field": >-
+       { %map_get( entry_metadata, $0, null ) }
+     artist: >-
+       { get_entry_metadata_field("artist") }
