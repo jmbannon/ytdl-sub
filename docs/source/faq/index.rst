@@ -10,6 +10,21 @@ Since ytdl-sub is relatively new to the public, there has not been many question
 How do I...
 -----------
 
+...get support or reach out to contribute?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you need support, you can:
+
+* :ytdl-sub-gh:`Open an issue on GitHub <issues/new>`
+
+* `Join our Discord <https://discord.gg/v8j9RAHb4k>`_
+
+If you would like to contribute, we're happy to accept any help, even non-coders! To find out how you can help this project, you can:
+
+* `Join our Discord <https://discord.gg/v8j9RAHb4k>`_ and leave a comment in #development with where you think you can assist or what skills you would like to contribute. 
+
+* If you just want to fix one thing, you're welcome to :ytdl-sub-gh:`submit a pull request <compare>` with information on what issue you're resolving and it will be reviewed as soon as possible.
+
 ...download age-restricted YouTube videos?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -8,7 +8,7 @@ After starting, if you installed the ``ytdl-sub-gui`` app, the code-server will 
 At this time, we are unsure how to access the headless ``ytdl-sub`` console using the user ``abc`` and not ``root``. If you use Unraid and can help us figure this out, please contact the code owner or join the Discord.
 
 .. warning:: 
-  Do **NOT** use the below option to access ``ytdl-sub``. Running from this option **WILL** break things.
+  Do **NOT** use the below option to access ``ytdl-sub``. Running from this option **WILL** break things by modifying files as the root user.
 
   .. figure:: ../../../images/unraid_badconsole.png
     :alt: The Unraid community app plugin GUI, with an arrow pointing at the "Console" option in the dropdown after selecting ytdl-sub-gui
