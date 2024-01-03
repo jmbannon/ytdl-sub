@@ -13,6 +13,6 @@ presets:
           capture_group_defaults:
             - "{title}"
         description:
-          match: "^(?:Provided)(?:.*\\n){4}([^\\[\\{\\(\\|]*?)\\s*(?=\\{|\\(|\\||\\[|$|\\n).*"
+          match: '^(?:Provided)(?:.*\n){4}([^\[\{\(\|]*?)\s*(?=\{|\(|\||\[|$|\n).*'
           capture_group_names: "captured_track_album"
           capture_group_defaults: "Singles"
