@@ -208,7 +208,6 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
             file_metadata = FileMetadata(f"Embedded subtitles with lang(s) {', '.join(langs)}")
         if self.plugin_options.subtitles_name:
             for lang in langs:
-                subtitle_file_name = f"{entry.uid}.{lang}.{self.plugin_options.subtitles_type}"
                 output_subtitle_file_name = self.overrides.apply_formatter(
                     formatter=self.plugin_options.subtitles_name,
                     entry=entry,
@@ -216,7 +215,9 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
                 )
 
                 self.save_file(
-                    file_name=subtitle_file_name,
+                    file_name=entry.base_filename(
+                        ext=f"{lang}.{self.plugin_options.subtitles_type}"
+                    ),
                     output_file_name=output_subtitle_file_name,
                     entry=entry,
                 )
@@ -225,9 +226,8 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         # Can happen for both file and embedded subs
         for lang in langs:
             for possible_ext in SUBTITLE_EXTENSIONS:
-                possible_subs_file = (
-                    Path(self.working_directory) / f"{entry.uid}.{lang}.{possible_ext}"
-                )
+                possible_subs_filename = entry.base_filename(ext=f"{lang}.{possible_ext}")
+                possible_subs_file = Path(self.working_directory) / possible_subs_filename
                 FileHandler.delete(possible_subs_file)
 
         return file_metadata

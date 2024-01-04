@@ -113,7 +113,8 @@ class Entry(BaseEntry, Scriptable):
         """
         ext = self.try_get(v.ext, str) or self._kwargs[v.ext.metadata_key]
         for possible_ext in [ext, "mkv"]:
-            file_path = str(Path(self.working_directory()) / f"{self.uid}.{possible_ext}")
+            file_name = self.base_filename(ext=possible_ext)
+            file_path = str(Path(self.working_directory()) / file_name)
             if os.path.isfile(file_path):
                 return possible_ext
 
@@ -125,7 +126,7 @@ class Entry(BaseEntry, Scriptable):
         -------
         The entry's file name
         """
-        return f"{self.uid}.{self.ext}"
+        return self.base_filename(ext=self.ext)
 
     def get_download_file_path(self) -> str:
         """Returns the entry's file path to where it was downloaded"""
@@ -137,7 +138,7 @@ class Entry(BaseEntry, Scriptable):
         -------
         The download thumbnail's file name
         """
-        return f"{self.uid}.{self.get(v.thumbnail_ext, str)}"
+        return self.base_filename(ext=self.get(v.thumbnail_ext, str))
 
     def get_download_thumbnail_path(self) -> str:
         """Returns the entry's thumbnail's file path to where it was downloaded"""
@@ -155,7 +156,10 @@ class Entry(BaseEntry, Scriptable):
             possible_thumbnail_exts.add(thumbnail["url"].split(".")[-1])
 
         for ext in possible_thumbnail_exts:
-            possible_thumbnail_path = str(Path(self.working_directory()) / f"{self.uid}.{ext}")
+            possible_thumbnail_filename = self.base_filename(ext=ext)
+            possible_thumbnail_path = str(
+                Path(self.working_directory()) / possible_thumbnail_filename
+            )
             if os.path.isfile(possible_thumbnail_path):
                 return possible_thumbnail_path
 
@@ -202,7 +206,7 @@ class Entry(BaseEntry, Scriptable):
         # HACK: yt-dlp does not record extracted/converted extensions anywhere. If the file is not
         # found, try it using all possible extensions
         if not file_exists:
-            for ext in AUDIO_CODEC_EXTS.union(VIDEO_CODEC_EXTS):
+            for ext in AUDIO_CODEC_EXTS | VIDEO_CODEC_EXTS:
                 if os.path.isfile(self.get_download_file_path().removesuffix(self.ext) + ext):
                     file_exists = True
                     break
