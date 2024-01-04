@@ -56,8 +56,8 @@ class SubscriptionYTDLOptions:
         ytdl-options to apply to every run no matter what
         """
         ytdl_options = {
-            # Download all files in the format of {id}.{ext}
-            "outtmpl": str(Path(self._working_directory) / "%(id)s.%(ext)s"),
+            # Download all files in the format of {id}.{ext}, where id is sanitized
+            "outtmpl": str(Path(self._working_directory) / "%(id)S.%(ext)s"),
             # Always write thumbnails
             "writethumbnail": True,
             "ffmpeg_location": FFMPEG.ffmpeg_path(),

@@ -152,7 +152,9 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
         for file_name in entry_file_names:
             ext = get_file_extension(file_name)
             file_path = Path(self.output_directory) / file_name
-            working_directory_file_path = Path(self.working_directory) / f"{entry.uid}.{ext}"
+            working_directory_file_path = Path(self.working_directory) / entry.base_filename(
+                ext=ext
+            )
 
             # NFO files will always get rewritten, so ignore
             if ext == "nfo":
