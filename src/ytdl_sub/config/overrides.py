@@ -133,6 +133,8 @@ class Overrides(DictFormatterValidator, Scriptable):
         """
         Initialize the override script with override variables + any unresolved variables
         """
+        self.initialize_base_script()
+
         self.script.add(
             ScriptUtils.add_sanitized_variables(
                 {SubscriptionVariables.subscription_name(): subscription_name}
