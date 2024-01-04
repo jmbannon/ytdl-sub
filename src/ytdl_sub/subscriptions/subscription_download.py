@@ -343,6 +343,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             preset=self._preset_options,
             plugins=plugins,
             enhanced_download_archive=self._enhanced_download_archive,
+            overrides=self.overrides,
             working_directory=self.working_directory,
             dry_run=dry_run,
         )
@@ -395,6 +396,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             preset=self._preset_options,
             plugins=plugins,
             enhanced_download_archive=self._enhanced_download_archive,
+            overrides=self.overrides,
             working_directory=self.working_directory,
             dry_run=dry_run,
         )
