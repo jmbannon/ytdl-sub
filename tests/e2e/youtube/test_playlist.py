@@ -45,7 +45,7 @@ def playlist_preset_dict(output_directory):
         "overrides": {
             "tv_show_name": "JMC",
             "tv_show_directory": output_directory,
-            "collection_season_1_url": "https://mediathekviewweb.de/feed?query=!SWR%20%23Handwerkskunst%20%3E10&size=10000&future=true",
+            "collection_season_1_url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
             "collection_season_1_name": "JMC - Season 1",
         },
     }
@@ -101,7 +101,7 @@ class TestPlaylist:
             expected_download_summary_file_name="youtube/test_playlist_archive_migrated.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [False])
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_playlist_download(
         self,
         default_config,
