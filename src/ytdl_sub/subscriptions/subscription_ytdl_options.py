@@ -7,6 +7,7 @@ from typing import TypeVar
 
 from yt_dlp import match_filter_func
 
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
@@ -33,12 +34,14 @@ class SubscriptionYTDLOptions:
         preset: Preset,
         plugins: List[Plugin],
         enhanced_download_archive: EnhancedDownloadArchive,
+        overrides: Overrides,
         working_directory: str,
         dry_run: bool,
     ):
         self._preset = preset
         self._plugins = plugins
         self._enhanced_download_archive = enhanced_download_archive
+        self._overrides = overrides
         self._working_directory = working_directory
         self._dry_run = dry_run
 
@@ -90,6 +93,11 @@ class SubscriptionYTDLOptions:
 
         if self._preset.output_options.maintain_download_archive:
             ytdl_options["download_archive"] = self._enhanced_download_archive.working_file_path
+        if self._preset.output_options.keep_max_files:
+            # yt-dlp has a weird bug with max_downloads=1, set to 2 for safe measure
+            ytdl_options["max_downloads"] = max(
+                int(self._overrides.apply_formatter(self._preset.output_options.keep_max_files)), 2
+            )
 
         return ytdl_options
 
