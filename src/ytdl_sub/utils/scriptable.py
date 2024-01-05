@@ -26,21 +26,33 @@ class Scriptable(ABC):
     Shared class between Entry and Overrides to manage their underlying Script.
     """
 
-    def __init__(self):
+    def __init__(self, initialize_base_script: bool = False):
         self._script: Optional[Script] = None
         self._unresolvable: Optional[Set[str]] = None
 
+        if initialize_base_script:
+            self.initialize_base_script()
+
     def initialize_base_script(self):
+        """
+        Initializes with base values
+        """
         self._script = copy.deepcopy(_BASE_SCRIPT)
         self._unresolvable = copy.deepcopy(UNRESOLVED_VARIABLES)
 
     @property
     def script(self) -> Script:
+        """
+        Initialized script
+        """
         assert self._script is not None, "Not initialized"
         return self._script
 
     @property
     def unresolvable(self) -> Set[str]:
+        """
+        Initialized unresolvable variables
+        """
         assert self._unresolvable is not None, "Not initialized"
         return self._unresolvable
 
