@@ -8,7 +8,7 @@ from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.validators import StringListValidator
 
-logger = Logger.get("match_filters")
+logger = Logger.get("match-filters")
 
 
 def default_filters() -> Tuple[List[str], List[str]]:
