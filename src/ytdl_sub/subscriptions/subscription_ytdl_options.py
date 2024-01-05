@@ -81,6 +81,7 @@ class SubscriptionYTDLOptions:
             "skip_download": True,
             "writethumbnail": False,
             "writeinfojson": True,
+            "extract_flat": "discard",  # do not store info.json in mem since its in file
         }
 
     @property

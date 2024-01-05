@@ -44,12 +44,6 @@ class Entry(BaseEntry, Scriptable):
         BaseEntry.__init__(self, entry_dict=entry_dict, working_directory=working_directory)
         Scriptable.__init__(self)
 
-    def _add_entry_kwargs_to_script(self) -> None:
-        # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
-        self.unresolvable.remove(v.entry_metadata.variable_name)
-        self.script.add({v.entry_metadata.variable_name: ScriptUtils.to_script(self._kwargs)})
-        self.update_script()
-
     def initialize_script(self, other: Optional[Scriptable] = None) -> "Entry":
         """
         Initializes the entry script using the Overrides script, then adding
@@ -57,11 +51,19 @@ class Entry(BaseEntry, Scriptable):
         """
         # Overrides contains added variables that are unresolvable, add them here
         if other:
-            self.script = copy.deepcopy(other.script)
-            self.unresolvable = copy.deepcopy(other.unresolvable)
+            self._script = copy.deepcopy(other.script)
+            self._unresolvable = copy.deepcopy(other.unresolvable)
+        else:
+            self.initialize_base_script()
 
         self._add_entry_kwargs_to_script()
         return self
+
+    def _add_entry_kwargs_to_script(self) -> None:
+        # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
+        self.unresolvable.remove(v.entry_metadata.variable_name)
+        self.script.add({v.entry_metadata.variable_name: ScriptUtils.to_script(self._kwargs)})
+        self.update_script()
 
     def get(self, variable: Variable, expected_type: Type[TypeT]) -> TypeT:
         """

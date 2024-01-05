@@ -2,6 +2,7 @@ import copy
 from abc import ABC
 from typing import Any
 from typing import Dict
+from typing import Optional
 from typing import Set
 
 from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
@@ -13,21 +14,47 @@ from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.script import ScriptUtils
 
+_BASE_SCRIPT: Script = Script(
+    ScriptUtils.add_sanitized_variables(
+        dict(copy.deepcopy(VARIABLE_SCRIPTS), **copy.deepcopy(CUSTOM_FUNCTION_SCRIPTS))
+    )
+)
+
 
 class Scriptable(ABC):
     """
     Shared class between Entry and Overrides to manage their underlying Script.
     """
 
-    _BASE_SCRIPT: Script = Script(
-        ScriptUtils.add_sanitized_variables(
-            dict(copy.deepcopy(VARIABLE_SCRIPTS), **copy.deepcopy(CUSTOM_FUNCTION_SCRIPTS))
-        )
-    )
+    def __init__(self, initialize_base_script: bool = False):
+        self._script: Optional[Script] = None
+        self._unresolvable: Optional[Set[str]] = None
 
-    def __init__(self):
-        self.script = copy.deepcopy(Scriptable._BASE_SCRIPT)
-        self.unresolvable: Set[str] = copy.deepcopy(UNRESOLVED_VARIABLES)
+        if initialize_base_script:
+            self.initialize_base_script()
+
+    def initialize_base_script(self):
+        """
+        Initializes with base values
+        """
+        self._script = copy.deepcopy(_BASE_SCRIPT)
+        self._unresolvable = copy.deepcopy(UNRESOLVED_VARIABLES)
+
+    @property
+    def script(self) -> Script:
+        """
+        Initialized script
+        """
+        assert self._script is not None, "Not initialized"
+        return self._script
+
+    @property
+    def unresolvable(self) -> Set[str]:
+        """
+        Initialized unresolvable variables
+        """
+        assert self._unresolvable is not None, "Not initialized"
+        return self._unresolvable
 
     def update_script(self) -> None:
         """
@@ -45,7 +72,7 @@ class Scriptable(ABC):
             for var, definition in values.items()
         }
 
-        self.unresolvable -= set(list(values_as_str.keys()))
+        self._unresolvable -= set(list(values_as_str.keys()))
         self.script.add(
             ScriptUtils.add_sanitized_variables(
                 {
