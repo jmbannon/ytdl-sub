@@ -20,6 +20,8 @@ disable = [
     "W0511", # TODO
 ]
 
+load-plugins = "pylint.extensions.docparams"
+
 [tool.coverage.run]
 include = [
     "src/*"
