@@ -22,24 +22,6 @@ disable = [
 
 load-plugins = "pylint.extensions.docparams"
 
-[tool.pydocstyle]
-inherit = false
-match = "[^test_].*\\.py"
-ignore = [
-    "D100", # docstring in public module
-    "D101", # Missing docstring in public class (covered by pylint)
-    "D104", # docstring in public package
-    "D107", # docstring in init
-    "D200", # One-line should fit on one line
-    "D203", # 1 blank line before class docstring
-    "D205", # 1 blank line between summary and description
-    "D212", # Multi-line should start at first line
-    "D400", # Should end with a period
-    "D401", # Return vs Returns
-    "D413", # Missing blank line after last section
-    "D415", # Should end with a period
-]
-
 [tool.coverage.run]
 include = [
     "src/*"
