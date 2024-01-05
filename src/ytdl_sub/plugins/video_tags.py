@@ -10,7 +10,7 @@ from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 
-logger = Logger.get("video_tags")
+logger = Logger.get("video-tags")
 
 
 class VideoTagsOptions(OptionsDictValidator):

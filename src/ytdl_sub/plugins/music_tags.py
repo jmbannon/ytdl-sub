@@ -21,7 +21,7 @@ from ytdl_sub.validators.validators import BoolValidator
 
 v: VariableDefinitions = VARIABLES
 
-logger = Logger.get("music_tags")
+logger = Logger.get("music-tags")
 
 
 def _is_multi_field(tag_name: str) -> bool:

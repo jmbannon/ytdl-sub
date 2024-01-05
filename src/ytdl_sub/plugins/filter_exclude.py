@@ -11,7 +11,7 @@ from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-logger = Logger.get("conditional")
+logger = Logger.get("filter-exclude")
 
 
 class FilterExcludeOptions(ListFormatterValidator, OptionsValidator):
@@ -55,6 +55,11 @@ class FilterExcludePlugin(Plugin[FilterExcludeOptions]):
         for formatter in self.plugin_options.list:
             out = json.loads(self.overrides.apply_formatter(formatter=formatter, entry=entry))
             if bool(out):
+                logger.info(
+                    "Filtering '%s' from the filter %s evaluating to True",
+                    entry.title,
+                    formatter.format_string,
+                )
                 return None
 
         return entry
