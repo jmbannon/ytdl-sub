@@ -7,11 +7,12 @@ from ytdl_sub.script.utils.name_validation import is_valid_name
 SUBSCRIPTION_ARRAY = "subscription_array"
 
 
-class OverrideVariables:
+class SubscriptionVariables:
     @staticmethod
     def subscription_name() -> str:
         """
-        Name of the subscription
+        Name of the subscription. For subscriptions types that use a prefix (``~``, ``+``),
+        the prefix and all whitespace afterwards is stripped from the subscription name.
         """
         return "subscription_name"
 

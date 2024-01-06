@@ -39,6 +39,8 @@ def should_filter_property(property_name: str) -> bool:
         "dict_with_format_strings",
         "subscription_name",
         "list",
+        "script",
+        "unresolvable",
     )
 
 

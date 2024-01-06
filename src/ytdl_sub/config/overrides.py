@@ -8,7 +8,7 @@ import mergedeep
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.variables.override_variables import OverrideHelpers
-from ytdl_sub.entries.variables.override_variables import OverrideVariables
+from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
@@ -56,7 +56,7 @@ class Overrides(DictFormatterValidator, Scriptable):
 
     def __init__(self, name, value):
         DictFormatterValidator.__init__(self, name, value)
-        Scriptable.__init__(self)
+        Scriptable.__init__(self, initialize_base_script=True)
 
         for key in self._keys:
             self.ensure_variable_name_valid(key)
@@ -135,7 +135,7 @@ class Overrides(DictFormatterValidator, Scriptable):
         """
         self.script.add(
             ScriptUtils.add_sanitized_variables(
-                {OverrideVariables.subscription_name(): subscription_name}
+                {SubscriptionVariables.subscription_name(): subscription_name}
             )
         )
         self.script.add(

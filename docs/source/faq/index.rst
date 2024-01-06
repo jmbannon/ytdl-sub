@@ -1,8 +1,8 @@
+===
 FAQ
 ===
 
-Since ytdl-sub is relatively new to the public, there has not been many question asked yet. We will update this as
-more questions get asked.
+Since ytdl-sub is relatively new to the public, there has not been many question asked yet. We will update this as more questions get asked.
 
 .. contents:: Frequently Asked Questions
   :depth: 3
@@ -10,12 +10,25 @@ more questions get asked.
 How do I...
 -----------
 
+...get support or reach out to contribute?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you need support, you can:
+
+* :ytdl-sub-gh:`Open an issue on GitHub <issues/new>`
+
+* `Join our Discord <https://discord.gg/v8j9RAHb4k>`_
+
+If you would like to contribute, we're happy to accept any help, even non-coders! To find out how you can help this project, you can:
+
+* `Join our Discord <https://discord.gg/v8j9RAHb4k>`_ and leave a comment in #development with where you think you can assist or what skills you would like to contribute. 
+
+* If you just want to fix one thing, you're welcome to :ytdl-sub-gh:`submit a pull request <compare>` with information on what issue you're resolving and it will be reviewed as soon as possible.
+
 ...download age-restricted YouTube videos?
-''''''''''''''''''''''''''''''''''''''''''
-See
-`ytdls recommended way <https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl>`_
-to download your YouTube cookie, then add it to your
-`ytdl options <https://ytdl-sub.readthedocs.io/en/latest/config.html#ytdl-options>`_ section of your config:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See `yt-dl's recommended way <https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl>`_ to download your YouTube cookie, then add it to your :ref:`ytdl options <config_reference/plugins:ytdl_options>` section of your config:
 
 .. code-block:: yaml
 
@@ -23,14 +36,16 @@ to download your YouTube cookie, then add it to your
     cookiefile: "/path/to/cookies/file.txt"
 
 ...automate my downloads?
-'''''''''''''''''''''''''
-`This part of the wiki <https://github.com/jmbannon/ytdl-sub/wiki/7.-Automate-Downloading-New-Content-Using-Your-Configs>`_ shows how to set up ``ytdl-sub`` to run in a cron job within Docker.
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:doc:`This page </guides/getting_started/automating_downloads>` shows how to set up ``ytdl-sub`` to run automatically on various platforms.
 
 There is a bug where...
 -----------------------
 
 ...date_range is not downloading older videos after I changed the range
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Your preset most likely has ``break_on_existing`` set to True, which will stop downloading additional metadata/videos if the video exists in your download archive. Set the following in your config to skip downloading videos that exist instead of stopping altogether.
 
 .. code-block:: yaml
@@ -38,11 +53,12 @@ Your preset most likely has ``break_on_existing`` set to True, which will stop d
   ytdl_options:
     break_on_existing: False
 
-After your download your new date_range duration, re-enable ``break_on_existing`` to speed up successive downloads.
+After you download your new date_range duration, re-enable ``break_on_existing`` to speed up successive downloads.
 
 ...it is downloading non-English title and description metadata
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Most likely the video has a non-English language set to its 'native' language. You can tell yt-dlp to explicitly download English metadata using
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Most likely the video has a non-English language set to its 'native' language. You can tell yt-dlp to explicitly download English metadata using.
 
 .. code-block:: yaml
 
@@ -53,7 +69,19 @@ Most likely the video has a non-English language set to its 'native' language. Y
           - "en"
 
 ...Plex is not showing my TV shows correctly
-''''''''''''''''''''''''''''''''''''''''''''
-Set the following
-`Scanner and Agent <https://i.imgur.com/zdZhCLZ.png>`_
-for your library.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Set the following for your ytdl-sub library that has been added to Plex.
+
+.. figure:: ../../images/plex_scanner_agent.png
+  :alt: The Plex library editor, under the advanced settings, showing the required options for Plex to show the TV shows correctly.
+
+**Scanner:** Plex Series Scanner
+
+**Agent:** Personal Media shows
+
+**Visibility:** Exclude from home screen and global search
+
+**Episode sorting:** Library default
+
+**YES** Enable video preview thumbnails
