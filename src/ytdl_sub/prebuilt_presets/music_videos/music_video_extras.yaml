@@ -25,18 +25,19 @@ presets:
       - "_multi_url"
 
     overrides:
-      music_videos_list: >-
+      music_videos_list_raw: >-
         { %list( %map_get(subscription_map, "Music Videos", []) ) }
-      concerts_list: >-
+      concerts_list_raw: >-
         { %list( %map_get(subscription_map, "Concerts", []) ) }
-      extras_list: >-
+      extras_list_raw: >-
         { %list( %map_get(subscription_map, "Extras", []) ) }
-      behind_the_scenes_list: >-
+      behind_the_scenes_list_raw: >-
         { %list( %map_get(subscription_map, "Behind The Scenes", []) ) }
-      live_list: >-
+      live_list_raw: >-
         { %list( %map_get(subscription_map, "Live", []) ) }
-      lyrics_list: >-
+      lyrics_list_raw: >-
         { %list( %map_get(subscription_map, "Lyrics", []) ) }
+
 
     download:
       - url: "{url1}"
