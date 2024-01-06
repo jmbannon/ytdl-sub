@@ -1,5 +1,9 @@
+import re
+
 import pytest
 from unit.script.conftest import single_variable_output
+
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 
 
 class TestConditionalFunction:
@@ -33,3 +37,67 @@ class TestConditionalFunction:
         }"""
         )
         assert output == "winner"
+
+    def test_elif_function(self):
+        output = single_variable_output(
+            """{
+            %elif(
+                False,
+                "nope",
+                False,
+                "still nope",
+                True,
+                "yes",
+                "default value"
+            )
+        }"""
+        )
+        assert output == "yes"
+
+    def test_elif_function_default_value(self):
+        output = single_variable_output(
+            """{
+            %elif(
+                False,
+                "nope",
+                False,
+                "still nope",
+                False,
+                "will be default",
+                "default value"
+            )
+        }"""
+        )
+        assert output == "default value"
+
+    def test_elif_function_errors_lt3(self):
+        with pytest.raises(
+            FunctionRuntimeException,
+            match=re.escape("elif requires at least 3 arguments"),
+        ):
+            single_variable_output(
+                """
+            {
+                %elif(
+                    False,
+                    "only two args"
+                )
+            }"""
+            )
+
+    def test_elif_function_errors_odd(self):
+        with pytest.raises(
+            FunctionRuntimeException,
+            match=re.escape("elif must have an odd number of arguments"),
+        ):
+            single_variable_output(
+                """
+            {
+                %elif(
+                    False,
+                    "1",
+                    False,
+                    "even number args bad"
+                )
+            }"""
+            )

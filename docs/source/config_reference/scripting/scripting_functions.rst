@@ -225,6 +225,27 @@ xor
 Conditional Functions
 ---------------------
 
+elif
+~~~~
+:spec: ``elif(if_elif_else: AnyArgument, ...) -> AnyArgument``
+
+:description:
+  Conditional ``if`` statement that is capable of doing else-ifs (``elif``) via
+  adjacent arguments. It is expected for there to be an odd number of arguments >= 3 to
+  supply at least one conditional and an else.
+:usage:
+
+  .. code-block:: python
+
+     %elif(
+        condition1,
+        return1,
+        condition2,
+        return2,
+        ...
+        else_return
+     )
+
 if
 ~~
 :spec: ``if(condition: Boolean, true: ReturnableArgumentA, false: ReturnableArgumentB) -> Union[ReturnableArgumentA, ReturnableArgumentB]``
