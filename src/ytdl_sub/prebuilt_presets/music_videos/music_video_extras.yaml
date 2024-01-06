@@ -22,9 +22,43 @@ presets:
   _music_video_extras_base:
     preset:
       - "_music_video_base"
-      - "_multi_url"
 
     overrides:
+
+      "%get_music_video_metadata_split": >-
+        { %split($0, " | ") }
+      "%get_music_video_metadata_size": >-
+        { %array_size( %get_music_video_split_value($0) ) }
+
+      "%get_music_video_url": >-
+        { %array_at( %get_music_video_split_value($0), -1 ) }
+      "%get_music_video_title": >-
+        {
+          %if(
+            %gt( %get_music_video_metadata_size($0) , 1 ),
+            %array_at( %get_music_video_split_value($0), 0 ),
+            title
+          )
+        }
+      "%get_music_video_year": >-
+        {
+          %if(
+            %gt( %get_music_video_metadata_size($0) , 2 ),
+            %int( %array_at( %get_music_video_split_value($0), 1 ) ),
+            release_year
+          )
+        }
+
+      "%get_music_metadata_map": >-
+        {
+          {
+            "type": $1,
+            "url": %get_music_video_url($0),
+            "title": %get_music_video_title($0),
+            "year": %get_music_video_year($0)
+          }
+        }
+
       music_videos_list_raw: >-
         { %list( %map_get(subscription_map, "Music Videos", []) ) }
       concerts_list_raw: >-
@@ -39,10 +73,42 @@ presets:
         { %list( %map_get(subscription_map, "Lyrics", []) ) }
 
 
+      music_videos_list_metadata: >-
+        { %array_apply_fixed( music_videos_list_raw, "Music Videos", %get_music_metadata_map ) }
+      concerts_list_metadata: >-
+        { %array_apply_fixed( concerts_list_raw, "Concerts", %get_music_metadata_map ) }
+      extras_list_metadata: >-
+        { %array_apply_fixed( extras_list_raw, "Extras", %get_music_metadata_map ) }
+      behind_the_scenes_list_metadata: >-
+        { %array_apply_fixed( behind_the_scenes_list_raw, "Behind The Scenes", %get_music_metadata_map ) }
+      live_list_metadata: >-
+        { %array_apply_fixed( live_list_raw, "Live", %get_music_metadata_map ) }
+      lyrics_list_metadata: >-
+        { %array_apply_fixed( lyrics_list_raw, "Lyrics", %get_music_metadata_map ) }
+        
+      list_metadata: >-
+        {
+          %array_extend(
+            music_videos_list_metadata,
+            concerts_list_metadata,
+            extras_list_metadata,
+            behind_the_scenes_list_metadata,
+            live_list_metadata,
+            lyrics_list_metadata
+          )
+        }
+
     download:
-      - url: "{url1}"
+      - url: >-
+          { %map_get( %array_at( list_metadata, 0 ), "url" }
+        playlist_thumbnails:
+          - name: "{avatar_uncropped_thumbnail_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{banner_uncropped_thumbnail_file_name}"
+            uid: "banner_uncropped"
         variables:
-          music_video_type: "Music Videos"
+          defined_music_video_title: >-
+            { %get_music_video_title( %array_at(music_videos_list_raw, 
 
   "Jellyfin Music Videos with Extras":
     preset:
