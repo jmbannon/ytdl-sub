@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from pathlib import Path
 
-REGENERATE_DOCS: bool = True
+REGENERATE_DOCS: bool = False
 
 
 class DocGen:
