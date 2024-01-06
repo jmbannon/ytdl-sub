@@ -1,0 +1,18 @@
+presets:
+
+  # Use with "YouTube Releases" to parse out each videos album and title and save accordingly
+
+  "YouTube Music Releases":
+    regex:
+      skip_if_match_fails: True
+      from:
+        title:
+          match: '^(?:(?:.+?)(?= - | \/{2} )(?: - | \/{2} ))*([^\[\{\(\|]*?)\s*(?=\{|\(|\||\[|$).*'          
+          capture_group_names:
+            - "captured_track_title"
+          capture_group_defaults:
+            - "{title}"
+        description:
+          match: '^(?:Provided)(?:.*\n){4}([^\[\{\(\|]*?)\s*(?=\{|\(|\||\[|$|\n).*'
+          capture_group_names: "captured_track_album"
+          capture_group_defaults: "Singles"
