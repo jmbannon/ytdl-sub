@@ -26,6 +26,14 @@ class TestArrayFunctions:
         output = single_variable_output("{%array_at(['a', 'b', 'c'], 1)}")
         assert output == "b"
 
+    def test_array_at_default(self):
+        output = single_variable_output("{%array_at(['a', 'b', 'c'], 30, 'd')}")
+        assert output == "d"
+
+    def test_array_at_error(self):
+        with pytest.raises(FunctionRuntimeException):
+            single_variable_output("{%array_at(['a', 'b', 'c'], 30)}")
+
     def test_array_flatten(self):
         output = single_variable_output("{%array_flatten(['a', ['b'], [['c']]])}")
         assert output == ["a", "b", "c"]
