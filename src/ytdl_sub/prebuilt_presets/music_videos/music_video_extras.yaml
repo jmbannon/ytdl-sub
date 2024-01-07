@@ -25,108 +25,91 @@ presets:
 
     overrides:
 
-      "%get_music_video_metadata_split": >-
+      "%get_value_split": >-
         { %split($0, " | ") }
-      "%get_music_video_metadata_size": >-
-        { %array_size( %get_music_video_split_value($0) ) }
+      "%get_value_size": >-
+        { %array_size( %get_value_split($0) ) }
 
-      "%get_music_video_url": >-
-        { %array_at( %get_music_video_split_value($0), -1 ) }
-      "%get_music_video_title": >-
+      "%get_value_url": >-
+        { %array_at( %get_value_split($0), -1 ) }
+
+      "%get_value_metadata_i": >-
         {
           %if(
-            %gt( %get_music_video_metadata_size($0) , 1 ),
-            %array_at( %get_music_video_split_value($0), 0 ),
-            title
-          )
-        }
-      "%get_music_video_year": >-
-        {
-          %if(
-            %gt( %get_music_video_metadata_size($0) , 2 ),
-            %int( %array_at( %get_music_video_split_value($0), 1 ) ),
-            release_year
+            %gt( %get_value_size($0) , %add($1, 1) ),
+            %array_at( %get_value_split($0), $1 ),
+            null
           )
         }
 
-      "%get_music_metadata_map": >-
+      "%get_value_metadata_map": >-
         {
           {
-            "type": $1,
-            "url": %get_music_video_url($0),
-            "title": %get_music_video_title($0),
-            "year": %get_music_video_year($0)
+            "key": $1,
+            "url": %get_value_url($0),
+            0: %get_value_metadata_i($0, 0),
+            1: %get_value_metadata_i($0, 1),
+            2: %get_value_metadata_i($0, 2),
+            3: %get_value_metadata_i($0, 3),
+            4: %get_value_metadata_i($0, 4)
           }
         }
 
-      music_videos_list_raw: >-
-        { %list( %map_get(subscription_map, "Music Videos", []) ) }
-      concerts_list_raw: >-
-        { %list( %map_get(subscription_map, "Concerts", []) ) }
-      extras_list_raw: >-
-        { %list( %map_get(subscription_map, "Extras", []) ) }
-      behind_the_scenes_list_raw: >-
-        { %list( %map_get(subscription_map, "Behind The Scenes", []) ) }
-      live_list_raw: >-
-        { %list( %map_get(subscription_map, "Live", []) ) }
-      lyrics_list_raw: >-
-        { %list( %map_get(subscription_map, "Lyrics", []) ) }
+      "%get_value_metadata_map_outer": >-
+        { %array_apply_fixed( $1, $0, %get_value_metadata_map ) }
 
-
-      music_videos_list_metadata: >-
-        { %array_apply_fixed( music_videos_list_raw, "Music Videos", %get_music_metadata_map ) }
-      concerts_list_metadata: >-
-        { %array_apply_fixed( concerts_list_raw, "Concerts", %get_music_metadata_map ) }
-      extras_list_metadata: >-
-        { %array_apply_fixed( extras_list_raw, "Extras", %get_music_metadata_map ) }
-      behind_the_scenes_list_metadata: >-
-        { %array_apply_fixed( behind_the_scenes_list_raw, "Behind The Scenes", %get_music_metadata_map ) }
-      live_list_metadata: >-
-        { %array_apply_fixed( live_list_raw, "Live", %get_music_metadata_map ) }
-      lyrics_list_metadata: >-
-        { %array_apply_fixed( lyrics_list_raw, "Lyrics", %get_music_metadata_map ) }
-        
-      list_metadata: >-
+      subscription_list_of_maps: >-
         {
-          %array_extend(
-            music_videos_list_metadata,
-            concerts_list_metadata,
-            extras_list_metadata,
-            behind_the_scenes_list_metadata,
-            live_list_metadata,
-            lyrics_list_metadata
+          %array_flatten(
+            %map_apply( subscription_map, %get_value_metadata_map_outer )
           )
         }
 
-      "%get_list_metadata_field": >-
+      "%get_list_metadata_field_by_idx": >-
         {
           %map_get(
-            %array_at( list_metadata, $0, {} ),
+            %array_at( subscription_list_of_maps, $0, {} ),
             $1,
             $2
           )
         }
 
-      "%get_type_by_idx": >-
-        { %get_list_metadata_field($0, "type", null) }
       "%get_url_by_idx": >-
-        { %get_list_metadata_field($0, "url", null) }
-      "%get_title_by_idx": >-
-        { %get_list_metadata_field($0, "title", title) }
-      "%get_year_by_idx": >-
-        { %get_list_metadata_field($0, "year", upload_year) }
+        { %get_list_metadata_field_by_idx($0, "url", null) }
+      "%get_key_by_idx": >-
+        { %get_list_metadata_field_by_idx($0, "key", null) }
+      "%get_metadata_i_by_idx": >-
+        { %get_list_metadata_field_by_idx($0, $1, $2) }
+
+      metadata_0_default: "{ %string(null) }"
+      metadata_1_default: "{ %string(null) }"
+      metadata_2_default: "{ %string(null) }"
+      metadata_3_default: "{ %string(null) }"
+      metadata_4_default: "{ %string(null) }"
+
 
     download:
-      - url: >-
-          { %map_get( %array_at( list_metadata, 0 ), "url" }
+      - url: "{ %get_url_by_idx(0) }"
         playlist_thumbnails:
           - name: "{avatar_uncropped_thumbnail_file_name}"
             uid: "avatar_uncropped"
           - name: "{banner_uncropped_thumbnail_file_name}"
             uid: "banner_uncropped"
         variables:
-          defined_music_video_title: >-
-            { %get_music_video_title( %array_at(music_videos_list_raw, 
+          metadata_key: "{ %get_key_by_idx(0) }"
+          metadata_0: "{ %get_metadata_i_by_idx(0, 0, metadata_0_default) }"
+          metadata_1: "{ %get_metadata_i_by_idx(0, 1, metadata_1_default) }"
+          metadata_2: "{ %get_metadata_i_by_idx(0, 2, metadata_2_default) }"
+          metadata_3: "{ %get_metadata_i_by_idx(0, 3, metadata_3_default) }"
+          metadata_4: "{ %get_metadata_i_by_idx(0, 4, metadata_4_default) }"
+      - url: "{ %get_url_by_idx(1) }"
+        variables:
+          metadata_key: "{ %get_key_by_idx(1) }"
+          metadata_0: "{ %get_metadata_i_by_idx(0, 0, metadata_0_default) }"
+          metadata_1: "{ %get_metadata_i_by_idx(0, 1, metadata_1_default) }"
+          metadata_2: "{ %get_metadata_i_by_idx(0, 2, metadata_2_default) }"
+          metadata_3: "{ %get_metadata_i_by_idx(0, 3, metadata_3_default) }"
+          metadata_4: "{ %get_metadata_i_by_idx(0, 4, metadata_4_default) }"
 
   "Jellyfin Music Videos with Extras":
     preset:
