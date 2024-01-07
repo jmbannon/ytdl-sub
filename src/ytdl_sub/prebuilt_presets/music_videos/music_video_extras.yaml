@@ -98,6 +98,24 @@ presets:
           )
         }
 
+      "%get_list_metadata_field": >-
+        {
+          %map_get(
+            %array_at( list_metadata, $0, {} ),
+            $1,
+            $2
+          )
+        }
+
+      "%get_type_by_idx": >-
+        { %get_list_metadata_field($0, "type", null) }
+      "%get_url_by_idx": >-
+        { %get_list_metadata_field($0, "url", null) }
+      "%get_title_by_idx": >-
+        { %get_list_metadata_field($0, "title", title) }
+      "%get_year_by_idx": >-
+        { %get_list_metadata_field($0, "year", upload_year) }
+
     download:
       - url: >-
           { %map_get( %array_at( list_metadata, 0 ), "url" }
