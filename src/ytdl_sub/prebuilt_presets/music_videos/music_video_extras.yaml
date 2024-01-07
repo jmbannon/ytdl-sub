@@ -25,14 +25,22 @@ presets:
 
     overrides:
 
+      # Splits metadata values from (TODO: allow any whitespace between | )
+      # Key:
+      #   - metadata_0 | url
+      #   - metadata_0 | metadata_1 | url
       "%get_value_split": >-
         { %split($0, " | ") }
+
+      # Gets the size of the metadata split
       "%get_value_size": >-
         { %array_size( %get_value_split($0) ) }
 
+      # Gets the URL from the metadata, will always be the last one
       "%get_value_url": >-
         { %array_at( %get_value_split($0), -1 ) }
 
+      # gets metadata_i if present, otherwise returns null
       "%get_value_metadata_i": >-
         {
           %if(
@@ -42,6 +50,7 @@ presets:
           )
         }
 
+      # For each value under a key, build this map allowing up to 5 metadata values
       "%get_value_metadata_map": >-
         {
           {
@@ -55,9 +64,11 @@ presets:
           }
         }
 
+      # TODO: Have this support single-string values
       "%get_value_metadata_map_outer": >-
         { %array_apply_fixed( $1, $0, %get_value_metadata_map ) }
 
+      # Build an array of metadata maps from every key in the subscription_map
       subscription_list_of_maps: >-
         {
           %array_flatten(
