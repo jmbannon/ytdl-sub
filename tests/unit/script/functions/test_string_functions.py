@@ -1,3 +1,6 @@
+from typing import List
+from typing import Optional
+
 import pytest
 from unit.script.conftest import single_variable_output
 
@@ -113,4 +116,22 @@ class TestNumericFunctions:
     )
     def test_contains(self, value, expected_output):
         output = single_variable_output(f"{{%contains('a brown dog', '{value}')}}")
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "input_string, split, max_split, expected_output",
+        [
+            ("no splits", " | ", None, ["no splits"]),
+            ("one | split", " | ", None, ["one", "split"]),
+            ("max | split | one", " | ", 1, ["max", "split | one"]),
+        ],
+    )
+    def test_split(
+        self, input_string: str, split: str, max_split: Optional[int], expected_output: List[str]
+    ):
+        if max_split:
+            output = single_variable_output(f"{{%split('{input_string}', '{split}', {max_split})}}")
+        else:
+            output = single_variable_output(f"{{%split('{input_string}', '{split}')}}")
+
         assert output == expected_output

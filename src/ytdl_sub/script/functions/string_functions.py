@@ -1,5 +1,6 @@
 from typing import Optional
 
+from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
@@ -79,6 +80,22 @@ class StringFunctions:
             return String(string.value.replace(old.value, new.value, count.value))
 
         return String(string.value.replace(old.value, new.value))
+
+    @staticmethod
+    def split(string: String, sep: String, max_split: Optional[Integer] = None) -> Array:
+        """
+        :description:
+          Splits the input string into multiple strings.
+        """
+        if max_split is not None:
+            return Array(
+                [
+                    String(split_val)
+                    for split_val in string.value.split(sep=sep.value, maxsplit=max_split.value)
+                ]
+            )
+
+        return Array([String(split_val) for split_val in string.value.split(sep=sep.value)])
 
     @staticmethod
     def concat(*values: String) -> String:

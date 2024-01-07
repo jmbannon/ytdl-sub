@@ -565,6 +565,13 @@ slice
 :description:
   Returns the slice of the Array.
 
+split
+~~~~~
+:spec: ``split(string: String, sep: String, max_split: Optional[Integer]) -> Array``
+
+:description:
+  Splits the input string into multiple strings.
+
 string
 ~~~~~~
 :spec: ``string(value: AnyArgument) -> String``
