@@ -47,8 +47,8 @@ def test_main_exit_code(mock_sys_exit, return_code: int):
         main()
 
         assert mock_logger_cleanup.call_count == 1
-        assert mock_logger_cleanup.call_args.kwargs["cleanup_error_log"] == (
-            True if return_code == 0 else False
+        assert mock_logger_cleanup.call_args.kwargs["has_error"] == (
+            True if return_code != 0 else False
         )
 
 
