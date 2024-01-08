@@ -211,6 +211,14 @@ class Logger:
                 redirect_stream.flush()
 
     @classmethod
+    def _append_to_error_log(cls):
+        # Any time an exception occurs, dump all debug logs into the error log
+        with open(cls.debug_log_filename(), mode="r", encoding="utf-8") as debug_logs, open(
+            cls.error_log_filename(), mode="a", encoding="utf-8"
+        ) as error_logs:
+            error_logs.writelines(debug_logs.readlines())
+
+    @classmethod
     def log_exception(cls, exception: Exception, log_filepath: Optional[Path] = None):
         """
         Logs an exception based on the exception type. Will transfer all
@@ -248,14 +256,10 @@ class Logger:
                 log_filepath if log_filepath else Logger.error_log_filename(),
             )
 
-        # Any time an exception occurs, dump all debug logs into the error log
-        with open(cls.debug_log_filename(), mode="r", encoding="utf-8") as debug_logs, open(
-            cls.error_log_filename(), mode="a", encoding="utf-8"
-        ) as error_logs:
-            error_logs.writelines(debug_logs.readlines())
+        cls._append_to_error_log()
 
     @classmethod
-    def cleanup(cls, cleanup_error_log: bool = False):
+    def cleanup(cls, has_error: bool = False):
         """
         Cleans up debug log file left behind
         """
@@ -263,9 +267,11 @@ class Logger:
             for handler in logger.handlers:
                 handler.close()
 
-        cls._DEBUG_LOGGER_FILE.close()
-        FileHandler.delete(cls.debug_log_filename())
-
-        if cleanup_error_log:
+        if has_error:
+            cls._append_to_error_log()
+        else:
             cls._ERROR_LOG_FILE.close()
             FileHandler.delete(cls.error_log_filename())
+
+        cls._DEBUG_LOGGER_FILE.close()
+        FileHandler.delete(cls.debug_log_filename())

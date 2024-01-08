@@ -40,6 +40,10 @@ class MainArguments:
         long="--suppress-transaction-log",
         is_positional=True,
     )
+    MATCH = CLIArgument(
+        short="-m",
+        long="--match",
+    )
 
     @classmethod
     def all(cls) -> List[CLIArgument]:
@@ -54,6 +58,7 @@ class MainArguments:
             cls.LOG_LEVEL,
             cls.TRANSACTION_LOG,
             cls.SUPPRESS_TRANSACTION_LOG,
+            cls.MATCH,
         ]
 
     @classmethod
@@ -123,6 +128,16 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         action="store_true",
         help="do not output transaction logs to console or file",
         default=argparse.SUPPRESS if suppress_defaults else False,
+    )
+    arg_parser.add_argument(
+        MainArguments.MATCH.short,
+        MainArguments.MATCH.long,
+        dest="match",
+        nargs="+",
+        action="extend",
+        type=str,
+        help="match subscription names to one or more substrings, and only run those subscriptions",
+        default=argparse.SUPPRESS if suppress_defaults else [],
     )
 
 

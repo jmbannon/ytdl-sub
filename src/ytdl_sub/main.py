@@ -27,7 +27,7 @@ def main():
     """
     try:
         return_code = _main()
-        Logger.cleanup(cleanup_error_log=return_code == 0)
+        Logger.cleanup(has_error=return_code != 0)
         sys.exit(return_code)
     except Exception as exc:  # pylint: disable=broad-except
         Logger.log_exception(exception=exc)

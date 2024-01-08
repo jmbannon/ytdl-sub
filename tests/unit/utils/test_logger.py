@@ -111,8 +111,8 @@ class TestLogger:
         Logger.cleanup()
         assert not os.path.isfile(Logger._DEBUG_LOGGER_FILE.name)
 
-    @pytest.mark.parametrize("clean_error_log", [True, False])
-    def test_logger_can_be_cleaned_during_execution(self, clean_error_log: bool):
+    @pytest.mark.parametrize("has_error", [True, False])
+    def test_logger_can_be_cleaned_during_execution(self, has_error: bool):
         Logger._LOGGER_LEVEL = LoggerLevels.INFO
         logger = Logger.get(name="name_test")
 
@@ -133,11 +133,11 @@ class TestLogger:
             except ValueError as exc:
                 Logger.log_exception(exception=exc)
 
-            Logger.cleanup(cleanup_error_log=clean_error_log)
+            Logger.cleanup(has_error=has_error)
             assert not os.path.isfile(Logger.debug_log_filename())
 
-            assert clean_error_log == (not os.path.isfile(Logger.error_log_filename()))
-            if not clean_error_log:
+            assert not has_error == (not os.path.isfile(Logger.error_log_filename()))
+            if has_error:
                 with open(Logger.error_log_filename(), mode="r", encoding="utf-8") as err_file:
                     err_logs = err_file.readlines()
                     expected = [

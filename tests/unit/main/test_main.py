@@ -47,8 +47,8 @@ def test_main_exit_code(mock_sys_exit, return_code: int):
         main()
 
         assert mock_logger_cleanup.call_count == 1
-        assert mock_logger_cleanup.call_args.kwargs["cleanup_error_log"] == (
-            True if return_code == 0 else False
+        assert mock_logger_cleanup.call_args.kwargs["has_error"] == (
+            True if return_code != 0 else False
         )
 
 
@@ -107,6 +107,58 @@ def test_args_after_sub_work(mock_sys_exit, tv_show_config_path):
         assert mock_sub.call_count == 1
         assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
         assert mock_sub.call_args.kwargs["config"]._name == tv_show_config_path
+        assert mock_sub.call_args.kwargs["subscription_matches"] == []
+        assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
+
+
+def test_sub_match_arguments_before(mock_sys_exit, tv_show_config_path):
+    with mock_sys_exit(expected_exit_code=0), patch.object(
+        sys,
+        "argv",
+        [
+            "ytdl-sub",
+            "--match",
+            "testA",
+            "testB",
+            "-c",
+            tv_show_config_path,
+            "sub",
+            "--log-level",
+            "verbose",
+        ],
+    ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
+        main()
+
+        assert mock_sub.call_count == 1
+        assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
+        assert mock_sub.call_args.kwargs["config"]._name == tv_show_config_path
+        assert mock_sub.call_args.kwargs["subscription_matches"] == ["testA", "testB"]
+        assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
+
+
+def test_sub_match_arguments_after_many(mock_sys_exit, tv_show_config_path):
+    with mock_sys_exit(expected_exit_code=0), patch.object(
+        sys,
+        "argv",
+        [
+            "ytdl-sub",
+            "-c",
+            tv_show_config_path,
+            "sub",
+            "--log-level",
+            "verbose",
+            "--match",
+            "testA",
+            "--match",
+            "testB",
+        ],
+    ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
+        main()
+
+        assert mock_sub.call_count == 1
+        assert mock_sub.call_args.kwargs["subscription_paths"] == ["subscriptions.yaml"]
+        assert mock_sub.call_args.kwargs["config"]._name == tv_show_config_path
+        assert mock_sub.call_args.kwargs["subscription_matches"] == ["testA", "testB"]
         assert Logger._LOGGER_LEVEL == LoggerLevels.VERBOSE
 
 
