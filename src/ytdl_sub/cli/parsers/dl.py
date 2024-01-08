@@ -9,6 +9,7 @@ from typing import Tuple
 from mergedeep import mergedeep
 
 from ytdl_sub.cli.parsers.main import MainArguments
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.utils.exceptions import InvalidDlArguments
 
@@ -247,3 +248,12 @@ class DownloadArgsParser:
         """
         hash_string = str(sorted(self._unknown_arguments))
         return hashlib.sha256(hash_string.encode()).hexdigest()[-8:]
+
+    @classmethod
+    def from_dl_override(cls, override: str, config: ConfigFile) -> "DownloadArgsParser":
+        """
+        Create a DownloadArgsParser from a sub --override argument value
+        """
+        return DownloadArgsParser(
+            extra_arguments=override.split(), config_options=config.config_options
+        )

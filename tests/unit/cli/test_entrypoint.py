@@ -53,6 +53,7 @@ def test_subscription_logs_write_to_file(
                 config=config,
                 subscription_paths=subscription_paths,
                 subscription_matches=match,
+                subscription_override_dict={},
                 update_with_info_json=False,
                 dry_run=dry_run,
             )

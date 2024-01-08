@@ -3,6 +3,9 @@ from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Optional
+
+from mergedeep import mergedeep
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.preset import Preset
@@ -69,7 +72,10 @@ class Subscription(SubscriptionDownload):
 
     @classmethod
     def from_file_path(
-        cls, config: ConfigFile, subscription_path: str | Path
+        cls,
+        config: ConfigFile,
+        subscription_path: str | Path,
+        subscription_override_dict: Optional[Dict] = None,
     ) -> List["Subscription"]:
         """
         Loads subscriptions from a file.
@@ -80,6 +86,8 @@ class Subscription(SubscriptionDownload):
             Validated instance of the config
         subscription_path:
             File path to the subscription yaml file
+        subscription_override_dict:
+            Optional dict containing overrides to every subscription
 
         Returns
         -------
@@ -122,6 +130,13 @@ class Subscription(SubscriptionDownload):
         )
 
         for subscription_key, subscription_object in subscriptions_dicts.items():
+            # Hard-override subscriptions here
+            mergedeep.merge(
+                subscription_object,
+                subscription_override_dict or {},
+                strategy=mergedeep.Strategy.ADDITIVE,
+            )
+
             subscriptions.append(
                 cls.from_dict(
                     config=config,
