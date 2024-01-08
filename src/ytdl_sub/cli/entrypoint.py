@@ -3,6 +3,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Dict
 from typing import List
 from typing import Optional
 
@@ -70,6 +71,7 @@ def _download_subscriptions_from_yaml_files(
     config: ConfigFile,
     subscription_paths: List[str],
     subscription_matches: List[str],
+    subscription_override_dict: Dict,
     update_with_info_json: bool,
     dry_run: bool,
 ) -> List[Subscription]:
@@ -102,7 +104,11 @@ def _download_subscriptions_from_yaml_files(
 
     # Load all the subscriptions first to perform all validation before downloading
     for path in subscription_paths:
-        subscriptions += Subscription.from_file_path(config=config, subscription_path=path)
+        subscriptions += Subscription.from_file_path(
+            config=config,
+            subscription_path=path,
+            subscription_override_dict=subscription_override_dict,
+        )
 
     if subscriptions and subscription_matches:
         logger.info("Filtering subscriptions by name based on --match arguments")
@@ -233,11 +239,18 @@ def main() -> List[Subscription]:
                     "full backup before usage. You have been warned!",
                 )
 
+            subscription_override_dict = {}
+            if args.dl_override:
+                subscription_override_dict = DownloadArgsParser.from_dl_override(
+                    override=args.dl_override, config=config
+                ).to_subscription_dict()
+
             logger.info("Validating subscriptions...")
             subscriptions = _download_subscriptions_from_yaml_files(
                 config=config,
                 subscription_paths=args.subscription_paths,
                 subscription_matches=args.match,
+                subscription_override_dict=subscription_override_dict,
                 update_with_info_json=args.update_with_info_json,
                 dry_run=args.dry_run,
             )

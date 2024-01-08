@@ -199,3 +199,26 @@ class TestPlaylist:
                     dry_run=dry_run,
                     expected_download_summary_file_name="youtube/test_playlist.json",
                 )
+
+    def test_playlist_download_from_cli_sub_with_override_arg(
+        self,
+        preset_dict_to_subscription_yaml_generator,
+        playlist_preset_dict,
+        output_directory,
+    ):
+        # TODO: Fix CLI parsing on windows when dealing with spaces
+        if IS_WINDOWS:
+            return
+
+        # No config needed when using only prebuilt presets
+        with preset_dict_to_subscription_yaml_generator(
+            subscription_name="music_video_playlist_test", preset_dict=playlist_preset_dict
+        ) as subscription_path:
+            args = (
+                f"--dry-run sub '{subscription_path}' --dl-override '--date_range.after 20240101'"
+            )
+
+            subscriptions = mock_run_from_cli(args=args)
+
+            assert len(subscriptions) == 1
+            assert subscriptions[0].transaction_log.is_empty

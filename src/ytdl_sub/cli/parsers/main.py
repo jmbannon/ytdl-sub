@@ -157,6 +157,10 @@ class SubArguments:
         short="-u",
         long="--update-with-info-json",
     )
+    OVERRIDE = CLIArgument(
+        short="-o",
+        long="--dl-override",
+    )
 
 
 subscription_parser = subparsers.add_parser("sub")
@@ -174,6 +178,13 @@ subscription_parser.add_argument(
     action="store_true",
     help="update all subscriptions with the current config using info.json files",
     default=False,
+)
+subscription_parser.add_argument(
+    SubArguments.OVERRIDE.short,
+    SubArguments.OVERRIDE.long,
+    type=str,
+    help="override all subscription config values using `dl` syntax, "
+    "i.e. --dl-override='--ytdl_options.max_downloads 3'",
 )
 
 ###################################################################################################
