@@ -23,7 +23,7 @@ from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
 @pytest.mark.parametrize("dry_run", [True, False])
 @pytest.mark.parametrize("mock_success_output", [True, False])
 @pytest.mark.parametrize("keep_successful_logs", [True, False])
-@pytest.mark.parametrize("match", [[], ["Rick Astley", "Michael Jackson"]])
+@pytest.mark.parametrize("match", [[], ["Rick", "Michael"]])
 def test_subscription_logs_write_to_file(
     persist_logs_directory: str,
     persist_logs_config_factory: Callable,
@@ -36,7 +36,7 @@ def test_subscription_logs_write_to_file(
 ):
     subscription_names = ["Rick Astley", "Michael Jackson", "Eric Clapton"]
     if match:
-        subscription_names = match
+        subscription_names = ["Rick Astley", "Michael Jackson"]
     num_runs = 2
 
     config = persist_logs_config_factory(keep_successful_logs=keep_successful_logs)
