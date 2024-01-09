@@ -144,9 +144,7 @@ class EntryParent(BaseEntry):
         return self.uid == playlist_id or any(item in child for child in self.parent_children())
 
     @classmethod
-    def _get_disconnected_root_parent(
-        cls, url: str, parents: List["EntryParent"]
-    ) -> Optional["EntryParent"]:
+    def _get_disconnected_root_parent(cls, parents: List["EntryParent"]) -> Optional["EntryParent"]:
         """
         Sometimes the root-level parent is disconnected via playlist_ids Find it if it exists.
         """
@@ -200,7 +198,7 @@ class EntryParent(BaseEntry):
             return []
 
         # If a disconnected root parent exists, connect it here
-        if (root_parent := cls._get_disconnected_root_parent(url, parents)) is not None:
+        if (root_parent := cls._get_disconnected_root_parent(parents)) is not None:
             parents.remove(root_parent)
             root_parent._parent_children = parents
             parents = [root_parent]
