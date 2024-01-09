@@ -178,7 +178,6 @@ class EntryParent(BaseEntry):
     @classmethod
     def from_entry_dicts(
         cls,
-        url: str,
         entry_dicts: List[Dict],
         working_directory: str,
         include_sibling_metadata: bool,

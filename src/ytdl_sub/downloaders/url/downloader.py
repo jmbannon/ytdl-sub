@@ -404,7 +404,6 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             )
 
         parents = EntryParent.from_entry_dicts(
-            url=url,
             entry_dicts=entry_dicts,
             working_directory=self.working_directory,
             include_sibling_metadata=include_sibling_metadata,
