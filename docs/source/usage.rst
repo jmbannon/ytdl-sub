@@ -77,7 +77,7 @@ Using the command:
       --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 
 See how to shorten commands using
-`download aliases <http://localhost:63342/ytdl-sub/docs/build/html/config_reference/config_yaml.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
+`download aliases <https://ytdl-sub.readthedocs.io/en/latest/config_reference/config_yaml.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
 
 View Options
 -----------------
