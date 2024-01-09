@@ -151,15 +151,10 @@ class EntryParent(BaseEntry):
         Sometimes the root-level parent is disconnected via playlist_ids Find it if it exists.
         """
 
-        def _url_matches(parent: "EntryParent"):
-            return parent.webpage_url in url or url in parent.webpage_url
-
         def _uid_is_uploader_id(parent: "EntryParent"):
             return parent.uid == parent.uploader_id
 
-        top_level_parents = [
-            parent for parent in parents if parent.num_children() == 0 and _url_matches(parent)
-        ]
+        top_level_parents = [parent for parent in parents if parent.num_children() == 0]
 
         # If more than 1 parent exists, assume the uploader_id is the root parent
         if len(top_level_parents) > 1:
