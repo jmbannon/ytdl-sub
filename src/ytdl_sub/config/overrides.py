@@ -56,7 +56,7 @@ class Overrides(DictFormatterValidator, Scriptable):
 
     def __init__(self, name, value):
         DictFormatterValidator.__init__(self, name, value)
-        Scriptable.__init__(self)
+        Scriptable.__init__(self, initialize_base_script=True)
 
         for key in self._keys:
             self.ensure_variable_name_valid(key)

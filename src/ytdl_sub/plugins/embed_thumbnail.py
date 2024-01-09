@@ -13,7 +13,7 @@ from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.validators import BoolValidator
 
-logger = Logger.get("embed_thumbnail")
+logger = Logger.get("embed-thumbnail")
 
 
 class EmbedThumbnailOptions(BoolValidator, OptionsValidator):

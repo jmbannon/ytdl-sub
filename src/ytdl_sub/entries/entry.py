@@ -44,12 +44,6 @@ class Entry(BaseEntry, Scriptable):
         BaseEntry.__init__(self, entry_dict=entry_dict, working_directory=working_directory)
         Scriptable.__init__(self)
 
-    def _add_entry_kwargs_to_script(self) -> None:
-        # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
-        self.unresolvable.remove(v.entry_metadata.variable_name)
-        self.script.add({v.entry_metadata.variable_name: ScriptUtils.to_script(self._kwargs)})
-        self.update_script()
-
     def initialize_script(self, other: Optional[Scriptable] = None) -> "Entry":
         """
         Initializes the entry script using the Overrides script, then adding
@@ -57,11 +51,19 @@ class Entry(BaseEntry, Scriptable):
         """
         # Overrides contains added variables that are unresolvable, add them here
         if other:
-            self.script = copy.deepcopy(other.script)
-            self.unresolvable = copy.deepcopy(other.unresolvable)
+            self._script = copy.deepcopy(other.script)
+            self._unresolvable = copy.deepcopy(other.unresolvable)
+        else:
+            self.initialize_base_script()
 
         self._add_entry_kwargs_to_script()
         return self
+
+    def _add_entry_kwargs_to_script(self) -> None:
+        # Add entry metadata, but avoid the `.add()` helper since it also adds sanitized
+        self.unresolvable.remove(v.entry_metadata.variable_name)
+        self.script.add({v.entry_metadata.variable_name: ScriptUtils.to_script(self._kwargs)})
+        self.update_script()
 
     def get(self, variable: Variable, expected_type: Type[TypeT]) -> TypeT:
         """
@@ -113,7 +115,8 @@ class Entry(BaseEntry, Scriptable):
         """
         ext = self.try_get(v.ext, str) or self._kwargs[v.ext.metadata_key]
         for possible_ext in [ext, "mkv"]:
-            file_path = str(Path(self.working_directory()) / f"{self.uid}.{possible_ext}")
+            file_name = self.base_filename(ext=possible_ext)
+            file_path = str(Path(self.working_directory()) / file_name)
             if os.path.isfile(file_path):
                 return possible_ext
 
@@ -125,7 +128,7 @@ class Entry(BaseEntry, Scriptable):
         -------
         The entry's file name
         """
-        return f"{self.uid}.{self.ext}"
+        return self.base_filename(ext=self.ext)
 
     def get_download_file_path(self) -> str:
         """Returns the entry's file path to where it was downloaded"""
@@ -137,7 +140,7 @@ class Entry(BaseEntry, Scriptable):
         -------
         The download thumbnail's file name
         """
-        return f"{self.uid}.{self.get(v.thumbnail_ext, str)}"
+        return self.base_filename(ext=self.get(v.thumbnail_ext, str))
 
     def get_download_thumbnail_path(self) -> str:
         """Returns the entry's thumbnail's file path to where it was downloaded"""
@@ -155,7 +158,10 @@ class Entry(BaseEntry, Scriptable):
             possible_thumbnail_exts.add(thumbnail["url"].split(".")[-1])
 
         for ext in possible_thumbnail_exts:
-            possible_thumbnail_path = str(Path(self.working_directory()) / f"{self.uid}.{ext}")
+            possible_thumbnail_filename = self.base_filename(ext=ext)
+            possible_thumbnail_path = str(
+                Path(self.working_directory()) / possible_thumbnail_filename
+            )
             if os.path.isfile(possible_thumbnail_path):
                 return possible_thumbnail_path
 
@@ -202,7 +208,7 @@ class Entry(BaseEntry, Scriptable):
         # HACK: yt-dlp does not record extracted/converted extensions anywhere. If the file is not
         # found, try it using all possible extensions
         if not file_exists:
-            for ext in AUDIO_CODEC_EXTS.union(VIDEO_CODEC_EXTS):
+            for ext in AUDIO_CODEC_EXTS | VIDEO_CODEC_EXTS:
                 if os.path.isfile(self.get_download_file_path().removesuffix(self.ext) + ext):
                     file_exists = True
                     break

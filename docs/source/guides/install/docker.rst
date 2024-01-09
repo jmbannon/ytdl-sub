@@ -17,14 +17,14 @@ The ``ytdl-sub`` Docker images use :lsio:`LSIO-based images <\ >` and install yt
 GUI Image
 ---------
 
-The GUI image uses LSIO's :lsio-gh:`docker-code-server image` for its base image. More info on other code-server environment variables can be found within its documentation.
+The GUI image uses LSIO's :lsio-gh:`docker-code-server image <\ >` for its base image. More info on other code-server environment variables can be found within its documentation.
 
-After starting, code-server will be running at http://localhost:8443. Open this page in a browser to access and interact with ``ytdl-sub``.
+After starting, the code-server will be running at http://localhost:8443. Open this page in a browser to access and interact with ``ytdl-sub``.
 
 Headless Image
 --------------
 
-The headless image uses LSIO's :lsio-gh:`docker-baseimage-alpine image` for its base image. Execute the following command to access and interact with ``ytdl-sub``:
+The headless image uses LSIO's :lsio-gh:`docker-baseimage-alpine image <\ >` for its base image. Execute the following command to access and interact with ``ytdl-sub``:
 
 .. code-block:: bash
 

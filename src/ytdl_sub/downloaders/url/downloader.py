@@ -112,18 +112,18 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
         """
-        if playlist_metadata := entry.get(v.playlist_metadata, dict):
-            self._download_parent_thumbnails(
-                thumbnail_list_info=collection_url.playlist_thumbnails,
-                entry=entry,
-                parent=EntryParent(playlist_metadata, working_directory=self.working_directory),
-            )
-
         if source_metadata := entry.get(v.source_metadata, dict):
             self._download_parent_thumbnails(
                 thumbnail_list_info=collection_url.source_thumbnails,
                 entry=entry,
                 parent=EntryParent(source_metadata, working_directory=self.working_directory),
+            )
+
+        if playlist_metadata := entry.get(v.playlist_metadata, dict):
+            self._download_parent_thumbnails(
+                thumbnail_list_info=collection_url.playlist_thumbnails,
+                entry=entry,
+                parent=EntryParent(playlist_metadata, working_directory=self.working_directory),
             )
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
@@ -349,39 +349,43 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         )
 
     def _iterate_child_entries(
-        self, url_validator: UrlValidator, entries: List[Entry]
+        self, entries: List[Entry], download_reversed: bool
     ) -> Iterator[Entry]:
-        entries_to_iterate = entries
-        if url_validator.download_reverse:
-            entries_to_iterate = reversed(entries)
+        # Iterate a list of entries, and delete the entries after yielding
+        indices = list(range(len(entries)))
+        if download_reversed:
+            indices = reversed(indices)
 
-        for entry in entries_to_iterate:
+        for idx in indices:
             self._url_state.entries_downloaded += 1
 
-            if self._is_downloaded(entry):
+            if self._is_downloaded(entries[idx]):
                 download_logger.info(
                     "Already downloaded entry %d/%d: %s",
                     self._url_state.entries_downloaded,
                     self._url_state.entries_total,
-                    entry.title,
+                    entries[idx].title,
                 )
+                del entries[idx]
                 continue
 
-            yield entry
-            self._mark_downloaded(entry)
+            yield entries[idx]
+            self._mark_downloaded(entries[idx])
+
+            del entries[idx]
 
     def _iterate_parent_entry(
-        self, url_validator: UrlValidator, parent: EntryParent
+        self, parent: EntryParent, download_reversed: bool
     ) -> Iterator[Entry]:
         for entry_child in self._iterate_child_entries(
-            url_validator=url_validator, entries=parent.entry_children()
+            entries=parent.entry_children(), download_reversed=download_reversed
         ):
             yield entry_child
 
         # Recursion the parent's parent entries
         for parent_child in reversed(parent.parent_children()):
             for entry_child in self._iterate_parent_entry(
-                url_validator=url_validator, parent=parent_child
+                parent=parent_child, download_reversed=download_reversed
             ):
                 yield entry_child
 
@@ -415,9 +419,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
 
     def _iterate_entries(
         self,
-        url_validator: UrlValidator,
         parents: List[EntryParent],
         orphans: List[Entry],
+        download_reversed: bool,
     ) -> Iterator[Entry]:
         """
         Downloads the leaf entries from EntryParent trees
@@ -426,11 +430,13 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         with self._separate_download_archives(clear_info_json_files=True):
             for parent in parents:
                 for entry_child in self._iterate_parent_entry(
-                    url_validator=url_validator, parent=parent
+                    parent=parent, download_reversed=download_reversed
                 ):
                     yield entry_child
 
-            for orphan in self._iterate_child_entries(url_validator=url_validator, entries=orphans):
+            for orphan in self._iterate_child_entries(
+                entries=orphans, download_reversed=download_reversed
+            ):
                 yield orphan
 
     def download_metadata(self) -> Iterable[Entry]:
@@ -454,7 +460,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 "Beginning downloads for %s", self.overrides.apply_formatter(collection_url.url)
             )
             for entry in self._iterate_entries(
-                url_validator=collection_url, parents=parents, orphans=orphan_entries
+                parents=parents,
+                orphans=orphan_entries,
+                download_reversed=collection_url.download_reverse,
             ):
                 entry.initialize_script(self.overrides).add(
                     {v.ytdl_sub_input_url: self.overrides.apply_formatter(collection_url.url)}

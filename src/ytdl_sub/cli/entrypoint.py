@@ -3,6 +3,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Dict
 from typing import List
 from typing import Optional
 
@@ -67,7 +68,12 @@ def _maybe_write_subscription_log_file(
 
 
 def _download_subscriptions_from_yaml_files(
-    config: ConfigFile, subscription_paths: List[str], update_with_info_json: bool, dry_run: bool
+    config: ConfigFile,
+    subscription_paths: List[str],
+    subscription_matches: List[str],
+    subscription_override_dict: Dict,
+    update_with_info_json: bool,
+    dry_run: bool,
 ) -> List[Subscription]:
     """
     Downloads all subscriptions from one or many subscription yaml files.
@@ -78,6 +84,8 @@ def _download_subscriptions_from_yaml_files(
         Configuration file
     subscription_paths
         Path to subscription files to download
+    subscription_matches
+        Optional list of substrings to match subscription names to (only run if matched)
     update_with_info_json
         Whether to actually download or update using existing info json
     dry_run
@@ -96,7 +104,17 @@ def _download_subscriptions_from_yaml_files(
 
     # Load all the subscriptions first to perform all validation before downloading
     for path in subscription_paths:
-        subscriptions += Subscription.from_file_path(config=config, subscription_path=path)
+        subscriptions += Subscription.from_file_path(
+            config=config,
+            subscription_path=path,
+            subscription_override_dict=subscription_override_dict,
+        )
+
+    if subscriptions and subscription_matches:
+        logger.info("Filtering subscriptions by name based on --match arguments")
+        subscriptions = [
+            sub for sub in subscriptions if any(match in sub.name for match in subscription_matches)
+        ]
 
     for subscription in subscriptions:
         with subscription.exception_handling():
@@ -119,7 +137,7 @@ def _download_subscriptions_from_yaml_files(
             exception=subscription.exception,
         )
 
-        Logger.cleanup(cleanup_error_log=False)
+        Logger.cleanup(has_error=False)
         gc.collect()  # Garbage collect after each subscription download
 
     return subscriptions
@@ -221,10 +239,18 @@ def main() -> List[Subscription]:
                     "full backup before usage. You have been warned!",
                 )
 
+            subscription_override_dict = {}
+            if args.dl_override:
+                subscription_override_dict = DownloadArgsParser.from_dl_override(
+                    override=args.dl_override, config=config
+                ).to_subscription_dict()
+
             logger.info("Validating subscriptions...")
             subscriptions = _download_subscriptions_from_yaml_files(
                 config=config,
                 subscription_paths=args.subscription_paths,
+                subscription_matches=args.match,
+                subscription_override_dict=subscription_override_dict,
                 update_with_info_json=args.update_with_info_json,
                 dry_run=args.dry_run,
             )

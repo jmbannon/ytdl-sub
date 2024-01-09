@@ -216,11 +216,14 @@ class YTDLP:
         **kwargs
             arguments passed directory to YoutubeDL extract_info
         """
+        parent_dict: Dict = {}
         try:
             with cls._listen_and_log_downloaded_info_json(
                 working_directory=working_directory, log_prefix=log_prefix_on_info_json_dl
             ):
-                _ = cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
+                parent_dict = cls.extract_info(
+                    ytdl_options_overrides=ytdl_options_overrides, **kwargs
+                )
         except RejectedVideoReached:
             cls.logger.debug(
                 "RejectedVideoReached, stopping additional downloads "
@@ -233,5 +236,20 @@ class YTDLP:
             )
         except MaxDownloadsReached:
             cls.logger.info("MaxDownloadsReached, stopping additional downloads.")
+
+        # For YouTube playlists in particular, channel metadata is not fetched. Attempt to get
+        # channel metadata via grabbing uploader_url info json a max of 3 times
+        current_iter = 0
+        url = kwargs.get("url")
+        uploader_url = parent_dict.get("uploader_url")
+        while current_iter < 3 and uploader_url and url != uploader_url:
+            cls.logger.debug("Attempting to get parent metadata from URL %s", uploader_url)
+            parent_dict = cls.extract_info(
+                ytdl_options_overrides=ytdl_options_overrides | {"playlist_items": "0:0"},
+                url=uploader_url,
+            )
+            current_iter += 1
+            url = uploader_url
+            uploader_url = parent_dict.get("uploader_url")
 
         return cls._get_entry_dicts_from_info_json_files(working_directory=working_directory)

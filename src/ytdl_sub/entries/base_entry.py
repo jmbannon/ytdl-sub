@@ -8,6 +8,8 @@ from typing import Type
 from typing import TypeVar
 from typing import final
 
+from yt_dlp.utils import sanitize_filename
+
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 
@@ -44,6 +46,19 @@ class BaseEntry(ABC):
             The entry's unique ID
         """
         return str(self._kwargs[v.uid.metadata_key])
+
+    @property
+    def uid_sanitized(self) -> str:
+        """
+        Sanitized version, used in filenames
+        """
+        return sanitize_filename(self.uid)
+
+    def base_filename(self, ext: str):
+        """
+        The base filename of all yt-dlp downloaded entry files
+        """
+        return f"{self.uid_sanitized}.{ext}"
 
     @property
     def download_archive_extractor(self) -> str:
@@ -101,30 +116,13 @@ class BaseEntry(ABC):
         """
         return self._working_directory
 
-    def add_kwargs(self, variables_to_add: Dict[str, Any]) -> "BaseEntry":
-        """
-        Adds variables to kwargs. Use with caution since yt-dlp data can be overwritten.
-        Plugins should use ``add_variables``.
-
-        Parameters
-        ----------
-        variables_to_add
-            Variables to add to kwargs
-
-        Returns
-        -------
-        self
-        """
-        self._kwargs = dict(self._kwargs, **variables_to_add)
-        return self
-
     def get_download_info_json_name(self) -> str:
         """
         Returns
         -------
         The download info json's file name
         """
-        return f"{self.uid}.{self.info_json_ext}"
+        return self.base_filename(ext=self.info_json_ext)
 
     def get_download_info_json_path(self) -> str:
         """

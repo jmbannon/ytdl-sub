@@ -38,10 +38,11 @@ array_apply_fixed
 
 array_at
 ~~~~~~~~
-:spec: ``array_at(array: Array, idx: Integer) -> AnyArgument``
+:spec: ``array_at(array: Array, idx: Integer, default: Optional[AnyArgument]) -> AnyArgument``
 
 :description:
-  Return the element in the Array at index ``idx``.
+  Return the element in the Array at index ``idx``. If ``idx`` exceeds the array length,
+  either return ``default`` if provided or throw an error.
 
 array_contains
 ~~~~~~~~~~~~~~
@@ -224,6 +225,27 @@ xor
 
 Conditional Functions
 ---------------------
+
+elif
+~~~~
+:spec: ``elif(if_elif_else: AnyArgument, ...) -> AnyArgument``
+
+:description:
+  Conditional ``if`` statement that is capable of doing else-ifs (``elif``) via
+  adjacent arguments. It is expected for there to be an odd number of arguments >= 3 to
+  supply at least one conditional and an else.
+:usage:
+
+  .. code-block:: python
+
+     %elif(
+        condition1,
+        return1,
+        condition2,
+        return2,
+        ...
+        else_return
+     )
 
 if
 ~~
@@ -542,6 +564,13 @@ slice
 
 :description:
   Returns the slice of the Array.
+
+split
+~~~~~
+:spec: ``split(string: String, sep: String, max_split: Optional[Integer]) -> Array``
+
+:description:
+  Splits the input string into multiple strings.
 
 string
 ~~~~~~

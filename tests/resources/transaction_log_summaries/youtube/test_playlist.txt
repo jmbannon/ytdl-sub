@@ -2,6 +2,8 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-music_video_playlist_test-download-archive.json
+  fanart.jpg
+  poster.jpg
   season01-poster.jpg
   tvshow.nfo
     NFO tags:
