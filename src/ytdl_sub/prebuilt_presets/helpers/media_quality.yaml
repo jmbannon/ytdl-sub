@@ -5,7 +5,7 @@ presets:
     ytdl_options:
       merge_output_format: "mp4"
 
-  "Best AV Quality":
+  "Best Video Quality":
     preset: 
       - best_video_quality
 

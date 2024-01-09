@@ -6,7 +6,7 @@ presets:
     output_options:
       output_directory: "{tv_show_directory}/{tv_show_name_sanitized}"
       file_name: "{episode_file_path}.{ext}"
-      thumbnail_name: "{episode_file_path}-thumb.jpg"
+      thumbnail_name: "{thumbnail_file_name}"
       info_json_name: "{episode_file_path}.{info_json_ext}"
       maintain_download_archive: True
 
@@ -43,6 +43,7 @@ presets:
       episode_date_standardized: "{upload_date_standardized}"
       episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {file_title}"
       episode_file_path: "{season_directory_name_sanitized}/{episode_file_name_sanitized}"
+      thumbnail_file_name: "{episode_file_path}-thumb.jpg"
 
   _episode_video_tags:
     video_tags:
