@@ -20,6 +20,11 @@ presets:
             uid: "avatar_uncropped"
           - name: "{banner_uncropped_thumbnail_file_name}"
             uid: "banner_uncropped"
+        source_thumbnails:
+          - name: "{avatar_uncropped_thumbnail_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{banner_uncropped_thumbnail_file_name}"
+            uid: "banner_uncropped"
       - url: "{url2}"
       - url: "{url3}"
       - url: "{url4}"
