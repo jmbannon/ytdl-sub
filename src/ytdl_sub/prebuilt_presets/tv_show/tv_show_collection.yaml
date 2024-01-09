@@ -34,6 +34,11 @@ presets:
             uid: "avatar_uncropped"
           - name: "{tv_show_fanart_file_name}"
             uid: "banner_uncropped"
+        source_thumbnails:
+          - name: "{tv_show_poster_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{tv_show_fanart_file_name}"
+            uid: "banner_uncropped"
 
     output_directory_nfo_tags:
       tags:

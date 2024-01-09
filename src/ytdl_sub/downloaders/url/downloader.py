@@ -112,18 +112,18 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
         directory, run this function. This lets the downloader add any extra files directly to the
         output directory, for things like YT channel image, banner.
         """
-        if playlist_metadata := entry.get(v.playlist_metadata, dict):
-            self._download_parent_thumbnails(
-                thumbnail_list_info=collection_url.playlist_thumbnails,
-                entry=entry,
-                parent=EntryParent(playlist_metadata, working_directory=self.working_directory),
-            )
-
         if source_metadata := entry.get(v.source_metadata, dict):
             self._download_parent_thumbnails(
                 thumbnail_list_info=collection_url.source_thumbnails,
                 entry=entry,
                 parent=EntryParent(source_metadata, working_directory=self.working_directory),
+            )
+
+        if playlist_metadata := entry.get(v.playlist_metadata, dict):
+            self._download_parent_thumbnails(
+                thumbnail_list_info=collection_url.playlist_thumbnails,
+                entry=entry,
+                parent=EntryParent(playlist_metadata, working_directory=self.working_directory),
             )
 
     def modify_entry(self, entry: Entry) -> Optional[Entry]:
