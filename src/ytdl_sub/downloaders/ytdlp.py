@@ -220,7 +220,6 @@ class YTDLP:
             with cls._listen_and_log_downloaded_info_json(
                 working_directory=working_directory, log_prefix=log_prefix_on_info_json_dl
             ):
-                # TODO: Fetch parent_dict if it breaks
                 cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
             cls.logger.debug(
