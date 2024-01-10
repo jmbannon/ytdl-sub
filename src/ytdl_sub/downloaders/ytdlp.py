@@ -216,15 +216,12 @@ class YTDLP:
         **kwargs
             arguments passed directory to YoutubeDL extract_info
         """
-        parent_dict: Dict = {}
         try:
             with cls._listen_and_log_downloaded_info_json(
                 working_directory=working_directory, log_prefix=log_prefix_on_info_json_dl
             ):
                 # TODO: Fetch parent_dict if it breaks
-                parent_dict = cls.extract_info(
-                    ytdl_options_overrides=ytdl_options_overrides, **kwargs
-                )
+                cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
             cls.logger.debug(
                 "RejectedVideoReached, stopping additional downloads "
@@ -238,23 +235,32 @@ class YTDLP:
         except MaxDownloadsReached:
             cls.logger.info("MaxDownloadsReached, stopping additional downloads.")
 
-        # For YouTube playlists in particular, channel metadata is not fetched. Attempt to get
-        # channel metadata via grabbing uploader_url info json a max of 3 times
-        if isinstance(parent_dict, dict):
-            current_iter = 0
-            url = kwargs.get("url")
-            uploader_url = parent_dict.get("uploader_url")
-            while current_iter < 3 and uploader_url and url != uploader_url:
-                cls.logger.debug("Attempting to get parent metadata from URL %s", uploader_url)
+        parent_dicts: List[Dict] = []
+        entry_dicts = cls._get_entry_dicts_from_info_json_files(working_directory=working_directory)
+        entry_ids = {entry_dict.get("id") for entry_dict in entry_dicts}
+
+        # Try to get additional uploader (source) metadata that yt-dlp does not fetch
+        # in a single request
+        for entry_dict in entry_dicts:
+            if not (uploader_id := entry_dict.get("uploader_id")):
+                continue
+
+            if uploader_id in entry_ids or not (uploader_url := entry_dict.get("uploader_url")):
+                continue
+
+            cls.logger.debug("Attempting to get parent metadata from URL %s", uploader_url)
+            try:
                 parent_dict = cls.extract_info(
                     ytdl_options_overrides=ytdl_options_overrides | {"playlist_items": "0:0"},
                     url=uploader_url,
                 )
+            except Exception:  # pylint: disable=broad-except
+                # Do not try this uploader_id again
+                entry_ids.add(uploader_id)
+                break
 
-                if not isinstance(parent_dict, dict):
-                    break
-                current_iter += 1
-                url = uploader_url
-                uploader_url = parent_dict.get("uploader_url")
+            if isinstance(parent_dict, dict):
+                parent_dicts.append(parent_dict)
+                entry_ids |= {uploader_id, parent_dict.get("id")}
 
-        return cls._get_entry_dicts_from_info_json_files(working_directory=working_directory)
+        return entry_dicts + parent_dicts
