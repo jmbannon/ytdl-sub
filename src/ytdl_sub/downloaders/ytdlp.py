@@ -259,7 +259,9 @@ class YTDLP:
                 break
 
             if isinstance(parent_dict, dict):
+                parent_id = parent_dict.get("id")
                 parent_dicts.append(parent_dict)
-                entry_ids |= {uploader_id, parent_dict.get("id")}
+                entry_ids |= {uploader_id, parent_id}
+                cls.logger.debug("Adding parent metadata with ids [%s, %s]", uploader_id, parent_id)
 
         return entry_dicts + parent_dicts
