@@ -102,7 +102,7 @@ class YTDLP:
             )
 
             if is_downloaded and is_thumbnail_downloaded:
-                return entry_dict
+                return entry_dict or {}  # in-case yt-dlp returns None
 
             # Always add check_formats
             # See https://github.com/yt-dlp/yt-dlp/issues/502
