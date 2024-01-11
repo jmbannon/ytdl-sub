@@ -89,7 +89,7 @@ def single_tv_show_video_nulled_values_preset_dict(output_directory):
         },
         "overrides": {
             "url": "https://www.youtube.com/@ProjectZombie603",
-            "tv_show_name": "Project Zombie {title}",
+            "tv_show_name": "Project Zombie",
             "tv_show_directory": output_directory,
         },
     }
