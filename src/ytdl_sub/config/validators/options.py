@@ -64,7 +64,9 @@ class ToggleableOptionsDictValidator(OptionsDictValidator):
     _optional_keys = {"enable"}
 
     def __init__(self, name, value):
-        assert "enable" in self._optional_keys, ""
+        assert (
+            "enable" in self._optional_keys
+        ), f"{self.__class__.__name__} does not have enable as an optional field"
         super().__init__(name, value)
 
         self._enable = self._validate_key(
@@ -74,9 +76,10 @@ class ToggleableOptionsDictValidator(OptionsDictValidator):
     @property
     def enable(self) -> OverridesBooleanFormatterValidator:
         """
-        :expected type: Optional[Boolean]
+        :expected type: Optional[OverridesFormatter]
         :description:
-          Whether to enable or disable this plugin when it is defined in a config. Defaults
-          to enabled (True).
+          Can typically be left undefined to always default to enable. For preset convenience,
+          this field can be set using an override variable to easily toggle whether this plugin
+          is enabled or not via Boolean.
         """
         return self._enable

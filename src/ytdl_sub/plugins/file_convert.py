@@ -7,7 +7,7 @@ from typing import Set
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
-from ytdl_sub.config.validators.options import OptionsDictValidator
+from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
@@ -28,7 +28,7 @@ class FileConvertWithValidator(StringSelectValidator):
     _select_values = {"yt-dlp", "ffmpeg"}
 
 
-class FileConvertOptions(OptionsDictValidator):
+class FileConvertOptions(ToggleableOptionsDictValidator):
     """
     Converts video files from one extension to another.
 
@@ -56,7 +56,7 @@ class FileConvertOptions(OptionsDictValidator):
     """
 
     _required_keys = {"convert_to"}
-    _optional_keys = {"convert_with", "ffmpeg_post_process_args"}
+    _optional_keys = {"enable", "convert_with", "ffmpeg_post_process_args"}
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:

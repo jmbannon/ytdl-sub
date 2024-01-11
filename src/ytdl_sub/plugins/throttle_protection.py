@@ -84,7 +84,8 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
              subscription_download_probability: 1.0
     """
 
-    _optional_keys = ToggleableOptionsDictValidator._optional_keys | {
+    _optional_keys = {
+        "enable",
         "sleep_per_download_s",
         "sleep_per_subscription_s",
         "max_downloads_per_subscription",

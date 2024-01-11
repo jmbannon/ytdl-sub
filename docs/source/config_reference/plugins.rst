@@ -22,6 +22,15 @@ Extracts audio from a video file.
   opus, vorbis, wav, and best to grab the best possible format at runtime.
 
 
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
+
+
 ``quality``
 
 :expected type: Float
@@ -74,6 +83,15 @@ chapters and remove specific ones. Can also remove chapters using regex.
 :expected type: Optional[Boolean]
 :description:
   Defaults to True. Embed chapters into the file.
+
+
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
 
 
 ``force_key_frames``
@@ -146,6 +164,15 @@ granularity possible.
 :expected type: Optional[OverridesFormatter]
 :description:
   Only download videos before this datetime.
+
+
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
 
 
 ----------------------------------------------------------------------------------------------------
@@ -257,6 +284,15 @@ Also supports custom ffmpeg conversions:
   Supports ``yt-dlp`` and ``ffmpeg``. ``yt-dlp`` will convert files within
   yt-dlp whereas ``ffmpeg`` specifies it will be converted using a custom command specified
   with ``ffmpeg_post_process_args``. Defaults to ``yt-dlp``.
+
+
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
 
 
 ``ffmpeg_post_process_args``
@@ -395,6 +431,15 @@ with a ``.nfo`` extension. You can add any values into the NFO.
        episode: "{upload_month}{upload_day_padded}"
      kodi_safe: False
 
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
+
+
 ``kodi_safe``
 
 :expected type: Optional[Boolean]
@@ -483,6 +528,15 @@ Usage:
            title: "Sweet youtube TV show"
          # optional
          kodi_safe: False
+
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
+
 
 ``kodi_safe``
 
@@ -800,6 +854,15 @@ and using ``title_and_description`` can regex match/exclude from either ``title`
            - "{upload_month}"
            - "{upload_day}"
 
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
+
+
 ``skip_if_match_fails``
 
 :expected type: Optional[Boolean]
@@ -880,6 +943,15 @@ It will set the respective language to the correct subtitle file.
   webm files can only embed "vtt" subtitle types.
 
 
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
+
+
 ``languages``
 
 :expected type: Optional[List[String]]
@@ -930,6 +1002,15 @@ scripted.
            min: 10
            max: 36
          subscription_download_probability: 1.0
+
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
+
 
 ``max_downloads_per_subscription``
 
