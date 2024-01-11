@@ -6,6 +6,7 @@ from typing import TypeVar
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 from ytdl_sub.validators.validators import Validator
 
 # pylint: disable=no-self-use
@@ -57,3 +58,25 @@ TOptionsValidator = TypeVar("TOptionsValidator", bound=OptionsValidator)
 
 class OptionsDictValidator(StrictDictValidator, OptionsValidator, ABC):
     pass
+
+
+class ToggleableOptionsDictValidator(OptionsDictValidator):
+    _optional_keys = {"enable"}
+
+    def __init__(self, name, value):
+        assert "enable" in self._optional_keys, ""
+        super().__init__(name, value)
+
+        self._enable = self._validate_key(
+            key="enable", validator=OverridesBooleanFormatterValidator, default="False"
+        )
+
+    @property
+    def enable(self) -> OverridesBooleanFormatterValidator:
+        """
+        :expected type: Optional[Boolean]
+        :description:
+          Whether to enable or disable this plugin when it is defined in a config. Defaults
+          to enabled (True).
+        """
+        return self._enable
