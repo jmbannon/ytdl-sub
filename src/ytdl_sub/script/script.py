@@ -272,6 +272,10 @@ class Script:
         output_filter: Set[str],
         unresolvable: Set[Variable],
     ) -> Dict[Variable, SyntaxTree]:
+        """
+        When an output filter is applied, only a subset of variables that the filter
+        depends on need to be resolved.
+        """
         subset_to_resolve: Set[str] = set()
 
         for output_filter_variable in output_filter:
