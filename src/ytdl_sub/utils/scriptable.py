@@ -15,7 +15,7 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.script import ScriptUtils
 
 BASE_SCRIPT: Script = Script(
-    ScriptUtils.add_sanitized_variables(dict(VARIABLE_SCRIPTS, **CUSTOM_FUNCTION_SCRIPTS))
+    dict(ScriptUtils.add_sanitized_variables(VARIABLE_SCRIPTS), **CUSTOM_FUNCTION_SCRIPTS)
 )
 
 

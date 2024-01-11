@@ -173,7 +173,7 @@ def _validate_formatter(
         text=formatter_validator.format_string,
     )
     variable_names = {var.name for var in parsed.variables}
-    custom_function_names = {func.name for func in parsed.custom_functions}
+    custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
 
     if not variable_names.issubset(mock_script.variable_names):
         raise StringFormattingVariableNotFoundException(
