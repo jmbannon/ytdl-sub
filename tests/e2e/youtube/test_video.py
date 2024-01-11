@@ -31,6 +31,7 @@ def single_video_preset_dict_old_video_tags_format(output_directory):
                 "title": "{title}",
             }
         },
+        "filter_include": ["{ %ne( %map_get(entry_metadata, 'artist', null), null )}"],
         "overrides": {
             "music_video_artist": "JMC",
             "music_video_directory": output_directory,
@@ -88,7 +89,7 @@ def single_tv_show_video_nulled_values_preset_dict(output_directory):
         },
         "overrides": {
             "url": "https://www.youtube.com/@ProjectZombie603",
-            "tv_show_name": "Project Zombie",
+            "tv_show_name": "Project Zombie {title}",
             "tv_show_directory": output_directory,
         },
     }

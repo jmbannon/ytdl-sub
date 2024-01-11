@@ -14,10 +14,8 @@ from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.script import ScriptUtils
 
-_BASE_SCRIPT: Script = Script(
-    ScriptUtils.add_sanitized_variables(
-        dict(copy.deepcopy(VARIABLE_SCRIPTS), **copy.deepcopy(CUSTOM_FUNCTION_SCRIPTS))
-    )
+BASE_SCRIPT: Script = Script(
+    ScriptUtils.add_sanitized_variables(dict(VARIABLE_SCRIPTS, **CUSTOM_FUNCTION_SCRIPTS))
 )
 
 
@@ -37,7 +35,7 @@ class Scriptable(ABC):
         """
         Initializes with base values
         """
-        self._script = copy.deepcopy(_BASE_SCRIPT)
+        self._script = copy.deepcopy(BASE_SCRIPT)
         self._unresolvable = copy.deepcopy(UNRESOLVED_VARIABLES)
 
     @property
