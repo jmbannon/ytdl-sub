@@ -73,16 +73,15 @@ def _override_variables(overrides: Overrides) -> Set[str]:
     }
 
 
-def _entry_variables() -> Dict[str, str]:
-    return {
-        name: to_variable_dependency_format_string(
-            # pylint: disable=protected-access
-            script=BASE_SCRIPT,
-            parsed_format_string=BASE_SCRIPT._variables[name]
-            # pylint: enable=protected-access
-        )
-        for name in BASE_SCRIPT.variable_names
-    }
+_DUMMY_ENTRY_VARIABLES: Dict[str, str] = {
+    name: to_variable_dependency_format_string(
+        # pylint: disable=protected-access
+        script=BASE_SCRIPT,
+        parsed_format_string=BASE_SCRIPT._variables[name]
+        # pylint: enable=protected-access
+    )
+    for name in BASE_SCRIPT.variable_names
+}
 
 
 class VariableValidation:
@@ -106,12 +105,11 @@ class VariableValidation:
         """
         Do some gymnastics to initialize the Overrides script.
         """
-        entry_variables = _entry_variables()
         override_variables = _override_variables(overrides)
 
         # Set resolved variables as all entry + override variables
         # at this point to generate every possible added/modified variable
-        self.resolved_variables = set(entry_variables.keys()) | override_variables
+        self.resolved_variables = set(_DUMMY_ENTRY_VARIABLES.keys()) | override_variables
         plugin_variables: Set[str] = set()
 
         for (
@@ -148,10 +146,11 @@ class VariableValidation:
         )
 
         # copy the script and mock entry variables
-        self.script = copy.deepcopy(overrides.script).add(entry_variables)
+        self.script = copy.deepcopy(overrides.script)
         self.script.add(
             variables=_add_dummy_overrides(overrides=overrides)
             | _add_dummy_variables(variables=plugin_variables)
+            | _DUMMY_ENTRY_VARIABLES
         )
 
         return self
