@@ -31,7 +31,6 @@ def single_video_preset_dict_old_video_tags_format(output_directory):
                 "title": "{title}",
             }
         },
-        "filter_include": ["{ %ne( %map_get(entry_metadata, 'artist', null), null )}"],
         "overrides": {
             "music_video_artist": "JMC",
             "music_video_directory": output_directory,
