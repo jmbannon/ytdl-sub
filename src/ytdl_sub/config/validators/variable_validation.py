@@ -13,9 +13,10 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.script.script import Script
+from ytdl_sub.utils.scriptable import BASE_SCRIPT
+from ytdl_sub.validators.string_formatter_validators import to_variable_dependency_format_string
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
 
@@ -32,10 +33,10 @@ def _add_dummy_overrides(overrides: Overrides) -> Dict[str, str]:
     # Have the dummy override variable contain all variable deps that it uses in the string
     dummy_overrides: Dict[str, str] = {}
     for override_name in _override_variables(overrides):
-        dummy_overrides[override_name] = ""
         # pylint: disable=protected-access
-        for variable_dependency in overrides.script._variables[override_name].variables:
-            dummy_overrides[override_name] += f"{{ {variable_dependency.name } }}"
+        dummy_overrides[override_name] = to_variable_dependency_format_string(
+            script=overrides.script, parsed_format_string=overrides.script._variables[override_name]
+        )
         # pylint: enable=protected-access
     return dummy_overrides
 
@@ -72,8 +73,15 @@ def _override_variables(overrides: Overrides) -> Set[str]:
     }
 
 
-def _entry_variables() -> Set[str]:
-    return set(list(VARIABLE_SCRIPTS.keys()))
+_DUMMY_ENTRY_VARIABLES: Dict[str, str] = {
+    name: to_variable_dependency_format_string(
+        # pylint: disable=protected-access
+        script=BASE_SCRIPT,
+        parsed_format_string=BASE_SCRIPT._variables[name]
+        # pylint: enable=protected-access
+    )
+    for name in BASE_SCRIPT.variable_names
+}
 
 
 class VariableValidation:
@@ -97,12 +105,12 @@ class VariableValidation:
         """
         Do some gymnastics to initialize the Overrides script.
         """
-        entry_variables = _entry_variables()
         override_variables = _override_variables(overrides)
 
         # Set resolved variables as all entry + override variables
         # at this point to generate every possible added/modified variable
-        self.resolved_variables = entry_variables | override_variables
+        self.resolved_variables = set(_DUMMY_ENTRY_VARIABLES.keys()) | override_variables
+        plugin_variables: Set[str] = set()
 
         for (
             plugin_options,
@@ -125,6 +133,7 @@ class VariableValidation:
             # Set unresolved as variables that are added but do not exist as
             # entry/override variables since they are created at run-time
             self.unresolved_variables |= added_variables | modified_variables
+            plugin_variables |= added_variables | modified_variables
 
         # Then update resolved variables to reflect that
         self.resolved_variables -= self.unresolved_variables
@@ -137,10 +146,11 @@ class VariableValidation:
         )
 
         # copy the script and mock entry variables
-        self.script = copy.deepcopy(overrides.script).add(_add_dummy_variables(entry_variables))
+        self.script = copy.deepcopy(overrides.script)
         self.script.add(
-            variables=_add_dummy_overrides(overrides=overrides),
-            unresolvable=self.unresolved_variables,
+            variables=_add_dummy_overrides(overrides=overrides)
+            | _add_dummy_variables(variables=plugin_variables)
+            | _DUMMY_ENTRY_VARIABLES
         )
 
         return self
@@ -158,7 +168,6 @@ class VariableValidation:
 
         resolved_variables = added_variables | modified_variables
 
-        self.script.add(_add_dummy_variables(resolved_variables))
         self.resolved_variables |= resolved_variables
         self.unresolved_variables -= resolved_variables
 
@@ -177,13 +186,10 @@ class VariableValidation:
         ):
             self._add_variables(PluginOperation.MODIFY_ENTRY_METADATA, options=plugin_options)
 
-        self._update_script()
         for plugin_options in PluginMapping.order_options_by(
             self.plugins.zipped(), PluginOperation.MODIFY_ENTRY
         ):
-            added = self._add_variables(PluginOperation.MODIFY_ENTRY, options=plugin_options)
-            if added:
-                self._update_script()
+            self._add_variables(PluginOperation.MODIFY_ENTRY, options=plugin_options)
 
             # Validate that any formatter in the plugin options can resolve
             validate_formatters(
