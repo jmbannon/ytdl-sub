@@ -92,7 +92,7 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 # pylint: enable=line-too-long
 
 
-class OverridesIntegerFormatterValidator(StringFormatterValidator):
+class OverridesIntegerFormatterValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "integer"
 
     def post_process(self, resolved: str) -> str:
@@ -104,6 +104,10 @@ class OverridesIntegerFormatterValidator(StringFormatterValidator):
             ) from exc
 
         return resolved
+
+
+class OverridesBooleanFormatterValidator(OverridesStringFormatterValidator):
+    _expected_value_type_name = "boolean"
 
 
 class ListFormatterValidator(ListValidator[StringFormatterValidator]):

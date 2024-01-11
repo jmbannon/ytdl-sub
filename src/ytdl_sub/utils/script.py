@@ -38,3 +38,15 @@ class ScriptUtils:
             out = f"{{%from_json('''{dumped_json}''')}}"
 
         return out
+
+    @classmethod
+    def bool_formatter_output(cls, output: str) -> bool:
+        """
+        Translate formatter output to a boolean
+        """
+        if not output or output.lower() == "false":
+            return False
+        try:
+            return bool(json.loads(output))
+        except Exception:  # pylint: disable=broad-except
+            return True

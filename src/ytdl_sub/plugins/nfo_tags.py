@@ -8,7 +8,7 @@ from typing import List
 from typing import Optional
 
 from ytdl_sub.config.plugin.plugin import Plugin
-from ytdl_sub.config.validators.options import OptionsDictValidator
+from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -23,13 +23,13 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.validators import BoolValidator
 
 
-class SharedNfoTagsOptions(OptionsDictValidator):
+class SharedNfoTagsOptions(ToggleableOptionsDictValidator):
     """
     Shared code between NFO tags and Ouptut Directory NFO Tags
     """
 
     _required_keys = {"nfo_name", "nfo_root", "tags"}
-    _optional_keys = {"kodi_safe"}
+    _optional_keys = {"enable", "kodi_safe"}
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
