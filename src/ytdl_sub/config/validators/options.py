@@ -70,7 +70,7 @@ class ToggleableOptionsDictValidator(OptionsDictValidator):
         super().__init__(name, value)
 
         self._enable = self._validate_key(
-            key="enable", validator=OverridesBooleanFormatterValidator, default="False"
+            key="enable", validator=OverridesBooleanFormatterValidator, default="True"
         )
 
     @property
