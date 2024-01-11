@@ -248,6 +248,48 @@ class Script:
         for variable_name, resolved in resolved_variables.items():
             self._variables[variable_name] = SyntaxTree(ast=[resolved])
 
+    def _recursive_get_unresolved_output_filter_variables(
+        self, current_var: SyntaxTree, subset_to_resolve: Set[str], unresolvable: Set[Variable]
+    ) -> Set[str]:
+        for var_dep in current_var.variables:
+            if var_dep in unresolvable:
+                raise ScriptVariableNotResolved(
+                    f"Output filter variable contains the variable {var_dep} "
+                    f"which is set as unresolvable"
+                )
+            subset_to_resolve.add(var_dep.name)
+            subset_to_resolve |= self._recursive_get_unresolved_output_filter_variables(
+                current_var=self._variables[var_dep.name],
+                subset_to_resolve=subset_to_resolve,
+                unresolvable=unresolvable,
+            )
+
+        return subset_to_resolve
+
+    def _get_unresolved_output_filter(
+        self,
+        unresolved: Dict[Variable, SyntaxTree],
+        output_filter: Set[str],
+        unresolvable: Set[Variable],
+    ) -> Dict[Variable, SyntaxTree]:
+        subset_to_resolve: Set[str] = set()
+
+        for output_filter_variable in output_filter:
+            subset_to_resolve.add(output_filter_variable)
+
+            if output_filter_variable not in self._variables:
+                raise ScriptVariableNotResolved(
+                    "Tried to specify an output filter variable that does not exist"
+                )
+
+            subset_to_resolve |= self._recursive_get_unresolved_output_filter_variables(
+                current_var=self._variables[output_filter_variable],
+                subset_to_resolve=subset_to_resolve,
+                unresolvable=unresolvable,
+            )
+
+        return {var: syntax for var, syntax in unresolved.items() if var.name in subset_to_resolve}
+
     def _resolve(
         self,
         pre_resolved: Optional[Dict[str, Resolvable]] = None,
@@ -287,6 +329,13 @@ class Script:
             for name, ast in self._variables.items()
             if Variable(name) not in unresolved_filter
         }
+
+        if output_filter:
+            unresolved = self._get_unresolved_output_filter(
+                unresolved=unresolved,
+                output_filter=output_filter,
+                unresolvable=unresolvable,
+            )
 
         while unresolved:
             unresolved_count: int = len(unresolved)

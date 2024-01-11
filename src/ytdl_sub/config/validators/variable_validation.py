@@ -13,9 +13,7 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
-from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.utils.scriptable import BASE_SCRIPT
 from ytdl_sub.validators.string_formatter_validators import to_variable_dependency_format_string
@@ -78,7 +76,9 @@ def _override_variables(overrides: Overrides) -> Set[str]:
 def _entry_variables() -> Dict[str, str]:
     return {
         name: to_variable_dependency_format_string(
+            # pylint: disable=protected-access
             script=BASE_SCRIPT, parsed_format_string=BASE_SCRIPT._variables[name]
+            # pylint: enable=protected-access
         )
         for name in BASE_SCRIPT.variable_names
     }
