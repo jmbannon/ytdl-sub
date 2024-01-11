@@ -6,8 +6,10 @@ from typing import final
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
+from ytdl_sub.script.utils.exceptions import RuntimeException
+from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.script.utils.exceptions import UserException
-from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
@@ -90,7 +92,7 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 # pylint: enable=line-too-long
 
 
-class OverridesIntegerFormatterValidator(StringFormatterValidator):
+class OverridesIntegerFormatterValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "integer"
 
     def post_process(self, resolved: str) -> str:
@@ -102,6 +104,10 @@ class OverridesIntegerFormatterValidator(StringFormatterValidator):
             ) from exc
 
         return resolved
+
+
+class OverridesBooleanFormatterValidator(OverridesStringFormatterValidator):
+    _expected_value_type_name = "boolean"
 
 
 class ListFormatterValidator(ListValidator[StringFormatterValidator]):
@@ -142,21 +148,67 @@ class OverridesDictFormatterValidator(DictFormatterValidator):
     _key_validator = OverridesStringFormatterValidator
 
 
+def to_variable_dependency_format_string(script: Script, parsed_format_string: SyntaxTree) -> str:
+    """
+    Create a dummy format string that contains all variable deps as a string.
+    """
+    dummy_format_string = ""
+    for var in parsed_format_string.variables:
+        dummy_format_string += f"{{ {var.name} }}"
+        # pylint: disable=protected-access
+        for variable_dependency in script._variables[var.name].variables:
+            dummy_format_string += f"{{ {variable_dependency.name} }}"
+        # pylint: enable=protected-access
+    return dummy_format_string
+
+
 def _validate_formatter(
     mock_script: Script,
     unresolved_variables: Set[str],
     formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
 ) -> None:
-    try:
-        unresolvable = unresolved_variables
-        if isinstance(formatter_validator, OverridesStringFormatterValidator):
-            unresolvable = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
+    is_static_formatter = False
+    unresolvable = unresolved_variables
+    if isinstance(formatter_validator, OverridesStringFormatterValidator):
+        is_static_formatter = True
+        unresolvable = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
 
+    parsed = parse(
+        text=formatter_validator.format_string,
+    )
+    variable_names = {var.name for var in parsed.variables}
+    custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
+
+    if not variable_names.issubset(mock_script.variable_names):
+        raise StringFormattingVariableNotFoundException(
+            "contains the following variables that do not exist: "
+            f"{', '.join(sorted(variable_names - mock_script.variable_names))}"
+        )
+    if not custom_function_names.issubset(mock_script.function_names):
+        raise StringFormattingVariableNotFoundException(
+            "contains the following custom functions that do not exist: "
+            f"{', '.join(sorted(custom_function_names - mock_script.function_names))}"
+        )
+    if unresolved := variable_names.intersection(unresolvable):
+        raise StringFormattingVariableNotFoundException(
+            "contains the following variables that are unresolved when executing this "
+            f"formatter: {', '.join(sorted(unresolved))}"
+        )
+    try:
         mock_script.resolve_once(
-            {"tmp_var": formatter_validator.format_string},
+            {
+                "tmp_var": to_variable_dependency_format_string(
+                    script=mock_script, parsed_format_string=parsed
+                )
+            },
             unresolvable=unresolvable,
         )
-    except VariableDoesNotExist as exc:
+    except RuntimeException as exc:
+        if isinstance(exc, ScriptVariableNotResolved) and is_static_formatter:
+            raise StringFormattingVariableNotFoundException(
+                "static formatters must contain variables that have no dependency to "
+                "entry variables"
+            ) from exc
         raise StringFormattingVariableNotFoundException(exc) from exc
 
 

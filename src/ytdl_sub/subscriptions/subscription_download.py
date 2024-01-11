@@ -190,7 +190,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         -------
         List of plugins defined in the subscription, initialized and ready to use.
         """
-        return [
+        plugins = [
             plugin_type(
                 options=plugin_options,
                 overrides=self.overrides,
@@ -198,6 +198,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             )
             for plugin_type, plugin_options in self.plugins.zipped()
         ]
+        return [plugin for plugin in plugins if plugin.is_enabled]
 
     @classmethod
     def _cleanup_entry_files(cls, entry: Entry):

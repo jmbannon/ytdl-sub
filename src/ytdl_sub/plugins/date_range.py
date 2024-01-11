@@ -3,12 +3,12 @@ from typing import Optional
 from typing import Tuple
 
 from ytdl_sub.config.plugin.plugin import Plugin
-from ytdl_sub.config.validators.options import OptionsDictValidator
+from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.utils.datetime import to_date_str
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 
 
-class DateRangeOptions(OptionsDictValidator):
+class DateRangeOptions(ToggleableOptionsDictValidator):
     """
     Only download files uploaded within the specified date range.
     Dates must adhere to a yt-dlp datetime. From their docs:
@@ -31,7 +31,7 @@ class DateRangeOptions(OptionsDictValidator):
          after: "today-2weeks"
     """
 
-    _optional_keys = {"before", "after"}
+    _optional_keys = {"enable", "before", "after"}
 
     def __init__(self, name, value):
         super().__init__(name, value)

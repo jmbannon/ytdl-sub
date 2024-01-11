@@ -107,14 +107,9 @@ def _download_subscriptions_from_yaml_files(
         subscriptions += Subscription.from_file_path(
             config=config,
             subscription_path=path,
+            subscription_matches=subscription_matches,
             subscription_override_dict=subscription_override_dict,
         )
-
-    if subscriptions and subscription_matches:
-        logger.info("Filtering subscriptions by name based on --match arguments")
-        subscriptions = [
-            sub for sub in subscriptions if any(match in sub.name for match in subscription_matches)
-        ]
 
     for subscription in subscriptions:
         with subscription.exception_handling():

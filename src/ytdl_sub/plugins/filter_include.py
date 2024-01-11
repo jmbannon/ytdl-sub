@@ -1,4 +1,3 @@
-import json
 from typing import Dict
 from typing import Optional
 
@@ -8,6 +7,7 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -61,7 +61,9 @@ class FilterIncludePlugin(Plugin[FilterIncludeOptions]):
             return entry
 
         for formatter in self.plugin_options.list:
-            out = json.loads(self.overrides.apply_formatter(formatter=formatter, entry=entry))
+            out = ScriptUtils.bool_formatter_output(
+                self.overrides.apply_formatter(formatter=formatter, entry=entry)
+            )
             if not bool(out):
                 logger.info(
                     "Filtering '%s' from the filter %s evaluating to False",

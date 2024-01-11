@@ -7,7 +7,7 @@ from typing import Set
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
-from ytdl_sub.config.validators.options import OptionsDictValidator
+from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry import ytdl_sub_chapters_from_comments
@@ -59,7 +59,7 @@ class SponsorBlockCategoryListValidator(ListValidator[SponsorBlockCategoriesVali
     _inner_list_type = SponsorBlockCategoriesValidator
 
 
-class ChaptersOptions(OptionsDictValidator):
+class ChaptersOptions(ToggleableOptionsDictValidator):
     """
     Embeds chapters to video files if they are present. Additional options to add SponsorBlock
     chapters and remove specific ones. Can also remove chapters using regex.
@@ -90,6 +90,7 @@ class ChaptersOptions(OptionsDictValidator):
     """
 
     _optional_keys = {
+        "enable",
         "embed_chapters",
         "allow_chapters_from_comments",
         "sponsorblock_categories",
