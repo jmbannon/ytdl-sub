@@ -276,17 +276,11 @@ class MultiUrlValidator(OptionsValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        # Copy since we're popping things
-        value_copy = copy.deepcopy(value)
-        if isinstance(value, dict):
-            # Pop old required field in case it's still there
-            value_copy.pop("download_strategy", None)
-
         # Deal with old multi-url download strategy
-        if isinstance(value, dict) and "urls" in value_copy:
-            self._urls = UrlListValidator(name=name, value=value_copy["urls"])
+        if isinstance(value, dict) and "urls" in value:
+            self._urls = UrlListValidator(name=name, value=value["urls"])
         else:
-            self._urls = UrlListValidator(name=name, value=value_copy)
+            self._urls = UrlListValidator(name=name, value=value)
 
     @property
     def urls(self) -> UrlListValidator:
