@@ -1,6 +1,7 @@
 from typing import Dict
 
 from ytdl_sub.config.plugin.plugin import Plugin
+from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import add_ffmpeg_metadata_key_values
 from ytdl_sub.utils.file_handler import FileMetadata
@@ -10,7 +11,7 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 logger = Logger.get("video-tags")
 
 
-class VideoTagsOptions(DictFormatterValidator):
+class VideoTagsOptions(DictFormatterValidator, OptionsValidator):
     """
     Adds tags to every downloaded video file using ffmpeg ``-metadata key=value`` args.
 
