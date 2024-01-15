@@ -6,25 +6,6 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def single_preset_dict_old_format(output_directory):
-    return {
-        "preset": "Single",
-        # test multi-tags
-        "music_tags": {"embed_thumbnail": True, "tags": {"genres": ["multi_tag_1", "multi_tag_2"]}},
-        "format": "worst[ext=mp4]",
-        "audio_extract": {"codec": "mp3", "quality": 320},
-        "ytdl_options": {
-            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
-        },
-        "overrides": {
-            "track_artist": "YouTube",
-            "url": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
-            "music_directory": output_directory,
-        },
-    }
-
-
-@pytest.fixture
 def single_preset_dict(output_directory):
     return {
         "preset": "Single",
@@ -68,32 +49,6 @@ def youtube_release_preset_dict(output_directory):
 
 
 class TestAudioExtract:
-    @pytest.mark.parametrize("dry_run", [True, False])
-    def test_audio_extract_single_song_old_format(
-        self,
-        default_config,
-        single_preset_dict_old_format,
-        output_directory,
-        dry_run,
-    ):
-        subscription = Subscription.from_dict(
-            config=default_config,
-            preset_name="single_song_test",
-            preset_dict=single_preset_dict_old_format,
-        )
-
-        transaction_log = subscription.download(dry_run=dry_run)
-        assert_transaction_log_matches(
-            output_directory=output_directory,
-            transaction_log=transaction_log,
-            transaction_log_summary_file_name="plugins/test_audio_extract_single_old_format.txt",
-        )
-        assert_expected_downloads(
-            output_directory=output_directory,
-            dry_run=dry_run,
-            expected_download_summary_file_name="plugins/test_audio_extract_single_old_format.json",
-        )
-
     @pytest.mark.parametrize("dry_run", [False])
     def test_audio_extract_single_song(
         self,
