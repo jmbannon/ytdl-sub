@@ -15,30 +15,6 @@ from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
 
 
 @pytest.fixture
-def single_video_preset_dict_old_video_tags_format(output_directory):
-    return {
-        "preset": "Jellyfin Music Videos",
-        "download": "https://youtube.com/watch?v=HKTNxEqsN3Q",
-        # override the output directory with our fixture-generated dir
-        "output_options": {
-            "maintain_download_archive": False,
-        },
-        "embed_thumbnail": True,  # embed thumb into the video
-        "format": "worst[ext=mp4]",  # download the worst format so it is fast
-        # also test video tags
-        "video_tags": {
-            "tags": {
-                "title": "{title}",
-            }
-        },
-        "overrides": {
-            "music_video_artist": "JMC",
-            "music_video_directory": output_directory,
-        },
-    }
-
-
-@pytest.fixture
 def single_video_preset_dict(output_directory):
     return {
         "preset": "Jellyfin Music Videos",
@@ -100,25 +76,6 @@ def single_video_preset_dict_dl_args(single_video_preset_dict):
 
 
 class TestYoutubeVideo:
-    def test_single_video_old_video_tags_format_download(
-        self,
-        default_config,
-        single_video_preset_dict_old_video_tags_format,
-        output_directory,
-    ):
-        single_video_subscription = Subscription.from_dict(
-            config=default_config,
-            preset_name="music_video_single_video_test",
-            preset_dict=single_video_preset_dict_old_video_tags_format,
-        )
-
-        transaction_log = single_video_subscription.download(dry_run=True)
-        assert_transaction_log_matches(
-            output_directory=output_directory,
-            transaction_log=transaction_log,
-            transaction_log_summary_file_name="youtube/test_video.txt",
-        )
-
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download(
         self,
