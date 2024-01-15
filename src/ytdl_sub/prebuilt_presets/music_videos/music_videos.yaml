@@ -19,3 +19,25 @@ presets:
       - "_plex_video_base"
       - "_music_video_base"
       - "_music_video_tags"
+
+  _music_video_nfo:
+    nfo_tags:
+      nfo_name: "{music_video_file_name}.nfo"
+      nfo_root: "musicvideo"
+      tags:
+        artist: "{music_video_artist}"
+        title: "{music_video_title}"
+        album: "{music_video_album}"
+        genre:
+          - "{music_video_genre}"
+        # Kodi v20 to not use year, so removing
+        premiered: "{music_video_date}"
+
+  _music_video_tags:
+    video_tags:
+      artist: "{music_video_artist}"
+      title: "{music_video_title}"
+      album: "{music_video_album}"
+      genre: "{music_video_genre}"
+      year: "{music_video_year}"
+      premiered: "{music_video_date}"

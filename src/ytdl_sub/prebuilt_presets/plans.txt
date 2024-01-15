@@ -1,7 +1,0 @@
-Rename presets to "Name Here"
-Have new name for presets inheret the old ones
-
-Each preset type, i.e. TV Show by Date should have one (which includes Kodi/Plex/Jellyfin), TV Show Collection separate, music ones separated
-
-for helpers, Maybe grouped, like 'video quality' for those
-bulk_initial_download probably needs its own page

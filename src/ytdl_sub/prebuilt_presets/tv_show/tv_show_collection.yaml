@@ -1,17 +1,5 @@
 presets:
 
-  "Kodi TV Show Collection":
-    preset:
-      - kodi_tv_show_collection
-
-  "Jellyfin TV Show Collection":
-    preset:
-      - jellyfin_tv_show_collection
-
-  "Plex TV Show Collection":
-    preset:
-      - plex_tv_show_collection
-
   kodi_tv_show_collection:
     preset:
       - "_kodi_tv_show"
