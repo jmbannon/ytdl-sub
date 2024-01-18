@@ -1,0 +1,21 @@
+presets:
+
+  # assumes that each chapter in an entry is a song
+  _albums_from_chapters:
+    preset: "Single"
+
+    chapters:
+      embed_chapters: True
+    split_by_chapters:
+      when_no_chapters: "pass"
+
+    overrides:
+      track_title: "{chapter_title}"  # Chapter title is the track title
+      track_album: "{title}"  # Video's title is the album title
+      track_number: "{chapter_index}"
+      track_number_padded: "{chapter_index_padded}"
+      track_total: "{chapter_count}"
+
+  "YouTube Full Albums":
+    preset:
+      - "_albums_from_chapters"
