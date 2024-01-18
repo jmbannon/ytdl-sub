@@ -102,6 +102,8 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
         return ytdl_options_builder.add(
             {
                 "postprocessors": [postprocessor_dict],
+                "format": "bestaudio/best",
+                "keepvideo": False,
             }
         ).to_dict()
 
