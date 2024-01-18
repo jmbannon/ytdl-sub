@@ -1,0 +1,35 @@
+presets:
+  _music_video_base:
+    preset:
+      - "_multi_url"
+
+    output_options:
+      output_directory: "{music_video_directory}"
+      file_name: "{music_video_file_name}.{ext}"
+      thumbnail_name: "{music_video_file_name}.jpg"
+      maintain_download_archive: True
+
+    ytdl_options:
+      break_on_existing: True
+
+    overrides:
+#   MUST DEFINE:
+#     music_video_directory
+
+      # Defaults
+      music_video_genre_default: "ytdl-sub"
+      music_video_album_default: "Music Videos"
+
+      # Subscription overrides
+      subscription_indent_1: "{music_video_genre_default}"
+
+      # Music Video Overrides
+      music_video_title: "{title}"
+      music_video_album: "{music_video_album_default}"
+      music_video_artist: "{subscription_name}"
+      music_video_year: "{upload_year}"
+      music_video_date: "{upload_date_standardized}"
+      music_video_genre: "{subscription_indent_1}"
+
+      # Directory Overrides
+      music_video_file_name: "{music_video_artist_sanitized}/{music_video_title_sanitized}"

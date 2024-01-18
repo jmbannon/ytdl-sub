@@ -3,7 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-single_song_best_test-download-archive.json
 {output_directory}/YouTube/[2019] YouTube Rewind 2019： For the Record ｜ #YouTubeRewind
-  01 - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.m4a
+  01 - YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.opus
     Music Tags:
       album: YouTube Rewind 2019: For the Record | #YouTubeRewind
       albumartist: YouTube
