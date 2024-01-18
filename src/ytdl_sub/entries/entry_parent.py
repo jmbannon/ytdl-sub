@@ -157,6 +157,10 @@ class EntryParent(BaseEntry):
         def _uid_is_uploader_id(parent: "EntryParent"):
             return parent.uid == parent.uploader_id
 
+        # Channels can have two of the same .info.json. Handle it here
+        if len(parents) == 2 and parents[0].uploader_id == parents[1].uploader_id:
+            return parents[0] if not parents[0].webpage_url.endswith("/videos") else parents[1]
+
         top_level_parents = [parent for parent in parents if parent.num_children() == 0]
 
         # If more than 1 parent exists, assume the uploader_id is the root parent
@@ -168,18 +172,10 @@ class EntryParent(BaseEntry):
         if len(top_level_parents) > 1:
             top_level_parents = [parent for parent in top_level_parents if _url_matches(parent)]
 
-        match len(top_level_parents):
-            case 0:
-                return None
-            case 1:
-                return top_level_parents[0]
-            case 2:
-                # Channels can have two of the same .info.json. Handle it here
-                top0 = top_level_parents[0]
-                top1 = top_level_parents[1]
-                if top0.uploader_id == top1.uploader_id:
-                    return top0 if not top0.webpage_url.endswith("/videos") else top1
-
+        if not top_level_parents:
+            return None
+        if len(top_level_parents) == 1:
+            return top_level_parents[0]
         raise ValueError(
             "Detected multiple top-level parents. "
             "Please file an issue on GitHub with the URLs used to produce this error"
