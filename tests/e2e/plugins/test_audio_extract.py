@@ -13,7 +13,6 @@ def single_preset_dict(output_directory):
         "music_tags": {"genres": ["multi_tag_1", "multi_tag_2"]},
         # test the new embed_thumbnail plugin
         "embed_thumbnail": True,
-        "format": "worst[ext=mp4]",
         "audio_extract": {"codec": "mp3", "quality": 320},
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
@@ -36,7 +35,6 @@ def youtube_release_preset_dict(output_directory):
     return {
         "preset": "YouTube Releases",
         "audio_extract": {"codec": "vorbis", "quality": 140},
-        "format": "worst[ext=mp4]",  # download the worst format so it is fast
         "ytdl_options": {
             "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
         },

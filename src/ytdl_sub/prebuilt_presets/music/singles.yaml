@@ -1,0 +1,72 @@
+presets:
+
+  
+  _music_base:
+    output_options:
+      output_directory: "{music_directory}"
+      file_name: "{track_full_path}"
+      thumbnail_name: "{album_cover_path}"
+      maintain_download_archive: True
+
+    ytdl_options:
+      break_on_existing: True
+
+    format: "ba[ext=webm]/ba"
+
+    audio_extract:
+      codec: "best"
+
+    music_tags:
+      artist: "{track_artist}"
+      albumartist: "{track_album_artist}"
+      title: "{track_title}"
+      album: "{track_album}"
+      track: "{track_number}"
+      tracktotal: "{track_total}"
+      year: "{track_year}"
+      # multi-tags
+      artists:
+        - "{track_artist}"
+      albumartists:
+        - "{track_album_artist}"
+      genres:
+        - "{track_genre}"
+
+    overrides:
+#   MUST DEFINE:
+#     music_directory
+
+      # Defaults
+      track_genre_default: "Unset"
+
+      # Subscription overrides
+      subscription_indent_1: "{track_genre_default}"
+      subscription_value: ""
+      url: "{subscription_value}"
+
+      # Track Overrides
+      track_title: "{title}"
+      track_album: "{title}"
+      track_artist: "{subscription_name}"
+      track_album_artist: "{track_artist}"
+      track_number: "1"
+      track_number_padded: "01"
+      track_total: "1"
+      track_year: "{upload_year}"
+      track_genre: "{subscription_indent_1}"
+
+      # Directory Overrides
+      artist_dir: "{track_artist_sanitized}"
+      album_dir: "[{track_year}] {track_album_sanitized}"
+      track_file_name: "{track_number_padded} - {track_title_sanitized}.{ext}"
+      track_full_path: "{artist_dir}/{album_dir}/{track_file_name}"
+      album_cover_path: "{artist_dir}/{album_dir}/folder.{thumbnail_ext}"
+
+
+  "Single":
+    preset:
+      - "_music_base"
+
+    download:
+      - url: "{url}"
+        include_sibling_metadata: False

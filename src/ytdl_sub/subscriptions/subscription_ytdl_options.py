@@ -178,6 +178,7 @@ class SubscriptionYTDLOptions:
             self._output_options,
             self._plugin_match_filters,
             self._plugin_ytdl_options(FormatPlugin),
+            self._plugin_ytdl_options(AudioExtractPlugin),  # will override format
             self._user_ytdl_options,  # user ytdl options...
             self._info_json_only_options,  # then info_json_only options
         )
@@ -195,8 +196,8 @@ class SubscriptionYTDLOptions:
             self._plugin_ytdl_options(FileConvertPlugin),
             self._plugin_ytdl_options(SubtitlesPlugin),
             self._plugin_ytdl_options(ChaptersPlugin),
-            self._plugin_ytdl_options(AudioExtractPlugin),
             self._plugin_ytdl_options(FormatPlugin),
+            self._plugin_ytdl_options(AudioExtractPlugin),  # will override format
             self._user_ytdl_options,  # user ytdl options...
             self._download_only_options,  # then download_only options
         )
