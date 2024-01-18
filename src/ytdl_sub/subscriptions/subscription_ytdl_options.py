@@ -85,10 +85,6 @@ class SubscriptionYTDLOptions:
         }
 
     @property
-    def _download_only_options(self) -> Dict:
-        return {"break_on_reject": True}
-
-    @property
     def _output_options(self) -> Dict:
         ytdl_options = {}
 
@@ -198,7 +194,6 @@ class SubscriptionYTDLOptions:
             self._plugin_ytdl_options(AudioExtractPlugin),
             self._plugin_ytdl_options(FormatPlugin),
             self._user_ytdl_options,  # user ytdl options...
-            self._download_only_options,  # then download_only options
         )
         # Add dry run options last if enabled
         if self._dry_run:

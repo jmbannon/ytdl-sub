@@ -1079,9 +1079,6 @@ for more details.
              # Stop downloading additional metadata/videos if it
              # exists in your download archive
              break_on_existing: True
-             # Stop downloading additional metadata/videos if it
-             # is out of your date range
-             break_on_reject: True
              # Path to your YouTube cookies file to download 18+ restricted content
              cookiefile: "/path/to/cookies/file.txt"
              # Only download this number of videos/audio

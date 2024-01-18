@@ -17,7 +17,6 @@ presets:
       max_downloads: 20
       playlistreverse: True
       break_on_existing: False
-      break_on_reject: True
 
   "Only Recent":
     # Only fetch videos after today minus date_range
