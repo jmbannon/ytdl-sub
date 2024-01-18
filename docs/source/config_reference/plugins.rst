@@ -166,6 +166,14 @@ granularity possible.
   Only download videos before this datetime.
 
 
+``breaks``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Toggle to enable breaking subsequent metadata downloads if an entry's upload date
+  is out of range. Defaults to True.
+
+
 ``enable``
 
 :expected type: Optional[OverridesFormatter]
