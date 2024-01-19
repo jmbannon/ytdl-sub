@@ -248,7 +248,7 @@ class YTDLP:
                 continue
 
             cls.logger.debug("Attempting to get parent metadata from URL %s", uploader_url)
-            parent_dict: Dict = {}
+            parent_dict: Optional[Dict] = None
             try:
                 parent_dict = cls.extract_info(
                     ytdl_options_overrides=ytdl_options_overrides | {"playlist_items": "0:0"},
@@ -257,7 +257,7 @@ class YTDLP:
             except Exception:  # pylint: disable=broad-except
                 pass
 
-            parent_id = parent_dict.get("id")
+            parent_id = parent_dict.get("id") if isinstance(parent_dict, dict) else None
             if parent_id and parent_id not in entry_ids:
                 parent_dicts.append(parent_dict)
                 entry_ids.add(parent_id)
