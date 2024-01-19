@@ -1,8 +1,6 @@
 import pytest
 from unit.script.conftest import single_variable_output
 
-from ytdl_sub.script.script import Script
-
 
 class TestBooleanFunctions:
     @pytest.mark.parametrize(
@@ -140,3 +138,32 @@ class TestBooleanFunctions:
     def test_is_null(self, value: str, expected_output: bool):
         output = single_variable_output(f"{{%is_null({value})}}")
         assert output == expected_output
+
+    def test_is_array(self):
+        assert single_variable_output("{ %is_array( [] ) }") is True
+        assert single_variable_output("{ %is_array( {} ) }") is False
+
+    def test_is_map(self):
+        assert single_variable_output("{ %is_map( {} ) }") is True
+        assert single_variable_output("{ %is_map( [] ) }") is False
+
+    def test_is_string(self):
+        assert single_variable_output("{ %is_string( 'hi' ) }") is True
+        assert single_variable_output("{ %is_string( False ) }") is False
+
+    def test_is_bool(self):
+        assert single_variable_output("{ %is_bool( True ) }") is True
+        assert single_variable_output("{ %is_bool( 0 ) }") is False
+
+    def test_is_int(self):
+        assert single_variable_output("{ %is_int( 2 ) }") is True
+        assert single_variable_output("{ %is_int( 2.3 ) }") is False
+
+    def test_is_float(self):
+        assert single_variable_output("{ %is_float( 3.14 ) }") is True
+        assert single_variable_output("{ %is_float( 4 ) }") is False
+
+    def test_is_numeric(self):
+        assert single_variable_output("{ %is_numeric( 4 ) }") is True
+        assert single_variable_output("{ %is_numeric( 2.34 ) }") is True
+        assert single_variable_output("{ %is_numeric( '3.12' ) }") is False

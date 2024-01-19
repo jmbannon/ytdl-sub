@@ -172,12 +172,61 @@ gte
 :description:
   ``>=`` operator. Returns True if left >= right. False otherwise.
 
+is_array
+~~~~~~~~
+:spec: ``is_array(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a Map. False otherwise.
+
+is_bool
+~~~~~~~
+:spec: ``is_bool(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a Float. False otherwise.
+
+is_float
+~~~~~~~~
+:spec: ``is_float(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a Float. False otherwise.
+
+is_int
+~~~~~~
+:spec: ``is_int(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is an Integer. False otherwise.
+
+is_map
+~~~~~~
+:spec: ``is_map(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a Map. False otherwise.
+
 is_null
 ~~~~~~~
 :spec: ``is_null(value: AnyArgument) -> Boolean``
 
 :description:
   Returns True if a value is null (i.e. an empty string). False otherwise.
+
+is_numeric
+~~~~~~~~~~
+:spec: ``is_numeric(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is either an Integer or Float. False otherwise.
+
+is_string
+~~~~~~~~~
+:spec: ``is_string(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a String. False otherwise.
 
 lt
 ~~
