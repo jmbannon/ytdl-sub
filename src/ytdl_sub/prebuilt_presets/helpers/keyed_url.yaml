@@ -1,0 +1,134 @@
+#
+# Kodi Music Videos with Extras:
+#   + Rick Astley:
+#     Music Videos:
+#       - url1
+#       - url2
+#       ...
+#     Concerts:
+#       - url: asfasdfasdf
+#         year: 2023
+#         title: sdfasff
+#         exclude: asdffsdf
+#       - url4
+#     Extras:
+#       - url5
+#       - url6
+#     Behind The Scenes:
+#       - ...
+#     Live:
+#       - ...
+#     Lyrics:
+#       - ...
+
+presets:
+  _keyed_url:
+
+    overrides:
+
+      # Takes a value and standardizes it to a dict, i.e.
+      #
+      #   Concerts:
+      #     - https://url1    -> { "url": "https://url1" }
+      #     - url: https://url2
+      #       title: custom title   -> { "url": "https://url2", "title": "custom title" }
+      "%standardize_value_to_dict": >-
+        {
+          %if(
+            %is_string($0),
+            { "url": $0 },
+            $0
+          )
+        }
+
+      # Takes a Subscription Dict in the form of
+      #
+      #   Concerts:
+      #     - https://url1
+      #     - url: https://url2
+      #       title: custom title
+      #   Another:
+      #     - https://url3
+      #
+      # and standardizes it to
+      #
+      # [
+      #   { "key": "Concerts", "url": "https://url1" },
+      #   { "key": "Concerts", "url": "https://url2", "title": "custom title" },
+      #   { "key": "Another", "url": "https://url3" }
+      # ]
+      "%subscription_dict_to_list__inner": >-
+        {
+          %map_extend(
+            { "key": $0 },
+            %assert_then(
+              %if(
+                %is_dict( %standardize_value_to_dict( $1 ) ),
+                %map_contains( %standardize_value_to_dict( $1 ), "url" ),
+                False
+              ),
+              %standardize_value_to_dict( $1 ),
+              "Value must be either a string or a Map with the key 'url'"
+            )
+          )
+        }
+      
+      # The actual variable that holds the subscription list of maps
+      subscription_map_list: >-
+        {
+          %map_apply( subscription_dict, %subscription_dict_to_list__inner )
+        }
+
+      # Helper function to get the i'th map in the subscription list.
+      # Returns an empty map if it does not exist.
+      "%get_subscription_map_i": >-
+        {
+          %array_at( subscription_map_list, $0, {} )
+        }
+
+      # Helper function to get the i'th map's url in the subscription list.
+      # Returns null if it does not exist.
+      "%get_subscription_map_i_url": >-
+        {
+          %map_get(
+            %get_subscription_map_i( $0 ),
+            "url",
+            null
+          )
+        }
+      
+
+    download:
+      - url: "{ %get_subscription_map_i_url(0) }"
+        playlist_thumbnails:
+          - name: "{avatar_uncropped_thumbnail_file_name}"
+            uid: "avatar_uncropped"
+          - name: "{banner_uncropped_thumbnail_file_name}"
+            uid: "banner_uncropped"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(0) }"
+      - url: "{ %get_url_by_idx(1) }"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(1) }"
+      - url: "{ %get_url_by_idx(2) }"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(2) }"
+      - url: "{ %get_url_by_idx(3) }"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(3) }"
+      - url: "{ %get_url_by_idx(4) }"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(4) }"
+      - url: "{ %get_url_by_idx(5) }"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(5) }"
+      - url: "{ %get_url_by_idx(6) }"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(6) }"
+      - url: "{ %get_url_by_idx(7) }"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(7) }"
+      - url: "{ %get_url_by_idx(8) }"
+        variables:
+          keyed_metadata: "{ %get_subscription_map_i(8) }"
+
