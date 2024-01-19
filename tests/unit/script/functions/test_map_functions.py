@@ -138,3 +138,15 @@ class TestMapFunctions:
             FunctionRuntimeException, match="Tried and failed to cast Integer as a Map"
         ):
             single_variable_output("{%map(1)}")
+
+    def test_map_extend(self):
+        output = single_variable_output(
+            """{
+            %map_extend(
+              {'key': 'value', 1: 3},
+              {'key': 'override'}
+              {'new': [1, 2]}
+            )
+        }"""
+        )
+        assert output == {"key": "override", "new": [1, 2], 1: 3}

@@ -415,6 +415,14 @@ map_enumerate
   Apply a lambda function on the Map, where each arg
   passed to the lambda function is ``idx, key, value`` as three separate args.
 
+map_extend
+~~~~~~~~~~
+:spec: ``map_extend(maps: Map, ...) -> Map``
+
+:description:
+  Return maps combined in the order from left-to-right. Duplicate keys will use the
+  right-most map's value.
+
 map_get
 ~~~~~~~
 :spec: ``map_get(mapping: Map, key: AnyArgument, default: Optional[AnyArgument]) -> AnyArgument``
