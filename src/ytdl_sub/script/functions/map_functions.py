@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.map import Map
@@ -65,6 +65,19 @@ class MapFunctions:
                 f"Tried to call %map_get with key {key.value}, but it does not exist"
             )
         return mapping.value[key]
+
+    @staticmethod
+    def map_extend(*maps: Map) -> Map:
+        """
+        :description:
+          Return maps combined in the order from left-to-right. Duplicate keys will use the
+          right-most map's value.
+        """
+        output_dict: Dict = {}
+        for map_i in maps:
+            output_dict |= map_i.value
+
+        return Map(output_dict)
 
     @staticmethod
     def map_get_non_empty(mapping: Map, key: AnyArgument, default: AnyArgument) -> AnyArgument:
