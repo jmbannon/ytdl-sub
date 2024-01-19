@@ -102,7 +102,7 @@ class YTDLP:
             )
 
             if is_downloaded and is_thumbnail_downloaded:
-                return entry_dict
+                return entry_dict or {}  # in-case yt-dlp returns None
 
             # Always add check_formats
             # See https://github.com/yt-dlp/yt-dlp/issues/502
@@ -220,11 +220,11 @@ class YTDLP:
             with cls._listen_and_log_downloaded_info_json(
                 working_directory=working_directory, log_prefix=log_prefix_on_info_json_dl
             ):
-                _ = cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
+                cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
             cls.logger.debug(
                 "RejectedVideoReached, stopping additional downloads "
-                "(Can be disable by setting `ytdl_options.break_on_reject` to False)."
+                "(Can be disable by setting `date_range.breaking` to False)."
             )
         except ExistingVideoReached:
             cls.logger.debug(
@@ -234,4 +234,34 @@ class YTDLP:
         except MaxDownloadsReached:
             cls.logger.info("MaxDownloadsReached, stopping additional downloads.")
 
-        return cls._get_entry_dicts_from_info_json_files(working_directory=working_directory)
+        parent_dicts: List[Dict] = []
+        entry_dicts = cls._get_entry_dicts_from_info_json_files(working_directory=working_directory)
+        entry_ids = {entry_dict.get("id") for entry_dict in entry_dicts}
+
+        # Try to get additional uploader (source) metadata that yt-dlp does not fetch
+        # in a single request
+        for entry_dict in entry_dicts:
+            if not (uploader_id := entry_dict.get("uploader_id")):
+                continue
+
+            if uploader_id in entry_ids or not (uploader_url := entry_dict.get("uploader_url")):
+                continue
+
+            cls.logger.debug("Attempting to get parent metadata from URL %s", uploader_url)
+            try:
+                parent_dict = cls.extract_info(
+                    ytdl_options_overrides=ytdl_options_overrides | {"playlist_items": "0:0"},
+                    url=uploader_url,
+                )
+            except Exception:  # pylint: disable=broad-except
+                # Do not try this uploader_id again
+                entry_ids.add(uploader_id)
+                break
+
+            if isinstance(parent_dict, dict):
+                parent_id = parent_dict.get("id")
+                parent_dicts.append(parent_dict)
+                entry_ids |= {uploader_id, parent_id}
+                cls.logger.debug("Adding parent metadata with ids [%s, %s]", uploader_id, parent_id)
+
+        return entry_dicts + parent_dicts

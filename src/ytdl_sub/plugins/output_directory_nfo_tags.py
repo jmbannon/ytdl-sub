@@ -32,7 +32,7 @@ class OutputDirectoryNfoTagsOptions(SharedNfoTagsOptions):
     # Hack to make it so collection named seasons do not error
     # when adding output_directory_nfo info for plex
     _required_keys = set()
-    _optional_keys = {"kodi_safe", "nfo_name", "nfo_root", "tags"}
+    _optional_keys = {"enable", "kodi_safe", "nfo_name", "nfo_root", "tags"}
 
     @property
     def nfo_root(self) -> StringFormatterValidator:

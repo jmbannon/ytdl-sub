@@ -1,0 +1,36 @@
+presets:
+
+  "Only Recent":
+    preset:
+      - "Only Recent Archive"
+    # Only fetch videos after today minus date_range
+
+    # Only keep files uploaded after date_range
+    output_options:
+      keep_files_after: "today-{only_recent_date_range}"
+      keep_max_files: "{only_recent_max_files}"
+
+    overrides:
+      only_recent_max_files: 0
+
+
+  "Only Recent Archive":
+    # Only fetch videos after today minus date_range
+    date_range:
+      after: "today-{only_recent_date_range}"
+
+    # Set the default date_range to 2 months
+    overrides:
+      date_range: "2months"  # keep for legacy-reasons
+      only_recent_date_range: "{date_range}"
+      
+
+  chunk_initial_download:
+    ytdl_options:
+      max_downloads: 20
+      playlistreverse: True
+      break_on_existing: False
+
+  "Download in Chunks":
+    preset:
+      - chunk_initial_download

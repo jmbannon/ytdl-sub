@@ -25,6 +25,8 @@ General options must be specified before the command (i.e. ``sub``).
                         path to store the transaction log output of all files added, modified, deleted
   -st, --suppress-transaction-log
                         do not output transaction logs to console or file
+  -m MATCH [MATCH ...], --match MATCH [MATCH ...]
+                        match subscription names to one or more substrings, and only run those subscriptions
 
 Sub Options
 -----------
@@ -36,6 +38,14 @@ Download all subscriptions specified in each ``SUBPATH``.
 
 ``SUBPATH`` is one or more paths to subscription files, uses ``subscriptions.yaml`` if not provided.
 It will use the config specified by ``--config``, or ``config.yaml`` if not provided.
+
+.. code-block:: text
+  :caption: Additional Options
+
+  -u, --update-with-info-json
+                        update all subscriptions with the current config using info.json files
+  -o DL_OVERRIDE, --dl-override DL_OVERRIDE
+                        override all subscription config values using `dl` syntax, i.e. --dl-override='--ytdl_options.max_downloads 3'
 
 Download Options
 -----------------
@@ -67,7 +77,7 @@ Using the command:
       --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 
 See how to shorten commands using
-`download aliases <https://ytdl-sub.readthedocs.io/en/latest/config.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
+`download aliases <https://ytdl-sub.readthedocs.io/en/latest/config_reference/config_yaml.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
 
 View Options
 -----------------
@@ -76,6 +86,7 @@ View Options
    ytdl-sub view [-sc] [URL]
 
 .. code-block:: text
+  :caption: Additional Options
 
   -sc, --split-chapters
                         View source variables after splitting by chapters

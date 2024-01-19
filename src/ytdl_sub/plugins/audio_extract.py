@@ -6,7 +6,7 @@ from typing import Set
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
-from ytdl_sub.config.validators.options import OptionsDictValidator
+from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
@@ -21,7 +21,7 @@ from ytdl_sub.validators.validators import FloatValidator
 v: VariableDefinitions = VARIABLES
 
 
-class AudioExtractOptions(OptionsDictValidator):
+class AudioExtractOptions(ToggleableOptionsDictValidator):
     """
     Extracts audio from a video file.
 
@@ -35,7 +35,7 @@ class AudioExtractOptions(OptionsDictValidator):
     """
 
     _required_keys = {"codec"}
-    _optional_keys = {"quality"}
+    _optional_keys = {"enable", "quality"}
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
@@ -102,6 +102,8 @@ class AudioExtractPlugin(Plugin[AudioExtractOptions]):
         return ytdl_options_builder.add(
             {
                 "postprocessors": [postprocessor_dict],
+                "format": "bestaudio/best",
+                "keepvideo": False,
             }
         ).to_dict()
 

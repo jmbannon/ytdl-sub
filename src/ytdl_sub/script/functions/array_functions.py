@@ -73,12 +73,18 @@ class ArrayFunctions:
         return Array(output)
 
     @staticmethod
-    def array_at(array: Array, idx: Integer) -> AnyArgument:
+    def array_at(array: Array, idx: Integer, default: Optional[AnyArgument] = None) -> AnyArgument:
         """
         :description:
-          Return the element in the Array at index ``idx``.
+          Return the element in the Array at index ``idx``. If ``idx`` exceeds the array length,
+          either return ``default`` if provided or throw an error.
         """
-        return array.value[idx.value]
+        try:
+            return array.value[idx.value]
+        except IndexError:
+            if default is not None:
+                return default
+            raise
 
     @staticmethod
     def array_first(array: Array, fallback: AnyArgument) -> AnyArgument:

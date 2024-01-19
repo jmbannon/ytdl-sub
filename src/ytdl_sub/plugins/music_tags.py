@@ -1,6 +1,4 @@
-import copy
 from collections import defaultdict
-from typing import Any
 from typing import Dict
 from typing import List
 
@@ -14,10 +12,8 @@ from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
-from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.validators import BoolValidator
 
 v: VariableDefinitions = VARIABLES
 
@@ -38,31 +34,6 @@ def _is_multi_field(tag_name: str) -> bool:
         "albumartists_sort",
         "mb_albumartistids",
     }
-
-
-class MusicTagsValidator(StrictDictValidator):
-    """
-    Validator for the music_tag's `tags` field. Treat each value as a list.
-    Can still specify it like a single value but under-the-hood it's a list of a single element.
-    """
-
-    _optional_keys = set(list(mediafile.MediaFile.sorted_fields()))
-
-    def __init__(self, name, value):
-        super().__init__(name, value)
-
-        self._tags: Dict[str, List[StringFormatterValidator]] = {}
-        for key in self._keys:
-            self._tags[key] = self._validate_key(key=key, validator=ListFormatterValidator).list
-
-    @property
-    def as_lists(self) -> Dict[str, List[StringFormatterValidator]]:
-        """
-        Returns
-        -------
-        Tag formatter(s) as a list
-        """
-        return self._tags
 
 
 class MusicTagsOptions(OptionsDictValidator):
@@ -93,39 +64,23 @@ class MusicTagsOptions(OptionsDictValidator):
                - "ytdl-sub"
     """
 
-    _optional_keys = {"tags", "embed_thumbnail"}
-    _allow_extra_keys = True
+    _optional_keys = set(list(mediafile.MediaFile.sorted_fields()))
 
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._embed_thumbnail = self._validate_key_if_present(
-            key="embed_thumbnail", validator=BoolValidator
-        )
-
-        new_tags_dict: Dict[str, Any] = copy.deepcopy(value)
-        old_tags_dict = new_tags_dict.pop("tags", {})
-        new_tags_dict.pop("embed_thumbnail", None)
-
-        self._is_old_format = len(old_tags_dict) > 0 or self._embed_thumbnail is not None
-        self._tags = MusicTagsValidator(name=name, value=dict(old_tags_dict, **new_tags_dict))
+        self._tags: Dict[str, List[StringFormatterValidator]] = {}
+        for key in self._keys:
+            self._tags[key] = self._validate_key(key=key, validator=ListFormatterValidator).list
 
     @property
-    def tags(self) -> MusicTagsValidator:
+    def as_lists(self) -> Dict[str, List[StringFormatterValidator]]:
         """
-        Key, values of tag names, tag values. Supports source and override variables.
-        Supports lists which will get written to MP3s as id3v2.4 multi-tags.
+        Returns
+        -------
+        Tag formatter(s) as a list
         """
         return self._tags
-
-    @property
-    def embed_thumbnail(self) -> bool:
-        """
-        Optional. Whether to embed the thumbnail into the audio file.
-        """
-        if self._embed_thumbnail is None:
-            return False
-        return self._embed_thumbnail.value
 
 
 class MusicTagsPlugin(Plugin[MusicTagsOptions]):
@@ -142,23 +97,9 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                 f"to audio using the audio_extract plugin."
             )
 
-        # pylint: disable=protected-access
-        if self.plugin_options._is_old_format:
-            logger.warning(
-                "music_tags.tags is now deprecated. Place your tags directly under music_tags "
-                "instead. The old format will be removed in October of 2023. See "
-                "https://ytdl-sub.readthedocs.io/en/latest/deprecation_notices.html#music-tags "
-                "for more details."
-            )
-        if self.plugin_options.embed_thumbnail:
-            logger.warning(
-                "music_tags.embed_thumbnail is also deprecated. Use the dedicated "
-                "embed_thumbnail plugin instead. This will be removed in October of 2023."
-            )
-
         # Resolve the tags into this dict
         tags_to_write: Dict[str, List[str]] = defaultdict(list)
-        for tag_name, tag_formatters in self.plugin_options.tags.as_lists.items():
+        for tag_name, tag_formatters in self.plugin_options.as_lists.items():
             for tag_formatter in tag_formatters:
                 tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
                 tags_to_write[tag_name].append(tag_value)
@@ -180,19 +121,10 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                         )
                     setattr(audio_file, tag_name, tag_value[0])
 
-            if self.plugin_options.embed_thumbnail and entry.is_thumbnail_downloaded():
-                with open(entry.get_download_thumbnail_path(), "rb") as thumb:
-                    mediafile_img = mediafile.Image(
-                        data=thumb.read(), desc="cover", type=mediafile.ImageType.front
-                    )
-
-                audio_file.images = [mediafile_img]
-
             audio_file.save()
 
         # report the tags written
-        title = f"{'Embedded Thumbnail, ' if self.plugin_options.embed_thumbnail else ''}Music Tags"
         return FileMetadata.from_dict(
+            title="Music Tags",
             value_dict=tags_to_write,
-            title=title,
         )

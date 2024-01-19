@@ -4,7 +4,7 @@ from typing import List
 from typing import Tuple
 
 from ytdl_sub.config.plugin.plugin import Plugin
-from ytdl_sub.config.validators.options import OptionsDictValidator
+from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.validators import StringListValidator
 
@@ -44,19 +44,17 @@ def combine_filters(filters: List[str], to_combine: List[str]) -> List[str]:
     if not filters:
         return copy.deepcopy(to_combine)
 
-    if len(to_combine) > 1:
-        raise ValueError("Match-filters to combine only supports 1 at this time")
-
     output_filters: List[str] = []
-    filter_to_combine: str = to_combine[0]
 
     for match_filter in filters:
-        output_filters.append(f"{match_filter} & {filter_to_combine}")
+        output_filters.append(match_filter)
+        for filter_combine in to_combine:
+            output_filters[-1] += f" & {filter_combine}"
 
     return output_filters
 
 
-class MatchFiltersOptions(OptionsDictValidator):
+class MatchFiltersOptions(ToggleableOptionsDictValidator):
     """
     Set ``--match-filters`` to pass into yt-dlp to filter entries from being downloaded.
     Uses the same syntax as yt-dlp. An entry will be downloaded if any one of the filters are met.
@@ -74,7 +72,7 @@ class MatchFiltersOptions(OptionsDictValidator):
            # - "availability=?public"
     """
 
-    _optional_keys = {"filters"}
+    _optional_keys = {"enable", "filters"}
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:

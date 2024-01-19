@@ -6,7 +6,7 @@ from typing import Tuple
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import Plugin
-from ytdl_sub.config.validators.options import OptionsDictValidator
+from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
@@ -59,7 +59,7 @@ class RandomizedRangeValidator(StrictDictValidator):
         return int(self.randomized_float())
 
 
-class ThrottleProtectionOptions(OptionsDictValidator):
+class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
     """
     Provides options to make ytdl-sub look more 'human-like' to protect from throttling. For
     range-based values, a random number will be chosen within the range to avoid sleeps looking
@@ -85,6 +85,7 @@ class ThrottleProtectionOptions(OptionsDictValidator):
     """
 
     _optional_keys = {
+        "enable",
         "sleep_per_download_s",
         "sleep_per_subscription_s",
         "max_downloads_per_subscription",

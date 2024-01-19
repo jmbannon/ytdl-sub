@@ -85,20 +85,18 @@ class SubscriptionYTDLOptions:
         }
 
     @property
-    def _download_only_options(self) -> Dict:
-        return {"break_on_reject": True}
-
-    @property
     def _output_options(self) -> Dict:
         ytdl_options = {}
 
         if self._preset.output_options.maintain_download_archive:
             ytdl_options["download_archive"] = self._enhanced_download_archive.working_file_path
         if self._preset.output_options.keep_max_files:
-            # yt-dlp has a weird bug with max_downloads=1, set to 2 for safe measure
-            ytdl_options["max_downloads"] = max(
-                int(self._overrides.apply_formatter(self._preset.output_options.keep_max_files)), 2
+            keep_max_files = int(
+                self._overrides.apply_formatter(self._preset.output_options.keep_max_files)
             )
+            if keep_max_files > 0:
+                # yt-dlp has a weird bug with max_downloads=1, set to 2 for safe measure
+                ytdl_options["max_downloads"] = max(keep_max_files, 2)
 
         return ytdl_options
 
@@ -176,6 +174,7 @@ class SubscriptionYTDLOptions:
             self._output_options,
             self._plugin_match_filters,
             self._plugin_ytdl_options(FormatPlugin),
+            self._plugin_ytdl_options(AudioExtractPlugin),  # will override format
             self._user_ytdl_options,  # user ytdl options...
             self._info_json_only_options,  # then info_json_only options
         )
@@ -193,10 +192,9 @@ class SubscriptionYTDLOptions:
             self._plugin_ytdl_options(FileConvertPlugin),
             self._plugin_ytdl_options(SubtitlesPlugin),
             self._plugin_ytdl_options(ChaptersPlugin),
-            self._plugin_ytdl_options(AudioExtractPlugin),
             self._plugin_ytdl_options(FormatPlugin),
+            self._plugin_ytdl_options(AudioExtractPlugin),  # will override format
             self._user_ytdl_options,  # user ytdl options...
-            self._download_only_options,  # then download_only options
         )
         # Add dry run options last if enabled
         if self._dry_run:

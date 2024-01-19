@@ -17,9 +17,6 @@ class TestPreset:
             "youtube.com/watch?v=123abc",  # single string
             ["youtube.com/watch?v=123abc", "youtube.com/watch?v=123xyz"],  # list of strings
             [{"url": "youtube.com/watch?v=123abc"}, "youtube.com/watch?v=123abc"],  # dict and str
-            # OLD download_strategy format
-            {"download_strategy": "url", "url": "youtube.com/watch?v=123abc"},
-            {"download_strategy": "multi-url", "urls": [{"url": "youtube.com/watch?v=123abc"}]},
         ],
     )
     def test_bare_minimum_preset(self, config_file, output_options, download_value):
@@ -129,7 +126,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Variable dne_var does not exist.",
+            match="contains the following variables that do not exist: dne_var",
         ):
             _ = Preset(
                 config=config_file,
@@ -145,7 +142,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Variable dne_var does not exist",
+            match="contains the following variables that do not exist: dne_var",
         ):
             _ = Preset(
                 config=config_file,
@@ -161,7 +158,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Variable dne_var does not exist",
+            match="contains the following variables that do not exist: dne_var",
         ):
             _ = Preset(
                 config=config_file,
@@ -182,7 +179,7 @@ class TestPreset:
     ):
         with pytest.raises(
             StringFormattingVariableNotFoundException,
-            match="Variable dne_var does not exist",
+            match="contains the following variables that do not exist: dne_var",
         ):
             _ = Preset(
                 config=config_file,
@@ -194,6 +191,26 @@ class TestPreset:
                         "nfo_name": "the nfo name",
                         "nfo_root": "the root",
                         "tags": {"tag_a": "{dne_var}"},
+                    },
+                },
+            )
+
+    def test_preset_error__dict_override_variable_not_static(
+        self, config_file, output_options, youtube_video
+    ):
+        with pytest.raises(
+            StringFormattingVariableNotFoundException,
+            match="static formatters must contain variables that "
+            "have no dependency to entry variables",
+        ):
+            _ = Preset(
+                config=config_file,
+                name="test",
+                value={
+                    "download": youtube_video,
+                    "output_options": {
+                        "output_directory": "{title}",
+                        "file_name": "{uid}",
                     },
                 },
             )

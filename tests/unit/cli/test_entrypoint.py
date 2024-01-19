@@ -2,6 +2,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Callable
+from typing import List
 from unittest.mock import patch
 
 import pytest
@@ -22,6 +23,7 @@ from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
 @pytest.mark.parametrize("dry_run", [True, False])
 @pytest.mark.parametrize("mock_success_output", [True, False])
 @pytest.mark.parametrize("keep_successful_logs", [True, False])
+@pytest.mark.parametrize("match", [[], ["Rick", "Michael"]])
 def test_subscription_logs_write_to_file(
     persist_logs_directory: str,
     persist_logs_config_factory: Callable,
@@ -30,8 +32,11 @@ def test_subscription_logs_write_to_file(
     dry_run: bool,
     mock_success_output: bool,
     keep_successful_logs: bool,
+    match: List[str],
 ):
-    subscripton_names = ["Rick Astley", "Michael Jackson", "Eric Clapton"]
+    subscription_names = ["Rick Astley", "Michael Jackson", "Eric Clapton"]
+    if match:
+        subscription_names = ["Rick Astley", "Michael Jackson"]
     num_runs = 2
 
     config = persist_logs_config_factory(keep_successful_logs=keep_successful_logs)
@@ -47,6 +52,8 @@ def test_subscription_logs_write_to_file(
             _download_subscriptions_from_yaml_files(
                 config=config,
                 subscription_paths=subscription_paths,
+                subscription_matches=match,
+                subscription_override_dict={},
                 update_with_info_json=False,
                 dry_run=dry_run,
             )
@@ -61,8 +68,8 @@ def test_subscription_logs_write_to_file(
         return
     # If not success, expect 2 log files for both sub errors
     elif not mock_success_output:
-        assert len(log_directory_files) == (num_runs * len(subscripton_names))
-        for log_path, subscription_name in zip(log_directory_files, subscripton_names):
+        assert len(log_directory_files) == (num_runs * len(subscription_names))
+        for log_path, subscription_name in zip(log_directory_files, subscription_names):
             subscription_log_file_name = subscription_name.lower().replace(" ", "_")
 
             assert bool(re.match(rf"\d\.{subscription_log_file_name}\.error\.log", log_path.name))
@@ -74,9 +81,9 @@ def test_subscription_logs_write_to_file(
                 )
     # If success and success logging, expect 3 log files
     else:
-        assert len(log_directory_files) == (num_runs * len(subscripton_names))
+        assert len(log_directory_files) == (num_runs * len(subscription_names))
         for log_file_path, subscription_name in zip(
-            log_directory_files, subscripton_names * num_runs
+            log_directory_files, subscription_names * num_runs
         ):
             subscription_log_file_name = subscription_name.lower().replace(" ", "_")
 

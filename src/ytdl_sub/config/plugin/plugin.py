@@ -1,5 +1,6 @@
 from abc import ABC
 from abc import abstractmethod
+from functools import cached_property
 from typing import Dict
 from typing import Generic
 from typing import List
@@ -8,9 +9,11 @@ from typing import Tuple
 from typing import Type
 
 from ytdl_sub.config.overrides import Overrides
+from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.config.validators.options import TOptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -39,6 +42,17 @@ class Plugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
     """
     Class to define the new plugin functionality
     """
+
+    @cached_property
+    def is_enabled(self) -> bool:
+        """
+        Returns True if enabled, False if disabled.
+        """
+        if isinstance(self.plugin_options, ToggleableOptionsDictValidator):
+            return ScriptUtils.bool_formatter_output(
+                self.overrides.apply_formatter(self.plugin_options.enable)
+            )
+        return True
 
     def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
         """

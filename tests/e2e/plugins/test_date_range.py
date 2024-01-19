@@ -40,20 +40,30 @@ def rolling_recent_channel_preset_dict(recent_preset_dict):
 
 class TestDateRange:
     @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("date_range_breaks", [True, False])
     def test_recent_channel_download(
         self,
         recent_preset_dict,
         tv_show_config,
         output_directory,
-        dry_run,
+        dry_run: bool,
+        date_range_breaks: bool,
     ):
+        recent_preset_dict["date_range"]["breaks"] = date_range_breaks
         recent_channel_subscription = Subscription.from_dict(
             config=tv_show_config,
             preset_name="recent",
             preset_dict=recent_preset_dict,
         )
 
-        transaction_log = recent_channel_subscription.download(dry_run=dry_run)
+        with assert_logs(
+            logger=YTDLP.logger,
+            expected_message="RejectedVideoReached, stopping additional downloads",
+            log_level="debug",
+            expected_occurrences=1 if date_range_breaks else 0,
+        ):
+            transaction_log = recent_channel_subscription.download(dry_run=dry_run)
+
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,

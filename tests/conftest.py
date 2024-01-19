@@ -113,7 +113,7 @@ def assert_logs(
     for call_args in patched_debug.call_args_list:
         occurrences += int(expected_message in call_args.args[0])
 
-    if expected_occurrences:
+    if expected_occurrences is not None:
         assert (
             occurrences == expected_occurrences
         ), f"{expected_message} was expected {expected_occurrences} times, got {occurrences}"

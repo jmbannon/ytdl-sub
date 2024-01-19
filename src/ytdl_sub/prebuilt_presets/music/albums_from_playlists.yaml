@@ -1,0 +1,36 @@
+presets:
+
+  # assumes that each entry is a song in one album
+  _albums_from_playlists:
+    preset:
+      - "_music_base"
+
+    download:
+      - url: "{url}"
+        include_sibling_metadata: True
+
+    overrides:
+      track_album: "{playlist_title}"
+      track_number: "{playlist_index}"
+      track_number_padded: "{playlist_index_padded}"
+      track_total: "{playlist_count}"
+      track_year: "{playlist_max_upload_year}"
+
+  "YouTube Releases":
+    preset:
+      - "_albums_from_playlists"
+
+  "Bandcamp":
+    preset:
+      - "_albums_from_playlists"
+    regex:
+      from:
+        title:
+          match:
+            - ".*? - (.*)"  # Captures 'Some - Song' from 'Emily Hopkins - Some - Song'
+          capture_group_names:
+            - "captured_track_title"
+          capture_group_defaults:
+            - "{title}"
+    overrides:
+      track_title: "{captured_track_title}"
