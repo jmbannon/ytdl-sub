@@ -1,4 +1,5 @@
-from typing import Optional, Dict
+from typing import Dict
+from typing import Optional
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.map import Map
