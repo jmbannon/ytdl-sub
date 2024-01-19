@@ -44,14 +44,12 @@ def combine_filters(filters: List[str], to_combine: List[str]) -> List[str]:
     if not filters:
         return copy.deepcopy(to_combine)
 
-    if len(to_combine) > 1:
-        raise ValueError("Match-filters to combine only supports 1 at this time")
-
     output_filters: List[str] = []
-    filter_to_combine: str = to_combine[0]
 
     for match_filter in filters:
-        output_filters.append(f"{match_filter} & {filter_to_combine}")
+        output_filters.append(match_filter)
+        for filter_combine in to_combine:
+            output_filters[-1] += f" & {filter_combine}"
 
     return output_filters
 

@@ -224,7 +224,7 @@ class YTDLP:
         except RejectedVideoReached:
             cls.logger.debug(
                 "RejectedVideoReached, stopping additional downloads "
-                "(Can be disable by setting `ytdl_options.break_on_reject` to False)."
+                "(Can be disable by setting `date_range.breaking` to False)."
             )
         except ExistingVideoReached:
             cls.logger.debug(
