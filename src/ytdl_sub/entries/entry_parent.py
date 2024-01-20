@@ -4,6 +4,7 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Set
+from urllib.parse import urlparse
 
 from ytdl_sub.entries.base_entry import BaseEntry
 from ytdl_sub.entries.base_entry import TBaseEntry
@@ -152,7 +153,12 @@ class EntryParent(BaseEntry):
         """
 
         def _url_matches(parent: "EntryParent"):
-            return parent.webpage_url in url or url in parent.webpage_url
+            url_parsed = urlparse(url)
+            parent_parsed = urlparse(parent.webpage_url)
+            return (
+                url_parsed.hostname == parent_parsed.hostname
+                and url_parsed.path == parent_parsed.path
+            )
 
         def _uid_is_uploader_id(parent: "EntryParent"):
             return parent.uid == parent.uploader_id
@@ -168,18 +174,10 @@ class EntryParent(BaseEntry):
         if len(top_level_parents) > 1:
             top_level_parents = [parent for parent in top_level_parents if _url_matches(parent)]
 
-        match len(top_level_parents):
-            case 0:
-                return None
-            case 1:
-                return top_level_parents[0]
-            case 2:
-                # Channels can have two of the same .info.json. Handle it here
-                top0 = top_level_parents[0]
-                top1 = top_level_parents[1]
-                if top0.uploader_id == top1.uploader_id:
-                    return top0 if not top0.webpage_url.endswith("/videos") else top1
-
+        if len(top_level_parents) == 0:
+            return None
+        if len(top_level_parents) == 1:
+            return top_level_parents[0]
         raise ValueError(
             "Detected multiple top-level parents. "
             "Please file an issue on GitHub with the URLs used to produce this error"
