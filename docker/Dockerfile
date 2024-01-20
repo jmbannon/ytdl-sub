@@ -22,7 +22,7 @@ RUN mkdir -p /config && \
       py3-setuptools && \
     # Install edge ffmpeg and aria2 from community, ensure they are properly installed
     apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-      "ffmpeg>=6.1.1-r1" \
+      "ffmpeg>5.1" \
       "aria2>=1.36.0" && \
     ffmpeg -version && \
     aria2c --version && \
