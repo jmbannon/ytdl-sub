@@ -9,6 +9,14 @@ Your first configuration will look pretty simple:
   configuration:
     working_directory: '.ytdl-sub-downloads'
 
+  presets:
+    TV Show:
+      preset:
+        - "Jellyfin TV Show by Date"
+        - "Only Recent"
+
+      overrides:
+        tv_show_directory: "/ytdl_sub_tv_shows"
 
 
 The first two lines in this ``config.yaml`` file are the ``configuration``, and define the ``working_directory``, which is described near the bottom of :ref:`this section <guides/getting_started/index:quick overview of \`\`ytdl-sub\`\`>`

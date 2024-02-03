@@ -6,7 +6,7 @@ This section contains the code for the prebuilt presets. If you just want to und
 
 
 
-.. toctree:: 
-  helpers_common
-  helpers_players
-  helpers_url
+.. toctree::
+  common
+  tv_show
+  music
