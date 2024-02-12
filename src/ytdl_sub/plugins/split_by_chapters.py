@@ -89,7 +89,6 @@ class SplitByChaptersOptions(OptionsDictValidator):
         return {
             PluginOperation.MODIFY_ENTRY: {
                 "chapter_title",
-                "chapter_title_sanitized",
                 "chapter_index",
                 "chapter_index_padded",
                 "chapter_count",
