@@ -156,7 +156,7 @@ granularity possible.
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos before this datetime.
+  Only download videos after this datetime.
 
 
 ``before``

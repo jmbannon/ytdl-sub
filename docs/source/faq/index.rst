@@ -10,6 +10,18 @@ Since ytdl-sub is relatively new to the public, there has not been many question
 How do I...
 -----------
 
+...remove the date in the video title?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :ref:`config_reference/prebuilt_presets/tv_show:TV Show` presets by default include the upload date in the ``episode_title``
+override variable. This variable is used to set the title in things like the video metadata, NFO file, etc, which is
+subsequently read by media players. This can be overwritten as you see fit by redefining it:
+
+.. code-block:: yaml
+
+   overrides:
+     episode_title: "{title}"  # Only sets the video title
+
 ...get support or reach out to contribute?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
