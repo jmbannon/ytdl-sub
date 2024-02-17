@@ -8,7 +8,8 @@ from typing import Type
 from typing import TypeVar
 from typing import final
 
-from yt_dlp.utils import sanitize_filename, LazyList
+from yt_dlp.utils import LazyList
+from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
