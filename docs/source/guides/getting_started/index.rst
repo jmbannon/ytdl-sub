@@ -29,28 +29,44 @@ If you plan on using the headless image of ``ytdl-sub``, you:
 Additional useful (but not required) knowledge:
   ☑ Understanding how :yt-dlp:`\ ` works
 
-
-Quick Overview of ``ytdl-sub``
-------------------------------
-
+Overview
+--------
 ``ytdl-sub`` uses two types of YAML files:
 
-- ``config.yaml`` defines ``presets``, which are the "definitions" of your media. ``presets`` "define" how you want your media downloaded, which formats, naming conventions to follow when saving them, etc. These ``presets`` can also inherit other ``presets``, so that you can easily modify an existing ``preset``.
-- ``subscriptions.yaml`` defines ``subscriptions``, which specify the media we want to recurrently download, like YouTube channels and playlists, SoundCloud artists, or any :yt-dlp:`yt-dlp supported site <blob/master/supportedsites.md>`. ``subscriptions`` use ``presets`` to define how ``ytdl-sub`` should handle downloading, processing, and saving them.
+subscriptions.yaml
+~~~~~~~~~~~~~~~~~~
+Defines ``subscriptions``, which specify the media we want to recurrently download, like YouTube
+channels and playlists, SoundCloud artists, or any
+:yt-dlp:`yt-dlp supported site <blob/master/supportedsites.md>`. ``subscriptions`` use ``presets``
+to define how ``ytdl-sub`` should handle downloading, processing, and saving them.
 
-When ``ytdl-sub`` is run, in its most basic form:
+``ytdl-sub`` comes packaged with many
+:ref:`prebuilt presets <prebuilt_presets/index:Prebuilt Presets>`
+that will play nicely with well-known media players.
+
+config.yaml
+~~~~~~~~~~~
+To customize ``ytdl-sub`` to beyond the prebuilt presets, you will need a ``config.yaml`` file. This
+file is where custom ``presets`` can be defined to orchestrate ``ytdl-sub`` to your very specific needs.
+
+Running ytdl-sub
+~~~~~~~~~~~~~~~~
+To invoke ``ytdl-sub`` to download subscriptions, use the following command:
 
 .. tab-set-code:: 
 
     .. code-block:: shell
         
-        ytdl-sub sub
+        ytdl-sub sub subscriptions.yaml
 
     .. code-block:: powershell
 
-        ytdl-sub.exe sub
+        ytdl-sub.exe sub subscriptions.yaml
 
-``ytdl-sub`` initially downloads all files to a defined ``working_directory``. This is a temporary storage spot for metadata and media files so that errors during processing- if they occur- don't affect your existing media library. Once all file processing is complete, your media files are moved to the ``output_directory``.
+``ytdl-sub`` initially downloads all files to a defined ``working_directory``. This is a temporary
+storage spot for metadata and media files so that errors during processing- if they occur- don't
+affect your existing media library. Once all file processing is complete, your media files are
+moved to the ``output_directory``.
 
 Ready to Start?
 ---------------
