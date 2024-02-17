@@ -8,6 +8,7 @@ from typing import Type
 from typing import TypeVar
 from typing import final
 
+from yt_dlp.utils import LazyList
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
@@ -36,6 +37,12 @@ class BaseEntry(ABC):
         """
         self._working_directory = working_directory
         self._kwargs = entry_dict
+
+        # Sometimes yt-dlp can return a LazyList which is not JSON serializable.
+        # Cast it to a native list here. (https://github.com/jmbannon/ytdl-sub/issues/910)
+        for key in self._kwargs.keys():
+            if isinstance(self._kwargs[key], LazyList):
+                self._kwargs[key] = list(self._kwargs[key])
 
     @property
     def uid(self) -> str:
