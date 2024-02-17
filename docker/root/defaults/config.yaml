@@ -1,8 +1,8 @@
 # Bare-bones config. Here are some useful links to get started:
-#   Walk-through Guide:  https://github.com/jmbannon/ytdl-sub/wiki/1.-Introduction
+#   Walk-through Guide:  https://ytdl-sub.readthedocs.io/en/latest/guides/index.html
 #   Config Examples:     https://github.com/jmbannon/ytdl-sub/tree/master/examples
 #   Prebuilt Presets:    https://ytdl-sub.readthedocs.io/en/latest/presets.html
-#   Config Docs:         https://ytdl-sub.readthedocs.io/en/latest/config.html
+#   Config Reference:    https://ytdl-sub.readthedocs.io/en/latest/config_reference/index.html
 #
 # The subscriptions in `subscriptions.yaml` uses prebuilt presets which do not require
 # any additions to this config. They can be downloaded using the command:

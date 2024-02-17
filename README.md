@@ -182,7 +182,7 @@ music_videos/
 
 ## Custom Configs
 Any part of this process is modifiable by using custom configs. See our
-[walk-through guide](https://github.com/jmbannon/ytdl-sub/wiki)
+[walk-through guide](https://ytdl-sub.readthedocs.io/en/latest/guides/index.html)
 on how to build your first config from scratch. Ready-to-use
 [example configurations](https://github.com/jmbannon/ytdl-sub/tree/master/examples)
 can be found here alongside our
