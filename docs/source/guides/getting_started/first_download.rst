@@ -1,7 +1,9 @@
 Initial Download
 ================
 
-Once you have the ``config.yaml`` and ``subscriptions.yaml`` files created and filled out, you can perform your first download. Access ``ytdl-sub``, navigate to the directory containing your ``config.yaml`` and ``subscriptions.yaml`` files, then run the below command:
+Once you have a ``subscriptions.yaml`` file created and filled out, you can perform your first
+download. Access ``ytdl-sub``, navigate to the directory containing your ``subscriptions.yaml``
+file, then run the below command:
 
 .. tab-set:: 
 
@@ -27,4 +29,4 @@ Once you have the ``config.yaml`` and ``subscriptions.yaml`` files created and f
 
     .. code-block:: shell
       
-      ytdl-sub dl --preset "My Favorite YouTube Channels" --overrides.subscription_name "Rick Astley" --overrides.subscription_value "https://www.youtube.com/@RickAstleyYT/videos"
+      ytdl-sub dl --preset "Jellyfin TV Show by Date" --overrides.subscription_name "NOVA PBS" --overrides.subscription_value "https://www.youtube.com/@novapbs" --overrides.tv_show_genre "Documentaries"
