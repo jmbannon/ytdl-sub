@@ -3,6 +3,7 @@ from typing import Dict
 from typing import List
 
 import mediafile
+import datetime
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import OptionsDictValidator
@@ -33,6 +34,12 @@ def _is_multi_field(tag_name: str) -> bool:
         "albumartists_credit",
         "albumartists_sort",
         "mb_albumartistids",
+    }
+
+def _is_date_field(tag_name: str) -> bool:
+    return tag_name in {
+        "date",
+        "original_date",
     }
 
 
@@ -111,6 +118,13 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                 # If the attribute is a multi-type, set it as the list type
                 if _is_multi_field(tag_name):
                     setattr(audio_file, tag_name, tag_value)
+                # If the attribute is a date-type, set it as a datetime type
+                elif _is_date_field(tag_name):
+                    if len(tag_value) == 3:
+                        date = datetime.date(int(tag_value[0]),int(tag_value[1]),int(tag_value[2]))
+                    else:
+                        date = datetime.fromisoformat(tag_value[0])
+                    setattr(audio_file, tag_name, date)
                 # Otherwise, set as single value
                 else:
                     if len(tag_value) > 1:
