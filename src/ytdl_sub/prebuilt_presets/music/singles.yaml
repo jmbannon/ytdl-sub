@@ -24,8 +24,8 @@ presets:
       track: "{track_number}"
       tracktotal: "{track_total}"
       year: "{track_year}"
-      date: "{upload_date_standardized}"
-      original_date: "{upload_date_standardized}"
+      date: "{track_date}"
+      original_date: "{track_original_date}"
       # multi-tags
       artists:
         - "{track_artist}"
@@ -55,6 +55,8 @@ presets:
       track_number_padded: "01"
       track_total: "1"
       track_year: "{upload_year}"
+      track_date: "{upload_date_standardized}"
+      track_original_date: "{track_date}"
       track_genre: "{subscription_indent_1}"
 
       # Directory Overrides
