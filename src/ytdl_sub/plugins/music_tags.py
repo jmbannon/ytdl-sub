@@ -141,7 +141,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                 if _is_date_field(tag_name):
                     setattr(audio_file, tag_name, _to_datetime(tag_value[0]))
                 # If the attribute is a multi-type, set it as the list type
-                if _is_multi_field(tag_name):
+                elif _is_multi_field(tag_name):
                     setattr(audio_file, tag_name, tag_value)
                 # Otherwise, set as single value
                 else:

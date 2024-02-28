@@ -10,10 +10,12 @@ Files created:
       albumartists: YouTube
       artist: YouTube
       artists: YouTube
+      date: 2019-12-05
       genres:
         - Unset
         - multi_tag_1
         - multi_tag_2
+      original_date: 2019-12-05
       title: YouTube Rewind 2019: For the Record | #YouTubeRewind
       track: 1
       tracktotal: 1

@@ -14,7 +14,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Intro (Feat. Racheal Ofori & Barney Artist)
       track: 1
       tracktotal: 11
@@ -30,7 +32,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Answers (Feat. Rick David & Kaya Thomas - Dyke)
       track: 2
       tracktotal: 11
@@ -46,7 +50,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Blaze (Feat. Kaya Thomas - Dyke)
       track: 3
       tracktotal: 11
@@ -62,7 +68,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: What If (Interlude)
       track: 4
       tracktotal: 11
@@ -78,7 +86,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: No Peace (Feat. Tom Misch)
       track: 5
       tracktotal: 11
@@ -94,7 +104,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Closer (Feat. Lester Duval)
       track: 6
       tracktotal: 11
@@ -110,7 +122,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Delusions: Rumination (Interlude) (Feat. Racheal Ofori)
       track: 7
       tracktotal: 11
@@ -126,7 +140,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Dreams (Feat. Carmody)
       track: 8
       tracktotal: 11
@@ -142,7 +158,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Dreaming (Interlude) (Feat. Racheal Ofori)
       track: 9
       tracktotal: 11
@@ -158,7 +176,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Hopeful (Feat. Jordan Rakei)
       track: 10
       tracktotal: 11
@@ -174,7 +194,9 @@ Files created:
       albumartists: Alfa Mist
       artist: Alfa Mist
       artists: Alfa Mist
+      date: 2017-04-02
       genres: Unset
+      original_date: 2017-04-02
       title: Sunrise (Pillows) (Feat. Emmavie)
       track: 11
       tracktotal: 11

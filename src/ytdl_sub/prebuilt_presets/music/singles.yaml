@@ -25,6 +25,7 @@ presets:
       tracktotal: "{track_total}"
       year: "{track_year}"
       date: "{upload_date_standardized}"
+      original_date: "{upload_date_standardized}"
       # multi-tags
       artists:
         - "{track_artist}"
