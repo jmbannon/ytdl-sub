@@ -10,7 +10,9 @@ Files created:
       albumartists: subscription_test
       artist: subscription_test
       artists: subscription_test
+      date: 2020-08-08
       genres: Unset
+      original_date: 2020-08-08
       title: Mock Entry 20-1
       track: 2
       tracktotal: 4
@@ -22,7 +24,9 @@ Files created:
       albumartists: subscription_test
       artist: subscription_test
       artists: subscription_test
+      date: 2020-08-08
       genres: Unset
+      original_date: 2020-08-08
       title: Mock Entry 20-2
       track: 3
       tracktotal: 4
@@ -34,7 +38,9 @@ Files created:
       albumartists: subscription_test
       artist: subscription_test
       artists: subscription_test
+      date: 2020-08-07
       genres: Unset
+      original_date: 2020-08-07
       title: Mock Entry 20-3
       track: 4
       tracktotal: 4
@@ -48,7 +54,9 @@ Files created:
       albumartists: subscription_test
       artist: subscription_test
       artists: subscription_test
+      date: 2021-08-08
       genres: Unset
+      original_date: 2021-08-08
       title: Mock Entry 21-1
       track: 1
       tracktotal: 4

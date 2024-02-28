@@ -402,6 +402,9 @@ It supports basic tags like ``title``, ``album``, ``artist`` and ``albumartist``
 a full list of tags for various file types in MediaFile's
 `source code <https://github.com/beetbox/mediafile/blob/v0.9.0/mediafile.py#L1770>`_.
 
+Note that the date fields ``date`` and ``original_date`` expected a standardized date in the
+form of YYYY-MM-DD. The variable ``upload_date_standardized`` returns a compatible format.
+
 :Usage:
 
 .. code-block:: yaml
@@ -418,6 +421,7 @@ a full list of tags for various file types in MediaFile's
          albumartists:
            - "{artist}"
            - "ytdl-sub"
+         date: "{upload_date_standardized}"
 
 ----------------------------------------------------------------------------------------------------
 

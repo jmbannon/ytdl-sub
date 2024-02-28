@@ -10,7 +10,9 @@ Files created:
       albumartists: Project Zombie
       artist: Project Zombie
       artists: Project Zombie
+      date: 2011-03-21
       genres: Unset
+      original_date: 2011-03-21
       title: Jesse's Minecraft Server [Trailer - Mar.21]
       track: 1
       tracktotal: 3
@@ -22,7 +24,9 @@ Files created:
       albumartists: Project Zombie
       artist: Project Zombie
       artists: Project Zombie
+      date: 2011-02-27
       genres: Unset
+      original_date: 2011-02-27
       title: Jesse's Minecraft Server [Trailer - Feb.27]
       track: 2
       tracktotal: 3
@@ -34,7 +38,9 @@ Files created:
       albumartists: Project Zombie
       artist: Project Zombie
       artists: Project Zombie
+      date: 2011-02-01
       genres: Unset
+      original_date: 2011-02-01
       title: Jesse's Minecraft Server [Trailer - Feb.1]
       track: 3
       tracktotal: 3

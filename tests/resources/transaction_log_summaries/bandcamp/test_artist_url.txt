@@ -10,7 +10,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2021-11-26
       genres: Progressive Metal
+      original_date: 2021-11-26
       title: Double Helix Reimagined
       track: 1
       tracktotal: 10
@@ -22,7 +24,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2021-11-26
       genres: Progressive Metal
+      original_date: 2021-11-26
       title: Skye Reimagined
       track: 2
       tracktotal: 10
@@ -34,7 +38,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2021-11-26
       genres: Progressive Metal
+      original_date: 2021-11-26
       title: Baryofusion
       track: 3
       tracktotal: 10
@@ -46,7 +52,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2021-11-26
       genres: Progressive Metal
+      original_date: 2021-11-26
       title: Mandalay Reimagined
       track: 4
       tracktotal: 10
@@ -58,7 +66,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2021-11-26
       genres: Progressive Metal
+      original_date: 2021-11-26
       title: Messenger EDM Remix
       track: 5
       tracktotal: 10
@@ -72,7 +82,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Invent the Universe
       track: 1
       tracktotal: 10
@@ -84,7 +96,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Grand Unification (feat. David Maxim Micic)
       track: 2
       tracktotal: 10
@@ -96,7 +110,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Expansion
       track: 3
       tracktotal: 10
@@ -108,7 +124,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Baryogenesis
       track: 4
       tracktotal: 10
@@ -120,7 +138,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Particles Collide (feat. Plini)
       track: 5
       tracktotal: 10
@@ -132,7 +152,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Nucleosynthesis
       track: 6
       tracktotal: 10
@@ -144,7 +166,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Recombination
       track: 7
       tracktotal: 10
@@ -156,7 +180,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Dark Ages
       track: 8
       tracktotal: 10
@@ -168,7 +194,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Formation
       track: 9
       tracktotal: 10
@@ -180,7 +208,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Pale Blue Dot
       track: 10
       tracktotal: 10
