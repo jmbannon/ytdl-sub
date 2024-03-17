@@ -105,7 +105,7 @@ Docker and Unraid
 
     .. code-block:: 
 
-      /config/run_cron
+      /config/ytdl-sub-configs/run_cron
 
     To create the cron definition, run the following command:
 
