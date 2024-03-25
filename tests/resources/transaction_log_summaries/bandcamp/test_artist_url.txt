@@ -59,20 +59,6 @@ Files created:
       track: 4
       tracktotal: 10
       year: 2021
-  05 - Messenger EDM Remix.mp3
-    Music Tags:
-      album: 10 Years: Remixes and Reimaginings
-      albumartist: Sithu Aye
-      albumartists: Sithu Aye
-      artist: Sithu Aye
-      artists: Sithu Aye
-      date: 2021-11-26
-      genres: Progressive Metal
-      original_date: 2021-11-26
-      title: Messenger EDM Remix
-      track: 5
-      tracktotal: 10
-      year: 2021
   folder.jpg
 {output_directory}/Sithu Aye/[2022] Re：Invent the Universe (10th Anniversary Remaster)
   01 - Invent the Universe.mp3
@@ -215,4 +201,20 @@ Files created:
       track: 10
       tracktotal: 10
       year: 2022
+  folder.jpg
+{output_directory}/Sithu Aye/[2024] Kindness
+  01 - Run it Down.mp3
+    Music Tags:
+      album: Kindness
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      date: 2024-03-23
+      genres: Progressive Metal
+      original_date: 2024-03-23
+      title: Run it Down
+      track: 1
+      tracktotal: 1
+      year: 2024
   folder.jpg
