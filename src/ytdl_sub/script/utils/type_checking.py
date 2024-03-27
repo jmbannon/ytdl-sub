@@ -63,21 +63,19 @@ def _is_type_compatible(
     True if arg is compatible with expected_arg_type. False otherwise.
     """
     if is_union(expected_arg_type):
-        # See if the arg is a valid against the union
-        valid_type = False
+        if issubclass(arg_type, (NamedCustomFunction, Variable)):
+            return True  # custom-function/variable can be anything, so pass for now
 
         # if the input arg is a union, do a direct comparison
         if is_union(arg_type):
-            valid_type = arg_type == expected_arg_type
-        # otherwise, iterate the union to see if it's compatible
-        else:
-            for union_type in expected_arg_type.__args__:
-                if issubclass(arg_type, union_type):
-                    valid_type = True
-                    break
+            return arg_type == expected_arg_type
 
-        if not valid_type:
-            return False
+        # otherwise, iterate the union to see if it's compatible
+        for union_type in expected_arg_type.__args__:
+            if issubclass(arg_type, union_type):
+                return True
+
+        return False
     # If the input is a union and the expected type is not, see if
     # each possible union input is compatible with the expected type
     elif is_union(arg_type):

@@ -14,9 +14,10 @@ __preset__:
   overrides:
     music_video_directory: "/music_videos"
 
-# Choose between Jellyfin/Kodi/Plex Music Videos
-# "Jellyfin Music Videos":
-# "Kodi Music Videos":
+# Choose between Jellyfin/Kodi/Plex Music Videos preset:
+#   - Plex Music Videos:
+#   - Jellyfin Music Videos:
+#   - Kodi Music Videos:
 "Plex Music Videos":
   = Pop:  # Sets genre tag to "Pop"
     "Rick Astley": "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"

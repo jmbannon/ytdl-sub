@@ -1,0 +1,50 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+{output_directory}/subscription_test
+  Custom Title-concert.jpg
+  Custom Title-concert.mp4
+    Video Tags:
+      album: concert
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2021-08-08
+      title: Custom Title
+      year: 2021
+  Mock Entry 20-4-concert.jpg
+  Mock Entry 20-4-concert.mp4
+    Video Tags:
+      album: concert
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-08-06
+      title: Mock Entry 20-4
+      year: 2020
+  Mock Entry 20-5-concert.jpg
+  Mock Entry 20-5-concert.mp4
+    Video Tags:
+      album: concert
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-07-06
+      title: Mock Entry 20-5
+      year: 2020
+  Mock Entry 20-6-concert.jpg
+  Mock Entry 20-6-concert.mp4
+    Video Tags:
+      album: concert
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-07-06
+      title: Mock Entry 20-6
+      year: 2020
+  Mock Entry 20-7-concert.jpg
+  Mock Entry 20-7-concert.mp4
+    Video Tags:
+      album: concert
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-06-06
+      title: Mock Entry 20-7
+      year: 2020
