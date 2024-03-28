@@ -30,10 +30,10 @@ class CustomFunctions:
         Queries a playlist-based URL using yt-dlp to see if it is ordered from newest
         (lower playlist number) to oldest.
         """
-        # Top-level allow-list of notorious playlists that can be
+        # Top-level allow-list of notorious URLs that can be
         # ordered in either direction
         if "youtube.com/playlist" not in url.value:
-            return Boolean("True")
+            return Boolean(True)
 
         info_only_kwargs = {
             "skip_download": True,
@@ -54,7 +54,7 @@ class CustomFunctions:
                 or not isinstance(url_info.get("entries"), list)
                 or len(url_info["entries"]) == 0
             ):
-                return Boolean(False)
+                return Boolean(True)
 
             upload_dates: List[str] = []
             for entry in url_info["entries"]:
@@ -72,7 +72,7 @@ class CustomFunctions:
             return Boolean(True)
 
         except Exception:  # pylint: disable=broad-except
-            return Boolean(False)
+            return Boolean(True)
 
     @staticmethod
     def legacy_bracket_safety(value: ReturnableArgument) -> ReturnableArgument:
