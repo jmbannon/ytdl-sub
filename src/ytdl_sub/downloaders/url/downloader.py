@@ -406,9 +406,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             entry_dicts = YTDLP.extract_info_via_info_json(
                 working_directory=self.working_directory,
                 ytdl_options_overrides=self.metadata_ytdl_options(scrape_reverse=scrape_reverse),
-                log_prefix_on_info_json_dl=(
-                    f"Downloading metadata {'in reverse ' if scrape_reverse else ''}for"
-                ),
+                log_prefix_on_info_json_dl="Downloading metadata for",
                 url=url,
             )
 

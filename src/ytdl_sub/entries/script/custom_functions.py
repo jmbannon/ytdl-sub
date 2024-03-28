@@ -32,7 +32,7 @@ class CustomFunctions:
         """
         # Top-level allow-list of notorious playlists that can be
         # ordered in either direction
-        if not any(["youtube.com/playlist" in url.value]):
+        if "youtube.com/playlist" not in url.value:
             return Boolean("True")
 
         info_only_kwargs = {
