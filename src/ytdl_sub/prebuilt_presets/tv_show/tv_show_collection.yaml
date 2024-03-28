@@ -38,6 +38,10 @@ presets:
             uid: "avatar_uncropped"
           - name: "{tv_show_fanart_file_name}"
             uid: "banner_uncropped"
+        scrape_reverse: >-
+          { %not( %is_playlist_ordered_by_newest( collection_season_1_url )) }
+        download_reverse: >-
+          { %is_playlist_ordered_by_newest( collection_season_1_url ) }
 
     output_directory_nfo_tags:
       tags:

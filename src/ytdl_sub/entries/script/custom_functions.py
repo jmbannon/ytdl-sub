@@ -30,6 +30,11 @@ class CustomFunctions:
         Queries a playlist-based URL using yt-dlp to see if it is ordered from newest
         (lower playlist number) to oldest.
         """
+        # Top-level allow-list of notorious playlists that can be
+        # ordered in either direction
+        if not any(["youtube.com/playlist" in url.value]):
+            return Boolean("True")
+
         info_only_kwargs = {
             "skip_download": True,
             "writethumbnail": False,
@@ -47,7 +52,7 @@ class CustomFunctions:
             if (
                 not isinstance(url_info, dict)
                 or not isinstance(url_info.get("entries"), list)
-                or not len(url_info["entries"])
+                or len(url_info["entries"]) == 0
             ):
                 return Boolean(False)
 
@@ -66,7 +71,7 @@ class CustomFunctions:
 
             return Boolean(True)
 
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             return Boolean(False)
 
     @staticmethod

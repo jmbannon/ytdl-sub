@@ -25,6 +25,7 @@ from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
 from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
 from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
@@ -245,9 +246,13 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             .to_dict()
         )
 
-    @property
-    def metadata_ytdl_options(self) -> Dict:
+    def metadata_ytdl_options(self, scrape_reverse: bool) -> Dict:
         """
+        Parameters
+        ----------
+        scrape_reverse
+            Whether to scrape in reverse order
+
         Returns
         -------
         YTDL options dict for fetching metadata
@@ -255,6 +260,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         return (
             self._metadata_ytdl_options_builder.clone()
             .add(self.ytdl_option_defaults(), before=True)
+            .add({"playlistreverse": scrape_reverse} if scrape_reverse else None, before=True)
             .to_dict()
         )
 
@@ -390,16 +396,19 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 yield entry_child
 
     def _download_url_metadata(
-        self, url: str, include_sibling_metadata: bool
+        self, url: str, include_sibling_metadata: bool, scrape_reverse: bool
     ) -> Tuple[List[EntryParent], List[Entry]]:
         """
         Downloads only info.json files and forms EntryParent trees
         """
+
         with self._separate_download_archives():
             entry_dicts = YTDLP.extract_info_via_info_json(
                 working_directory=self.working_directory,
-                ytdl_options_overrides=self.metadata_ytdl_options,
-                log_prefix_on_info_json_dl="Downloading metadata for",
+                ytdl_options_overrides=self.metadata_ytdl_options(scrape_reverse=scrape_reverse),
+                log_prefix_on_info_json_dl=(
+                    f"Downloading metadata {'in reverse ' if scrape_reverse else ''}for"
+                ),
                 url=url,
             )
 
@@ -448,7 +457,11 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 continue
 
             parents, orphan_entries = self._download_url_metadata(
-                url=url, include_sibling_metadata=collection_url.include_sibling_metadata
+                url=url,
+                include_sibling_metadata=collection_url.include_sibling_metadata,
+                scrape_reverse=ScriptUtils.bool_formatter_output(
+                    self.overrides.apply_formatter(collection_url.scrape_reverse)
+                ),
             )
 
             # TODO: Encapsulate this logic into its own class
@@ -462,7 +475,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             for entry in self._iterate_entries(
                 parents=parents,
                 orphans=orphan_entries,
-                download_reversed=collection_url.download_reverse,
+                download_reversed=ScriptUtils.bool_formatter_output(
+                    self.overrides.apply_formatter(collection_url.download_reverse)
+                ),
             ):
                 entry.initialize_script(self.overrides).add(
                     {v.ytdl_sub_input_url: self.overrides.apply_formatter(collection_url.url)}
