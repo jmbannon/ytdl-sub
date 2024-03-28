@@ -8,6 +8,7 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.script.parser import parse
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
@@ -49,6 +50,7 @@ class UrlValidator(StrictDictValidator):
         "source_thumbnails",
         "playlist_thumbnails",
         "download_reverse",
+        "scrape_reverse",
         "include_sibling_metadata",
     }
 
@@ -77,7 +79,10 @@ class UrlValidator(StrictDictValidator):
             key="playlist_thumbnails", validator=UrlThumbnailListValidator, default=[]
         )
         self._download_reverse = self._validate_key(
-            key="download_reverse", validator=BoolValidator, default=True
+            key="download_reverse", validator=OverridesBooleanFormatterValidator, default="True"
+        )
+        self._scrape_reverse = self._validate_key(
+            key="scrape_reverse", validator=OverridesBooleanFormatterValidator, default="False"
         )
         self._include_sibling_metadata = self._validate_key(
             key="include_sibling_metadata", validator=BoolValidator, default=False
@@ -148,12 +153,20 @@ class UrlValidator(StrictDictValidator):
         return self._source_thumbnails
 
     @property
-    def download_reverse(self) -> bool:
+    def download_reverse(self) -> OverridesBooleanFormatterValidator:
         """
         Optional. Whether to download entries in the reverse order of the metadata downloaded.
         Defaults to True.
         """
-        return self._download_reverse.value
+        return self._download_reverse
+
+    @property
+    def scrape_reverse(self) -> OverridesBooleanFormatterValidator:
+        """
+        Optional. Whether to scrape entry metadata in the reverse order.
+        Defaults to False.
+        """
+        return self._scrape_reverse
 
     @property
     def include_sibling_metadata(self) -> bool:

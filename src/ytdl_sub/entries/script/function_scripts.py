@@ -5,6 +5,7 @@ from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 
 v: VariableDefinitions = VARIABLES
 
+# TODO: Make this a proper class with docstrings
 CUSTOM_FUNCTION_SCRIPTS: Dict[str, str] = {
     #############################################################################################
     # SIBLING GETTER
