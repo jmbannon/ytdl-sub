@@ -1,10 +1,8 @@
 import os
 import posixpath
-from typing import List
 
 from yt_dlp.utils import sanitize_filename
 
-from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import AnyArgument
@@ -25,54 +23,16 @@ _days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 class CustomFunctions:
     @staticmethod
-    def is_playlist_ordered_by_newest(url: String) -> Boolean:
+    def is_bilateral_playlist_url(url: String) -> Boolean:
         """
-        Queries a playlist-based URL using yt-dlp to see if it is ordered from newest
-        (lower playlist number) to oldest.
+        Heuristic that returns True if the URL is known to be bilateral, meaning that entries can
+        be added to the beginning or end.
         """
         # Top-level allow-list of notorious URLs that can be
         # ordered in either direction
         if "youtube.com/playlist" not in url.value:
             return Boolean(True)
-
-        info_only_kwargs = {
-            "skip_download": True,
-            "writethumbnail": False,
-            "writeinfojson": False,
-            "ignoreerrors": True,
-            "extract_flat": "discard",
-            "playlist_items": "0:5",
-        }
-        try:
-            url_info = YTDLP.extract_info(
-                ytdl_options_overrides=info_only_kwargs,
-                url=url.value,
-            )
-
-            if (
-                not isinstance(url_info, dict)
-                or not isinstance(url_info.get("entries"), list)
-                or len(url_info["entries"]) == 0
-            ):
-                return Boolean(True)
-
-            upload_dates: List[str] = []
-            for entry in url_info["entries"]:
-                if entry.get("uploader_id") and entry.get("url"):
-                    full_entry = YTDLP.extract_info(
-                        ytdl_options_overrides=info_only_kwargs, url=entry.get("url")
-                    )
-                    if isinstance(full_entry.get("upload_date"), str):
-                        upload_dates.append(full_entry["upload_date"])
-
-            for idx in range(1, len(upload_dates)):
-                if upload_dates[idx - 1] < upload_dates[idx]:
-                    return Boolean(False)
-
-            return Boolean(True)
-
-        except Exception:  # pylint: disable=broad-except
-            return Boolean(True)
+        return Boolean(False)
 
     @staticmethod
     def legacy_bracket_safety(value: ReturnableArgument) -> ReturnableArgument:
@@ -223,7 +183,7 @@ class CustomFunctions:
         Register Custom functions once and only once
         """
         if not Functions.is_built_in("sanitize"):
-            Functions.register_function(CustomFunctions.is_playlist_ordered_by_newest)
+            Functions.register_function(CustomFunctions.is_bilateral_playlist_url)
             Functions.register_function(CustomFunctions.legacy_bracket_safety)
             Functions.register_function(CustomFunctions.truncate_filepath_if_too_long)
             Functions.register_function(CustomFunctions.to_native_filepath)

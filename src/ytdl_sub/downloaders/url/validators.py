@@ -4,6 +4,7 @@ from typing import Optional
 from typing import Set
 
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.script.parser import parse
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -50,7 +51,8 @@ class UrlValidator(StrictDictValidator):
         "source_thumbnails",
         "playlist_thumbnails",
         "download_reverse",
-        "scrape_reverse",
+        "extract_bilaterally",
+        "ytdl_options",
         "include_sibling_metadata",
     }
 
@@ -81,8 +83,11 @@ class UrlValidator(StrictDictValidator):
         self._download_reverse = self._validate_key(
             key="download_reverse", validator=OverridesBooleanFormatterValidator, default="True"
         )
-        self._scrape_reverse = self._validate_key(
-            key="scrape_reverse", validator=OverridesBooleanFormatterValidator, default="False"
+        self._extract_bilaterally = self._validate_key(
+            key="extract_bilaterally", validator=OverridesBooleanFormatterValidator, default="False"
+        )
+        self._ytdl_options = self._validate_key(
+            key="ytdl_options", validator=YTDLOptions, default={}
         )
         self._include_sibling_metadata = self._validate_key(
             key="include_sibling_metadata", validator=BoolValidator, default=False
@@ -161,12 +166,21 @@ class UrlValidator(StrictDictValidator):
         return self._download_reverse
 
     @property
-    def scrape_reverse(self) -> OverridesBooleanFormatterValidator:
+    def extract_bilaterally(self) -> OverridesBooleanFormatterValidator:
         """
-        Optional. Whether to scrape entry metadata in the reverse order.
-        Defaults to False.
+        Optional. If True, will extract metadata from both the beginning and end of the playlist.
+        This is for incrementally fetching new entries that may be added at either the beginning
+        or the end of a playlist. Defaults to False.
         """
-        return self._scrape_reverse
+        return self._extract_bilaterally
+
+    @property
+    def ytdl_options(self) -> YTDLOptions:
+        """
+        Optional. ``ytdl_options`` that only apply to this URL. These take precedence
+        over the plugin ``ytdl_options``.
+        """
+        return self._ytdl_options
 
     @property
     def include_sibling_metadata(self) -> bool:
