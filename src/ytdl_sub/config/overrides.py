@@ -7,8 +7,8 @@ import mergedeep
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
 from ytdl_sub.entries.variables.override_variables import OverrideHelpers
-from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
@@ -62,6 +62,7 @@ class Overrides(DictFormatterValidator, Scriptable):
             self.ensure_variable_name_valid(key)
 
         self.unresolvable.add(VARIABLES.entry_metadata.variable_name)
+        self.unresolvable.update(REQUIRED_OVERRIDE_VARIABLE_NAMES)
 
     def ensure_added_plugin_variable_valid(self, added_variable: str) -> bool:
         """

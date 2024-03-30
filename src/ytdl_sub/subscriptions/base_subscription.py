@@ -47,20 +47,18 @@ class BaseSubscription(ABC):
         self.name = name
         self._config_options = config_options
         self._preset_options = preset_options
-
-        migrated_file_name: Optional[str] = None
-        if migrated_file_name_option := self.output_options.migrated_download_archive_name:
-            migrated_file_name = self.overrides.apply_formatter(migrated_file_name_option)
-
-        # TODO: Do not include this as part of the subscription
-        self._enhanced_download_archive = EnhancedDownloadArchive(
-            file_name=self.overrides.apply_formatter(self.output_options.download_archive_name),
-            working_directory=self.working_directory,
-            output_directory=self.output_directory,
-            migrated_file_name=migrated_file_name,
-        )
-
+        self._enhanced_download_archive: Optional[EnhancedDownloadArchive] = None
         self._exception: Optional[Exception] = None
+
+    @property
+    def download_archive(self) -> EnhancedDownloadArchive:
+        """
+        Returns
+        -------
+        Initialized download archive
+        """
+        assert self._enhanced_download_archive is not None
+        return self._enhanced_download_archive
 
     @property
     def downloader_options(self) -> MultiUrlValidator:
@@ -141,7 +139,7 @@ class BaseSubscription(ABC):
         -------
         Number of entries added
         """
-        return self._enhanced_download_archive.num_entries_added
+        return self.download_archive.num_entries_added
 
     @property
     def num_entries_modified(self) -> int:
@@ -150,7 +148,7 @@ class BaseSubscription(ABC):
         -------
         Number of entries modified
         """
-        return self._enhanced_download_archive.num_entries_modified
+        return self.download_archive.num_entries_modified
 
     @property
     def num_entries_removed(self) -> int:
@@ -159,7 +157,7 @@ class BaseSubscription(ABC):
         -------
         Number of entries removed
         """
-        return self._enhanced_download_archive.num_entries_removed
+        return self.download_archive.num_entries_removed
 
     @property
     def num_entries(self) -> int:
@@ -168,7 +166,7 @@ class BaseSubscription(ABC):
         -------
         The number of entries
         """
-        return self._enhanced_download_archive.num_entries
+        return self.download_archive.num_entries
 
     @property
     def transaction_log(self) -> FileHandlerTransactionLog:
@@ -177,7 +175,7 @@ class BaseSubscription(ABC):
         -------
         Transaction log from the subscription
         """
-        return self._enhanced_download_archive.get_file_handler_transaction_log()
+        return self.download_archive.get_file_handler_transaction_log()
 
     @property
     def exception(self) -> Optional[Exception]:

@@ -13,7 +13,6 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_DEFINITIONS
 from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script import _is_function
@@ -106,9 +105,7 @@ class VariableValidation:
         """
         Do some gymnastics to initialize the Overrides script.
         """
-        override_variables = (
-            set(list(overrides.initial_variables().keys())) | REQUIRED_OVERRIDE_VARIABLE_NAMES
-        )
+        override_variables = set(list(overrides.initial_variables().keys()))
 
         # Set resolved variables as all entry + override variables
         # at this point to generate every possible added/modified variable

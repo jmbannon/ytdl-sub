@@ -8,7 +8,6 @@ from ytdl_sub.entries.script.variable_types import MapVariable
 from ytdl_sub.entries.script.variable_types import StringVariable
 from ytdl_sub.entries.script.variable_types import Variable
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.utils.name_validation import is_valid_name
 
 # TODO: use this
