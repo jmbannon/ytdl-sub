@@ -51,7 +51,6 @@ class UrlValidator(StrictDictValidator):
         "source_thumbnails",
         "playlist_thumbnails",
         "download_reverse",
-        "extract_bilaterally",
         "ytdl_options",
         "include_sibling_metadata",
     }
@@ -82,9 +81,6 @@ class UrlValidator(StrictDictValidator):
         )
         self._download_reverse = self._validate_key(
             key="download_reverse", validator=OverridesBooleanFormatterValidator, default="True"
-        )
-        self._extract_bilaterally = self._validate_key(
-            key="extract_bilaterally", validator=OverridesBooleanFormatterValidator, default="False"
         )
         self._ytdl_options = self._validate_key(
             key="ytdl_options", validator=YTDLOptions, default={}
@@ -164,15 +160,6 @@ class UrlValidator(StrictDictValidator):
         Defaults to True.
         """
         return self._download_reverse
-
-    @property
-    def extract_bilaterally(self) -> OverridesBooleanFormatterValidator:
-        """
-        Optional. If True, will extract metadata from both the beginning and end of the playlist.
-        This is for incrementally fetching new entries that may be added at either the beginning
-        or the end of a playlist. Defaults to False.
-        """
-        return self._extract_bilaterally
 
     @property
     def ytdl_options(self) -> YTDLOptions:
