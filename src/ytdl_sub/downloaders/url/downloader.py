@@ -459,18 +459,11 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             ):
                 yield orphan
 
-    def _download_metadata(self, url: str, is_bilateral: bool) -> Iterable[Entry]:
+    def _download_metadata(self, url: str) -> Iterable[Entry]:
         metadata_ytdl_options = self.metadata_ytdl_options(url=url)
         download_reversed = ScriptUtils.bool_formatter_output(
             self.overrides.apply_formatter(self._collection_url_mapping[url].download_reverse)
         )
-        if is_bilateral:
-            # If bilateral metadata scrape, inverse to download the other side
-            metadata_ytdl_options = dict(
-                metadata_ytdl_options,
-                **{"playlistreverse": not metadata_ytdl_options.get("playlistreverse", False)},
-            )
-            download_reversed = not download_reversed
 
         parents, orphan_entries = self._download_url_metadata(
             url=url,
@@ -483,11 +476,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             entries_total=sum(parent.num_children() for parent in parents) + len(orphan_entries)
         )
 
-        if is_bilateral:
-            download_logger.info("Beginning downloads for %s in the opposite direction", url)
-        else:
-            download_logger.info("Beginning downloads for %s", url)
-
+        download_logger.info("Beginning downloads for %s", url)
         for entry in self._iterate_entries(
             parents=parents,
             orphans=orphan_entries,
@@ -504,14 +493,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             if not (url := self.overrides.apply_formatter(collection_url.url)):
                 continue
 
-            for entry in self._download_metadata(url=url, is_bilateral=False):
+            for entry in self._download_metadata(url=url):
                 yield entry
-
-            if ScriptUtils.bool_formatter_output(
-                self.overrides.apply_formatter(collection_url.extract_bilaterally)
-            ):
-                for entry in self._download_metadata(url=url, is_bilateral=True):
-                    yield entry
 
     def download(self, entry: Entry) -> Optional[Entry]:
         """

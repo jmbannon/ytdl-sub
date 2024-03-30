@@ -1,0 +1,52 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-bilateral_test-download-archive.json
+  tvshow.nfo
+    NFO tags:
+      tvshow:
+        genre: ytdl-sub
+        mpaa: TV-14
+        title: bilateral_test
+{output_directory}/Season 2011
+  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
+  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
+    Video Tags:
+      contentRating: TV-14
+      date: 2011-02-01
+      episode_id: 20101
+      genre: ytdl-sub
+      show: bilateral_test
+      synopsis:
+        https://www.youtube.com/watch?v=0SVukUyys10
+
+        To join the server, you must apply at:
+        http://www.jesseminecraft.webs.com/
+
+        This is just a brief video of the server as of Feb. 1, 2011.
+
+        Texture Pack I Use:
+        http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
+      title: 2011-02-01 - Jesse's Minecraft Server [Trailer - Feb.1]
+      year: 2011
+  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
+    NFO tags:
+      episodedetails:
+        aired: 2011-02-01
+        episode: 20101
+        genre: ytdl-sub
+        mpaa: TV-14
+        plot:
+          https://www.youtube.com/watch?v=0SVukUyys10
+
+          To join the server, you must apply at:
+          http://www.jesseminecraft.webs.com/
+
+          This is just a brief video of the server as of Feb. 1, 2011.
+
+          Texture Pack I Use:
+          http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
+        season: 2011
+        title: 2011-02-01 - Jesse's Minecraft Server [Trailer - Feb.1]
+        year: 2011

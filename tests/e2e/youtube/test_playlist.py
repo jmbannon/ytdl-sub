@@ -51,6 +51,20 @@ def playlist_preset_dict(output_directory):
     }
 
 
+@pytest.fixture
+def playlist_bilateral_dict(output_directory):
+    return {
+        "preset": [
+            "Jellyfin TV Show by Date",
+            ],
+        "format": "worst[ext=mp4]",
+        "overrides": {
+            "url": "https://www.youtube.com/playlist?list=PLd4Q7G88JqoekF0b30NYQcOTnTiIe9Ali",
+            "tv_show_directory": output_directory,
+        },
+    }
+
+
 class TestPlaylist:
     """
     Downloads my old minecraft youtube channel, pretends they are music videos. Ensure the above
@@ -222,3 +236,41 @@ class TestPlaylist:
 
             assert len(subscriptions) == 1
             assert subscriptions[0].transaction_log.is_empty
+
+    def test_tv_show_downloads_bilateral(
+            self,
+            playlist_bilateral_dict: Dict,
+            output_directory: str,
+            default_config: ConfigFile,
+    ):
+        playlist_bilateral_dict['filter_include'] = [
+            "{ %contains(title, 'Feb.1') }"
+        ]
+        playlist_subscription = Subscription.from_dict(
+            config=default_config,
+            preset_name="bilateral_test",
+            preset_dict=playlist_bilateral_dict,
+        )
+
+        transaction_log = playlist_subscription.download(dry_run=False)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_playlist_bilateral_p1.txt",
+        )
+
+        # Now that one vid is downloaded, attempt to download all and see if bilateral
+        # logic kicks in
+        del playlist_bilateral_dict['filter_include']
+        playlist_subscription = Subscription.from_dict(
+            config=default_config,
+            preset_name="bilateral_test",
+            preset_dict=playlist_bilateral_dict,
+        )
+
+        transaction_log = playlist_subscription.download(dry_run=True)
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_playlist_bilateral_p2.txt",
+        )
