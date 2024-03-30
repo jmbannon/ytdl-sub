@@ -454,7 +454,9 @@ class Script:
         added_variables_to_validate: Set[str] = set()
 
         functions_to_add = {
-            name: definition for name, definition in variables.items() if _is_function(name)
+            _function_name(name): definition
+            for name, definition in variables.items()
+            if _is_function(name)
         }
         variables_to_add = {
             name: definition for name, definition in variables.items() if not _is_function(name)
