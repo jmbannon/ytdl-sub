@@ -474,6 +474,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                     {
                         v.ytdl_sub_input_url: url,
                         v.ytdl_sub_input_url_index: idx,
+                        v.ytdl_sub_input_url_count: len(self.collection.urls.list),
                     }
                 )
 
