@@ -15,6 +15,7 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script import _is_function
 from ytdl_sub.utils.scriptable import BASE_SCRIPT
 from ytdl_sub.validators.string_formatter_validators import to_variable_dependency_format_string
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
@@ -33,6 +34,9 @@ def _add_dummy_overrides(overrides: Overrides) -> Dict[str, str]:
     # Have the dummy override variable contain all variable deps that it uses in the string
     dummy_overrides: Dict[str, str] = {}
     for override_name in _override_variables(overrides):
+        if _is_function(override_name):
+            continue
+
         # pylint: disable=protected-access
         dummy_overrides[override_name] = to_variable_dependency_format_string(
             script=overrides.script, parsed_format_string=overrides.script._variables[override_name]
