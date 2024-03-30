@@ -751,6 +751,14 @@ class YtdlSubVariableDefinitions(ABC):
         return StringVariable(variable_name="ytdl_sub_input_url", definition="{ %string('') }")
 
     @cached_property
+    def ytdl_sub_input_url_index(self: "VariableDefinitions") -> IntegerVariable:
+        """
+        :description:
+          The index of the input URL as defined in the subscription, top-most being the 0th index.
+        """
+        return IntegerVariable(variable_name="ytdl_sub_input_url_index", definition="{ %int(0) }")
+
+    @cached_property
     def download_index(self: "VariableDefinitions") -> IntegerVariable:
         """
         :description:

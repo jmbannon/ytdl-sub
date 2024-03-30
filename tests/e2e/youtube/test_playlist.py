@@ -267,7 +267,6 @@ class TestPlaylist:
             preset_name="bilateral_test",
             preset_dict=playlist_bilateral_dict,
         )
-
         transaction_log = playlist_subscription.download(dry_run=True)
         assert_transaction_log_matches(
             output_directory=output_directory,
