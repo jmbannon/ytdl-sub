@@ -756,7 +756,9 @@ class YtdlSubVariableDefinitions(ABC):
         :description:
           The index of the input URL as defined in the subscription, top-most being the 0th index.
         """
-        return IntegerVariable(variable_name="ytdl_sub_input_url_index", definition="{ %int(0) }")
+        # init as -1 so if prior downloaded entries are known when they do not have this value
+        # in their .info.json
+        return IntegerVariable(variable_name="ytdl_sub_input_url_index", definition="{ %int(-1) }")
 
     @cached_property
     def ytdl_sub_input_url_count(self: "VariableDefinitions") -> IntegerVariable:

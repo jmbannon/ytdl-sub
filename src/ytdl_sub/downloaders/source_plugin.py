@@ -17,7 +17,7 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
-class SourcePluginExtension(Plugin[TOptionsValidator], ABC):
+class SourcePluginExtension(Plugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
     """
     Plugins that get added automatically by using a downloader. Downloader options
     are the plugin options.

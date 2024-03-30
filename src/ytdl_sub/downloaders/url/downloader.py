@@ -42,7 +42,30 @@ class URLDownloadState:
         self.entries_downloaded = 0
 
 
-class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
+class UrlDownloaderBasePluginExtension(SourcePluginExtension[MultiUrlValidator]):
+    def _match_entry_to_url_validator(self, entry: Entry) -> UrlValidator:
+        """
+        Handle matching a URL to its original validator. This is for .info.json updates
+        when older entries have missing variables
+        """
+        input_url_idx = entry.get(v.ytdl_sub_input_url_index, int)
+        entry_input_url = entry.get(v.ytdl_sub_input_url, str)
+
+        if 0 <= input_url_idx < len(self.plugin_options.urls.list):
+            validator = self.plugin_options.urls.list[input_url_idx]
+            if self.overrides.apply_formatter(validator.url) == entry_input_url:
+                return validator
+
+        # Match the first validator based on the URL, if one exists
+        for validator in self.plugin_options.urls.list:
+            if self.overrides.apply_formatter(validator.url) == entry_input_url:
+                return validator
+
+        # Return the first validator if none exist
+        return self.plugin_options.urls.list[0]
+
+
+class UrlDownloaderThumbnailPlugin(UrlDownloaderBasePluginExtension):
     def __init__(
         self,
         options: MultiUrlValidator,
@@ -134,15 +157,13 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
             try_convert_download_thumbnail(entry=entry)
 
         self._download_url_thumbnails(
-            collection_url=self.plugin_options.urls.list[
-                entry.get(v.ytdl_sub_input_url_index, int)
-            ],
+            collection_url=self._match_entry_to_url_validator(entry=entry),
             entry=entry,
         )
         return entry
 
 
-class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
+class UrlDownloaderCollectionVariablePlugin(UrlDownloaderBasePluginExtension):
     def __init__(
         self,
         options: MultiUrlValidator,
@@ -160,7 +181,7 @@ class UrlDownloaderCollectionVariablePlugin(SourcePluginExtension):
         """
         Add collection variables to the entry
         """
-        collection_url = self.plugin_options.urls.list[entry.get(v.ytdl_sub_input_url_index, int)]
+        collection_url = self._match_entry_to_url_validator(entry=entry)
         entry.add(collection_url.variables.dict_with_format_strings)
 
         return entry
