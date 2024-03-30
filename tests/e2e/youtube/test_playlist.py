@@ -56,7 +56,7 @@ def playlist_bilateral_dict(output_directory):
     return {
         "preset": [
             "Jellyfin TV Show by Date",
-            ],
+        ],
         "format": "worst[ext=mp4]",
         "overrides": {
             "url": "https://www.youtube.com/playlist?list=PLd4Q7G88JqoekF0b30NYQcOTnTiIe9Ali",
@@ -238,14 +238,12 @@ class TestPlaylist:
             assert subscriptions[0].transaction_log.is_empty
 
     def test_tv_show_downloads_bilateral(
-            self,
-            playlist_bilateral_dict: Dict,
-            output_directory: str,
-            default_config: ConfigFile,
+        self,
+        playlist_bilateral_dict: Dict,
+        output_directory: str,
+        default_config: ConfigFile,
     ):
-        playlist_bilateral_dict['filter_include'] = [
-            "{ %contains(title, 'Feb.1') }"
-        ]
+        playlist_bilateral_dict["filter_include"] = ["{ %contains(title, 'Feb.1') }"]
         playlist_subscription = Subscription.from_dict(
             config=default_config,
             preset_name="bilateral_test",
@@ -261,7 +259,7 @@ class TestPlaylist:
 
         # Now that one vid is downloaded, attempt to download all and see if bilateral
         # logic kicks in
-        del playlist_bilateral_dict['filter_include']
+        del playlist_bilateral_dict["filter_include"]
         playlist_subscription = Subscription.from_dict(
             config=default_config,
             preset_name="bilateral_test",

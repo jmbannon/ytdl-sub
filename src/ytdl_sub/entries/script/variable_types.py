@@ -9,6 +9,7 @@ from typing import TypeVar
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.map import Map
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 
@@ -61,6 +62,13 @@ class Variable(ABC):
         """
         Script type of the variable, for documentation
         """
+
+
+@dataclass(frozen=True)
+class BooleanVariable(Variable):
+    @classmethod
+    def human_readable_type(cls) -> str:
+        return Boolean.__name__
 
 
 @dataclass(frozen=True)

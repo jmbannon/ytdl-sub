@@ -17,6 +17,7 @@ from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
@@ -325,6 +326,16 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         return self._enhanced_download_archive.get_file_handler_transaction_log()
 
+    def _initialize_subscription_overrides(self):
+        required_overrides = {
+            SubscriptionVariables.subscription_name(): self.name,
+            SubscriptionVariables.subscription_has_download_archive(): f"""{{
+                %bool({self._enhanced_download_archive.num_entries > 0})
+            }}""",
+        }
+        assert SubscriptionVariables
+        self.overrides.add(required_overrides)
+
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
         Performs the subscription download
@@ -338,6 +349,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self._exception = None
         self._enhanced_download_archive.reinitialize(dry_run=dry_run)
 
+        self._initialize_subscription_overrides()
         plugins = self._initialize_plugins()
 
         subscription_ytdl_options = SubscriptionYTDLOptions(

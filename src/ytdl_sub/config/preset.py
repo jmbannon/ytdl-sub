@@ -198,9 +198,7 @@ class Preset(_PresetShell):
             downloader_options=self.downloader_options,
             output_options=self.output_options,
             plugins=self.plugins,
-        ).initialize_overrides(
-            subscription_name=self.name, overrides=self.overrides
-        ).ensure_proper_usage()
+        ).initialize_preset_overrides(overrides=self.overrides).ensure_proper_usage()
 
     @property
     def name(self) -> str:

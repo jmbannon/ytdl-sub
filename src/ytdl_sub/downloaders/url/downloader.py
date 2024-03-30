@@ -134,7 +134,9 @@ class UrlDownloaderThumbnailPlugin(SourcePluginExtension):
             try_convert_download_thumbnail(entry=entry)
 
         self._download_url_thumbnails(
-            collection_url=self.plugin_options.urls.list[entry.get(v.ytdl_sub_input_url_index, int)],
+            collection_url=self.plugin_options.urls.list[
+                entry.get(v.ytdl_sub_input_url_index, int)
+            ],
             entry=entry,
         )
         return entry
@@ -224,7 +226,12 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         return (
             self._download_ytdl_options_builder.clone()
             .add(self.ytdl_option_defaults(), before=True)
-            .add(self.plugin_options.urls.list[url_idx].ytdl_options.dict if url_idx is not None else None, before=True)
+            .add(
+                self.plugin_options.urls.list[url_idx].ytdl_options.dict
+                if url_idx is not None
+                else None,
+                before=True,
+            )
             .to_dict()
         )
 
@@ -463,10 +470,12 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 continue
 
             for entry in self._download_metadata(url=url, validator=url_validator):
-                entry.initialize_script(self.overrides).add({
-                    v.ytdl_sub_input_url: url,
-                    v.ytdl_sub_input_url_index: idx,
-                })
+                entry.initialize_script(self.overrides).add(
+                    {
+                        v.ytdl_sub_input_url: url,
+                        v.ytdl_sub_input_url_index: idx,
+                    }
+                )
 
                 yield entry
 
