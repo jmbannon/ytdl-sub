@@ -61,3 +61,23 @@ class TestScript:
         assert script.get("new_variable_upper") == String("HI MOM THE TITLE")
         assert script.get("new_variable_titlecase") == String("Hi Mom The Title")
         assert script.get("entry") == entry_map
+
+    def test_resolve_once_with_custom_functions(self):
+        script = Script(
+            {
+                "%is_bilateral_url": "{ %not(%contains( $0, 'youtube.com/playlist' )) }",
+                "%bilateral_url": """{ 
+                  %if(
+                    %and(
+                      enable_bilateral_scraping,
+                      %is_bilateral_url($0)
+                    ),
+                    $0,
+                    ""
+                  )
+                }""",
+                "enable_bilateral_scraping": "True",
+            }
+        )
+
+        assert script.resolve_once({"url": "{ %bilateral_url('nope') }"})["url"].native == "nope"
