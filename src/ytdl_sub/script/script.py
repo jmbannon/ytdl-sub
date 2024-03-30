@@ -10,6 +10,7 @@ from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
+from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
@@ -257,9 +258,20 @@ class Script:
                     f"Output filter variable contains the variable {var_dep} "
                     f"which is set as unresolvable"
                 )
+
+            # Do not recurse custom function arguments since they have no deps
+            if isinstance(var_dep, FunctionArgument):
+                continue
+
             subset_to_resolve.add(var_dep.name)
             subset_to_resolve |= self._recursive_get_unresolved_output_filter_variables(
                 current_var=self._variables[var_dep.name],
+                subset_to_resolve=subset_to_resolve,
+                unresolvable=unresolvable,
+            )
+        for custom_func_dep in current_var.custom_functions:
+            subset_to_resolve |= self._recursive_get_unresolved_output_filter_variables(
+                current_var=self._functions[custom_func_dep.name],
                 subset_to_resolve=subset_to_resolve,
                 unresolvable=unresolvable,
             )
@@ -440,18 +452,32 @@ class Script:
             self
         """
         added_variables_to_validate: Set[str] = set()
-        for variable_name, variable_definition in variables.items():
-            self._variables[variable_name] = parse(
-                text=variable_definition,
-                name=variable_name,
-                custom_function_names=set(self._functions.keys()),
-                variable_names=set(self._variables.keys())
-                .union(variables.keys())
-                .union(unresolvable or set()),
-            )
 
-            if self._variables[variable_name].maybe_resolvable is None:
-                added_variables_to_validate.add(variable_name)
+        functions_to_add = {
+            name: definition for name, definition in variables.items() if _is_function(name)
+        }
+        variables_to_add = {
+            name: definition for name, definition in variables.items() if not _is_function(name)
+        }
+
+        for definitions in [functions_to_add, variables_to_add]:
+            for name, definition in definitions.items():
+                parsed = parse(
+                    text=definition,
+                    name=name,
+                    custom_function_names=set(self._functions.keys()),
+                    variable_names=set(self._variables.keys())
+                    .union(variables.keys())
+                    .union(unresolvable or set()),
+                )
+
+                if parsed.maybe_resolvable is None:
+                    added_variables_to_validate.add(name)
+
+                if name in functions_to_add:
+                    self._functions[_function_name(name)] = parsed
+                else:
+                    self._variables[name] = parsed
 
         if added_variables_to_validate:
             self._validate(added_variables=added_variables_to_validate)

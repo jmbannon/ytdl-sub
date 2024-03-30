@@ -3,6 +3,8 @@ import re
 from typing import Any
 from typing import Dict
 
+from ytdl_sub.script.script import _is_function
+
 
 class ScriptUtils:
     @classmethod
@@ -11,7 +13,9 @@ class ScriptUtils:
         Helper to add sanitized variables to a Script
         """
         sanitized_variables = {
-            f"{name}_sanitized": f"{{%sanitize({name})}}" for name in variables.keys()
+            f"{name}_sanitized": f"{{%sanitize({name})}}"
+            for name in variables.keys()
+            if not _is_function(name)
         }
         return dict(variables, **sanitized_variables)
 
