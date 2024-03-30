@@ -477,7 +477,7 @@ class Script:
                     added_variables_to_validate.add(name)
 
                 if name in functions_to_add:
-                    self._functions[_function_name(name)] = parsed
+                    self._functions[name] = parsed
                 else:
                     self._variables[name] = parsed
 
