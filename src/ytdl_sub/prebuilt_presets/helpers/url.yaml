@@ -15,7 +15,6 @@ presets:
   _multi_url:
     download:
       - url: "{url}"
-        extract_bilaterally: "url_extract_bilaterally"
         playlist_thumbnails:
           - name: "{avatar_uncropped_thumbnail_file_name}"
             uid: "avatar_uncropped"
@@ -27,203 +26,104 @@ presets:
           - name: "{banner_uncropped_thumbnail_file_name}"
             uid: "banner_uncropped"
       - url: "{url2}"
-        extract_bilaterally: "url2_extract_bilaterally"
       - url: "{url3}"
-        extract_bilaterally: "url3_extract_bilaterally"
       - url: "{url4}"
-        extract_bilaterally: "url4_extract_bilaterally"
       - url: "{url5}"
-        extract_bilaterally: "url5_extract_bilaterally"
       - url: "{url6}"
-        extract_bilaterally: "url6_extract_bilaterally"
       - url: "{url7}"
-        extract_bilaterally: "url7_extract_bilaterally"
       - url: "{url8}"
-        extract_bilaterally: "url8_extract_bilaterally"
       - url: "{url9}"
-        extract_bilaterally: "url9_extract_bilaterally"
       - url: "{url10}"
-        extract_bilaterally: "url10_extract_bilaterally"
       - url: "{url11}"
-        extract_bilaterally: "url11_extract_bilaterally"
       - url: "{url12}"
-        extract_bilaterally: "url12_extract_bilaterally"
       - url: "{url13}"
-        extract_bilaterally: "url13_extract_bilaterally"
       - url: "{url14}"
-        extract_bilaterally: "url14_extract_bilaterally"
       - url: "{url15}"
-        extract_bilaterally: "url15_extract_bilaterally"
       - url: "{url16}"
-        extract_bilaterally: "url16_extract_bilaterally"
       - url: "{url17}"
-        extract_bilaterally: "url17_extract_bilaterally"
       - url: "{url18}"
-        extract_bilaterally: "url18_extract_bilaterally"
       - url: "{url19}"
-        extract_bilaterally: "url19_extract_bilaterally"
       - url: "{url20}"
-        extract_bilaterally: "url20_extract_bilaterally"
       - url: "{url21}"
-        extract_bilaterally: "url21_extract_bilaterally"
       - url: "{url22}"
-        extract_bilaterally: "url22_extract_bilaterally"
       - url: "{url23}"
-        extract_bilaterally: "url23_extract_bilaterally"
       - url: "{url24}"
-        extract_bilaterally: "url24_extract_bilaterally"
       - url: "{url25}"
-        extract_bilaterally: "url25_extract_bilaterally"
       - url: "{url26}"
-        extract_bilaterally: "url26_extract_bilaterally"
       - url: "{url27}"
-        extract_bilaterally: "url27_extract_bilaterally"
       - url: "{url28}"
-        extract_bilaterally: "url28_extract_bilaterally"
       - url: "{url29}"
-        extract_bilaterally: "url29_extract_bilaterally"
       - url: "{url30}"
-        extract_bilaterally: "url30_extract_bilaterally"
       - url: "{url31}"
-        extract_bilaterally: "url31_extract_bilaterally"
       - url: "{url32}"
-        extract_bilaterally: "url32_extract_bilaterally"
       - url: "{url33}"
-        extract_bilaterally: "url33_extract_bilaterally"
       - url: "{url34}"
-        extract_bilaterally: "url34_extract_bilaterally"
       - url: "{url35}"
-        extract_bilaterally: "url35_extract_bilaterally"
       - url: "{url36}"
-        extract_bilaterally: "url36_extract_bilaterally"
       - url: "{url37}"
-        extract_bilaterally: "url37_extract_bilaterally"
       - url: "{url38}"
-        extract_bilaterally: "url38_extract_bilaterally"
       - url: "{url39}"
-        extract_bilaterally: "url39_extract_bilaterally"
       - url: "{url40}"
-        extract_bilaterally: "url40_extract_bilaterally"
       - url: "{url41}"
-        extract_bilaterally: "url41_extract_bilaterally"
       - url: "{url42}"
-        extract_bilaterally: "url42_extract_bilaterally"
       - url: "{url43}"
-        extract_bilaterally: "url43_extract_bilaterally"
       - url: "{url44}"
-        extract_bilaterally: "url44_extract_bilaterally"
       - url: "{url45}"
-        extract_bilaterally: "url45_extract_bilaterally"
       - url: "{url46}"
-        extract_bilaterally: "url46_extract_bilaterally"
       - url: "{url47}"
-        extract_bilaterally: "url47_extract_bilaterally"
       - url: "{url48}"
-        extract_bilaterally: "url48_extract_bilaterally"
       - url: "{url49}"
-        extract_bilaterally: "url49_extract_bilaterally"
       - url: "{url50}"
-        extract_bilaterally: "url50_extract_bilaterally"
       - url: "{url51}"
-        extract_bilaterally: "url51_extract_bilaterally"
       - url: "{url52}"
-        extract_bilaterally: "url52_extract_bilaterally"
       - url: "{url53}"
-        extract_bilaterally: "url53_extract_bilaterally"
       - url: "{url54}"
-        extract_bilaterally: "url54_extract_bilaterally"
       - url: "{url55}"
-        extract_bilaterally: "url55_extract_bilaterally"
       - url: "{url56}"
-        extract_bilaterally: "url56_extract_bilaterally"
       - url: "{url57}"
-        extract_bilaterally: "url57_extract_bilaterally"
       - url: "{url58}"
-        extract_bilaterally: "url58_extract_bilaterally"
       - url: "{url59}"
-        extract_bilaterally: "url59_extract_bilaterally"
       - url: "{url60}"
-        extract_bilaterally: "url60_extract_bilaterally"
       - url: "{url61}"
-        extract_bilaterally: "url61_extract_bilaterally"
       - url: "{url62}"
-        extract_bilaterally: "url62_extract_bilaterally"
       - url: "{url63}"
-        extract_bilaterally: "url63_extract_bilaterally"
       - url: "{url64}"
-        extract_bilaterally: "url64_extract_bilaterally"
       - url: "{url65}"
-        extract_bilaterally: "url65_extract_bilaterally"
       - url: "{url66}"
-        extract_bilaterally: "url66_extract_bilaterally"
       - url: "{url67}"
-        extract_bilaterally: "url67_extract_bilaterally"
       - url: "{url68}"
-        extract_bilaterally: "url68_extract_bilaterally"
       - url: "{url69}"
-        extract_bilaterally: "url69_extract_bilaterally"
       - url: "{url70}"
-        extract_bilaterally: "url70_extract_bilaterally"
       - url: "{url71}"
-        extract_bilaterally: "url71_extract_bilaterally"
       - url: "{url72}"
-        extract_bilaterally: "url72_extract_bilaterally"
       - url: "{url73}"
-        extract_bilaterally: "url73_extract_bilaterally"
       - url: "{url74}"
-        extract_bilaterally: "url74_extract_bilaterally"
       - url: "{url75}"
-        extract_bilaterally: "url75_extract_bilaterally"
       - url: "{url76}"
-        extract_bilaterally: "url76_extract_bilaterally"
       - url: "{url77}"
-        extract_bilaterally: "url77_extract_bilaterally"
       - url: "{url78}"
-        extract_bilaterally: "url78_extract_bilaterally"
       - url: "{url79}"
-        extract_bilaterally: "url79_extract_bilaterally"
       - url: "{url80}"
-        extract_bilaterally: "url80_extract_bilaterally"
       - url: "{url81}"
-        extract_bilaterally: "url81_extract_bilaterally"
       - url: "{url82}"
-        extract_bilaterally: "url82_extract_bilaterally"
       - url: "{url83}"
-        extract_bilaterally: "url83_extract_bilaterally"
       - url: "{url84}"
-        extract_bilaterally: "url84_extract_bilaterally"
       - url: "{url85}"
-        extract_bilaterally: "url85_extract_bilaterally"
       - url: "{url86}"
-        extract_bilaterally: "url86_extract_bilaterally"
       - url: "{url87}"
-        extract_bilaterally: "url87_extract_bilaterally"
       - url: "{url88}"
-        extract_bilaterally: "url88_extract_bilaterally"
       - url: "{url89}"
-        extract_bilaterally: "url89_extract_bilaterally"
       - url: "{url90}"
-        extract_bilaterally: "url90_extract_bilaterally"
       - url: "{url91}"
-        extract_bilaterally: "url91_extract_bilaterally"
       - url: "{url92}"
-        extract_bilaterally: "url92_extract_bilaterally"
       - url: "{url93}"
-        extract_bilaterally: "url93_extract_bilaterally"
       - url: "{url94}"
-        extract_bilaterally: "url94_extract_bilaterally"
       - url: "{url95}"
-        extract_bilaterally: "url95_extract_bilaterally"
       - url: "{url96}"
-        extract_bilaterally: "url96_extract_bilaterally"
       - url: "{url97}"
-        extract_bilaterally: "url97_extract_bilaterally"
       - url: "{url98}"
-        extract_bilaterally: "url98_extract_bilaterally"
       - url: "{url99}"
-        extract_bilaterally: "url99_extract_bilaterally"
       - url: "{url100}"
-        extract_bilaterally: "url100_extract_bilaterally"
 
     overrides:
       avatar_uncropped_thumbnail_file_name: ""
@@ -431,105 +331,428 @@ presets:
       url99: "{subscription_value_99}"
       url100: "{subscription_value_100}"
 
-      # Default behavior is to assume all URLs are ordered by newest
-      url_extract_bilaterally: False
-      url2_extract_bilaterally: False
-      url3_extract_bilaterally: False
-      url4_extract_bilaterally: False
-      url5_extract_bilaterally: False
-      url6_extract_bilaterally: False
-      url7_extract_bilaterally: False
-      url8_extract_bilaterally: False
-      url9_extract_bilaterally: False
-      url10_extract_bilaterally: False
-      url11_extract_bilaterally: False
-      url12_extract_bilaterally: False
-      url13_extract_bilaterally: False
-      url14_extract_bilaterally: False
-      url15_extract_bilaterally: False
-      url16_extract_bilaterally: False
-      url17_extract_bilaterally: False
-      url18_extract_bilaterally: False
-      url19_extract_bilaterally: False
-      url20_extract_bilaterally: False
-      url21_extract_bilaterally: False
-      url22_extract_bilaterally: False
-      url23_extract_bilaterally: False
-      url24_extract_bilaterally: False
-      url25_extract_bilaterally: False
-      url26_extract_bilaterally: False
-      url27_extract_bilaterally: False
-      url28_extract_bilaterally: False
-      url29_extract_bilaterally: False
-      url30_extract_bilaterally: False
-      url31_extract_bilaterally: False
-      url32_extract_bilaterally: False
-      url33_extract_bilaterally: False
-      url34_extract_bilaterally: False
-      url35_extract_bilaterally: False
-      url36_extract_bilaterally: False
-      url37_extract_bilaterally: False
-      url38_extract_bilaterally: False
-      url39_extract_bilaterally: False
-      url40_extract_bilaterally: False
-      url41_extract_bilaterally: False
-      url42_extract_bilaterally: False
-      url43_extract_bilaterally: False
-      url44_extract_bilaterally: False
-      url45_extract_bilaterally: False
-      url46_extract_bilaterally: False
-      url47_extract_bilaterally: False
-      url48_extract_bilaterally: False
-      url49_extract_bilaterally: False
-      url50_extract_bilaterally: False
-      url51_extract_bilaterally: False
-      url52_extract_bilaterally: False
-      url53_extract_bilaterally: False
-      url54_extract_bilaterally: False
-      url55_extract_bilaterally: False
-      url56_extract_bilaterally: False
-      url57_extract_bilaterally: False
-      url58_extract_bilaterally: False
-      url59_extract_bilaterally: False
-      url60_extract_bilaterally: False
-      url61_extract_bilaterally: False
-      url62_extract_bilaterally: False
-      url63_extract_bilaterally: False
-      url64_extract_bilaterally: False
-      url65_extract_bilaterally: False
-      url66_extract_bilaterally: False
-      url67_extract_bilaterally: False
-      url68_extract_bilaterally: False
-      url69_extract_bilaterally: False
-      url70_extract_bilaterally: False
-      url71_extract_bilaterally: False
-      url72_extract_bilaterally: False
-      url73_extract_bilaterally: False
-      url74_extract_bilaterally: False
-      url75_extract_bilaterally: False
-      url76_extract_bilaterally: False
-      url77_extract_bilaterally: False
-      url78_extract_bilaterally: False
-      url79_extract_bilaterally: False
-      url80_extract_bilaterally: False
-      url81_extract_bilaterally: False
-      url82_extract_bilaterally: False
-      url83_extract_bilaterally: False
-      url84_extract_bilaterally: False
-      url85_extract_bilaterally: False
-      url86_extract_bilaterally: False
-      url87_extract_bilaterally: False
-      url88_extract_bilaterally: False
-      url89_extract_bilaterally: False
-      url90_extract_bilaterally: False
-      url91_extract_bilaterally: False
-      url92_extract_bilaterally: False
-      url93_extract_bilaterally: False
-      url94_extract_bilaterally: False
-      url95_extract_bilaterally: False
-      url96_extract_bilaterally: False
-      url97_extract_bilaterally: False
-      url98_extract_bilaterally: False
-      url99_extract_bilaterally: False
-      url100_extract_bilaterally: False
-      
+
+  # multi-url with bilateral scraping built into it via
+  # inspection of the URL and conditionally adding another
+  # ytdl-sub url download with the scraping and download reversed
+  _multi_url_bilateral:
+    preset:
+      - "_multi_url"
+
+    overrides:
+      enable_bilateral_scraping: True
+      "%is_bilateral_url": >-
+        { %contains( $0, "youtube.com/playlist" ) }
+      "%bilateral_url": >-
+        { 
+          %if(
+            %and(
+              enable_bilateral_scraping,
+              %is_bilateral_url($0)
+            ),
+            $0,
+            ""
+          )
+        }
+
+    download:
+      - url: "{  %bilateral_url(url) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url2) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url3) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url4) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url5) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url6) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url7) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url8) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url9) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url10) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url11) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url12) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url13) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url14) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url15) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url16) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url17) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url18) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url19) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url20) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url21) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url22) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url23) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url24) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url25) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url26) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url27) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url28) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url29) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url30) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url31) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url32) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url33) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url34) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url35) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url36) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url37) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url38) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url39) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url40) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url41) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url42) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url43) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url44) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url45) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url46) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url47) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url48) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url49) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url50) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url51) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url52) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url53) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url54) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url55) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url56) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url57) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url58) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url59) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url60) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url61) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url62) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url63) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url64) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url65) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url66) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url67) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url68) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url69) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url70) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url71) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url72) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url73) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url74) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url75) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url76) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url77) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url78) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url79) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url80) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url81) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url82) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url83) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url84) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url85) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url86) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url87) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url88) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url89) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url90) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url91) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url92) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url93) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url94) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url95) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url96) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url97) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url98) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{  %bilateral_url(url99) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
+      - url: "{ %bilateral_url(url100) }"
+        download_reverse: True
+        ytdl_options:
+          playlistreverse: True
