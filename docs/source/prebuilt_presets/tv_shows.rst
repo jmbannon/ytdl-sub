@@ -65,6 +65,11 @@ Must define ``tv_show_directory``. Available presets:
        "Jake Trains": "https://www.youtube.com/@JakeTrains"
        "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
 
+     = Music:
+       # TV show subscriptions can support multiple urls and store in the same TV Show
+       "Rick Beato":
+         - "https://www.youtube.com/@RickBeato"
+         - "https://www.youtube.com/@rickbeato240"
 
 Advanced Usage
 ~~~~~~~~~~~~~~
@@ -88,36 +93,6 @@ And then add one of these:
   
   * Episodes are numbered by the download order. NOTE that this is fetched using the length of the download archive. Do not use if you intend to remove old videos.
 
-An example of a subscription that will be played on Kodi, organized by year with the most recent episode at the top (having a lower episode number), with a genre of "Pop":
-
-.. code-block:: yaml
-  :caption: subscriptions.yaml
-
-  __preset__:
-    overrides:
-      tv_show_directory: "/tv_shows"
-
-  kodi_tv_show_by_date:
-    season_by_year_episode_by_month_day_reversed:
-      = Pop:
-        "Rick A": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-
-You can also choose to combine multiple URLs into one show. This will result in your videos being downloaded to the same folder, and the episode numbers being shared between them (so you won't have two episode 10's, for example). Note that you may :ytdl-sub-gh:`experience issues <issues/833>` if you use more than 20 URLs at this time.
-
-.. code-block:: yaml
-  :caption: subscriptions.yaml
-
-  __preset__:
-    overrides:
-      tv_show_directory: "/tv_shows"
-
-  kodi_tv_show_by_date:
-    season_by_year_episode_by_month_day_reversed:
-      = Pop:
-        "~Rick A": 
-          url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-          url2: "https://www.youtube.com/@just.rick_6"
-
 
 TV Show Collection
 ------------------
@@ -137,9 +112,9 @@ Example
 ~~~~~~~
 Must define ``tv_show_directory``. Available presets:
 
-* ``"Kodi TV Collection"``
-* ``"Jellyfin TV Collection"``
-* ``"Plex TV Collection"``
+* ``"Kodi TV Show Collection"``
+* ``"Jellyfin TV Show Collection"``
+* ``"Plex TV Show Collection"``
 
 .. code-block:: yaml
 
@@ -175,34 +150,3 @@ And then add one of these:
   
   * Only use playlist_index episode formatting for playlists that will be fully downloaded once and never again. Otherwise, indices can change.
 * ``season_by_collection__episode_by_playlist_index_reversed``
-
-
-Example
-~~~~~~~
-
-A preset/subscription requires specifying a player and episode formatting
-with the following override variables:
-
-.. code-block:: yaml
-
-  rick_a_tv_show_collection:
-    preset:
-      - "jellyfin_tv_show_collection"
-      - "season_by_collection__episode_by_year_month_day_reversed"
-      - "collection_season_1"
-      - "collection_season_2"
-    overrides:
-      # required
-      tv_show_name: "Rick A"
-      tv_show_directory: "/path/to/youtube_shows"
-      collection_season_1_url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-      collection_season_1_name: "All Videos"
-      collection_season_2_url: "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
-      collection_season_2_name: "Official Music Videos"
-
-  Jellyfin TV Show Collection:
-    "~Rick A":
-      s01_name: "All Videos"
-      s01_url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
-      s02_name: "Official Music Videos"
-      s02_url: "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
