@@ -40,14 +40,6 @@ presets:
 
 ####################################################################################################
 
-  # TV show from a collection. Must specify additional `tv_show_collection_season` presets in
-  # addition. Each season sets its own `collection_season_number/_padded`
-  _tv_show_collection:
-    overrides:
-      collection_season_number_padded: "{ %pad_zero(%int(collection_season_number), 2) }"
-      season_number: "{collection_season_number}"
-      season_number_padded: "{collection_season_number_padded}"
-
   _episode_video_tags:
     video_tags:
       show: "{tv_show_name}"

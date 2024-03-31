@@ -133,21 +133,12 @@ Episode Formatting Presets
   * Only use playlist_index episode formatting for playlists that will be fully downloaded once and never again. Otherwise, indices can change.
 * ``season_by_collection__episode_by_playlist_index_reversed``
 
-Season Presets
-~~~~~~~~~~~~~~
-
-* ``collection_season_1``
-* ``collection_season_2``
-* ``collection_season_3``
-* ``collection_season_4``
-* ``...``
-* ``collection_season_40``
 
 Example
 ~~~~~~~
 
-A preset/subscription requires specifying a player, episode formatting, and
-one or more season presets, with the following override variables:
+A preset/subscription requires specifying a player and episode formatting
+with the following override variables:
 
 .. code-block:: yaml
 
@@ -155,8 +146,6 @@ one or more season presets, with the following override variables:
     preset:
       - "jellyfin_tv_show_collection"
       - "season_by_collection__episode_by_year_month_day_reversed"
-      - "collection_season_1"
-      - "collection_season_2"
     overrides:
       # required
       tv_show_name: "Rick A"

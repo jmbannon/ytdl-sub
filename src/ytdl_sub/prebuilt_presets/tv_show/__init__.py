@@ -52,6 +52,8 @@ class TvShowCollectionEpisodeFormattingPresets(PrebuiltPresets):
 
 
 class TvShowCollectionSeasonPresets(PrebuiltPresets):
+    """Now Deprecated"""
+
     preset_names = {
         "collection_season_1",
         "collection_season_2",
