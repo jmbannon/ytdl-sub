@@ -71,13 +71,8 @@ __preset__:
     cookiefile: "/config/cookie.txt" 
 
 ###################################################################
-# Subscriptions nested under this will use the
-# `Plex TV Show by Date` preset.
-#
-# Can choose between:
-#   - Plex TV Show by Date:
-#   - Jellyfin TV Show by Date:
-#   - Kodi TV Show by Date:
+# TV Show Presets. Can replace Plex with Plex/Jellyfin/Kodi
+
 Plex TV Show by Date:
 
   # Sets genre tag to "Documentaries"
@@ -101,9 +96,18 @@ Plex TV Show by Date:
   = News | Only Recent:
     "BBC News": "https://www.youtube.com/@BBCNews"
 
+Plex TV Show Collection:
+  = Music:
+    # Prefix with ~ to set specific override variables
+    "~Beyond the Guitar":
+      s01_name: "Videos"
+      s01_url: "https://www.youtube.com/c/BeyondTheGuitar"
+      s02_name: "Covers"
+      s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
+
 ###################################################################
-# Subscriptions nested under these will use the various prebuilt
-# music presets
+# Music Presets. Can replace Plex with Plex/Jellyfin/Kodi
+
 YouTube Releases:
   = Jazz:  # Sets genre tag to "Jazz"
     "Thelonious Monk": "https://www.youtube.com/@theloniousmonk3870/releases"
@@ -124,10 +128,7 @@ Bandcamp:
     "Emily Hopkins": "https://emilyharpist.bandcamp.com/"
 
 ###################################################################
-# Can choose between:
-#   - Plex Music Videos:
-#   - Jellyfin Music Videos:
-#   - Kodi Music Videos:
+# Music Video Presets
 "Plex Music Videos":
   = Pop:  # Sets genre tag to "Pop"
     "Rick Astley": "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"

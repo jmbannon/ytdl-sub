@@ -56,3 +56,20 @@ Plex TV Show by Date:
   # Set "News" for genre, use `Only Recent` preset to only store videos uploaded recently
   = News | Only Recent:
     "BBC News": "https://www.youtube.com/@BBCNews"
+
+# Sets URLs to be explicit seasons. If a video resides in multiple URLs, it will
+# only appear once in the higher-numbered season. This is how you can separate a channel's
+# videos and playlists you are interested in.
+#
+# Choose the player you intend to use by setting the top-level key to be either:
+#   - Plex TV Show Collection:
+#   - Jellyfin TV Show Collection:
+#   - Kodi TV Show Collection:
+Plex TV Show Collection:
+  = Music:
+    "~Beyond the Guitar":
+      s01_name: "Videos"
+      s01_url: "https://www.youtube.com/c/BeyondTheGuitar"
+
+      s02_name: "Music Videos"
+      s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
