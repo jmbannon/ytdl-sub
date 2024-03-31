@@ -38,16 +38,33 @@ TV Show by Date
 
 TV Show by Date will organize something like a YouTube channel or playlist into a tv show, where seasons and episodes are organized using upload date.
 
-Plug and Play Presets
-~~~~~~~~~~~~~~~~~~~~~
-
-You can use any of these presets in your ``subscriptions.yaml`` as a "One size fits all" solution- they should set all appropriate values. These will organize seasons by year and episodes by month, then day.
-
-Must define ``tv_show_directory``
+Example
+~~~~~~~
+Must define ``tv_show_directory``. Available presets:
 
 * ``"Kodi TV Show by Date"``
 * ``"Jellyfin TV Show by Date"``
 * ``"Plex TV Show by Date"``
+
+.. code-block:: yaml
+
+   __preset__:
+     overrides:
+       tv_show_directory: "/tv_shows"
+
+   Plex TV Show by Date:
+
+     # Sets genre tag to "Documentaries"
+     = Documentaries:
+       "NOVA PBS": "https://www.youtube.com/@novapbs"
+       "National Geographic": "https://www.youtube.com/@NatGeo"
+       "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
+
+     # Sets genre tag to "Kids", "TV-Y" for content rating
+     = Kids | = TV-Y:
+       "Jake Trains": "https://www.youtube.com/@JakeTrains"
+       "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
+
 
 Advanced Usage
 ~~~~~~~~~~~~~~
@@ -105,9 +122,9 @@ You can also choose to combine multiple URLs into one show. This will result in 
 TV Show Collection
 ------------------
 
-TV Show Collections are made up of multiple URLs, where each URL is a season.
-If a video belongs to multiple URLs (i.e. a channel and a channel's playlist),
-it will resolve to the bottom-most season, as defined in the subscription.
+TV Show Collections set each URL as its own season. If a video belongs to multiple URLs
+(i.e. a channel and a channel's playlist), the video will only download once and reside in
+the higher-numbered season.
 
 Two main use cases of a collection are:
    1. Organize a YouTube channel TV show where Season 1 contains any video
@@ -116,15 +133,41 @@ Two main use cases of a collection are:
    2. Organize one or more YouTube channels/playlists, where each season
       represents a separate channel/playlist.
 
-Player Presets
+Example
+~~~~~~~
+Must define ``tv_show_directory``. Available presets:
+
+* ``"Kodi TV Collection"``
+* ``"Jellyfin TV Collection"``
+* ``"Plex TV Collection"``
+
+.. code-block:: yaml
+
+   __preset__:
+     overrides:
+       tv_show_directory: "/tv_shows"
+
+   Plex TV Show Collection:
+     = Music:
+       # Prefix with ~ to set specific override variables
+       "~Beyond the Guitar":
+         s01_name: "Videos"
+         s01_url: "https://www.youtube.com/c/BeyondTheGuitar"
+         s02_name: "Covers"
+         s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
+
+Advanced Usage
 ~~~~~~~~~~~~~~
+
+If you prefer a different organization method, you can instead apply multiple presets to your subscriptions.
+
+You will need a base of one of the below:
 
 * ``kodi_tv_show_collection``
 * ``jellyfin_tv_show_collection``
 * ``plex_tv_show_collection``
 
-Episode Formatting Presets
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+And then add one of these:
 
 * ``season_by_collection__episode_by_year_month_day``
 * ``season_by_collection__episode_by_year_month_day_reversed``
@@ -146,6 +189,8 @@ with the following override variables:
     preset:
       - "jellyfin_tv_show_collection"
       - "season_by_collection__episode_by_year_month_day_reversed"
+      - "collection_season_1"
+      - "collection_season_2"
     overrides:
       # required
       tv_show_name: "Rick A"
@@ -154,7 +199,10 @@ with the following override variables:
       collection_season_1_name: "All Videos"
       collection_season_2_url: "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
       collection_season_2_name: "Official Music Videos"
-      # can be modified from their default value
-      # tv_show_genre: "ytdl-sub"
-      # episode_title: "{upload_date_standardized} - {title}"
-      # episode_description: "{webpage_url}"
+
+  Jellyfin TV Show Collection:
+    "~Rick A":
+      s01_name: "All Videos"
+      s01_url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+      s02_name: "Official Music Videos"
+      s02_url: "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
