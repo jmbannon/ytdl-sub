@@ -655,6 +655,13 @@ upper
 Ytdl-Sub Functions
 ------------------
 
+is_bilateral_playlist_url
+~~~~~~~~~~~~~~~~~~~~~~~~~
+:spec: ``is_bilateral_playlist_url(url: String) -> Boolean``
+
+Heuristic that returns True if the URL is known to be bilateral, meaning that entries can
+be added to the beginning or end.
+
 legacy_bracket_safety
 ~~~~~~~~~~~~~~~~~~~~~
 :spec: ``legacy_bracket_safety(value: ReturnableArgument) -> ReturnableArgument``
