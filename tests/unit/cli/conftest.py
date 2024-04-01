@@ -20,10 +20,6 @@ from ytdl_sub.utils.logger import Logger
 def mock_subscription_download_factory():
     def _mock_subscription_download_factory(mock_success_output: bool) -> Callable:
         def _mock_download(self: Subscription, dry_run: bool) -> FileHandlerTransactionLog:
-            self._initialize_subscription_overrides_pre_archive()
-            self._initialize_download_archive(dry_run=dry_run)
-            self._initialize_subscription_overrides_post_archive()
-
             Logger.get().info(
                 "name=%s success=%s dry_run=%s", self.name, mock_success_output, dry_run
             )
