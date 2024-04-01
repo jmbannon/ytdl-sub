@@ -80,6 +80,7 @@ class TestScript:
             }
         )
 
+        assert script.resolve_once({"url": "{ %bilateral_url('nope') }"})["url"].native == "nope"
         script.add({"%bilateral_url_wrap": "{ %bilateral_url($0) }"})
 
         assert (

@@ -1,0 +1,21 @@
+presets:
+  # multi-url with bilateral scraping built into it via
+  # inspection of the URL and conditionally adding another
+  # ytdl-sub url download with the scraping and download reversed
+  _url_bilateral_overrides:
+    overrides:
+      enable_bilateral_scraping: True
+      "%is_bilateral_url": >-
+        { %contains( $0, "youtube.com/playlist" ) }
+      "%bilateral_url": >-
+        { 
+          %if(
+            %and(
+              enable_bilateral_scraping,
+              subscription_has_download_archive,
+              %is_bilateral_url($0)
+            ),
+            $0,
+            ""
+          )
+        }

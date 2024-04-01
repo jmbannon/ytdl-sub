@@ -118,6 +118,7 @@ class InfoJsonDownloader(SourcePlugin[InfoJsonDownloaderOptions]):
             )
             entries.append(entry)
 
+        # TODO: MATCH A URL TO A URL_VALIDATOR !!!
         for entry in sorted(entries, key=lambda ent: ent.get(v.download_index, int)):
             # Remove each entry from the live download archive since it will get re-added
             # unless it is filtered

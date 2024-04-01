@@ -74,7 +74,7 @@ class TestConfigFilePartiallyValidatesPresets:
             expected_error_message="Validation error in partial_preset.download.1: "
             "'partial_preset.download.1' contains the field 'bad_key' which is not allowed. "
             "Allowed fields: download_reverse, include_sibling_metadata, playlist_thumbnails, "
-            "source_thumbnails, url, variables",
+            "source_thumbnails, url, variables, ytdl_options",
         )
 
     @pytest.mark.parametrize(

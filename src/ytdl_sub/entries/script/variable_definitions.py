@@ -751,6 +751,24 @@ class YtdlSubVariableDefinitions(ABC):
         return StringVariable(variable_name="ytdl_sub_input_url", definition="{ %string('') }")
 
     @cached_property
+    def ytdl_sub_input_url_index(self: "VariableDefinitions") -> IntegerVariable:
+        """
+        :description:
+          The index of the input URL as defined in the subscription, top-most being the 0th index.
+        """
+        # init as -1 so if prior downloaded entries are known when they do not have this value
+        # in their .info.json
+        return IntegerVariable(variable_name="ytdl_sub_input_url_index", definition="{ %int(-1) }")
+
+    @cached_property
+    def ytdl_sub_input_url_count(self: "VariableDefinitions") -> IntegerVariable:
+        """
+        :description:
+          The total number of input URLs as defined in the subscription.
+        """
+        return IntegerVariable(variable_name="ytdl_sub_input_url_count", definition="{ %int(0) }")
+
+    @cached_property
     def download_index(self: "VariableDefinitions") -> IntegerVariable:
         """
         :description:
@@ -1100,6 +1118,8 @@ class VariableDefinitions(
             self.chapters,
             self.sponsorblock_chapters,
             self.ytdl_sub_input_url,
+            self.ytdl_sub_input_url_index,
+            self.ytdl_sub_input_url_count,
         }
 
     @cache

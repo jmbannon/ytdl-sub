@@ -9,11 +9,30 @@ from ytdl_sub.config.preset import Preset
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
+from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get("subscription")
+
+
+def _initialize_download_archive(
+    output_options: OutputOptions,
+    overrides: Overrides,
+    working_directory: str,
+    output_directory: str,
+) -> EnhancedDownloadArchive:
+    migrated_file_name: Optional[str] = None
+    if migrated_file_name_option := output_options.migrated_download_archive_name:
+        migrated_file_name = overrides.apply_formatter(migrated_file_name_option)
+
+    return EnhancedDownloadArchive(
+        file_name=overrides.apply_formatter(output_options.download_archive_name),
+        working_directory=working_directory,
+        output_directory=output_directory,
+        migrated_file_name=migrated_file_name,
+    ).reinitialize(dry_run=True)
 
 
 class BaseSubscription(ABC):
@@ -48,19 +67,42 @@ class BaseSubscription(ABC):
         self._config_options = config_options
         self._preset_options = preset_options
 
-        migrated_file_name: Optional[str] = None
-        if migrated_file_name_option := self.output_options.migrated_download_archive_name:
-            migrated_file_name = self.overrides.apply_formatter(migrated_file_name_option)
+        # Add overrides pre-archive
+        self.overrides.add(
+            {
+                SubscriptionVariables.subscription_name(): self.name,
+            }
+        )
 
-        # TODO: Do not include this as part of the subscription
-        self._enhanced_download_archive = EnhancedDownloadArchive(
-            file_name=self.overrides.apply_formatter(self.output_options.download_archive_name),
+        self._enhanced_download_archive: Optional[
+            EnhancedDownloadArchive
+        ] = _initialize_download_archive(
+            output_options=self.output_options,
+            overrides=self.overrides,
             working_directory=self.working_directory,
             output_directory=self.output_directory,
-            migrated_file_name=migrated_file_name,
+        )
+
+        # Add post-archive variables
+        self.overrides.add(
+            {
+                SubscriptionVariables.subscription_has_download_archive(): f"""{{
+                        %bool({self.download_archive.num_entries > 0})
+                    }}""",
+            }
         )
 
         self._exception: Optional[Exception] = None
+
+    @property
+    def download_archive(self) -> EnhancedDownloadArchive:
+        """
+        Returns
+        -------
+        Initialized download archive
+        """
+        assert self._enhanced_download_archive is not None
+        return self._enhanced_download_archive
 
     @property
     def downloader_options(self) -> MultiUrlValidator:
@@ -141,7 +183,7 @@ class BaseSubscription(ABC):
         -------
         Number of entries added
         """
-        return self._enhanced_download_archive.num_entries_added
+        return self.download_archive.num_entries_added
 
     @property
     def num_entries_modified(self) -> int:
@@ -150,7 +192,7 @@ class BaseSubscription(ABC):
         -------
         Number of entries modified
         """
-        return self._enhanced_download_archive.num_entries_modified
+        return self.download_archive.num_entries_modified
 
     @property
     def num_entries_removed(self) -> int:
@@ -159,7 +201,7 @@ class BaseSubscription(ABC):
         -------
         Number of entries removed
         """
-        return self._enhanced_download_archive.num_entries_removed
+        return self.download_archive.num_entries_removed
 
     @property
     def num_entries(self) -> int:
@@ -168,7 +210,7 @@ class BaseSubscription(ABC):
         -------
         The number of entries
         """
-        return self._enhanced_download_archive.num_entries
+        return self.download_archive.num_entries
 
     @property
     def transaction_log(self) -> FileHandlerTransactionLog:
@@ -177,7 +219,7 @@ class BaseSubscription(ABC):
         -------
         Transaction log from the subscription
         """
-        return self._enhanced_download_archive.get_file_handler_transaction_log()
+        return self.download_archive.get_file_handler_transaction_log()
 
     @property
     def exception(self) -> Optional[Exception]:
