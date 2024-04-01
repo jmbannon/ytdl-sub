@@ -22,17 +22,6 @@ _days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 class CustomFunctions:
-    @staticmethod
-    def is_bilateral_playlist_url(url: String) -> Boolean:
-        """
-        Heuristic that returns True if the URL is known to be bilateral, meaning that entries can
-        be added to the beginning or end.
-        """
-        # Top-level allow-list of notorious URLs that can be
-        # ordered in either direction
-        if "youtube.com/playlist" not in url.value:
-            return Boolean(True)
-        return Boolean(False)
 
     @staticmethod
     def legacy_bracket_safety(value: ReturnableArgument) -> ReturnableArgument:
@@ -183,7 +172,6 @@ class CustomFunctions:
         Register Custom functions once and only once
         """
         if not Functions.is_built_in("sanitize"):
-            Functions.register_function(CustomFunctions.is_bilateral_playlist_url)
             Functions.register_function(CustomFunctions.legacy_bracket_safety)
             Functions.register_function(CustomFunctions.truncate_filepath_if_too_long)
             Functions.register_function(CustomFunctions.to_native_filepath)
