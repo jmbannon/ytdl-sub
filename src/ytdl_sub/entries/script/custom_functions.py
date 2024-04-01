@@ -6,7 +6,6 @@ from yt_dlp.utils import sanitize_filename
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import ReturnableArgument
 from ytdl_sub.script.types.resolvable import String
@@ -22,7 +21,6 @@ _days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 class CustomFunctions:
-
     @staticmethod
     def legacy_bracket_safety(value: ReturnableArgument) -> ReturnableArgument:
         """
