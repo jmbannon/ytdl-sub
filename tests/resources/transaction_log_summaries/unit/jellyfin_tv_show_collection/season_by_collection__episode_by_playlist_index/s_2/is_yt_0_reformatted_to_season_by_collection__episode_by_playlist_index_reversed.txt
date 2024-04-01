@@ -208,6 +208,11 @@ Files created:
         title: 2021-08-08 - Mock Entry 21-1
         year: 2021
 
+Files modified:
+----------------------------------------
+{output_directory}/Season 01
+  s01.e000003 - Mock Entry 20-5.info.json
+
 Files removed:
 ----------------------------------------
 {output_directory}
