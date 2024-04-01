@@ -341,403 +341,403 @@ presets:
 
     download:
       - url: "{  %bilateral_url(url) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url2) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url3) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url4) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url5) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url6) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url7) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url8) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url9) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url10) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url11) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url12) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url13) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url14) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url15) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url16) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url17) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url18) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url19) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url20) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url21) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url22) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url23) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url24) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url25) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url26) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url27) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url28) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url29) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url30) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url31) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url32) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url33) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url34) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url35) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url36) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url37) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url38) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url39) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url40) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url41) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url42) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url43) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url44) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url45) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url46) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url47) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url48) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url49) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url50) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url51) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url52) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url53) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url54) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url55) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url56) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url57) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url58) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url59) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url60) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url61) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url62) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url63) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url64) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url65) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url66) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url67) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url68) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url69) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url70) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url71) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url72) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url73) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url74) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url75) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url76) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url77) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url78) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url79) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url80) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url81) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url82) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url83) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url84) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url85) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url86) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url87) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url88) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url89) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url90) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url91) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url92) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url93) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url94) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url95) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url96) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url97) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url98) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{  %bilateral_url(url99) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
       - url: "{ %bilateral_url(url100) }"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 

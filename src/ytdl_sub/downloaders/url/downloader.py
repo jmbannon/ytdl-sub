@@ -388,7 +388,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             yield entries_to_iter[idx]
             self._mark_downloaded(entries_to_iter[idx])
 
-            del entries_to_iter[idx]
+            entries_to_iter[idx] = None
 
     def _iterate_parent_entry(
         self, parent: EntryParent, download_reversed: bool

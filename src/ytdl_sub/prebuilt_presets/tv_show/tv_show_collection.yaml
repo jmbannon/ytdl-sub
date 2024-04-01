@@ -60,6 +60,9 @@ presets:
   ##############
 
   _tv_show_collection:
+    preset:
+      - "_tv_show_collection_bilateral"
+
     download:
       - url: "{collection_season_1_url}"
         variables:
@@ -696,7 +699,7 @@ presets:
         variables:
           collection_season_number: "1"
           collection_season_name: "{collection_season_1_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -704,7 +707,7 @@ presets:
         variables:
           collection_season_number: "2"
           collection_season_name: "{collection_season_2_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -712,7 +715,7 @@ presets:
         variables:
           collection_season_number: "3"
           collection_season_name: "{collection_season_3_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -720,7 +723,7 @@ presets:
         variables:
           collection_season_number: "4"
           collection_season_name: "{collection_season_4_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -728,7 +731,7 @@ presets:
         variables:
           collection_season_number: "5"
           collection_season_name: "{collection_season_5_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -736,7 +739,7 @@ presets:
         variables:
           collection_season_number: "6"
           collection_season_name: "{collection_season_6_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -744,7 +747,7 @@ presets:
         variables:
           collection_season_number: "7"
           collection_season_name: "{collection_season_7_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -752,7 +755,7 @@ presets:
         variables:
           collection_season_number: "8"
           collection_season_name: "{collection_season_8_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -760,7 +763,7 @@ presets:
         variables:
           collection_season_number: "9"
           collection_season_name: "{collection_season_9_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -768,7 +771,7 @@ presets:
         variables:
           collection_season_number: "10"
           collection_season_name: "{collection_season_10_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -776,7 +779,7 @@ presets:
         variables:
           collection_season_number: "11"
           collection_season_name: "{collection_season_11_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -784,7 +787,7 @@ presets:
         variables:
           collection_season_number: "12"
           collection_season_name: "{collection_season_12_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -792,7 +795,7 @@ presets:
         variables:
           collection_season_number: "13"
           collection_season_name: "{collection_season_13_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -800,7 +803,7 @@ presets:
         variables:
           collection_season_number: "14"
           collection_season_name: "{collection_season_14_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -808,7 +811,7 @@ presets:
         variables:
           collection_season_number: "15"
           collection_season_name: "{collection_season_15_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -816,7 +819,7 @@ presets:
         variables:
           collection_season_number: "16"
           collection_season_name: "{collection_season_16_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -824,7 +827,7 @@ presets:
         variables:
           collection_season_number: "17"
           collection_season_name: "{collection_season_17_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -832,7 +835,7 @@ presets:
         variables:
           collection_season_number: "18"
           collection_season_name: "{collection_season_18_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -840,7 +843,7 @@ presets:
         variables:
           collection_season_number: "19"
           collection_season_name: "{collection_season_19_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -848,7 +851,7 @@ presets:
         variables:
           collection_season_number: "20"
           collection_season_name: "{collection_season_20_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -856,7 +859,7 @@ presets:
         variables:
           collection_season_number: "21"
           collection_season_name: "{collection_season_21_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -864,7 +867,7 @@ presets:
         variables:
           collection_season_number: "22"
           collection_season_name: "{collection_season_22_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -872,7 +875,7 @@ presets:
         variables:
           collection_season_number: "23"
           collection_season_name: "{collection_season_23_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -880,7 +883,7 @@ presets:
         variables:
           collection_season_number: "24"
           collection_season_name: "{collection_season_24_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -888,7 +891,7 @@ presets:
         variables:
           collection_season_number: "25"
           collection_season_name: "{collection_season_25_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -896,7 +899,7 @@ presets:
         variables:
           collection_season_number: "26"
           collection_season_name: "{collection_season_26_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -904,7 +907,7 @@ presets:
         variables:
           collection_season_number: "27"
           collection_season_name: "{collection_season_27_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -912,7 +915,7 @@ presets:
         variables:
           collection_season_number: "28"
           collection_season_name: "{collection_season_28_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -920,7 +923,7 @@ presets:
         variables:
           collection_season_number: "29"
           collection_season_name: "{collection_season_29_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -928,7 +931,7 @@ presets:
         variables:
           collection_season_number: "30"
           collection_season_name: "{collection_season_30_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -936,7 +939,7 @@ presets:
         variables:
           collection_season_number: "31"
           collection_season_name: "{collection_season_31_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -944,7 +947,7 @@ presets:
         variables:
           collection_season_number: "32"
           collection_season_name: "{collection_season_32_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -952,7 +955,7 @@ presets:
         variables:
           collection_season_number: "33"
           collection_season_name: "{collection_season_33_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -960,7 +963,7 @@ presets:
         variables:
           collection_season_number: "34"
           collection_season_name: "{collection_season_34_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -968,7 +971,7 @@ presets:
         variables:
           collection_season_number: "35"
           collection_season_name: "{collection_season_35_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -976,7 +979,7 @@ presets:
         variables:
           collection_season_number: "36"
           collection_season_name: "{collection_season_36_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -984,7 +987,7 @@ presets:
         variables:
           collection_season_number: "37"
           collection_season_name: "{collection_season_37_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -992,7 +995,7 @@ presets:
         variables:
           collection_season_number: "38"
           collection_season_name: "{collection_season_38_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -1000,7 +1003,7 @@ presets:
         variables:
           collection_season_number: "39"
           collection_season_name: "{collection_season_39_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 
@@ -1008,7 +1011,7 @@ presets:
         variables:
           collection_season_number: "40"
           collection_season_name: "{collection_season_40_name}"
-        download_reverse: True
+        download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"
 

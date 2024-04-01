@@ -4,20 +4,25 @@ Files created:
   .ytdl-sub-bilateral_test-download-archive.json
   fanart.jpg
   poster.jpg
+  season01-poster.jpg
   tvshow.nfo
     NFO tags:
       tvshow:
         genre: ytdl-sub
         mpaa: TV-14
+        namedseason:
+          attributes:
+            number: 1
+          tag: bilateral test
         title: bilateral_test
-{output_directory}/Season 2011
-  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
-  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
-  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
+{output_directory}/Season 01
+  s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1]-thumb.jpg
+  s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].info.json
+  s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].mp4
     Video Tags:
       contentRating: TV-14
       date: 2011-02-01
-      episode_id: 20101
+      episode_id: 11020101
       genre: ytdl-sub
       show: bilateral_test
       synopsis:
@@ -32,12 +37,12 @@ Files created:
         http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
       title: 2011-02-01 - Jesse's Minecraft Server [Trailer - Feb.1]
       year: 2011
-  s2011.e020101 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
+  s01.e11020101 - Jesse's Minecraft Server [Trailer - Feb.1].nfo
     NFO tags:
       episodedetails:
         aired: 2011-02-01
         download_index: 1
-        episode: 20101
+        episode: 11020101
         genre: ytdl-sub
         mpaa: TV-14
         plot:
@@ -50,7 +55,7 @@ Files created:
 
           Texture Pack I Use:
           http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
-        season: 2011
+        season: 1
         subscription_has_download_archive: false
         title: 2011-02-01 - Jesse's Minecraft Server [Trailer - Feb.1]
         year: 2011
