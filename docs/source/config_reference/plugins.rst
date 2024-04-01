@@ -231,6 +231,8 @@ URL.
         variables:
           season_index: "2"
           season_name: "Playlist as Season"
+        ytdl_options:
+          break_on_existing: False
         playlist_thumbnails:
           - name: "season{season_index}-poster.jpg"
             uid: "latest_entry"
