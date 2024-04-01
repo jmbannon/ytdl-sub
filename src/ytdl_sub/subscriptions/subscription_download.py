@@ -17,7 +17,6 @@ from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
@@ -26,7 +25,6 @@ from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger: logging.Logger = Logger.get()
 
@@ -327,34 +325,6 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         return self.download_archive.get_file_handler_transaction_log()
 
-    def _initialize_subscription_overrides_pre_archive(self) -> None:
-        self.overrides.add(
-            {
-                SubscriptionVariables.subscription_name(): self.name,
-            }
-        )
-
-    def _initialize_subscription_overrides_post_archive(self) -> None:
-        self.overrides.add(
-            {
-                SubscriptionVariables.subscription_has_download_archive(): f"""{{
-                %bool({self.download_archive.num_entries > 0})
-            }}""",
-            }
-        )
-
-    def _initialize_download_archive(self, dry_run: bool) -> None:
-        migrated_file_name: Optional[str] = None
-        if migrated_file_name_option := self.output_options.migrated_download_archive_name:
-            migrated_file_name = self.overrides.apply_formatter(migrated_file_name_option)
-
-        self._enhanced_download_archive = EnhancedDownloadArchive(
-            file_name=self.overrides.apply_formatter(self.output_options.download_archive_name),
-            working_directory=self.working_directory,
-            output_directory=self.output_directory,
-            migrated_file_name=migrated_file_name,
-        ).reinitialize(dry_run=dry_run)
-
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
         Performs the subscription download
@@ -366,10 +336,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             directory.
         """
         self._exception = None
-
-        self._initialize_subscription_overrides_pre_archive()
-        self._initialize_download_archive(dry_run=dry_run)
-        self._initialize_subscription_overrides_post_archive()
+        self.download_archive.reinitialize(dry_run=dry_run)
 
         plugins = self._initialize_plugins()
 
@@ -422,10 +389,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             If true, do not modify any video/audio files or move anything to the output directory.
         """
         self._exception = None
-
-        self._initialize_subscription_overrides_pre_archive()
-        self._initialize_download_archive(dry_run=dry_run)
-        self._initialize_subscription_overrides_post_archive()
+        self.download_archive.reinitialize(dry_run=dry_run)
 
         plugins = self._initialize_plugins()
 

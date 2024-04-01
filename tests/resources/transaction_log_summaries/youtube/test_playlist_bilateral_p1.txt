@@ -50,5 +50,6 @@ Files created:
           Texture Pack I Use:
           http://www.minecraftforum.net/viewtopic.php?f=25&t=29164
         season: 2011
+        subscription_has_download_archive: false
         title: 2011-02-01 - Jesse's Minecraft Server [Trailer - Feb.1]
         year: 2011

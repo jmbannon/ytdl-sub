@@ -78,6 +78,7 @@ Files created:
 
           I claim no ownership of this song, all the credit goes to Pearl Jam and their producers.
         season: 2011
+        subscription_has_download_archive: true
         title: 2011-02-27 - Jesse's Minecraft Server [Trailer - Feb.27]
         year: 2011
   s2011.e032101 - Jesse's Minecraft Server [Trailer - Mar.21]-thumb.jpg
@@ -157,6 +158,7 @@ Files created:
 
           I claim no ownership of this song, all the credit goes to Pearl Jam and their producers.
         season: 2011
+        subscription_has_download_archive: true
         title: 2011-03-21 - Jesse's Minecraft Server [Trailer - Mar.21]
         year: 2011
 

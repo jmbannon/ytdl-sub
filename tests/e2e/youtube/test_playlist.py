@@ -62,6 +62,11 @@ def playlist_bilateral_dict(output_directory):
             "url": "https://www.youtube.com/playlist?list=PLd4Q7G88JqoekF0b30NYQcOTnTiIe9Ali",
             "tv_show_directory": output_directory,
         },
+        "nfo_tags": {
+            "tags": {
+                "subscription_has_download_archive": "{subscription_has_download_archive}",
+            }
+        },
     }
 
 
