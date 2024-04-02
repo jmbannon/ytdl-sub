@@ -88,6 +88,12 @@ triple-quotes can be used to avoid *closing* the String.
           %string("""This has both " and ' in it.""")
         }
 
+If you want a plain string that contains literal curly braces, you can escape them like so:
+
+.. code-block:: yaml
+
+   string_variable: "This contains \\{ literal curly braces \\}"
+
 Integer
 ~~~~~~~
 
