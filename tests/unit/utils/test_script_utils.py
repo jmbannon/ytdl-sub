@@ -3,6 +3,7 @@ import copy
 import pytest
 from unit.script.conftest import single_variable_output
 
+from ytdl_sub.script.parser import parse
 from ytdl_sub.utils.script import ScriptUtils
 
 
@@ -51,3 +52,10 @@ class TestScriptUtils:
     )
     def test_bool_formatter_output(self, input_str: str, expected_output: bool):
         assert ScriptUtils.bool_formatter_output(input_str) == expected_output
+
+    def test_to_syntax_tree(self):
+        out = ScriptUtils.to_native_script(
+            {"{var_a}": "{var_b}", "static_a": "string with {var_c} in it"}
+        )
+        out2 = parse(out)
+        assert False

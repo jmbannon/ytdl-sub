@@ -7,6 +7,10 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    UnstructuredOverridesDictFormatterValidator,
+)
 
 
 @pytest.mark.parametrize(
@@ -74,4 +78,46 @@ class TestDictFormatterValidator(object):
         assert validator.dict_with_format_strings == {
             "key1": key1_format_string,
             "key2": key2_format_string,
+        }
+
+
+class TestUnstructuredDictFormatterValidator(object):
+    @pytest.mark.parametrize(
+        "dict_validator_class, expected_formatter_class",
+        [
+            (UnstructuredDictFormatterValidator, StringFormatterValidator),
+            (UnstructuredOverridesDictFormatterValidator, OverridesStringFormatterValidator),
+        ],
+    )
+    def test_validates_values(self, dict_validator_class, expected_formatter_class):
+        key1_format_string = "string with {variable}"
+        key2_format_string = "no variables"
+        key3_int = 3
+        key4_float = 4.132
+        key5_bool = True
+        key6_map = {"{variable}_key": "value", "static_key": "{variable}_value"}
+        key7_list = ["list_1", "list_{variable_2}"]
+        validator = dict_validator_class(
+            name="validator",
+            value={
+                "key1": key1_format_string,
+                "key2": key2_format_string,
+                "key3": key3_int,
+                "key4": key4_float,
+                "key5": key5_bool,
+                "key6": key6_map,
+                "key7": key7_list,
+            },
+        )
+
+        assert len(validator.dict) == 7
+        assert all(isinstance(val, expected_formatter_class) for val in validator.dict.values())
+        assert validator.dict_with_format_strings == {
+            "key1": "string with {variable}",
+            "key2": "no variables",
+            "key3": "{%int(3)}",
+            "key4": "{%float(4.132)}",
+            "key5": "{%int(True)}",
+            "key6": '{%from_json(\'\'\'{"static_key": "{variable}_value", "{variable}_key": "value"}\'\'\')}',
+            "key7": "{%from_json('''[\"list_1\", \"list_{variable_2}\"]''')}",
         }

@@ -11,6 +11,7 @@ from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
@@ -145,6 +146,18 @@ class OverridesDictFormatterValidator(DictFormatterValidator):
     :class:`~ytdl_sub.validators.string_formatter_validators.OverridesStringFormatterValidator`.
     """
 
+    _key_validator = OverridesStringFormatterValidator
+
+
+class UnstructuredDictFormatterValidator(DictFormatterValidator):
+    def __init__(self, name, value):
+        # Convert the unstructured-ness into a script
+        if isinstance(value, dict):
+            value = {key: ScriptUtils.to_native_script(val) for key, val in value.items()}
+        super().__init__(name, value)
+
+
+class UnstructuredOverridesDictFormatterValidator(UnstructuredDictFormatterValidator):
     _key_validator = OverridesStringFormatterValidator
 
 

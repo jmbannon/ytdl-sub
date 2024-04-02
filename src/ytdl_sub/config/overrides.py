@@ -17,11 +17,11 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
 
 
-class Overrides(DictFormatterValidator, Scriptable):
+class Overrides(UnstructuredDictFormatterValidator, Scriptable):
     """
     Allows you to define variables that can be used in any EntryFormatter or OverridesFormatter.
 
@@ -51,11 +51,11 @@ class Overrides(DictFormatterValidator, Scriptable):
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
-        dict_formatter = DictFormatterValidator(name=name, value=value)
+        dict_formatter = UnstructuredDictFormatterValidator(name=name, value=value)
         _ = [parse(format_string) for format_string in dict_formatter.dict_with_format_strings]
 
     def __init__(self, name, value):
-        DictFormatterValidator.__init__(self, name, value)
+        UnstructuredDictFormatterValidator.__init__(self, name, value)
         Scriptable.__init__(self, initialize_base_script=True)
 
         for key in self._keys:

@@ -34,6 +34,8 @@ def single_video_preset_dict(output_directory):
         "overrides": {
             "music_video_artist": "JMC",
             "music_video_directory": output_directory,
+            "test_override_map": {"{music_video_artist}": "{music_video_directory}"},
+            "test_override_map_get": "{ %map_get(test_override_map, music_video_artist) }",
         },
     }
 
