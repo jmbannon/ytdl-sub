@@ -35,7 +35,7 @@ def retry(times: int, exceptions: Tuple[Type[Exception], ...], wait_sec: int = 5
                 try:
                     return func(*args, **kwargs)
                 except exceptions:
-                    logger.debug(
+                    logger.exception(
                         "Exception thrown when attempting to run %s, attempt %d of %d",
                         func.__name__,
                         attempt + 1,
