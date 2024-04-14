@@ -15,11 +15,11 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    "yt-dlp==2024.*",
-    "colorama==0.4.*",
-    "mergedeep==1.3.*",
-    "mediafile==0.12.*",
-    "PyYAML==6.0.*",
+    "yt-dlp==2024.04.09",
+    "colorama~=0.4",
+    "mergedeep~=1.3",
+    "mediafile~=0.12",
+    "PyYAML~=6.0",
 ]
 urls = { Homepage = "https://github.com/jmbannon/ytdl-sub" }
 
@@ -42,24 +42,24 @@ where = ["src"]
 
 [project.optional-dependencies]
 test = [
-    "coverage[toml]==6.3.*",
-    "pytest==7.1.*",
-    "pytest-rerunfailures==14.0",
+    "coverage[toml]~=6.3",
+    "pytest~=7.2",
+    "pytest-rerunfailures~=14.0",
 ]
 lint = [
-    "black==23.*",
-    "isort==5.*",
-    "pylint==2.*",
+    "black~=24.3",
+    "isort~=5.13",
+    "pylint~=3.1",
 ]
 docs = [
-    "sphinx==7.*",
-    "sphinx-rtd-theme==2.*",
-    "sphinx-book-theme==1.*",
+    "sphinx~=7.0",
+    "sphinx-rtd-theme~=2.0",
+    "sphinx-book-theme~=1.0",
 ]
 build = [
-    "build",
-    "twine",
-    "pyinstaller",
+    "build~=1.2",
+    "twine~=5.0",
+    "pyinstaller~=6.5",
 ]
 [project.scripts]
 ytdl-sub = "ytdl_sub.main:main"
