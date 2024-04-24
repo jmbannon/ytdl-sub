@@ -39,23 +39,29 @@ class TestThrottleProtectionPlugin:
             preset_dict=preset_dict,
         )
 
-        with mock_download_collection_entries(
-            is_youtube_channel=False, num_urls=1, is_extracted_audio=False
-        ), assert_logs(
-            logger=throttle_protection_logger,
-            expected_message="Sleeping between downloads for %0.2f seconds",
-            log_level="debug",
-            expected_occurrences=4,
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False, num_urls=1, is_extracted_audio=False
+            ),
+            assert_logs(
+                logger=throttle_protection_logger,
+                expected_message="Sleeping between downloads for %0.2f seconds",
+                log_level="debug",
+                expected_occurrences=4,
+            ),
         ):
             _ = subscription.download(dry_run=False)
 
-        with mock_download_collection_entries(
-            is_youtube_channel=False, num_urls=1, is_extracted_audio=False
-        ), assert_logs(
-            logger=throttle_protection_logger,
-            expected_message="Sleeping between subscriptions for %0.2f seconds",
-            log_level="debug",
-            expected_occurrences=1,
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False, num_urls=1, is_extracted_audio=False
+            ),
+            assert_logs(
+                logger=throttle_protection_logger,
+                expected_message="Sleeping between subscriptions for %0.2f seconds",
+                log_level="debug",
+                expected_occurrences=1,
+            ),
         ):
             _ = subscription.download(dry_run=False)
 
@@ -105,12 +111,15 @@ class TestThrottleProtectionPlugin:
             preset_dict=preset_dict,
         )
 
-        with mock_download_collection_entries(
-            is_youtube_channel=False, num_urls=1, is_extracted_audio=False
-        ), assert_logs(
-            logger=throttle_protection_logger,
-            expected_message="Sleeping between downloads for %0.2f seconds",
-            log_level="debug",
-            expected_occurrences=0,
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False, num_urls=1, is_extracted_audio=False
+            ),
+            assert_logs(
+                logger=throttle_protection_logger,
+                expected_message="Sleeping between downloads for %0.2f seconds",
+                log_level="debug",
+                expected_occurrences=0,
+            ),
         ):
             _ = subscription.download(dry_run=False)
