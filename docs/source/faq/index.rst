@@ -33,7 +33,7 @@ If you need support, you can:
 
 If you would like to contribute, we're happy to accept any help, even non-coders! To find out how you can help this project, you can:
 
-* `Join our Discord <https://discord.gg/v8j9RAHb4k>`_ and leave a comment in #development with where you think you can assist or what skills you would like to contribute. 
+* `Join our Discord <https://discord.gg/v8j9RAHb4k>`_ and leave a comment in #development with where you think you can assist or what skills you would like to contribute.
 
 * If you just want to fix one thing, you're welcome to :ytdl-sub-gh:`submit a pull request <compare>` with information on what issue you're resolving and it will be reviewed as soon as possible.
 
@@ -83,17 +83,18 @@ Most likely the video has a non-English language set to its 'native' language. Y
 ...Plex is not showing my TV shows correctly
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Set the following for your ytdl-sub library that has been added to Plex.
+1. Set the following for your ytdl-sub library that has been added to Plex.
 
 .. figure:: ../../images/plex_scanner_agent.png
   :alt: The Plex library editor, under the advanced settings, showing the required options for Plex to show the TV shows correctly.
 
-**Scanner:** Plex Series Scanner
+- **Scanner:** Plex Series Scanner
+- **Agent:** Personal Media shows
+- **Visibility:** Exclude from home screen and global search
+- **Episode sorting:** Library default
+- **YES** Enable video preview thumbnails
 
-**Agent:** Personal Media shows
+2. Under **Settings** > **Agents**, confirm Plex Personal Media Shows/Movies scanner has **Local Media Assets** enabled.
 
-**Visibility:** Exclude from home screen and global search
-
-**Episode sorting:** Library default
-
-**YES** Enable video preview thumbnails
+.. figure:: ../../images/plex_agent_sources.png
+  :alt: The Plex Agents settings page has Local Media Assets enabled for Personal Media Shows and Movies tabs.
