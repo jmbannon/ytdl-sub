@@ -47,9 +47,9 @@ test = [
     "pytest-rerunfailures~=14.0",
 ]
 lint = [
-    "black~=22.3",
-    "isort~=5.10",
-    "pylint~=2.13",
+    "black==22.3.0",
+    "isort==5.10.1",
+    "pylint==2.13.5",
 ]
 docs = [
     "sphinx~=7.0",
