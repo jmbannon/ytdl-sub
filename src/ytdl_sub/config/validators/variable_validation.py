@@ -25,7 +25,7 @@ _DUMMY_ENTRY_VARIABLES: Dict[str, str] = {
     name: to_variable_dependency_format_string(
         # pylint: disable=protected-access
         script=BASE_SCRIPT,
-        parsed_format_string=BASE_SCRIPT._variables[name],
+        parsed_format_string=BASE_SCRIPT._variables[name]
         # pylint: enable=protected-access
     )
     for name in BASE_SCRIPT.variable_names

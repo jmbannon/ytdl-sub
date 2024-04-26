@@ -32,22 +32,19 @@ def test_suppress_transaction_log(
     music_video_subscription_path: Path,
     file_transaction_log: Optional[str],
 ) -> None:
-    with (
-        patch.object(
-            sys,
-            "argv",
-            [
-                "ytdl-sub",
-                "--config",
-                str(default_config_path),
-                "sub",
-                str(music_video_subscription_path),
-                "--suppress-transaction-log",
-            ]
-            + (["--transaction-log", file_transaction_log] if file_transaction_log else []),
-        ),
-        patch("ytdl_sub.cli.output_transaction_log.output_transaction_log") as mock_transaction_log,
-    ):
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "ytdl-sub",
+            "--config",
+            str(default_config_path),
+            "sub",
+            str(music_video_subscription_path),
+            "--suppress-transaction-log",
+        ]
+        + (["--transaction-log", file_transaction_log] if file_transaction_log else []),
+    ), patch("ytdl_sub.cli.output_transaction_log.output_transaction_log") as mock_transaction_log:
         subscriptions = main()
 
         assert subscriptions
@@ -85,23 +82,20 @@ def test_transaction_log_to_logger(
     default_config_path: Path,
     music_video_subscription_path: Path,
 ) -> None:
-    with (
-        patch.object(
-            sys,
-            "argv",
-            [
-                "ytdl-sub",
-                "--config",
-                str(default_config_path),
-                "sub",
-                str(music_video_subscription_path),
-            ],
-        ),
-        assert_logs(
-            logger=transaction_logger,
-            expected_message="Transaction log for Rick Astley:\n",
-            log_level="info",
-        ),
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "ytdl-sub",
+            "--config",
+            str(default_config_path),
+            "sub",
+            str(music_video_subscription_path),
+        ],
+    ), assert_logs(
+        logger=transaction_logger,
+        expected_message="Transaction log for Rick Astley:\n",
+        log_level="info",
     ):
         subscriptions = main()
         assert subscriptions

@@ -248,11 +248,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             self._download_ytdl_options_builder.clone()
             .add(self.ytdl_option_defaults(), before=True)
             .add(
-                (
-                    self.plugin_options.urls.list[url_idx].ytdl_options.dict
-                    if url_idx is not None
-                    else None
-                ),
+                self.plugin_options.urls.list[url_idx].ytdl_options.dict
+                if url_idx is not None
+                else None,
                 before=True,
             )
             .to_dict()
@@ -354,11 +352,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 url_idx=entry.get(v.ytdl_sub_input_url_index, int)
             ),
             is_downloaded_fn=None if self.is_dry_run else entry.is_downloaded,
-            is_thumbnail_downloaded_fn=(
-                None
-                if (self.is_dry_run or not self.is_entry_thumbnails_enabled)
-                else entry.is_thumbnail_downloaded_via_ytdlp
-            ),
+            is_thumbnail_downloaded_fn=None
+            if (self.is_dry_run or not self.is_entry_thumbnails_enabled)
+            else entry.is_thumbnail_downloaded_via_ytdlp,
             url=entry.webpage_url,
         )
         return Entry(
