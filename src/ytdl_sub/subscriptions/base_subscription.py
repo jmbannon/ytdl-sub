@@ -74,13 +74,13 @@ class BaseSubscription(ABC):
             }
         )
 
-        self._enhanced_download_archive: Optional[EnhancedDownloadArchive] = (
-            _initialize_download_archive(
-                output_options=self.output_options,
-                overrides=self.overrides,
-                working_directory=self.working_directory,
-                output_directory=self.output_directory,
-            )
+        self._enhanced_download_archive: Optional[
+            EnhancedDownloadArchive
+        ] = _initialize_download_archive(
+            output_options=self.output_options,
+            overrides=self.overrides,
+            working_directory=self.working_directory,
+            output_directory=self.output_directory,
         )
 
         # Add post-archive variables

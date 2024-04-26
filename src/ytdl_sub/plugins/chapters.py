@@ -263,13 +263,13 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                 "force_keyframes": self.plugin_options.force_key_frames,
             }
             if self.plugin_options.remove_sponsorblock_categories is not None:
-                remove_chapters_post_processor["remove_sponsor_segments"] = (
-                    self.plugin_options.remove_sponsorblock_categories
-                )
+                remove_chapters_post_processor[
+                    "remove_sponsor_segments"
+                ] = self.plugin_options.remove_sponsorblock_categories
             if self.plugin_options.remove_chapters_regex is not None:
-                remove_chapters_post_processor["remove_chapters_patterns"] = (
-                    self.plugin_options.remove_chapters_regex
-                )
+                remove_chapters_post_processor[
+                    "remove_chapters_patterns"
+                ] = self.plugin_options.remove_chapters_regex
 
             if self.plugin_options.embed_chapters:
                 builder.add(
