@@ -42,12 +42,15 @@ def test_subscription_logs_write_to_file(
     config = persist_logs_config_factory(keep_successful_logs=keep_successful_logs)
     subscription_paths = [str(music_video_subscription_path)] * num_runs
 
-    with patch.object(
-        Subscription,
-        "download",
-        new=mock_subscription_download_factory(mock_success_output=mock_success_output),
-        # mock datetime to be an index to be able to run instantly
-    ), patch("ytdl_sub.cli.entrypoint._log_time", side_effect=[str(idx) for idx in range(10)]):
+    with (
+        patch.object(
+            Subscription,
+            "download",
+            new=mock_subscription_download_factory(mock_success_output=mock_success_output),
+            # mock datetime to be an index to be able to run instantly
+        ),
+        patch("ytdl_sub.cli.entrypoint._log_time", side_effect=[str(idx) for idx in range(10)]),
+    ):
         try:
             _download_subscriptions_from_yaml_files(
                 config=config,
@@ -101,16 +104,19 @@ def test_update_with_info_json_requires_experimental_flag(
     default_config_path: Path,
     music_video_subscription_path: Path,
 ) -> None:
-    with patch.object(
-        sys,
-        "argv",
-        [
-            "ytdl-sub",
-            "--config",
-            str(default_config_path),
-            "sub",
-            str(music_video_subscription_path),
-            "--update-with-info-json",
-        ],
-    ), pytest.raises(ExperimentalFeatureNotEnabled):
+    with (
+        patch.object(
+            sys,
+            "argv",
+            [
+                "ytdl-sub",
+                "--config",
+                str(default_config_path),
+                "sub",
+                str(music_video_subscription_path),
+                "--update-with-info-json",
+            ],
+        ),
+        pytest.raises(ExperimentalFeatureNotEnabled),
+    ):
         _ = main()

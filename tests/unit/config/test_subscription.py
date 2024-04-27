@@ -375,38 +375,47 @@ def test_subscription_file_value_applies_from_config_and_nested_and_indent_varia
     config_file: ConfigFile,
     preset_with_subscription_value_nested_presets_and_indent_variables_same_line_old_format_errors: Dict,
 ):
-    with mock_load_yaml(
-        preset_dict=preset_with_subscription_value_nested_presets_and_indent_variables_same_line_old_format_errors
-    ), pytest.raises(
-        ValidationException,
-        match=re.escape(
-            "Validation error in parent_preset_2.=INDENT_1: 'INDENT_3' in '= INDENT_2  | INDENT_3' is not a preset name. "
-            "To use as a subscription indent value, define it as '= INDENT_3'"
+    with (
+        mock_load_yaml(
+            preset_dict=preset_with_subscription_value_nested_presets_and_indent_variables_same_line_old_format_errors
+        ),
+        pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "Validation error in parent_preset_2.=INDENT_1: 'INDENT_3' in '= INDENT_2  | INDENT_3' is not a preset name. "
+                "To use as a subscription indent value, define it as '= INDENT_3'"
+            ),
         ),
     ):
         Subscription.from_file_path(config=config_file, subscription_path="mocked")
 
 
 def test_subscription_file_using_conflicting_preset_name(config_file: ConfigFile):
-    with mock_load_yaml(
-        preset_dict={
-            "= INDENTS_IN_ERR_MSG ": {"=ANOTHER": {"jellyfin_tv_show_by_date": "single value"}}
-        }
-    ), pytest.raises(
-        ValidationException,
-        match=re.escape(
-            "Validation error in = INDENTS_IN_ERR_MSG .=ANOTHER.jellyfin_tv_show_by_date: "
-            "jellyfin_tv_show_by_date conflicts with an existing preset name and cannot be used "
-            "as a subscription name"
+    with (
+        mock_load_yaml(
+            preset_dict={
+                "= INDENTS_IN_ERR_MSG ": {"=ANOTHER": {"jellyfin_tv_show_by_date": "single value"}}
+            }
+        ),
+        pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "Validation error in = INDENTS_IN_ERR_MSG .=ANOTHER.jellyfin_tv_show_by_date: "
+                "jellyfin_tv_show_by_date conflicts with an existing preset name and cannot be used "
+                "as a subscription name"
+            ),
         ),
     ):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")
 
 
 def test_subscription_file_invalid_form(config_file: ConfigFile):
-    with mock_load_yaml(preset_dict={"sub_name": 4332}), pytest.raises(
-        ValidationException,
-        match=re.escape(f"Subscription value should either be a string, list, or object"),
+    with (
+        mock_load_yaml(preset_dict={"sub_name": 4332}),
+        pytest.raises(
+            ValidationException,
+            match=re.escape(f"Subscription value should either be a string, list, or object"),
+        ),
     ):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")
 

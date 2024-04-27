@@ -213,9 +213,10 @@ class Logger:
     @classmethod
     def _append_to_error_log(cls):
         # Any time an exception occurs, dump all debug logs into the error log
-        with open(cls.debug_log_filename(), mode="r", encoding="utf-8") as debug_logs, open(
-            cls.error_log_filename(), mode="a", encoding="utf-8"
-        ) as error_logs:
+        with (
+            open(cls.debug_log_filename(), mode="r", encoding="utf-8") as debug_logs,
+            open(cls.error_log_filename(), mode="a", encoding="utf-8") as error_logs,
+        ):
             error_logs.writelines(debug_logs.readlines())
 
     @classmethod

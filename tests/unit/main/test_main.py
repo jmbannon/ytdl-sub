@@ -40,9 +40,11 @@ def mock_sys_exit():
 
 @pytest.mark.parametrize("return_code", [0, 1])
 def test_main_exit_code(mock_sys_exit, return_code: int):
-    with mock_sys_exit(expected_exit_code=return_code), patch(
-        "src.ytdl_sub.main._main"
-    ) as mock_inner_main, patch.object(Logger, "cleanup") as mock_logger_cleanup:
+    with (
+        mock_sys_exit(expected_exit_code=return_code),
+        patch("src.ytdl_sub.main._main") as mock_inner_main,
+        patch.object(Logger, "cleanup") as mock_logger_cleanup,
+    ):
         mock_inner_main.return_value = return_code
         main()
 
@@ -54,9 +56,11 @@ def test_main_exit_code(mock_sys_exit, return_code: int):
 
 def test_main_validation_error(capsys, mock_sys_exit):
     validation_exception = ValidationException("test exc")
-    with mock_sys_exit(expected_exit_code=1), patch(
-        "src.ytdl_sub.main._main", side_effect=validation_exception
-    ), patch.object(logging.Logger, "error") as mock_logger:
+    with (
+        mock_sys_exit(expected_exit_code=1),
+        patch("src.ytdl_sub.main._main", side_effect=validation_exception),
+        patch.object(logging.Logger, "error") as mock_logger,
+    ):
         main()
 
     assert mock_logger.call_count == 1
@@ -65,11 +69,12 @@ def test_main_validation_error(capsys, mock_sys_exit):
 
 def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_message):
     uncaught_error = ValueError("test")
-    with mock_sys_exit(expected_exit_code=1), patch(
-        "src.ytdl_sub.main._main", side_effect=uncaught_error
-    ), patch.object(logging.Logger, "exception") as mock_exception, patch.object(
-        logging.Logger, "error"
-    ) as mock_error:
+    with (
+        mock_sys_exit(expected_exit_code=1),
+        patch("src.ytdl_sub.main._main", side_effect=uncaught_error),
+        patch.object(logging.Logger, "exception") as mock_exception,
+        patch.object(logging.Logger, "error") as mock_error,
+    ):
         main()
 
     assert mock_exception.call_count == 1
@@ -83,9 +88,11 @@ def test_main_uncaught_error(capsys, mock_sys_exit, expected_uncaught_error_mess
 
 def test_main_permission_error(capsys, mock_sys_exit, expected_uncaught_error_message):
     permission_error = PermissionError("test")
-    with mock_sys_exit(expected_exit_code=1), patch(
-        "src.ytdl_sub.main._main", side_effect=permission_error
-    ), patch.object(logging.Logger, "error") as mock_error:
+    with (
+        mock_sys_exit(expected_exit_code=1),
+        patch("src.ytdl_sub.main._main", side_effect=permission_error),
+        patch.object(logging.Logger, "error") as mock_error,
+    ):
         main()
 
     assert mock_error.call_count == 1
@@ -97,11 +104,15 @@ def test_main_permission_error(capsys, mock_sys_exit, expected_uncaught_error_me
 
 
 def test_args_after_sub_work(mock_sys_exit, tv_show_config_path):
-    with mock_sys_exit(expected_exit_code=0), patch.object(
-        sys,
-        "argv",
-        ["ytdl-sub", "-c", tv_show_config_path, "sub", "--log-level", "verbose"],
-    ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
+    with (
+        mock_sys_exit(expected_exit_code=0),
+        patch.object(
+            sys,
+            "argv",
+            ["ytdl-sub", "-c", tv_show_config_path, "sub", "--log-level", "verbose"],
+        ),
+        patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub,
+    ):
         main()
 
         assert mock_sub.call_count == 1
@@ -112,21 +123,25 @@ def test_args_after_sub_work(mock_sys_exit, tv_show_config_path):
 
 
 def test_sub_match_arguments_before(mock_sys_exit, tv_show_config_path):
-    with mock_sys_exit(expected_exit_code=0), patch.object(
-        sys,
-        "argv",
-        [
-            "ytdl-sub",
-            "--match",
-            "testA",
-            "testB",
-            "-c",
-            tv_show_config_path,
-            "sub",
-            "--log-level",
-            "verbose",
-        ],
-    ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
+    with (
+        mock_sys_exit(expected_exit_code=0),
+        patch.object(
+            sys,
+            "argv",
+            [
+                "ytdl-sub",
+                "--match",
+                "testA",
+                "testB",
+                "-c",
+                tv_show_config_path,
+                "sub",
+                "--log-level",
+                "verbose",
+            ],
+        ),
+        patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub,
+    ):
         main()
 
         assert mock_sub.call_count == 1
@@ -137,22 +152,26 @@ def test_sub_match_arguments_before(mock_sys_exit, tv_show_config_path):
 
 
 def test_sub_match_arguments_after_many(mock_sys_exit, tv_show_config_path):
-    with mock_sys_exit(expected_exit_code=0), patch.object(
-        sys,
-        "argv",
-        [
-            "ytdl-sub",
-            "-c",
-            tv_show_config_path,
-            "sub",
-            "--log-level",
-            "verbose",
-            "--match",
-            "testA",
-            "--match",
-            "testB",
-        ],
-    ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
+    with (
+        mock_sys_exit(expected_exit_code=0),
+        patch.object(
+            sys,
+            "argv",
+            [
+                "ytdl-sub",
+                "-c",
+                tv_show_config_path,
+                "sub",
+                "--log-level",
+                "verbose",
+                "--match",
+                "testA",
+                "--match",
+                "testB",
+            ],
+        ),
+        patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub,
+    ):
         main()
 
         assert mock_sub.call_count == 1
@@ -163,11 +182,15 @@ def test_sub_match_arguments_after_many(mock_sys_exit, tv_show_config_path):
 
 
 def test_no_config_works(mock_sys_exit):
-    with mock_sys_exit(expected_exit_code=0), patch.object(
-        sys,
-        "argv",
-        ["ytdl-sub", "sub", "--log-level", "verbose"],
-    ), patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub:
+    with (
+        mock_sys_exit(expected_exit_code=0),
+        patch.object(
+            sys,
+            "argv",
+            ["ytdl-sub", "sub", "--log-level", "verbose"],
+        ),
+        patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub,
+    ):
         main()
 
         assert mock_sub.call_count == 1
@@ -183,14 +206,19 @@ def test_uses_default_config_if_present(mock_sys_exit):
         open(DEFAULT_CONFIG_FILE_NAME, "a").close()
 
     try:
-        with mock_sys_exit(expected_exit_code=0), patch.object(
-            sys,
-            "argv",
-            ["ytdl-sub", "sub", "--log-level", "verbose"],
-        ), patch(
-            "ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files"
-        ) as mock_sub, patch.object(
-            ConfigFile, "from_file_path", new=lambda _: ConfigFile(name="test default", value={})
+        with (
+            mock_sys_exit(expected_exit_code=0),
+            patch.object(
+                sys,
+                "argv",
+                ["ytdl-sub", "sub", "--log-level", "verbose"],
+            ),
+            patch("ytdl_sub.cli.entrypoint._download_subscriptions_from_yaml_files") as mock_sub,
+            patch.object(
+                ConfigFile,
+                "from_file_path",
+                new=lambda _: ConfigFile(name="test default", value={}),
+            ),
         ):
             main()
 
@@ -204,11 +232,15 @@ def test_uses_default_config_if_present(mock_sys_exit):
 
 
 def test_no_positional_arg_command(mock_sys_exit, tv_show_config_path):
-    with mock_sys_exit(expected_exit_code=1), patch.object(
-        sys,
-        "argv",
-        ["ytdl-sub", "-c", tv_show_config_path, "--log-level", "verbose"],
-    ), patch.object(logging.Logger, "error") as mock_error:
+    with (
+        mock_sys_exit(expected_exit_code=1),
+        patch.object(
+            sys,
+            "argv",
+            ["ytdl-sub", "-c", tv_show_config_path, "--log-level", "verbose"],
+        ),
+        patch.object(logging.Logger, "error") as mock_error,
+    ):
         main()
 
         assert mock_error.call_count == 1
@@ -216,11 +248,15 @@ def test_no_positional_arg_command(mock_sys_exit, tv_show_config_path):
 
 
 def test_bad_config_path(mock_sys_exit):
-    with mock_sys_exit(expected_exit_code=1), patch.object(
-        sys,
-        "argv",
-        ["ytdl-sub", "-c", "does_not_exist.yaml", "sub", "--log-level", "verbose"],
-    ), patch.object(logging.Logger, "error") as mock_error:
+    with (
+        mock_sys_exit(expected_exit_code=1),
+        patch.object(
+            sys,
+            "argv",
+            ["ytdl-sub", "-c", "does_not_exist.yaml", "sub", "--log-level", "verbose"],
+        ),
+        patch.object(logging.Logger, "error") as mock_error,
+    ):
         main()
 
         assert mock_error.call_count == 1
