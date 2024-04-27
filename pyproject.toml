@@ -43,7 +43,7 @@ where = ["src"]
 [project.optional-dependencies]
 test = [
     "coverage[toml]~=6.3",
-    "pytest~=7.2",
+    "pytest>=7.2,<9.0",
     "pytest-rerunfailures~=14.0",
 ]
 lint = [
