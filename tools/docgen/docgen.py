@@ -2,7 +2,7 @@ import os
 from abc import abstractmethod
 from pathlib import Path
 
-REGENERATE_DOCS: bool = bool(os.environ.get("REGENERATE_DOCS", 1))
+REGENERATE_DOCS: bool = bool(os.environ.get("REGENERATE_DOCS", 0))
 
 
 class DocGen:
