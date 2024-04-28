@@ -9,7 +9,6 @@ from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 from ytdl_sub.validators.validators import Validator
 
-# pylint: disable=no-self-use
 # pylint: disable=unused-argument
 
 
@@ -53,7 +52,7 @@ class OptionsValidator(Validator, ABC):
         return {}
 
 
-TOptionsValidator = TypeVar("TOptionsValidator", bound=OptionsValidator)
+OptionsValidatorT = TypeVar("OptionsValidatorT", bound=OptionsValidator)
 
 
 class OptionsDictValidator(StrictDictValidator, OptionsValidator, ABC):

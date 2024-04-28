@@ -21,6 +21,7 @@ from ytdl_sub.entries.script.variable_types import Variable
 # pylint: disable=no-member
 # pylint: disable=too-many-public-methods
 # pylint: disable=too-many-lines
+# pylint: disable=method-cache-max-size-none
 
 
 class MetadataVariableDefinitions(ABC):

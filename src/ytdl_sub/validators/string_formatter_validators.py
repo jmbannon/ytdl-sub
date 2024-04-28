@@ -63,8 +63,6 @@ class StringFormatterValidator(StringValidator):
         """
         return self._value
 
-    # pylint: disable=no-self-use
-
     def post_process(self, resolved: str) -> str:
         """
         Returns
@@ -72,8 +70,6 @@ class StringFormatterValidator(StringValidator):
         Apply any post processing to the resolved value
         """
         return resolved
-
-    # pylint: enable=no-self-use
 
 
 # pylint: disable=line-too-long

@@ -126,8 +126,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
         except Exception as exc:
             self._delete_working_directory(is_error=True)
             raise exc
-        else:
-            self._delete_working_directory()
+
+        self._delete_working_directory()
 
     @contextlib.contextmanager
     def _maintain_archive_file(self):
