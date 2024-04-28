@@ -5,19 +5,19 @@ from typing import Dict
 
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import _is_function
-from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.function import Function
 from ytdl_sub.script.types.map import UnresolvedMap
-from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
-from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.utils.exceptions import UNREACHABLE
+
+# pylint: disable=too-many-return-statements
 
 
 class ScriptUtils:
@@ -85,17 +85,19 @@ class ScriptUtils:
                 }
             )
 
-        assert False, "should never reach here"
+        raise UNREACHABLE
 
     @classmethod
     def _to_script_code(cls, arg: Argument, top_level: bool = False) -> str:
         if not top_level and isinstance(arg, (Integer, Boolean, Float)):
             return str(arg.native)
+
         if isinstance(arg, String):
             if arg.native == "":
                 return "" if top_level else "''"
             return arg.native if top_level else f"'''{arg.native}'''"
-        elif isinstance(arg, Integer):
+
+        if isinstance(arg, Integer):
             out = f"%int({arg.native})"
         elif isinstance(arg, Boolean):
             out = f"%bool({arg.native})"
@@ -104,17 +106,24 @@ class ScriptUtils:
         elif isinstance(arg, UnresolvedArray):
             out = f"[ {', '.join(cls._to_script_code(val) for val in arg.value)} ]"
         elif isinstance(arg, UnresolvedMap):
-            out = f"{{ {', '.join(f'{cls._to_script_code(key)}: {cls._to_script_code(val)}' for key, val in arg.value.items())} }}"
+            kv_list = (
+                f"{cls._to_script_code(key)}: {cls._to_script_code(val)}"
+                for key, val in arg.value.items()
+            )
+            out = f"{{ {', '.join(kv_list)} }}"
         elif isinstance(arg, Variable):
             out = arg.name
         elif isinstance(arg, Function):
             out = f"%{arg.name}( {', '.join(cls._to_script_code(val) for val in arg.args)} )"
         else:
-            assert False, "ack"
+            raise UNREACHABLE
         return f"{{ {out} }}" if top_level else out
 
     @classmethod
     def to_native_script(cls, value: Any) -> str:
+        """
+        Converts any JSON-compatible value into equivalent script syntax
+        """
         return cls._to_script_code(cls._to_script_argument(value), top_level=True)
 
     @classmethod
