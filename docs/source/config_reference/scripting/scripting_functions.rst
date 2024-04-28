@@ -560,6 +560,15 @@ regex_search
   the string as the first element of the Array. If there are capture groups, returns each
   group as a subsequent element in the Array.
 
+regex_sub
+~~~~~~~~~
+:spec: ``regex_sub(regex: String, replacement: String, string: String) -> String``
+
+:description:
+  Returns the string obtained by replacing the leftmost non-overlapping occurrences of the
+  pattern in string by the replacement string. The replacement string can reference the
+  match groups via backslash escapes. Callables as replacement argument are not supported.
+
 ----------------------------------------------------------------------------------------------------
 
 String Functions
