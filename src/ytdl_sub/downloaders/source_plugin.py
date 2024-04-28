@@ -11,13 +11,13 @@ from typing import final
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import BasePlugin
 from ytdl_sub.config.plugin.plugin import Plugin
-from ytdl_sub.config.validators.options import TOptionsValidator
+from ytdl_sub.config.validators.options import OptionsValidatorT
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
-class SourcePluginExtension(Plugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
+class SourcePluginExtension(Plugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
     """
     Plugins that get added automatically by using a downloader. Downloader options
     are the plugin options.
@@ -32,12 +32,12 @@ class SourcePluginExtension(Plugin[TOptionsValidator], Generic[TOptionsValidator
         return None
 
 
-class SourcePlugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
+class SourcePlugin(BasePlugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
     plugin_extensions: List[Type[SourcePluginExtension]] = []
 
     def __init__(
         self,
-        options: TOptionsValidator,
+        options: OptionsValidatorT,
         enhanced_download_archive: EnhancedDownloadArchive,
         download_ytdl_options: YTDLOptionsBuilder,
         metadata_ytdl_options: YTDLOptionsBuilder,

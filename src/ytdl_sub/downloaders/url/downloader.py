@@ -397,17 +397,15 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
     def _iterate_parent_entry(
         self, parent: EntryParent, download_reversed: bool
     ) -> Iterator[Entry]:
-        for entry_child in self._iterate_child_entries(
+        yield from self._iterate_child_entries(
             entries=parent.entry_children(), download_reversed=download_reversed
-        ):
-            yield entry_child
+        )
 
         # Recursion the parent's parent entries
         for parent_child in reversed(parent.parent_children()):
-            for entry_child in self._iterate_parent_entry(
+            yield from self._iterate_parent_entry(
                 parent=parent_child, download_reversed=download_reversed
-            ):
-                yield entry_child
+            )
 
     def _download_url_metadata(
         self, url: str, include_sibling_metadata: bool, ytdl_options_overrides: Dict
@@ -449,15 +447,13 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         # Delete info json files afterwards so other collection URLs do not use them
         with self._separate_download_archives(clear_info_json_files=True):
             for parent in parents:
-                for entry_child in self._iterate_parent_entry(
+                yield from self._iterate_parent_entry(
                     parent=parent, download_reversed=download_reversed
-                ):
-                    yield entry_child
+                )
 
-            for orphan in self._iterate_child_entries(
+            yield from self._iterate_child_entries(
                 entries=orphans, download_reversed=download_reversed
-            ):
-                yield orphan
+            )
 
     def _download_metadata(self, url: str, validator: UrlValidator) -> Iterable[Entry]:
         metadata_ytdl_options = self.metadata_ytdl_options(
@@ -479,12 +475,11 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         )
 
         download_logger.info("Beginning downloads for %s", url)
-        for entry in self._iterate_entries(
+        yield from self._iterate_entries(
             parents=parents,
             orphans=orphan_entries,
             download_reversed=download_reversed,
-        ):
-            yield entry
+        )
 
     def download_metadata(self) -> Iterable[Entry]:
         """The function to perform the download of all media entries"""

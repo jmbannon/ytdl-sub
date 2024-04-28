@@ -8,11 +8,11 @@ from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.type_checking import FunctionSpec
 from ytdl_sub.script.utils.type_checking import is_union
 
-TUserException = TypeVar("TUserException", bound=UserException)
+UserExceptionT = TypeVar("UserExceptionT", bound=UserException)
 
 
 class ParserExceptionFormatter:
-    def __init__(self, text: str, start: int, end: int, exception: TUserException):
+    def __init__(self, text: str, start: int, end: int, exception: UserExceptionT):
         self._text = text
         self._start = start
         self._end = end
@@ -78,7 +78,7 @@ class ParserExceptionFormatter:
 
         return "\n" + "\n".join(to_return)
 
-    def highlight(self) -> TUserException:
+    def highlight(self) -> UserExceptionT:
         """
         Returns
         -------

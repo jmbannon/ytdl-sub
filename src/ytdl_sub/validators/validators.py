@@ -169,6 +169,7 @@ class ListValidator(Validator, ABC, Generic[ValidatorT]):
     Validates a list of objects to validate
     """
 
+    # pylint: disable=used-before-assignment
     _expected_value_type = list
     _expected_value_type_name = "list"
 
