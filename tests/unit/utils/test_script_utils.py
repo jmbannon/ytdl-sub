@@ -4,6 +4,11 @@ import pytest
 from unit.script.conftest import single_variable_output
 
 from ytdl_sub.script.parser import parse
+from ytdl_sub.script.types.function import BuiltInFunction
+from ytdl_sub.script.types.map import UnresolvedMap
+from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
+from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.utils.script import ScriptUtils
 
 
@@ -57,5 +62,20 @@ class TestScriptUtils:
         out = ScriptUtils.to_native_script(
             {"{var_a}": "{var_b}", "static_a": "string with {var_c} in it"}
         )
-        out2 = parse(out)
-        assert False
+        assert parse(out) == SyntaxTree(
+            ast=[
+                UnresolvedMap(
+                    value={
+                        Variable(name="var_a"): Variable(name="var_b"),
+                        String(value="static_a"): BuiltInFunction(
+                            name="concat",
+                            args=[
+                                BuiltInFunction(name="string", args=[String(value="string with ")]),
+                                BuiltInFunction(name="string", args=[Variable(name="var_c")]),
+                                BuiltInFunction(name="string", args=[String(value=" in it")]),
+                            ],
+                        ),
+                    }
+                )
+            ]
+        )

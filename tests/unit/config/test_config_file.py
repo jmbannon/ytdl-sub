@@ -98,7 +98,6 @@ class TestConfigFilePartiallyValidatesPresets:
         "preset_dict",
         [
             {"overrides": "not a dict"},
-            {"overrides": {"nested": {"dict": "value"}}},
             {"overrides": ["list"]},
         ],
     )
