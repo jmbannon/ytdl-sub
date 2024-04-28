@@ -198,3 +198,16 @@ class TestMap:
                     "key_variable": "{['non-hashable']}",
                 }
             ).resolve()
+
+    def test_map_key_is_function(self):
+        assert Script(
+            {
+                "dict": "{{ %concat('hi', %string(' world')) : 'value' }}",
+                "key_variable": "hashable",
+            }
+        ).resolve() == ScriptOutput(
+            {
+                "key_variable": String("hashable"),
+                "dict": Map(value={String(value="hi world"): String(value="value")}),
+            }
+        )

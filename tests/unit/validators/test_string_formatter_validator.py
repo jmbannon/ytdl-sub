@@ -97,6 +97,7 @@ class TestUnstructuredDictFormatterValidator(object):
         key5_bool = True
         key6_map = {"{variable}_key": "value", "static_key": "{variable}_value"}
         key7_list = ["list_1", "list_{variable_2}"]
+        key8_many_vars = "string {variable1} with multiple {variable2}"
         validator = dict_validator_class(
             name="validator",
             value={
@@ -107,17 +108,19 @@ class TestUnstructuredDictFormatterValidator(object):
                 "key5": key5_bool,
                 "key6": key6_map,
                 "key7": key7_list,
+                "key8": key8_many_vars,
             },
         )
 
-        assert len(validator.dict) == 7
+        assert len(validator.dict) == 8
         assert all(isinstance(val, expected_formatter_class) for val in validator.dict.values())
         assert validator.dict_with_format_strings == {
-            "key1": "string with {variable}",
+            "key1": "{ %concat( %string( '''string with ''' ), %string( variable ) ) }",
             "key2": "no variables",
-            "key3": "{%int(3)}",
-            "key4": "{%float(4.132)}",
-            "key5": "{%int(True)}",
-            "key6": '{%from_json(\'\'\'{"static_key": "{variable}_value", "{variable}_key": "value"}\'\'\')}',
-            "key7": "{%from_json('''[\"list_1\", \"list_{variable_2}\"]''')}",
+            "key3": "{ %int(3) }",
+            "key4": "{ %float(4.132) }",
+            "key5": "{ %int(True) }",
+            "key6": "{ { %concat( %string( variable ), %string( '''_key''' ) ): '''value''', '''static_key''': %concat( %string( variable ), %string( '''_value''' ) ) } }",
+            "key7": "{ [ '''list_1''', %concat( %string( '''list_''' ), %string( variable_2 ) ) ] }",
+            "key8": "{ %concat( %string( '''string ''' ), %string( variable1 ), %string( ''' with multiple ''' ), %string( variable2 ) ) }",
         }
