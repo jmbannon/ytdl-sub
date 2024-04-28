@@ -228,10 +228,11 @@ def mock_download_collection_entries(
                 ),
             ]
 
-        with patch.object(
-            YTDLP, "extract_info_via_info_json", new=_write_entries_to_working_dir
-        ), patch.object(
-            MultiUrlDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
+        with (
+            patch.object(YTDLP, "extract_info_via_info_json", new=_write_entries_to_working_dir),
+            patch.object(
+                MultiUrlDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
+            ),
         ):
             # Stub out metadata. TODO: update this if we do metadata plugins
             yield
