@@ -16,7 +16,7 @@ from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 
 v: VariableDefinitions = VARIABLES
 
-TBaseEntry = TypeVar("TBaseEntry", bound="BaseEntry")
+BaseEntryT = TypeVar("BaseEntryT", bound="BaseEntry")
 
 
 class BaseEntry(ABC):
@@ -140,7 +140,7 @@ class BaseEntry(ABC):
         return str(Path(self.working_directory()) / self.get_download_info_json_name())
 
     @final
-    def to_type(self, entry_type: Type[TBaseEntry]) -> TBaseEntry:
+    def to_type(self, entry_type: Type[BaseEntryT]) -> BaseEntryT:
         """
         Returns
         -------
@@ -149,7 +149,7 @@ class BaseEntry(ABC):
         return entry_type(entry_dict=self._kwargs, working_directory=self._working_directory)
 
     @classmethod
-    def is_entry_parent(cls, entry_dict: Dict | TBaseEntry):
+    def is_entry_parent(cls, entry_dict: Dict | BaseEntryT):
         """
         Returns
         -------
@@ -164,7 +164,7 @@ class BaseEntry(ABC):
         return entry_type == "playlist"
 
     @classmethod
-    def is_entry(cls, entry_dict: Dict | TBaseEntry):
+    def is_entry(cls, entry_dict: Dict | BaseEntryT):
         """
         Returns
         -------

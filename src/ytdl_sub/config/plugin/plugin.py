@@ -9,27 +9,27 @@ from typing import Tuple
 from typing import Type
 
 from ytdl_sub.config.overrides import Overrides
+from ytdl_sub.config.validators.options import OptionsValidatorT
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
-from ytdl_sub.config.validators.options import TOptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
-# pylint: disable=no-self-use,unused-argument
+# pylint: disable=unused-argument
 
 
-class BasePlugin(DownloadArchiver, Generic[TOptionsValidator], ABC):
+class BasePlugin(DownloadArchiver, Generic[OptionsValidatorT], ABC):
     """
     Shared code amongst all SourcePlugins (downloaders) and Plugins (post-download modification)
     """
 
-    plugin_options_type: Type[TOptionsValidator]
+    plugin_options_type: Type[OptionsValidatorT]
 
     def __init__(
         self,
-        options: TOptionsValidator,
+        options: OptionsValidatorT,
         overrides: Overrides,
         enhanced_download_archive: EnhancedDownloadArchive,
     ):
@@ -38,7 +38,7 @@ class BasePlugin(DownloadArchiver, Generic[TOptionsValidator], ABC):
         self.overrides = overrides
 
 
-class Plugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
+class Plugin(BasePlugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
     """
     Class to define the new plugin functionality
     """
@@ -121,7 +121,7 @@ class Plugin(BasePlugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
         """
 
 
-class SplitPlugin(Plugin[TOptionsValidator], Generic[TOptionsValidator], ABC):
+class SplitPlugin(Plugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
     """
     Plugin that splits entries into zero or more entries
     """

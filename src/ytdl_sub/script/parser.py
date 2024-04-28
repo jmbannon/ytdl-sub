@@ -247,7 +247,7 @@ class _Parser:
         if self._read(increment_pos=False) == "-":
             numeric_string += "-"
             self._pos += 1
-        if has_decimal := (self._read(increment_pos=False) == "."):
+        if has_decimal := self._read(increment_pos=False) == ".":
             numeric_string += "."
             self._pos += 1
 
@@ -506,7 +506,9 @@ class _Parser:
                 output[key] = value_args[0]
                 key = None
             else:
-                raise UNREACHABLE
+                break
+
+        raise UNREACHABLE
 
     def _parse_main_loop(self, ch: str) -> bool:
         if ch == "\\" and self._read(increment_pos=False) in {"{", "}"}:

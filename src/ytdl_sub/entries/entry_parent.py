@@ -7,7 +7,7 @@ from typing import Set
 from urllib.parse import urlparse
 
 from ytdl_sub.entries.base_entry import BaseEntry
-from ytdl_sub.entries.base_entry import TBaseEntry
+from ytdl_sub.entries.base_entry import BaseEntryT
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
@@ -21,7 +21,7 @@ v: VariableDefinitions = VARIABLES
 
 class EntryParent(BaseEntry):
     @classmethod
-    def _sort_entries(cls, entries: List[TBaseEntry]) -> List[TBaseEntry]:
+    def _sort_entries(cls, entries: List[BaseEntryT]) -> List[BaseEntryT]:
         """Try sorting by playlist_id first, then fall back to uid"""
         return sorted(
             entries,

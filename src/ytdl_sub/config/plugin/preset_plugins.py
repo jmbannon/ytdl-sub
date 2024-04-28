@@ -5,7 +5,7 @@ from typing import Type
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import OptionsValidator
-from ytdl_sub.config.validators.options import TOptionsValidator
+from ytdl_sub.config.validators.options import OptionsValidatorT
 
 
 class PresetPlugins:
@@ -29,7 +29,7 @@ class PresetPlugins:
         """
         return list(zip(self.plugin_types, self.plugin_options))
 
-    def get(self, plugin_type: Type[TOptionsValidator]) -> Optional[TOptionsValidator]:
+    def get(self, plugin_type: Type[OptionsValidatorT]) -> Optional[OptionsValidatorT]:
         """
         Parameters
         ----------
