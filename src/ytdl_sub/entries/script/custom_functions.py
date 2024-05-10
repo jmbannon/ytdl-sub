@@ -36,9 +36,9 @@ class CustomFunctions:
     def to_native_filepath(filepath: String) -> String:
         """
         Convert any unix-based path separators ('/') with the OS's native
-        separator.
+        separator. In addition, expand ~ to absolute directories.
         """
-        return String(filepath.value.replace(posixpath.sep, os.sep))
+        return String(os.path.expanduser(filepath.value.replace(posixpath.sep, os.sep)))
 
     @staticmethod
     def truncate_filepath_if_too_long(filepath: String) -> String:

@@ -1,4 +1,6 @@
+import os.path
 import re
+from pathlib import Path
 from typing import Dict
 from typing import Optional
 
@@ -93,6 +95,18 @@ class TestConfigFilePartiallyValidatesPresets:
                     "presets": {"partial_preset": preset_dict},
                 },
             )
+
+    def test_config_file_working_dir_home_dir(self):
+        out = ConfigFile(
+            name="test_tilda",
+            value={
+                "configuration": {"working_directory": "~/working/dir"},
+            },
+        )
+
+        assert out.config_options.working_directory == str(
+            Path(os.path.expanduser("~")) / "working" / "dir"
+        )
 
     @pytest.mark.parametrize(
         "preset_dict",
