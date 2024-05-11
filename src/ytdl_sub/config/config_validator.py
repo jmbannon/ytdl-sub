@@ -1,3 +1,5 @@
+import os
+import posixpath
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -147,7 +149,8 @@ class ConfigOptions(StrictDictValidator):
         The directory to temporarily store downloaded files before moving them into their final
         directory. Defaults to .ytdl-sub-working-directory
         """
-        return self._working_directory.value
+        # Expands tildas to actual paths, use native os sep
+        return os.path.expanduser(self._working_directory.value.replace(posixpath.sep, os.sep))
 
     @property
     def umask(self) -> Optional[str]:

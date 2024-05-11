@@ -1,4 +1,6 @@
+import os.path
 import re
+from pathlib import Path
 
 import pytest
 
@@ -35,6 +37,20 @@ class TestPreset:
                 "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
                 "overrides": {"dne_var": "not dne"},
             },
+        )
+
+    def test_preset_with_output_directory_tilda(self, config_file, output_options, youtube_video):
+        out = Preset(
+            config=config_file,
+            name="test",
+            value={
+                "download": youtube_video,
+                "output_options": {"output_directory": "~/output/dir", "file_name": "{dne_var}"},
+                "overrides": {"dne_var": "not dne"},
+            },
+        )
+        assert out.overrides.apply_formatter(out.output_options.output_directory) == str(
+            Path(os.path.expanduser("~")) / "output" / "dir"
         )
 
     def test_preset_parent(self, config_file, output_options, youtube_video):
