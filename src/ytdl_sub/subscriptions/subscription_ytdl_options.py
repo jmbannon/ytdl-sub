@@ -89,7 +89,9 @@ class SubscriptionYTDLOptions:
         ytdl_options = {}
 
         if self._preset.output_options.maintain_download_archive:
-            ytdl_options["download_archive"] = self._enhanced_download_archive.working_file_path
+            ytdl_options["download_archive"] = (
+                self._enhanced_download_archive.working_ytdl_file_path
+            )
         if self._preset.output_options.keep_max_files:
             keep_max_files = int(
                 self._overrides.apply_formatter(self._preset.output_options.keep_max_files)

@@ -506,9 +506,18 @@ class EnhancedDownloadArchive:
         """
         Returns
         -------
-        The download mapping's file path in the working directory.
+        The download mapping's file path in the working directory for ytdl usage
         """
         return str(Path(self.working_directory) / self.file_name)
+
+    @property
+    def working_ytdl_file_path(self) -> str:
+        """
+        Returns
+        -------
+        The download mapping's file path in the working directory for ytdl usage
+        """
+        return f"{self.working_file_path}-ytdl-archive"
 
     @property
     def mapping(self) -> DownloadMappings:
@@ -541,7 +550,7 @@ class EnhancedDownloadArchive:
             return self
 
         # Otherwise, create a ytdl download archive file in the working directory.
-        self.mapping.to_download_archive().to_file(self.working_file_path)
+        self.mapping.to_download_archive().to_file(self.working_ytdl_file_path)
 
         return self
 
@@ -603,7 +612,7 @@ class EnhancedDownloadArchive:
         if self._migrated_file_name:
             self._download_mapping.to_file(output_json_file=self.working_file_path)
             self.save_file_to_output_directory(
-                file_name=self.file_name, output_file_name=self._migrated_file_name
+                file_name=self.file_name, output_file_name=self._migrated_file_name, copy_file=True
             )
             # and delete the old one if the name differs
             if self._file_name != self._migrated_file_name:
@@ -611,7 +620,7 @@ class EnhancedDownloadArchive:
         # Otherwise, only save if there are changes to the transaction log
         elif not self.get_file_handler_transaction_log().is_empty:
             self._download_mapping.to_file(output_json_file=self.working_file_path)
-            self.save_file_to_output_directory(file_name=self.file_name)
+            self.save_file_to_output_directory(file_name=self.file_name, copy_file=True)
         return self
 
     def delete_file_from_output_directory(self, file_name: str):
