@@ -42,12 +42,12 @@ class ScriptUtils:
             out = ""
         elif isinstance(value, str):
             out = value
+        elif isinstance(value, bool):
+            out = f"{{%bool({value})}}"
         elif isinstance(value, int):
             out = f"{{%int({value})}}"
         elif isinstance(value, float):
             out = f"{{%float({value})}}"
-        elif isinstance(value, bool):
-            out = f"{{%bool({value})}}"
         else:
             dumped_json = json.dumps(value, ensure_ascii=False, sort_keys=True)
             # Remove triple-single-quotes from JSON to avoid parsing issues
