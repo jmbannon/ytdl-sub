@@ -119,7 +119,7 @@ class TestUnstructuredDictFormatterValidator(object):
             "key2": "no variables",
             "key3": "{ %int(3) }",
             "key4": "{ %float(4.132) }",
-            "key5": "{ %int(True) }",
+            "key5": "{ %bool(True) }",
             "key6": "{ { %concat( %string( variable ), %string( '''_key''' ) ): '''value''', '''static_key''': %concat( %string( variable ), %string( '''_value''' ) ) } }",
             "key7": "{ [ '''list_1''', %concat( %string( '''list_''' ), %string( variable_2 ) ) ] }",
             "key8": "{ %concat( %string( '''string ''' ), %string( variable1 ), %string( ''' with multiple ''' ), %string( variable2 ) ) }",

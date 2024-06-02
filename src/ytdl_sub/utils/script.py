@@ -69,12 +69,12 @@ class ScriptUtils:
             return BuiltInFunction(
                 name="concat", args=[BuiltInFunction(name="string", args=[arg]) for arg in ast]
             )
+        if isinstance(value, bool):
+            return Boolean(value)
         if isinstance(value, int):
             return Integer(value)
         if isinstance(value, float):
             return Float(value)
-        if isinstance(value, bool):
-            return Boolean(value)
         if isinstance(value, list):
             return UnresolvedArray([cls._to_script_argument(val) for val in value])
         if isinstance(value, dict):
