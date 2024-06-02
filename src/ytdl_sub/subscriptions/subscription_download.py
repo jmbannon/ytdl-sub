@@ -161,7 +161,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 )
 
             self.download_archive.save_download_mappings()
-            FileHandler.delete(self.download_archive.working_file_path)
+            FileHandler.delete(self.download_archive.working_ytdl_file_path)
 
     @contextlib.contextmanager
     def _remove_empty_directories_in_output_directory(self):
