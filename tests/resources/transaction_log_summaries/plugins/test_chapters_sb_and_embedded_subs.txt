@@ -3,6 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-sponsorblock_with_embedded_subs_test-download-archive.json
 {output_directory}/JMC
+  This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.info.json
   This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.jpg
   This GPU SLIDES into this Case! - Silverstone SUGO 16 ITX Case.mp4
     Embedded Chapters:

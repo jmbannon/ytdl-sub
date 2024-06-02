@@ -3,6 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-chapters_from_comments-download-archive.json
 {output_directory}/JMC
+  Move 78 - Automated Improvisation [Full Album].info.json
   Move 78 - Automated Improvisation [Full Album].jpg
   Move 78 - Automated Improvisation [Full Album].mp4
     Chapters from comments:
