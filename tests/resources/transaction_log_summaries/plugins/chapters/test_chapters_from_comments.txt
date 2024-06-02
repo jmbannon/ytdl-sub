@@ -5,6 +5,16 @@ Files created:
 {output_directory}/JMC
   Move 78 - Automated Improvisation [Full Album].jpg
   Move 78 - Automated Improvisation [Full Album].mp4
+    Chapters from comments:
+      0:00: 01. The Lonely Tears of Lee Seedol
+      4:30: 02. But What If We're Wrong
+      9:16: 03. Follow the Earworm Pt.2
+      12:25: 04. Keyword Salad
+      16:48: 05. Ultra Natural
+      20:47: 06. Flight Instructions
+      25:46: 07. Dawn of the Useless Class
+      29:58: 08. Schnitzel Whisperer
+      32:16: 09. Teilo
     Embedded subtitles with lang(s) en, de
     Video Tags:
       album: Music Videos
