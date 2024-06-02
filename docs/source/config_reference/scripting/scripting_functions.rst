@@ -716,7 +716,7 @@ to_native_filepath
 :spec: ``to_native_filepath(filepath: String) -> String``
 
 Convert any unix-based path separators ('/') with the OS's native
-separator.
+separator. In addition, expand ~ to absolute directories.
 
 truncate_filepath_if_too_long
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,6 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-regex_match_and_exclude_playlist_test-download-archive.json
 {output_directory}/regex_match_and_exclude_playlist_test
+  Jesse's Minecraft Server [Trailer - Feb.1].info.json
   Jesse's Minecraft Server [Trailer - Feb.1].jpg
   Jesse's Minecraft Server [Trailer - Feb.1].mp4
     Video Tags:
