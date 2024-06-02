@@ -72,8 +72,7 @@ def download_and_convert_url_thumbnail(
     if not thumbnail_url:
         return None
 
-    # timeout after 8 seconds
-    with urlopen(thumbnail_url, timeout=1.0) as file:
+    with urlopen(thumbnail_url, timeout=7.0) as file:
         with tempfile.NamedTemporaryFile(delete=False) as thumbnail:
             thumbnail.write(file.read())
 
