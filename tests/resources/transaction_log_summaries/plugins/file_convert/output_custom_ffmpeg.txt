@@ -3,6 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-file_convert_test-download-archive.json
 {output_directory}/file_convert_test
+  When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.info.json
   When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.jpg
   When you hear Hugh Jackman is returning as Wolverine in Deadpool 3.mkv
     Converted from mp4

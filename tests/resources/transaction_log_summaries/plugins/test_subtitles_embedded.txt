@@ -3,6 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-subtitles_embedded_test-download-archive.json
 {output_directory}/JMC
+  YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.info.json
   YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.jpg
   YouTube Rewind 2019： For the Record ｜ #YouTubeRewind.mp4
     Embedded subtitles with lang(s) en, de
