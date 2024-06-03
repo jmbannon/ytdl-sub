@@ -18,8 +18,8 @@ class ConditionalFunctions:
           depending on the ``condition`` value.
         """
         if condition.value:
-            return true
-        return false
+            return true.value()
+        return false.value()
 
     @staticmethod
     def elif_(*if_elif_else: AnyArgument) -> AnyArgument:
@@ -50,9 +50,9 @@ class ConditionalFunctions:
 
         for idx in range(0, len(arguments) - 1, 2):
             if bool(arguments[idx].value):
-                return arguments[idx + 1]
+                return arguments[idx + 1].value()
 
-        return arguments[-1]
+        return arguments[-1].value()
 
     @staticmethod
     def if_passthrough(
@@ -63,6 +63,7 @@ class ConditionalFunctions:
           Conditional ``if`` statement that returns the ``maybe_true_arg`` if it evaluates to True,
           otherwise returns ``else_arg``.
         """
-        if bool(maybe_true_arg.value):
-            return maybe_true_arg
-        return else_arg
+        maybe_true_value = maybe_true_arg.value()
+        if bool(maybe_true_value):
+            return maybe_true_value
+        return else_arg.value()

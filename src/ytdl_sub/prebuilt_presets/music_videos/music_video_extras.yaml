@@ -53,6 +53,6 @@ presets:
       - "_music_video_extras_base"
       - "_music_video_tags"
 
-    overrides:
-      metadata_verify_plex_suffix: "{url_metadata}"
-      music_video_file_name_suffix: "-{music_video_album}"
+#    overrides:
+#      metadata_verify_plex_suffix: "{url_metadata}"
+#      music_video_file_name_suffix: "-{music_video_album}"

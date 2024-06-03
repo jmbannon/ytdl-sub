@@ -54,6 +54,23 @@ class TestLambdaFunction:
             }
         ).resolve() == ScriptOutput({"output": Integer(4)})
 
+    def test_multiple_lambdas_single_definition(self):
+        url_map_def = """{
+                %array_reduce(
+                    %array_apply( array_def, %array_map_format),
+                    %map_extend
+                )
+            }"""
+        script = Script(
+            {
+                "%array_map_format": "{ {$0: $0 } }",
+                "array_def": "{ [1, 2, 3] }",
+                "category_url_map": url_map_def,
+            }
+        )
+
+        assert script.resolve().get("category_url_map").native == {1: 1, 2: 2, 3: 3}
+
 
 class TestLambdaFunctionIncompatibleNumArguments:
     @pytest.mark.parametrize(

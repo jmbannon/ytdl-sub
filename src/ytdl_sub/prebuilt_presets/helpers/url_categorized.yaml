@@ -52,7 +52,7 @@ presets:
 
       # Creates an array in the form of [ { url: ..., category: ..., metadata_field_1: ... }, ... ]
       category_url_array: >-
-        { %map_apply( subscription_dict, %flat_array__category_to_map_format ) }
+        { %array_flatten( %map_apply( subscription_dict, %flat_array__category_to_map_format ) ) }
 
       # Creates a map in the form of { <url value>: { category: ..., metadata_field_1: ... }, ... }
       category_url_map: >-

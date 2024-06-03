@@ -116,6 +116,7 @@ def is_type_compatible(
 
 @dataclass(frozen=True)
 class FunctionSpec:
+    function_name: str
     return_type: Type[Resolvable]
     arg_names: List[str]
     args: Optional[List[Type[Resolvable | Optional[Resolvable]]]] = None
@@ -184,6 +185,22 @@ class FunctionSpec:
         if self.args is not None:
             return sum(1 for arg in self.args if not is_optional(arg))
         return 0  # varargs can take any number
+
+    def conditional_arg_indices(self, num_input_args: int) -> List[int]:
+        """
+        Returns
+        -------
+        If the function is conditional, return the indices of the arguments that
+        return for different branches.
+        """
+        if self.function_name == "if":
+            return [1, 2]  # true, false
+        if self.function_name == "elif":
+            # if, retA, elif, retB, retElse
+            return list(range(1, num_input_args, 2)) + [num_input_args - 1]
+        if self.function_name == "if_passthrough":
+            return [0, 1]  # true-passthrough, false-passthrough
+        return []
 
     @property
     def is_lambda_reduce_function(self) -> Optional[Type[LambdaReduce]]:
@@ -259,7 +276,7 @@ class FunctionSpec:
         return self._to_human_readable_name(self.return_type)
 
     @classmethod
-    def from_callable(cls, callable_ref: Callable[..., Resolvable]) -> "FunctionSpec":
+    def from_callable(cls, name: str, callable_ref: Callable[..., Resolvable]) -> "FunctionSpec":
         """
         Returns
         -------
@@ -268,12 +285,14 @@ class FunctionSpec:
         arg_spec: FullArgSpec = inspect.getfullargspec(callable_ref)
         if arg_spec.varargs:
             return FunctionSpec(
+                function_name=name,
                 return_type=arg_spec.annotations["return"],
                 arg_names=[arg_spec.varargs],
                 varargs=arg_spec.annotations[arg_spec.varargs],
             )
 
         return FunctionSpec(
+            function_name=name,
             return_type=arg_spec.annotations["return"],
             arg_names=arg_spec.args,
             args=[arg_spec.annotations[arg_name] for arg_name in arg_spec.args],

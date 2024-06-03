@@ -34,17 +34,21 @@ class VariableDependency(ABC):
         Any arguments in the VariableDependency that may or may not need to be resolved.
         """
 
-    def _recurse_get(self, ttype: Type[TypeT], subclass: bool = False) -> List[TypeT]:
+    def _recurse_get(
+        self, ttype: Type[TypeT], subclass: bool = False, instance: bool = True
+    ) -> List[TypeT]:
         output: List[TypeT] = []
         for arg in self._iterable_arguments:
             if subclass and issubclass(type(arg), ttype):
                 output.append(arg)
-            elif isinstance(arg, ttype):
+            elif instance and isinstance(arg, ttype):
+                output.append(arg)
+            elif type(arg) == ttype:
                 output.append(arg)
 
             if isinstance(arg, VariableDependency):
                 # pylint: disable=protected-access
-                output.extend(arg._recurse_get(ttype))
+                output.extend(arg._recurse_get(ttype, subclass=subclass, instance=instance))
                 # pylint: enable=protected-access
 
         return output
@@ -57,7 +61,7 @@ class VariableDependency(ABC):
         -------
         All Variables that this depends on.
         """
-        return set(self._recurse_get(Variable))
+        return set(self._recurse_get(Variable, instance=False))
 
     @final
     @property
