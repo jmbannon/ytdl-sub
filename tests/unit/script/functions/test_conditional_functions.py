@@ -101,3 +101,37 @@ class TestConditionalFunction:
                 )
             }"""
             )
+
+    @pytest.mark.parametrize(
+        "function_str, expected_output",
+        [
+            ("{%if(True, True, %assert(False, 'should not reach'))}", True),
+            ("{%if(False, %assert(False, 'should not reach'), False)}", False),
+        ],
+    )
+    def test_if_function_only_evaluates_branch(self, function_str: str, expected_output: bool):
+        output = single_variable_output(function_str)
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "function_str, expected_output",
+        [
+            ("{%elif(True, True, %assert(False, 'should not reach'))}", True),
+            ("{%elif(False, %assert(False, 'should not reach'), False)}", False),
+        ],
+    )
+    def test_elif_function_only_evaluates_branch(self, function_str: str, expected_output: bool):
+        output = single_variable_output(function_str)
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "function_str, expected_output",
+        [
+            ("{%if_passthrough(True, %assert(False, 'should not reach'))}", True),
+        ],
+    )
+    def test_if_passthrough_function_only_evaluates_branch(
+        self, function_str: str, expected_output: bool
+    ):
+        output = single_variable_output(function_str)
+        assert output == expected_output

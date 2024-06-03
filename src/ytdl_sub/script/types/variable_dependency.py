@@ -34,17 +34,21 @@ class VariableDependency(ABC):
         Any arguments in the VariableDependency that may or may not need to be resolved.
         """
 
-    def _recurse_get(self, ttype: Type[TypeT], subclass: bool = False) -> List[TypeT]:
+    def _recurse_get(
+        self, ttype: Type[TypeT], subclass: bool = False, instance: bool = True
+    ) -> List[TypeT]:
         output: List[TypeT] = []
         for arg in self._iterable_arguments:
             if subclass and issubclass(type(arg), ttype):
                 output.append(arg)
-            elif isinstance(arg, ttype):
+            elif instance and isinstance(arg, ttype):
+                output.append(arg)
+            elif type(arg) == ttype:
                 output.append(arg)
 
             if isinstance(arg, VariableDependency):
                 # pylint: disable=protected-access
-                output.extend(arg._recurse_get(ttype))
+                output.extend(arg._recurse_get(ttype, subclass=subclass, instance=instance))
                 # pylint: enable=protected-access
 
         return output
@@ -57,7 +61,7 @@ class VariableDependency(ABC):
         -------
         All Variables that this depends on.
         """
-        return set(self._recurse_get(Variable))
+        return set(self._recurse_get(Variable, instance=False))
 
     @final
     @property
@@ -156,19 +160,38 @@ class VariableDependency(ABC):
         raise UNREACHABLE
 
     @final
-    def is_subset_of(self, variables: Iterable[Variable]) -> bool:
+    def is_subset_of(
+        self,
+        variables: Iterable[Variable],
+        custom_function_definitions: Dict[str, "VariableDependency"],
+    ) -> bool:
         """
         Returns
         -------
         True if it contains all input variables as a dependency. False otherwise.
         """
+        for custom_function in self.custom_functions:
+            if custom_function_definitions[custom_function.name].is_subset_of(
+                variables=variables, custom_function_definitions=custom_function_definitions
+            ):
+                return True
+
         return not self.variables.issubset(variables)
 
     @final
-    def contains(self, variables: Iterable[Variable]) -> bool:
+    def contains(
+        self,
+        variables: Iterable[Variable],
+        custom_function_definitions: Dict[str, "VariableDependency"],
+    ) -> bool:
         """
         Returns
         -------
         True if it contains any of the input variables. False otherwise.
         """
+        for custom_function in self.custom_functions:
+            if custom_function_definitions[custom_function.name].contains(
+                variables=variables, custom_function_definitions=custom_function_definitions
+            ):
+                return True
         return len(self.variables.intersection(variables)) > 0

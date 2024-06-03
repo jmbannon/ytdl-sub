@@ -63,21 +63,19 @@ def _is_type_compatible(
     True if arg is compatible with expected_arg_type. False otherwise.
     """
     if is_union(expected_arg_type):
-        # See if the arg is a valid against the union
-        valid_type = False
+        if issubclass(arg_type, (NamedCustomFunction, Variable)):
+            return True  # custom-function/variable can be anything, so pass for now
 
         # if the input arg is a union, do a direct comparison
         if is_union(arg_type):
-            valid_type = arg_type == expected_arg_type
-        # otherwise, iterate the union to see if it's compatible
-        else:
-            for union_type in expected_arg_type.__args__:
-                if issubclass(arg_type, union_type):
-                    valid_type = True
-                    break
+            return arg_type == expected_arg_type
 
-        if not valid_type:
-            return False
+        # otherwise, iterate the union to see if it's compatible
+        for union_type in expected_arg_type.__args__:
+            if issubclass(arg_type, union_type):
+                return True
+
+        return False
     # If the input is a union and the expected type is not, see if
     # each possible union input is compatible with the expected type
     elif is_union(arg_type):
@@ -118,6 +116,7 @@ def is_type_compatible(
 
 @dataclass(frozen=True)
 class FunctionSpec:
+    function_name: str
     return_type: Type[Resolvable]
     arg_names: List[str]
     args: Optional[List[Type[Resolvable | Optional[Resolvable]]]] = None
@@ -186,6 +185,22 @@ class FunctionSpec:
         if self.args is not None:
             return sum(1 for arg in self.args if not is_optional(arg))
         return 0  # varargs can take any number
+
+    def conditional_arg_indices(self, num_input_args: int) -> List[int]:
+        """
+        Returns
+        -------
+        If the function is conditional, return the indices of the arguments that
+        return for different branches.
+        """
+        if self.function_name == "if":
+            return [1, 2]  # true, false
+        if self.function_name == "elif":
+            # if, retA, elif, retB, retElse
+            return list(range(1, num_input_args, 2)) + [num_input_args - 1]
+        if self.function_name == "if_passthrough":
+            return [0, 1]  # true-passthrough, false-passthrough
+        return []
 
     @property
     def is_lambda_reduce_function(self) -> Optional[Type[LambdaReduce]]:
@@ -261,7 +276,7 @@ class FunctionSpec:
         return self._to_human_readable_name(self.return_type)
 
     @classmethod
-    def from_callable(cls, callable_ref: Callable[..., Resolvable]) -> "FunctionSpec":
+    def from_callable(cls, name: str, callable_ref: Callable[..., Resolvable]) -> "FunctionSpec":
         """
         Returns
         -------
@@ -270,12 +285,14 @@ class FunctionSpec:
         arg_spec: FullArgSpec = inspect.getfullargspec(callable_ref)
         if arg_spec.varargs:
             return FunctionSpec(
+                function_name=name,
                 return_type=arg_spec.annotations["return"],
                 arg_names=[arg_spec.varargs],
                 varargs=arg_spec.annotations[arg_spec.varargs],
             )
 
         return FunctionSpec(
+            function_name=name,
             return_type=arg_spec.annotations["return"],
             arg_names=arg_spec.args,
             args=[arg_spec.annotations[arg_name] for arg_name in arg_spec.args],
