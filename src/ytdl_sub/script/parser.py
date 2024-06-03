@@ -498,6 +498,8 @@ class _Parser:
                     raise MAP_KEY_WITH_NO_VALUE
                 if isinstance(key, NonHashable):
                     raise MAP_KEY_NOT_HASHABLE
+                if isinstance(key, BuiltInFunction) and issubclass(key.output_type(), NonHashable):
+                    raise MAP_KEY_NOT_HASHABLE
                 if len(value_args) > 1:
                     raise MAP_KEY_MULTIPLE_VALUES
 

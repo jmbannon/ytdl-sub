@@ -291,3 +291,6 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             raise FunctionRuntimeException(
                 f"Runtime error occurred when executing the function %{self.name}: {str(exc)}"
             ) from exc
+
+    def __hash__(self):
+        return hash((self.name, *self.args))
