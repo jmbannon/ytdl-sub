@@ -9,13 +9,16 @@ from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
 from ytdl_sub.entries.script.variable_definitions import UNRESOLVED_VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
 from ytdl_sub.entries.script.variable_types import Variable
+from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_DEFINITIONS
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.script import ScriptUtils
 
 BASE_SCRIPT: Script = Script(
-    dict(ScriptUtils.add_sanitized_variables(VARIABLE_SCRIPTS), **CUSTOM_FUNCTION_SCRIPTS)
+    ScriptUtils.add_sanitized_variables(VARIABLE_SCRIPTS)
+    | ScriptUtils.add_sanitized_variables(REQUIRED_OVERRIDE_VARIABLE_DEFINITIONS)
+    | CUSTOM_FUNCTION_SCRIPTS
 )
 
 

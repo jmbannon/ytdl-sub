@@ -5,6 +5,7 @@ from typing import Union
 import pytest
 
 from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
+from ytdl_sub.script.parser import BRACKET_INVALID_CHAR
 from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
 from ytdl_sub.script.parser import ParsedArgType
 from ytdl_sub.script.parser import parse
@@ -192,6 +193,15 @@ class TestParser:
             ]
         )
 
+    def test_escaped_bracket(self):
+        assert parse("\\{ This is escape {%string('{}')} and here \\}") == SyntaxTree(
+            [
+                String(value="{ This is escape "),
+                BuiltInFunction(name="string", args=[String(value="{}")]),
+                String(value=" and here }"),
+            ]
+        )
+
 
 class TestParserBracketFailures:
     def test_bracket_open(self):
@@ -208,3 +218,8 @@ class TestParserBracketFailures:
             match=re.escape(str(_UNEXPECTED_CHAR_ARGUMENT(ParsedArgType.MAP_KEY))),
         ):
             parse("hello {%capitalize({as_arg)}")
+
+    @pytest.mark.parametrize("char", [")", ",", "*", "]"])
+    def test_extra_char_in_brackets(self, char: str):
+        with pytest.raises(InvalidSyntaxException, match=re.escape(str(BRACKET_INVALID_CHAR))):
+            parse(f"{{  %string('hi') {char} }}")

@@ -32,7 +32,7 @@ class SubscriptionOutput(Validator, ABC):
         indent overrides to merge with the preset dict's overrides
         """
         return {
-            SubscriptionVariables.subscription_indent_i(i): self._indent_overrides[i]
+            SubscriptionVariables.subscription_indent_i(i).variable_name: self._indent_overrides[i]
             for i in range(len(self._indent_overrides))
         }
 
@@ -143,7 +143,9 @@ class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
             presets=presets,
             indent_overrides=indent_overrides,
         )
-        self._overrides_to_add[SubscriptionVariables.subscription_value()] = self.value
+        self._overrides_to_add[SubscriptionVariables.subscription_value().variable_name] = (
+            self.value
+        )
 
 
 class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValidator):
@@ -168,12 +170,12 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
         for idx, list_value in enumerate(self.list):
             # Write the first list value into subscription_value as well
             if idx == 0:
-                self._overrides_to_add[
-                    SubscriptionVariables.subscription_value()
-                ] = list_value.value
+                self._overrides_to_add[SubscriptionVariables.subscription_value().variable_name] = (
+                    list_value.value
+                )
 
             self._overrides_to_add[
-                SubscriptionVariables.subscription_value_i(index=idx)
+                SubscriptionVariables.subscription_value_i(index=idx).variable_name
             ] = list_value.value
 
 
@@ -217,8 +219,8 @@ class SubscriptionMapValidator(SubscriptionLeafValidator, LiteralDictValidator):
             presets=presets,
             indent_overrides=indent_overrides,
         )
-        self._overrides_to_add[SubscriptionVariables.subscription_map()] = ScriptUtils.to_script(
-            self.dict
+        self._overrides_to_add[SubscriptionVariables.subscription_map().variable_name] = (
+            ScriptUtils.to_script(self.dict)
         )
 
 

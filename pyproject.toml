@@ -1,3 +1,69 @@
+[project]
+name ="ytdl-sub"
+dynamic = [ "version" ]
+authors = [ { name = "Jesse Bannon" } ]
+description = "Automate downloading metadata generation with YoutubeDL"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+classifiers = [
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Video",
+    "License :: Public Domain",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "yt-dlp==2024.5.27",
+    "colorama~=0.4",
+    "mergedeep~=1.3",
+    "mediafile~=0.12",
+    "PyYAML~=6.0",
+]
+urls = { Homepage = "https://github.com/jmbannon/ytdl-sub" }
+
+[build-system]
+requires = [ "setuptools >= 67.0" ]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+platforms = [ "Unix" ]
+
+[tool.setuptools.dynamic]
+version = { attr = "ytdl_sub.__pypi_version__" }
+[tool.setuptools.package-dir]
+"" = "src"
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+[project.optional-dependencies]
+test = [
+    "coverage[toml]>=6.3,<8.0",
+    "pytest>=7.2,<9.0",
+    "pytest-rerunfailures~=14.0",
+]
+lint = [
+    "black==24.4.2",
+    "isort==5.13.2",
+    "pylint==3.2.2",
+]
+docs = [
+    "sphinx~=7.0",
+    "sphinx-rtd-theme~=2.0",
+    "sphinx-book-theme~=1.0",
+]
+build = [
+    "build~=1.2",
+    "twine~=5.0",
+    "pyinstaller~=6.5",
+]
+[project.scripts]
+ytdl-sub = "ytdl_sub.main:main"
+
 [tool.isort]
 profile = "black"
 line_length = 100

@@ -4,6 +4,7 @@ presets:
       output_directory: "{music_video_directory}"
       file_name: "{music_video_file_name}.{ext}"
       thumbnail_name: "{music_video_file_name}.jpg"
+      info_json_name: "{music_video_file_name}.{info_json_ext}"
       maintain_download_archive: True
 
     ytdl_options:

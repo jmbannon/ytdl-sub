@@ -8,6 +8,7 @@ from typing import Type
 from typing import TypeVar
 from typing import final
 
+from yt_dlp.utils import LazyList
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
@@ -15,7 +16,7 @@ from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 
 v: VariableDefinitions = VARIABLES
 
-TBaseEntry = TypeVar("TBaseEntry", bound="BaseEntry")
+BaseEntryT = TypeVar("BaseEntryT", bound="BaseEntry")
 
 
 class BaseEntry(ABC):
@@ -36,6 +37,12 @@ class BaseEntry(ABC):
         """
         self._working_directory = working_directory
         self._kwargs = entry_dict
+
+        # Sometimes yt-dlp can return a LazyList which is not JSON serializable.
+        # Cast it to a native list here. (https://github.com/jmbannon/ytdl-sub/issues/910)
+        for key in self._kwargs.keys():
+            if isinstance(self._kwargs[key], LazyList):
+                self._kwargs[key] = list(self._kwargs[key])
 
     @property
     def uid(self) -> str:
@@ -133,7 +140,7 @@ class BaseEntry(ABC):
         return str(Path(self.working_directory()) / self.get_download_info_json_name())
 
     @final
-    def to_type(self, entry_type: Type[TBaseEntry]) -> TBaseEntry:
+    def to_type(self, entry_type: Type[BaseEntryT]) -> BaseEntryT:
         """
         Returns
         -------
@@ -142,7 +149,7 @@ class BaseEntry(ABC):
         return entry_type(entry_dict=self._kwargs, working_directory=self._working_directory)
 
     @classmethod
-    def is_entry_parent(cls, entry_dict: Dict | TBaseEntry):
+    def is_entry_parent(cls, entry_dict: Dict | BaseEntryT):
         """
         Returns
         -------
@@ -157,7 +164,7 @@ class BaseEntry(ABC):
         return entry_type == "playlist"
 
     @classmethod
-    def is_entry(cls, entry_dict: Dict | TBaseEntry):
+    def is_entry(cls, entry_dict: Dict | BaseEntryT):
         """
         Returns
         -------

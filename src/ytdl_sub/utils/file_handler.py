@@ -385,7 +385,11 @@ class FileHandler:
         dst_file_path
             Destination file
         """
-        shutil.copyfile(src=src_file_path, dst=dst_file_path)
+        # Perform the copy by first writing to a temp file, then moving it.
+        # This tries to prevent corrupted writes if the processed dies mid-write,
+        atomic_dst = f"{dst_file_path}-ytdl-sub-incomplete"
+        shutil.copyfile(src=src_file_path, dst=atomic_dst)
+        shutil.move(src=atomic_dst, dst=dst_file_path)
 
     @classmethod
     def move(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):

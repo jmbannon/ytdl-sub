@@ -3,6 +3,7 @@ Files created:
 {output_directory}
   .ytdl-sub-regex_capture_playlist_test-download-archive.json
 {output_directory}/regex_capture_playlist_test
+  Jesse's Minecraft Server [Trailer - Feb.1].info.json
   Jesse's Minecraft Server [Trailer - Feb.1].jpg
   Jesse's Minecraft Server [Trailer - Feb.1].mp4
     Video Tags:
@@ -27,6 +28,7 @@ Files created:
         title_cap_1_sanitized: Trailer
         title_cap_2: Feb.1
         upload_date_both_caps: First and Second containing in regex default
+  Jesse's Minecraft Server [Trailer - Feb.27].info.json
   Jesse's Minecraft Server [Trailer - Feb.27].jpg
   Jesse's Minecraft Server [Trailer - Feb.27].mp4
     Video Tags:

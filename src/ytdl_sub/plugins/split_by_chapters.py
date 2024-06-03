@@ -89,7 +89,6 @@ class SplitByChaptersOptions(OptionsDictValidator):
         return {
             PluginOperation.MODIFY_ENTRY: {
                 "chapter_title",
-                "chapter_title_sanitized",
                 "chapter_index",
                 "chapter_index_padded",
                 "chapter_count",
@@ -160,9 +159,9 @@ class SplitByChaptersPlugin(SplitPlugin[SplitByChaptersOptions]):
 
         metadata_value_dict = {}
         if self.is_dry_run:
-            metadata_value_dict[
-                "Warning"
-            ] = "Dry-run assumes embedded chapters with no modifications"
+            metadata_value_dict["Warning"] = (
+                "Dry-run assumes embedded chapters with no modifications"
+            )
 
         metadata_value_dict["Source Title"] = new_entry.title
         metadata_value_dict["Segment"] = f"{timestamp_begin} - {timestamp_end}"

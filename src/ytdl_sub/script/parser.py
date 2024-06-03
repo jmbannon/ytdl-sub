@@ -73,6 +73,8 @@ CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS = InvalidSyntaxException(
 
 FUNCTION_INVALID_CHAR = InvalidSyntaxException("Invalid value when parsing a function")
 
+BRACKET_INVALID_CHAR = InvalidSyntaxException("Invalid value within brackets")
+
 
 def _UNEXPECTED_CHAR_ARGUMENT(arg_type: ParsedArgType):
     return InvalidSyntaxException(f"Unexpected character when parsing {arg_type.value} arguments")
@@ -245,7 +247,7 @@ class _Parser:
         if self._read(increment_pos=False) == "-":
             numeric_string += "-"
             self._pos += 1
-        if has_decimal := (self._read(increment_pos=False) == "."):
+        if has_decimal := self._read(increment_pos=False) == ".":
             numeric_string += "."
             self._pos += 1
 
@@ -496,15 +498,23 @@ class _Parser:
                     raise MAP_KEY_WITH_NO_VALUE
                 if isinstance(key, NonHashable):
                     raise MAP_KEY_NOT_HASHABLE
+                if isinstance(key, BuiltInFunction) and issubclass(key.output_type(), NonHashable):
+                    raise MAP_KEY_NOT_HASHABLE
                 if len(value_args) > 1:
                     raise MAP_KEY_MULTIPLE_VALUES
 
                 output[key] = value_args[0]
                 key = None
             else:
-                raise UNREACHABLE
+                break
+
+        raise UNREACHABLE
 
     def _parse_main_loop(self, ch: str) -> bool:
+        if ch == "\\" and self._read(increment_pos=False) in {"{", "}"}:
+            # Escape brackets are \{ and \}, only add the second char
+            self._literal_str += self._read()
+            return True
         if ch == "}":
             if self._bracket_counter == 0:
                 raise BRACKET_NOT_CLOSED
@@ -558,9 +568,9 @@ class _Parser:
         elif self._bracket_counter == 0:
             # Only accumulate literal str if not in brackets
             self._literal_str += ch
-        else:
-            # Should only be possible to get here if it's a space
-            assert ch.isspace()
+        elif not ch.isspace():
+            self._set_highlight_position(pos=self._pos - 1)
+            raise BRACKET_INVALID_CHAR
 
         return True
 

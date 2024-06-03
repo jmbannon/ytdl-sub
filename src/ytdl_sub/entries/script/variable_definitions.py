@@ -21,6 +21,7 @@ from ytdl_sub.entries.script.variable_types import Variable
 # pylint: disable=no-member
 # pylint: disable=too-many-public-methods
 # pylint: disable=too-many-lines
+# pylint: disable=method-cache-max-size-none
 
 
 class MetadataVariableDefinitions(ABC):
@@ -394,7 +395,9 @@ class UploadDateVariableDefinitions(ABC):
         :description:
           The entry’s uploaded date, in YYYYMMDD format. If not present, return today’s date.
         """
-        return StringDateMetadataVariable.from_entry(metadata_key="upload_date").as_date_variable()
+        return StringDateMetadataVariable.from_entry(
+            metadata_key="upload_date", default=self.epoch_date
+        ).as_date_variable()
 
     @cached_property
     def upload_year(self: "VariableDefinitions") -> IntegerVariable:
@@ -749,6 +752,24 @@ class YtdlSubVariableDefinitions(ABC):
         return StringVariable(variable_name="ytdl_sub_input_url", definition="{ %string('') }")
 
     @cached_property
+    def ytdl_sub_input_url_index(self: "VariableDefinitions") -> IntegerVariable:
+        """
+        :description:
+          The index of the input URL as defined in the subscription, top-most being the 0th index.
+        """
+        # init as -1 so if prior downloaded entries are known when they do not have this value
+        # in their .info.json
+        return IntegerVariable(variable_name="ytdl_sub_input_url_index", definition="{ %int(-1) }")
+
+    @cached_property
+    def ytdl_sub_input_url_count(self: "VariableDefinitions") -> IntegerVariable:
+        """
+        :description:
+          The total number of input URLs as defined in the subscription.
+        """
+        return IntegerVariable(variable_name="ytdl_sub_input_url_count", definition="{ %int(0) }")
+
+    @cached_property
     def download_index(self: "VariableDefinitions") -> IntegerVariable:
         """
         :description:
@@ -1098,6 +1119,8 @@ class VariableDefinitions(
             self.chapters,
             self.sponsorblock_chapters,
             self.ytdl_sub_input_url,
+            self.ytdl_sub_input_url_index,
+            self.ytdl_sub_input_url_count,
         }
 
     @cache

@@ -1,5 +1,9 @@
 presets:
 
+  #############################################################################
+  # Best Video Quality
+  #   Gets the best available quality
+
   best_video_quality:
     format: "bestvideo+bestaudio/best"
     ytdl_options:
@@ -9,18 +13,26 @@ presets:
     preset: 
       - best_video_quality
 
+  #############################################################################
+  # Max 2160p
 
   "Max 2160p":
     format: "(bv*[height<=2160]+bestaudio/best[height<=2160])"
     ytdl_options:
       merge_output_format: "mp4"
 
+  #############################################################################
+  # Max 1440p
+
   "Max 1440p":
     format: "(bv*[height<=1440]+bestaudio/best[height<=1440])"
     ytdl_options:
       merge_output_format: "mp4"
 
-  max_1080p:
+  #############################################################################
+  # Max 1080p
+
+  max_1080p:  # legacy name
     format: "(bv*[height<=1080]+bestaudio/best[height<=1080])"
     ytdl_options:
       merge_output_format: "mp4"
@@ -28,11 +40,17 @@ presets:
   "Max 1080p":
     preset:
       - max_1080p
-  
+
+  #############################################################################
+  # Max 720p
+
   "Max 720p":
     format: "(bv*[height<=720]+bestaudio/best[height<=720])"
     ytdl_options:
       merge_output_format: "mp4"
+
+  #############################################################################
+  # Max 480p
 
   "Max 480p":
     format: "(bv*[height<=480]+bestaudio/best[height<=480])"

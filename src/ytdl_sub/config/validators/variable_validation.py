@@ -13,11 +13,23 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
+from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script import _is_function
 from ytdl_sub.utils.scriptable import BASE_SCRIPT
 from ytdl_sub.validators.string_formatter_validators import to_variable_dependency_format_string
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
+
+# Entry variables to mock during validation
+_DUMMY_ENTRY_VARIABLES: Dict[str, str] = {
+    name: to_variable_dependency_format_string(
+        # pylint: disable=protected-access
+        script=BASE_SCRIPT,
+        parsed_format_string=BASE_SCRIPT._variables[name],
+        # pylint: enable=protected-access
+    )
+    for name in BASE_SCRIPT.variable_names
+}
 
 
 def _add_dummy_variables(variables: Iterable[str]) -> Dict[str, str]:
@@ -33,6 +45,9 @@ def _add_dummy_overrides(overrides: Overrides) -> Dict[str, str]:
     # Have the dummy override variable contain all variable deps that it uses in the string
     dummy_overrides: Dict[str, str] = {}
     for override_name in _override_variables(overrides):
+        if _is_function(override_name):
+            continue
+
         # pylint: disable=protected-access
         dummy_overrides[override_name] = to_variable_dependency_format_string(
             script=overrides.script, parsed_format_string=overrides.script._variables[override_name]
@@ -68,20 +83,7 @@ def _get_added_and_modified_variables(
 
 
 def _override_variables(overrides: Overrides) -> Set[str]:
-    return set(list(overrides.initial_variables().keys())) | {
-        SubscriptionVariables.subscription_name()
-    }
-
-
-_DUMMY_ENTRY_VARIABLES: Dict[str, str] = {
-    name: to_variable_dependency_format_string(
-        # pylint: disable=protected-access
-        script=BASE_SCRIPT,
-        parsed_format_string=BASE_SCRIPT._variables[name]
-        # pylint: enable=protected-access
-    )
-    for name in BASE_SCRIPT.variable_names
-}
+    return set(list(overrides.initial_variables().keys()))
 
 
 class VariableValidation:
@@ -99,13 +101,11 @@ class VariableValidation:
         self.resolved_variables: Set[str] = set()
         self.unresolved_variables: Set[str] = set()
 
-    def initialize_overrides(
-        self, subscription_name: str, overrides: Overrides
-    ) -> "VariableValidation":
+    def initialize_preset_overrides(self, overrides: Overrides) -> "VariableValidation":
         """
         Do some gymnastics to initialize the Overrides script.
         """
-        override_variables = _override_variables(overrides)
+        override_variables = set(list(overrides.initial_variables().keys()))
 
         # Set resolved variables as all entry + override variables
         # at this point to generate every possible added/modified variable
@@ -141,9 +141,7 @@ class VariableValidation:
         # Initialize overrides with unresolved variables + modified variables to throw an error.
         # For modified variables, this is to prevent a resolve(update=True) to setting any
         # dependencies until it has been explicitly added
-        overrides = overrides.initialize_script(
-            subscription_name=subscription_name, unresolved_variables=self.unresolved_variables
-        )
+        overrides = overrides.initialize_script(unresolved_variables=self.unresolved_variables)
 
         # copy the script and mock entry variables
         self.script = copy.deepcopy(overrides.script)
@@ -158,7 +156,16 @@ class VariableValidation:
     def _update_script(self) -> None:
         _ = self.script.resolve(unresolvable=self.unresolved_variables, update=True)
 
-    def _add_variables(self, plugin_op: PluginOperation, options: OptionsValidator) -> Set[str]:
+    def _add_subscription_override_variables(self) -> None:
+        """
+        Add dummy subscription variables for script validation
+        """
+        self.resolved_variables |= REQUIRED_OVERRIDE_VARIABLE_NAMES
+
+    def _add_variables(self, plugin_op: PluginOperation, options: OptionsValidator) -> None:
+        """
+        Add dummy variables for script validation
+        """
         added_variables = options.added_variables(
             resolved_variables=self.resolved_variables,
             unresolved_variables=self.unresolved_variables,
@@ -171,14 +178,14 @@ class VariableValidation:
         self.resolved_variables |= resolved_variables
         self.unresolved_variables -= resolved_variables
 
-        return added_variables
-
     def ensure_proper_usage(self) -> None:
         """
         Validate variables resolve as plugins are executed, and return
         a mock script which contains actualized added variables from the plugins
         """
+
         self._add_variables(PluginOperation.DOWNLOADER, options=self.downloader_options)
+        self._add_subscription_override_variables()
 
         # Metadata variables to be added
         for plugin_options in PluginMapping.order_options_by(

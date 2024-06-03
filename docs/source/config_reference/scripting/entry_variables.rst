@@ -647,3 +647,15 @@ ytdl_sub_input_url
 :type: ``String``
 :description:
   The input URL used in ytdl-sub to create this entry.
+
+ytdl_sub_input_url_count
+~~~~~~~~~~~~~~~~~~~~~~~~
+:type: ``Integer``
+:description:
+  The total number of input URLs as defined in the subscription.
+
+ytdl_sub_input_url_index
+~~~~~~~~~~~~~~~~~~~~~~~~
+:type: ``Integer``
+:description:
+  The index of the input URL as defined in the subscription, top-most being the 0th index.

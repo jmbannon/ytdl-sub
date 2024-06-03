@@ -23,7 +23,7 @@ from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
-TLambda = TypeVar("TLambda", bound=Lambda)
+LambdaT = TypeVar("LambdaT", bound=Lambda)
 
 
 def is_union(arg_type: Type) -> bool:
@@ -210,7 +210,7 @@ class FunctionSpec:
         return None
 
     @property
-    def is_lambda_like(self) -> Optional[Type[TLambda]]:
+    def is_lambda_like(self) -> Optional[Type[LambdaT]]:
         """
         Returns
         -------

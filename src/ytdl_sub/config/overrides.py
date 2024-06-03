@@ -7,8 +7,8 @@ import mergedeep
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
 from ytdl_sub.entries.variables.override_variables import OverrideHelpers
-from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
@@ -17,11 +17,11 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
 
 
-class Overrides(DictFormatterValidator, Scriptable):
+class Overrides(UnstructuredDictFormatterValidator, Scriptable):
     """
     Allows you to define variables that can be used in any EntryFormatter or OverridesFormatter.
 
@@ -51,17 +51,18 @@ class Overrides(DictFormatterValidator, Scriptable):
 
     @classmethod
     def partial_validate(cls, name: str, value: Any) -> None:
-        dict_formatter = DictFormatterValidator(name=name, value=value)
+        dict_formatter = UnstructuredDictFormatterValidator(name=name, value=value)
         _ = [parse(format_string) for format_string in dict_formatter.dict_with_format_strings]
 
     def __init__(self, name, value):
-        DictFormatterValidator.__init__(self, name, value)
+        UnstructuredDictFormatterValidator.__init__(self, name, value)
         Scriptable.__init__(self, initialize_base_script=True)
 
         for key in self._keys:
             self.ensure_variable_name_valid(key)
 
         self.unresolvable.add(VARIABLES.entry_metadata.variable_name)
+        self.unresolvable.update(REQUIRED_OVERRIDE_VARIABLE_NAMES)
 
     def ensure_added_plugin_variable_valid(self, added_variable: str) -> bool:
         """
@@ -127,17 +128,10 @@ class Overrides(DictFormatterValidator, Scriptable):
         )
         return ScriptUtils.add_sanitized_variables(initial_variables)
 
-    def initialize_script(
-        self, subscription_name: str, unresolved_variables: Set[str]
-    ) -> "Overrides":
+    def initialize_script(self, unresolved_variables: Set[str]) -> "Overrides":
         """
-        Initialize the override script with override variables + any unresolved variables
+        Initialize the override script with any unresolved variables
         """
-        self.script.add(
-            ScriptUtils.add_sanitized_variables(
-                {SubscriptionVariables.subscription_name(): subscription_name}
-            )
-        )
         self.script.add(
             self.initial_variables(
                 unresolved_variables={

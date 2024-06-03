@@ -9,6 +9,7 @@ from typing import TypeVar
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.map import Map
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 
@@ -16,8 +17,8 @@ ENTRY_METADATA_VARIABLE_NAME = "entry_metadata"
 PLAYLIST_METADATA_VARIABLE_NAME = "playlist_metadata"
 SOURCE_METADATA_VARIABLE_NAME = "source_metadata"
 
-TMetadataVariable = TypeVar("TMetadataVariable", bound="MetadataVariable")
-TVariable = TypeVar("TVariable", bound="Variable")
+MetadataVariableT = TypeVar("MetadataVariableT", bound="MetadataVariable")
+VariableT = TypeVar("VariableT", bound="Variable")
 
 
 def _get(
@@ -25,9 +26,9 @@ def _get(
     metadata_variable_name: str,
     metadata_key: str,
     variable_name: Optional[str],
-    default: Optional[TVariable | str | int | Dict | List],
-    as_type: Type[TMetadataVariable],
-) -> TMetadataVariable:
+    default: Optional[VariableT | str | int | Dict | List],
+    as_type: Type[MetadataVariableT],
+) -> MetadataVariableT:
     if default is None:
         # TODO: assert with good error message if key DNE
         out = f"%map_get({metadata_variable_name}, '{metadata_key}')"
@@ -61,6 +62,13 @@ class Variable(ABC):
         """
         Script type of the variable, for documentation
         """
+
+
+@dataclass(frozen=True)
+class BooleanVariable(Variable):
+    @classmethod
+    def human_readable_type(cls) -> str:
+        return Boolean.__name__
 
 
 @dataclass(frozen=True)

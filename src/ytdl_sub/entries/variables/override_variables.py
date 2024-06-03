@@ -1,5 +1,12 @@
+from typing import Dict
+from typing import Set
+
 from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
 from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
+from ytdl_sub.entries.script.variable_types import BooleanVariable
+from ytdl_sub.entries.script.variable_types import MapVariable
+from ytdl_sub.entries.script.variable_types import StringVariable
+from ytdl_sub.entries.script.variable_types import Variable
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.utils.name_validation import is_valid_name
 
@@ -9,15 +16,15 @@ SUBSCRIPTION_ARRAY = "subscription_array"
 
 class SubscriptionVariables:
     @staticmethod
-    def subscription_name() -> str:
+    def subscription_name() -> StringVariable:
         """
         Name of the subscription. For subscriptions types that use a prefix (``~``, ``+``),
         the prefix and all whitespace afterwards is stripped from the subscription name.
         """
-        return "subscription_name"
+        return StringVariable(variable_name="subscription_name", definition="{ %string('') }")
 
     @staticmethod
-    def subscription_value() -> str:
+    def subscription_value() -> StringVariable:
         """
         For subscriptions in the form of
 
@@ -27,10 +34,10 @@ class SubscriptionVariables:
 
         ``subscription_value`` gets set to ``https://...``.
         """
-        return "subscription_value"
+        return StringVariable(variable_name="subscription_value", definition="{ %string('') }")
 
     @staticmethod
-    def subscription_indent_i(index: int) -> str:
+    def subscription_indent_i(index: int) -> StringVariable:
         """
         For subscriptions in the form of
 
@@ -43,10 +50,12 @@ class SubscriptionVariables:
         ``subscription_indent_1`` and ``subscription_indent_2`` get set to
         ``Indent Value 1`` and ``Indent Value 2``.
         """
-        return f"subscription_indent_{index + 1}"
+        return StringVariable(
+            variable_name=f"subscription_indent_{index + 1}", definition="{ %string('') }"
+        )
 
     @staticmethod
-    def subscription_value_i(index: int) -> str:
+    def subscription_value_i(index: int) -> StringVariable:
         """
         For subscriptions in the form of
 
@@ -60,10 +69,12 @@ class SubscriptionVariables:
         and ``https://url2.com/...``. Note that ``subscription_value_1`` also gets set to
         ``subscription_value``.
         """
-        return f"subscription_value_{index + 1}"
+        return StringVariable(
+            variable_name=f"subscription_value_{index + 1}", definition="{ %string('') }"
+        )
 
     @staticmethod
-    def subscription_map() -> str:
+    def subscription_map() -> MapVariable:
         """
         For subscriptions in the form of
 
@@ -89,7 +100,17 @@ class SubscriptionVariables:
              ]
            }
         """
-        return "subscription_map"
+        return MapVariable(variable_name="subscription_map", definition="{ {} }")
+
+    @staticmethod
+    def subscription_has_download_archive() -> BooleanVariable:
+        """
+        Returns True if the subscription has any entries recorded in a download archive. False
+        otherwise.
+        """
+        return BooleanVariable(
+            variable_name="subscription_has_download_archive", definition="{ %bool(True) }"
+        )
 
 
 class OverrideHelpers:
@@ -124,3 +145,17 @@ class OverrideHelpers:
             return is_valid_name(name=name[1:])
 
         return is_valid_name(name=name)
+
+
+REQUIRED_OVERRIDE_VARIABLES: Set[Variable] = {
+    SubscriptionVariables.subscription_name(),
+    SubscriptionVariables.subscription_has_download_archive(),
+}
+
+REQUIRED_OVERRIDE_VARIABLE_DEFINITIONS: Dict[str, str] = {
+    var.variable_name: var.definition for var in REQUIRED_OVERRIDE_VARIABLES
+}
+
+REQUIRED_OVERRIDE_VARIABLE_NAMES: Set[str] = {
+    var.variable_name for var in REQUIRED_OVERRIDE_VARIABLES
+}

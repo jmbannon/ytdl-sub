@@ -67,7 +67,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         output_file_name = self.overrides.apply_formatter(
             formatter=self.output_options.file_name, entry=entry
         )
-        self._enhanced_download_archive.save_file_to_output_directory(
+        self.download_archive.save_file_to_output_directory(
             file_name=entry.get_download_file_name(),
             file_metadata=entry_metadata,
             output_file_name=output_file_name,
@@ -81,7 +81,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             )
 
             # Copy the thumbnails since they could be used later for other things
-            self._enhanced_download_archive.save_file_to_output_directory(
+            self.download_archive.save_file_to_output_directory(
                 file_name=entry.get_download_thumbnail_name(),
                 output_file_name=output_thumbnail_name,
                 entry=entry,
@@ -101,7 +101,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             if not dry_run:
                 entry.write_info_json()
 
-            self._enhanced_download_archive.save_file_to_output_directory(
+            self.download_archive.save_file_to_output_directory(
                 file_name=entry.get_download_info_json_name(),
                 output_file_name=output_info_json_name,
                 entry=entry,
@@ -126,8 +126,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
         except Exception as exc:
             self._delete_working_directory(is_error=True)
             raise exc
-        else:
-            self._delete_working_directory()
+
+        self._delete_working_directory()
 
     @contextlib.contextmanager
     def _maintain_archive_file(self):
@@ -135,7 +135,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         Context manager to initialize the enhanced download archive
         """
         if self.maintain_download_archive:
-            self._enhanced_download_archive.prepare_download_archive()
+            self.download_archive.prepare_download_archive()
 
         yield
 
@@ -156,19 +156,19 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 )
 
             if date_range_to_keep or self.output_options.keep_max_files is not None:
-                self._enhanced_download_archive.remove_stale_files(
+                self.download_archive.remove_stale_files(
                     date_range=date_range_to_keep, keep_max_files=keep_max_files
                 )
 
-            self._enhanced_download_archive.save_download_mappings()
-            FileHandler.delete(self._enhanced_download_archive.working_file_path)
+            self.download_archive.save_download_mappings()
+            FileHandler.delete(self.download_archive.working_ytdl_file_path)
 
     @contextlib.contextmanager
     def _remove_empty_directories_in_output_directory(self):
         try:
             yield
         finally:
-            if not self._enhanced_download_archive.is_dry_run:
+            if not self.download_archive.is_dry_run:
                 for root, dir_names, _ in os.walk(Path(self.output_directory), topdown=False):
                     for dir_name in dir_names:
                         dir_path = Path(root) / dir_name
@@ -194,7 +194,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             plugin_type(
                 options=plugin_options,
                 overrides=self.overrides,
-                enhanced_download_archive=self._enhanced_download_archive,
+                enhanced_download_archive=self.download_archive,
             )
             for plugin_type, plugin_options in self.plugins.zipped()
         ]
@@ -233,7 +233,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         # Re-save the download archive after each entry is moved to the output directory
         if self.maintain_download_archive:
-            self._enhanced_download_archive.save_download_mappings()
+            self.download_archive.save_download_mappings()
 
     def _process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
@@ -323,7 +323,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         for plugin in plugins:
             plugin.post_process_subscription()
 
-        return self._enhanced_download_archive.get_file_handler_transaction_log()
+        return self.download_archive.get_file_handler_transaction_log()
 
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
@@ -336,14 +336,14 @@ class SubscriptionDownload(BaseSubscription, ABC):
             directory.
         """
         self._exception = None
-        self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+        self.download_archive.reinitialize(dry_run=dry_run)
 
         plugins = self._initialize_plugins()
 
         subscription_ytdl_options = SubscriptionYTDLOptions(
             preset=self._preset_options,
             plugins=plugins,
-            enhanced_download_archive=self._enhanced_download_archive,
+            enhanced_download_archive=self.download_archive,
             overrides=self.overrides,
             working_directory=self.working_directory,
             dry_run=dry_run,
@@ -351,7 +351,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         downloader = MultiUrlDownloader(
             options=self.downloader_options,
-            enhanced_download_archive=self._enhanced_download_archive,
+            enhanced_download_archive=self.download_archive,
             download_ytdl_options=subscription_ytdl_options.download_builder(),
             metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
             overrides=self.overrides,
@@ -389,14 +389,14 @@ class SubscriptionDownload(BaseSubscription, ABC):
             If true, do not modify any video/audio files or move anything to the output directory.
         """
         self._exception = None
-        self._enhanced_download_archive.reinitialize(dry_run=dry_run)
+        self.download_archive.reinitialize(dry_run=dry_run)
 
         plugins = self._initialize_plugins()
 
         subscription_ytdl_options = SubscriptionYTDLOptions(
             preset=self._preset_options,
             plugins=plugins,
-            enhanced_download_archive=self._enhanced_download_archive,
+            enhanced_download_archive=self.download_archive,
             overrides=self.overrides,
             working_directory=self.working_directory,
             dry_run=dry_run,
@@ -406,7 +406,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         plugins.extend(
             MultiUrlDownloader(
                 options=self.downloader_options,
-                enhanced_download_archive=self._enhanced_download_archive,
+                enhanced_download_archive=self.download_archive,
                 download_ytdl_options=subscription_ytdl_options.download_builder(),
                 metadata_ytdl_options=subscription_ytdl_options.metadata_builder(),
                 overrides=self.overrides,
@@ -415,7 +415,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         downloader = InfoJsonDownloader(
             options=InfoJsonDownloaderOptions(name="no-op", value={}),
-            enhanced_download_archive=self._enhanced_download_archive,
+            enhanced_download_archive=self.download_archive,
             download_ytdl_options=YTDLOptionsBuilder(),
             metadata_ytdl_options=YTDLOptionsBuilder(),
             overrides=self.overrides,

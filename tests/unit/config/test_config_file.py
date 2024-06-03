@@ -1,4 +1,6 @@
+import os.path
 import re
+from pathlib import Path
 from typing import Dict
 from typing import Optional
 
@@ -74,7 +76,7 @@ class TestConfigFilePartiallyValidatesPresets:
             expected_error_message="Validation error in partial_preset.download.1: "
             "'partial_preset.download.1' contains the field 'bad_key' which is not allowed. "
             "Allowed fields: download_reverse, include_sibling_metadata, playlist_thumbnails, "
-            "source_thumbnails, url, variables",
+            "source_thumbnails, url, variables, ytdl_options",
         )
 
     @pytest.mark.parametrize(
@@ -94,11 +96,22 @@ class TestConfigFilePartiallyValidatesPresets:
                 },
             )
 
+    def test_config_file_working_dir_home_dir(self):
+        out = ConfigFile(
+            name="test_tilda",
+            value={
+                "configuration": {"working_directory": "~/working/dir"},
+            },
+        )
+
+        assert out.config_options.working_directory == str(
+            Path(os.path.expanduser("~")) / "working" / "dir"
+        )
+
     @pytest.mark.parametrize(
         "preset_dict",
         [
             {"overrides": "not a dict"},
-            {"overrides": {"nested": {"dict": "value"}}},
             {"overrides": ["list"]},
         ],
     )

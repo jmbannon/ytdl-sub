@@ -1,5 +1,9 @@
+from ytdl_sub.script.types.array import Array
+from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
+from ytdl_sub.script.types.resolvable import Float
+from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
 
 # pylint: disable=invalid-name
@@ -107,3 +111,59 @@ class BooleanFunctions:
           Returns True if a value is null (i.e. an empty string). False otherwise.
         """
         return Boolean(isinstance(value, String) and value.value == "")
+
+    @staticmethod
+    def is_map(value: AnyArgument) -> Boolean:
+        """
+        :description:
+          Returns True if a value is a Map. False otherwise.
+        """
+        return Boolean(isinstance(value, Map))
+
+    @staticmethod
+    def is_array(value: AnyArgument) -> Boolean:
+        """
+        :description:
+          Returns True if a value is a Map. False otherwise.
+        """
+        return Boolean(isinstance(value, Array))
+
+    @staticmethod
+    def is_string(value: AnyArgument) -> Boolean:
+        """
+        :description:
+          Returns True if a value is a String. False otherwise.
+        """
+        return Boolean(isinstance(value, String))
+
+    @staticmethod
+    def is_numeric(value: AnyArgument) -> Boolean:
+        """
+        :description:
+          Returns True if a value is either an Integer or Float. False otherwise.
+        """
+        return Boolean(isinstance(value, (Integer, Float)))
+
+    @staticmethod
+    def is_int(value: AnyArgument) -> Boolean:
+        """
+        :description:
+          Returns True if a value is an Integer. False otherwise.
+        """
+        return Boolean(isinstance(value, Integer))
+
+    @staticmethod
+    def is_float(value: AnyArgument) -> Boolean:
+        """
+        :description:
+          Returns True if a value is a Float. False otherwise.
+        """
+        return Boolean(isinstance(value, Float))
+
+    @staticmethod
+    def is_bool(value: AnyArgument) -> Boolean:
+        """
+        :description:
+          Returns True if a value is a Float. False otherwise.
+        """
+        return Boolean(isinstance(value, Boolean))

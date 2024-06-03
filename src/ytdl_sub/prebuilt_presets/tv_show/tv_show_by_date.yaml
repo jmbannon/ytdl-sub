@@ -33,6 +33,15 @@ presets:
 
 ####################################################################################################
 
+  # TV show from one or more sources. Uses {url}'s avatar and banner as poster and fanart
+  _tv_show_by_date:
+    preset: "_multi_url_bilateral"
+    overrides:
+      avatar_uncropped_thumbnail_file_name: "{tv_show_poster_file_name}"
+      banner_uncropped_thumbnail_file_name: "{tv_show_fanart_file_name}"
+
+####################################################################################################
+
   _season_by_year:
     overrides:
       season_number: "{upload_year}"

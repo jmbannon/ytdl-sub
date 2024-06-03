@@ -31,23 +31,6 @@ presets:
 
 ####################################################################################################
 
-  # TV show from one or more sources. Uses {url}'s avatar and banner as poster and fanart
-  _tv_show_by_date:
-    preset: "_multi_url"
-    overrides:
-      avatar_uncropped_thumbnail_file_name: "{tv_show_poster_file_name}"
-      banner_uncropped_thumbnail_file_name: "{tv_show_fanart_file_name}"
-
-####################################################################################################
-
-  # TV show from a collection. Must specify additional `tv_show_collection_season` presets in
-  # addition. Each season sets its own `collection_season_number/_padded`
-  _tv_show_collection:
-    overrides:
-      collection_season_number_padded: "{ %pad_zero(%int(collection_season_number), 2) }"
-      season_number: "{collection_season_number}"
-      season_number_padded: "{collection_season_number_padded}"
-
   _episode_video_tags:
     video_tags:
       show: "{tv_show_name}"

@@ -52,3 +52,13 @@ class RegexFunctions:
           Returns number of capture groups in regex
         """
         return Integer(re.compile(regex.value).groups)
+
+    @staticmethod
+    def regex_sub(regex: String, replacement: String, string: String) -> String:
+        """
+        :description:
+          Returns the string obtained by replacing the leftmost non-overlapping occurrences of the
+          pattern in string by the replacement string. The replacement string can reference the
+          match groups via backslash escapes. Callables as replacement argument are not supported.
+        """
+        return String(re.sub(regex.value, replacement.value, string.value))

@@ -19,9 +19,7 @@ Below is an example that downloads a YouTube playlist:
 
   presets:
     playlist_preset_ex:
-      download:
-        download_strategy: "url"
-        url: "{url}"
+      download: "{url}"
       output_options:
         output_directory: "{output_directory}/{playlist_name}"
         file_name: "{playlist_name}.{title}.{ext}"

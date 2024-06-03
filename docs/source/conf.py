@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "ytdl-sub"
-copyright = "2023, Jesse Bannon"
+copyright = "2024, Jesse Bannon"
 author = "Jesse Bannon"
-release = "2023.12.15"
+release = ""
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -47,7 +47,7 @@ html_theme_options = {
             "type": "url",
         },
     ],
-    "announcement": ("Please excuse our mess as we update these documents"),
+    "announcement": "",
     "navigation_depth": 10,
     "show_toc_level": 10,
 }

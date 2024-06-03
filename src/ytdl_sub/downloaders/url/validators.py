@@ -4,10 +4,12 @@ from typing import Optional
 from typing import Set
 
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.script.parser import parse
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import BoolValidator
@@ -49,6 +51,7 @@ class UrlValidator(StrictDictValidator):
         "source_thumbnails",
         "playlist_thumbnails",
         "download_reverse",
+        "ytdl_options",
         "include_sibling_metadata",
     }
 
@@ -77,7 +80,10 @@ class UrlValidator(StrictDictValidator):
             key="playlist_thumbnails", validator=UrlThumbnailListValidator, default=[]
         )
         self._download_reverse = self._validate_key(
-            key="download_reverse", validator=BoolValidator, default=True
+            key="download_reverse", validator=OverridesBooleanFormatterValidator, default="True"
+        )
+        self._ytdl_options = self._validate_key(
+            key="ytdl_options", validator=YTDLOptions, default={}
         )
         self._include_sibling_metadata = self._validate_key(
             key="include_sibling_metadata", validator=BoolValidator, default=False
@@ -148,12 +154,20 @@ class UrlValidator(StrictDictValidator):
         return self._source_thumbnails
 
     @property
-    def download_reverse(self) -> bool:
+    def download_reverse(self) -> OverridesBooleanFormatterValidator:
         """
         Optional. Whether to download entries in the reverse order of the metadata downloaded.
         Defaults to True.
         """
-        return self._download_reverse.value
+        return self._download_reverse
+
+    @property
+    def ytdl_options(self) -> YTDLOptions:
+        """
+        Optional. ``ytdl_options`` that only apply to this URL. These take precedence
+        over the plugin ``ytdl_options``.
+        """
+        return self._ytdl_options
 
     @property
     def include_sibling_metadata(self) -> bool:
@@ -258,6 +272,8 @@ class MultiUrlValidator(OptionsValidator):
             variables:
               season_index: "2"
               season_name: "Playlist as Season"
+            ytdl_options:
+              break_on_existing: False
             playlist_thumbnails:
               - name: "season{season_index}-poster.jpg"
                 uid: "latest_entry"

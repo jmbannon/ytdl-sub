@@ -172,12 +172,61 @@ gte
 :description:
   ``>=`` operator. Returns True if left >= right. False otherwise.
 
+is_array
+~~~~~~~~
+:spec: ``is_array(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a Map. False otherwise.
+
+is_bool
+~~~~~~~
+:spec: ``is_bool(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a Float. False otherwise.
+
+is_float
+~~~~~~~~
+:spec: ``is_float(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a Float. False otherwise.
+
+is_int
+~~~~~~
+:spec: ``is_int(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is an Integer. False otherwise.
+
+is_map
+~~~~~~
+:spec: ``is_map(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a Map. False otherwise.
+
 is_null
 ~~~~~~~
 :spec: ``is_null(value: AnyArgument) -> Boolean``
 
 :description:
   Returns True if a value is null (i.e. an empty string). False otherwise.
+
+is_numeric
+~~~~~~~~~~
+:spec: ``is_numeric(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is either an Integer or Float. False otherwise.
+
+is_string
+~~~~~~~~~
+:spec: ``is_string(value: AnyArgument) -> Boolean``
+
+:description:
+  Returns True if a value is a String. False otherwise.
 
 lt
 ~~
@@ -366,6 +415,14 @@ map_enumerate
   Apply a lambda function on the Map, where each arg
   passed to the lambda function is ``idx, key, value`` as three separate args.
 
+map_extend
+~~~~~~~~~~
+:spec: ``map_extend(maps: Map, ...) -> Map``
+
+:description:
+  Return maps combined in the order from left-to-right. Duplicate keys will use the
+  right-most map's value.
+
 map_get
 ~~~~~~~
 :spec: ``map_get(mapping: Map, key: AnyArgument, default: Optional[AnyArgument]) -> AnyArgument``
@@ -502,6 +559,15 @@ regex_search
   Checks for a match anywhere in the string. If a match exists, returns
   the string as the first element of the Array. If there are capture groups, returns each
   group as a subsequent element in the Array.
+
+regex_sub
+~~~~~~~~~
+:spec: ``regex_sub(regex: String, replacement: String, string: String) -> String``
+
+:description:
+  Returns the string obtained by replacing the leftmost non-overlapping occurrences of the
+  pattern in string by the replacement string. The replacement string can reference the
+  match groups via backslash escapes. Callables as replacement argument are not supported.
 
 ----------------------------------------------------------------------------------------------------
 
@@ -650,7 +716,7 @@ to_native_filepath
 :spec: ``to_native_filepath(filepath: String) -> String``
 
 Convert any unix-based path separators ('/') with the OS's native
-separator.
+separator. In addition, expand ~ to absolute directories.
 
 truncate_filepath_if_too_long
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

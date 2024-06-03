@@ -2,68 +2,6 @@ Files created:
 ----------------------------------------
 {output_directory}
   .ytdl-sub-Sithu Aye-download-archive.json
-{output_directory}/Sithu Aye/[2021] 10 Years： Remixes and Reimaginings
-  01 - Double Helix Reimagined.mp3
-    Music Tags:
-      album: 10 Years: Remixes and Reimaginings
-      albumartist: Sithu Aye
-      albumartists: Sithu Aye
-      artist: Sithu Aye
-      artists: Sithu Aye
-      genres: Progressive Metal
-      title: Double Helix Reimagined
-      track: 1
-      tracktotal: 10
-      year: 2021
-  02 - Skye Reimagined.mp3
-    Music Tags:
-      album: 10 Years: Remixes and Reimaginings
-      albumartist: Sithu Aye
-      albumartists: Sithu Aye
-      artist: Sithu Aye
-      artists: Sithu Aye
-      genres: Progressive Metal
-      title: Skye Reimagined
-      track: 2
-      tracktotal: 10
-      year: 2021
-  03 - Baryofusion.mp3
-    Music Tags:
-      album: 10 Years: Remixes and Reimaginings
-      albumartist: Sithu Aye
-      albumartists: Sithu Aye
-      artist: Sithu Aye
-      artists: Sithu Aye
-      genres: Progressive Metal
-      title: Baryofusion
-      track: 3
-      tracktotal: 10
-      year: 2021
-  04 - Mandalay Reimagined.mp3
-    Music Tags:
-      album: 10 Years: Remixes and Reimaginings
-      albumartist: Sithu Aye
-      albumartists: Sithu Aye
-      artist: Sithu Aye
-      artists: Sithu Aye
-      genres: Progressive Metal
-      title: Mandalay Reimagined
-      track: 4
-      tracktotal: 10
-      year: 2021
-  05 - Messenger EDM Remix.mp3
-    Music Tags:
-      album: 10 Years: Remixes and Reimaginings
-      albumartist: Sithu Aye
-      albumartists: Sithu Aye
-      artist: Sithu Aye
-      artists: Sithu Aye
-      genres: Progressive Metal
-      title: Messenger EDM Remix
-      track: 5
-      tracktotal: 10
-      year: 2021
-  folder.jpg
 {output_directory}/Sithu Aye/[2022] Re：Invent the Universe (10th Anniversary Remaster)
   01 - Invent the Universe.mp3
     Music Tags:
@@ -72,7 +10,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Invent the Universe
       track: 1
       tracktotal: 10
@@ -84,7 +24,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Grand Unification (feat. David Maxim Micic)
       track: 2
       tracktotal: 10
@@ -96,7 +38,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Expansion
       track: 3
       tracktotal: 10
@@ -108,7 +52,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Baryogenesis
       track: 4
       tracktotal: 10
@@ -120,7 +66,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Particles Collide (feat. Plini)
       track: 5
       tracktotal: 10
@@ -132,7 +80,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Nucleosynthesis
       track: 6
       tracktotal: 10
@@ -144,7 +94,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Recombination
       track: 7
       tracktotal: 10
@@ -156,7 +108,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Dark Ages
       track: 8
       tracktotal: 10
@@ -168,7 +122,9 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Formation
       track: 9
       tracktotal: 10
@@ -180,9 +136,83 @@ Files created:
       albumartists: Sithu Aye
       artist: Sithu Aye
       artists: Sithu Aye
+      date: 2022-10-04
       genres: Progressive Metal
+      original_date: 2022-10-04
       title: Pale Blue Dot
       track: 10
       tracktotal: 10
       year: 2022
+  folder.jpg
+{output_directory}/Sithu Aye/[2024] Kindness
+  01 - Run it Down.mp3
+    Music Tags:
+      album: Kindness
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      date: 2024-03-23
+      genres: Progressive Metal
+      original_date: 2024-03-23
+      title: Run it Down
+      track: 1
+      tracktotal: 5
+      year: 2024
+  02 - Zero Sum Groove.mp3
+    Music Tags:
+      album: Kindness
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      date: 2024-03-23
+      genres: Progressive Metal
+      original_date: 2024-03-23
+      title: Zero Sum Groove
+      track: 2
+      tracktotal: 5
+      year: 2024
+  03 - Obsidian.mp3
+    Music Tags:
+      album: Kindness
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      date: 2024-03-23
+      genres: Progressive Metal
+      original_date: 2024-03-23
+      title: Obsidian
+      track: 3
+      tracktotal: 5
+      year: 2024
+  04 - Fear is the Kindness Killer.mp3
+    Music Tags:
+      album: Kindness
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      date: 2024-03-23
+      genres: Progressive Metal
+      original_date: 2024-03-23
+      title: Fear is the Kindness Killer
+      track: 4
+      tracktotal: 5
+      year: 2024
+  05 - Ghost;Cleanse.mp3
+    Music Tags:
+      album: Kindness
+      albumartist: Sithu Aye
+      albumartists: Sithu Aye
+      artist: Sithu Aye
+      artists: Sithu Aye
+      date: 2024-03-23
+      genres: Progressive Metal
+      original_date: 2024-03-23
+      title: Ghost;Cleanse
+      track: 5
+      tracktotal: 5
+      year: 2024
   folder.jpg

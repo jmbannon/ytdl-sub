@@ -1,4 +1,6 @@
 from collections import defaultdict
+from datetime import datetime
+from typing import Any
 from typing import Dict
 from typing import List
 
@@ -9,6 +11,7 @@ from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
@@ -36,6 +39,17 @@ def _is_multi_field(tag_name: str) -> bool:
     }
 
 
+def _is_date_field(tag_name: str) -> bool:
+    return tag_name in {
+        "date",
+        "original_date",
+    }
+
+
+def _to_datetime(tag_value: str) -> Any:
+    return datetime.strptime(tag_value, "%Y-%m-%d")
+
+
 class MusicTagsOptions(OptionsDictValidator):
     """
     Adds tags to every download audio file using
@@ -45,6 +59,9 @@ class MusicTagsOptions(OptionsDictValidator):
     It supports basic tags like ``title``, ``album``, ``artist`` and ``albumartist``. You can find
     a full list of tags for various file types in MediaFile's
     `source code <https://github.com/beetbox/mediafile/blob/v0.9.0/mediafile.py#L1770>`_.
+
+    Note that the date fields ``date`` and ``original_date`` expected a standardized date in the
+    form of YYYY-MM-DD. The variable ``upload_date_standardized`` returns a compatible format.
 
     :Usage:
 
@@ -62,6 +79,7 @@ class MusicTagsOptions(OptionsDictValidator):
              albumartists:
                - "{artist}"
                - "ytdl-sub"
+             date: "{upload_date_standardized}"
     """
 
     _optional_keys = set(list(mediafile.MediaFile.sorted_fields()))
@@ -104,12 +122,26 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                 tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
                 tags_to_write[tag_name].append(tag_value)
 
+            if _is_date_field(tag_name):
+                try:
+                    if len(tags_to_write[tag_name]) != 1:
+                        raise ValueError("caught below")
+
+                    _ = _to_datetime(tags_to_write[tag_name][0])
+                except Exception as exc:
+                    raise ValidationException(
+                        "Date-based music tags must be a single tag in the form of YYYY-MM-DD"
+                    ) from exc
+
         # write the actual tags if its not a dry run
         if not self.is_dry_run:
             audio_file = mediafile.MediaFile(entry.get_download_file_path())
             for tag_name, tag_value in tags_to_write.items():
+                # If the attribute is a date-type, set it as a datetime type
+                if _is_date_field(tag_name):
+                    setattr(audio_file, tag_name, _to_datetime(tag_value[0]))
                 # If the attribute is a multi-type, set it as the list type
-                if _is_multi_field(tag_name):
+                elif _is_multi_field(tag_name):
                     setattr(audio_file, tag_name, tag_value)
                 # Otherwise, set as single value
                 else:

@@ -5,6 +5,11 @@ Static Variables
 Subscription Variables
 ----------------------
 
+subscription_has_download_archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns True if the subscription has any entries recorded in a download archive. False
+otherwise.
+
 subscription_indent_i
 ~~~~~~~~~~~~~~~~~~~~~
 For subscriptions in the form of

@@ -22,7 +22,8 @@ check_lint:
 		&& black . --check  \
 		&& pylint src/
 wheel: clean
-	$(shell echo "__pypi_version__ = \"$(PYPI_VERSION)\"\n__local_version__ = \"$(LOCAL_VERSION)\"" > src/ytdl_sub/__init__.py)
+	$(shell echo "__pypi_version__ = \"$(PYPI_VERSION)\"" > src/ytdl_sub/__init__.py)
+	$(shell echo "__local_version__ = \"$(LOCAL_VERSION)\"" >> src/ytdl_sub/__init__.py)
 	cat src/ytdl_sub/__init__.py
 	pip3 install build
 	python3 -m build
@@ -39,6 +40,7 @@ executable: clean
 	pyinstaller ytdl-sub.spec
 	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}
 docs:
+	REGENERATE_DOCS=1 pytest tests/unit/docgen/test_docgen.py
 	sphinx-build -M html docs/source/ docs/build/
 clean:
 	rm -rf \
