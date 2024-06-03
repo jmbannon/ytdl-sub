@@ -43,7 +43,7 @@ class VariableDependency(ABC):
                 output.append(arg)
             elif instance and isinstance(arg, ttype):
                 output.append(arg)
-            elif type(arg) == ttype:
+            elif type(arg) == ttype:  # pylint: disable=unidiomatic-typecheck
                 output.append(arg)
 
             if isinstance(arg, VariableDependency):
