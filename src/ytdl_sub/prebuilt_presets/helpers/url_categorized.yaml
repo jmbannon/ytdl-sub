@@ -1,0 +1,41 @@
+presets:
+  # Preset for categorizing URls like so
+  #
+  # subscription_name:
+  #   category_1:
+  #     - https://...1
+  #     - https://...2
+  #   category_2:
+  #     - url: https://...1
+  #       metadata_field_1: 2011
+  #       metadata_field_2: 'abc"
+  #   ...
+  #
+  # Metadata field of `url` must exist, other ones can be anything.
+  # Only supports a single level of nesting.
+  _url_categorized:
+    overrides:
+
+      # Parameters:
+      #   $0: category key
+      #   $1: url string or map containing url + metadata fields
+      #
+      # Output:
+      #  Map containing { url: ..., category: ..., metadata_field_1: ... }
+      "%url_to_map_format": >-
+        {
+          %if(
+            %is_map($1),
+            %map_extend( $1, { "category": $0 } ),
+            { "category": $0, "url": $1 }
+        }
+
+      "%url_map_"
+
+      # Creates an array in the form of [ { url: ..., category: ..., metadata_field_1: ... }, ... ]
+      category_array: >-
+        { %map_apply( subscription_dict, %url_to_map_format ) }
+
+      # Creates a map in the form of { url: { category: ..., metadata_field_1: ... }, ... }
+      category_map: >-
+        { %array_apply
