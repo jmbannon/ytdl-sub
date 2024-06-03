@@ -143,6 +143,24 @@ class Script:
                     f"{nested_custom_function.num_input_args}"
                 )
 
+    def _get_lambda_function_names_to_evaluate(self, function: BuiltInFunctionType) -> Set[str]:
+        lambda_function_names: Set[str] = set()
+        for lamb in SyntaxTree(function.args).lambdas:
+            if lamb in function.args:
+                lambda_function_names.add(lamb.value)
+
+            # See if the arg outputs a lambda (from an if).
+            # If so, add the possible lambda to be checked
+            for arg in function.args:
+                if (
+                    isinstance(arg, BuiltInFunctionType)
+                    and arg.output_type() == Lambda
+                    and lamb in arg.args
+                ):
+                    lambda_function_names.add(lamb.value)
+
+        return lambda_function_names
+
     def _ensure_lambda_usage_num_input_arguments_valid(
         self, prefix: str, name: str, definition: SyntaxTree
     ):
@@ -158,20 +176,7 @@ class Script:
             if not (lambda_type := spec.is_lambda_like):
                 return
 
-            lambda_function_names: Set[str] = set()
-            for lamb in SyntaxTree(function.args).lambdas:
-                if lamb in function.args:
-                    lambda_function_names.add(lamb.value)
-
-                # See if the arg outputs a lambda (from an if).
-                # If so, add the possible lambda to be checked
-                for arg in function.args:
-                    if (
-                        isinstance(arg, BuiltInFunctionType)
-                        and arg.output_type() == Lambda
-                        and lamb in arg.args
-                    ):
-                        lambda_function_names.add(lamb.value)
+            lambda_function_names = self._get_lambda_function_names_to_evaluate(function=function)
 
             # Only case len(lambda_function_names) > 1 is when used in if-statements
             for lambda_function_name in lambda_function_names:

@@ -53,6 +53,25 @@ def get_optional_type(optional_type: Type) -> Type[NamedType]:
     return [arg for arg in optional_type.__args__ if arg != type(None)][0]
 
 
+def _is_union_compatible(
+    arg_type: Type[NamedType],
+    expected_union_type: Type[Resolvable | Optional[Resolvable]],
+) -> bool:
+    if issubclass(arg_type, (NamedCustomFunction, Variable)):
+        return True  # custom-function/variable can be anything, so pass for now
+
+    # if the input arg is a union, do a direct comparison
+    if is_union(arg_type):
+        return arg_type == expected_union_type
+
+    # otherwise, iterate the union to see if it's compatible
+    for union_type in expected_union_type.__args__:
+        if issubclass(arg_type, union_type):
+            return True
+
+    return False
+
+
 def _is_type_compatible(
     arg_type: Type[NamedType],
     expected_arg_type: Type[Resolvable | Optional[Resolvable]],
@@ -63,22 +82,11 @@ def _is_type_compatible(
     True if arg is compatible with expected_arg_type. False otherwise.
     """
     if is_union(expected_arg_type):
-        if issubclass(arg_type, (NamedCustomFunction, Variable)):
-            return True  # custom-function/variable can be anything, so pass for now
+        return _is_union_compatible(arg_type=arg_type, expected_union_type=expected_arg_type)
 
-        # if the input arg is a union, do a direct comparison
-        if is_union(arg_type):
-            return arg_type == expected_arg_type
-
-        # otherwise, iterate the union to see if it's compatible
-        for union_type in expected_arg_type.__args__:
-            if issubclass(arg_type, union_type):
-                return True
-
-        return False
     # If the input is a union and the expected type is not, see if
     # each possible union input is compatible with the expected type
-    elif is_union(arg_type):
+    if is_union(arg_type):
         for union_type in arg_type.__args__:
             if not _is_type_compatible(union_type, expected_arg_type):
                 return False
