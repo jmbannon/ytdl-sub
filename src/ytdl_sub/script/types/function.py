@@ -117,7 +117,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         -------
         The FunctionSpec of the BuiltInFunction
         """
-        return FunctionSpec.from_callable(self.callable)
+        return FunctionSpec.from_callable(name=self.name, callable_ref=self.callable)
 
     @classmethod
     def _arg_output_type(cls, arg: Argument) -> Type[Argument]:
@@ -229,6 +229,8 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
         assert isinstance(lambda_array, Array)
 
+        if len(lambda_array.value) == 0:
+            return Array(value=[])
         if len(lambda_array.value) == 1:
             return lambda_array.value[0]
 
@@ -257,14 +259,27 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
+        # TODO: Make conditionals not execute all branches!!!
+        conditional_return_args = self.function_spec.conditional_arg_indices(
+            num_input_args=len(self.args)
+        )
+
         # Resolve all non-lambda arguments
-        resolved_arguments: List[Resolvable | Lambda] = [
-            self._resolve_argument_type(
-                arg=arg,
-                resolved_variables=resolved_variables,
-                custom_functions=custom_functions,
+        resolved_arguments: List[Resolvable | Lambda | ReturnableArgument] = [
+            (
+                self._resolve_argument_type(
+                    arg=arg,
+                    resolved_variables=resolved_variables,
+                    custom_functions=custom_functions,
+                )
+                if idx not in conditional_return_args
+                else ReturnableArgument(
+                    value=functools.partial(
+                        self._resolve_argument_type, arg, resolved_variables, custom_functions
+                    )
+                )
             )
-            for arg in self.args
+            for idx, arg in enumerate(self.args)
         ]
 
         # If a lambda is in a function's arg, resolve it differently

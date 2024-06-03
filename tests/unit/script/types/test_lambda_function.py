@@ -15,6 +15,11 @@ class TestLambdaFunction:
             {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([1, 2, 3], %times_two)}"}
         ).resolve() == ScriptOutput({"wip": Array([Integer(2), Integer(4), Integer(6)])})
 
+    def test_lambda_with_custom_function_empty_input(self):
+        assert Script(
+            {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([], %times_two)}"}
+        ).resolve() == ScriptOutput({"wip": Array([])})
+
     def test_conditional_lambda_with_custom_functions(self):
         assert Script(
             {
@@ -53,6 +58,23 @@ class TestLambdaFunction:
                 "output": "{%array_at(%array_apply([2], %nest1), 0)}",
             }
         ).resolve() == ScriptOutput({"output": Integer(4)})
+
+    def test_multiple_lambdas_single_definition(self):
+        url_map_def = """{
+                %array_reduce(
+                    %array_apply( array_def, %array_map_format),
+                    %map_extend
+                )
+            }"""
+        script = Script(
+            {
+                "%array_map_format": "{ {$0: $0 } }",
+                "array_def": "{ [1, 2, 3] }",
+                "category_url_map": url_map_def,
+            }
+        )
+
+        assert script.resolve().get("category_url_map").native == {1: 1, 2: 2, 3: 3}
 
 
 class TestLambdaFunctionIncompatibleNumArguments:

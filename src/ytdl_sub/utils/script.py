@@ -13,6 +13,7 @@ from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
@@ -115,6 +116,8 @@ class ScriptUtils:
             out = arg.name
         elif isinstance(arg, Function):
             out = f"%{arg.name}( {', '.join(cls._to_script_code(val) for val in arg.args)} )"
+        elif isinstance(arg, Lambda):
+            out = f"%{arg.value}"
         else:
             raise UNREACHABLE
         return f"{{ {out} }}" if top_level else out

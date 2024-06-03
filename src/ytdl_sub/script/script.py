@@ -7,6 +7,7 @@ from typing import Set
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script_output import ScriptOutput
+from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
@@ -142,22 +143,47 @@ class Script:
                     f"{nested_custom_function.num_input_args}"
                 )
 
+    def _get_lambda_function_names_to_evaluate(self, function: BuiltInFunctionType) -> Set[str]:
+        lambda_function_names: Set[str] = set()
+        for lamb in SyntaxTree(function.args).lambdas:
+            if lamb in function.args:
+                lambda_function_names.add(lamb.value)
+
+            # See if the arg outputs a lambda (from an if).
+            # If so, add the possible lambda to be checked
+            for arg in function.args:
+                if (
+                    isinstance(arg, BuiltInFunctionType)
+                    and arg.output_type() == Lambda
+                    and lamb in arg.args
+                ):
+                    lambda_function_names.add(lamb.value)
+
+        return lambda_function_names
+
     def _ensure_lambda_usage_num_input_arguments_valid(
         self, prefix: str, name: str, definition: SyntaxTree
     ):
         for function in definition.built_in_functions:
-            spec = FunctionSpec.from_callable(Functions.get(function.name))
+            for arg in function.args:
+                self._ensure_lambda_usage_num_input_arguments_valid(
+                    prefix=prefix, name=name, definition=SyntaxTree([arg])
+                )
+
+            spec = FunctionSpec.from_callable(
+                name=function.name, callable_ref=Functions.get(function.name)
+            )
             if not (lambda_type := spec.is_lambda_like):
                 return
 
-            lambda_function_names = set(
-                lamb.value for lamb in SyntaxTree(function.args).lambdas if isinstance(lamb, Lambda)
-            )
+            lambda_function_names = self._get_lambda_function_names_to_evaluate(function=function)
 
             # Only case len(lambda_function_names) > 1 is when used in if-statements
             for lambda_function_name in lambda_function_names:
                 if Functions.is_built_in(lambda_function_name):
-                    lambda_spec = FunctionSpec.from_callable(Functions.get(lambda_function_name))
+                    lambda_spec = FunctionSpec.from_callable(
+                        name=lambda_function_name, callable_ref=Functions.get(lambda_function_name)
+                    )
                     if not lambda_spec.is_num_args_compatible(lambda_type.num_input_args()):
                         expected_args_str = str(lambda_spec.num_required_args)
                         if lambda_spec.num_required_args != len(lambda_spec.args):
@@ -366,13 +392,15 @@ class Script:
 
                 # If the variable's variable dependencies contain an unresolvable variable,
                 # declare it as unresolvable and continue
-                elif definition.contains(unresolvable):
+                elif definition.contains(unresolvable, custom_function_definitions=self._functions):
                     unresolvable.add(variable)
                     del unresolved[variable]
 
                 # Otherwise, if it has dependencies that are all resolved, then
                 # resolve the definition
-                elif not definition.is_subset_of(variables=resolved.keys()):
+                elif not definition.is_subset_of(
+                    variables=resolved.keys(), custom_function_definitions=self._functions
+                ):
                     resolved[variable] = unresolved[variable].resolve(
                         resolved_variables=resolved,
                         custom_functions=self._functions,
