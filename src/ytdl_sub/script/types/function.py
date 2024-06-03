@@ -283,6 +283,8 @@ class BuiltInFunction(Function, BuiltInFunctionType):
                 custom_functions=custom_functions,
             )
 
+        # TODO: Make conditionals not execute all branches!!!
+
         try:
             return self.callable(*resolved_arguments)
         except (UserThrownRuntimeError, RuntimeException):
