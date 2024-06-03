@@ -17,25 +17,45 @@ presets:
     overrides:
 
       # Parameters:
-      #   $0: category key
-      #   $1: url string or map containing url + metadata fields
+      #   $0: url string or map containing url + metadata fields
+      #   $1: category key
       #
       # Output:
       #  Map containing { url: ..., category: ..., metadata_field_1: ... }
-      "%url_to_map_format": >-
+      "%flat_array__url_to_map_format": >-
         {
           %if(
-            %is_map($1),
-            %map_extend( $1, { "category": $0 } ),
-            { "category": $0, "url": $1 }
+            %is_map($0),
+            %map_extend( $0, { "category": $1 } ),
+            { "url": $0, "category": $1 }
         }
 
-      "%url_map_"
+      # Parameters:
+      #  $0: category key
+      #  $1: array of URLs in either string or map form
+      #
+      # Output:
+      #   Array containing [{ url: ..., category: ... }, ... ]
+      "%flat_array__category_to_map_format": >-
+        { %array_apply_fixed( $1, $0, %flat_array__url_to_map_format ) }
+
+      # Parameters:
+      #  $0: map containing fields { url: <url_value>, category: ... }
+      #
+      # Output:
+      #  Nested map containing { <url_value>: { url: <url_value>, category: ... } }
+      "%flat_array__url_keyed_map_format": >-
+        { { %map_get($0, "url"): $0 } }
 
       # Creates an array in the form of [ { url: ..., category: ..., metadata_field_1: ... }, ... ]
-      category_array: >-
-        { %map_apply( subscription_dict, %url_to_map_format ) }
+      category_url_array: >-
+        { %map_apply( subscription_dict, %flat_array__category_to_map_format ) }
 
-      # Creates a map in the form of { url: { category: ..., metadata_field_1: ... }, ... }
-      category_map: >-
-        { %array_apply
+      # Creates a map in the form of { <url value>: { category: ..., metadata_field_1: ... }, ... }
+      category_url_map: >-
+        {
+          %array_reduce(
+            %array_apply( category_array, %flat_array__url_keyed_map_format ),
+            %map_extend
+          )
+        }
