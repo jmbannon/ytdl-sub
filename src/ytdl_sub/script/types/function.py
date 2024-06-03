@@ -229,6 +229,8 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
         assert isinstance(lambda_array, Array)
 
+        if len(lambda_array.value) == 0:
+            return Array(value=[])
         if len(lambda_array.value) == 1:
             return lambda_array.value[0]
 

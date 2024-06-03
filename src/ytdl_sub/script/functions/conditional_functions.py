@@ -64,6 +64,6 @@ class ConditionalFunctions:
           otherwise returns ``else_arg``.
         """
         maybe_true_value = maybe_true_arg.value()
-        if bool(maybe_true_value):
+        if bool(maybe_true_value.value):
             return maybe_true_value
         return else_arg.value()

@@ -15,6 +15,11 @@ class TestLambdaFunction:
             {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([1, 2, 3], %times_two)}"}
         ).resolve() == ScriptOutput({"wip": Array([Integer(2), Integer(4), Integer(6)])})
 
+    def test_lambda_with_custom_function_empty_input(self):
+        assert Script(
+            {"%times_two": "{%mul($0, 2)}", "wip": "{%array_apply([], %times_two)}"}
+        ).resolve() == ScriptOutput({"wip": Array([])})
+
     def test_conditional_lambda_with_custom_functions(self):
         assert Script(
             {
