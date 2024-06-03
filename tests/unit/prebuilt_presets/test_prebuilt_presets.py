@@ -550,24 +550,17 @@ class TestPrebuiltMusicVideoPresets:
         album_metadata: str,
         multi_url: bool,
     ) -> Dict:
-        subscription_dict = f"""{{
-            {{
-                {album_metadata}: "https://your.name.here"  
-            }}
-        }}"""
+        subscription_dict = {
+            album_metadata: [
+                "https://your.name.here"
+            ]
+        }
 
         if multi_url:
-            subscription_dict = f"""{{
-                {{
-                    {album_metadata}: [ 
-                      "https://your.name.here",
-                      {{
-                        "url": "https://your.name.here2",
-                        "title": "Custom Title"
-                      }}
-                    ]
-                }}
-            }}"""
+            subscription_dict[album_metadata].append({
+                "url": "https://your.name.here2",
+                "title": "Custom Title"
+              })
 
         preset_dict = {
             "preset": [

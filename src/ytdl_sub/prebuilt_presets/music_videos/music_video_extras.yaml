@@ -24,14 +24,14 @@
 presets:
   _music_video_extras_base:
     preset:
-      - "_keyed_url"
+      - "_url_categorized"
       - "_music_video_base"
 
     overrides:
       music_video_album: >-
-        { %map_get( %map(keyed_metadata), "key" ) }
+        { %get_url_field("category", music_video_album_default) }
       music_video_title: >-
-        { %map_get( keyed_metadata, "title", title ) }
+        { %get_url_field("title", title) }
 
   "Jellyfin Music Videos with Extras":
     preset:
