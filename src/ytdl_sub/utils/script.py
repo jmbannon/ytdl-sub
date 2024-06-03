@@ -9,10 +9,11 @@ from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.function import Function
 from ytdl_sub.script.types.map import UnresolvedMap
-from ytdl_sub.script.types.resolvable import Argument, Lambda
+from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE

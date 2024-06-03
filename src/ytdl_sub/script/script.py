@@ -151,8 +151,9 @@ class Script:
                 return
 
             lambda_function_names = set(
-                lamb.value for lamb in SyntaxTree(function.args).lambdas if isinstance(lamb, Lambda)
-                and lamb in function.args
+                lamb.value
+                for lamb in SyntaxTree(function.args).lambdas
+                if isinstance(lamb, Lambda) and lamb in function.args
             )
 
             # Only case len(lambda_function_names) > 1 is when used in if-statements
@@ -367,13 +368,15 @@ class Script:
 
                 # If the variable's variable dependencies contain an unresolvable variable,
                 # declare it as unresolvable and continue
-                elif definition.contains(unresolvable):
+                elif definition.contains(unresolvable, custom_function_definitions=self._functions):
                     unresolvable.add(variable)
                     del unresolved[variable]
 
                 # Otherwise, if it has dependencies that are all resolved, then
                 # resolve the definition
-                elif not definition.is_subset_of(variables=resolved.keys()):
+                elif not definition.is_subset_of(
+                    variables=resolved.keys(), custom_function_definitions=self._functions
+                ):
                     resolved[variable] = unresolved[variable].resolve(
                         resolved_variables=resolved,
                         custom_functions=self._functions,

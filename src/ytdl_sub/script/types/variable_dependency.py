@@ -156,19 +156,38 @@ class VariableDependency(ABC):
         raise UNREACHABLE
 
     @final
-    def is_subset_of(self, variables: Iterable[Variable]) -> bool:
+    def is_subset_of(
+        self,
+        variables: Iterable[Variable],
+        custom_function_definitions: Dict[str, "VariableDependency"],
+    ) -> bool:
         """
         Returns
         -------
         True if it contains all input variables as a dependency. False otherwise.
         """
+        for custom_function in self.custom_functions:
+            if custom_function_definitions[custom_function.name].is_subset_of(
+                variables=variables, custom_function_definitions=custom_function_definitions
+            ):
+                return True
+
         return not self.variables.issubset(variables)
 
     @final
-    def contains(self, variables: Iterable[Variable]) -> bool:
+    def contains(
+        self,
+        variables: Iterable[Variable],
+        custom_function_definitions: Dict[str, "VariableDependency"],
+    ) -> bool:
         """
         Returns
         -------
         True if it contains any of the input variables. False otherwise.
         """
+        for custom_function in self.custom_functions:
+            if custom_function_definitions[custom_function.name].contains(
+                variables=variables, custom_function_definitions=custom_function_definitions
+            ):
+                return True
         return len(self.variables.intersection(variables)) > 0
