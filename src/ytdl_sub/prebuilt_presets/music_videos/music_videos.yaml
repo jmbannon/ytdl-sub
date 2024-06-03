@@ -2,7 +2,6 @@ presets:
 
   "Jellyfin Music Videos":
     preset:
-      - "_multi_url"
       - "_base"
       - "_music_video_base"
       - "_music_video_nfo"
@@ -10,7 +9,6 @@ presets:
 
   "Kodi Music Videos":
     preset:
-      - "_multi_url"
       - "_kodi_base"
       - "_music_video_base"
       - "_music_video_nfo"
@@ -18,7 +16,6 @@ presets:
 
   "Plex Music Videos":
     preset:
-      - "_multi_url"
       - "_plex_video_base"
       - "_music_video_base"
       - "_music_video_tags"

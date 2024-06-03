@@ -535,31 +535,26 @@ class TestPrebuiltMusicVideoPresets:
         )
 
 
-@pytest.mark.parametrize("music_video_extras_preset", MusicVideoExtrasPresets.preset_names)
-@pytest.mark.parametrize(
-    "album_metadata",
-    ["behindthescenes", "concert", "interview", "live", "lyrics", "video", "Custom Album"],
-)
+@pytest.mark.parametrize("music_video_preset", MusicVideoPresets.preset_names)
 @pytest.mark.parametrize("multi_url", [True, False])
-class TestPrebuiltMusicVideoPresets:
+class TestPrebuiltMusicVideoPresetsWithCategories:
 
     def _preset_dict(
         self,
         output_directory: Path,
-        music_video_extras_preset: str,
-        album_metadata: str,
+        music_video_preset: str,
         multi_url: bool,
     ) -> Dict:
-        subscription_dict = {album_metadata: ["https://your.name.here"]}
+        subscription_dict = {"Music Videos": ["https://your.name.here"]}
 
         if multi_url:
-            subscription_dict[album_metadata].append(
-                {"url": "https://your.name.here2", "title": "Custom Title"}
-            )
+            subscription_dict["Concerts"] = [{
+                "url": "https://your.name.here2", "title": "Custom Title"
+            }]
 
         preset_dict = {
             "preset": [
-                music_video_extras_preset,
+                music_video_preset,
             ],
             "overrides": {
                 "music_video_directory": output_directory,
@@ -573,14 +568,12 @@ class TestPrebuiltMusicVideoPresets:
         self,
         config,
         output_directory: Path,
-        music_video_extras_preset: str,
-        album_metadata: str,
+        music_video_preset: str,
         multi_url: bool,
     ):
         preset_dict = self._preset_dict(
             output_directory=output_directory,
-            music_video_extras_preset=music_video_extras_preset,
-            album_metadata=album_metadata,
+            music_video_preset=music_video_preset,
             multi_url=multi_url,
         )
 
@@ -594,18 +587,16 @@ class TestPrebuiltMusicVideoPresets:
         subscription_name,
         output_directory,
         mock_download_collection_entries,
-        music_video_extras_preset: str,
-        album_metadata: str,
+        music_video_preset: str,
         multi_url: bool,
     ):
         expected_summary_name = (
-            f"unit/music_videos/{music_video_extras_preset}/{album_metadata}/multi_url_{multi_url}"
+            f"unit/music_videos/{music_video_preset} Categorized/multi_url_{multi_url}"
         )
 
         preset_dict = self._preset_dict(
             output_directory=output_directory,
-            music_video_extras_preset=music_video_extras_preset,
-            album_metadata=album_metadata,
+            music_video_preset=music_video_preset,
             multi_url=multi_url,
         )
 

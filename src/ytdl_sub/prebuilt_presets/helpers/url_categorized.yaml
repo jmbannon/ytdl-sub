@@ -26,10 +26,12 @@ presets:
       #  Map containing { url: ..., category: ..., metadata_field_1: ... }
       "%flat_array__url_to_map_format": >-
         {
-          %if(
+          %elif(
             %is_map($0),
             %map_extend( $0, { "category": $1 } ),
-            { "url": $0, "category": $1 }
+            %is_string($0),
+            { "url": $0, "category": $1 },
+            %throw("If using album categories, each URL must be either a string or map with metadata fields")
           )
         }
 
@@ -40,7 +42,17 @@ presets:
       # Output:
       #   Array containing [{ url: ..., category: ... }, ... ]
       "%flat_array__category_to_map_format": >-
-        { %array_apply_fixed( $1, $0, %flat_array__url_to_map_format ) }
+        { 
+          %array_apply_fixed(
+            %assert_then(
+              %is_array( $1 ),
+              $1,
+              "If using album categories, each category must map to an array"
+            ),
+            $0,
+            %flat_array__url_to_map_format 
+          )
+        }
 
       # Parameters:
       #  $0: map containing fields { url: <url_value>, category: ... }
