@@ -59,3 +59,11 @@ presets:
             %map_extend
           )
         }
+
+      # Parameters:
+      #   $0: metadata field to fetch for the current url
+      #
+      # Output:
+      #   Metadata field value. Empty string/null if it does not exist
+      "%get_url_field": >-
+        { %map_get( %map_get( category_url_map, ytdl_sub_input_url, {} ), $0, null ) }
