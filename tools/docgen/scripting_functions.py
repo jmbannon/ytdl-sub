@@ -30,7 +30,7 @@ def function_class_to_name(obj: Type[Any]) -> str:
 
 
 def function_type_hinting(display_function_name: str, function: Any) -> str:
-    spec = FunctionSpec.from_callable(function)
+    spec = FunctionSpec.from_callable(name=display_function_name, callable_ref=function)
     out = ":spec: ``"
     out += display_function_name
     out += spec.human_readable_input_args()
