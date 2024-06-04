@@ -24,3 +24,13 @@ __preset__:
     "Michael Jackson": "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
   = Blues:
     "Eric Clapton": "https://www.youtube.com/playlist?list=PLABGggHhsbEeaRtdzqnxYoEINsJE_4GF4"
+
+  = Rock:
+    # TODO: DOCUMENTATION
+    "+ Guns N' Roses":
+      Music Videos:
+        - "https://www.youtube.com/playlist?list=PLOTK54q5K4INNXaHKtmXYr6J7CajWjqeJ"
+      Concerts:
+        - title: "Live at The Ritz - New York City"
+          date: "1988"
+          url: "https://www.youtube.com/watch?v=OldpIhHPsbs"

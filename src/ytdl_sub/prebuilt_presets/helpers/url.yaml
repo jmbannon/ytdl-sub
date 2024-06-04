@@ -129,6 +129,7 @@ presets:
       avatar_uncropped_thumbnail_file_name: ""
       banner_uncropped_thumbnail_file_name: ""
 
+      subscription_array: "{ [] }"
       subscription_value: ""
       subscription_value_2: ""
       subscription_value_3: ""

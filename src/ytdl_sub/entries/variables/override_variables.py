@@ -3,6 +3,7 @@ from typing import Set
 
 from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
 from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
+from ytdl_sub.entries.script.variable_types import ArrayVariable
 from ytdl_sub.entries.script.variable_types import BooleanVariable
 from ytdl_sub.entries.script.variable_types import MapVariable
 from ytdl_sub.entries.script.variable_types import StringVariable
@@ -35,6 +36,21 @@ class SubscriptionVariables:
         ``subscription_value`` gets set to ``https://...``.
         """
         return StringVariable(variable_name="subscription_value", definition="{ %string('') }")
+
+    @staticmethod
+    def subscription_array() -> ArrayVariable:
+        """
+        For subscriptions in the form of
+
+        .. code-block:: yaml
+
+           "Subscription Name":
+             - "https://url1.com/..."
+             - "https://url2.com/..."
+
+        Store all values into an array named ``subscription_array``.
+        """
+        return ArrayVariable(variable_name="subscription_array", definition="{ [] }")
 
     @staticmethod
     def subscription_indent_i(index: int) -> StringVariable:

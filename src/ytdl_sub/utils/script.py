@@ -35,7 +35,7 @@ class ScriptUtils:
         return dict(variables, **sanitized_variables)
 
     @classmethod
-    def to_script(cls, value: Any) -> str:
+    def to_script(cls, value: Any, sort_keys: bool = True) -> str:
         """
         Converts a python value to a script value
         """
@@ -50,7 +50,7 @@ class ScriptUtils:
         elif isinstance(value, float):
             out = f"{{%float({value})}}"
         else:
-            dumped_json = json.dumps(value, ensure_ascii=False, sort_keys=True)
+            dumped_json = json.dumps(value, ensure_ascii=False, sort_keys=sort_keys)
             # Remove triple-single-quotes from JSON to avoid parsing issues
             dumped_json = re.sub("'{3,}", "'", dumped_json)
 

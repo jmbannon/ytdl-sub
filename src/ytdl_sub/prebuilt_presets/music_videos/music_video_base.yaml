@@ -21,7 +21,6 @@ presets:
       # Defaults
       music_video_genre_default: "ytdl-sub"
       music_video_album_default: "Music Videos"
-      subscription_dict: "{ {} }"
 
       # Subscription overrides
       subscription_indent_1: "{music_video_genre_default}"
@@ -34,9 +33,29 @@ presets:
       music_video_title: >-
         { %get_url_field("title", title) }
       music_video_date: >-
-        { %get_url_field("date", upload_date_standardized) }
+        { 
+          %elif(
+            %contains_url_field("date"),
+            %get_url_field("date", upload_date_standardized),
+        
+            %contains_url_field("year"),
+            %concat( %get_url_field("date", upload_year), "-01-01"),
+        
+            upload_date_standardized
+          )
+        }
       music_video_year: >-
-        { %int( %slice( music_video_date, 0, 4 ) ) }
+        {
+          %int(%elif(
+            %contains_url_field("date"),
+            %slice( %get_url_field("date", upload_date_standardized), 0, 4 ),
+        
+            %contains_url_field("year"),
+            %get_url_field("date", upload_year),
+        
+            upload_year
+          ))
+        }
 
 
       # Directory Overrides

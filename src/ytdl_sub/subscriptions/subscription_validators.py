@@ -143,8 +143,19 @@ class SubscriptionValueValidator(SubscriptionLeafValidator, StringValidator):
             presets=presets,
             indent_overrides=indent_overrides,
         )
+        # subscription_value
         self._overrides_to_add[SubscriptionVariables.subscription_value().variable_name] = (
             self.value
+        )
+
+        # subscription_value_0
+        self._overrides_to_add[
+            SubscriptionVariables.subscription_value_i(index=0).variable_name
+        ] = self.value
+
+        # And the array variable
+        self._overrides_to_add[SubscriptionVariables.subscription_array().variable_name] = (
+            ScriptUtils.to_script([self.value])
         )
 
 
@@ -167,6 +178,7 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
             indent_overrides=indent_overrides,
         )
 
+        # Add indexed variables
         for idx, list_value in enumerate(self.list):
             # Write the first list value into subscription_value as well
             if idx == 0:
@@ -177,6 +189,11 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
             self._overrides_to_add[
                 SubscriptionVariables.subscription_value_i(index=idx).variable_name
             ] = list_value.value
+
+        # And the array variable
+        self._overrides_to_add[SubscriptionVariables.subscription_array().variable_name] = (
+            ScriptUtils.to_script([list_value.value for list_value in self.list])
+        )
 
 
 class SubscriptionWithOverridesValidator(SubscriptionLeafValidator, DictFormatterValidator):
@@ -220,7 +237,7 @@ class SubscriptionMapValidator(SubscriptionLeafValidator, LiteralDictValidator):
             indent_overrides=indent_overrides,
         )
         self._overrides_to_add[SubscriptionVariables.subscription_map().variable_name] = (
-            ScriptUtils.to_script(self.dict)
+            ScriptUtils.to_script(self.dict, sort_keys=False)
         )
 
 

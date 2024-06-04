@@ -64,7 +64,7 @@ presets:
 
       # Creates an array in the form of [ { url: ..., category: ..., metadata_field_1: ... }, ... ]
       category_url_array: >-
-        { %array_flatten( %map_apply( subscription_dict, %flat_array__category_to_map_format ) ) }
+        { %array_flatten( %map_apply( subscription_map, %flat_array__category_to_map_format ) ) }
 
       # Creates a map in the form of { <url value>: { category: ..., metadata_field_1: ... }, ... }
       category_url_map: >-
@@ -82,8 +82,16 @@ presets:
       # Output:
       #   Metadata field value if it exists. Otherwise, return default value
       "%get_url_field": >-
-        {
-          %map_get( %map( %map_get( category_url_map, ytdl_sub_input_url, {} ) ), $0, $1 ) }
+        { %map_get( %map( %map_get( category_url_map, ytdl_sub_input_url, {} ) ), $0, $1 ) }
+
+      # Parameters:
+      #   $0: metadata field to fetch for the current url
+      #
+      # Output:
+      #   True if field is specified. False otherwise.
+      "%contains_url_field": >-
+        { %not( %is_null( %get_url_field( $0, null ) ) ) }
+        
 
       # Parameters:
       #  $0: integer to fetch the i'th url using 1-based indexing
@@ -91,8 +99,15 @@ presets:
       # Output:
       #   i'th url in the category map
       "%get_url_i": >-
-        { %map_get( %map( %array_at( category_url_array, %int( %sub($0, 1) ), {} ) ), "url", null )}
+        { 
+          %map_get(
+            %map( %array_at( category_url_array, %int( %sub($0, 1) ), {} ) ),
+            "url",
+            %array_at(subscription_array, %int( %sub($0, 1) ), null)
+          )
+        }
 
+      subscription_map: "{ {} }"
       url: "{ %get_url_i(1) }"
       url2: "{ %get_url_i(2) }"
       url3: "{ %get_url_i(3) }"
