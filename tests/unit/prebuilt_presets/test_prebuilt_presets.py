@@ -548,9 +548,9 @@ class TestPrebuiltMusicVideoPresetsWithCategories:
         subscription_dict = {"Music Videos": ["https://your.name.here"]}
 
         if multi_url:
-            subscription_dict["Concerts"] = [{
-                "url": "https://your.name.here2", "title": "Custom Title"
-            }]
+            subscription_dict["Concerts"] = [
+                {"url": "https://your.name.here2", "title": "Custom Title"}
+            ]
 
         preset_dict = {
             "preset": [
