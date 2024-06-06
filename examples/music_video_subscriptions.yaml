@@ -19,18 +19,27 @@ __preset__:
 #   - Jellyfin Music Videos:
 #   - Kodi Music Videos:
 "Plex Music Videos":
+
   = Pop:  # Sets genre tag to "Pop"
     "Rick Astley": "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
     "Michael Jackson": "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
+
   = Blues:
     "Eric Clapton": "https://www.youtube.com/playlist?list=PLABGggHhsbEeaRtdzqnxYoEINsJE_4GF4"
 
   = Rock:
-    # TODO: DOCUMENTATION
+    # Prefixing with '+' puts the subscription into 'map-mode'.
+    # Music video presets in map-mode support grouping videos into different
+    # categories, which get set on the album field.
+    #
+    # URLs can either be strings, or maps that can overload title, year, date
     "+ Guns N' Roses":
       Music Videos:
         - "https://www.youtube.com/playlist?list=PLOTK54q5K4INNXaHKtmXYr6J7CajWjqeJ"
       Concerts:
         - title: "Live at The Ritz - New York City"
-          date: "1988"
+          year: "1988"
           url: "https://www.youtube.com/watch?v=OldpIhHPsbs"
+        - title: "Live at The Hollywood Bowl"
+          date: "2023-01-11"
+          url: "https://www.youtube.com/watch?v=Z7hutGlvq9I"
