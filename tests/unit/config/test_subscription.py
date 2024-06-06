@@ -1,3 +1,4 @@
+import json
 import re
 from contextlib import contextmanager
 from pathlib import Path
@@ -470,6 +471,15 @@ def test_advanced_tv_show_subscriptions(
         == "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_"
     )
 
+    assert overrides.apply_formatter(overrides.dict["subscription_array"]) == json.dumps(
+        [
+            "https://www.youtube.com/@gardeningwithciscoe4430",
+            "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_",
+            "https://www.youtube.com/playlist?list=PLsJlQSR-KjmaQqqJ9jq18cF6XXXAR4kyn",
+            "https://www.youtube.com/watch?v=2vq-vPubS5I",
+        ]
+    )
+
 
 def test_music_subscriptions(default_config: ConfigFile, music_subscriptions_path: Path):
     subs = Subscription.from_file_path(
@@ -493,16 +503,31 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
         config=default_config, subscription_path=music_video_subscription_path
     )
 
-    assert len(subs) == 3
+    assert len(subs) == 4
     assert subs[1].name == "Michael Jackson"
-    monk = subs[1].overrides.script
+    jackson = subs[1].overrides.script
 
-    assert monk.get("subscription_name").native == "Michael Jackson"
+    assert jackson.get("subscription_name").native == "Michael Jackson"
     assert (
-        monk.get("subscription_value").native
+        jackson.get("subscription_value").native
         == "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
     )
-    assert monk.get("subscription_indent_1").native == "Pop"
+    assert jackson.get("subscription_indent_1").native == "Pop"
+    assert (
+        jackson.get("url").native
+        == "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
+    )
+
+    assert subs[3].name == "Guns N' Roses"
+    gnr = subs[3].overrides.script
+
+    assert gnr.get("subscription_name").native == "Guns N' Roses"
+    assert (
+        gnr.get("url").native
+        == "https://www.youtube.com/playlist?list=PLOTK54q5K4INNXaHKtmXYr6J7CajWjqeJ"
+    )
+    assert gnr.get("subscription_indent_1").native == "Rock"
+    assert gnr.get("url2").native == "https://www.youtube.com/watch?v=OldpIhHPsbs"
 
 
 def test_default_docker_config_and_subscriptions():

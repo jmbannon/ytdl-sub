@@ -34,7 +34,7 @@ def test_subscription_logs_write_to_file(
     keep_successful_logs: bool,
     match: List[str],
 ):
-    subscription_names = ["Rick Astley", "Michael Jackson", "Eric Clapton"]
+    subscription_names = ["Rick Astley", "Michael Jackson", "Eric Clapton", "Guns N' Roses"]
     if match:
         subscription_names = ["Rick Astley", "Michael Jackson"]
     num_runs = 2

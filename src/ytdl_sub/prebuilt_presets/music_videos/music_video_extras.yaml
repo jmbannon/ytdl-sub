@@ -1,0 +1,58 @@
+#
+# Kodi Music Videos with Extras:
+#   + Rick Astley:
+#     Music Videos:
+#       - url1
+#       - url2
+#       ...
+#     Concerts:
+#       - url: asfasdfasdf
+#         year: 2023
+#         title: sdfasff
+#         exclude: asdffsdf
+#       - url4
+#     Extras:
+#       - url5
+#       - url6
+#     Behind The Scenes:
+#       - ...
+#     Live:
+#       - ...
+#     Lyrics:
+#       - ...
+
+presets:
+  _music_video_extras_base:
+    preset:
+      - "_url_categorized"
+      - "_music_video_base"
+
+    overrides:
+      music_video_album: >-
+        { %get_url_field("category", music_video_album_default) }
+      music_video_title: >-
+        { %get_url_field("title", title) }
+
+  "Jellyfin Music Videos with Extras":
+    preset:
+      - "_base"
+      - "_music_video_extras_base"
+      - "_music_video_nfo"
+      - "_music_video_tags"
+
+  "Kodi Music Videos with Extras":
+    preset:
+      - "_kodi_base"
+      - "_music_video_extras_base"
+      - "_music_video_nfo"
+      - "_music_video_tags"
+
+  "Plex Music Videos with Extras":
+    preset:
+      - "_plex_video_base"
+      - "_music_video_extras_base"
+      - "_music_video_tags"
+
+#    overrides:
+#      metadata_verify_plex_suffix: "{url_metadata}"
+#      music_video_file_name_suffix: "-{music_video_album}"

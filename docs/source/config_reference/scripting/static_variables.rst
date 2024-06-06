@@ -5,6 +5,18 @@ Static Variables
 Subscription Variables
 ----------------------
 
+subscription_array
+~~~~~~~~~~~~~~~~~~
+For subscriptions in the form of
+
+.. code-block:: yaml
+
+   "Subscription Name":
+     - "https://url1.com/..."
+     - "https://url2.com/..."
+
+Store all values into an array named ``subscription_array``.
+
 subscription_has_download_archive
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns True if the subscription has any entries recorded in a download archive. False

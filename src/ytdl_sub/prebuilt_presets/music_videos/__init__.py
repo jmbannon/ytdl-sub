@@ -10,3 +10,11 @@ class MusicVideoPresets(PrebuiltPresets):
         "Jellyfin Music Videos",
         "Plex Music Videos",
     }
+
+
+class MusicVideoExtrasPresets(PrebuiltPresets):
+    preset_names = {
+        "Kodi Music Videos with Extras",
+        "Jellyfin Music Videos with Extras",
+        "Plex Music Videos with Extras",
+    }

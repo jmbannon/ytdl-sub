@@ -1,0 +1,210 @@
+presets:
+  # Preset for categorizing URls like so
+  #
+  # subscription_name:
+  #   category_1:
+  #     - https://...1
+  #     - https://...2
+  #   category_2:
+  #     - url: https://...1
+  #       metadata_field_1: 2011
+  #       metadata_field_2: 'abc"
+  #   ...
+  #
+  # Metadata field of `url` must exist, other ones can be anything.
+  # Only supports a single level of nesting.
+  _url_categorized:
+    preset:
+      - "_multi_url_bilateral"
+
+    overrides:
+      # Parameters:
+      #   $0: url string or map containing url + metadata fields
+      #   $1: category key
+      #
+      # Output:
+      #  Map containing { url: ..., category: ..., metadata_field_1: ... }
+      "%flat_array__url_to_map_format": >-
+        {
+          %elif(
+            %is_map($0),
+            %map_extend( $0, { "category": $1 } ),
+            %is_string($0),
+            { "url": $0, "category": $1 },
+            %throw("If using album categories, each URL must be either a string or map with metadata fields")
+          )
+        }
+
+      # Parameters:
+      #  $0: category key
+      #  $1: array of URLs in either string or map form
+      #
+      # Output:
+      #   Array containing [{ url: ..., category: ... }, ... ]
+      "%flat_array__category_to_map_format": >-
+        { 
+          %array_apply_fixed(
+            %assert_then(
+              %is_array( $1 ),
+              $1,
+              "If using album categories, each category must map to an array"
+            ),
+            $0,
+            %flat_array__url_to_map_format 
+          )
+        }
+
+      # Parameters:
+      #  $0: map containing fields { url: <url_value>, category: ... }
+      #
+      # Output:
+      #  Nested map containing { <url_value>: { url: <url_value>, category: ... } }
+      "%flat_array__url_keyed_map_format": >-
+        { { %map_get($0, "url"): $0 } }
+
+      # Creates an array in the form of [ { url: ..., category: ..., metadata_field_1: ... }, ... ]
+      category_url_array: >-
+        { %array_flatten( %map_apply( subscription_map, %flat_array__category_to_map_format ) ) }
+
+      # Creates a map in the form of { <url value>: { category: ..., metadata_field_1: ... }, ... }
+      category_url_map: >-
+        {
+          %array_reduce(
+            %array_apply( category_url_array, %flat_array__url_keyed_map_format ),
+            %map_extend
+          )
+        }
+
+      # Parameters:
+      #   $0: metadata field to fetch for the current url
+      #   $1: default value
+      #
+      # Output:
+      #   Metadata field value if it exists. Otherwise, return default value
+      "%get_url_field": >-
+        { %map_get( %map( %map_get( category_url_map, ytdl_sub_input_url, {} ) ), $0, $1 ) }
+
+      # Parameters:
+      #   $0: metadata field to fetch for the current url
+      #
+      # Output:
+      #   True if field is specified. False otherwise.
+      "%contains_url_field": >-
+        { %not( %is_null( %get_url_field( $0, null ) ) ) }
+        
+
+      # Parameters:
+      #  $0: integer to fetch the i'th url using 1-based indexing
+      #
+      # Output:
+      #   i'th url in the category map
+      "%get_url_i": >-
+        { 
+          %map_get(
+            %map( %array_at( category_url_array, %int( %sub($0, 1) ), {} ) ),
+            "url",
+            %array_at(subscription_array, %int( %sub($0, 1) ), null)
+          )
+        }
+
+      subscription_map: "{ {} }"
+      url: "{ %get_url_i(1) }"
+      url2: "{ %get_url_i(2) }"
+      url3: "{ %get_url_i(3) }"
+      url4: "{ %get_url_i(4) }"
+      url5: "{ %get_url_i(5) }"
+      url6: "{ %get_url_i(6) }"
+      url7: "{ %get_url_i(7) }"
+      url8: "{ %get_url_i(8) }"
+      url9: "{ %get_url_i(9) }"
+      url10: "{ %get_url_i(10) }"
+      url11: "{ %get_url_i(11) }"
+      url12: "{ %get_url_i(12) }"
+      url13: "{ %get_url_i(13) }"
+      url14: "{ %get_url_i(14) }"
+      url15: "{ %get_url_i(15) }"
+      url16: "{ %get_url_i(16) }"
+      url17: "{ %get_url_i(17) }"
+      url18: "{ %get_url_i(18) }"
+      url19: "{ %get_url_i(19) }"
+      url20: "{ %get_url_i(20) }"
+      url21: "{ %get_url_i(21) }"
+      url22: "{ %get_url_i(22) }"
+      url23: "{ %get_url_i(23) }"
+      url24: "{ %get_url_i(24) }"
+      url25: "{ %get_url_i(25) }"
+      url26: "{ %get_url_i(26) }"
+      url27: "{ %get_url_i(27) }"
+      url28: "{ %get_url_i(28) }"
+      url29: "{ %get_url_i(29) }"
+      url30: "{ %get_url_i(30) }"
+      url31: "{ %get_url_i(31) }"
+      url32: "{ %get_url_i(32) }"
+      url33: "{ %get_url_i(33) }"
+      url34: "{ %get_url_i(34) }"
+      url35: "{ %get_url_i(35) }"
+      url36: "{ %get_url_i(36) }"
+      url37: "{ %get_url_i(37) }"
+      url38: "{ %get_url_i(38) }"
+      url39: "{ %get_url_i(39) }"
+      url40: "{ %get_url_i(40) }"
+      url41: "{ %get_url_i(41) }"
+      url42: "{ %get_url_i(42) }"
+      url43: "{ %get_url_i(43) }"
+      url44: "{ %get_url_i(44) }"
+      url45: "{ %get_url_i(45) }"
+      url46: "{ %get_url_i(46) }"
+      url47: "{ %get_url_i(47) }"
+      url48: "{ %get_url_i(48) }"
+      url49: "{ %get_url_i(49) }"
+      url50: "{ %get_url_i(50) }"
+      url51: "{ %get_url_i(51) }"
+      url52: "{ %get_url_i(52) }"
+      url53: "{ %get_url_i(53) }"
+      url54: "{ %get_url_i(54) }"
+      url55: "{ %get_url_i(55) }"
+      url56: "{ %get_url_i(56) }"
+      url57: "{ %get_url_i(57) }"
+      url58: "{ %get_url_i(58) }"
+      url59: "{ %get_url_i(59) }"
+      url60: "{ %get_url_i(60) }"
+      url61: "{ %get_url_i(61) }"
+      url62: "{ %get_url_i(62) }"
+      url63: "{ %get_url_i(63) }"
+      url64: "{ %get_url_i(64) }"
+      url65: "{ %get_url_i(65) }"
+      url66: "{ %get_url_i(66) }"
+      url67: "{ %get_url_i(67) }"
+      url68: "{ %get_url_i(68) }"
+      url69: "{ %get_url_i(69) }"
+      url70: "{ %get_url_i(70) }"
+      url71: "{ %get_url_i(71) }"
+      url72: "{ %get_url_i(72) }"
+      url73: "{ %get_url_i(73) }"
+      url74: "{ %get_url_i(74) }"
+      url75: "{ %get_url_i(75) }"
+      url76: "{ %get_url_i(76) }"
+      url77: "{ %get_url_i(77) }"
+      url78: "{ %get_url_i(78) }"
+      url79: "{ %get_url_i(79) }"
+      url80: "{ %get_url_i(80) }"
+      url81: "{ %get_url_i(81) }"
+      url82: "{ %get_url_i(82) }"
+      url83: "{ %get_url_i(83) }"
+      url84: "{ %get_url_i(84) }"
+      url85: "{ %get_url_i(85) }"
+      url86: "{ %get_url_i(86) }"
+      url87: "{ %get_url_i(87) }"
+      url88: "{ %get_url_i(88) }"
+      url89: "{ %get_url_i(89) }"
+      url90: "{ %get_url_i(90) }"
+      url91: "{ %get_url_i(91) }"
+      url92: "{ %get_url_i(92) }"
+      url93: "{ %get_url_i(93) }"
+      url94: "{ %get_url_i(94) }"
+      url95: "{ %get_url_i(95) }"
+      url96: "{ %get_url_i(96) }"
+      url97: "{ %get_url_i(97) }"
+      url98: "{ %get_url_i(98) }"
+      url99: "{ %get_url_i(99) }"
+      url100: "{ %get_url_i(100) }"
