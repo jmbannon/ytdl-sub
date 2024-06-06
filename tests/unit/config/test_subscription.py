@@ -1,3 +1,4 @@
+import json
 import re
 from contextlib import contextmanager
 from pathlib import Path
@@ -468,6 +469,15 @@ def test_advanced_tv_show_subscriptions(
     assert (
         overrides.apply_formatter(overrides.dict["url2"])
         == "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_"
+    )
+
+    assert overrides.apply_formatter(overrides.dict["subscription_array"]) == json.dumps(
+        [
+            "https://www.youtube.com/@gardeningwithciscoe4430",
+            "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_",
+            "https://www.youtube.com/playlist?list=PLsJlQSR-KjmaQqqJ9jq18cF6XXXAR4kyn",
+            "https://www.youtube.com/watch?v=2vq-vPubS5I",
+        ]
     )
 
 
