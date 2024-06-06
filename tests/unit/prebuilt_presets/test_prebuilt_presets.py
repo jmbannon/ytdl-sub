@@ -558,7 +558,7 @@ class TestPrebuiltMusicVideoPresetsWithCategories:
             ],
             "overrides": {
                 "music_video_directory": output_directory,
-                "subscription_dict": subscription_dict,
+                "subscription_map": subscription_dict,
             },
         }
 
