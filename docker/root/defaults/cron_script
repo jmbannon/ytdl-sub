@@ -1,0 +1,2 @@
+echo "Running cron_script"
+ytdl-sub --log-level info --config config.yaml sub subscriptions.yaml

@@ -1,19 +1,2 @@
-# Bare-bones config. Here are some useful links to get started:
-#   Walk-through Guide:  https://ytdl-sub.readthedocs.io/en/latest/guides/index.html
-#   Config Examples:     https://github.com/jmbannon/ytdl-sub/tree/master/examples
-#   Prebuilt Presets:    https://ytdl-sub.readthedocs.io/en/latest/presets.html
-#   Config Reference:    https://ytdl-sub.readthedocs.io/en/latest/config_reference/index.html
-#
-# The subscriptions in `subscriptions.yaml` uses prebuilt presets which do not require
-# any additions to this config. They can be downloaded using the command:
-#
-#   ytdl-sub --config config.yaml sub subscriptions.yaml
-#
-# Or dry-ran with:
-#
-#   ytdl-sub --dry-run --config config.yaml sub subscriptions.yaml
-#
-# See the documentation above on how to build your own custom presets.
-#
 configuration:
   working_directory: ".ytdl-sub-working-directory"
