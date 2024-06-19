@@ -55,6 +55,8 @@ RUN mkdir -p /config && \
 # CONTAINER CONFIGS
 
 ENV EDITOR="nano" \
-HOME="/config"
+HOME="/config" \
+DOCKER_MODS=linuxserver/mods:universal-stdout-logs|linuxserver/mods:universal-cron \
+LOGS_TO_STDOUT=/config/cron_logs.txt
 
 VOLUME /config

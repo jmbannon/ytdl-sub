@@ -18,6 +18,41 @@ echo "Checking ytdl-sub-gui defaults..."
     mkdir -p /config/ytdl-sub-configs/examples && \
     cp /defaults/examples/* /config/ytdl-sub-configs/examples
 
+if [ "$CRON_ENABLE" = true ] ; then
+
+  # set cron schedule if not set
+  if [ -z "${CRON_SCHEDULE}" ]  ; then
+    CRON_SCHEDULE="0 */6 * * *"
+  fi
+
+  # put it into the crontab file
+  echo "# min hour day month weekday command" > /config/crontabs/abc
+  echo " ${CRON_SCHEDULE} /config/ytdl-sub-configs/cron_script | tee -a /config/ytdl-sub-configs/cron_logs.txt" >> /config/crontabs/abc
+
+  # clear the cron logs on start, always
+  echo > /config/ytdl-sub-configs/cron_logs.txt
+
+  # restart cron
+  /etc/init.d/cron restart
+
+  # check cron
+  crontab -u abc -l
+  ret=$?
+
+  if [ $ret -eq 0 ]; then
+    echo "Cron schedule is successfully set to ${CRON_SCHEDULE}"
+    if [ "$CRON_RUN_ON_START" = true ] ; then
+      # Run cron script on start
+      /config/ytdl-sub-configs/cron_script | tee -a /config/ytdl-sub-configs/cron_logs.txt &
+    fi
+  else
+    echo "Cron schedule is invalid, disabling"
+  fi
+fi
+
+
+
+
 # permissions
 chown -R ${PUID:-abc}:${PGID:-abc} \
     /config

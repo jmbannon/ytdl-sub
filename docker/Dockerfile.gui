@@ -81,7 +81,8 @@ RUN mkdir -p /config && \
 ENV YTDL_SUB_TYPE="gui" \
 EDITOR="nano" \
 HOME="/config" \
-DOCKER_MODS=linuxserver/mods:universal-cron \
+DOCKER_MODS=linuxserver/mods:universal-stdout-logs|linuxserver/mods:universal-cron \
+LOGS_TO_STDOUT=/config/ytdl-sub-configs/cron_logs.txt \
 DEFAULT_WORKSPACE=/config/ytdl-sub-configs
 
 VOLUME /config
