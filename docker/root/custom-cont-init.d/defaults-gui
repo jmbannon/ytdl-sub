@@ -5,51 +5,56 @@ if [ "$YTDL_SUB_TYPE" != "gui" ] ; then
     exit 0
 fi
 
-echo "Checking ytdl-sub-gui defaults..."
+# always create the config dir with empty cron logs
+mkdir -p /config/ytdl-sub-configs
+echo "" > /config/ytdl-sub-configs/cron_logs.txt
 
-# clear the cron logs on start, always
-echo > /config/ytdl-sub-configs/cron_logs.txt
+echo "[ytdl-sub-init] Checking defaults..."
 
 # copy config
 [[ ! -e /config/ytdl-sub-configs/config.yaml ]] && \
-    mkdir -p /config/ytdl-sub-configs && \
     cp /defaults/config.yaml /config/ytdl-sub-configs/config.yaml
 [[ ! -e /config/ytdl-sub-configs/subscriptions.yaml ]] && \
-    mkdir -p /config/ytdl-sub-configs && \
     cp /defaults/subscriptions.yaml /config/ytdl-sub-configs/subscriptions.yaml
 [[ ! -d /config/ytdl-sub-configs/examples ]] && \
     mkdir -p /config/ytdl-sub-configs/examples && \
-    cp /defaults/examples/* /config/ytdl-sub-configs/examples
+    cp -r /defaults/examples/* /config/ytdl-sub-configs/examples
 [[ ! -d /config/ytdl-sub-configs/cron_script ]] && \
-    mkdir -p /config/ytdl-sub-configs && \
     cp /defaults/cron_script /config/ytdl-sub-configs/cron_script
+    chmod +x /config/ytdl-sub-configs/cron_script
+
+# permissions
+chown -R ${PUID:-abc}:${PGID:-abc} \
+    /config
 
 if [ -n "$CRON_SCHEDULE" ] ; then
-  # put it into the crontab file
-  echo "# min hour day month weekday command" > /config/crontabs/abc
-  echo " ${CRON_SCHEDULE} /config/ytdl-sub-configs/cron_script | tee -a /config/ytdl-sub-configs/cron_logs.txt" >> /config/crontabs/abc
+  # copy cron wrapper over
+  cp /defaults/cron_wrapper.gui /opt/cron_wrapper
+  chmod +x /opt/cron_wrapper
+  chown abc:abc /opt/cron_wrapper
+
+  # execute cron wrapper in the crontab file
+  echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" > /config/crontabs/abc
+  echo "" >> /config/crontabs/abc
+  echo "# min hour day month weekday command" >> /config/crontabs/abc
+  echo " ${CRON_SCHEDULE} /opt/cron_wrapper" >> /config/crontabs/abc
 
   # restart cron
   /etc/init.d/cron reload
 
   # check cron
-  crontab -u abc -l
+  crontab -u abc /config/crontabs/abc
   ret=$?
 
   if [ $ret -eq 0 ]; then
-    echo "Cron schedule is successfully set to ${CRON_SCHEDULE}"
-    if [ "$CRON_RUN_ON_START" = true ] ; then
-      # Run cron script on start
-      su - abc -c "/config/ytdl-sub-configs/cron_script | tee -a /config/ytdl-sub-configs/cron_logs.txt" &
+    echo "[ytdl-sub-init] Cron schedule is successfully set to ${CRON_SCHEDULE}"
+    if [ -n "$CRON_RUN_ON_START" ] ; then
+      # Run cron script on start, logs get emitted to docker so do not write to cron logs
+      echo "[ytdl-sub-init] Cron on start enabled, starting"
+      sudo -b -u abc bash -c "cd /config/ytdl-sub-configs && ./cron_script"
     fi
   else
-    echo "Cron schedule is invalid, disabling"
+    echo "[ytdl-sub-init] Cron schedule is invalid, disabling"
+    sleep 10
   fi
 fi
-
-
-
-
-# permissions
-chown -R ${PUID:-abc}:${PGID:-abc} \
-    /config

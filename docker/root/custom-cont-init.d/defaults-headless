@@ -5,7 +5,11 @@ if [ "$YTDL_SUB_TYPE" == "gui" ] ; then
     exit 0
 fi
 
-echo "Checking ytdl-sub defaults..."
+# always create the config dir with empty cron logs
+mkdir -p /config
+echo "" > /config/cron_logs.txt
+
+echo "[ytdl-sub-init] Checking defaults..."
 
 # copy config
 [[ ! -e /config/config.yaml ]] && \

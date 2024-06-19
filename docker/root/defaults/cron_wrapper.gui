@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /config/ytdl-sub-configs
+bash ./cron_script | tee -a ./cron_logs.txt
