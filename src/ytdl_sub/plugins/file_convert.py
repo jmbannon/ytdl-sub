@@ -1,4 +1,5 @@
 import os
+from subprocess import CalledProcessError
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -204,9 +205,10 @@ class FileConvertPlugin(Plugin[FileConvertOptions]):
                 try:
                     FFMPEG.run(ffmpeg_args)
                 except Exception as exc:
-                    raise ValidationException(
-                        f"ffmpeg_post_process_args {' '.join(ffmpeg_args)} result in an error"
-                    ) from exc
+                    err_msg = f"ffmpeg_post_process_args {' '.join(ffmpeg_args)} result in an error"
+                    if isinstance(exc, CalledProcessError):
+                        err_msg += f":\n{exc.stderr.decode('utf-8')}"
+                    raise ValidationException(err_msg) from exc
 
                 if not os.path.isfile(tmp_output_file):
                     raise ValidationException(
