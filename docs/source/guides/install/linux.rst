@@ -13,7 +13,7 @@ Linux
 
       curl -L -o ytdl-sub https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub
       chmod +x ytdl-sub
-      ytdl-sub -h
+      ./ytdl-sub -h
 
     You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is up to date:
 
@@ -34,7 +34,7 @@ Linux
 
       curl -L -o ytdl-sub https://github.com/jmbannon/ytdl-sub/releases/latest/download/ytdl-sub_aarch64
       chmod +x ytdl-sub
-      ytdl-sub -h
+      ./ytdl-sub -h
 
     You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is up to date:
 
