@@ -52,7 +52,7 @@ lint = [
     "pylint==3.2.6",
 ]
 docs = [
-    "sphinx~=7.0",
+    "sphinx>=7,<9",
     "sphinx-rtd-theme~=2.0",
     "sphinx-book-theme~=1.0",
 ]
