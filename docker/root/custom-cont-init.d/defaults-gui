@@ -8,15 +8,15 @@ fi
 echo "Checking ytdl-sub-gui defaults..."
 
 # copy config
-[[ ! -e /config/ytdl-sub-configs/config.yaml ]] && \
+[[ ! -e /config/config.yaml ]] && \
     mkdir -p /config/ytdl-sub-configs && \
-    cp /defaults/config.yaml /config/ytdl-sub-configs/config.yaml
-[[ ! -e /config/ytdl-sub-configs/subscriptions.yaml ]] && \
+    cp /defaults/config.yaml /config/config.yaml
+[[ ! -e /config/subscriptions.yaml ]] && \
     mkdir -p /config/ytdl-sub-configs && \
-    cp /defaults/subscriptions.yaml /config/ytdl-sub-configs/subscriptions.yaml
-[[ ! -d /config/ytdl-sub-configs/examples ]] && \
-    mkdir -p /config/ytdl-sub-configs/examples && \
-    cp /defaults/examples/* /config/ytdl-sub-configs/examples
+    cp /defaults/subscriptions.yaml /config/subscriptions.yaml
+[[ ! -d /config/examples ]] && \
+    mkdir -p /config/examples && \
+    cp /defaults/examples/* /config/examples
 
 # permissions
 chown -R ${PUID:-abc}:${PGID:-abc} \
