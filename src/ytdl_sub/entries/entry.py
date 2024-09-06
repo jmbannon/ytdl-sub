@@ -109,12 +109,15 @@ class Entry(BaseEntry, Scriptable):
     @property
     def ext(self) -> str:
         """
-        With ffmpeg installed, yt-dlp will sometimes merge the file into an mkv file.
-        This is not reflected in the entry. See if the mkv file exists and return "mkv" if so,
-        otherwise, return the original extension.
+        With ffmpeg installed, yt-dlp will sometimes merge the file into an mkv file or
+        info.json states mkv when it is not. This is not reflected in the entry. See
+        if the expected file exists and return it if so, otherwise, search for present ext.
+        Fall back to expected ext but this will fail.
         """
         ext = self.try_get(v.ext, str) or self._kwargs[v.ext.metadata_key]
-        for possible_ext in [ext, "mkv"]:
+        for possible_ext in [
+            ext,
+        ] + list(VIDEO_CODEC_EXTS):
             file_name = self.base_filename(ext=possible_ext)
             file_path = str(Path(self.working_directory()) / file_name)
             if os.path.isfile(file_path):
