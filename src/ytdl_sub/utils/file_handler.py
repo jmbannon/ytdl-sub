@@ -51,8 +51,12 @@ def get_file_md5_hash(full_file_path: Path | str) -> str:
     -------
     md5 hash of its contents
     """
+    md5hash = hashlib.md5()
+    block_size = 128 * 1000  # md5 uses 128-byte digest blocks
     with open(full_file_path, "rb") as file:
-        return hashlib.md5(file.read()).hexdigest()
+        while chunk := file.read(block_size):
+            md5hash.update(chunk)
+    return md5hash.hexdigest()
 
 
 def files_equal(full_file_path_a: Path | str, full_file_path_b: Path | str) -> bool:
