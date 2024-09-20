@@ -133,6 +133,7 @@ class TestLogger:
             except ValueError as exc:
                 Logger.log_exception(exception=exc)
 
+            time.sleep(0.1)  # flush time
             Logger.cleanup(has_error=has_error)
             assert not os.path.isfile(Logger.debug_log_filename())
 
