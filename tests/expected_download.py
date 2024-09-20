@@ -15,14 +15,12 @@ _EXPECTED_DOWNLOADS_SUMMARY_PATH = RESOURCE_PATH / "expected_downloads_summaries
 
 
 def _get_files_in_directory(relative_directory: Path | str) -> List[Path]:
-    relative_path_part_idx = 3  # Cuts /tmp/<tmp_folder>
-    if IS_WINDOWS:
-        relative_path_part_idx = 7  # Cuts C:\Users\<user>\AppData\Local\Temp\<tmp_folder>
-
     relative_file_paths: List[Path] = []
     for path in Path(relative_directory).rglob("*"):
         if path.is_file():
-            relative_path = Path(*path.parts[relative_path_part_idx:])
+            relative_path = Path(
+                str(path).removeprefix(str(relative_directory)).removeprefix(os.path.sep)
+            )
             relative_file_paths.append(relative_path)
 
     return relative_file_paths
