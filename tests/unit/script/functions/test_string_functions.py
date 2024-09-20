@@ -119,6 +119,14 @@ class TestNumericFunctions:
         assert output == expected_output
 
     @pytest.mark.parametrize(
+        "value, expected_output",
+        [("['a', 'b', 'c']", True), ("['nope', [], {}]", False), ("['at', 'dog']", True)],
+    )
+    def test_contains_any(self, value, expected_output):
+        output = single_variable_output(f"{{%contains_any('a brown dog', {value})}}")
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
         "input_string, split, max_split, expected_output",
         [
             ("no splits", " | ", None, ["no splits"]),
