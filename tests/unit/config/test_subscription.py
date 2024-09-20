@@ -159,6 +159,12 @@ def preset_with_subscription_overrides_tilda(
             "parent_preset_2 | parent_preset_1": {
                 "~ test_2_1": {
                     "current_override": "test_2_1",
+                    "custom_list": [
+                        "elem1",
+                        "elem2",
+                        "elem3",
+                    ],
+                    "passed_list_elem": "{%contains_any('elem2', custom_list)}",
                 }
             },
         },
@@ -262,6 +268,8 @@ def test_subscription_overrides_tilda(
 
     assert sub_2_1.get("subscription_name").native == "test_2_1"
     assert sub_2_1.get("current_override").native == "test_2_1"  # tilda sub takes precedence
+    assert sub_2_1.get("passed_list_elem").native is True
+    assert sub_2_1.get("custom_list").native == ["elem1", "elem2", "elem3"]
 
 
 def test_subscription_overrides_map(

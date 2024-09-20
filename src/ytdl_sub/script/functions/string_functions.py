@@ -3,6 +3,7 @@ from typing import Optional
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import AnyArgument
 from ytdl_sub.script.types.resolvable import Boolean
+from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Numeric
 from ytdl_sub.script.types.resolvable import String
@@ -24,6 +25,20 @@ class StringFunctions:
           Returns True if ``contains`` is in ``string``. False otherwise.
         """
         return Boolean(contains.value in string.value)
+
+    @staticmethod
+    def contains_any(string: String, contains_array: Array) -> Boolean:
+        """
+        :description:
+            Returns true if any element in ``contains_array`` is in ``string``. False otherwise.
+        """
+        return Boolean(
+            any(
+                str(val) in string.value
+                for val in contains_array.value
+                if isinstance(val, (String, Integer, Boolean, Float))
+            )
+        )
 
     @staticmethod
     def slice(string: String, start: Integer, end: Optional[Integer] = None) -> String:

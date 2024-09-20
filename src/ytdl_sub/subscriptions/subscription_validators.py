@@ -11,7 +11,7 @@ from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.utils.script import ScriptUtils
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringListValidator
@@ -196,7 +196,9 @@ class SubscriptionListValuesValidator(SubscriptionLeafValidator, StringListValid
         )
 
 
-class SubscriptionWithOverridesValidator(SubscriptionLeafValidator, DictFormatterValidator):
+class SubscriptionWithOverridesValidator(
+    SubscriptionLeafValidator, UnstructuredDictFormatterValidator
+):
     def __init__(
         self,
         name,
