@@ -2,6 +2,19 @@ import os
 
 from ytdl_sub.utils.system import IS_WINDOWS
 
+
+def _existing_path(*paths: str) -> str:
+    """
+    Tries to search multiple paths for a file, returns a
+    path if it exists. If none are valid files, returns
+    the first one
+    """
+    for path in paths:
+        if os.path.isfile(path):
+            return path
+    return paths[0]
+
+
 if IS_WINDOWS:
     DEFAULT_LOCK_DIRECTORY = ""  # Not supported in Windows
     DEFAULT_FFMPEG_PATH = ".\\ffmpeg.exe"
@@ -10,8 +23,8 @@ if IS_WINDOWS:
     MAX_FILE_NAME_BYTES = 255
 else:
     DEFAULT_LOCK_DIRECTORY = "/tmp"
-    DEFAULT_FFMPEG_PATH = "/usr/bin/ffmpeg"
-    DEFAULT_FFPROBE_PATH = "/usr/bin/ffprobe"
+    DEFAULT_FFMPEG_PATH = _existing_path("/usr/bin/ffmpeg", "/usr/local/bin/ffmpeg")
+    DEFAULT_FFPROBE_PATH = _existing_path("/usr/bin/ffprobe", "/usr/local/bin/ffmpeg")
 
     MAX_FILE_NAME_BYTES = os.pathconf("/", "PC_NAME_MAX")
 
