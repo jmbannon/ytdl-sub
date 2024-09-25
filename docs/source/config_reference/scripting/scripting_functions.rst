@@ -533,6 +533,50 @@ regex_capture_groups
 :description:
   Returns number of capture groups in regex
 
+regex_capture_many
+~~~~~~~~~~~~~~~~~~
+:spec: ``regex_capture_many(string: String, regex_array: Array, default: Optional[Array]) -> Array``
+
+:description:
+  Returns the input string and first regex's capture groups that match to the string
+  in an array. If a default is not provided, then all number of regex capture groups
+  must be equal across all regex strings. In addition, an error will be thrown if
+  no matches are found.
+
+  If the default is provided, then the number of capture groups must be less than
+  or equal to the length of the default value array. Any element not captured
+  will return the respective default value.
+:usage:
+
+.. code-block:: python
+
+   {
+     %regex_capture_many(
+       "2020-02-27",
+       [
+         "No (.*) matches here",
+         "([0-9]+)-([0-9]+)-27"
+       ],
+       [ "01", "01" ]
+     )
+   }
+
+   # ["2020-02-27", "2020", "02"]
+
+regex_capture_many_required
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:spec: ``regex_capture_many_required(string: String, regex_array: Array) -> Array``
+
+:description:
+  Deprecated. Use %regex_capture_many instead.
+
+regex_capture_many_with_defaults
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:spec: ``regex_capture_many_with_defaults(string: String, regex_array: Array, default: Optional[Array]) -> Array``
+
+:description:
+  Deprecated. Use %regex_capture_many instead.
+
 regex_fullmatch
 ~~~~~~~~~~~~~~~
 :spec: ``regex_fullmatch(regex: String, string: String) -> Array``
@@ -559,6 +603,13 @@ regex_search
   Checks for a match anywhere in the string. If a match exists, returns
   the string as the first element of the Array. If there are capture groups, returns each
   group as a subsequent element in the Array.
+
+regex_search_any
+~~~~~~~~~~~~~~~~
+:spec: ``regex_search_any(string: String, regex_array: Array) -> Boolean``
+
+:description:
+  Returns True if any regex pattern in the regex array matches the string. False otherwise.
 
 regex_sub
 ~~~~~~~~~

@@ -7,6 +7,7 @@ import pytest
 from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -265,9 +266,9 @@ class TestFilter:
 
     def test_regex_fails_no_match(self, playlist_subscription_no_match_fails, output_directory):
         with pytest.raises(
-            UserThrownRuntimeError,
+            RuntimeException,
             match=re.escape(
-                "When running %regex_capture_many_required, no regex strings were captured"
+                "no regex strings were captured for input string Jesse's Minecraft Server [Trailer - Mar.21]"
             ),
         ):
             _ = playlist_subscription_no_match_fails.download(dry_run=True)
@@ -290,10 +291,9 @@ class TestFilter:
         )
 
         with pytest.raises(
-            UserThrownRuntimeError,
+            RuntimeException,
             match=re.escape(
-                "When using %regex_capture_with_defaults, number of regex capture groups must "
-                "be less than or equal to the number of defaults"
+                "When using %regex_capture_array, number of regex capture groups must be less than or equal to the number of defaults"
             ),
         ):
             _ = subscription.download(dry_run=True)
