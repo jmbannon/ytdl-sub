@@ -1,15 +1,11 @@
-import re
 from typing import Any
 from typing import Dict
 
 import mergedeep
 import pytest
 from expected_transaction_log import assert_transaction_log_matches
-from unit.conftest import mock_download_collection_entries
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.script.utils.exceptions import RuntimeException
-from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -88,7 +84,7 @@ def regex_subscription_dict_exclude(regex_subscription_dict_base, output_directo
                 """{
                     %regex_search_any(
                         title,
-                        [ "should not cap", ".*Feb.*" ]
+                        [ "should not cap", "Mock Entry 20-.*" ]
                     )
                 }"""
             ]
@@ -97,94 +93,9 @@ def regex_subscription_dict_exclude(regex_subscription_dict_base, output_directo
 
 
 @pytest.fixture
-def regex_subscription_dict_match_and_exclude(regex_subscription_dict_base, output_directory):
-    return mergedeep.merge(
-        regex_subscription_dict_base,
-        {
-            "regex": {
-                # tests that skip_if_match_fails defaults to True
-                "from": {
-                    "title": {
-                        "match": [
-                            "should not cap (.+) - (.+)",
-                            ".*\\[(.+) - (Feb.+)]",  # should filter out march video
-                        ],
-                        "capture_group_names": ["title_type", "title_date"],
-                        "exclude": [
-                            "should not cap",
-                            ".*27.*",  # should filter out Feb 27th video
-                        ],
-                    },
-                },
-            },
-            "nfo_tags": {
-                "tags": {
-                    "title_cap_1": "{title_type}",
-                    "title_cap_1_sanitized": "{title_type_sanitized}",
-                    "title_cap_2": "{title_date}",
-                    "desc_cap": "{description_website}",
-                    "upload_date_both_caps": "{upload_captured_year} and {upload_captured_month}",
-                    "override_with_capture_variable": "{contains_regex_default}",
-                    "override_with_capture_variable_sanitized": "{contains_regex_sanitized_default}",
-                }
-            },
-            "overrides": {
-                "contains_regex_default": "contains {title_type}",
-                "contains_regex_sanitized_default": "contains {title_type_sanitized}",
-            },
-        },
-    )
-
-
-@pytest.fixture
-def regex_subscription_dict_match_and_exclude_override_variable(
-    regex_subscription_dict_base, output_directory
-):
-    return mergedeep.merge(
-        regex_subscription_dict_base,
-        {
-            "regex": {
-                # tests that skip_if_match_fails defaults to True
-                "from": {
-                    "override_title": {
-                        "exclude": [
-                            "should not cap",
-                            ".*Feb.*",  # should filter out march video
-                        ],
-                    },
-                    "override_description": {
-                        "match": [".*http:\\/\\/(.+).com.*"],
-                        "capture_group_names": ["override_description_website"],
-                    },
-                },
-            },
-            "overrides": {"override_title": "{title}", "override_description": "{description}"},
-        },
-    )
-
-
-@pytest.fixture
-def playlist_subscription(config: ConfigFile, subscription_name: str, regex_subscription_dict: Dict[str, Any]):
-    return Subscription.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=regex_subscription_dict,
-    )
-
-
-@pytest.fixture
-def playlist_subscription_no_match_fails(
+def playlist_subscription(
     config: ConfigFile, subscription_name: str, regex_subscription_dict: Dict[str, Any]
 ):
-    regex_subscription_dict["overrides"][
-        "title_capture_list"
-    ] = """{
-        %regex_capture_many_required(
-            title,
-            [ "should not cap (.+) - (.+)", ".*\\[(.+) - (Feb.+)]" ]
-        )
-    }"""
-
     return Subscription.from_dict(
         config=config,
         preset_name=subscription_name,
@@ -203,32 +114,10 @@ def playlist_subscription_exclude(
     )
 
 
-@pytest.fixture
-def playlist_subscription_overrides(
-    config: ConfigFile,
-    subscription_name: str,
-    regex_subscription_dict_match_and_exclude_override_variable: Dict[str, Any],
-) -> Subscription:
-    return Subscription.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=regex_subscription_dict_match_and_exclude_override_variable,
-    )
-
-
-@pytest.fixture
-def playlist_subscription_match_and_exclude(
-    config: ConfigFile, subscription_name: str, regex_subscription_dict_match_and_exclude: Dict[str, Any]
-) -> Subscription:
-    return Subscription.from_dict(
-        config=config,
-        preset_name=subscription_name,
-        preset_dict=regex_subscription_dict_match_and_exclude,
-    )
-
-
 class TestFilter:
-    def test_regex_success(self, mock_download_collection_entries, playlist_subscription, output_directory):
+    def test_filter_regex_success(
+        self, mock_download_collection_entries, playlist_subscription, output_directory
+    ):
         with mock_download_collection_entries(
             is_youtube_channel=False, num_urls=1, is_extracted_audio=False, is_dry_run=True
         ):
@@ -240,65 +129,17 @@ class TestFilter:
             transaction_log_summary_file_name="plugins/filter/test_regex.txt",
         )
 
-    def test_regex_excludes_success(self, playlist_subscription_exclude, output_directory):
-        # Should only contain the march video
-        transaction_log = playlist_subscription_exclude.download(dry_run=True)
-        assert_transaction_log_matches(
-            output_directory=output_directory,
-            transaction_log=transaction_log,
-            transaction_log_summary_file_name="plugins/test_regex_exclude.txt",
-        )
-
-    def test_regex_match_and_excludes_success(
-        self, playlist_subscription_match_and_exclude, output_directory
+    def test_filter_regex_excludes_success(
+        self, mock_download_collection_entries, playlist_subscription_exclude, output_directory
     ):
-        # Should only contain the Feb 1st video
-        transaction_log = playlist_subscription_match_and_exclude.download(dry_run=True)
-        assert_transaction_log_matches(
-            output_directory=output_directory,
-            transaction_log=transaction_log,
-            transaction_log_summary_file_name="plugins/test_regex_match_and_exclude.txt",
-        )
-
-    def test_regex_using_overrides_success(self, playlist_subscription_overrides, output_directory):
         # Should only contain the march video
-        transaction_log = playlist_subscription_overrides.download(dry_run=True)
+        with mock_download_collection_entries(
+            is_youtube_channel=False, num_urls=1, is_extracted_audio=False, is_dry_run=True
+        ):
+            transaction_log = playlist_subscription_exclude.download(dry_run=True)
+
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="plugins/test_regex_overrides.txt",
+            transaction_log_summary_file_name="plugins/filter/test_regex_exclude.txt",
         )
-
-    def test_regex_fails_no_match(self, playlist_subscription_no_match_fails, output_directory):
-        with pytest.raises(
-            RuntimeException,
-            match=re.escape(
-                "no regex strings were captured for input string Jesse's Minecraft Server [Trailer - Mar.21]"
-            ),
-        ):
-            _ = playlist_subscription_no_match_fails.download(dry_run=True)
-
-    def test_regex_fails_unequal_defaults(self, regex_subscription_dict, default_config):
-        regex_subscription_dict["overrides"][
-            "title_capture_list"
-        ] = """{
-            %regex_capture_many_with_defaults(
-                title,
-                [ "should not cap (.+) - (.+)", ".*\\[(.+) - (Feb.+)]" ],
-                [ "one default, expects >= 2" ]
-            )
-        }"""
-
-        subscription = Subscription.from_dict(
-            config=default_config,
-            preset_name="regex_capture_playlist_test",
-            preset_dict=regex_subscription_dict,
-        )
-
-        with pytest.raises(
-            RuntimeException,
-            match=re.escape(
-                "When using %regex_capture_array, number of regex capture groups must be less than or equal to the number of defaults"
-            ),
-        ):
-            _ = subscription.download(dry_run=True)

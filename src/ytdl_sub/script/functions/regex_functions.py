@@ -10,7 +10,7 @@ from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
-from ytdl_sub.script.utils.exceptions import RuntimeException
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 
 
 def _re_output_to_array(re_out: Match[AnyStr] | None) -> Array:
@@ -115,12 +115,12 @@ class RegexFunctions:
            # ["2020-02-27", "2020", "02"]
         """
         if len(regex_array) == 0:
-            raise RuntimeException("regex_array must contain at least a single element")
+            raise FunctionRuntimeException("regex_array must contain at least a single element")
 
         regex_list: List[String] = []
         for regex in regex_array.value:
             if not isinstance(regex, String):
-                raise RuntimeException("All regex_array elements must be strings")
+                raise FunctionRuntimeException("All regex_array elements must be strings")
             regex_list.append(regex)
 
         if default is None:
@@ -129,13 +129,13 @@ class RegexFunctions:
                 RegexFunctions.regex_capture_groups(regex).value != num_capture_groups
                 for regex in regex_list[1:]
             ):
-                raise RuntimeException(
+                raise FunctionRuntimeException(
                     "regex_array elements must contain the same number of capture groups"
                 )
         elif any(
             RegexFunctions.regex_capture_groups(regex).value > len(default) for regex in regex_list
         ):
-            raise RuntimeException(
+            raise FunctionRuntimeException(
                 "When using %regex_capture_array, number of regex capture groups must be less than "
                 "or equal to the number of defaults"
             )
@@ -147,7 +147,7 @@ class RegexFunctions:
                 break
 
         if len(output) == 0 and not default:
-            raise RuntimeException(
+            raise FunctionRuntimeException(
                 f"no regex strings were captured for input string {string.value}"
             )
 
