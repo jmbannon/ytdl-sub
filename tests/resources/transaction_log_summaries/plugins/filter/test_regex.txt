@@ -1,0 +1,105 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+{output_directory}/subscription_test
+  Mock Entry 20-1.info.json
+  Mock Entry 20-1.jpg
+  Mock Entry 20-1.mp4
+    Video Tags:
+      album: Music Videos
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-08-08
+      title: Mock Entry 20-1
+      year: 2020
+  Mock Entry 20-1.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: subscription_test
+        desc_cap: Description
+        genre: ytdl-sub
+        override_with_capture_variable: contains 20
+        override_with_capture_variable_sanitized: contains 20
+        premiered: 2020-08-08
+        title: Mock Entry 20-1
+        title_cap_1: 20
+        title_cap_1_sanitized: 20
+        title_cap_2: 1
+        upload_date_both_caps: First and Second containing in regex default
+  Mock Entry 20-2.info.json
+  Mock Entry 20-2.jpg
+  Mock Entry 20-2.mp4
+    Video Tags:
+      album: Music Videos
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-08-08
+      title: Mock Entry 20-2
+      year: 2020
+  Mock Entry 20-2.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: subscription_test
+        desc_cap: Description
+        genre: ytdl-sub
+        override_with_capture_variable: contains 20
+        override_with_capture_variable_sanitized: contains 20
+        premiered: 2020-08-08
+        title: Mock Entry 20-2
+        title_cap_1: 20
+        title_cap_1_sanitized: 20
+        title_cap_2: 2
+        upload_date_both_caps: First and Second containing in regex default
+  Mock Entry 20-3.info.json
+  Mock Entry 20-3.jpg
+  Mock Entry 20-3.mp4
+    Video Tags:
+      album: Music Videos
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-08-07
+      title: Mock Entry 20-3
+      year: 2020
+  Mock Entry 20-3.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: subscription_test
+        desc_cap: Description
+        genre: ytdl-sub
+        override_with_capture_variable: contains 20
+        override_with_capture_variable_sanitized: contains 20
+        premiered: 2020-08-07
+        title: Mock Entry 20-3
+        title_cap_1: 20
+        title_cap_1_sanitized: 20
+        title_cap_2: 3
+        upload_date_both_caps: First and Second containing in regex default
+  Mock Entry 21-1.info.json
+  Mock Entry 21-1.jpg
+  Mock Entry 21-1.mp4
+    Video Tags:
+      album: Music Videos
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2021-08-08
+      title: Mock Entry 21-1
+      year: 2021
+  Mock Entry 21-1.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: subscription_test
+        desc_cap: Description
+        genre: ytdl-sub
+        override_with_capture_variable: contains 21
+        override_with_capture_variable_sanitized: contains 21
+        premiered: 2021-08-08
+        title: Mock Entry 21-1
+        title_cap_1: 21
+        title_cap_1_sanitized: 21
+        title_cap_2: 1
+        upload_date_both_caps: First and Second containing in regex default

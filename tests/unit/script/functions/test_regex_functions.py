@@ -1,10 +1,10 @@
 import pytest
 from unit.script.conftest import single_variable_output
 
-from ytdl_sub.script.script import Script
+from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 
 
-class TestNumericFunctions:
+class TestRegexFunctions:
     @pytest.mark.parametrize(
         "values, expected_output",
         [
@@ -59,3 +59,37 @@ class TestNumericFunctions:
     def test_regex_sub(self, values: str, expected_output: str):
         output = single_variable_output(f"{{%regex_sub({values})}}")
         assert output == expected_output
+
+    def test_regex_capture_many_fails_no_match(self):
+        with pytest.raises(
+            FunctionRuntimeException,
+            match="no regex strings were captured for input string the string",
+        ):
+            single_variable_output(
+                f"""{{
+            %regex_capture_many(
+                "the string",
+                [
+                    "no (.*) match",
+                    "not here either (.*)"
+                ]
+            )
+        }}"""
+            )
+
+    def test_regex_capture_many_fails_unequal_capture_groups(self):
+        with pytest.raises(
+            FunctionRuntimeException,
+            match="regex_array elements must contain the same number of capture groups",
+        ):
+            single_variable_output(
+                f"""{{
+            %regex_capture_many(
+                "the string",
+                [
+                    "no (.*) match",
+                    "(.*) not equal to 1 (.*)"
+                ]
+            )
+        }}"""
+            )
