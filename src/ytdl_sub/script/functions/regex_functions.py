@@ -1,10 +1,16 @@
 import re
 from typing import AnyStr
+from typing import List
 from typing import Match
+from typing import Optional
 
+from ytdl_sub.script.functions.array_functions import ArrayFunctions
 from ytdl_sub.script.types.array import Array
+from ytdl_sub.script.types.resolvable import Boolean
+from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.utils.exceptions import RuntimeException
 
 
 def _re_output_to_array(re_out: Match[AnyStr] | None) -> Array:
@@ -36,6 +42,20 @@ class RegexFunctions:
         return _re_output_to_array(re.search(regex.value, string.value))
 
     @staticmethod
+    def regex_search_any(string: String, regex_array: Array) -> Boolean:
+        """
+        :description:
+          Returns True if any regex pattern in the regex array matches the string. False otherwise.
+        """
+        return Boolean(
+            any(
+                len(RegexFunctions.regex_search(regex=String(str(regex)), string=string).value) > 0
+                for regex in regex_array.value
+                if isinstance(regex, (String, Integer, Boolean, Float))
+            )
+        )
+
+    @staticmethod
     def regex_fullmatch(regex: String, string: String) -> Array:
         """
         :description:
@@ -62,3 +82,95 @@ class RegexFunctions:
           match groups via backslash escapes. Callables as replacement argument are not supported.
         """
         return String(re.sub(regex.value, replacement.value, string.value))
+
+    @staticmethod
+    def regex_capture_many(
+        string: String, regex_array: Array, default: Optional[Array] = None
+    ) -> Array:
+        """
+        :description:
+          Returns the input string and first regex's capture groups that match to the string
+          in an array. If a default is not provided, then all number of regex capture groups
+          must be equal across all regex strings. In addition, an error will be thrown if
+          no matches are found.
+
+          If the default is provided, then the number of capture groups must be less than
+          or equal to the length of the default value array. Any element not captured
+          will return the respective default value.
+        :usage:
+
+        .. code-block:: python
+
+           {
+             %regex_capture_many(
+               "2020-02-27",
+               [
+                 "No (.*) matches here",
+                 "([0-9]+)-([0-9]+)-27"
+               ],
+               [ "01", "01" ]
+             )
+           }
+
+           # ["2020-02-27", "2020", "02"]
+        """
+        if len(regex_array) == 0:
+            raise RuntimeException("regex_array must contain at least a single element")
+
+        regex_list: List[String] = []
+        for regex in regex_array.value:
+            if not isinstance(regex, String):
+                raise RuntimeException("All regex_array elements must be strings")
+            regex_list.append(regex)
+
+        if default is None:
+            num_capture_groups = RegexFunctions.regex_capture_groups(regex_list[0]).value
+            if any(
+                RegexFunctions.regex_capture_groups(regex).value != num_capture_groups
+                for regex in regex_list[1:]
+            ):
+                raise RuntimeException(
+                    "regex_array elements must contain the same number of capture groups"
+                )
+        elif any(
+            RegexFunctions.regex_capture_groups(regex).value > len(default) for regex in regex_list
+        ):
+            raise RuntimeException(
+                "When using %regex_capture_array, number of regex capture groups must be less than "
+                "or equal to the number of defaults"
+            )
+
+        output = Array([])
+        for regex in regex_list:
+            output = RegexFunctions.regex_search(regex=regex, string=string)
+            if len(output) > 0:
+                break
+
+        if len(output) == 0 and not default:
+            raise RuntimeException(
+                f"no regex strings were captured for input string {string.value}"
+            )
+
+        if default is not None:
+            default_output = Array([string] + default.value)
+            return ArrayFunctions.array_overlay(output, default_output, only_missing=Boolean(True))
+
+        return output
+
+    @staticmethod
+    def regex_capture_many_with_defaults(
+        string: String, regex_array: Array, default: Optional[Array]
+    ) -> Array:
+        """
+        :description:
+          Deprecated. Use %regex_capture_many instead.
+        """
+        return RegexFunctions.regex_capture_many(string, regex_array, default)
+
+    @staticmethod
+    def regex_capture_many_required(string: String, regex_array: Array) -> Array:
+        """
+        :description:
+          Deprecated. Use %regex_capture_many instead.
+        """
+        return RegexFunctions.regex_capture_many(string, regex_array)

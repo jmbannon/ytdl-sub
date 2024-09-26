@@ -796,7 +796,7 @@ regex
       overrides:
         description_date_capture: >-
           {
-            %regex_capture_many_with_defaults(
+            %regex_capture_many(
               description,
               [ "([0-9]{4})-([0-9]{2})-([0-9]{2})" ],
               [ upload_year, upload_month, upload_day ]

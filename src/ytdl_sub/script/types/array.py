@@ -56,3 +56,6 @@ class Array(_Array, ResolvableToJson):
     @property
     def native(self) -> Any:
         return [val.native for val in self.value]
+
+    def __len__(self) -> int:
+        return len(self.value)

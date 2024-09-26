@@ -72,11 +72,16 @@ class ScriptingFunctionsDocGen(DocGen):
 
             for function_name in static_methods(parent_objs[name]):
                 if display_function_name := maybe_get_function_name(function_name):
-                    docs += get_function_docstring(
-                        function_name=function_name,
-                        display_function_name=display_function_name,
-                        function=getattr(parent_objs[name], function_name),
-                        level=2,
-                    )
+                    try:
+                        docs += get_function_docstring(
+                            function_name=function_name,
+                            display_function_name=display_function_name,
+                            function=getattr(parent_objs[name], function_name),
+                            level=2,
+                        )
+                    except Exception as exc:
+                        raise ValueError(
+                            f"Invalid docs for function {display_function_name}"
+                        ) from exc
 
         return docs
