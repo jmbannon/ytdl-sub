@@ -83,6 +83,7 @@ disable = [
     "R0901", # too-many-ancestors
     "R0902", # too-many-instance-attributes
     "R1711", # useless-return
+    "R0917", # too many positional arguments
     "W0511", # TODO
 ]
 
