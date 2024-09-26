@@ -1,7 +1,7 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-kodi_safe_xml-download-archive.json
+  .ytdl-sub-subscription_test-download-archive.json
   test.nfo
     NFO tags:
       kodi_safe_root □:
@@ -34,22 +34,22 @@ Files created:
           tag:
             the
              tag □□
-{output_directory}/kodi_safe_xml
-  Can you hear the difference？ 🎸🔥 #shorts.info.json
-  Can you hear the difference？ 🎸🔥 #shorts.jpg
-  Can you hear the difference？ 🎸🔥 #shorts.mp4
+{output_directory}/subscription_test
+  Mock Entry 20-1.info.json
+  Mock Entry 20-1.jpg
+  Mock Entry 20-1.mp4
     Video Tags:
       album: Music Videos
-      artist: kodi_safe_xml
+      artist: subscription_test
       genre: ytdl-sub
-      premiered: 2022-06-30
-      title: Can you hear the difference? 🎸🔥 #shorts
-      year: 2022
-  Can you hear the difference？ 🎸🔥 #shorts.nfo
+      premiered: 2020-08-08
+      title: Mock Entry 20-1
+      year: 2020
+  Mock Entry 20-1.nfo
     NFO tags:
       musicvideo:
         album: Music Videos
-        artist: kodi_safe_xml
+        artist: subscription_test
         genre: ytdl-sub
         kodi_safe_multi_title □:
           - value 1 □
@@ -80,5 +80,146 @@ Files created:
           tag:
             the
              tag □□
-        premiered: 2022-06-30
-        title: Can you hear the difference? □□ #shorts
+        premiered: 2020-08-08
+        title: Mock Entry 20-1
+  Mock Entry 20-2.info.json
+  Mock Entry 20-2.jpg
+  Mock Entry 20-2.mp4
+    Video Tags:
+      album: Music Videos
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-08-08
+      title: Mock Entry 20-2
+      year: 2020
+  Mock Entry 20-2.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: subscription_test
+        genre: ytdl-sub
+        kodi_safe_multi_title □:
+          - value 1 □
+          - value 2 □
+        kodi_safe_multi_title_with_attrs:
+          -
+            attributes:
+              □?:
+                value
+                newlines □
+            tag:
+              the
+               tag 1 □□
+          -
+            attributes:
+              □?:
+                value
+                newlines □
+            tag:
+              the
+               tag 2 □□
+        kodi_safe_title □: kodi_safe_value □
+        kodi_safe_title_with_attrs:
+          attributes:
+            □?:
+              value
+              newlines □
+          tag:
+            the
+             tag □□
+        premiered: 2020-08-08
+        title: Mock Entry 20-2
+  Mock Entry 20-3.info.json
+  Mock Entry 20-3.jpg
+  Mock Entry 20-3.mp4
+    Video Tags:
+      album: Music Videos
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2020-08-07
+      title: Mock Entry 20-3
+      year: 2020
+  Mock Entry 20-3.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: subscription_test
+        genre: ytdl-sub
+        kodi_safe_multi_title □:
+          - value 1 □
+          - value 2 □
+        kodi_safe_multi_title_with_attrs:
+          -
+            attributes:
+              □?:
+                value
+                newlines □
+            tag:
+              the
+               tag 1 □□
+          -
+            attributes:
+              □?:
+                value
+                newlines □
+            tag:
+              the
+               tag 2 □□
+        kodi_safe_title □: kodi_safe_value □
+        kodi_safe_title_with_attrs:
+          attributes:
+            □?:
+              value
+              newlines □
+          tag:
+            the
+             tag □□
+        premiered: 2020-08-07
+        title: Mock Entry 20-3
+  Mock Entry 21-1.info.json
+  Mock Entry 21-1.jpg
+  Mock Entry 21-1.mp4
+    Video Tags:
+      album: Music Videos
+      artist: subscription_test
+      genre: ytdl-sub
+      premiered: 2021-08-08
+      title: Mock Entry 21-1
+      year: 2021
+  Mock Entry 21-1.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: subscription_test
+        genre: ytdl-sub
+        kodi_safe_multi_title □:
+          - value 1 □
+          - value 2 □
+        kodi_safe_multi_title_with_attrs:
+          -
+            attributes:
+              □?:
+                value
+                newlines □
+            tag:
+              the
+               tag 1 □□
+          -
+            attributes:
+              □?:
+                value
+                newlines □
+            tag:
+              the
+               tag 2 □□
+        kodi_safe_title □: kodi_safe_value □
+        kodi_safe_title_with_attrs:
+          attributes:
+            □?:
+              value
+              newlines □
+          tag:
+            the
+             tag □□
+        premiered: 2021-08-08
+        title: Mock Entry 21-1
