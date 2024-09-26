@@ -80,6 +80,8 @@ class ScriptingFunctionsDocGen(DocGen):
                             level=2,
                         )
                     except Exception as exc:
-                        raise ValueError(f"Invalid docs for function {display_function_name}") from exc
+                        raise ValueError(
+                            f"Invalid docs for function {display_function_name}"
+                        ) from exc
 
         return docs

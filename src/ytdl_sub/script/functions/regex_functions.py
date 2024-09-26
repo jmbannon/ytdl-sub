@@ -4,7 +4,7 @@ from typing import List
 from typing import Match
 from typing import Optional
 
-from ytdl_sub.script.functions import ArrayFunctions
+from ytdl_sub.script.functions.array_functions import ArrayFunctions
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import Float
@@ -47,11 +47,13 @@ class RegexFunctions:
         :description:
           Returns True if any regex pattern in the regex array matches the string. False otherwise.
         """
-        return Boolean(any(
-            len(RegexFunctions.regex_search(regex=String(str(regex)), string=string).value) > 0
-            for regex in regex_array.value
-            if isinstance(regex, (String, Integer, Boolean, Float))
-        ))
+        return Boolean(
+            any(
+                len(RegexFunctions.regex_search(regex=String(str(regex)), string=string).value) > 0
+                for regex in regex_array.value
+                if isinstance(regex, (String, Integer, Boolean, Float))
+            )
+        )
 
     @staticmethod
     def regex_fullmatch(regex: String, string: String) -> Array:
@@ -134,7 +136,8 @@ class RegexFunctions:
             RegexFunctions.regex_capture_groups(regex).value > len(default) for regex in regex_list
         ):
             raise RuntimeException(
-                "When using %regex_capture_array, number of regex capture groups must be less than or equal to the number of defaults"
+                "When using %regex_capture_array, number of regex capture groups must be less than "
+                "or equal to the number of defaults"
             )
 
         output = Array([])
