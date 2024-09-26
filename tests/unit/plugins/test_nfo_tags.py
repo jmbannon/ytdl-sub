@@ -1,5 +1,6 @@
 import pytest
 from expected_transaction_log import assert_transaction_log_matches
+from unit.conftest import mock_download_collection_entries
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -8,7 +9,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def subscription_dict(output_directory):
     return {
         "preset": "Jellyfin Music Videos",
-        "download": "https://www.youtube.com/shorts/ucYmEqmlhFw",
+        "download": "https://your.name.here",
         # override the output directory with our fixture-generated dir
         "output_options": {"output_directory": output_directory},
         "format": "best[height<=480]",  # download the worst format so it is fast
@@ -79,7 +80,15 @@ def subscription_dict(output_directory):
 
 class TestNfoTagsPlugins:
     @pytest.mark.parametrize("kodi_safe", [True, False])
-    def test_nfo_tags(self, subscription_dict, default_config, output_directory, kodi_safe):
+    def test_nfo_tags(
+        self,
+        subscription_name,
+        subscription_dict,
+        config,
+        output_directory,
+        mock_download_collection_entries,
+        kodi_safe,
+    ):
         transaction_log_file_name = "test_nfo.txt"
         if kodi_safe:
             transaction_log_file_name = "test_nfo_kodi_safe.txt"
@@ -87,13 +96,17 @@ class TestNfoTagsPlugins:
             subscription_dict["output_directory_nfo_tags"]["kodi_safe"] = True
 
         subscription = Subscription.from_dict(
-            config=default_config,
-            preset_name="kodi_safe_xml",
+            config=config,
+            preset_name=subscription_name,
             preset_dict=subscription_dict,
         )
 
         # Only dry run is needed to see if NFO values are kodi safe
-        transaction_log = subscription.download(dry_run=True)
+        with mock_download_collection_entries(
+            is_youtube_channel=False, num_urls=1, is_extracted_audio=False
+        ):
+            transaction_log = subscription.download(dry_run=False)
+
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
