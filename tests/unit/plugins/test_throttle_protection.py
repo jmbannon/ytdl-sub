@@ -123,3 +123,42 @@ class TestThrottleProtectionPlugin:
             ),
         ):
             _ = subscription.download(dry_run=False)
+
+    def test_max_downloads(
+        self,
+        config,
+        subscription_name,
+        output_directory,
+        mock_download_collection_entries,
+    ):
+        preset_dict = {
+            "preset": [
+                "Kodi Music Videos",
+            ],
+            "overrides": {
+                "url": "https://your.name.here",
+                "music_video_directory": output_directory,
+            },
+            "throttle_protection": {"max_downloads_per_subscription": {"max": 0}},
+        }
+
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=preset_dict,
+        )
+
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False, num_urls=1, is_extracted_audio=False, is_dry_run=True
+            ),
+            assert_logs(
+                logger=throttle_protection_logger,
+                expected_message="Reached subscription max downloads of %d",
+                log_level="info",
+                expected_occurrences=1,
+            ),
+        ):
+            transaction_log = subscription.download(dry_run=True)
+
+        assert transaction_log.is_empty

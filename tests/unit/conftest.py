@@ -1,5 +1,6 @@
 import contextlib
 import os
+import shutil
 from pathlib import Path
 from typing import Callable
 from typing import Dict
@@ -133,8 +134,13 @@ def mock_download_collection_entries(
 ):
     @contextlib.contextmanager
     def _mock_download_collection_entries_factory(
-        is_youtube_channel: bool, num_urls: int = 1, is_extracted_audio: bool = False
+        is_youtube_channel: bool,
+        num_urls: int = 1,
+        is_extracted_audio: bool = False,
+        is_dry_run: bool = False,
     ):
+        is_real_run = not is_dry_run
+
         def _write_entries_to_working_dir(*args, **kwargs) -> List[Dict]:
             # Second TV URL or second soundcloud URL, which downloads first
             is_second_url = "2" in kwargs["url"] or kwargs["url"].endswith("/albums")
@@ -149,6 +155,7 @@ def mock_download_collection_entries(
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
+                        mock_download_to_working_dir=is_real_run,
                     ),  # 1
                     mock_entry_dict_factory(
                         uid="20-1",
@@ -158,6 +165,7 @@ def mock_download_collection_entries(
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
+                        mock_download_to_working_dir=is_real_run,
                     ),  # 2  98
                     mock_entry_dict_factory(
                         uid="20-2",
@@ -167,6 +175,7 @@ def mock_download_collection_entries(
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
+                        mock_download_to_working_dir=is_real_run,
                     ),  # 1  99
                     mock_entry_dict_factory(
                         uid="20-3",
@@ -176,6 +185,7 @@ def mock_download_collection_entries(
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
+                        mock_download_to_working_dir=is_real_run,
                     ),
                 ]
             return [
@@ -187,8 +197,8 @@ def mock_download_collection_entries(
                     playlist_index=1,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
-                    mock_download_to_working_dir=False,
                     is_extracted_audio=is_extracted_audio,
+                    mock_download_to_working_dir=False,
                 ),
                 mock_entry_dict_factory(
                     uid="20-4",
@@ -198,6 +208,7 @@ def mock_download_collection_entries(
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
+                    mock_download_to_working_dir=is_real_run,
                 ),
                 mock_entry_dict_factory(
                     uid="20-5",
@@ -207,6 +218,7 @@ def mock_download_collection_entries(
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
+                    mock_download_to_working_dir=is_real_run,
                 ),
                 mock_entry_dict_factory(
                     uid="20-6",
@@ -216,6 +228,7 @@ def mock_download_collection_entries(
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
+                    mock_download_to_working_dir=is_real_run,
                 ),
                 mock_entry_dict_factory(
                     uid="20-7",
@@ -225,6 +238,7 @@ def mock_download_collection_entries(
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
+                    mock_download_to_working_dir=is_real_run,
                 ),
             ]
 
