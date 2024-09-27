@@ -26,9 +26,11 @@ presets:
     overrides:
       # Captures 'Some - Song' from 'Emily Hopkins - Some - Song'
       captured_track_title: >-
-        %regex_capture_many(
-          title,
-          [ ".*? - (.*)" ],
-          [ title ]
-        )
+        {
+          %regex_capture_many(
+            title,
+            [ ".*? - (.*)" ],
+            [ title ]
+          )
+        }
       track_title: "{%array_at(captured_track_title, 1)}"
