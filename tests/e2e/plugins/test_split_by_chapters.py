@@ -4,6 +4,7 @@ import mergedeep
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
@@ -66,7 +67,7 @@ def yt_album_as_chapters_with_regex_preset_dict(yt_album_as_chapters_preset_dict
 
 
 class TestSplitByChapters:
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_video_with_chapters(
         self,
         default_config,
@@ -96,7 +97,7 @@ class TestSplitByChapters:
             transaction_log = subscription.download()
             assert transaction_log.is_empty
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_video_with_chapters_and_regex(
         self,
         default_config,
@@ -122,7 +123,7 @@ class TestSplitByChapters:
             expected_download_summary_file_name="plugins/split_by_chapters_with_regex_video.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     @pytest.mark.parametrize("when_no_chapters", ["pass", "drop", "error"])
     def test_video_with_no_chapters_and_regex(
         self,

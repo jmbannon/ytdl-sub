@@ -1,6 +1,7 @@
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -47,7 +48,7 @@ def youtube_release_preset_dict(output_directory):
 
 
 class TestAudioExtract:
-    @pytest.mark.parametrize("dry_run", [False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_audio_extract_single_song(
         self,
         default_config,
@@ -73,7 +74,7 @@ class TestAudioExtract:
             expected_download_summary_file_name="plugins/test_audio_extract_single.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_audio_extract_single_song_best_format(
         self,
         default_config,
@@ -99,7 +100,7 @@ class TestAudioExtract:
             expected_download_summary_file_name=f"plugins/test_audio_extract_single_best{'_dry_run' if dry_run else ''}.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_audio_extract_multiple_songs(
         self,
         default_config,

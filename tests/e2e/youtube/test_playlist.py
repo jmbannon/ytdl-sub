@@ -7,6 +7,7 @@ from e2e.conftest import mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 from mergedeep import mergedeep
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.ytdlp import YTDLP
@@ -144,7 +145,7 @@ class TestPlaylist:
             expected_download_summary_file_name="youtube/test_playlist_archive_migrated.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_playlist_download(
         self,
         default_config,
@@ -193,7 +194,7 @@ class TestPlaylist:
                 output_directory=output_directory,
             )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_playlist_download_from_cli_sub_no_provided_config(
         self,
         preset_dict_to_subscription_yaml_generator,

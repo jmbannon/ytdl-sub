@@ -1,6 +1,7 @@
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -48,7 +49,7 @@ class TestSubtitles:
 
         _ = ConfigFile.from_dict(default_config_dict)
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_subtitles_embedded(
         self,
         default_config,
@@ -74,7 +75,7 @@ class TestSubtitles:
             expected_download_summary_file_name="plugins/test_subtitles_embedded.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_subtitles_embedded_and_file(
         self,
         default_config,

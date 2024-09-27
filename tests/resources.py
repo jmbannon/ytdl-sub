@@ -3,9 +3,12 @@ import shutil
 from pathlib import Path
 
 REGENERATE_FIXTURES: bool = False
+RUN_E2E_DOWNLOAD_TESTS: bool = False
 
 RESOURCE_PATH: Path = Path("tests") / "resources"
 _FILE_FIXTURE_PATH: Path = RESOURCE_PATH / "file_fixtures"
+
+E2E_DRY_RUN_FIXTURE_VALUE = [True, False] if RUN_E2E_DOWNLOAD_TESTS else [True]
 
 
 def file_fixture_path(fixture_name: str) -> Path:

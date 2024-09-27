@@ -5,6 +5,7 @@ import pytest
 from conftest import assert_logs
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -39,7 +40,7 @@ def rolling_recent_channel_preset_dict(recent_preset_dict):
 
 
 class TestDateRange:
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     @pytest.mark.parametrize("date_range_breaks", [True, False])
     def test_recent_channel_download(
         self,
@@ -93,7 +94,7 @@ class TestDateRange:
                     expected_download_summary_file_name="plugins/date_range/test_channel_recent.json",
                 )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_recent_channel_download__no_vids_in_range(
         self,
         tv_show_config,
@@ -125,7 +126,7 @@ class TestDateRange:
             expected_download_summary_file_name="plugins/date_range/no_downloads.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_rolling_recent_channel_download(
         self,
         tv_show_config,

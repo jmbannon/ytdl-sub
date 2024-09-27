@@ -5,6 +5,7 @@ from conftest import preset_dict_to_dl_args
 from e2e.conftest import mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
@@ -78,7 +79,7 @@ def single_video_preset_dict_dl_args(single_video_preset_dict):
 
 
 class TestYoutubeVideo:
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_single_video_download(
         self,
         default_config,
@@ -144,7 +145,7 @@ class TestYoutubeVideo:
             expected_download_summary_file_name="youtube/test_video_missing_thumb.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_single_video_download_from_cli_dl(
         self,
         default_config_path,

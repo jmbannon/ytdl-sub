@@ -2,6 +2,7 @@ import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 from mergedeep import mergedeep
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -21,7 +22,7 @@ def preset_dict(output_directory):
 
 
 class TestFileConvert:
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_file_convert(
         self,
         default_config,
@@ -47,7 +48,7 @@ class TestFileConvert:
             expected_download_summary_file_name="plugins/file_convert/output.json",
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_file_convert_custom_ffmpeg(
         self,
         default_config,

@@ -3,6 +3,7 @@ from typing import Dict
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -54,7 +55,7 @@ def chapters_from_comments_preset_dict(sponsorblock_and_subs_preset_dict: Dict) 
 
 
 class TestChapters:
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_chapters_sponsorblock_and_removal_with_subs(
         self,
         default_config,
@@ -83,7 +84,7 @@ class TestChapters:
             ],
         )
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_chapters_from_comments(
         self,
         default_config,

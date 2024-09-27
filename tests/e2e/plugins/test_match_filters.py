@@ -1,6 +1,7 @@
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import E2E_DRY_RUN_FIXTURE_VALUE
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -61,7 +62,7 @@ class TestFileConvert:
         transaction_log = subscription.download(dry_run=False)
         assert transaction_log.is_empty
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_match_filters_empty(
         self,
         default_config,
@@ -78,7 +79,7 @@ class TestFileConvert:
         transaction_log = subscription.download(dry_run=dry_run)
         assert transaction_log.is_empty
 
-    @pytest.mark.parametrize("dry_run", [True, False])
+    @pytest.mark.parametrize("dry_run", E2E_DRY_RUN_FIXTURE_VALUE)
     def test_match_filters_partial(
         self,
         default_config,
