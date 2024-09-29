@@ -132,9 +132,7 @@ class SubtitleOptions(ToggleableOptionsDictValidator):
 
     def added_variables(
         self,
-        resolved_variables: Set[str],
         unresolved_variables: Set[str],
-        plugin_op: PluginOperation,
     ) -> Dict[PluginOperation, Set[str]]:
         """
         Returns

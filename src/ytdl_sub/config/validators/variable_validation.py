@@ -70,9 +70,7 @@ def _get_added_and_modified_variables(
         modified_variables: Set[str] = set()
 
         for plugin_added_variables in plugin_options.added_variables(
-            resolved_variables=set(),
             unresolved_variables=set(),
-            plugin_op=PluginOperation.ANY,
         ).values():
             added_variables |= set(plugin_added_variables)
 
@@ -167,9 +165,7 @@ class VariableValidation:
         Add dummy variables for script validation
         """
         added_variables = options.added_variables(
-            resolved_variables=self.resolved_variables,
             unresolved_variables=self.unresolved_variables,
-            plugin_op=plugin_op,
         ).get(plugin_op, set())
         modified_variables = options.modified_variables().get(plugin_op, set())
 
