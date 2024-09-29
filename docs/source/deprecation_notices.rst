@@ -26,7 +26,7 @@ has been created to replicate the plugin's behavior. See the following converted
       track_title: "{captured_track_title}"
 
 .. code-block:: yaml
-  :caption: regex plugin
+  :caption: scripting
 
     overrides:
       # Captures 'Some - Song' from 'Emily Hopkins - Some - Song'
