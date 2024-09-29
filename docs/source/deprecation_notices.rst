@@ -1,6 +1,45 @@
 Deprecation Notices
 ===================
 
+Sep 2024
+--------
+
+regex plugin
+~~~~~~~~~~~~
+Regex plugin has been removed in favor of scripting. The function
+:ref:`config_reference/scripting/scripting_functions:regex_capture_many`
+has been created to replicate the plugin's behavior. See the following converted example:
+
+.. code-block:: yaml
+  :caption: regex plugin
+
+    regex:
+      from:
+        title:
+          match:
+            - ".*? - (.*)"  # Captures 'Some - Song' from 'Emily Hopkins - Some - Song'
+          capture_group_names:
+            - "captured_track_title"
+          capture_group_defaults:
+            - "{title}"
+    overrides:
+      track_title: "{captured_track_title}"
+
+.. code-block:: yaml
+  :caption: scripting
+
+    overrides:
+      # Captures 'Some - Song' from 'Emily Hopkins - Some - Song'
+      captured_track_title: >-
+        {
+          %regex_capture_many(
+            title,
+            [ ".*? - (.*)" ],
+            [ title ]
+          )
+        }
+      track_title: "{%array_at(captured_track_title, 1)}"
+
 Oct 2023
 --------
 
