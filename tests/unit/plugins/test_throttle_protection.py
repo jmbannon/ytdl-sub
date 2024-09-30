@@ -8,7 +8,7 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 @pytest.fixture
-def throtte_subscription_dict(output_directory) -> Dict:
+def throttle_subscription_dict(output_directory) -> Dict:
     return {
         "preset": [
             "Kodi Music Videos",
@@ -16,6 +16,8 @@ def throtte_subscription_dict(output_directory) -> Dict:
         "overrides": {
             "url": "https://your.name.here",
             "music_video_directory": output_directory,
+            "bool_false_variable": "{ %bool(False) }",
+            "empty_string_variable": "",
         },
         "throttle_protection": {
             "sleep_per_download_s": {
@@ -35,14 +37,14 @@ class TestThrottleProtectionPlugin:
         self,
         config,
         subscription_name,
-        throtte_subscription_dict,
+        throttle_subscription_dict,
         output_directory,
         mock_download_collection_entries,
     ):
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
-            preset_dict=throtte_subscription_dict,
+            preset_dict=throttle_subscription_dict,
         )
 
         with (
@@ -76,24 +78,24 @@ class TestThrottleProtectionPlugin:
         [
             "",
             False,
-            "{tp_bool_string}",
-            "{tp_empty_string}",
+            "{bool_false_variable}",
+            "{empty_string_variable}",
         ],
     )
     def test_disabled(
         self,
         config,
         subscription_name,
-        throtte_subscription_dict,
+        throttle_subscription_dict,
         output_directory,
         mock_download_collection_entries,
         disable_value,
     ):
-        throtte_subscription_dict["throttle_protection"]["enable"] = disable_value
+        throttle_subscription_dict["throttle_protection"]["enable"] = disable_value
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
-            preset_dict=throtte_subscription_dict,
+            preset_dict=throttle_subscription_dict,
         )
 
         with (
@@ -113,17 +115,17 @@ class TestThrottleProtectionPlugin:
         self,
         config,
         subscription_name,
-        throtte_subscription_dict,
+        throttle_subscription_dict,
         output_directory,
         mock_download_collection_entries,
     ):
-        throtte_subscription_dict["throttle_protection"] = {
+        throttle_subscription_dict["throttle_protection"] = {
             "max_downloads_per_subscription": {"max": 0}
         }
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
-            preset_dict=throtte_subscription_dict,
+            preset_dict=throttle_subscription_dict,
         )
 
         with (
@@ -145,17 +147,17 @@ class TestThrottleProtectionPlugin:
         self,
         config,
         subscription_name,
-        throtte_subscription_dict,
+        throttle_subscription_dict,
         output_directory,
         mock_download_collection_entries,
     ):
-        throtte_subscription_dict["throttle_protection"] = {
+        throttle_subscription_dict["throttle_protection"] = {
             "subscription_download_probability": 0.0
         }
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
-            preset_dict=throtte_subscription_dict,
+            preset_dict=throttle_subscription_dict,
         )
 
         with (
