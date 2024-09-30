@@ -1,0 +1,81 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+{output_directory}/JMC
+  Mock Entry 20-1.info.json
+  Mock Entry 20-1.jpg
+  Mock Entry 20-1.mkv
+    Converted from mp4
+    Video Tags:
+      album: Music Videos
+      artist: JMC
+      genre: ytdl-sub
+      premiered: 2020-08-08
+      title: Mock Entry 20-1
+      year: 2020
+  Mock Entry 20-1.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        genre: ytdl-sub
+        premiered: 2020-08-08
+        title: Mock Entry 20-1
+  Mock Entry 20-2.info.json
+  Mock Entry 20-2.jpg
+  Mock Entry 20-2.mkv
+    Converted from mp4
+    Video Tags:
+      album: Music Videos
+      artist: JMC
+      genre: ytdl-sub
+      premiered: 2020-08-08
+      title: Mock Entry 20-2
+      year: 2020
+  Mock Entry 20-2.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        genre: ytdl-sub
+        premiered: 2020-08-08
+        title: Mock Entry 20-2
+  Mock Entry 20-3.info.json
+  Mock Entry 20-3.jpg
+  Mock Entry 20-3.mkv
+    Converted from mp4
+    Video Tags:
+      album: Music Videos
+      artist: JMC
+      genre: ytdl-sub
+      premiered: 2020-08-07
+      title: Mock Entry 20-3
+      year: 2020
+  Mock Entry 20-3.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        genre: ytdl-sub
+        premiered: 2020-08-07
+        title: Mock Entry 20-3
+  Mock Entry 21-1.info.json
+  Mock Entry 21-1.jpg
+  Mock Entry 21-1.mkv
+    Converted from mp4
+    Video Tags:
+      album: Music Videos
+      artist: JMC
+      genre: ytdl-sub
+      premiered: 2021-08-08
+      title: Mock Entry 21-1
+      year: 2021
+  Mock Entry 21-1.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        genre: ytdl-sub
+        premiered: 2021-08-08
+        title: Mock Entry 21-1
