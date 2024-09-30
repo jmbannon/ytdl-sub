@@ -9,37 +9,40 @@ from ytdl_sub.utils.exceptions import ValidationException
 @pytest.fixture
 def single_song_video_dict(output_directory):
     return {
-        "download": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
+        "download": "https://your.name.here",
         "output_options": {"output_directory": output_directory, "file_name": "will_error.mp4"},
-        # test multi-tags
+        # test multi-tags compile
         "music_tags": {"genres": ["multi_tag_1", "multi_tag_2"]},
-        "format": "worst[ext=mp4]",  # download the worst format so it is fast
-        "ytdl_options": {
-            "postprocessor_args": {"ffmpeg": ["-bitexact"]},  # Must add this for reproducibility
-        },
     }
 
 
 class TestMusicTags:
     def test_music_tags_errors_on_video(
         self,
-        default_config,
+        config,
         single_song_video_dict,
         output_directory,
+        subscription_name,
+        mock_download_collection_entries,
     ):
         subscription = Subscription.from_dict(
-            config=default_config,
-            preset_name="single_song_test",
+            config=config,
+            preset_name=subscription_name,
             preset_dict=single_song_video_dict,
         )
 
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Validation error in single_song_test.music_tags: music_tags plugin received a "
-                "video with the extension 'mp4'. Only audio files are supported for setting music "
-                "tags. Ensure you are converting the video to audio using the audio_extract "
-                "plugin."
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False, num_urls=1, is_extracted_audio=False, is_dry_run=True
+            ),
+            pytest.raises(
+                ValidationException,
+                match=re.escape(
+                    f"Validation error in {subscription_name}.music_tags: music_tags plugin received a "
+                    "video with the extension 'mp4'. Only audio files are supported for setting music "
+                    "tags. Ensure you are converting the video to audio using the audio_extract "
+                    "plugin."
+                ),
             ),
         ):
             subscription.download(dry_run=True)
