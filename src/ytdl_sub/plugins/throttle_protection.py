@@ -1,8 +1,6 @@
 import random
 import time
-from typing import List
 from typing import Optional
-from typing import Tuple
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import Plugin
@@ -167,29 +165,17 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
                 self.plugin_options.max_downloads_per_subscription.randomized_int()
             )
 
-    def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
-        """
-        Returns
-        -------
-        If subscription_download_probability, match-filters that will perform no downloads
-        if it's rolled to not download.
-        """
-        perform_download: Tuple[List[str], List[str]] = [], []
-        do_not_perform_download: Tuple[List[str], List[str]] = [], [
-            "title = __YTDL_SUB_THROTTLE_PROTECTION_ON_SUBSCRIPTION_DOWNLOAD__"
-        ]
-
+    def initialize_subscription(self) -> bool:
         if self.plugin_options.subscription_download_probability:
             proba = self.plugin_options.subscription_download_probability.value
             # assume proba is set to 1.0, random.random() will always be < 1, can never reach this
             if random.random() > proba:
                 logger.info(
-                    "Subscription download probability of %f missed, skipping this subscription",
+                    "Subscription download probability of %0.2f missed",
                     proba,
                 )
-                return do_not_perform_download
-
-        return perform_download
+                return False
+        return True
 
     def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
         if (
