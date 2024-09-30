@@ -82,9 +82,7 @@ class SplitByChaptersOptions(OptionsDictValidator):
 
     def added_variables(
         self,
-        resolved_variables: Set[str],
         unresolved_variables: Set[str],
-        plugin_op: PluginOperation,
     ) -> Dict[PluginOperation, Set[str]]:
         return {
             PluginOperation.MODIFY_ENTRY: {

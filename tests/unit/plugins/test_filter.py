@@ -19,7 +19,7 @@ def regex_subscription_dict_base(output_directory):
         "filter_include": ["{%not(%is_null(description_website))}"],
         "overrides": {
             "in_regex_default": "in regex default",
-            "url": "https://youtube.com/playlist?list=PL5BC0FC26BECA5A35",
+            "url": "https://your.name.here",
             "upload_capture": """{
                 %regex_capture_many_with_defaults(
                     upload_date_standardized,
