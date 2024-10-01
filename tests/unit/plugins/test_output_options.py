@@ -37,8 +37,8 @@ class TestOutputOptions:
         mock_download_collection_entries,
         dry_run,
     ):
-        output_options_subscription_dict['output_options']['thumbnail_name'] = ""
-        output_options_subscription_dict['output_options']['info_json_name'] = ""
+        output_options_subscription_dict["output_options"]["thumbnail_name"] = ""
+        output_options_subscription_dict["output_options"]["info_json_name"] = ""
 
         subscription = Subscription.from_dict(
             config=config,
