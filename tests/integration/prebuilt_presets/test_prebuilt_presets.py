@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Dict
 from typing import List
 
-
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
@@ -15,7 +14,6 @@ from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionPresets
 from ytdl_sub.prebuilt_presets.tv_show import TvShowCollectionSeasonPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
-
 
 
 @pytest.mark.parametrize("media_player_preset", TvShowCollectionPresets.preset_names)

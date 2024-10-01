@@ -1,10 +1,10 @@
 import pytest
-
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateEpisodeFormattingPresets, \
-    TvShowByDatePresets
+from ytdl_sub.prebuilt_presets.tv_show import TvShowByDateEpisodeFormattingPresets
+from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
 from ytdl_sub.subscriptions.subscription import Subscription
 
 DEPRECATED_TV_SHOW_PRESET_EQUIVALENTS = {
@@ -17,6 +17,7 @@ DEPRECATED_TV_SHOW_PRESET_EQUIVALENTS = {
 }
 
 DEFAULT_TV_SHOW_STRUCTURE = "season_by_year__episode_by_month_day"
+
 
 class TestPrebuiltTVShowPresets:
 
@@ -119,9 +120,7 @@ class TestPrebuiltTVShowPresets:
         tv_show_preset: str,
     ):
 
-        with mock_download_collection_entries(
-            is_youtube_channel=True
-        ):
+        with mock_download_collection_entries(is_youtube_channel=True):
             self.run(
                 config=config,
                 subscription_name=subscription_name,
@@ -130,7 +129,9 @@ class TestPrebuiltTVShowPresets:
                 episode_ordering_preset=DEFAULT_TV_SHOW_STRUCTURE,
             )
 
-    @pytest.mark.parametrize("episode_ordering_preset", TvShowByDateEpisodeFormattingPresets.preset_names)
+    @pytest.mark.parametrize(
+        "episode_ordering_preset", TvShowByDateEpisodeFormattingPresets.preset_names
+    )
     def test_episode_ordering_presets(
         self,
         config,
