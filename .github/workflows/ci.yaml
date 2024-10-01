@@ -52,7 +52,7 @@ jobs:
         path: /opt/coverage/unit
         key: ${{github.sha}}-coverage-unit
 
-  test-soundcloud:
+  test-integration:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -65,40 +65,20 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Run e2e soundcloud tests with coverage
+    - name: Run integration tests with coverage
       run: |
         pip install -e .[test]
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/e2e/soundcloud && coverage xml -o /opt/coverage/soundcloud/coverage.xml
-
-  test-bandcamp:
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-
-    - name: Run e2e soundcloud tests with coverage
-      run: |
-        pip install -e .[test]
-        sudo apt-get update
-        sudo apt-get install -y ffmpeg
-        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/e2e/bandcamp && coverage xml -o /opt/coverage/bandcamp/coverage.xml
+        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/integration --ignore tests/integration/prebuilt_presets && coverage xml -o /opt/coverage/integration/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
       with:
-        path: /opt/coverage/bandcamp
-        key: ${{github.sha}}-coverage-bandcamp
+        path: /opt/coverage/integration
+        key: ${{github.sha}}-coverage-integration
 
-  test-youtube:
+  test-integration-prebuilt-presets:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -111,20 +91,20 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Run e2e youtube tests with coverage
+    - name: Run prebuilt preset integration tests with coverage
       run: |
         pip install -e .[test]
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/e2e/youtube && coverage xml -o /opt/coverage/youtube/coverage.xml
+        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/integration/prebuilt_presets && coverage xml -o /opt/coverage/integration-prebuilt-presets/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
       with:
-        path: /opt/coverage/youtube
-        key: ${{github.sha}}-coverage-youtube
+        path: /opt/coverage/integration-prebuilt-presets
+        key: ${{github.sha}}-coverage-integration-prebuilt-presets
 
-  test-plugins:
+  test-e2e:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -137,27 +117,20 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Run e2e plugin tests with coverage
+    - name: Run e2e tests with coverage
       run: |
         pip install -e .[test]
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/e2e/plugins && coverage xml -o /opt/coverage/plugins/coverage.xml
-
-    - name: Save coverage
-      uses: actions/cache@v3
-      with:
-        path: /opt/coverage/plugins
-        key: ${{github.sha}}-coverage-plugins
+        coverage run -m pytest tests/e2e && coverage xml -o /opt/coverage/e2e/coverage.xml
 
   codecov-upload:
     runs-on: ubuntu-22.04
     needs: [
       test-unit,
-      test-soundcloud,
-      test-bandcamp,
-      test-youtube,
-      test-plugins
+      test-integration,
+      test-integration-prebuilt-presets,
+      test-e2e
     ]
     permissions:
       contents: read
@@ -169,32 +142,26 @@ jobs:
         path: /opt/coverage/unit
         key: ${{github.sha}}-coverage-unit
 
-    - name: Restore soundcloud test coverage
+    - name: Restore integration test coverage
       uses: actions/cache@v3
       with:
-        path: /opt/coverage/soundcloud
-        key: ${{github.sha}}-coverage-soundcloud
+        path: /opt/coverage/integration
+        key: ${{github.sha}}-coverage-integration
 
-    - name: Restore bandcamp test coverage
+    - name: Restore integration prebuilt presets test coverage
       uses: actions/cache@v3
       with:
-        path: /opt/coverage/bandcamp
-        key: ${{github.sha}}-coverage-bandcamp
+        path: /opt/coverage/integration-prebuilt-presets
+        key: ${{github.sha}}-coverage-integration-prebuilt-presets
 
-    - name: Restore youtube test coverage
+    - name: Restore e2e test coverage
       uses: actions/cache@v3
       with:
-        path: /opt/coverage/youtube
-        key: ${{github.sha}}-coverage-youtube
-
-    - name: Restore plugins test coverage
-      uses: actions/cache@v3
-      with:
-        path: /opt/coverage/plugins
-        key: ${{github.sha}}-coverage-plugins
+        path: /opt/coverage/e2e
+        key: ${{github.sha}}-coverage-e2e
 
     - name: Upload code coverage to codecov.io
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: /opt/coverage/unit/coverage.xml,/opt/coverage/soundcloud/coverage.xml,/opt/coverage/bandcamp/coverage.xml,/opt/coverage/youtube/coverage.xml,/opt/coverage/plugins/coverage.xml
+        files: /opt/coverage/unit/coverage.xml,/opt/coverage/integration/coverage.xml,/opt/coverage/integration-prebuilt-presets/coverage.xml,/opt/coverage/e2e/coverage.xml

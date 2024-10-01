@@ -1,6 +1,5 @@
 import pytest
 from expected_transaction_log import assert_transaction_log_matches
-from unit.conftest import mock_download_collection_entries
 
 from ytdl_sub.subscriptions.subscription import Subscription
 

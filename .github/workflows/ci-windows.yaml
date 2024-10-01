@@ -31,7 +31,7 @@ jobs:
         python -m pip install -e .[test]
         python -m pytest --reruns 3 --reruns-delay 5 tests/unit
 
-  test-soundcloud:
+  test-integration:
     runs-on: windows-latest
     permissions:
       contents: read
@@ -44,7 +44,7 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Run e2e soundcloud tests with coverage
+    - name: Run integration tests with coverage
       run: |
         curl.exe -L -o ffmpeg.zip https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
         tar -xf ffmpeg.zip
@@ -52,9 +52,10 @@ jobs:
         move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
         
         python -m pip install -e .[test]
-        python -m pytest --reruns 3 --reruns-delay 5 tests/e2e/soundcloud
+        python -m pytest --reruns 3 --reruns-delay 5 tests/integration --ignore tests/integration/prebuilt_presets
 
-  test-bandcamp:
+
+  test-integration-prebuilt-presets:
     runs-on: windows-latest
     permissions:
       contents: read
@@ -67,31 +68,7 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Run e2e soundcloud tests with coverage
-      run: |
-        curl.exe -L -o ffmpeg.zip https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
-        tar -xf ffmpeg.zip
-        move "ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe" "ffmpeg.exe"
-        move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
-
-        python -m pip install -e .[test]
-        python -m pytest --reruns 3 --reruns-delay 5 tests/e2e/bandcamp
-
-
-  test-youtube:
-    runs-on: windows-latest
-    permissions:
-      contents: read
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-
-    - name: Run e2e youtube tests with coverage
+    - name: Run prebuilt preset integration tests with coverage
       run: |
         curl.exe -L -o ffmpeg.zip https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
         tar -xf ffmpeg.zip
@@ -99,9 +76,9 @@ jobs:
         move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
         
         python -m pip install -e .[test]
-        python -m pytest --reruns 3 --reruns-delay 5 tests/e2e/youtube
+        python -m pytest --reruns 3 --reruns-delay 5 tests/integration/prebuilt_presets
 
-  test-plugins:
+  test-e2e:
     runs-on: windows-latest
     permissions:
       contents: read
@@ -114,7 +91,7 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Run e2e plugin tests with coverage
+    - name: Run e2e tests with coverage
       run: |
         curl.exe -L -o ffmpeg.zip https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
         tar -xf ffmpeg.zip
@@ -122,4 +99,4 @@ jobs:
         move "ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe" "ffprobe.exe"
         
         python -m pip install -e .[test]
-        python -m pytest --reruns 3 --reruns-delay 5 tests/e2e/plugins
+        python -m pytest tests/e2e
