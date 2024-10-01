@@ -5,7 +5,6 @@ from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.entries.entry import ytdl_sub_chapters_from_comments
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
