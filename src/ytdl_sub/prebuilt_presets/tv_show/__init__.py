@@ -36,6 +36,14 @@ class TvShowByDateEpisodeFormattingPresets(PrebuiltPresets):
 
 class TvShowCollectionPresets(PrebuiltPresets):
     preset_names = {
+        "Kodi TV Show Collection",
+        "Jellyfin TV Show Collection",
+        "Plex TV Show Collection",
+    }
+
+
+class TvShowCollectionOldPresets(PrebuiltPresets):
+    preset_names = {
         "kodi_tv_show_collection",
         "jellyfin_tv_show_collection",
         "plex_tv_show_collection",
