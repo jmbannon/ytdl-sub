@@ -28,6 +28,7 @@ def throttle_subscription_dict(output_directory) -> Dict:
                 "min": 0.02,
                 "max": 0.02,
             },
+            "subscription_download_probability": 1.0,
         },
     }
 
