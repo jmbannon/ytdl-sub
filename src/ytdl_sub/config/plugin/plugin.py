@@ -69,6 +69,13 @@ class Plugin(BasePlugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
         ytdl options to enable/disable when downloading entries for this specific plugin
         """
 
+    def initialize_subscription(self) -> bool:
+        """
+        Before any downloading begins, perform initialization before the subscription runs.
+        Returns true if this subscription should run, false otherwise.
+        """
+        return True
+
     def modify_entry_metadata(self, entry: Entry) -> Optional[Entry]:
         """
         After entry metadata has been gathered, perform preprocessing on the metadata
