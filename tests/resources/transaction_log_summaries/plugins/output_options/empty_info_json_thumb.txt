@@ -9,8 +9,6 @@ Files created:
         mpaa: TV-14
         title: JMC
 {output_directory}/Season 2020
-  s2020.e000001 - Mock Entry 20-3-thumb.jpg
-  s2020.e000001 - Mock Entry 20-3.info.json
   s2020.e000001 - Mock Entry 20-3.mp4
     Video Tags:
       contentRating: TV-14
@@ -38,8 +36,6 @@ Files created:
         season: 2020
         title: 2020-08-07 - Mock Entry 20-3
         year: 2020
-  s2020.e000002 - Mock Entry 20-2-thumb.jpg
-  s2020.e000002 - Mock Entry 20-2.info.json
   s2020.e000002 - Mock Entry 20-2.mp4
     Video Tags:
       contentRating: TV-14
@@ -67,8 +63,6 @@ Files created:
         season: 2020
         title: 2020-08-08 - Mock Entry 20-2
         year: 2020
-  s2020.e000003 - Mock Entry 20-1-thumb.jpg
-  s2020.e000003 - Mock Entry 20-1.info.json
   s2020.e000003 - Mock Entry 20-1.mp4
     Video Tags:
       contentRating: TV-14
@@ -97,8 +91,6 @@ Files created:
         title: 2020-08-08 - Mock Entry 20-1
         year: 2020
 {output_directory}/Season 2021
-  s2021.e000004 - Mock Entry 21-1-thumb.jpg
-  s2021.e000004 - Mock Entry 21-1.info.json
   s2021.e000004 - Mock Entry 21-1.mp4
     Video Tags:
       contentRating: TV-14
