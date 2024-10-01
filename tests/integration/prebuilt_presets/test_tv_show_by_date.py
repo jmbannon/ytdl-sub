@@ -9,14 +9,11 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 DEPRECATED_TV_SHOW_PRESET_EQUIVALENTS = {
     "Kodi TV Show by Date": "kodi_tv_show_by_date",
-    "Kodi TV Show Collection": "kodi_tv_show_collection",
     "Jellyfin TV Show by Date": "jellyfin_tv_show_by_date",
-    "Jellyfin TV Show Collection": "jellyfin_tv_show_collection",
     "Plex TV Show by Date": "plex_tv_show_by_date",
-    "Plex TV Show Collection": "plex_tv_show_collection",
 }
 
-DEFAULT_TV_SHOW_STRUCTURE = "season_by_year__episode_by_month_day"
+DEFAULT_EPISODE_ORDERING_PRESET = "season_by_year__episode_by_month_day"
 
 
 class TestPrebuiltTVShowPresets:
@@ -126,7 +123,7 @@ class TestPrebuiltTVShowPresets:
                 subscription_name=subscription_name,
                 output_directory=output_directory,
                 tv_show_preset=tv_show_preset,
-                episode_ordering_preset=DEFAULT_TV_SHOW_STRUCTURE,
+                episode_ordering_preset=DEFAULT_EPISODE_ORDERING_PRESET,
             )
 
     @pytest.mark.parametrize(
