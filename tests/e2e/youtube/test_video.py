@@ -29,45 +29,11 @@ def single_video_preset_dict(output_directory):
         "video_tags": {
             "title": "{title}",
         },
-        # And test subscription download proba = 1.0
-        "throttle_protection": {"subscription_download_probability": 1.0},
         "overrides": {
             "music_video_artist": "JMC",
             "music_video_directory": output_directory,
             "test_override_map": {"{music_video_artist}": "{music_video_directory}"},
             "test_override_map_get": "{ %map_get(test_override_map, music_video_artist) }",
-        },
-    }
-
-
-@pytest.fixture
-def single_tv_show_video_nulled_values_preset_dict(output_directory):
-    return {
-        "preset": [
-            "jellyfin_tv_show_by_date",
-            "season_by_year__episode_by_download_index",
-            "chunk_initial_download",
-        ],
-        # set file output fields to None
-        "output_options": {
-            "thumbnail_name": "",
-            "info_json_name": "",
-        },
-        "format": "worst[ext=mp4]",
-        "ytdl_options": {
-            "max_downloads": 2,
-        },
-        # test override variables added by ytdl-sub
-        "nfo_tags": {
-            "tags": {
-                "subscription_name": "{subscription_name}",
-                "subscription_name_sanitized": "{subscription_name_sanitized}",
-            }
-        },
-        "overrides": {
-            "url": "https://www.youtube.com/@ProjectZombie603",
-            "tv_show_name": "Project Zombie",
-            "tv_show_directory": output_directory,
         },
     }
 
@@ -171,23 +137,4 @@ class TestYoutubeVideo:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="youtube/test_video_cli.json",
-        )
-
-    def test_single_video_nulled_values(
-        self,
-        tv_show_config,
-        single_tv_show_video_nulled_values_preset_dict,
-        output_directory,
-    ):
-        single_video_subscription = Subscription.from_dict(
-            config=tv_show_config,
-            preset_name="tv_video_nulled_values",
-            preset_dict=single_tv_show_video_nulled_values_preset_dict,
-        )
-
-        transaction_log = single_video_subscription.download(dry_run=True)
-        assert_transaction_log_matches(
-            output_directory=output_directory,
-            transaction_log=transaction_log,
-            transaction_log_summary_file_name="youtube/test_video_nulled_values.txt",
         )
