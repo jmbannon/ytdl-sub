@@ -32,7 +32,7 @@ jobs:
         python -m pytest --reruns 3 --reruns-delay 5 tests/unit
 
   test-integration:
-    runs-on: ubuntu-22.04
+    runs-on: windows-latest
     permissions:
       contents: read
 
@@ -56,7 +56,7 @@ jobs:
 
 
   test-integration-prebuilt-presets:
-    runs-on: ubuntu-22.04
+    runs-on: windows-latest
     permissions:
       contents: read
 
