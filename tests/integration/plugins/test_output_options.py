@@ -3,10 +3,9 @@ from typing import Dict
 from unittest.mock import patch
 
 import pytest
-from mergedeep import mergedeep
-
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from mergedeep import mergedeep
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.ytdlp import YTDLP
@@ -113,7 +112,9 @@ class TestOutputOptions:
             expected_download_summary_file_name="plugins/output_options/pre_migration.json",
         )
 
-        output_options_subscription_dict["output_options"]["migrated_download_archive_name"] = ".ytdl-sub-{tv_show_name_sanitized}-migrated-download-archive.json"
+        output_options_subscription_dict["output_options"][
+            "migrated_download_archive_name"
+        ] = ".ytdl-sub-{tv_show_name_sanitized}-migrated-download-archive.json"
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
@@ -121,8 +122,8 @@ class TestOutputOptions:
         )
 
         with mock_download_collection_entries(
-                is_youtube_channel=False,
-                num_urls=0,
+            is_youtube_channel=False,
+            num_urls=0,
         ):
             transaction_log = subscription.download(dry_run=False)
 
