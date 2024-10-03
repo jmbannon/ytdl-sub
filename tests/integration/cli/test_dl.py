@@ -20,6 +20,11 @@ def dl_subscription_dict(output_directory) -> Dict:
             "music_video_directory": output_directory,
             "url": "https://your.name.here",
         },
+        "nfo_tags": {
+            "tags": {
+                "custom_tag": "{%array_at( ['hi', 'mom'], 1 )}"
+            }
+        }
     }
 
 
