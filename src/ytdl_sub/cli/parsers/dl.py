@@ -243,9 +243,12 @@ class DownloadArgsParser:
         return subscription_dict
 
     def get_dl_subscription_name(self) -> str:
+        """
+        Returns a deterministic name based on input args
+        """
         to_hash = str(sorted(self._unknown_arguments))
-        hash = hashlib.sha256(to_hash.encode()).hexdigest()[-8:]
-        return f"cli-dl-{hash}"
+        hash_str = hashlib.sha256(to_hash.encode()).hexdigest()[-8:]
+        return f"cli-dl-{hash_str}"
 
     @classmethod
     def from_dl_override(cls, override: str, config: ConfigFile) -> "DownloadArgsParser":

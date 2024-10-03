@@ -25,5 +25,3 @@ def timestamps_file_path():
         yield tmp.name
     finally:
         FileHandler.delete(tmp.name)
-
-

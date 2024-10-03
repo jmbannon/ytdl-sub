@@ -7,7 +7,7 @@ import shutil
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 from typing import Callable
 from typing import Dict
 from typing import List
