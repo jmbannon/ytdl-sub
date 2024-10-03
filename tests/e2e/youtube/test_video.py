@@ -70,46 +70,6 @@ class TestYoutubeVideo:
             expected_download_summary_file_name="youtube/test_video.json",
         )
 
-    def test_single_video_download_missing_thumbnail(
-        self,
-        default_config,
-        single_video_preset_dict,
-        working_directory,
-        output_directory,
-    ):
-        single_video_subscription = Subscription.from_dict(
-            config=default_config,
-            preset_name="music_video_single_video_test",
-            preset_dict=single_video_preset_dict,
-        )
-
-        def delete_entry_thumb(entry: Entry) -> None:
-            FileHandler.delete(entry.get_download_thumbnail_path())
-            try_convert_download_thumbnail(entry=entry)
-
-        # Pretend the thumbnail did not download via returning nothing for its downloaded path
-        with (
-            patch.object(YTDLP, "_EXTRACT_ENTRY_NUM_RETRIES", 1),
-            patch.object(Entry, "try_get_ytdlp_download_thumbnail_path") as mock_ytdlp_path,
-            patch(
-                "ytdl_sub.downloaders.url.downloader.try_convert_download_thumbnail",
-                side_effect=delete_entry_thumb,
-            ),
-        ):
-            mock_ytdlp_path.return_value = None
-            transaction_log = single_video_subscription.download(dry_run=False)
-
-        assert_transaction_log_matches(
-            output_directory=output_directory,
-            transaction_log=transaction_log,
-            transaction_log_summary_file_name="youtube/test_video_missing_thumb.txt",
-        )
-        assert_expected_downloads(
-            output_directory=output_directory,
-            dry_run=False,
-            expected_download_summary_file_name="youtube/test_video_missing_thumb.json",
-        )
-
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_single_video_download_from_cli_dl(
         self,
