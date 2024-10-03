@@ -1,13 +1,7 @@
-import shlex
-import sys
 import tempfile
-from typing import List
-from unittest.mock import patch
 
 import pytest
 
-from ytdl_sub.cli.entrypoint import main
-from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.file_handler import FileHandler
 
 
@@ -33,7 +27,3 @@ def timestamps_file_path():
         FileHandler.delete(tmp.name)
 
 
-def mock_run_from_cli(args: str) -> List[Subscription]:
-    args_list = ["ytdl-sub"] + shlex.split(args)
-    with patch.object(sys, "argv", args_list):
-        return main()

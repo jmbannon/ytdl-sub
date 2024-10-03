@@ -2,8 +2,7 @@ from pathlib import Path
 from typing import Dict
 
 import pytest
-from conftest import assert_logs
-from e2e.conftest import mock_run_from_cli
+from conftest import assert_logs, mock_run_from_cli
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 from mergedeep import mergedeep
