@@ -1,9 +1,9 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-JMC-download-archive.json
+  .ytdl-sub-JMC-migrated-download-archive.json
 
 Files removed:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-music_video_playlist_test-download-archive.json
+  .ytdl-sub-subscription_test-download-archive.json

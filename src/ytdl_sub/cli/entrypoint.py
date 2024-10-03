@@ -161,7 +161,7 @@ def _download_subscription_from_cli(
         extra_arguments=extra_args, config_options=config.config_options
     )
     subscription_args_dict = dl_args_parser.to_subscription_dict()
-    subscription_name = f"cli-dl-{dl_args_parser.get_args_hash()}"
+    subscription_name = dl_args_parser.get_dl_subscription_name()
 
     subscription = Subscription.from_dict(
         config=config, preset_name=subscription_name, preset_dict=subscription_args_dict

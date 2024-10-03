@@ -145,6 +145,8 @@ def mock_download_collection_entries(
             # Second TV URL or second soundcloud URL, which downloads first
             is_second_url = "2" in kwargs["url"] or kwargs["url"].endswith("/albums")
 
+            if num_urls == 0:
+                return []
             if num_urls == 1 or (is_second_url and num_urls > 1):
                 return [
                     mock_entry_dict_factory(

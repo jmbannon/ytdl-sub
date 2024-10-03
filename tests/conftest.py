@@ -2,7 +2,9 @@ import contextlib
 import json
 import logging
 import os
+import shlex
 import shutil
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -18,8 +20,10 @@ from resources import copy_file_fixture
 from resources import file_fixture_path
 from yt_dlp.utils import sanitize_filename
 
+from ytdl_sub.cli.entrypoint import main
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
+from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
@@ -262,3 +266,9 @@ def default_config_path(default_config) -> str:
 @pytest.fixture()
 def music_subscriptions_path() -> Path:
     return Path("examples/music_subscriptions.yaml")
+
+
+def mock_run_from_cli(args: str) -> List[Subscription]:
+    args_list = ["ytdl-sub"] + shlex.split(args)
+    with patch.object(sys, "argv", args_list):
+        return main()

@@ -1,7 +1,7 @@
 from typing import Optional
 
 import pytest
-from e2e.conftest import mock_run_from_cli
+from conftest import mock_run_from_cli
 
 from ytdl_sub.utils.file_handler import FileMetadata
 

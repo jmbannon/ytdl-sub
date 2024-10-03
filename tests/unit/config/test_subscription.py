@@ -186,6 +186,7 @@ def preset_with_subscription_overrides_map(
                         "elem2",
                         "elem3",
                     ],
+                    "custom_map": {"custom_map_key": ["custom_map_list_value"]},
                 }
             },
         },
@@ -290,6 +291,7 @@ def test_subscription_overrides_map(
             "elem2",
             "elem3",
         ],
+        "custom_map": {"custom_map_key": ["custom_map_list_value"]},
     }
 
 
