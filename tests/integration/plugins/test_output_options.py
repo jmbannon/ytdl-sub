@@ -122,9 +122,7 @@ class TestOutputOptions:
 
         with mock_download_collection_entries(
                 is_youtube_channel=False,
-                num_urls=1,
-                is_extracted_audio=False,
-                is_dry_run=False,
+                num_urls=0,
         ):
             transaction_log = subscription.download(dry_run=False)
 
