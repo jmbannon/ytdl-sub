@@ -1,7 +1,10 @@
+from pathlib import Path
 from typing import Dict
 from unittest.mock import patch
 
 import pytest
+from mergedeep import mergedeep
+
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
@@ -32,6 +35,110 @@ def output_options_subscription_dict(output_directory) -> Dict:
 
 
 class TestOutputOptions:
+
+    @classmethod
+    def _ensure_subscription_migrates(
+        cls,
+        config: ConfigFile,
+        subscription_name: str,
+        subscription_dict: Dict,
+        output_directory: Path,
+    ):
+        # Ensure download archive migrates
+        mergedeep.merge(
+            subscription_dict,
+            {
+                "output_options": {
+                    "migrated_download_archive_name": ".ytdl-sub-{tv_show_name_sanitized}-download-archive.json"
+                }
+            },
+        )
+        migrated_subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=subscription_dict,
+        )
+        transaction_log = migrated_subscription.download()
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="youtube/test_playlist_archive_migrated.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="youtube/test_playlist_archive_migrated.json",
+        )
+
+        # Ensure no changes after migration
+        transaction_log = migrated_subscription.download()
+        assert transaction_log.is_empty
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="youtube/test_playlist_archive_migrated.json",
+        )
+
+    def test_download_archive_migration(
+        self,
+        config: ConfigFile,
+        subscription_name: str,
+        output_options_subscription_dict: Dict,
+        output_directory: str,
+        mock_download_collection_entries,
+    ):
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=output_options_subscription_dict,
+        )
+
+        with mock_download_collection_entries(
+            is_youtube_channel=False,
+            num_urls=1,
+            is_extracted_audio=False,
+            is_dry_run=False,
+        ):
+            transaction_log = subscription.download(dry_run=False)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="plugins/output_options/pre_migration.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="plugins/output_options/pre_migration.json",
+        )
+
+        output_options_subscription_dict["output_options"]["migrated_download_archive_name"] = ".ytdl-sub-{tv_show_name_sanitized}-migrated-download-archive.json"
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=output_options_subscription_dict,
+        )
+
+        with mock_download_collection_entries(
+                is_youtube_channel=False,
+                num_urls=1,
+                is_extracted_audio=False,
+                is_dry_run=False,
+        ):
+            transaction_log = subscription.download(dry_run=False)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name="plugins/output_options/post_migration.txt",
+        )
+        assert_expected_downloads(
+            output_directory=output_directory,
+            dry_run=False,
+            expected_download_summary_file_name="plugins/output_options/post_migration.json",
+        )
+
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_empty_info_json_and_thumb(
         self,
