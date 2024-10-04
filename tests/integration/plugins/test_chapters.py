@@ -1,13 +1,14 @@
 from typing import Dict
 
 import pytest
-from mergedeep import mergedeep
-
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 from integration.plugins.conftest import mock_chapters_class
+from mergedeep import mergedeep
+
 from ytdl_sub.entries.entry import ytdl_sub_chapters_from_comments
 from ytdl_sub.subscriptions.subscription import Subscription
+
 
 @pytest.fixture
 def chapters_base_subscription_dict(output_directory) -> Dict:
@@ -21,41 +22,50 @@ def chapters_base_subscription_dict(output_directory) -> Dict:
         },
     }
 
+
 @pytest.fixture
 def sponsorblock_disabled_dict(chapters_base_subscription_dict) -> Dict:
-    mergedeep.merge(chapters_base_subscription_dict, {
-        "chapters": {
-            "enable": "{enable_sponsorblock}",
-            "sponsorblock_categories": [
-                "outro",
-                "selfpromo",
-                "preview",
-                "interaction",
-                "sponsor",
-                "music_offtopic",
-                "intro",
-            ],
-            "remove_sponsorblock_categories": "all",
-            "remove_chapters_regex": [
-                "Intro",
-                "Outro",
-            ],
+    mergedeep.merge(
+        chapters_base_subscription_dict,
+        {
+            "chapters": {
+                "enable": "{enable_sponsorblock}",
+                "sponsorblock_categories": [
+                    "outro",
+                    "selfpromo",
+                    "preview",
+                    "interaction",
+                    "sponsor",
+                    "music_offtopic",
+                    "intro",
+                ],
+                "remove_sponsorblock_categories": "all",
+                "remove_chapters_regex": [
+                    "Intro",
+                    "Outro",
+                ],
+            },
+            "overrides": {
+                "enable_sponsorblock": "False",
+            },
         },
-        "overrides": {
-            "enable_sponsorblock": "False",
-        },
-    })
+    )
     return chapters_base_subscription_dict
+
 
 @pytest.fixture
 def chapters_from_comments_subscription_dict(chapters_base_subscription_dict) -> Dict:
-    mergedeep.merge(chapters_base_subscription_dict, {
-        "chapters": {
-            "embed_chapters": True,
-            "allow_chapters_from_comments": True,
+    mergedeep.merge(
+        chapters_base_subscription_dict,
+        {
+            "chapters": {
+                "embed_chapters": True,
+                "allow_chapters_from_comments": True,
+            },
         },
-    })
+    )
     return chapters_base_subscription_dict
+
 
 class TestChapters:
     def test_chapters_disabled_respected(
@@ -98,9 +108,7 @@ class TestChapters:
         )
 
         with mock_download_collection_entries(
-            is_youtube_channel=False,
-            num_urls=1,
-            is_dry_run=dry_run
+            is_youtube_channel=False, num_urls=1, is_dry_run=dry_run
         ):
             transaction_log = subscription.download(dry_run=dry_run)
 
