@@ -1,7 +1,19 @@
 {
-  ".ytdl-sub-chapters_from_comments-download-archive.json": "70bc3bb62af3a344b0256e1d3b98dcb0",
-  "JMC/Move 78 - Automated Improvisation [Full Album].info.json": "INFO_JSON",
-  "JMC/Move 78 - Automated Improvisation [Full Album].jpg": "c12e6a6f242680d1096a1a99d74a62c6",
-  "JMC/Move 78 - Automated Improvisation [Full Album].mp4": "fbe825bf5fb8ce193d47c3da3540e815",
-  "JMC/Move 78 - Automated Improvisation [Full Album].nfo": "039268e97673a6f2b391772ec3b52fac"
+  ".ytdl-sub-subscription_test-download-archive.json": "76e202bd03ceef93daaffffee2cfa193",
+  "JMC/Mock Entry 20-1.info.json": "INFO_JSON",
+  "JMC/Mock Entry 20-1.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "JMC/Mock Entry 20-1.mp4": "40efe3f597c40c11d0d3f2f87cc7650b",
+  "JMC/Mock Entry 20-1.nfo": "fefcf0b3e4f4ff80ad636584d50dadec",
+  "JMC/Mock Entry 20-2.info.json": "INFO_JSON",
+  "JMC/Mock Entry 20-2.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "JMC/Mock Entry 20-2.mp4": "0747f56d03e720128b1fa5ef25bcf3c8",
+  "JMC/Mock Entry 20-2.nfo": "025c0b631da5ff5470382b38fce78d2d",
+  "JMC/Mock Entry 20-3.info.json": "INFO_JSON",
+  "JMC/Mock Entry 20-3.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "JMC/Mock Entry 20-3.mp4": "eb776b8e6da77a848666d88623600fd6",
+  "JMC/Mock Entry 20-3.nfo": "618b0ff948d9de2e10cf1da8c0dd6615",
+  "JMC/Mock Entry 21-1.info.json": "INFO_JSON",
+  "JMC/Mock Entry 21-1.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "JMC/Mock Entry 21-1.mp4": "5d56530dc8a4cfe55efb791d82bae0f0",
+  "JMC/Mock Entry 21-1.nfo": "e5c715749efc1603a6e2f59244d87aba"
 }

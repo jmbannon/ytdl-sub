@@ -1,34 +1,97 @@
 Files created:
 ----------------------------------------
 {output_directory}
-  .ytdl-sub-chapters_from_comments-download-archive.json
+  .ytdl-sub-subscription_test-download-archive.json
 {output_directory}/JMC
-  Move 78 - Automated Improvisation [Full Album].info.json
-  Move 78 - Automated Improvisation [Full Album].jpg
-  Move 78 - Automated Improvisation [Full Album].mp4
+  Mock Entry 20-1.info.json
+  Mock Entry 20-1.jpg
+  Mock Entry 20-1.mp4
     Chapters from comments:
-      0:00: 01. The Lonely Tears of Lee Seedol
-      4:30: 02. But What If We're Wrong
-      9:16: 03. Follow the Earworm Pt.2
-      12:25: 04. Keyword Salad
-      16:48: 05. Ultra Natural
-      20:47: 06. Flight Instructions
-      25:46: 07. Dawn of the Useless Class
-      29:58: 08. Schnitzel Whisperer
-      32:16: 09. Teilo
-    Embedded subtitles with lang(s) en, de
+      0:00: " Intro
+      0:07: " Part 1
+      0:13: " Part 2
+      0:19: " Part 3
     Video Tags:
       album: Music Videos
       artist: JMC
       genre: ytdl-sub
-      premiered: 2022-11-21
-      title: Move 78 - Automated Improvisation [Full Album]
-      year: 2022
-  Move 78 - Automated Improvisation [Full Album].nfo
+      premiered: 2020-08-08
+      title: Mock Entry 20-1
+      year: 2020
+  Mock Entry 20-1.nfo
     NFO tags:
       musicvideo:
         album: Music Videos
         artist: JMC
         genre: ytdl-sub
-        premiered: 2022-11-21
-        title: Move 78 - Automated Improvisation [Full Album]
+        premiered: 2020-08-08
+        title: Mock Entry 20-1
+  Mock Entry 20-2.info.json
+  Mock Entry 20-2.jpg
+  Mock Entry 20-2.mp4
+    Chapters from comments:
+      0:00: " Intro
+      0:07: " Part 1
+      0:13: " Part 2
+      0:19: " Part 3
+    Video Tags:
+      album: Music Videos
+      artist: JMC
+      genre: ytdl-sub
+      premiered: 2020-08-08
+      title: Mock Entry 20-2
+      year: 2020
+  Mock Entry 20-2.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        genre: ytdl-sub
+        premiered: 2020-08-08
+        title: Mock Entry 20-2
+  Mock Entry 20-3.info.json
+  Mock Entry 20-3.jpg
+  Mock Entry 20-3.mp4
+    Chapters from comments:
+      0:00: " Intro
+      0:07: " Part 1
+      0:13: " Part 2
+      0:19: " Part 3
+    Video Tags:
+      album: Music Videos
+      artist: JMC
+      genre: ytdl-sub
+      premiered: 2020-08-07
+      title: Mock Entry 20-3
+      year: 2020
+  Mock Entry 20-3.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        genre: ytdl-sub
+        premiered: 2020-08-07
+        title: Mock Entry 20-3
+  Mock Entry 21-1.info.json
+  Mock Entry 21-1.jpg
+  Mock Entry 21-1.mp4
+    Chapters from comments:
+      0:00: " Intro
+      0:07: " Part 1
+      0:13: " Part 2
+      0:19: " Part 3
+    Video Tags:
+      album: Music Videos
+      artist: JMC
+      genre: ytdl-sub
+      premiered: 2021-08-08
+      title: Mock Entry 21-1
+      year: 2021
+  Mock Entry 21-1.nfo
+    NFO tags:
+      musicvideo:
+        album: Music Videos
+        artist: JMC
+        genre: ytdl-sub
+        premiered: 2021-08-08
+        title: Mock Entry 21-1
