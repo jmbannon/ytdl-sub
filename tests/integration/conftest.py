@@ -57,6 +57,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         entry_dict = {
             v.uid.metadata_key: uid,
             v.epoch.metadata_key: 1596878400,
+            v.duration.metadata_key: 42 if is_extracted_audio else 31,
             v.playlist_title.metadata_key: playlist_title,
             v.playlist_index.metadata_key: playlist_index,
             v.playlist_count.metadata_key: playlist_count,
