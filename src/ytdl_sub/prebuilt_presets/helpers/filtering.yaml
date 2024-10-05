@@ -1,0 +1,52 @@
+presets:
+
+  #############################################################################
+  # Include Keywords
+  #   Include or exclude media with any of the listed keywords in their titles
+  #   Keywords will check a lower-cased title or description
+  Filter Keywords:
+    overrides:
+      # default filter lists to be empty
+      title_include_keywords: "{ [] }"
+      title_exclude_keywords: "{ [] }"
+      description_include_keywords: "{ [] }"
+      description_exclude_keywords: "{ [] }"
+
+      "%ensure_string": >-
+        {
+          %assert_then(
+            %is_string($0),
+            %lower($0),
+            "filter keywords must be strings"
+          )
+        }
+      "%ensure_lower_array": >-
+        {
+          %assert_then(
+            %is_array($0),
+            %array_apply(
+              $0,
+              %ensure_string
+            ),
+            %concat($1," must be an array")
+          )
+        }
+
+      # $0 - var to evaluate
+      # $1 - keyword list
+      # $2 - variable name for error messages
+      # $3 - default return if keyword list is empty
+      "%contains_keywords": >-
+        { 
+          %if(
+            %bool( $1 ),
+            %contains_any( %lower($0), %ensure_lower_array($1, $2) ),
+            $3
+          )
+        }
+
+    filter_exclude:
+        - "{ %not( %contains_keywords(title, title_include_keywords, 'title_include_keywords', true) ) }"
+        - "{ %not( %contains_keywords(description, description_include_keywords, 'description_include_keywords', true) ) }"
+        - "{ %contains_keywords(title, title_exclude_keywords, 'title_exclude_keywords', false) }"
+        - "{ %contains_keywords(description, description_exclude_keywords, 'description_exclude_keywords',false) }"

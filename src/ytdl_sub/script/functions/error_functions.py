@@ -20,9 +20,10 @@ class ErrorFunctions:
           Explicitly throw an error with the provided assert message if ``value`` evaluates to
           False. If it evaluates to True, it will return ``value``.
         """
-        if not bool(value.value):
+        evaluated_val = value.value()
+        if not bool(evaluated_val.value):
             raise UserThrownRuntimeError(assert_message)
-        return value
+        return evaluated_val
 
     @staticmethod
     def assert_then(
@@ -35,7 +36,7 @@ class ErrorFunctions:
         """
         if not bool(value.value):
             raise UserThrownRuntimeError(assert_message)
-        return ret
+        return ret.value()
 
     @staticmethod
     def assert_eq(
@@ -46,9 +47,10 @@ class ErrorFunctions:
           Explicitly throw an error with the provided assert message if ``value`` does not equal
           ``equals``. If they do equal, then return ``value``.
         """
-        if not value.value == equals.value:
+        evaluated_val = value.value()
+        if not evaluated_val.value == equals.value:
             raise UserThrownRuntimeError(assert_message)
-        return value
+        return evaluated_val
 
     @staticmethod
     def assert_ne(
@@ -59,6 +61,7 @@ class ErrorFunctions:
           Explicitly throw an error with the provided assert message if ``value`` equals
           ``equals``. If they do equal, then return ``value``.
         """
-        if value.value == equals.value:
+        evaluated_value = value.value()
+        if evaluated_value.value == equals.value:
             raise UserThrownRuntimeError(assert_message)
-        return value
+        return evaluated_value

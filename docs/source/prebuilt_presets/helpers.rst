@@ -35,6 +35,40 @@ Add the following preset to download the best available audio and video quality,
 
 ``max_1080p``
 
+Filter Keywords
+---------------
+
+``Filter Keywords`` can include or exclude media with any of the listed keywords. Both keywords and title/description are lower-cased before filtering.
+
+Supports the following override variables:
+
+* ``title_include_keywords``
+* ``title_exclude_keywords``
+* ``description_include_keywords``
+* ``description_exclude_keywords``
+
+.. tip::
+
+   Use the `~` tilda subscription mode to set a subscription's list override variables.
+   Tilda mode allows override variables to be set directly underneath it.
+
+   .. code-block:: yaml
+
+      Plex TV Show by Date | Filter Keywords:
+
+        = Documentaries:
+          "~NOVA PBS":
+            url: "https://www.youtube.com/@novapbs"
+            title_exclude_keywords:
+              - "preview"
+              - "trailer"
+
+          "~To Catch a Smuggler":
+            url: "https://www.youtube.com/@NatGeo"
+            title_include_keywords:
+              - "To Catch a Smuggler"
+
+
 Chunk Initial Download
 ----------------------
 

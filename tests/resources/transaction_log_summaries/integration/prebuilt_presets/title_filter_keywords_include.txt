@@ -1,0 +1,20 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+{output_directory}/Season 2020
+  s2020.e080701 - Mock Entry ２０-３-thumb.jpg
+  s2020.e080701 - Mock Entry ２０-３.info.json
+  s2020.e080701 - Mock Entry ２０-３.mp4
+    Video Tags:
+      contentRating: TV-14
+      date: 2020-08-07
+      episode_id: 80701
+      genre: ytdl-sub
+      show: subscription_test
+      synopsis:
+        https://20-3.com
+
+        The Description
+      title: 2020-08-07 - Mock Entry 20-3
+      year: 2020

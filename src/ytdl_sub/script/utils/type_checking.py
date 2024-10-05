@@ -208,6 +208,10 @@ class FunctionSpec:
             return list(range(1, num_input_args, 2)) + [num_input_args - 1]
         if self.function_name == "if_passthrough":
             return [0, 1]  # true-passthrough, false-passthrough
+        if self.function_name in ("assert", "assert_eq", "assert_ne"):
+            return [0]
+        if self.function_name == "assert_then":
+            return [1]
         return []
 
     @property
