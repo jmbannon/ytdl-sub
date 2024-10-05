@@ -4,6 +4,11 @@ Common
 
 .. highlight:: yaml
 
+Filtering
+-------------
+
+.. literalinclude:: /../../src/ytdl_sub/prebuilt_presets/helpers/filtering.yaml
+
 Media Quality
 -------------
 

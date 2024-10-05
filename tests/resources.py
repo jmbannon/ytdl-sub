@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 
-REGENERATE_FIXTURES: bool = False
+REGENERATE_FIXTURES: bool = True
 
 RESOURCE_PATH: Path = Path("tests") / "resources"
 _FILE_FIXTURE_PATH: Path = RESOURCE_PATH / "file_fixtures"
