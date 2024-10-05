@@ -52,6 +52,11 @@ See `yt-dl's recommended way <https://github.com/ytdl-org/youtube-dl#how-do-i-pa
 
 :doc:`This page </guides/getting_started/automating_downloads>` shows how to set up ``ytdl-sub`` to run automatically on various platforms.
 
+...download large channels?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can use the prebuilt preset :doc:`chunk_initial_download </prebuilt_presets/helpers>`
+
 There is a bug where...
 -----------------------
 

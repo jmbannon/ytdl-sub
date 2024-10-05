@@ -2,6 +2,22 @@
 Helper Presets
 ==============
 
+.. hint::
+
+   Apply presets to your subscriptions using pipes:
+
+   .. code-block:: yaml
+     :caption: Pipes can separate presets and values to apply them to all subscriptions below them.
+
+     Plex TV Show by Date | best_video_quality:
+
+       = Documentaries | chunk_initial_download:
+         "NOVA PBS": "https://www.youtube.com/@novapbs"
+         "National Geographic": "https://www.youtube.com/@NatGeo"
+
+       = Documentaries:
+         "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
+
 Common presets are not usable by themselves- setting one of these as the sole preset of your subscription and attempting to download will not work. But you can add these presets to quickly modify an existing preset to better suit your needs.
 
 Best A/V Quality
