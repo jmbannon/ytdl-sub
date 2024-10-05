@@ -55,7 +55,12 @@ See `yt-dl's recommended way <https://github.com/ytdl-org/youtube-dl#how-do-i-pa
 ...download large channels?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can use the prebuilt preset :doc:`chunk_initial_download </prebuilt_presets/helpers>`
+See the prebuilt preset :doc:`chunk_initial_download </prebuilt_presets/helpers>`.
+
+...filter to include or exclude based on certain keywords?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See the prebuilt preset :doc:`Filter Keywords </prebuilt_presets/helpers>`.
 
 There is a bug where...
 -----------------------

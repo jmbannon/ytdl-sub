@@ -48,19 +48,20 @@ Include or exclude media with any of the listed keywords in their titles. Both k
    Tilda mode allows override variables to be set directly underneath it.
 
    .. code-block:: yaml
-     Plex TV Show by Date:
 
-       = Documentaries:
-         "~NOVA PBS":
-           url: "https://www.youtube.com/@novapbs"
-           title_exclude_keywords:
-             - "preview"
-             - "trailer"
+      Plex TV Show by Date | Filter Keywords:
 
-         "~To Catch a Smuggler":
-           url: "https://www.youtube.com/@NatGeo"
-           title_include_keywords:
-             - "To Catch a Smuggler"
+        = Documentaries:
+          "~NOVA PBS":
+            url: "https://www.youtube.com/@novapbs"
+            title_exclude_keywords:
+              - "preview"
+              - "trailer"
+
+          "~To Catch a Smuggler":
+            url: "https://www.youtube.com/@NatGeo"
+            title_include_keywords:
+              - "To Catch a Smuggler"
 
 
 Chunk Initial Download
