@@ -259,7 +259,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         resolved_variables: Dict[Variable, Resolvable],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Resolvable:
-        # TODO: Make conditionals not execute all branches!!!
+        # Ensure conditionals do not execute all branches
         conditional_return_args = self.function_spec.conditional_arg_indices(
             num_input_args=len(self.args)
         )

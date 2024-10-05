@@ -1,8 +1,9 @@
 import re
 
 import pytest
-
 from expected_transaction_log import assert_transaction_log_matches
+
+from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 
@@ -14,11 +15,9 @@ def filter_subscription_dict(output_directory):
             "Plex TV Show by Date",
             "Filter Keywords",
         ],
-        "overrides": {
-            "url": "https://your.name.here",
-            "tv_show_directory": output_directory
-        }
+        "overrides": {"url": "https://your.name.here", "tv_show_directory": output_directory},
     }
+
 
 class TestFilterKeywords:
 
@@ -36,7 +35,7 @@ class TestFilterKeywords:
             preset_dict=filter_subscription_dict,
         )
 
-        with  mock_download_collection_entries(
+        with mock_download_collection_entries(
             is_youtube_channel=False, num_urls=1, is_dry_run=True
         ):
             transaction_log = subscription.download(dry_run=True)
@@ -59,7 +58,7 @@ class TestFilterKeywords:
     ):
         filter_subscription_dict["overrides"][f"title_{filter_mode}_keywords"] = [
             "not included",
-            "MOCK ENTRY 20-3"
+            "MOCK ENTRY 20-3",
         ]
         subscription = Subscription.from_dict(
             config=config,
@@ -67,7 +66,7 @@ class TestFilterKeywords:
             preset_dict=filter_subscription_dict,
         )
 
-        with  mock_download_collection_entries(
+        with mock_download_collection_entries(
             is_youtube_channel=False, num_urls=1, is_dry_run=True
         ):
             transaction_log = subscription.download(dry_run=True)
@@ -75,7 +74,7 @@ class TestFilterKeywords:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name=f"integration/prebuilt_presets/filter_keywords_{filter_mode}.txt",
+            transaction_log_summary_file_name=f"integration/prebuilt_presets/title_filter_keywords_{filter_mode}.txt",
         )
 
     @pytest.mark.parametrize("filter_mode", ["include", "exclude"])
@@ -89,8 +88,8 @@ class TestFilterKeywords:
         filter_mode: str,
     ):
         filter_subscription_dict["overrides"][f"description_{filter_mode}_keywords"] = [
-            "not included",
-            "MOCK ENTRY 20-3"
+            "no filter here",
+            "description",
         ]
         subscription = Subscription.from_dict(
             config=config,
@@ -98,7 +97,7 @@ class TestFilterKeywords:
             preset_dict=filter_subscription_dict,
         )
 
-        with  mock_download_collection_entries(
+        with mock_download_collection_entries(
             is_youtube_channel=False, num_urls=1, is_dry_run=True
         ):
             transaction_log = subscription.download(dry_run=True)
@@ -106,25 +105,67 @@ class TestFilterKeywords:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name=f"integration/prebuilt_presets/filter_keywords_{filter_mode}.txt",
+            transaction_log_summary_file_name=f"integration/prebuilt_presets/description_filter_keywords_{filter_mode}.txt",
         )
 
+    @pytest.mark.parametrize(
+        "keyword_variable",
+        [
+            "title_include_keywords",
+            "title_exclude_keywords",
+            "description_include_keywords",
+            "description_exclude_keywords",
+        ],
+    )
     def test_error_not_list_type(
-            self,
-            config,
-            filter_subscription_dict,
-            output_directory,
-            subscription_name,
-            mock_download_collection_entries,
+        self,
+        config,
+        filter_subscription_dict,
+        output_directory,
+        subscription_name,
+        mock_download_collection_entries,
+        keyword_variable,
     ):
-        filter_subscription_dict["overrides"][f"description_include_keywords"] = "not list"
+        filter_subscription_dict["overrides"][keyword_variable] = "not array"
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
             preset_dict=filter_subscription_dict,
         )
 
-        with  mock_download_collection_entries(
-            is_youtube_channel=False, num_urls=1, is_dry_run=True
+        with (
+            mock_download_collection_entries(is_youtube_channel=False, num_urls=1, is_dry_run=True),
+            pytest.raises(UserThrownRuntimeError, match=f"{keyword_variable} must be an array"),
         ):
-            transaction_log = subscription.download(dry_run=True)
+            _ = subscription.download(dry_run=True)
+
+    @pytest.mark.parametrize(
+        "keyword_variable",
+        [
+            "title_include_keywords",
+            "title_exclude_keywords",
+            "description_include_keywords",
+            "description_exclude_keywords",
+        ],
+    )
+    def test_error_not_string_keyword(
+        self,
+        config,
+        filter_subscription_dict,
+        output_directory,
+        subscription_name,
+        mock_download_collection_entries,
+        keyword_variable,
+    ):
+        filter_subscription_dict["overrides"][keyword_variable] = "{['str', ['nested array not']]}"
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=filter_subscription_dict,
+        )
+
+        with (
+            mock_download_collection_entries(is_youtube_channel=False, num_urls=1, is_dry_run=True),
+            pytest.raises(UserThrownRuntimeError, match="filter keywords must be strings"),
+        ):
+            _ = subscription.download(dry_run=True)
