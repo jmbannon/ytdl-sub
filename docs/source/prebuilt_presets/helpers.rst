@@ -38,9 +38,14 @@ Add the following preset to download the best available audio and video quality,
 Filter Keywords
 ---------------
 
-Include or exclude media with any of the listed keywords in their titles. Both keywords and title/description are lower-cased before filtering.
+``Filter Keywords`` can include or exclude media with any of the listed keywords in their titles. Both keywords and title/description are lower-cased before filtering.
 
-``Filter Keywords``
+Supports the following override variables:
+
+* ``title_include_keywords``
+* ``title_exclude_keywords``
+* ``description_include_keywords``
+* ``description_exclude_keywords``
 
 .. tip::
 
