@@ -69,19 +69,34 @@ Supports the following override variables:
               - "To Catch a Smuggler"
 
 
-Chunk Initial Download
-----------------------
+Chunk Downloads
+---------------
 
-If you are archiving a large channel, ``ytdl-sub`` will try pulling each video's metadata from newest to oldest before starting any downloads. It is a long process and not ideal. A better method is to chunk the process by using the following preset:
+If you are archiving a large channel, ``ytdl-sub`` will try pulling each video's metadata from newest to oldest before
+starting any downloads. It is a long process and not ideal. A better method is to chunk the process by using the
+following preset:
 
-``chunk_initial_download``
+``Chunk Downloads``
 
-It will download videos starting from the oldest one, and only download 20 at a time. You can
-change this number by setting:
+It will download videos starting from the oldest one, and only download 20 at a time by default. You can
+change this number by setting the override variable ``chunk_max_downloads``.
 
 .. code-block:: yaml
 
-  ytdl_options:
-    max_downloads: 30  # Desired number to download per invocation
+   __preset__:
+     overrides:
+       chunk_max_downloads: 20
 
-Once the entire channel is downloaded, remove this preset. Then it will pull metadata from newest to oldest again, and stop pulling additional metadata once it reaches a video that has already been downloaded.
+   Plex TV Show by Date:
+
+     # Chunk these ones
+     = Documentaries | Chunk Downloads:
+       "NOVA PBS": "https://www.youtube.com/@novapbs"
+       "National Geographic": "https://www.youtube.com/@NatGeo"
+
+     # But not these ones
+     = Documentaries:
+       "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
+
+Once the entire channel is downloaded, remove the usage of this preset. It will then pull metadata from newest to
+oldest again, and stop once it reaches a video that has already been downloaded.

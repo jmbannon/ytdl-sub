@@ -37,10 +37,12 @@ presets:
 
   chunk_initial_download:  # legacy preset name
     ytdl_options:
-      max_downloads: 20
+      max_downloads: "{chunk_max_downloads}"
       playlistreverse: True
       break_on_existing: False
+    overrides:
+      chunk_max_downloads: 20
 
-  "Download in Chunks":
+  "Chunk Downloads":
     preset:
       - chunk_initial_download
