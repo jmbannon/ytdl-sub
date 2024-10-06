@@ -9,11 +9,13 @@ from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesIntegerFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    UnstructuredOverridesDictFormatterValidator,
+)
 from ytdl_sub.validators.validators import BoolValidator
-from ytdl_sub.validators.validators import LiteralDictValidator
 
 
-class YTDLOptions(LiteralDictValidator):
+class YTDLOptions(UnstructuredOverridesDictFormatterValidator):
     """
     Allows you to add any ytdl argument to ytdl-sub's downloader.
     The argument names can differ slightly from the command-line argument names. See

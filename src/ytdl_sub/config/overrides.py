@@ -11,12 +11,14 @@ from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARI
 from ytdl_sub.entries.variables.override_variables import OverrideHelpers
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
+from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
 
@@ -144,11 +146,36 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         self.update_script()
         return self
 
+    def _apply_to_resolvable(
+        self,
+        formatter: StringFormatterValidator,
+        entry: Optional[Entry],
+        function_overrides: Optional[Dict[str, str]],
+    ) -> Resolvable:
+        script: Script = self.script
+        unresolvable: Set[str] = self.unresolvable
+        if entry:
+            script = entry.script
+            unresolvable = entry.unresolvable
+
+        try:
+            return script.resolve_once(
+                dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
+                unresolvable=unresolvable,
+            )["tmp_var"]
+        except ScriptVariableNotResolved as exc:
+            raise StringFormattingException(
+                "Tried to resolve the following script, but could not due to unresolved "
+                f"variables:\n {formatter.format_string}\n"
+                "This is most likely due to circular dependencies in variables. "
+                "If you think otherwise, please file a bug on GitHub and post your config. Thanks!"
+            ) from exc
+
     def apply_formatter(
         self,
         formatter: StringFormatterValidator,
         entry: Optional[Entry] = None,
-        function_overrides: Dict[str, str] = None,
+        function_overrides: Optional[Dict[str, str]] = None,
     ) -> str:
         """
         Parameters
@@ -169,25 +196,28 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         StringFormattingException
             If the formatter that is trying to be resolved cannot
         """
-        script: Script = self.script
-        unresolvable: Set[str] = self.unresolvable
-        if entry:
-            script = entry.script
-            unresolvable = entry.unresolvable
-
-        try:
-            return formatter.post_process(
-                str(
-                    script.resolve_once(
-                        dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
-                        unresolvable=unresolvable,
-                    )["tmp_var"]
+        return formatter.post_process(
+            str(
+                self._apply_to_resolvable(
+                    formatter=formatter, entry=entry, function_overrides=function_overrides
                 )
             )
-        except ScriptVariableNotResolved as exc:
-            raise StringFormattingException(
-                "Tried to resolve the following script, but could not due to unresolved "
-                f"variables:\n {formatter.format_string}\n"
-                "This is most likely due to circular dependencies in variables. "
-                "If you think otherwise, please file a bug on GitHub and post your config. Thanks!"
-            ) from exc
+        )
+
+    def apply_overrides_formatter_to_native(
+        self,
+        formatter: OverridesStringFormatterValidator,
+    ) -> Any:
+        """
+        Parameters
+        ----------
+        formatter
+            Overrides formatter to apply
+
+        Returns
+        -------
+        The native python form of the resolved variable
+        """
+        return self._apply_to_resolvable(
+            formatter=formatter, entry=None, function_overrides=None
+        ).native

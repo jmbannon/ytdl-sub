@@ -12,7 +12,10 @@ def subscription_dict(output_directory):
     return {
         "preset": "Bandcamp",
         "ytdl_options": {
-            "max_downloads": 15,
+            # Test that ytdl-options can handle overrides
+            # TODO: Move this to a local test
+            "max_downloads": "{max_downloads}",
+            "extractor_args": {"youtube": {"lang": ["en"]}},
         },
         "audio_extract": {"codec": "mp3", "quality": 320},
         "date_range": {"after": "20210110"},
@@ -20,6 +23,7 @@ def subscription_dict(output_directory):
             "subscription_value": "https://sithuayemusic.bandcamp.com/",
             "subscription_indent_1": "Progressive Metal",
             "music_directory": output_directory,
+            "max_downloads": 15,
         },
     }
 
