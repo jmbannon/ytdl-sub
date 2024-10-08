@@ -53,7 +53,7 @@ lint = [
 ]
 docs = [
     "sphinx>=7,<9",
-    "sphinx-rtd-theme~=2.0",
+    "sphinx-rtd-theme>=2,<4",
     "sphinx-book-theme~=1.0",
     "sphinx-copybutton~=0.5",
     "sphinx_design~=0.6",
