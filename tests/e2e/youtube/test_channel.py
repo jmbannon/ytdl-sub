@@ -4,6 +4,7 @@ from typing import Dict
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import DISABLE_YOUTUBE_TESTS
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -42,6 +43,7 @@ def channel_preset_dict(output_directory):
     }
 
 
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestChannel:
     """
     Downloads my old minecraft youtube channel. Ensure the above files exist and have the

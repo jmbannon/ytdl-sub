@@ -3,6 +3,7 @@ from typing import Dict
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import DISABLE_YOUTUBE_TESTS
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -53,6 +54,7 @@ def chapters_from_comments_preset_dict(sponsorblock_and_subs_preset_dict: Dict) 
     return sponsorblock_and_subs_preset_dict
 
 
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestChapters:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_chapters_sponsorblock_and_removal_with_subs(

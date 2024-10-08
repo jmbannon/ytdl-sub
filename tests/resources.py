@@ -2,6 +2,7 @@ import os
 import shutil
 from pathlib import Path
 
+DISABLE_YOUTUBE_TESTS: bool = True
 REGENERATE_FIXTURES: bool = False
 
 RESOURCE_PATH: Path = Path("tests") / "resources"

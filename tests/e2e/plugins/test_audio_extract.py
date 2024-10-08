@@ -1,6 +1,7 @@
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import DISABLE_YOUTUBE_TESTS
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -46,6 +47,7 @@ def youtube_release_preset_dict(output_directory):
     }
 
 
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestAudioExtract:
     @pytest.mark.parametrize("dry_run", [False])
     def test_audio_extract_single_song(
