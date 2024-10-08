@@ -1,6 +1,7 @@
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from resources import DISABLE_YOUTUBE_TESTS
 
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -19,6 +20,9 @@ def preset_dict(output_directory):
     }
 
 
+@pytest.mark.skipif(
+    DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH"
+)
 class TestFileConvert:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_file_convert(

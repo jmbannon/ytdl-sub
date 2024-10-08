@@ -46,12 +46,12 @@ class TestBandcamp:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name="bandcamp/test_artist_url.txt",
+            transaction_log_summary_file_name="presets/test_artist_url.txt",
         )
         assert_expected_downloads(
             output_directory=output_directory,
             dry_run=dry_run,
-            expected_download_summary_file_name="bandcamp/test_artist_url.json",
+            expected_download_summary_file_name="presets/test_artist_url.json",
         )
 
         # Ensure another invocation will hit ExistingVideoReached
@@ -67,5 +67,5 @@ class TestBandcamp:
             assert_expected_downloads(
                 output_directory=output_directory,
                 dry_run=dry_run,
-                expected_download_summary_file_name="bandcamp/test_artist_url.json",
+                expected_download_summary_file_name="presets/test_artist_url.json",
             )
