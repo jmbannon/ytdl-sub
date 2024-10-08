@@ -20,9 +20,7 @@ def preset_dict(output_directory):
     }
 
 
-@pytest.mark.skipif(
-    DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH"
-)
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestFileConvert:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_file_convert(

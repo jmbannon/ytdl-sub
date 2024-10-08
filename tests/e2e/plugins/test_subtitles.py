@@ -32,9 +32,7 @@ def test_single_video_subs_embed_and_file_preset_dict(single_video_subs_embed_pr
     return single_video_subs_embed_preset_dict
 
 
-@pytest.mark.skipif(
-    DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH"
-)
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestSubtitles:
     def test_subtitle_lang_variable_partial_validates(self, default_config):
         default_config_dict = default_config.as_dict()

@@ -46,9 +46,7 @@ def livestream_preset_dict(output_directory):
     }
 
 
-@pytest.mark.skipif(
-    DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH"
-)
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestFileConvert:
     def test_livestreams_download_filtered(
         self,

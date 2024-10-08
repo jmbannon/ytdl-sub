@@ -58,9 +58,7 @@ def yt_album_as_chapters_with_regex_preset_dict(yt_album_as_chapters_preset_dict
     return yt_album_as_chapters_preset_dict
 
 
-@pytest.mark.skipif(
-    DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH"
-)
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestSplitByChapters:
     @pytest.mark.parametrize("dry_run", [True, False])
     def test_video_with_chapters(

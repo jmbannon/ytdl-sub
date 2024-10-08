@@ -2,10 +2,12 @@ from typing import Optional
 
 import pytest
 from conftest import mock_run_from_cli
+from resources import DISABLE_YOUTUBE_TESTS
 
 from ytdl_sub.utils.file_handler import FileMetadata
 
 
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestView:
     @pytest.mark.parametrize("split_chapters", [True, False])
     def test_view_from_cli(

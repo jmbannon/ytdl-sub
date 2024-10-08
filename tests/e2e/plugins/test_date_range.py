@@ -39,9 +39,7 @@ def rolling_recent_channel_preset_dict(recent_preset_dict):
     )
 
 
-@pytest.mark.skipif(
-    DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH"
-)
+@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestDateRange:
     @pytest.mark.parametrize("dry_run", [True, False])
     @pytest.mark.parametrize("date_range_breaks", [True, False])
