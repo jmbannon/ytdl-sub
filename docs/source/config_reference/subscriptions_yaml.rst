@@ -1,16 +1,13 @@
 ==================
 Subscriptions File
 ==================
-------------------
-subscriptions.yaml
-------------------
 
-The ``subscriptions.yaml`` file is where we use our :ref:`config_reference/config_yaml:presets` in the :ref:`config_reference/config_yaml:config.yaml`
-to define a ``subscription``: something we want to recurrently download such as a specific
+The ``subscriptions.yaml`` file is where we use :ref:`config_reference/config_yaml:presets`
+to define a ``subscription``: something we want to recurrently download, such as a specific
 channel or playlist.
 
 The only difference between a ``subscription`` and ``preset`` is that the subscription
-must have all required fields and ``{override_variables}`` defined so it can perform a download.
+must have all required variables defined to perform a download.
 
 Below is an example that downloads a YouTube playlist:
 
@@ -41,7 +38,7 @@ the ``parent preset`` to ``playlist_preset_ex``, and must define the variables `
 and ``{url}`` since the preset did not.
 
 Beautifying Subscriptions
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 Subscriptions support using presets as keys, and using keys to set override variables as values.
 For example:
 
@@ -96,10 +93,8 @@ parent preset:
         genre: "{subscription_indent_1}"
         content_rating: "{subscription_indent_2}"
 
-.. _subscription value:
-
 File Preset
-~~~~~~~~~~~
+-----------
 
 You can apply a preset to all subscriptions in the ``subscription.yaml`` file
 by using the file-wide ``__preset__``:
@@ -117,31 +112,3 @@ by using the file-wide ``__preset__``:
 
 This ``subscription.yaml`` is equivalent to the one above it because all
 subscriptions automatically set ``__preset__`` as a ``parent preset``.
-
-
-Subscription Value
-~~~~~~~~~~~~~~~~~~~
-NOTE: This is deprecated in favor of using the method in :ref:`config_reference/subscriptions_yaml:beautifying subscriptions`.
-
-With a clever config and use of ``__preset__``, your subscriptions can typically boil
-down to a name and url. You can set ``__value__`` to the name of an override variable,
-and use the override variable ``subscription_name`` to achieve one-liner subscriptions.
-Using the example above, we can do:
-
-.. code-block:: yaml
-  :caption: subscription.yaml
-
-  __preset__:
-    preset:
-      - "tv_show"
-    overrides:
-      tv_show_name: "{subscription_name}"
-
-  __value__: "url"
-
-  # single-line subscription, sets "Brandon Acker" and the subscription value
-  # to the override variables tv_show_name and url
-  "Brandon Acker": "https://www.youtube.com/@brandonacker"
-
-Traditional subscriptions that can override presets will still work when using ``__value__``.
-``__value__`` can also be set within a :ref:`config_reference/config_yaml:config.yaml`.
