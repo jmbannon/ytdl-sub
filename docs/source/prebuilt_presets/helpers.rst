@@ -20,6 +20,28 @@ Helper Presets
 
 Common presets are not usable by themselves- setting one of these as the sole preset of your subscription and attempting to download will not work. But you can add these presets to quickly modify an existing preset to better suit your needs.
 
+Only Recent
+-----------
+
+To only download a recent number of videos, apply the ``Only Recent`` preset. Once a video's
+upload date is outside of the range, or you hit max files, older videos will be deleted automatically.
+
+.. code-block:: yaml
+
+   __preset__:
+     overrides:
+       # Set to a non-zero value to only keep this many files at once per sub
+       only_recent_max_files: 0
+       only_recent_date_range: "7days"
+
+   Plex TV Show by Date | Only Recent:
+
+     = Documentaries:
+       "NOVA PBS": "https://www.youtube.com/@novapbs"
+
+To prevent deletion of files, use the preset ``Only Recent Archive`` instead.
+
+
 Best A/V Quality
 ----------------
 

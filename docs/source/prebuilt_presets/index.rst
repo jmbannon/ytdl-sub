@@ -12,3 +12,4 @@ definitions :doc:`here </config_reference/prebuilt_presets/index>`.
   helpers
   tv_shows
   music
+  music_videos
