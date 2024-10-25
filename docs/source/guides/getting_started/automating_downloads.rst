@@ -21,7 +21,7 @@ Docker and Unraid
   
   .. tab-item:: GUI Image
     
-    The script that will execute automatically is located at ``/config/ytdl-sub-configs/run-cron``. 
+    The script that will execute automatically is located at ``/config/ytdl-sub-configs/run_cron``.
 
     Access your container at http://localhost:8443/, then in the GUI terminal run these commands:
 
@@ -81,7 +81,7 @@ Docker and Unraid
 
       docker compose restart
 
-    The script that will execute automatically is located at ``/config/run-cron``. 
+    The script that will execute automatically is located at ``/config/ytdl-sub-configs/run_cron``.
 
     Access your container from the terminal by running:
 
@@ -105,14 +105,14 @@ Docker and Unraid
 
     .. code-block:: 
 
-      /config/run_cron
+      /config/ytdl-sub-configs/run_cron
 
     To create the cron definition, run the following command:
 
     .. code-block:: shell
 
       echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
-      echo "  0     */6     *       *       *       /config/run_cron" >> /config/crontabs/abc
+      echo "  0     */6     *       *       *       /config/ytdl-sub-configs/run_cron" >> /config/crontabs/abc
     
     This will run the script every 6 hours. To run every hour, change ``*/6`` to ``*/1``, or to run once a day, change the same value to the hour (in 24hr format) that you want it to run at. See the `cron tab manpage`_ for more options.
 
@@ -124,7 +124,7 @@ Linux
 .. code-block:: shell
 
   crontab -e
-  0     */6     *       *       *       /config/run_cron
+  0     */6     *       *       *       /config/ytdl-sub-configs/run_cron
 
 
 
