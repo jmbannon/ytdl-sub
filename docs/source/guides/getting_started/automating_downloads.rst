@@ -81,7 +81,7 @@ Docker and Unraid
 
       docker compose restart
 
-    The script that will execute automatically is located at ``/config/ytdl-sub-configs/run_cron``.
+    The script that will execute automatically is located at ``/config/run_cron``.
 
     Access your container from the terminal by running:
 
@@ -93,26 +93,26 @@ Docker and Unraid
 
     .. code-block:: shell
 
-      echo '#!/bin/bash' > /config/ytdl-sub-configs/run_cron
-      echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /config/ytdl-sub-configs/run_cron
-      echo "echo 'Cron started, running ytdl-sub...'" >> /config/ytdl-sub-configs/run_cron
-      echo "cd /config/ytdl-sub-configs" >> /config/ytdl-sub-configs/run_cron
-      echo "ytdl-sub --config=config.yaml sub subscriptions.yaml" >> /config/ytdl-sub-configs/run_cron
-      chmod +x /config/ytdl-sub-configs/run_cron
-      chown abc:abc /config/ytdl-sub-configs/run_cron
+      echo '#!/bin/bash' > /config/run_cron
+      echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /config/run_cron
+      echo "echo 'Cron started, running ytdl-sub...'" >> /config/run_cron
+      echo "cd /config" >> /config/run_cron
+      echo "ytdl-sub --config=config.yaml sub subscriptions.yaml" >> /config/run_cron
+      chmod +x /config/run_cron
+      chown abc:abc /config/run_cron
 
     You can test the newly created script by running: 
 
     .. code-block:: 
 
-      /config/ytdl-sub-configs/run_cron
+      /config/run_cron
 
     To create the cron definition, run the following command:
 
     .. code-block:: shell
 
       echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
-      echo "  0     */6     *       *       *       /config/ytdl-sub-configs/run_cron" >> /config/crontabs/abc
+      echo "  0     */6     *       *       *       /config/run_cron" >> /config/crontabs/abc
     
     This will run the script every 6 hours. To run every hour, change ``*/6`` to ``*/1``, or to run once a day, change the same value to the hour (in 24hr format) that you want it to run at. See the `cron tab manpage`_ for more options.
 
@@ -124,7 +124,7 @@ Linux
 .. code-block:: shell
 
   crontab -e
-  0     */6     *       *       *       /config/ytdl-sub-configs/run_cron
+  0     */6     *       *       *       /config/run_cron
 
 
 
