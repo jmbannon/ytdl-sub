@@ -1,0 +1,694 @@
+presets:
+  subs:
+    chapters:
+      embed_chapters: true
+    download:
+    - download_reverse: false
+      url: '{%bilateral_url(url) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url2) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url3) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url4) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url5) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url6) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url7) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url8) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url9) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url10) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url11) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url12) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url13) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url14) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url15) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url16) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url17) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url18) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url19) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url20) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url21) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url22) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url23) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url24) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url25) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url26) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url27) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url28) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url29) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url30) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url31) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url32) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url33) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url34) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url35) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url36) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url37) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url38) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url39) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url40) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url41) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url42) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url43) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url44) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url45) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url46) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url47) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url48) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url49) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url50) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url51) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url52) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url53) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url54) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url55) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url56) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url57) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url58) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url59) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url60) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url61) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url62) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url63) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url64) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url65) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url66) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url67) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url68) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url69) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url70) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url71) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url72) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url73) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url74) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url75) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url76) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url77) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url78) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url79) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url80) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url81) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url82) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url83) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url84) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url85) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url86) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url87) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url88) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url89) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url90) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url91) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url92) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url93) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url94) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url95) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url96) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url97) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url98) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{ %bilateral_url(url99) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    - download_reverse: false
+      url: '{%bilateral_url(url100) }'
+      ytdl_options:
+        playlist_items: -1:0:-1
+    nfo_tags:
+      nfo_name: '{episode_file_path}.nfo'
+      nfo_root: episodedetails
+      tags:
+        aired: '{episode_date_standardized}'
+        episode: '{episode_number}'
+        genre:
+        - '{tv_show_genre}'
+        mpaa: '{episode_content_rating}'
+        plot: '{episode_plot}'
+        season: '{season_number}'
+        title: '{episode_title}'
+        year: '{episode_year}'
+    output_directory_nfo_tags:
+      nfo_name: tvshow.nfo
+      nfo_root: tvshow
+      tags:
+        genre:
+        - '{tv_show_genre}'
+        mpaa: '{tv_show_content_rating}'
+        title: '{tv_show_name}'
+    output_options:
+      file_name: '{episode_file_path}.{ext}'
+      info_json_name: '{episode_file_path}.{info_json_ext}'
+      maintain_download_archive: true
+      output_directory: '{tv_show_directory}/{tv_show_name_sanitized}'
+      thumbnail_name: '{thumbnail_file_name}'
+    overrides:
+      '%is_bilateral_url': '{ %contains( $0, "youtube.com/playlist" ) }'
+      '%bilateral_url': "{ \n  %if(\n    %and(\n      enable_bilateral_scraping,\n\
+              \      true,\n      %is_bilateral_url($0)\n \
+              \   ),\n    $0,\n    \"\"\n  )\n}"
+      avatar_uncropped_thumbnail_file_name: '{tv_show_poster_file_name}'
+      banner_uncropped_thumbnail_file_name: '{tv_show_fanart_file_name}'
+      enable_bilateral_scraping: true
+      episode_content_rating: '{tv_show_content_rating}'
+      episode_date_standardized: '{upload_date_standardized}'
+      episode_file_name: s{season_number_padded}.e{episode_number_padded} - {file_title}
+      episode_file_path: '{season_directory_name_sanitized}/{episode_file_name_sanitized}'
+      episode_number: '{upload_month}{upload_day_padded}{upload_date_index_padded}'
+      episode_number_padded: '{upload_month_padded}{upload_day_padded}{upload_date_index_padded}'
+      episode_plot: '{webpage_url}
+
+
+        {description}'
+      episode_title: '{title} - {upload_date_standardized}'
+      episode_year: '{upload_year}'
+      file_title: '{title_sanitized}'
+      file_uid: '{uid_sanitized}'
+      season_directory_name: Season {season_number_padded}
+      season_number: '{upload_year}'
+      season_number_padded: '{season_number}'
+      season_poster_file_name: season{season_number_padded}-poster.jpg
+      subscription_array: '{ [] }'
+      subscription_indent_1: '{tv_show_genre_default}'
+      subscription_indent_2: '{tv_show_content_rating_default}'
+      subscription_value: ''
+      subscription_value_10: ''
+      subscription_value_100: ''
+      subscription_value_11: ''
+      subscription_value_12: ''
+      subscription_value_13: ''
+      subscription_value_14: ''
+      subscription_value_15: ''
+      subscription_value_16: ''
+      subscription_value_17: ''
+      subscription_value_18: ''
+      subscription_value_19: ''
+      subscription_value_2: ''
+      subscription_value_20: ''
+      subscription_value_21: ''
+      subscription_value_22: ''
+      subscription_value_23: ''
+      subscription_value_24: ''
+      subscription_value_25: ''
+      subscription_value_26: ''
+      subscription_value_27: ''
+      subscription_value_28: ''
+      subscription_value_29: ''
+      subscription_value_3: ''
+      subscription_value_30: ''
+      subscription_value_31: ''
+      subscription_value_32: ''
+      subscription_value_33: ''
+      subscription_value_34: ''
+      subscription_value_35: ''
+      subscription_value_36: ''
+      subscription_value_37: ''
+      subscription_value_38: ''
+      subscription_value_39: ''
+      subscription_value_4: ''
+      subscription_value_40: ''
+      subscription_value_41: ''
+      subscription_value_42: ''
+      subscription_value_43: ''
+      subscription_value_44: ''
+      subscription_value_45: ''
+      subscription_value_46: ''
+      subscription_value_47: ''
+      subscription_value_48: ''
+      subscription_value_49: ''
+      subscription_value_5: ''
+      subscription_value_50: ''
+      subscription_value_51: ''
+      subscription_value_52: ''
+      subscription_value_53: ''
+      subscription_value_54: ''
+      subscription_value_55: ''
+      subscription_value_56: ''
+      subscription_value_57: ''
+      subscription_value_58: ''
+      subscription_value_59: ''
+      subscription_value_6: ''
+      subscription_value_60: ''
+      subscription_value_61: ''
+      subscription_value_62: ''
+      subscription_value_63: ''
+      subscription_value_64: ''
+      subscription_value_65: ''
+      subscription_value_66: ''
+      subscription_value_67: ''
+      subscription_value_68: ''
+      subscription_value_69: ''
+      subscription_value_7: ''
+      subscription_value_70: ''
+      subscription_value_71: ''
+      subscription_value_72: ''
+      subscription_value_73: ''
+      subscription_value_74: ''
+      subscription_value_75: ''
+      subscription_value_76: ''
+      subscription_value_77: ''
+      subscription_value_78: ''
+      subscription_value_79: ''
+      subscription_value_8: ''
+      subscription_value_80: ''
+      subscription_value_81: ''
+      subscription_value_82: ''
+      subscription_value_83: ''
+      subscription_value_84: ''
+      subscription_value_85: ''
+      subscription_value_86: ''
+      subscription_value_87: ''
+      subscription_value_88: ''
+      subscription_value_89: ''
+      subscription_value_9: ''
+      subscription_value_90: ''
+      subscription_value_91: ''
+      subscription_value_92: ''
+      subscription_value_93: ''
+      subscription_value_94: ''
+      subscription_value_95: ''
+      subscription_value_96: ''
+      subscription_value_97: ''
+      subscription_value_98: ''
+      subscription_value_99: ''
+      thumbnail_file_name: '{episode_file_path}-thumb.jpg'
+      tv_show_content_rating: '{subscription_indent_2}'
+      tv_show_content_rating_default: TV-14
+      tv_show_directory: /mnt/streamy/videos/Subs/
+      tv_show_fanart_file_name: fanart.jpg
+      tv_show_genre: Animation
+      tv_show_genre_default: ytdl-sub
+      tv_show_name: Filthy Frank
+      tv_show_poster_file_name: poster.jpg
+      url: https://www.youtube.com/playlist?list=PLdd_1efceN2FP9USkRvE1v7cgVIewjpB6
+      url10: '{subscription_value_10}'
+      url100: '{subscription_value_100}'
+      url11: '{subscription_value_11}'
+      url12: '{subscription_value_12}'
+      url13: '{subscription_value_13}'
+      url14: '{subscription_value_14}'
+      url15: '{subscription_value_15}'
+      url16: '{subscription_value_16}'
+      url17: '{subscription_value_17}'
+      url18: '{subscription_value_18}'
+      url19: '{subscription_value_19}'
+      url2: '{subscription_value_2}'
+      url20: '{subscription_value_20}'
+      url21: '{subscription_value_21}'
+      url22: '{subscription_value_22}'
+      url23: '{subscription_value_23}'
+      url24: '{subscription_value_24}'
+      url25: '{subscription_value_25}'
+      url26: '{subscription_value_26}'
+      url27: '{subscription_value_27}'
+      url28: '{subscription_value_28}'
+      url29: '{subscription_value_29}'
+      url3: '{subscription_value_3}'
+      url30: '{subscription_value_30}'
+      url31: '{subscription_value_31}'
+      url32: '{subscription_value_32}'
+      url33: '{subscription_value_33}'
+      url34: '{subscription_value_34}'
+      url35: '{subscription_value_35}'
+      url36: '{subscription_value_36}'
+      url37: '{subscription_value_37}'
+      url38: '{subscription_value_38}'
+      url39: '{subscription_value_39}'
+      url4: '{subscription_value_4}'
+      url40: '{subscription_value_40}'
+      url41: '{subscription_value_41}'
+      url42: '{subscription_value_42}'
+      url43: '{subscription_value_43}'
+      url44: '{subscription_value_44}'
+      url45: '{subscription_value_45}'
+      url46: '{subscription_value_46}'
+      url47: '{subscription_value_47}'
+      url48: '{subscription_value_48}'
+      url49: '{subscription_value_49}'
+      url5: '{subscription_value_5}'
+      url50: '{subscription_value_50}'
+      url51: '{subscription_value_51}'
+      url52: '{subscription_value_52}'
+      url53: '{subscription_value_53}'
+      url54: '{subscription_value_54}'
+      url55: '{subscription_value_55}'
+      url56: '{subscription_value_56}'
+      url57: '{subscription_value_57}'
+      url58: '{subscription_value_58}'
+      url59: '{subscription_value_59}'
+      url6: '{subscription_value_6}'
+      url60: '{subscription_value_60}'
+      url61: '{subscription_value_61}'
+      url62: '{subscription_value_62}'
+      url63: '{subscription_value_63}'
+      url64: '{subscription_value_64}'
+      url65: '{subscription_value_65}'
+      url66: '{subscription_value_66}'
+      url67: '{subscription_value_67}'
+      url68: '{subscription_value_68}'
+      url69: '{subscription_value_69}'
+      url7: '{subscription_value_7}'
+      url70: '{subscription_value_70}'
+      url71: '{subscription_value_71}'
+      url72: '{subscription_value_72}'
+      url73: '{subscription_value_73}'
+      url74: '{subscription_value_74}'
+      url75: '{subscription_value_75}'
+      url76: '{subscription_value_76}'
+      url77: '{subscription_value_77}'
+      url78: '{subscription_value_78}'
+      url79: '{subscription_value_79}'
+      url8: '{subscription_value_8}'
+      url80: '{subscription_value_80}'
+      url81: '{subscription_value_81}'
+      url82: '{subscription_value_82}'
+      url83: '{subscription_value_83}'
+      url84: '{subscription_value_84}'
+      url85: '{subscription_value_85}'
+      url86: '{subscription_value_86}'
+      url87: '{subscription_value_87}'
+      url88: '{subscription_value_88}'
+      url89: '{subscription_value_89}'
+      url9: '{subscription_value_9}'
+      url90: '{subscription_value_90}'
+      url91: '{subscription_value_91}'
+      url92: '{subscription_value_92}'
+      url93: '{subscription_value_93}'
+      url94: '{subscription_value_94}'
+      url95: '{subscription_value_95}'
+      url96: '{subscription_value_96}'
+      url97: '{subscription_value_97}'
+      url98: '{subscription_value_98}'
+      url99: '{subscription_value_99}'
+    preset:
+    - _jellyfin_tv_show
+    - _tv_show_by_date
+    - _season_by_year
+    - jellyfin_tv_show_by_date
+    - season_by_year__episode_by_month_day
+    - add_subtitles
+    - include_info_json
+    - tv_show
+    subtitles:
+      allow_auto_generated_subtitles: true
+      embed_subtitles: true
+      languages: en
+    video_tags:
+      contentRating: '{episode_content_rating}'
+      date: '{episode_date_standardized}'
+      episode_id: '{episode_number}'
+      genre: '{tv_show_genre}'
+      show: '{tv_show_name}'
+      synopsis: '{episode_plot}'
+      title: '{episode_title}'
+      year: '{episode_year}'
+    ytdl_options:
+      break_on_existing: true
