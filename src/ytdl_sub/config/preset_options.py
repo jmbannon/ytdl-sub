@@ -1,7 +1,9 @@
 from typing import Any
+from typing import Dict
 from typing import Optional
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
+from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -47,6 +49,16 @@ class YTDLOptions(UnstructuredOverridesDictFormatterValidator):
 
     where each key is a ytdl argument. Include in the example are some popular ytdl_options.
     """
+
+    def to_native_dict(self, overrides: Overrides) -> Dict:
+        """
+        Materializes the entire ytdl-options dict from OverrideStringFormatters into
+        native python
+        """
+        return {
+            key: overrides.apply_overrides_formatter_to_native(val)
+            for key, val in self.dict.items()
+        }
 
 
 # Disable for proper docstring formatting
