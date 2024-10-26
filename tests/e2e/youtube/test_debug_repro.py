@@ -1,6 +1,5 @@
 import pytest
 import yaml
-
 from resources import file_fixture_path
 
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -10,9 +9,9 @@ from ytdl_sub.subscriptions.subscription import Subscription
 def repro_preset_dict(output_directory):
     with open(file_fixture_path("repro.yaml"), "r", encoding="utf-8") as yaml_file:
         yaml_dict = yaml.safe_load(yaml_file)
-    out = yaml_dict['presets']['subs']
-    del out['preset']
-    out['output_options']['output_directory'] = output_directory
+    out = yaml_dict["presets"]["subs"]
+    del out["preset"]
+    out["output_options"]["output_directory"] = output_directory
     return out
 
 
