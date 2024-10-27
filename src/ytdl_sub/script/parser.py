@@ -307,7 +307,7 @@ class _Parser:
                 self._pos += 2
             elif self._read(increment_pos=False, length=2) == "\\t":
                 string_value += "\t"
-                self._pos +=2
+                self._pos += 2
             else:
                 self._pos += 1
                 string_value += ch
