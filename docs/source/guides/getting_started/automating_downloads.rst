@@ -21,7 +21,7 @@ Docker and Unraid
   
   .. tab-item:: GUI Image
     
-    The script that will execute automatically is located at ``/config/ytdl-sub-configs/run-cron``. 
+    The script that will execute automatically is located at ``/config/ytdl-sub-configs/run_cron``.
 
     Access your container at http://localhost:8443/, then in the GUI terminal run these commands:
 
@@ -81,7 +81,7 @@ Docker and Unraid
 
       docker compose restart
 
-    The script that will execute automatically is located at ``/config/run-cron``. 
+    The script that will execute automatically is located at ``/config/run_cron``.
 
     Access your container from the terminal by running:
 
@@ -93,13 +93,13 @@ Docker and Unraid
 
     .. code-block:: shell
 
-      echo '#!/bin/bash' > /config/ytdl-sub-configs/run_cron
-      echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /config/ytdl-sub-configs/run_cron
-      echo "echo 'Cron started, running ytdl-sub...'" >> /config/ytdl-sub-configs/run_cron
-      echo "cd /config/ytdl-sub-configs" >> /config/ytdl-sub-configs/run_cron
-      echo "ytdl-sub --config=config.yaml sub subscriptions.yaml" >> /config/ytdl-sub-configs/run_cron
-      chmod +x /config/ytdl-sub-configs/run_cron
-      chown abc:abc /config/ytdl-sub-configs/run_cron
+      echo '#!/bin/bash' > /config/run_cron
+      echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /config/run_cron
+      echo "echo 'Cron started, running ytdl-sub...'" >> /config/run_cron
+      echo "cd /config" >> /config/run_cron
+      echo "ytdl-sub --config=config.yaml sub subscriptions.yaml" >> /config/run_cron
+      chmod +x /config/run_cron
+      chown abc:abc /config/run_cron
 
     You can test the newly created script by running: 
 
