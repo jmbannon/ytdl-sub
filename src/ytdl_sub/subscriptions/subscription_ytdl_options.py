@@ -110,11 +110,7 @@ class SubscriptionYTDLOptions:
 
     @property
     def _user_ytdl_options(self) -> Dict:
-        native_ytdl_options = {
-            key: self._overrides.apply_overrides_formatter_to_native(val)
-            for key, val in self._preset.ytdl_options.dict.items()
-        }
-        return native_ytdl_options
+        return self._preset.ytdl_options.to_native_dict(self._overrides)
 
     @property
     def _plugin_match_filters(self) -> Dict:

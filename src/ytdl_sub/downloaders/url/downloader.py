@@ -457,7 +457,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
 
     def _download_metadata(self, url: str, validator: UrlValidator) -> Iterable[Entry]:
         metadata_ytdl_options = self.metadata_ytdl_options(
-            ytdl_option_overrides=validator.ytdl_options.dict
+            ytdl_option_overrides=validator.ytdl_options.to_native_dict(self.overrides)
         )
         download_reversed = ScriptUtils.bool_formatter_output(
             self.overrides.apply_formatter(validator.download_reverse)
