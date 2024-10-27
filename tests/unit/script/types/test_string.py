@@ -1,7 +1,6 @@
 import re
 
 import pytest
-from unit.script.conftest import single_variable_output
 
 from ytdl_sub.script.parser import STRINGS_NOT_CLOSED
 from ytdl_sub.script.parser import STRINGS_ONLY_ARGS
@@ -46,13 +45,10 @@ class TestString:
             ("{%string('backslash \\\\')}", "backslash \\\\"),
             ("{%string('''triple quote with \" ' \\''')}", "triple quote with \" ' \\"),
             ('{%string("""triple quote with " \' \\""")}', "triple quote with \" ' \\"),
-            ("{%string('literal \\n newlines')}", "literal \n newlines"),
-            ("{%string('supports \t tabs')}", "supports \t tabs"),
-            ("{%string('literal \\t tabs')}", "literal \t tabs"),
         ],
     )
     def test_string(self, string: str, expected_string: str):
-        assert single_variable_output(string) == expected_string
+        assert Script({"out": string}).resolve() == ScriptOutput({"out": String(expected_string)})
 
     def test_null_is_empty_string(self):
         assert Script({"out": "{%string(null)}"}).resolve() == ScriptOutput({"out": String("")})

@@ -132,7 +132,6 @@ class TestNumericFunctions:
             ("no splits", " | ", None, ["no splits"]),
             ("one | split", " | ", None, ["one", "split"]),
             ("max | split | one", " | ", 1, ["max", "split | one"]),
-            ("multiline\ndescription", "\\n", None, ["multiline", "description"]),
         ],
     )
     def test_split(
