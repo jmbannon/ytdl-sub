@@ -490,15 +490,18 @@ class Script:
             name: definition for name, definition in variables.items() if not _is_function(name)
         }
 
+        custom_function_names = set(self._functions.keys()) | functions_to_add.keys()
+        variable_names = (
+            set(self._variables.keys()) | variables_to_add.keys() | (unresolvable or set())
+        )
+
         for definitions in [functions_to_add, variables_to_add]:
             for name, definition in definitions.items():
                 parsed = parse(
                     text=definition,
                     name=name,
-                    custom_function_names=set(self._functions.keys()),
-                    variable_names=set(self._variables.keys())
-                    .union(variables.keys())
-                    .union(unresolvable or set()),
+                    custom_function_names=custom_function_names,
+                    variable_names=variable_names,
                 )
 
                 if parsed.maybe_resolvable is None:

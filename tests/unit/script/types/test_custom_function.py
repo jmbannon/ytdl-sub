@@ -22,6 +22,24 @@ class TestCustomFunction:
             }
         ).resolve() == ScriptOutput({"output": Integer(9)})
 
+    def test_custom_functions_any_order_via_add(self):
+        assert Script({}).add(
+            {
+                "%custom_cubed": "{%mul(%custom_square($0),$0)}",
+                "%custom_square": "{%mul($0, $0)}",
+                "output": "{%custom_cubed(3)}",
+            }
+        ).resolve() == ScriptOutput({"output": Integer(27)})
+
+    def test_custom_functions_any_order_via_init(self):
+        assert Script(
+            {
+                "%custom_cubed": "{%mul(%custom_square($0),$0)}",
+                "%custom_square": "{%mul($0, $0)}",
+                "output": "{%custom_cubed(3)}",
+            }
+        ).resolve() == ScriptOutput({"output": Integer(27)})
+
     def test_custom_function_cycle(self):
         with pytest.raises(
             CycleDetected, match=re.escape("The custom function %cycle_func cannot call itself.")
