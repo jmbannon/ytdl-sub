@@ -30,14 +30,14 @@ You can modularize your presets via preset inheritance. For example,
   presets:
 
     TV Show:
-      presets:
+      preset:
         - "Jellyfin TV Show by Date"
 
       overrides:
         tv_show_directory: "/ytdl_sub_tv_shows"
 
     TV Show Only Recent:
-      presets:
+      preset:
         - "TV Show"
         - "Only Recent"
 
