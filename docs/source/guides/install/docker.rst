@@ -49,22 +49,22 @@ Docker Compose is an easy "set it and forget it" install method. Follow the inst
       :caption: compose.yaml
 
       services:
-      ytdl-sub:
-        image: ghcr.io/jmbannon/ytdl-sub-gui:latest
-        container_name: ytdl-sub
-        environment:
-          - PUID=1000
-          - PGID=1000
-          - TZ=America/Los_Angeles
-        volumes:
-          - <path/to/ytdl-sub/config>:/config
-          - <path/to/tv_shows>:/tv_shows  # optional
-          - <path/to/movies>:/movies  # optional
-          - <path/to/music_videos>:/music_videos  # optional
-          - <path/to/music>:/music  # optional
-        ports:
-          - 8443:8443
-        restart: unless-stopped
+        ytdl-sub:
+          image: ghcr.io/jmbannon/ytdl-sub-gui:latest
+          container_name: ytdl-sub
+          environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+          volumes:
+            - <path/to/ytdl-sub/config>:/config
+            - <path/to/tv_shows>:/tv_shows  # optional
+            - <path/to/movies>:/movies  # optional
+            - <path/to/music_videos>:/music_videos  # optional
+            - <path/to/music>:/music  # optional
+          ports:
+            - 8443:8443
+          restart: unless-stopped
 
   .. tab-item:: Headless Image
 
@@ -72,21 +72,21 @@ Docker Compose is an easy "set it and forget it" install method. Follow the inst
       :caption: compose.yaml
 
       services:
-      ytdl-sub:
-        image: ghcr.io/jmbannon/ytdl-sub:latest
-        container_name: ytdl-sub
-        environment:
-          - PUID=1000
-          - PGID=1000
-          - TZ=America/Los_Angeles
-          - DOCKER_MODS=linuxserver/mods:universal-cron
-        volumes:
-          - <path/to/ytdl-sub/config>:/config
-          - <path/to/tv_shows>:/tv_shows  # optional
-          - <path/to/movies>:/movies  # optional
-          - <path/to/music_videos>:/music_videos  # optional
-          - <path/to/music>:/music  # optional
-        restart: unless-stopped
+        ytdl-sub:
+          image: ghcr.io/jmbannon/ytdl-sub:latest
+          container_name: ytdl-sub
+          environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+            - DOCKER_MODS=linuxserver/mods:universal-cron
+          volumes:
+            - <path/to/ytdl-sub/config>:/config
+            - <path/to/tv_shows>:/tv_shows  # optional
+            - <path/to/movies>:/movies  # optional
+            - <path/to/music_videos>:/music_videos  # optional
+            - <path/to/music>:/music  # optional
+          restart: unless-stopped
 
 Device Passthrough
 ~~~~~~~~~~~~~~~~~~~
@@ -120,19 +120,19 @@ GPU Passthrough
   :emphasize-lines: 5-13
 
   services:
-  ytdl-sub:
-    image: ghcr.io/jmbannon/ytdl-sub-gui:latest
-    container_name: ytdl-sub
-    environment:
-    - ..
-    - NVIDIA_DRIVER_CAPABILITIES=all  # Nvidia ENV args
-    - NVIDIA_VISIBLE_DEVICES=all
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: ["gpu"]  # GPU passthrough
-    restart: unless-stopped
+    ytdl-sub:
+      image: ghcr.io/jmbannon/ytdl-sub-gui:latest
+      container_name: ytdl-sub
+      environment:
+      - ..
+      - NVIDIA_DRIVER_CAPABILITIES=all  # Nvidia ENV args
+      - NVIDIA_VISIBLE_DEVICES=all
+      deploy:
+        resources:
+          reservations:
+            devices:
+              - capabilities: ["gpu"]  # GPU passthrough
+      restart: unless-stopped
 
 Docker CLI
 ----------
