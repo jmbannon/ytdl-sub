@@ -46,12 +46,20 @@ class TestString:
             ("{%string('backslash \\\\')}", "backslash \\\\"),
             ("{%string('''triple quote with \" ' \\''')}", "triple quote with \" ' \\"),
             ('{%string("""triple quote with " \' \\""")}', "triple quote with \" ' \\"),
-            ("{%string('literal \\n newlines')}", "literal \n newlines"),
             ("{%string('supports \t tabs')}", "supports \t tabs"),
-            ("{%string('literal \\t tabs')}", "literal \t tabs"),
         ],
     )
     def test_string(self, string: str, expected_string: str):
+        assert single_variable_output(string) == expected_string
+
+    @pytest.mark.parametrize(
+        "string, expected_string",
+        [
+            ("{%unescape('literal \\n newlines')}", "literal \n newlines"),
+            ("{%unescape('literal \\t tabs')}", "literal \t tabs"),
+        ],
+    )
+    def test_unescape(self, string: str, expected_string: str):
         assert single_variable_output(string) == expected_string
 
     def test_null_is_empty_string(self):
