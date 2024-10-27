@@ -301,8 +301,16 @@ class _Parser:
                 self._pos += len(str_open_token)
                 return String(value=string_value)
 
-            self._pos += 1
-            string_value += ch
+            # Read literal "\n" as newlines
+            if self._read(increment_pos=False, length=2) == "\\n":
+                string_value += "\n"
+                self._pos += 2
+            elif self._read(increment_pos=False, length=2) == "\\t":
+                string_value += "\t"
+                self._pos +=2
+            else:
+                self._pos += 1
+                string_value += ch
 
         raise STRINGS_NOT_CLOSED
 
