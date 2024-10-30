@@ -24,20 +24,27 @@ class TestPrebuiltMusicPresets:
                 music_preset,
             ],
             "overrides": {
-                "url": "https://your.name.here",
+                "subscription_value": "https://your.name.here",
                 "music_directory": output_directory,
             },
         }
+
+        num_urls = 1
+        if music_preset in {"YouTube Releases", "YouTube Full Albums"}:
+            del preset_dict["overrides"]["subscription_value"]
+            preset_dict["overrides"]["subscription_array"] = [
+                "https://your.name.here",
+                "https://your.name.here.2",
+            ]
+            num_urls = 2
+        elif music_preset == "SoundCloud Discography":
+            num_urls = 2  # simulate albums + tracks
 
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
             preset_dict=preset_dict,
         )
-
-        num_urls = 1
-        if music_preset == "SoundCloud Discography":
-            num_urls = 2  # simulate /albums and /tracks
 
         with mock_download_collection_entries(
             is_youtube_channel=False, num_urls=num_urls, is_extracted_audio=True
