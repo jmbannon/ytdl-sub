@@ -1,11 +1,13 @@
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from integration.plugins.conftest import mock_chapters_class
 
 from ytdl_sub.prebuilt_presets.music import MusicPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
+@pytest.mark.usefixtures(mock_chapters_class.__name__)
 @pytest.mark.parametrize("music_preset", MusicPresets.preset_names)
 class TestPrebuiltMusicPresets:
 

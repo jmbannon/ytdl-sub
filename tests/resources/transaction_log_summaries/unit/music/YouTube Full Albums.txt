@@ -3,7 +3,10 @@ Files created:
 {output_directory}
   .ytdl-sub-subscription_test-download-archive.json
 {output_directory}/subscription_test/[2020] Mock Entry 20-1
-  01 - Mock Entry 20-1.mp3
+  01 - ＂ Intro.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-1
+      Segment: 0:00 - 0:07
     Music Tags:
       album: Mock Entry 20-1
       albumartist: subscription_test
@@ -13,13 +16,67 @@ Files created:
       date: 2020-08-08
       genres: Unset
       original_date: 2020-08-08
-      title: Mock Entry 20-1
+      title: " Intro
       track: 1
-      tracktotal: 1
+      tracktotal: 4
+      year: 2020
+  02 - ＂ Part 1.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-1
+      Segment: 0:07 - 0:13
+    Music Tags:
+      album: Mock Entry 20-1
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-08
+      genres: Unset
+      original_date: 2020-08-08
+      title: " Part 1
+      track: 2
+      tracktotal: 4
+      year: 2020
+  03 - ＂ Part 2.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-1
+      Segment: 0:13 - 0:19
+    Music Tags:
+      album: Mock Entry 20-1
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-08
+      genres: Unset
+      original_date: 2020-08-08
+      title: " Part 2
+      track: 3
+      tracktotal: 4
+      year: 2020
+  04 - ＂ Part 3.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-1
+      Segment: 0:19 - 0:42
+    Music Tags:
+      album: Mock Entry 20-1
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-08
+      genres: Unset
+      original_date: 2020-08-08
+      title: " Part 3
+      track: 4
+      tracktotal: 4
       year: 2020
   folder.jpg
 {output_directory}/subscription_test/[2020] Mock Entry 20-2
-  01 - Mock Entry 20-2.mp3
+  01 - ＂ Intro.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-2
+      Segment: 0:00 - 0:07
     Music Tags:
       album: Mock Entry 20-2
       albumartist: subscription_test
@@ -29,13 +86,67 @@ Files created:
       date: 2020-08-08
       genres: Unset
       original_date: 2020-08-08
-      title: Mock Entry 20-2
+      title: " Intro
       track: 1
-      tracktotal: 1
+      tracktotal: 4
+      year: 2020
+  02 - ＂ Part 1.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-2
+      Segment: 0:07 - 0:13
+    Music Tags:
+      album: Mock Entry 20-2
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-08
+      genres: Unset
+      original_date: 2020-08-08
+      title: " Part 1
+      track: 2
+      tracktotal: 4
+      year: 2020
+  03 - ＂ Part 2.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-2
+      Segment: 0:13 - 0:19
+    Music Tags:
+      album: Mock Entry 20-2
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-08
+      genres: Unset
+      original_date: 2020-08-08
+      title: " Part 2
+      track: 3
+      tracktotal: 4
+      year: 2020
+  04 - ＂ Part 3.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-2
+      Segment: 0:19 - 0:42
+    Music Tags:
+      album: Mock Entry 20-2
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-08
+      genres: Unset
+      original_date: 2020-08-08
+      title: " Part 3
+      track: 4
+      tracktotal: 4
       year: 2020
   folder.jpg
 {output_directory}/subscription_test/[2020] Mock Entry 20-3
-  01 - Mock Entry 20-3.mp3
+  01 - ＂ Intro.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-3
+      Segment: 0:00 - 0:07
     Music Tags:
       album: Mock Entry 20-3
       albumartist: subscription_test
@@ -45,13 +156,67 @@ Files created:
       date: 2020-08-07
       genres: Unset
       original_date: 2020-08-07
-      title: Mock Entry 20-3
+      title: " Intro
       track: 1
-      tracktotal: 1
+      tracktotal: 4
+      year: 2020
+  02 - ＂ Part 1.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-3
+      Segment: 0:07 - 0:13
+    Music Tags:
+      album: Mock Entry 20-3
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-07
+      genres: Unset
+      original_date: 2020-08-07
+      title: " Part 1
+      track: 2
+      tracktotal: 4
+      year: 2020
+  03 - ＂ Part 2.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-3
+      Segment: 0:13 - 0:19
+    Music Tags:
+      album: Mock Entry 20-3
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-07
+      genres: Unset
+      original_date: 2020-08-07
+      title: " Part 2
+      track: 3
+      tracktotal: 4
+      year: 2020
+  04 - ＂ Part 3.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-3
+      Segment: 0:19 - 0:42
+    Music Tags:
+      album: Mock Entry 20-3
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-07
+      genres: Unset
+      original_date: 2020-08-07
+      title: " Part 3
+      track: 4
+      tracktotal: 4
       year: 2020
   folder.jpg
 {output_directory}/subscription_test/[2020] Mock Entry 20-4
-  01 - Mock Entry 20-4.mp3
+  01 - ＂ Intro.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-4
+      Segment: 0:00 - 0:07
     Music Tags:
       album: Mock Entry 20-4
       albumartist: subscription_test
@@ -61,13 +226,67 @@ Files created:
       date: 2020-08-06
       genres: Unset
       original_date: 2020-08-06
-      title: Mock Entry 20-4
+      title: " Intro
       track: 1
-      tracktotal: 1
+      tracktotal: 4
+      year: 2020
+  02 - ＂ Part 1.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-4
+      Segment: 0:07 - 0:13
+    Music Tags:
+      album: Mock Entry 20-4
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-06
+      genres: Unset
+      original_date: 2020-08-06
+      title: " Part 1
+      track: 2
+      tracktotal: 4
+      year: 2020
+  03 - ＂ Part 2.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-4
+      Segment: 0:13 - 0:19
+    Music Tags:
+      album: Mock Entry 20-4
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-06
+      genres: Unset
+      original_date: 2020-08-06
+      title: " Part 2
+      track: 3
+      tracktotal: 4
+      year: 2020
+  04 - ＂ Part 3.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-4
+      Segment: 0:19 - 0:42
+    Music Tags:
+      album: Mock Entry 20-4
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-06
+      genres: Unset
+      original_date: 2020-08-06
+      title: " Part 3
+      track: 4
+      tracktotal: 4
       year: 2020
   folder.jpg
 {output_directory}/subscription_test/[2020] Mock Entry 20-5
-  01 - Mock Entry 20-5.mp3
+  01 - ＂ Intro.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-5
+      Segment: 0:00 - 0:07
     Music Tags:
       album: Mock Entry 20-5
       albumartist: subscription_test
@@ -77,13 +296,67 @@ Files created:
       date: 2020-07-06
       genres: Unset
       original_date: 2020-07-06
-      title: Mock Entry 20-5
+      title: " Intro
       track: 1
-      tracktotal: 1
+      tracktotal: 4
+      year: 2020
+  02 - ＂ Part 1.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-5
+      Segment: 0:07 - 0:13
+    Music Tags:
+      album: Mock Entry 20-5
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-07-06
+      genres: Unset
+      original_date: 2020-07-06
+      title: " Part 1
+      track: 2
+      tracktotal: 4
+      year: 2020
+  03 - ＂ Part 2.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-5
+      Segment: 0:13 - 0:19
+    Music Tags:
+      album: Mock Entry 20-5
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-07-06
+      genres: Unset
+      original_date: 2020-07-06
+      title: " Part 2
+      track: 3
+      tracktotal: 4
+      year: 2020
+  04 - ＂ Part 3.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-5
+      Segment: 0:19 - 0:42
+    Music Tags:
+      album: Mock Entry 20-5
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-07-06
+      genres: Unset
+      original_date: 2020-07-06
+      title: " Part 3
+      track: 4
+      tracktotal: 4
       year: 2020
   folder.jpg
 {output_directory}/subscription_test/[2020] Mock Entry 20-6
-  01 - Mock Entry 20-6.mp3
+  01 - ＂ Intro.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-6
+      Segment: 0:00 - 0:07
     Music Tags:
       album: Mock Entry 20-6
       albumartist: subscription_test
@@ -93,13 +366,67 @@ Files created:
       date: 2020-07-06
       genres: Unset
       original_date: 2020-07-06
-      title: Mock Entry 20-6
+      title: " Intro
       track: 1
-      tracktotal: 1
+      tracktotal: 4
+      year: 2020
+  02 - ＂ Part 1.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-6
+      Segment: 0:07 - 0:13
+    Music Tags:
+      album: Mock Entry 20-6
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-07-06
+      genres: Unset
+      original_date: 2020-07-06
+      title: " Part 1
+      track: 2
+      tracktotal: 4
+      year: 2020
+  03 - ＂ Part 2.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-6
+      Segment: 0:13 - 0:19
+    Music Tags:
+      album: Mock Entry 20-6
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-07-06
+      genres: Unset
+      original_date: 2020-07-06
+      title: " Part 2
+      track: 3
+      tracktotal: 4
+      year: 2020
+  04 - ＂ Part 3.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-6
+      Segment: 0:19 - 0:42
+    Music Tags:
+      album: Mock Entry 20-6
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-07-06
+      genres: Unset
+      original_date: 2020-07-06
+      title: " Part 3
+      track: 4
+      tracktotal: 4
       year: 2020
   folder.jpg
 {output_directory}/subscription_test/[2020] Mock Entry 20-7
-  01 - Mock Entry 20-7.mp3
+  01 - ＂ Intro.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-7
+      Segment: 0:00 - 0:07
     Music Tags:
       album: Mock Entry 20-7
       albumartist: subscription_test
@@ -109,13 +436,67 @@ Files created:
       date: 2020-06-06
       genres: Unset
       original_date: 2020-06-06
-      title: Mock Entry 20-7
+      title: " Intro
       track: 1
-      tracktotal: 1
+      tracktotal: 4
+      year: 2020
+  02 - ＂ Part 1.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-7
+      Segment: 0:07 - 0:13
+    Music Tags:
+      album: Mock Entry 20-7
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-06-06
+      genres: Unset
+      original_date: 2020-06-06
+      title: " Part 1
+      track: 2
+      tracktotal: 4
+      year: 2020
+  03 - ＂ Part 2.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-7
+      Segment: 0:13 - 0:19
+    Music Tags:
+      album: Mock Entry 20-7
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-06-06
+      genres: Unset
+      original_date: 2020-06-06
+      title: " Part 2
+      track: 3
+      tracktotal: 4
+      year: 2020
+  04 - ＂ Part 3.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 20-7
+      Segment: 0:19 - 0:42
+    Music Tags:
+      album: Mock Entry 20-7
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-06-06
+      genres: Unset
+      original_date: 2020-06-06
+      title: " Part 3
+      track: 4
+      tracktotal: 4
       year: 2020
   folder.jpg
 {output_directory}/subscription_test/[2021] Mock Entry 21-1
-  01 - Mock Entry 21-1.mp3
+  01 - ＂ Intro.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 21-1
+      Segment: 0:00 - 0:07
     Music Tags:
       album: Mock Entry 21-1
       albumartist: subscription_test
@@ -125,8 +506,59 @@ Files created:
       date: 2021-08-08
       genres: Unset
       original_date: 2021-08-08
-      title: Mock Entry 21-1
+      title: " Intro
       track: 1
-      tracktotal: 1
+      tracktotal: 4
+      year: 2021
+  02 - ＂ Part 1.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 21-1
+      Segment: 0:07 - 0:13
+    Music Tags:
+      album: Mock Entry 21-1
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2021-08-08
+      genres: Unset
+      original_date: 2021-08-08
+      title: " Part 1
+      track: 2
+      tracktotal: 4
+      year: 2021
+  03 - ＂ Part 2.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 21-1
+      Segment: 0:13 - 0:19
+    Music Tags:
+      album: Mock Entry 21-1
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2021-08-08
+      genres: Unset
+      original_date: 2021-08-08
+      title: " Part 2
+      track: 3
+      tracktotal: 4
+      year: 2021
+  04 - ＂ Part 3.mp3
+    From Chapter Split:
+      Source Title: Mock Entry 21-1
+      Segment: 0:19 - 0:42
+    Music Tags:
+      album: Mock Entry 21-1
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2021-08-08
+      genres: Unset
+      original_date: 2021-08-08
+      title: " Part 3
+      track: 4
+      tracktotal: 4
       year: 2021
   folder.jpg
