@@ -1,1 +1,19 @@
-{}
+{
+  ".ytdl-sub-subscription_test-download-archive.json": "e2e5ccd309d8f95fddd690e9417a140b",
+  "subscription_test/[2020] Mock Entry 20-1/01 - Mock Entry 20-1.mp3": "c967fcb589fca43fb3ae9038290e3a49",
+  "subscription_test/[2020] Mock Entry 20-1/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "subscription_test/[2020] Mock Entry 20-2/01 - Mock Entry 20-2.mp3": "5f22ce0cdaa93518786f2d68ff088a83",
+  "subscription_test/[2020] Mock Entry 20-2/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "subscription_test/[2020] Mock Entry 20-3/01 - Mock Entry 20-3.mp3": "645dedee58a794da96e0e29129e90744",
+  "subscription_test/[2020] Mock Entry 20-3/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "subscription_test/[2020] Mock Entry 20-4/01 - Mock Entry 20-4.mp3": "98161c8844f491a30b76a8ad436ea062",
+  "subscription_test/[2020] Mock Entry 20-4/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "subscription_test/[2020] Mock Entry 20-5/01 - Mock Entry 20-5.mp3": "7c18a92f2f06a0409f5e4289a014ddf1",
+  "subscription_test/[2020] Mock Entry 20-5/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "subscription_test/[2020] Mock Entry 20-6/01 - Mock Entry 20-6.mp3": "0869ae0c4d537c5d50769eb73d5a65c9",
+  "subscription_test/[2020] Mock Entry 20-6/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "subscription_test/[2020] Mock Entry 20-7/01 - Mock Entry 20-7.mp3": "65d8c2d2f7414b0828dff0e60d23e66f",
+  "subscription_test/[2020] Mock Entry 20-7/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7",
+  "subscription_test/[2021] Mock Entry 21-1/01 - Mock Entry 21-1.mp3": "ad3e8f379cae386dd6d76d5af4552d59",
+  "subscription_test/[2021] Mock Entry 21-1/folder.jpg": "e80c508c4818454300133fe1dc1a9cd7"
+}

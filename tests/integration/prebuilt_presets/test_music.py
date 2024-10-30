@@ -24,18 +24,14 @@ class TestPrebuiltMusicPresets:
                 music_preset,
             ],
             "overrides": {
-                "subscription_value": "https://your.name.here",
+                "url": "https://your.name.here",
                 "music_directory": output_directory,
             },
         }
 
         num_urls = 1
         if music_preset in {"YouTube Releases", "YouTube Full Albums"}:
-            del preset_dict["overrides"]["subscription_value"]
-            preset_dict["overrides"]["subscription_array"] = [
-                "https://your.name.here",
-                "https://your.name.here.2",
-            ]
+            preset_dict["overrides"]["url2"] = "https://your.name.here.2"
             num_urls = 2
         elif music_preset == "SoundCloud Discography":
             num_urls = 2  # simulate albums + tracks
