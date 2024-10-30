@@ -4,12 +4,11 @@ presets:
   _albums_from_playlists:
     preset:
       - "_music_base"
-
-    download:
-      - url: "{url}"
-        include_sibling_metadata: True
+      - "_multi_url"
 
     overrides:
+      include_sibling_metadata: True
+
       track_album: "{playlist_title}"
       track_number: "{playlist_index}"
       track_number_padded: "{playlist_index_padded}"

@@ -462,10 +462,13 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         download_reversed = ScriptUtils.bool_formatter_output(
             self.overrides.apply_formatter(validator.download_reverse)
         )
+        include_sibling_metadata = ScriptUtils.bool_formatter_output(
+            self.overrides.apply_formatter(validator.include_sibling_metadata)
+        )
 
         parents, orphan_entries = self._download_url_metadata(
             url=url,
-            include_sibling_metadata=validator.include_sibling_metadata,
+            include_sibling_metadata=include_sibling_metadata,
             ytdl_options_overrides=metadata_ytdl_options,
         )
 
