@@ -86,7 +86,9 @@ class UrlValidator(StrictDictValidator):
             key="ytdl_options", validator=YTDLOptions, default={}
         )
         self._include_sibling_metadata = self._validate_key(
-            key="include_sibling_metadata", validator=OverridesBooleanFormatterValidator, default="False"
+            key="include_sibling_metadata",
+            validator=OverridesBooleanFormatterValidator,
+            default="False",
         )
 
     @property
