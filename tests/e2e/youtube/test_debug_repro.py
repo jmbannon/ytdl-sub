@@ -9,10 +9,12 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 def debug_yaml_to_preset_dict(debug_subscription_dict: Dict, output_directory: str) -> Dict:
-    out = debug_subscription_dict["presets"]["subs"]
-    del out["preset"]
-    out["output_options"]["output_directory"] = output_directory
-    return out
+    presets_level = debug_subscription_dict["presets"]
+    assert isinstance(presets_level, dict) and len(presets_level) == 1
+    subscription = list(presets_level.values())[0]
+    del subscription["preset"]
+    subscription["output_options"]["output_directory"] = output_directory
+    return subscription
 
 
 @pytest.fixture
@@ -30,7 +32,7 @@ def subscription_yaml_preset(default_config, output_directory):
     subscriptions = Subscription.from_file_path(
         config=default_config, subscription_path=file_fixture_path("repro.yaml")
     )
-    subscription_dict = json.loads(subscriptions[0].as_yaml())
+    subscription_dict = yaml.safe_load(subscriptions[0].as_yaml())
     return debug_yaml_to_preset_dict(
         debug_subscription_dict=subscription_dict,
         output_directory=output_directory,
