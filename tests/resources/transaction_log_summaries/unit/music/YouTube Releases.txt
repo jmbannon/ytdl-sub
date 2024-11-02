@@ -46,6 +46,64 @@ Files created:
       tracktotal: 4
       year: 2020
   folder.jpg
+{output_directory}/subscription_test/[2020] Download Second
+  02 - Mock Entry 20-4.mp3
+    Music Tags:
+      album: Download Second
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-08-06
+      genres: Unset
+      original_date: 2020-08-06
+      title: Mock Entry 20-4
+      track: 2
+      tracktotal: 5
+      year: 2020
+  03 - Mock Entry 20-5.mp3
+    Music Tags:
+      album: Download Second
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-07-06
+      genres: Unset
+      original_date: 2020-07-06
+      title: Mock Entry 20-5
+      track: 3
+      tracktotal: 5
+      year: 2020
+  04 - Mock Entry 20-6.mp3
+    Music Tags:
+      album: Download Second
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-07-06
+      genres: Unset
+      original_date: 2020-07-06
+      title: Mock Entry 20-6
+      track: 4
+      tracktotal: 5
+      year: 2020
+  05 - Mock Entry 20-7.mp3
+    Music Tags:
+      album: Download Second
+      albumartist: subscription_test
+      albumartists: subscription_test
+      artist: subscription_test
+      artists: subscription_test
+      date: 2020-06-06
+      genres: Unset
+      original_date: 2020-06-06
+      title: Mock Entry 20-7
+      track: 5
+      tracktotal: 5
+      year: 2020
+  folder.jpg
 {output_directory}/subscription_test/[2021] Download First
   01 - Mock Entry 21-1.mp3
     Music Tags:

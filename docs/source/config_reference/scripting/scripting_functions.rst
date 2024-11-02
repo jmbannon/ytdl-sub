@@ -710,6 +710,24 @@ titlecase
 :description:
   Capitalize each word in the string.
 
+unescape
+~~~~~~~~
+:spec: ``unescape(string: String) -> String``
+
+:description:
+  Unescape symbols like newlines or tabs to their true form.
+
+:usage:
+
+.. code-block:: python
+
+   {
+     %unescape( "Hello\nWorld" )
+   }
+
+   # Hello
+   # World
+
 upper
 ~~~~~
 :spec: ``upper(string: String) -> String``

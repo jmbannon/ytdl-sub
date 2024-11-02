@@ -1,11 +1,13 @@
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
+from integration.plugins.conftest import mock_chapters_class
 
 from ytdl_sub.prebuilt_presets.music import MusicPresets
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
+@pytest.mark.usefixtures(mock_chapters_class.__name__)
 @pytest.mark.parametrize("music_preset", MusicPresets.preset_names)
 class TestPrebuiltMusicPresets:
 
@@ -29,15 +31,18 @@ class TestPrebuiltMusicPresets:
             },
         }
 
+        num_urls = 1
+        if music_preset in {"YouTube Releases", "YouTube Full Albums"}:
+            preset_dict["overrides"]["url2"] = "https://your.name.here.2"
+            num_urls = 2
+        elif music_preset == "SoundCloud Discography":
+            num_urls = 2  # simulate albums + tracks
+
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
             preset_dict=preset_dict,
         )
-
-        num_urls = 1
-        if music_preset == "SoundCloud Discography":
-            num_urls = 2  # simulate /albums and /tracks
 
         with mock_download_collection_entries(
             is_youtube_channel=False, num_urls=num_urls, is_extracted_audio=True

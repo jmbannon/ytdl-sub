@@ -2,7 +2,9 @@ presets:
 
   # assumes that each chapter in an entry is a song
   _albums_from_chapters:
-    preset: "Single"
+    preset:
+      - "_music_base"
+      - "_multi_url"
 
     chapters:
       embed_chapters: True
@@ -10,6 +12,8 @@ presets:
       when_no_chapters: "pass"
 
     overrides:
+      include_sibling_metadata: False
+
       track_title: "{chapter_title}"  # Chapter title is the track title
       track_album: "{title}"  # Video's title is the album title
       track_number: "{chapter_index}"

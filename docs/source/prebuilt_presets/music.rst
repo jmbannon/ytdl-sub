@@ -6,6 +6,12 @@ Music downloadable by yt-dlp comes in many flavors. ``ytdl-sub`` offers a suite
 of various presets for handling some of the most popular forms of uploaded music
 content.
 
+.. hint::
+
+  The subscription *value* (denoted by =) will set the genre tag for all music scraped under its key
+  for all music presets.
+
+
 YouTube Releases
 ----------------
 Many artists, especially those auto-uploaded as ``Topics`` in YouTube have a section on
@@ -18,11 +24,18 @@ Playlists are recognized as the album, and videos within it are tracks.
 
    YouTube Releases:
      = Jazz:  # Sets genre tag to "Jazz"
-       "Thelonious Monk": "https://www.youtube.com/@theloniousmonk3870/releases"
+       "Thelonious Monk": "https://www.youtube.com/@officialtheloniousmonk/releases"
 
-.. hint::
+If you are only interested in a subset of albums, you can provide their playlists as separate values in the form
+of an array, like so:
 
-  The subscription *value* (denoted by =) will set the genre tag for all music scraped under its key.
+.. code-block:: yaml
+
+   YouTube Releases:
+     = Jazz:
+       "Thelonious Monk":
+         - "https://www.youtube.com/playlist?list=OLAK5uy_lcqINwfzkw73TPnAt6MlpB6V0gM9VzQu8"  # Monk on Monk
+         - "https://www.youtube.com/playlist?list=OLAK5uy_nhuvjuZOO3yLIWCbQzbiWfyzkGapSIuYw"  # Late Night Thelonious Monk
 
 YouTube Full Albums
 -------------------
@@ -37,6 +50,17 @@ Videos are recognized as the album, and chapters within it are tracks.
    YouTube Full Albums:
      = Lofi:
        "Game Chops": "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
+
+If you are only interested in a subset of albums, you can provide their video as separate values in the form
+of an array, like so:
+
+.. code-block:: yaml
+
+   YouTube Full Albums:
+     = Lofi:
+       "Game Chops":
+         - "https://www.youtube.com/watch?v=m7vBrD7LMLI"  # Zelda & Sleep Ensemble Collection
+         - "https://www.youtube.com/watch?v=w0XebCwSpKI"  # Study Buddy ~ video game lofi mix
 
 Soundcloud Discography
 ----------------------

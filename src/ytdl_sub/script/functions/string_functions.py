@@ -143,3 +143,22 @@ class StringFunctions:
             length=length,
             char=String("0"),
         )
+
+    @staticmethod
+    def unescape(string: String) -> String:
+        """
+        :description:
+          Unescape symbols like newlines or tabs to their true form.
+
+        :usage:
+
+        .. code-block:: python
+
+           {
+             %unescape( "Hello\\nWorld" )
+           }
+
+           # Hello
+           # World
+        """
+        return String(string.value.encode("utf-8").decode("unicode_escape"))

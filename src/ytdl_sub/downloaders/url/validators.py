@@ -12,7 +12,6 @@ from ytdl_sub.validators.string_formatter_validators import DictFormatterValidat
 from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.validators import BoolValidator
 from ytdl_sub.validators.validators import ListValidator
 
 
@@ -86,7 +85,9 @@ class UrlValidator(StrictDictValidator):
             key="ytdl_options", validator=YTDLOptions, default={}
         )
         self._include_sibling_metadata = self._validate_key(
-            key="include_sibling_metadata", validator=BoolValidator, default=False
+            key="include_sibling_metadata",
+            validator=OverridesBooleanFormatterValidator,
+            default="False",
         )
 
     @property
@@ -170,14 +171,14 @@ class UrlValidator(StrictDictValidator):
         return self._ytdl_options
 
     @property
-    def include_sibling_metadata(self) -> bool:
+    def include_sibling_metadata(self) -> OverridesBooleanFormatterValidator:
         """
         Optional. Whether to include sibling metadata as an entry variable, which comprises basic
         metadata from all other entries (including itself) that belong to the same playlist. For
         channels or large playlists, this becomes memory-intensive since you are storing
         ``n^2`` metadata. Defaults to False.
         """
-        return self._include_sibling_metadata.value
+        return self._include_sibling_metadata
 
 
 class UrlStringOrDictValidator(UrlValidator):
