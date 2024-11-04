@@ -1,0 +1,42 @@
+__preset__:
+  overrides:
+    music_directory: "hi"
+
+YouTube Full Albums:
+
+  = Eastern Bloc:
+    "Eastern Bloc":
+      output_options:
+        migrated_download_archive_name: ".Eastern Bloc-download-archive.json"
+      ytdl_options:
+        max_downloads: 3
+      overrides:
+        title_capture_regex_array:
+          - "^(.*) - (.*) \\|\\|.*"  # Captures artist, album from 'artist - album ||...'
+          - "^(.*) - (.*) \\[.*"  # Captures artist, ablum from 'artist - album [...'
+          - "^(.*) - (.*)"  # Captures artist, ablum from 'artist - album'
+        title_capture: >-
+          {
+            %regex_capture_many( title, title_capture_regex_array )
+          }
+
+        description_capture_regex_array:
+          - '{%unescape("Genre:\s*(.*)\s*\n(?:Rec.+|Year):\s*.*(\d\{4\})\s*\n")}'  # Captures genre and recorded year
+        description_capture: >-
+          {
+            %regex_capture_many( description, description_capture_regex_array)
+          }
+
+        chapter_title_regex_array:
+          - "^(?:\\d+\\.\\s*|)(.*)"  # Captures title from '1. title'
+        chapter_title_capture: >-
+          {
+            %regex_capture_many( chapter_title, chapter_title_regex_array, [chapter_title] )
+          }
+
+        url: "https://www.youtube.com/@heavymetalofeasternbloc"
+        track_artist: "{%array_at(title_capture, 1)}"
+        track_album: "{%array_at(title_capture, 2)}"
+        track_title: "{%array_at(chapter_title_capture, 1)}"
+        track_year: "{%array_at(description_capture, 1)}"
+
