@@ -39,7 +39,7 @@ def subscription_yaml_preset(default_config, output_directory):
     )
 
 
-@pytest.mark.skipif(False, reason="Always skip repro, for local testing only")
+@pytest.mark.skipif(True, reason="Always skip repro, for local testing only")
 class TestReproduce:
     def test_debug_log_repro(
         self,
