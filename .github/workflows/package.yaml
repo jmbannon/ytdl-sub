@@ -263,6 +263,10 @@ jobs:
           images: ${{ steps.formatted-image_id.outputs.IMAGE_ID }}
           labels: |
             runnumber=${{ github.run_number }}
+            maintainer=${{ github.repository_owner }}
+            org.opencontainers.image.authors=${{ github.repository_owner }}
+            org.opencontainers.image.vendor=${{ github.repository_owner }}
+            org.opencontainers.image.documentation=https://ytdl-sub.readthedocs.io/
           tags: |
             type=raw,value=${{ steps.formatted_version.outputs.VERSION }}
             type=raw,value=${{ needs.version.outputs.pypi_version }}
