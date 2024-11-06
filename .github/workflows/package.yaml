@@ -241,7 +241,7 @@ jobs:
             # Change all uppercase to lowercase
             IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
             echo IMAGE_ID=${IMAGE_ID}
-            
+
             echo ::set-output name=IMAGE_ID::${IMAGE_ID}
 
       - name: Get the version
@@ -254,16 +254,33 @@ jobs:
             # Use Docker `latest` tag convention
             [ "$VERSION" == "master" ] && VERSION=latest
             echo VERSION=${VERSION}
-            
+
             echo ::set-output name=VERSION::${VERSION}
 
-      - name: Build Docker Image and push to registry
-        run: | 
-          docker buildx build --push \
-          --platform=linux/amd64,linux/arm64 \
-          --cache-from=type=local,src=/tmp/build-cache/amd64 \
-          --cache-from=type=local,src=/tmp/build-cache/arm64 \
-          --tag ${{ steps.formatted-image_id.outputs.IMAGE_ID }}:${{ steps.formatted_version.outputs.VERSION }} \
-          --tag ${{ steps.formatted-image_id.outputs.IMAGE_ID }}:${{ needs.version.outputs.pypi_version }} \
-          --label "runnumber=${GITHUB_RUN_ID}" \
-          docker/
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.formatted-image_id.outputs.IMAGE_ID }}
+          labels: |
+            runnumber=${{ github.run_number }}
+            maintainer=${{ github.repository_owner }}
+            org.opencontainers.image.authors=${{ github.repository_owner }}
+            org.opencontainers.image.vendor=${{ github.repository_owner }}
+            org.opencontainers.image.documentation=https://ytdl-sub.readthedocs.io/
+          tags: |
+            type=raw,value=${{ steps.formatted_version.outputs.VERSION }}
+            type=raw,value=${{ needs.version.outputs.pypi_version }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: "docker/"
+          cache-from: |
+            type=local,src=/tmp/build-cache/amd64
+            type=local,src=/tmp/build-cache/arm64
