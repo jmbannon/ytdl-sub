@@ -1,4 +1,5 @@
 import os
+import posixpath
 from pathlib import Path
 from typing import Tuple
 
@@ -59,3 +60,8 @@ class FilePathTruncater:
             return str(Path(file_directory) / cls._truncate_file_name(file_name))
 
         return str(file_path)
+
+    @classmethod
+    def to_native_filepath(cls, file_path: str) -> str:
+        """Ensures file paths use the correct separator"""
+        return os.path.expanduser(file_path.replace(posixpath.sep, os.sep))

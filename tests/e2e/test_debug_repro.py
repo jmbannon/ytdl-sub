@@ -1,4 +1,3 @@
-import json
 from typing import Dict
 
 import pytest
@@ -44,13 +43,13 @@ class TestReproduce:
     def test_debug_log_repro(
         self,
         default_config,
-        repro_preset_dict,
+        debug_log_rerpo,
         output_directory,
     ):
         sub = Subscription.from_dict(
             config=default_config,
             preset_name="repro",
-            preset_dict=repro_preset_dict,
+            preset_dict=debug_log_rerpo,
         )
 
         transaction_log = sub.download(dry_run=False)
