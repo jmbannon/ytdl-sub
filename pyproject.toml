@@ -44,7 +44,7 @@ where = ["src"]
 test = [
     "coverage[toml]>=6.3,<8.0",
     "pytest>=7.2,<9.0",
-    "pytest-rerunfailures~=14.0",
+    "pytest-rerunfailures>=14,<16",
 ]
 lint = [
     "black==24.10.0",
