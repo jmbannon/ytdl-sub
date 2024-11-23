@@ -226,14 +226,14 @@ class YTDLP:
                 "RejectedVideoReached, stopping additional downloads "
                 "(Can be disable by setting `date_range.breaks` to False. "
                 "If this is unexpected, "
-                "run with --log-level verbose to see the yt-dlp logs on why it stopped."
+                "run with `--log-level verbose` to see the yt-dlp logs on why it stopped)"
             )
         except ExistingVideoReached:
             cls.logger.info(
                 "ExistingVideoReached, stopping additional downloads. "
-                "(Can be disable by setting `ytdl_options.break_on_existing` to False)."
-                "If this is unexpected, "
-                "run with --log-level verbose to see the yt-dlp logs on why it stopped."
+                "(Can be disable by setting `ytdl_options.break_on_existing` to False. This will "
+                "force yt-dlp to continue scraping all metadata to grab any files you may have "
+                "missed)"
             )
         except MaxDownloadsReached:
             cls.logger.info("MaxDownloadsReached, stopping additional downloads.")
