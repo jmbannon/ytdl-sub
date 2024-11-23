@@ -31,6 +31,7 @@ Overview
 
 Terminology
 ~~~~~~~~~~~
+
 Must-know terminology:
 - ``subscription``: URL(s) that you want to download with specific metadata requirements.
 - ``preset``: Reusable YAML configuration, that can specify anything from metadata layout, media quality, or any feature of ytdl-sub, to apply to subscriptions. A preset can inherit other presets.
@@ -40,11 +41,13 @@ Must-know terminology:
 - ``subscription file``: The file to specify all of your subscriptions and some override variables.
 
 Intermediate terminology:
+
 - ``plugin``: Modular logic to apply to a subscription. To use a plugin, it must be defined in a preset.
 - ``config file``: An optional file where you can define custom presets and other advanced configuration.
 - ``yt-dlp``: The underlying application that handles downloading for ytdl-sub.
 
 Advanced terminology:
+
 - ``entry variables``: Variables that derive from a downloaded yt-dlp entry.
 - ``static variables``: Variables that do not have a dependency to entry variables.
 - ``scripting``: Syntax that allows the use of entry variables, static variables, and functions in override variables.
