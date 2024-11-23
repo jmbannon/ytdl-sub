@@ -31,13 +31,12 @@ Overview
 
 Terminology
 ~~~~~~~~~~~
-
 Must-know terminology:
 - ``subscription``: URL(s) that you want to download with specific metadata requirements.
 - ``preset``: Reusable YAML configuration, that can specify anything from metadata layout, media quality, or any feature of ytdl-sub, to apply to subscriptions. A preset can inherit other presets.
 - ``prebuilt preset``: Presets that are included in ``ytdl-sub``. These do most of the work defining plugins, overrides, etc in order to make downloads ready for player consumption.
 - ``override``: Verb describing the act of overriding something in a parent preset. For example, the TV Show presets practically expect you to *override* the URL variable to tell ytdl-sub where to download from.
-- ``override variables``: User-defined variables that a preset will use in its definition.
+- ``override variables``: User-defined variables that are intended to *override* something.
 - ``subscription file``: The file to specify all of your subscriptions and some override variables.
 
 Intermediate terminology:
