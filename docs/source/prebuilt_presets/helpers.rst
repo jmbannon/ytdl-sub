@@ -4,21 +4,7 @@ Helper Presets
 
 .. hint::
 
-   Apply presets to your subscriptions using pipes:
-
-   .. code-block:: yaml
-     :caption: Pipes can separate presets and values to apply them to all subscriptions below them.
-
-     Plex TV Show by Date | best_video_quality:
-
-       = Documentaries | chunk_initial_download:
-         "NOVA PBS": "https://www.youtube.com/@novapbs"
-         "National Geographic": "https://www.youtube.com/@NatGeo"
-
-       = Documentaries:
-         "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
-
-Common presets are not usable by themselves- setting one of these as the sole preset of your subscription and attempting to download will not work. But you can add these presets to quickly modify an existing preset to better suit your needs.
+   See how to apply helper presets :doc:`here </prebuilt_presets/index>`
 
 Only Recent
 -----------
@@ -41,21 +27,6 @@ upload date is outside of the range, or you hit max files, older videos will be 
 
 To prevent deletion of files, use the preset ``Only Recent Archive`` instead.
 
-
-Best A/V Quality
-----------------
-
-Add the following preset to download the best available video and audio quality, and remux it into an MP4 container:
-
-``best_video_quality``
-
-
-Max 1080p Video
----------------
-
-Add the following preset to download the best available audio and video quality, with the video not greater than 1080p, and remux it into an MP4 container:
-
-``max_1080p``
 
 Filter Keywords
 ---------------
