@@ -79,6 +79,11 @@ presets:
       codec: "opus"
       quality: 0
 
+  "MP3 320k":
+    audio_extract:
+      codec: "mp3"
+      quality: 320
+
   "MP3 128k":
     audio_extract:
       codec: "mp3"

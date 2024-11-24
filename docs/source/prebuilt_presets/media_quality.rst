@@ -26,4 +26,5 @@ These assume you are only extracting audio (no video).
 - ``Max Audio Quality``, format is determined by the source
 - ``Max MP3 Quality``
 - ``Max Opus Quality``
+- ``MP3 320k``
 - ``MP3 128k``
