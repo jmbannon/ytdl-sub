@@ -2,6 +2,10 @@
 Media Quality Presets
 ======================
 
+.. hint::
+
+   See how to apply media quality presets :doc:`here </prebuilt_presets/index>`
+
 Video
 -----
 The following presets set video quality specifications to yt-dlp.
