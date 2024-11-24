@@ -28,9 +28,9 @@ definitions :doc:`here </config_reference/prebuilt_presets/index>`.
 
 .. toctree:: 
   :titlesonly:
-  
-  helpers
-  media_quality
+
   tv_shows
   music
   music_videos
+  media_quality
+  helpers
