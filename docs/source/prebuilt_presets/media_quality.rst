@@ -12,7 +12,6 @@ The following presets set video quality specifications to yt-dlp.
 
 - ``Max Video Quality``
 - ``Max 2160p``
-- ``Max 1080p``
 - ``Max 1440p``
 - ``Max 1080p``
 - ``Max 720p``
