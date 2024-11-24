@@ -42,21 +42,6 @@ upload date is outside of the range, or you hit max files, older videos will be 
 To prevent deletion of files, use the preset ``Only Recent Archive`` instead.
 
 
-Best A/V Quality
-----------------
-
-Add the following preset to download the best available video and audio quality, and remux it into an MP4 container:
-
-``best_video_quality``
-
-
-Max 1080p Video
----------------
-
-Add the following preset to download the best available audio and video quality, with the video not greater than 1080p, and remux it into an MP4 container:
-
-``max_1080p``
-
 Filter Keywords
 ---------------
 
