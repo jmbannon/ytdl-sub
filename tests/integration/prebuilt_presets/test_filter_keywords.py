@@ -260,8 +260,6 @@ class TestFilterKeywords:
 
         with (
             mock_download_collection_entries(is_youtube_channel=False, num_urls=1, is_dry_run=True),
-            pytest.raises(
-                UserThrownRuntimeError, match="Keyword eval must be either ANY or ALL"
-            ),
+            pytest.raises(UserThrownRuntimeError, match="Keyword eval must be either ANY or ALL"),
         ):
             _ = subscription.download(dry_run=True)
