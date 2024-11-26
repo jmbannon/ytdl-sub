@@ -41,6 +41,20 @@ class StringFunctions:
         )
 
     @staticmethod
+    def contains_all(string: String, contains_array: Array) -> Boolean:
+        """
+        :description:
+            Returns true if all elements in ``contains_array`` are in ``string``. False otherwise.
+        """
+        return Boolean(
+            all(
+                str(val) in string.value
+                for val in contains_array.value
+                if isinstance(val, (String, Integer, Boolean, Float))
+            )
+        )
+
+    @staticmethod
     def slice(string: String, start: Integer, end: Optional[Integer] = None) -> String:
         """
         :description:

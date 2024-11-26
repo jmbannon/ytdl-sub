@@ -1,11 +1,8 @@
-import re
-
 import pytest
 from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.exceptions import ValidationException
 
 
 @pytest.fixture
@@ -78,6 +75,39 @@ class TestFilterKeywords:
         )
 
     @pytest.mark.parametrize("filter_mode", ["include", "exclude"])
+    def test_title_all(
+        self,
+        config,
+        filter_subscription_dict,
+        output_directory,
+        subscription_name,
+        mock_download_collection_entries,
+        filter_mode: str,
+    ):
+        filter_subscription_dict["overrides"][f"title_{filter_mode}_eval"] = "all"
+        filter_subscription_dict["overrides"][f"title_{filter_mode}_keywords"] = [
+            "MOCK",
+            "ENTRY",
+            "20-3",
+        ]
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=filter_subscription_dict,
+        )
+
+        with mock_download_collection_entries(
+            is_youtube_channel=False, num_urls=1, is_dry_run=True
+        ):
+            transaction_log = subscription.download(dry_run=True)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"integration/prebuilt_presets/title_filter_keywords_{filter_mode}.txt",
+        )
+
+    @pytest.mark.parametrize("filter_mode", ["include", "exclude"])
     def test_description(
         self,
         config,
@@ -90,6 +120,38 @@ class TestFilterKeywords:
         filter_subscription_dict["overrides"][f"description_{filter_mode}_keywords"] = [
             "no filter here",
             "description",
+        ]
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=filter_subscription_dict,
+        )
+
+        with mock_download_collection_entries(
+            is_youtube_channel=False, num_urls=1, is_dry_run=True
+        ):
+            transaction_log = subscription.download(dry_run=True)
+
+        assert_transaction_log_matches(
+            output_directory=output_directory,
+            transaction_log=transaction_log,
+            transaction_log_summary_file_name=f"integration/prebuilt_presets/description_filter_keywords_{filter_mode}.txt",
+        )
+
+    @pytest.mark.parametrize("filter_mode", ["include", "exclude"])
+    def test_description_all(
+        self,
+        config,
+        filter_subscription_dict,
+        output_directory,
+        subscription_name,
+        mock_download_collection_entries,
+        filter_mode: str,
+    ):
+        filter_subscription_dict["overrides"][f"description_{filter_mode}_eval"] = "ALL"
+        filter_subscription_dict["overrides"][f"description_{filter_mode}_keywords"] = [
+            "descr",
+            "iption",
         ]
         subscription = Subscription.from_dict(
             config=config,
@@ -167,5 +229,37 @@ class TestFilterKeywords:
         with (
             mock_download_collection_entries(is_youtube_channel=False, num_urls=1, is_dry_run=True),
             pytest.raises(UserThrownRuntimeError, match="filter keywords must be strings"),
+        ):
+            _ = subscription.download(dry_run=True)
+
+    @pytest.mark.parametrize(
+        "keyword_variable",
+        [
+            "title_include",
+            "title_exclude",
+            "description_include",
+            "description_exclude",
+        ],
+    )
+    def test_error_not_correct_eval(
+        self,
+        config,
+        filter_subscription_dict,
+        output_directory,
+        subscription_name,
+        mock_download_collection_entries,
+        keyword_variable,
+    ):
+        filter_subscription_dict["overrides"][f"{keyword_variable}_keywords"] = ["hmm"]
+        filter_subscription_dict["overrides"][f"{keyword_variable}_eval"] = "LOL"
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=filter_subscription_dict,
+        )
+
+        with (
+            mock_download_collection_entries(is_youtube_channel=False, num_urls=1, is_dry_run=True),
+            pytest.raises(UserThrownRuntimeError, match="Keyword eval must be either ANY or ALL"),
         ):
             _ = subscription.download(dry_run=True)
