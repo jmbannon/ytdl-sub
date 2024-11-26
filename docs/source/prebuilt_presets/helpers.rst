@@ -33,12 +33,14 @@ Filter Keywords
 
 ``Filter Keywords`` can include or exclude media with any of the listed keywords. Both keywords and title/description are lower-cased before filtering.
 
+Default behavior for Keyword evaluation is ANY, meaning the filter will succeed if any of the keywords are present. This can be set to ANY or ALL using the respective ``_eval`` variable.
+
 Supports the following override variables:
 
-* ``title_include_keywords``
-* ``title_exclude_keywords``
-* ``description_include_keywords``
-* ``description_exclude_keywords``
+* ``title_include_keywords``, ``title_include_eval``
+* ``title_exclude_keywords``, ``title_exclude_eval``
+* ``description_include_keywords``, ``title_exclude_eval``
+* ``description_exclude_keywords``, ``title_exclude_eval``
 
 .. tip::
 
@@ -61,6 +63,13 @@ Supports the following override variables:
             title_include_keywords:
               - "To Catch a Smuggler"
 
+        = Sports:
+          "~Maple Leafs Highlights":
+            url: "https://www.youtube.com/@NHL"
+            title_include_eval: "ALL"
+            title_include_keywords:
+              - "maple leafs"
+              - "highlights"
 
 Chunk Downloads
 ---------------
