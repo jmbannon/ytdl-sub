@@ -29,11 +29,22 @@ Having many subscriptions could still make this dry run take a while. A subset o
 subscriptions can be dry ran using a match.
 
 .. code-block:: shell
-
   :caption: Only run subscriptions that have PBS in their names
 
   ytdl-sub --dry-run sub subscriptions.yaml -o '--ytdl_options.max_downloads 3' --match PBS
 
 Downloading
 -----------
-WIP
+Once the subscriptions file is validated, a download can be performed by omitting the dry run argument.
+
+.. code-block:: shell
+
+  ytdl-sub sub subscriptions.yaml
+
+Multiple subscription file names can be provided to perform a download on all of them. A single file
+named ``subscriptions.yaml`` does not require a file name specification since it will
+look for that file name by default, making the following command valid.
+
+.. code-block:: shell
+
+  ytdl-sub sub

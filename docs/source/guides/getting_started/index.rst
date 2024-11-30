@@ -68,8 +68,6 @@ Other docs that may be of use:
 
 :doc:`/prebuilt_presets/index`
 
-:doc:`examples`
-
 .. toctree::
   :hidden:
   :caption: Getting Started Guide
@@ -80,4 +78,3 @@ Other docs that may be of use:
   automating_downloads
   first_config
   advanced_configuration
-  examples
