@@ -48,6 +48,12 @@ can set modifications that apply to every subscription in this file.
 This snippet specifically adds two :ref:`override <config_reference/plugins:Overrides>` variables,
 which are used by the presets below.
 
+.. note::
+  It is tempting to put any override underneath ``overrides``. Keep in mind that this section
+  is solely for variable defining. Other :ref:`plugins <config_reference/plugins:Plugins>` need to be
+  set at the same indentation level as ``overrides``, not within it.
+
+
 -------------------------------------
 
 .. code-block:: yaml
