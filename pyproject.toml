@@ -60,7 +60,7 @@ docs = [
 ]
 build = [
     "build~=1.2",
-    "twine~=5.0",
+    "twine>=5,<7",
     "pyinstaller~=6.5",
 ]
 [project.scripts]
