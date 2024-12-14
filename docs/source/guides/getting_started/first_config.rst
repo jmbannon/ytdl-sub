@@ -6,8 +6,9 @@ A configuration file serves two purposes:
 1. Set advanced functionality that is not specifiable in a subscription file, such as working directory location. These
    are set underneath ``configuration``.
 2. Create custom presets, which can drastically simplify your subscription file. These are defined underneath ``presets``.
+   Presets are intended to be applicable and reusable across multiple subscriptions.
 
-Below is a basic configuration:
+Below is a common configuration:
 
 .. code-block:: yaml
   :linenos:
@@ -19,25 +20,184 @@ Below is a basic configuration:
     TV Show:
       preset:
         - "Jellyfin TV Show by Date"
+        - "Max 1080p"
 
+      embed_thumbnail: True
+
+      throttle_protection:
+         sleep_per_download_s:
+           min: 2.2
+           max: 10.8
+         sleep_per_subscription_s:
+           min: 9.0
+           max: 14.1
+         max_downloads_per_subscription:
+           min: 10
+           max: 36
 
       overrides:
         tv_show_directory: "/ytdl_sub_tv_shows"
 
     TV Show Only Recent:
       preset:
+        - "TV Show"
         - "Only Recent"
 
+Configuration Section
+---------------------
 
-The first two lines in this ``config.yaml`` file are the ``configuration``, and define the ``working_directory``, which is described near the bottom of :ref:`this section <guides/getting_started/index:quick overview of \`\`ytdl-sub\`\`>`
+The :ref:`configuration <config_reference/config_yaml:Configuration File>` section sets options for ytdl-sub execution.
+
+.. code-block:: yaml
+  :lineno-start: 1
+
+  configuration:
+    working_directory: '/mnt/ssd/.ytdl-sub-downloads'
+
+Preset Section
+--------------
+
+Underneath ``presets``, we define two custom presets with the names ``TV Show`` and ``TV Show Only Recent``.
+
+.. code-block:: yaml
+
+  presets:
+    TV Show:
+      ...
+    TV Show Only Recent:
+      ...
+
+The indentation example above shows how to define multiple presets.
+
+Custom Preset Definition
+------------------------
+
+Before we break down the above ``TV Show`` preset, lets first outline a preset layout:
+
+.. code-block:: yaml
+
+    Preset Name:
+      preset:
+        ...
+
+      plugin(s):
+        ...
+
+      overrides:
+        ...
+
+Presets can contain three important things:
+
+1. ``preset`` section, which can inherit `prebuilt presets <config_reference/prebuilt_presets:Prebuilt Preset Reference>`
+   or other presets defined in your config.
+2. `Plugin definitions <config_reference/plugins:Plugins>`
+3. `overrides <config_reference/plugins:overrides>`, which can override inherited preset variables
+
+Presets do not have to define all of these, as we'll see in the ``TV Show Only Recent`` preset.
+
+Inheriting Presets
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: yaml
+  :lineno-start: 5
+
+    TV Show:
+      preset:
+        - "Jellyfin TV Show by Date"
+        - "Max 1080p"
+
+The following snippet shows that the ``TV Show`` preset will inherit all properties
+of the prebuilt presets ``Jellyfin TV Show by Date`` and ``Max 1080p`` in that order.
+
+Order matters for preset inheritance. Bottom-most presets will override ones above them.
+
+It is highly advisable to use `prebuilt presets <config_reference/prebuilt_presets:Prebuilt Preset Reference>` as
+a starting point for custom preset building, as they do the work of preset building to ensure things show as expected
+in their respective media players. Read on to see how to override prebuilt preset specifics such as title.
+
+Defining Plugins
+~~~~~~~~~~~~~~~~
+
+.. code-block:: yaml
+  :lineno-start: 10
+
+      embed_thumbnail: True
+
+      throttle_protection:
+         sleep_per_download_s:
+           min: 2.2
+           max: 10.8
+         sleep_per_subscription_s:
+           min: 9.0
+           max: 14.1
+         max_downloads_per_subscription:
+           min: 10
+           max: 36
+
+Our ``TV Show`` sets two plugins, `throttle_protection <config_reference/plugins:throttle_protection>` and
+`embed_thumbnail <config_reference/plugins:embed_thumbnail>`. Each plugin's documentation shows the respective
+fields that they support.
+
+If an inherited preset defines the same plugin, the custom preset will use 'merge-and-append' strategy to
+combine their definitions. What this means is:
+
+1. If the field is a map (i.e. has sub-params like ``sleep_per_download_s`` above) or array, it will try to merge them
+2. If both the inherited preset and custom preset set the same exact field and value (i.e. ``embed_thumbnail``)
+   the custom preset will overwrite it
 
 
-Line 4 begins the definition of your custom ``presets``, with line 5 being the name of your first custom ``preset``.
+Setting Override Variables
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Lines 7 and 8 tell ``ytdl-sub`` which :doc:`/prebuilt_presets/index` to expand on; these ``presets`` already indicate that the downloaded files should be: 
+.. code-block:: yaml
+  :lineno-start: 20
 
-- in a format usable by, and with metadata accessible to, Jellyfin
-- sorted by upload date, and 
-- only uploaded in the last 2 months (and will also delete any files in the media library which were uploaded over 2 months ago)
+      overrides:
+        tv_show_directory: "/ytdl_sub_tv_shows"
 
-Line 11 is an override variable, ``tv_show_directory``, that tells ``ytdl-sub`` where to save your downloaded files once they've been processed, also known as the ``output_directory``. In this case, the downloaded files will be saved to the ``youtube`` folder in the root ``tv_shows`` directory.
+All override variables reside underneath the `overrides <config_reference/plugins:overrides>` section.
+
+It is important to remember that individual subscriptions can override specific override variables.
+When defining variables in a preset, it is best practice to define them with the intention that
+
+1. All subscriptions will use its value them
+2. Use them as placeholders to perform other logic, then have subscriptions or child presets
+   define their specific value
+
+For simplicity, we'll focus on (1) for now. The above snippet sets the ``tv_show_directory``
+variable to a file path. This variable name is specific to the prebuilt TV show presets.
+
+See the `prebuilt preset reference <config_reference/prebuilt_presets/index:Prebuilt Preset Reference`
+to see all available variables that are overridable.
+
+
+Using Custom Presets in Subscriptions
+--------------------------------------
+
+Subscription files can use custom presets just like any other prebuilt preset.
+Below shows a complete subscription file using the above two custom presets.
+
+.. code-block:: yaml
+
+  TV Show:
+    = Documentaries:
+      "NOVA PBS": "https://www.youtube.com/@novapbs"
+
+    = Kids | = TV-Y:
+      "Jake Trains": "https://www.youtube.com/@JakeTrains"
+
+  TV Show Only Recent:
+    = News
+      "BBC News": "https://www.youtube.com/@BBCNews"
+
+Notice how we do not need to define ``tv_show_directory`` in the ``__preset__`` section
+like in prior examples. This is because our custom presets already do the work of defining it.
+
+Reference Custom Config in the CLI
+----------------------------------
+
+Be sure to tell ytdl-sub to use your config by using the argument
+``--config /path/to/config.yaml``.
+
+If you run ytdl-sub in the same directory, and the config file is named ``config.yaml``, it will
+use it by default.
