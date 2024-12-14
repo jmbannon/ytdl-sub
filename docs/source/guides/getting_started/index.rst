@@ -39,7 +39,7 @@ Intermediate terminology:
 
 Advanced terminology:
 
-- ``entry variables``: Variables that derive from a downloaded yt-dlp entry.
+- ``entry variables``: Variables that derive from a downloaded yt-dlp entry (media).
 - ``static variables``: Variables that do not have a dependency to entry variables.
 - ``scripting``: Syntax that allows the use of entry variables, static variables, and functions in override variables.
 

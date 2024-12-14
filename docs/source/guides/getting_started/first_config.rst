@@ -1,22 +1,32 @@
 Basic Configuration
 ===================
 
-Your first configuration will look pretty simple:
+A configuration file serves two purposes:
+
+1. Set advanced functionality that is not specifiable in a subscription file, such as working directory location. These
+   are set underneath ``configuration``.
+2. Create custom presets, which can drastically simplify your subscription file. These are defined underneath ``presets``.
+
+Below is a basic configuration:
 
 .. code-block:: yaml
   :linenos:
 
   configuration:
-    working_directory: '.ytdl-sub-downloads'
+    working_directory: '/mnt/ssd/.ytdl-sub-downloads'
 
   presets:
     TV Show:
       preset:
         - "Jellyfin TV Show by Date"
-        - "Only Recent"
+
 
       overrides:
         tv_show_directory: "/ytdl_sub_tv_shows"
+
+    TV Show Only Recent:
+      preset:
+        - "Only Recent"
 
 
 The first two lines in this ``config.yaml`` file are the ``configuration``, and define the ``working_directory``, which is described near the bottom of :ref:`this section <guides/getting_started/index:quick overview of \`\`ytdl-sub\`\`>`

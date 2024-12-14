@@ -31,7 +31,7 @@ Your first subscription file should look something like this:
     = Lofi:
       "Game Chops": "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
 
-Lets break this down:
+Let's break this down:
 
 .. code-block:: yaml
   :lineno-start: 1
