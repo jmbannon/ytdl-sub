@@ -191,7 +191,7 @@ Below shows a complete subscription file using the above two custom presets.
       "BBC News": "https://www.youtube.com/@BBCNews"
 
 Notice how we do not need to define ``tv_show_directory`` in the ``__preset__`` section
-like in prior examples. This is because our custom presets already do the work of defining it.
+like in prior examples. This is because our custom presets do the work of defining it.
 
 Reference Custom Config in the CLI
 ----------------------------------

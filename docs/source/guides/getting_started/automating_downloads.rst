@@ -1,7 +1,9 @@
 Automating Downloads
 ====================
 
-One of the key capabilities of ``ytdl-sub`` is how well it runs without user input, but to take advantage of this you must set up scheduling to execute the commands at some interval. How you set up this scheduling depends on which version of ``ytdl-sub`` you downloaded.
+One of the key capabilities of ``ytdl-sub`` automating new downloads.
+To take advantage of this, you must set up scheduling to execute the commands at some interval.
+How you set up this scheduling depends on which version of ``ytdl-sub`` you downloaded.
 
 
 :ref:`Guide for Docker and Unraid Containers <guides/getting_started/automating_downloads:docker and unraid>`
