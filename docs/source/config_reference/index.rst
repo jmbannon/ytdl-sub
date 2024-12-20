@@ -6,7 +6,7 @@ This section contains direct references to the code of ``ytdl-sub`` and informat
 
 .. toctree:: 
     config_yaml
-    subscriptions_yaml
+    subscription_yaml
     plugins
     scripting/index
     prebuilt_presets/index
