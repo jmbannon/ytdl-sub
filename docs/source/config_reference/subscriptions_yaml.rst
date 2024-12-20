@@ -1,114 +1,102 @@
 ==================
-Subscriptions File
+Subscription File
 ==================
 
-The ``subscriptions.yaml`` file is where we use :ref:`config_reference/config_yaml:presets`
-to define a ``subscription``: something we want to recurrently download, such as a specific
-channel or playlist.
+A subscription file is designed to both define and organize many things
+to download in condensed YAML.
 
-The only difference between a ``subscription`` and ``preset`` is that the subscription
-must have all required variables defined to perform a download.
+.. hint::
 
-Below is an example that downloads a YouTube playlist:
+  Read the :ref:`getting started guide <guides/getting_started:Getting Started>`
+  first before reviewing this section.
 
-.. code-block:: yaml
-  :caption: config.yaml
+Layout
+------
+A subscription file is comprised of YAML keys and values. Keys can be either
 
-  presets:
-    playlist_preset_ex:
-      download: "{url}"
-      output_options:
-        output_directory: "{output_directory}/{playlist_name}"
-        file_name: "{playlist_name}.{title}.{ext}"
-      overrides:
-        output_directory: "/path/to/ytdl-sub-videos"
+- a preset
+- an override value
+- a subscription name
+
+Take the following example:
 
 .. code-block:: yaml
-  :caption: subscription.yaml
 
-  my_subscription_name:
-    preset: "playlist_preset_ex"
-    overrides:
-      playlist_name: "diy-playlist"
-      url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
-
-Our preset ``playlist_preset_ex`` defines three
-custom variables: ``{output_directory}``, ``{playlist_name}``, and ``{url}``. The subscription sets
-the ``parent preset`` to ``playlist_preset_ex``, and must define the variables ``{playlist_name}``
-and ``{url}`` since the preset did not.
-
-Beautifying Subscriptions
--------------------------
-Subscriptions support using presets as keys, and using keys to set override variables as values.
-For example:
-
-.. code-block:: yaml
-  :caption: subscription.yaml
-
-  TV Show Full Archive:
+  Jellyfin TV Show by Date:
     = News:
-        "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
+      "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
+      "BBC News": "https://www.youtube.com/@BBCNews"
 
-  TV Show Only Recent:
-    = Tech | TV-Y:
-      "Two Minute Papers": "https://www.youtube.com/@TwoMinutePapers"
+All three types of keys are used for the following:
 
-Will create two subscriptions named "Breaking News" and "Two Minute Papers", equivalent to:
+- ``Jellyfin TV Show by Date`` - a prebuilt preset
+- ``= News`` - an override value for genre
+- ``Breaking News``, ``BBC News`` - The subscription names
 
-.. code-block:: yaml
+The bottom-most keys, or leaf keys, should always be the subscription name.
+It is good practice to put subscription names in quotes to differentiate
+between preset names and subscription names.
 
-  "Breaking News":
-    preset:
-      - "TV Show Full Archive"
+Values should always be the subscription itself. The simplest form is
+just the URL. Further sections will show more exotic examples that go beyond
+a single URL.
 
-    overrides:
-      subscription_indent_1: "News"
-      subscription_name: "Breaking News"
-      subscription_value: "https://www.youtube.com/@SomeBreakingNews"
 
-  "Two Minute Papers":
-    preset:
-      - "TV Show Only Recent"
-
-    overrides:
-      subscription_indent_1: "Tech"
-      subscription_indent_2: "TV-Y"
-      subscription_name: "Two Minute Papers"
-      subscription_value: "https://www.youtube.com/@TwoMinutePapers"
-
-You can provide as many parent presets in the form of ``keys``, and subscription indents as ``= keys``.
-This can drastically simplify subscription definitions by setting things like so in your
-parent preset:
-
-.. code-block:: yaml
-
-  presets:
-    "TV Show Preset":
-      overrides:
-        subscription_indent_1: "default-genre"
-        subscription_indent_2: "default-content-rating"
-
-        tv_show_name: "{subscription_name}"
-        url: "{subscription_value}"
-        genre: "{subscription_indent_1}"
-        content_rating: "{subscription_indent_2}"
-
-File Preset
+Inheritance
 -----------
+A subscription inherits every key above it. In the above example,
+both ``Breaking News`` and ``BBC News`` inherits the ``Jellyfin TV Show by Date``
+preset and the ``= News`` override value.
 
-You can apply a preset to all subscriptions in the ``subscription.yaml`` file
-by using the file-wide ``__preset__``:
+.. note::
+
+  There are no limits or boundaries on how one structures
+  their presets. This flexibility is intended for subscription authors
+  to organize their downloads as they see fit.
+
+Multi Keys
+----------
+Subscription keys support pipe syntax, or ``|``, which allows multiple
+keys to be defined on a single line. The following is equivalent to the above
+example:
 
 .. code-block:: yaml
-  :caption: subscription.yaml
 
-  __preset__:
-    preset: "playlist_preset_ex"
+  Jellyfin TV Show by Date | = News:
+    "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
+    "BBC News": "https://www.youtube.com/@BBCNews"
 
-  my_subscription_name:
-    overrides:
-      url: "https://youtube.com/playlist?list=UCsvn_Po0SmunchJYtttWpOxMg"
-      playlist_name: "diy-playlist"
+Override Mode
+-------------
+Often times, it is convenient to set multiple override values for
+a single subscription. We can put a preset in *override mode* by
+using tilda syntax, or ``~``.
 
-This ``subscription.yaml`` is equivalent to the one above it because all
-subscriptions automatically set ``__preset__`` as a ``parent preset``.
+Suppose we want to apply the :ref:`Only Recent <prebuilt_presets/helpers:Only Recent>`
+preset to the above examples. But for ``BBC News`` specifically, we want to
+set the date range to be different than the default ``2months`` value to
+``2weeks``.
+
+We can change it as follows:
+
+.. code-block:: yaml
+
+  Jellyfin TV Show by Date
+    = News | Only Recent:
+      "Breaking News": "https://www.youtube.com/@SomeBreakingNews"
+      "~BBC News":
+        url: "https://www.youtube.com/@BBCNews"
+        only_recent_date_range: "2weeks"
+
+.. important::
+
+  When using override mode, we need to set the ``url``
+  variable since we are no longer using the simplified
+  *subscription_value*. For more info on how this works,
+  read about :ref:`subscription variables <config_reference/scripting/static_variables:Subscription Variables>`.
+
+Map Mode
+--------
+Map mode is for highly advanced presets that benefit
+from a more complex subscription definition. TODO: Show music video
+example here.
