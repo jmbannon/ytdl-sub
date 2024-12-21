@@ -88,10 +88,10 @@ Before we break down the above ``TV Show`` preset, lets first outline a preset l
 
 Presets can contain three important things:
 
-1. ``preset`` section, which can inherit `prebuilt presets <config_reference/prebuilt_presets:Prebuilt Preset Reference>`
+1. ``preset`` section, which can inherit :ref:`prebuilt presets <config_reference/prebuilt_presets/index:Prebuilt Preset Reference>`
    or other presets defined in your config.
-2. `Plugin definitions <config_reference/plugins:Plugins>`
-3. `overrides <config_reference/plugins:overrides>`, which can override inherited preset variables
+2. :ref:`Plugin definitions <config_reference/plugins:Plugins>`
+3. :ref:`overrides <config_reference/plugins:overrides>`, which can override inherited preset variables
 
 Presets do not have to define all of these, as we'll see in the ``TV Show Only Recent`` preset.
 
@@ -111,7 +111,7 @@ of the prebuilt presets ``Jellyfin TV Show by Date`` and ``Max 1080p`` in that o
 
 Order matters for preset inheritance. Bottom-most presets will override ones above them.
 
-It is highly advisable to use `prebuilt presets <config_reference/prebuilt_presets:Prebuilt Preset Reference>` as
+It is highly advisable to use :ref:`prebuilt presets <config_reference/prebuilt_presets/index:Prebuilt Preset Reference>` as
 a starting point for custom preset building, as they do the work of preset building to ensure things show as expected
 in their respective media players. Read on to see how to override prebuilt preset specifics such as title.
 
@@ -134,8 +134,8 @@ Defining Plugins
            min: 10
            max: 36
 
-Our ``TV Show`` sets two plugins, `throttle_protection <config_reference/plugins:throttle_protection>` and
-`embed_thumbnail <config_reference/plugins:embed_thumbnail>`. Each plugin's documentation shows the respective
+Our ``TV Show`` sets two plugins, :ref:`throttle_protection <config_reference/plugins:throttle_protection>` and
+:ref:`embed_thumbnail <config_reference/plugins:embed_thumbnail>`. Each plugin's documentation shows the respective
 fields that they support.
 
 If an inherited preset defines the same plugin, the custom preset will use 'merge-and-append' strategy to
@@ -155,7 +155,7 @@ Setting Override Variables
       overrides:
         tv_show_directory: "/ytdl_sub_tv_shows"
 
-All override variables reside underneath the `overrides <config_reference/plugins:overrides>` section.
+All override variables reside underneath the :ref:`overrides <config_reference/plugins:overrides>` section.
 
 It is important to remember that individual subscriptions can override specific override variables.
 When defining variables in a preset, it is best practice to define them with the intention that
@@ -167,7 +167,7 @@ When defining variables in a preset, it is best practice to define them with the
 For simplicity, we'll focus on (1) for now. The above snippet sets the ``tv_show_directory``
 variable to a file path. This variable name is specific to the prebuilt TV show presets.
 
-See the `prebuilt preset reference <config_reference/prebuilt_presets/index:Prebuilt Preset Reference`
+See the :ref:`prebuilt preset reference <config_reference/prebuilt_presets/index:Prebuilt Preset Reference>`
 to see all available variables that are overridable.
 
 
