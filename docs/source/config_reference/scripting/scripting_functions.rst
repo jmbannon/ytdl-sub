@@ -646,6 +646,13 @@ contains
 :description:
   Returns True if ``contains`` is in ``string``. False otherwise.
 
+contains_all
+~~~~~~~~~~~~
+:spec: ``contains_all(string: String, contains_array: Array) -> Boolean``
+
+:description:
+    Returns true if all elements in ``contains_array`` are in ``string``. False otherwise.
+
 contains_any
 ~~~~~~~~~~~~
 :spec: ``contains_any(string: String, contains_array: Array) -> Boolean``
