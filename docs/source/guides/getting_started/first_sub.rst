@@ -1,7 +1,7 @@
 Initial Subscription
 ====================
 
-Your first subscription should look something like this:
+Your first subscription file should look something like this:
 
 .. code-block:: yaml
   :linenos:
@@ -31,7 +31,7 @@ Your first subscription should look something like this:
     = Lofi:
       "Game Chops": "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
 
-Lets break this down:
+Let's break this down:
 
 .. code-block:: yaml
   :lineno-start: 1
@@ -42,8 +42,17 @@ Lets break this down:
       music_directory: "/music"
 
 
-The first :ref:`__preset__ <config_reference/subscriptions_yaml:File Preset>` section is where we
+The first :ref:`__preset__ <config_reference/subscription_yaml:File Preset>` section is where we
 can set modifications that apply to every subscription in this file.
+
+This snippet specifically adds two :ref:`override <config_reference/plugins:Overrides>` variables,
+which are used by the presets below.
+
+.. note::
+  It is tempting to put any override underneath ``overrides``. Keep in mind that this section
+  is solely for variable defining. Other :ref:`plugins <config_reference/plugins:Plugins>` need to be
+  set at the same indentation level as ``overrides``, not within it.
+
 
 -------------------------------------
 
@@ -73,6 +82,8 @@ subscriptions to look like TV shows in the Jellyfin media player (can be changed
 one of the presets outlined in the comment above). Setting it as a YAML key implies that all
 subscriptions underneath it will *inherit* this preset.
 
+This preset expects the variable ``tv_show_directory`` to be set, which we do above.
+
 -------------------------------------
 
 .. code-block:: yaml
@@ -82,17 +93,13 @@ subscriptions underneath it will *inherit* this preset.
     = Documentaries:
 
 Line 12 sets the key to ``= Documentaries``. When keys are prefixed with ``=``, it means we are
-setting the
-:ref:`subscription indent variable <config_reference/subscriptions_yaml:Beautifying Subscriptions>`.
-For TV Show presets, the first subscription indent variable maps to the TV show's genre.
-Setting subscription indent variables as a key implies all subscriptions underneath it will
-have this variable set.
+setting the genre. This value will get written to the respective metadata tags for both TV show
+and music presets.
 
-To better understand what variables are used in prebuilt presets, refer to the
-:ref:`prebuilt preset reference <config_reference/prebuilt_presets/index:Prebuilt Preset Reference>`.
-Here you will see the underlying variables used in prebuilt presets that can be overwritten.
-We already overwrote a few of the variables in the ``__preset__`` section above to define our
-output directory.
+Behind the scenes, this sets the override variable ``subscription_indent_1``. Further documentation
+can be found here for
+:ref:`subscription syntax <config_reference/subscription_yaml:Subscription File>` and
+:ref:`subscription variables <config_reference/scripting/static_variables:Subscription Variables>`.
 
 -------------------------------------
 
@@ -104,8 +111,10 @@ output directory.
       "NOVA PBS": "https://www.youtube.com/@novapbs"
 
 Line 13 is where we define our first subscription. We set the subscription name to ``NOVA PBS``,
-and the subscription value to ``https://www.youtube.com/@novapbs``. Referring to the
-:ref:`TV show preset reference <config_reference/prebuilt_presets/tv_show:TV Show>`,
+and the subscription value to ``https://www.youtube.com/@novapbs``.
+
+To see how presets ingest subscription definitions, refer to the
+:ref:`preset references <config_reference/prebuilt_presets/tv_show:TV Show>`,
 we can see that ``{subscription_name}`` is used to set the ``tv_show_name`` variable.
 
 -------------------------------------
