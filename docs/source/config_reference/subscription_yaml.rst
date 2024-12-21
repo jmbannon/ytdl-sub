@@ -7,8 +7,27 @@ to download in condensed YAML.
 
 .. hint::
 
-  Read the :ref:`getting started guide <guides/getting_started:Getting Started>`
+  Read the :ref:`getting started guide <guides/getting_started/index:Getting Started>`
   first before reviewing this section.
+
+File Preset
+-----------
+Many examples show ``__preset__`` at the top. This is known as the *subscription file preset*.
+It is where a single :ref:`preset <guides/getting_started/first_config:Custom Preset Definition>`
+can be defined that gets applied to each subscription within the file.
+
+This is a good place to apply file-wide variables such as ``tv_show_directory`` or
+supply a cookies file path.
+
+.. code-block:: yaml
+
+  __preset__:
+    overrides:
+      tv_show_directory: "/tv_shows"
+
+    ytdl_options:
+      cookiefile: "/config/cookie.txt"
+
 
 Layout
 ------

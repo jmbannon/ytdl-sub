@@ -42,7 +42,7 @@ Let's break this down:
       music_directory: "/music"
 
 
-The first :ref:`__preset__ <config_reference/subscriptions_yaml:File Preset>` section is where we
+The first :ref:`__preset__ <config_reference/subscription_yaml:File Preset>` section is where we
 can set modifications that apply to every subscription in this file.
 
 This snippet specifically adds two :ref:`override <config_reference/plugins:Overrides>` variables,
@@ -96,8 +96,10 @@ Line 12 sets the key to ``= Documentaries``. When keys are prefixed with ``=``, 
 setting the genre. This value will get written to the respective metadata tags for both TV show
 and music presets.
 
-Behind the scenes, this sets the override variable ``subscription_indent_1``. Read more about
-subscription syntax :ref:`here <config_reference/subscriptions_yaml:Subscriptions File>`.
+Behind the scenes, this sets the override variable ``subscription_indent_1``. Further documentation
+can be found here for
+:ref:`subscription syntax <config_reference/subscription_yaml:Subscription File>` and
+:ref:`subscription variables <config_reference/scripting/static_variables:Subscription Variables>`.
 
 -------------------------------------
 

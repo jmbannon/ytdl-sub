@@ -150,7 +150,7 @@ Setting Override Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
-  :lineno-start: 20
+  :lineno-start: 23
 
       overrides:
         tv_show_directory: "/ytdl_sub_tv_shows"
@@ -187,7 +187,7 @@ Below shows a complete subscription file using the above two custom presets.
       "Jake Trains": "https://www.youtube.com/@JakeTrains"
 
   TV Show Only Recent:
-    = News
+    = News:
       "BBC News": "https://www.youtube.com/@BBCNews"
 
 Notice how we do not need to define ``tv_show_directory`` in the ``__preset__`` section

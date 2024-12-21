@@ -45,36 +45,13 @@ Advanced terminology:
 
 Ready to Start?
 ---------------
-Now that you've completed your install of ``ytdl-sub``, it's time to get started. This is a 3-step process:
-
-- Create your subscription file
-- Automate starting ytdl-sub
-- (Optional) Create a custom configuration file if further customization is needed
-
-
-:doc:`Step 1: Initial Subscriptions <first_sub>`
-
-:doc:`Step 2: Your First Download <first_download>`
-
-:doc:`Step 3: Automating Downloads <automating_downloads>`
-
-Want to go a step further?
-
-If you want to use atypical paths or specific configuration options, check out :doc:`Basic Configuration <first_config>`
-
-For tips on creating your own presets when the prebuilt presets aren't cutting it, check out :doc:`Advanced Configuration <advanced_configuration>`
-
-Other docs that may be of use:
-
-:doc:`/prebuilt_presets/index`
+Now that you've completed your install of ``ytdl-sub``, it's time to get started.
+It is recommended to go through the below sections in order to fully grasp ytdl-sub.
 
 .. toctree::
-  :hidden:
-  :caption: Getting Started Guide
-  :maxdepth: 1
+  :maxdepth: 2
 
   first_sub
   first_download
   automating_downloads
   first_config
-  advanced_configuration
