@@ -3,8 +3,10 @@ FROM ghcr.io/linuxserver/baseimage-ubuntu:jammy
 # https://askubuntu.com/questions/972516/debian-frontend-environment-variable
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Needed for phantomjs
-ENV OPENSSL_CONF=/etc/ssl
+# For phantomjs
+ENV OPENSSL_CONF="/etc/ssl"
+# For downloading thumbnails
+ENV SSL_CERT_DIR="/etc/ssl/certs/"
 
 ###############################################################################
 # YTDL-SUB INSTALL

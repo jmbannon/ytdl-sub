@@ -3,8 +3,10 @@ FROM ghcr.io/linuxserver/baseimage-alpine:edge
 ###############################################################################
 # YTDL-SUB INSTALL
 
-# Needed for phantomjs
+# For phantomjs
 ENV OPENSSL_CONF="/etc/ssl"
+# For downloading thumbnails
+ENV SSL_CERT_DIR="/etc/ssl/certs/"
 
 COPY root/ /
 RUN mkdir -p /config && \

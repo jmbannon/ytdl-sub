@@ -1,7 +1,9 @@
 FROM lscr.io/linuxserver/code-server:4.18.0-ls181
 
-# Needed for phantomjs
-ENV OPENSSL_CONF=/etc/ssl
+# For phantomjs
+ENV OPENSSL_CONF="/etc/ssl"
+# For downloading thumbnails
+ENV SSL_CERT_DIR="/etc/ssl/certs/"
 
 ###############################################################################
 # YTDL-SUB INSTALL
