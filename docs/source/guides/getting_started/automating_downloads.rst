@@ -52,6 +52,9 @@ Docker and Unraid
 
     This will run the script every 6 hours. To run every hour, change ``*/6`` to ``*/1``, or to run once a day, change the same value to the hour (in 24hr format) that you want it to run at. See the `cron tab manpage`_ for more options.
 
+    .. attention::
+      The Docker container needs to be restarted for changes to take effect. Run `crontab -e` after to verify settings are correct.
+
   .. tab-item:: Headless Image
 
     .. _LinuxServer's Universal Cron mod: https://github.com/linuxserver/docker-mods/tree/universal-cron
@@ -117,6 +120,9 @@ Docker and Unraid
       echo "  0     */6     *       *       *       /config/run_cron" >> /config/crontabs/abc
     
     This will run the script every 6 hours. To run every hour, change ``*/6`` to ``*/1``, or to run once a day, change the same value to the hour (in 24hr format) that you want it to run at. See the `cron tab manpage`_ for more options.
+    
+    .. attention::
+      The Docker container needs to be restarted for changes to take effect. Run `crontab -e` after to verify settings are correct.
 
 .. _linux-setup:
 
