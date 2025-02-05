@@ -6,7 +6,7 @@ from typing import Optional
 from typing import Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import line_section
+from tools.docgen.utils import line_section, get_function_docs
 from tools.docgen.utils import properties
 from tools.docgen.utils import section
 from ytdl_sub.config.overrides import Overrides
@@ -42,13 +42,6 @@ def should_filter_property(property_name: str) -> bool:
         "script",
         "unresolvable",
     )
-
-
-def get_function_docs(function_name: str, obj: Any, level: int) -> str:
-    docs = f"\n``{function_name}``\n\n"
-    docs += inspect.cleandoc(getattr(obj, function_name).__doc__)
-    docs += "\n\n"
-    return docs
 
 
 def generate_plugin_docs(name: str, options: Type[OptionsValidator], offset: int) -> str:
