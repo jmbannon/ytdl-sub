@@ -95,7 +95,7 @@ jobs:
           mv dist/ytdl-sub /opt/builds/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ytdl-sub_${{ matrix.arch }}
           path: /opt/builds/ytdl-sub_${{ matrix.arch }}
@@ -124,7 +124,7 @@ jobs:
           .\dist\ytdl-sub.exe -h
 
       - name: Upload build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ytdl-sub_exe
           path: .\dist\ytdl-sub.exe
