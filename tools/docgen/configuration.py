@@ -9,10 +9,9 @@ from tools.docgen.utils import camel_case_to_human
 from tools.docgen.utils import get_function_docs
 from tools.docgen.utils import line_section
 from tools.docgen.utils import section
+from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
-
-from ytdl_sub.config.config_validator import ConfigOptions
 
 
 def _variable_class_to_name(obj: Type[Any]) -> str:
