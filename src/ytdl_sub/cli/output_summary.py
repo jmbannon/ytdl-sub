@@ -99,7 +99,7 @@ def output_summary(subscriptions: List[Subscription]) -> None:
         f"{total_subs_str:<{width_sub_name}} "
         f"{_color_int(total_added):>{width_num_entries_added}} "
         f"{_color_int(total_modified):>{width_num_entries_modified}} "
-        f"{_color_int(total_removed):>{width_num_entries_removed}} "
+        f"{_color_int(total_removed * -1):>{width_num_entries_removed}} "
         f"{total_entries:>{width_num_entries}} "
         f"{total_errors_str}"
     )
