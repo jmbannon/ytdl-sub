@@ -1,0 +1,4 @@
+echo "Beginning cron job..."
+
+# Place your ytdl-sub command here
+# ytdl-sub -h

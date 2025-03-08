@@ -1,0 +1,32 @@
+#!/usr/bin/with-contenv bash
+
+echo "Starting ytdl-sub..."
+
+# copy config
+[[ ! -e "$DEFAULT_WORKSPACE/config.yaml" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE" && \
+    cp /defaults/config.yaml "$DEFAULT_WORKSPACE/config.yaml"
+[[ ! -e "$DEFAULT_WORKSPACE/subscriptions.yaml" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE" && \
+    cp /defaults/subscriptions.yaml "$DEFAULT_WORKSPACE/subscriptions.yaml"
+[[ ! -d "$DEFAULT_WORKSPACE/examples" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE/examples" && \
+    cp /defaults/examples/* "$DEFAULT_WORKSPACE/examples"
+
+# permissions
+chown -R ${PUID:-abc}:${PGID:-abc} \
+    /config
+
+# set up cron
+if [ "$CRON_SCHEDULE" != "" ] ; then
+    [[ ! -e "$CRON_SCRIPT" ]] && \
+    cp /defaults/cron "$CRON_SCRIPT"
+
+    cp /defaults/cron_wrapper "$DEFAULT_WORKSPACE/.cron_wrapper"
+
+    echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
+    echo "$CRON_SCHEDULE   $DEFAULT_WORKSPACE/.cron_wrapper" >> /config/crontabs/abc
+    
+    chmod +x "$CRON_SCRIPT"
+    chown abc:abc "$CRON_SCRIPT"
+fi

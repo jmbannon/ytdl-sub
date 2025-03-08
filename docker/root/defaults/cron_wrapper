@@ -1,0 +1,4 @@
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+. "$CRON_SCRIPT" | tee "$LOGS_TO_STDOUT"
