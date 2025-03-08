@@ -4,10 +4,10 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Set
 from typing import Type
 
-from ytdl_sub.config.validators.options import OptionsValidator
+from ytdl_sub.script.utils.type_checking import is_optional, get_optional_type
+from ytdl_sub.validators.validators import Validator
 
 LEVEL_CHARS: Dict[int, str] = {0: "=", 1: "-", 2: "~", 3: "^"}
 
@@ -24,6 +24,19 @@ def _should_filter_property(property_name: str) -> bool:
         "script",
         "unresolvable",
     )
+
+def _is_validator_property(options: Type[Validator], property_name: str) -> Optional[Type[Validator]]:
+    property_return_type = inspect.getfullargspec(getattr(options, property_name).fget).annotations['return']
+    if is_optional(property_return_type):
+        property_return_type = get_optional_type(property_return_type)
+
+    try:
+        if issubclass(property_return_type, Validator):
+            return property_return_type
+    except TypeError:
+        return None
+
+    return None
 
 
 def section(name: str, level: Optional[int]) -> str:
@@ -85,7 +98,7 @@ def get_function_docs(
 
 
 def generate_options_validator_docs(
-    name: str, options: Type[OptionsValidator], offset: int, skip_properties: bool
+    name: str, options: Type[Validator], offset: int, skip_properties: bool, recurse_property_options: bool = False, property_sections: bool = False
 ) -> str:
     docs = ""
     docs += section(name, level=offset + 0)
@@ -98,6 +111,21 @@ def generate_options_validator_docs(
 
     property_names = [prop for prop in properties(options) if not _should_filter_property(prop)]
     for property_name in sorted(property_names):
-        docs += get_function_docs(function_name=property_name, obj=options, level=None, display_function_name=f"``{property_name}``")
+        maybe_validator_property = _is_validator_property(options, property_name) if recurse_property_options else None
+        if maybe_validator_property:
+            docs += generate_options_validator_docs(
+                name=property_name,
+                options=maybe_validator_property,
+                offset=offset + 1,
+                skip_properties=False,
+                recurse_property_options=False
+            )
+        else:
+            docs += get_function_docs(
+                function_name=property_name,
+                obj=options,
+                level=(offset + 1) if property_sections else None,
+                display_function_name=f"``{property_name}``" if not property_sections else None,
+            )
 
     return docs

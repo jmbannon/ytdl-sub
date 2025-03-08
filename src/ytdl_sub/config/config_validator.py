@@ -22,6 +22,10 @@ from ytdl_sub.validators.validators import StringValidator
 
 
 class ExperimentalValidator(StrictDictValidator):
+    """
+    TODO(jessebannon) fill out
+    """
+
     _optional_keys = {"enable_update_with_info_json"}
     _allow_extra_keys = True
 
@@ -43,6 +47,10 @@ class ExperimentalValidator(StrictDictValidator):
 
 
 class PersistLogsValidator(StrictDictValidator):
+    """
+    TODO(jessebannon) fill out
+    """
+
     _required_keys = {"logs_directory"}
     _optional_keys = {"keep_logs_after", "keep_successful_logs"}
 
@@ -98,6 +106,10 @@ class PersistLogsValidator(StrictDictValidator):
 
 
 class ConfigOptions(StrictDictValidator):
+    """
+    Something
+    """
+
     _optional_keys = {
         "working_directory",
         "umask",

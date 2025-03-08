@@ -1,90 +1,80 @@
-==================
+
 Configuration File
 ==================
------------
-config.yaml
------------
+Something
 
-ytdl-sub is configured using a ``config.yaml`` file.
+dl_aliases
+----------
+.. _dl_aliases:
 
-The ``config.yaml`` is made up of two sections:
+Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
 
 .. code-block:: yaml
 
-  configuration:
-  presets:
+   configuration:
+     dl_aliases:
+       mv: "--preset music_video"
+       u: "--download.url"
 
-You can jump to any section and subsection of the config using the navigation
-section to the left.
+Simplifies
 
-Note for Windows users, paths can be represented with ``C:/forward/slashes/like/linux``.
-If you wish to represent paths like Windows, you will need to ``C:\\double\\bashslash\\paths``
-in order to escape the backslash character.
+.. code-block:: bash
 
-configuration
-~~~~~~~~~~~~~
-The ``configuration`` section contains app-wide configs applied to all presets
-and subscriptions.
+   ytdl-sub dl --preset "Jellyfin Music Videos" --download.url "youtube.com/watch?v=a1b2c3"
 
-.. autoclass:: ytdl_sub.config.config_validator.ConfigOptions()
-  :members:
-  :member-order: bysource
-  :exclude-members: subscription_value, persist_logs, experimental
+to
+
+.. code-block:: bash
+
+   ytdl-sub dl --mv --u "youtube.com/watch?v=a1b2c3"
+
+experimental
+------------
+TODO(jessebannon) fill out
+
+``enable_update_with_info_json``
+
+Enables modifying subscription files using info.json files using the argument
+``--update-with-info-json``. This feature is still being tested and has the ability to
+destroy files. Ensure you have a full backup before usage. You have been warned!
+
+ffmpeg_path
+-----------
+Path to ffmpeg executable. Defaults to ``/usr/bin/ffmpeg`` for Linux, and
+``ffmpeg.exe`` for Windows (in the same directory as ytdl-sub).
+
+ffprobe_path
+------------
+Path to ffprobe executable. Defaults to ``/usr/bin/ffprobe`` for Linux, and
+``ffprobe.exe`` for Windows (in the same directory as ytdl-sub).
+
+file_name_max_bytes
+-------------------
+Max file name size in bytes. Most OS's typically default to 255 bytes.
+
+lock_directory
+--------------
+The directory to temporarily store file locks, which prevents multiple instances
+of ``ytdl-sub`` from running. Note that file locks do not work on network-mounted
+directories. Ensure that this directory resides on the host machine. Defaults to ``/tmp``.
 
 persist_logs
-""""""""""""
-Within ``configuration``, define whether logs from subscription downloads
-should be persisted.
+------------
+TODO(jessebannon) fill out
 
-.. code-block:: yaml
+``keep_successful_logs``
 
-  configuration:
-    persist_logs:
-      logs_directory: "/path/to/log/directory"
+Optional. Whether to store logs when downloading is successful. Defaults to True.
 
-Log files are stored as
-``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``.
+``logs_directory``
 
-.. autoclass:: ytdl_sub.config.config_validator.PersistLogsValidator()
-  :members:
-  :member-order: bysource
+Required. The directory to store the logs in.
 
-presets
-~~~~~~~
-``presets`` define a `formula` for how to format downloaded media and metadata.
+umask
+-----
+Umask (octal format) to apply to every created file. Defaults to "022".
 
-This section is work-in-progress!
-
-preset
-""""""
-Presets support inheritance by defining a parent preset:
-
-.. code-block:: yaml
-
-  presets:
-    custom_preset:
-      ...
-    parent_preset:
-      ...
-    child_preset:
-      preset: "parent_preset"
-
-In the example above, ``child_preset`` inherits all fields defined in ``parent_preset``.
-It is advantageous to use parent presets where possible to reduce duplicate yaml
-definitions.
-
-Presets also support inheritance from multiple presets:
-
-.. code-block:: yaml
-
-  child_preset:
-    preset:
-      - "custom_preset"
-      - "parent_preset"
-
-In this example, ``child_preset`` will inherit all fields from ``custom_preset``
-and ``parent_preset`` in that order. The bottom-most preset has the highest
-priority.
-
-If you are only inheriting from one preset, the syntax ``preset: "parent_preset"`` is
-valid YAML. Inheriting from multiple presets require use of a list.
+working_directory
+-----------------
+The directory to temporarily store downloaded files before moving them into their final
+directory. Defaults to .ytdl-sub-working-directory
