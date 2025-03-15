@@ -7,9 +7,33 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
       - CRON_SCHEDULE="*/1 * * * *"
-      - CRON_RUN_ON_START=false
+      - CRON_RUN_ON_START=true
     volumes:
       - ./volumes/ytdl-sub-gui:/config
     ports:
       - 8443:8443
+    restart: unless-stopped
+  ytdl-sub:
+    image: ytdl-sub:local
+    container_name: ytdl-sub
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+      - CRON_SCHEDULE="*/1 * * * *"
+      - CRON_RUN_ON_START=true
+    volumes:
+      - ./volumes/ytdl-sub:/config
+    restart: unless-stopped
+  ytdl-sub-ubuntu:
+    image: ytdl-sub-ubuntu:local
+    container_name: ytdl-sub
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+      - CRON_SCHEDULE="*/1 * * * *"
+      - CRON_RUN_ON_START=true
+    volumes:
+      - ./volumes/ytdl-sub:/config
     restart: unless-stopped
