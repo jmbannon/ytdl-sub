@@ -13,6 +13,10 @@ echo "Starting ytdl-sub..."
     mkdir -p "$DEFAULT_WORKSPACE/examples" && \
     cp -r /defaults/examples/* "$DEFAULT_WORKSPACE/examples"
 
+[[ ! -e "/config/.bashrc" ]] && \
+  echo "alias ls='ls --color=auto'" > /config/.bashrc && \
+  echo "cd ." >> /config/.bashrc
+
 # permissions
 chown -R ${PUID:-abc}:${PGID:-abc} \
     /config
