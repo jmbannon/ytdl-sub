@@ -6,6 +6,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/Los_Angeles
+      - CRON_SCHEDULE="*/1 * * * *"
     volumes:
       - ./volumes/ytdl-sub-gui:/config
     ports:
