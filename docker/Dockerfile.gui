@@ -79,11 +79,13 @@ RUN mkdir -p /config && \
 ###############################################################################
 # CONTAINER CONFIGS
 
-
-ENV YTDL_SUB_TYPE="gui" \
-EDITOR="nano" \
+ENV EDITOR="nano" \
 HOME="/config" \
-DOCKER_MODS=linuxserver/mods:universal-cron \
-DEFAULT_WORKSPACE=/config/ytdl-sub-configs
+DOCKER_MODS=linuxserver/mods:universal-stdout-logs|linuxserver/mods:universal-cron \
+DEFAULT_WORKSPACE=/config/ytdl-sub-configs \
+CRON_SCRIPT="/config/ytdl-sub-configs/cron" \
+CRON_WRAPPER_SCRIPT="/config/ytdl-sub-configs/.cron_wrapper" \
+LOGS_TO_STDOUT=/config/ytdl-sub-configs/.cron.log \
+LSIO_FIRST_PARTY=false
 
 VOLUME /config
