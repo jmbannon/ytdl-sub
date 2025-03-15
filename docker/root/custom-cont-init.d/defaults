@@ -13,9 +13,6 @@ echo "Starting ytdl-sub..."
     mkdir -p "$DEFAULT_WORKSPACE/examples" && \
     cp -r /defaults/examples/* "$DEFAULT_WORKSPACE/examples"
 
-# always create cron log file
-touch "$LOGS_TO_STDOUT"
-
 # permissions
 chown -R ${PUID:-abc}:${PGID:-abc} \
     /config
@@ -39,7 +36,24 @@ if [ "$CRON_SCHEDULE" != "" ] ; then
     chown abc:abc "$CRON_SCRIPT"
 
     crontab -u abc /config/crontabs/abc
+
+    CRON_SUCCESS=$?
+    if [ $CRON_SUCCESS -eq 0 ] ; then
+      echo "Cron enabled with schedule $CRON_SCHEDULE_CLEAN"
+
+      if [ "$CRON_RUN_ON_START" = true ] ; then
+        echo "Running cron script on start"
+        . "$CRON_WRAPPER_SCRIPT"
+      fi
+    else
+      echo "Error in CRON_SCHEDULE definition, disabling cron."
+    fi
 else
   echo "CRON_SCHEDULE not specified, disabling cron."
   echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
+  echo "" >> /config/crontabs/abc
 fi
+
+# always create cron log file, after cron runs
+# on start to not tail it again
+echo "" > "$LOGS_TO_STDOUT"

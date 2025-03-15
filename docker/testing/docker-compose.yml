@@ -7,6 +7,7 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
       - CRON_SCHEDULE="*/1 * * * *"
+      - CRON_RUN_ON_START=false
     volumes:
       - ./volumes/ytdl-sub-gui:/config
     ports:
