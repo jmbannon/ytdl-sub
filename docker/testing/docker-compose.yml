@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
   ytdl-sub-ubuntu:
     image: ytdl-sub-ubuntu:local
-    container_name: ytdl-sub
+    container_name: ytdl-sub-ubuntu
     environment:
       - PUID=1000
       - PGID=1000

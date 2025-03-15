@@ -79,7 +79,6 @@ Docker Compose is an easy "set it and forget it" install method. Follow the inst
             - PUID=1000
             - PGID=1000
             - TZ=America/Los_Angeles
-            - DOCKER_MODS=linuxserver/mods:universal-cron
           volumes:
             - <path/to/ytdl-sub/config>:/config
             - <path/to/tv_shows>:/tv_shows  # optional
