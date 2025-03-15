@@ -25,7 +25,9 @@ if [ "$CRON_SCHEDULE" != "" ] ; then
     [[ ! -e "$CRON_SCRIPT" ]] && \
     cp /defaults/cron "$CRON_SCRIPT"
 
-    cp /defaults/cron_wrapper "$DEFAULT_WORKSPACE/.cron_wrapper"
+    cp /defaults/cron_wrapper "$CRON_WRAPPER_SCRIPT"
+    chmod +x "$CRON_WRAPPER_SCRIPT"
+    chown abc:abc "$CRON_WRAPPER_SCRIPT"
 
     CRON_SCHEDULE_CLEAN="${CRON_SCHEDULE//\"/}"
     CRON_SCHEDULE_CLEAN="${CRON_SCHEDULE_CLEAN//\'/}"
