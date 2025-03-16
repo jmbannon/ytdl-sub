@@ -22,12 +22,12 @@ ENV variables to your docker setup.
   services:
     ytdl-sub:
       environment:
-      - CRON_SCHEDULE="0 */6 * * *"
-      - CRON_RUN_ON_START=false
+        - CRON_SCHEDULE="0 */6 * * *"
+        - CRON_RUN_ON_START=false
 
 
 - ``CRON_SCHEDULE`` follows the standard `cron scheduling syntax`_. The above value will run the script once every 6 hours.
-- ``CRON_RUN_ON_START`` toggles whether to run your cron script on container start.
+- ``CRON_RUN_ON_START`` toggles whether to run your cron script on container start in addition to the cron schedule.
 
 The cron script will reside in the main directory with the file name ``cron``.
 Cron logs should show when viewing the Docker logs.

@@ -76,17 +76,17 @@ jobs:
           dnf install -y epel-release tar wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
       - name: Install Python
         run: |
-          wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
-          tar -xf Python-3.10.10.tar.xz
-          cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+          wget https://www.python.org/ftp/python/3.12.9/Python-3.12.9.tar.xz
+          tar -xf Python-3.12.9.tar.xz
+          cd Python-3.12.9 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
           make -j 8
           make altinstall
-          python3.10 --version
-          python3.10 -m ensurepip --upgrade
+          python3.12 --version
+          python3.12 -m ensurepip --upgrade
       - name: Build Package
         run: |
-          python3.10 -m pip install -e .
-          python3.10 -m pip install pyinstaller
+          python3.12 -m pip install -e .
+          python3.12 -m pip install pyinstaller
           # Build executable
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
@@ -112,7 +112,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.12"
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}'> src/ytdl_sub/__init__.py
@@ -193,13 +193,13 @@ jobs:
     name: pypi-publish
     needs:
       - version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.12'
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py

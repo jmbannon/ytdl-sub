@@ -39,7 +39,7 @@ if [ "$CRON_SCHEDULE" != "" ] ; then
     CRON_SCHEDULE_CLEAN="${CRON_SCHEDULE_CLEAN//\'/}"
 
     echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
-    echo "$CRON_SCHEDULE_CLEAN   $DEFAULT_WORKSPACE/.cron_wrapper" >> /config/crontabs/abc
+    echo "$CRON_SCHEDULE_CLEAN   $CRON_WRAPPER_SCRIPT" >> /config/crontabs/abc
 
     chmod +x "$CRON_SCRIPT"
     chown abc:abc "$CRON_SCRIPT"
