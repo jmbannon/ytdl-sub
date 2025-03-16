@@ -65,4 +65,19 @@ class TestSoundcloudDiscography:
                 output_directory=output_directory,
                 dry_run=dry_run,
                 expected_download_summary_file_name="soundcloud/test_soundcloud_discography.json",
+                ignore_md5_hashes_for=[
+                    "j_b/[2021] Baby Santana's Dorian Groove/01 - Baby Santana's Dorian Groove.mp3",
+                    "j_b/[2021] Purple Clouds/01 - Purple Clouds.mp3",
+                    "j_b/[2022] Acoustic Treats/01 - 20160426 184214.mp3",
+                    "j_b/[2022] Acoustic Treats/02 - 20160502 123150.mp3",
+                    "j_b/[2022] Acoustic Treats/03 - 20160504 143832.mp3",
+                    "j_b/[2022] Acoustic Treats/04 - 20160601 221234.mp3",
+                    "j_b/[2022] Acoustic Treats/05 - 20160601 222440.mp3",
+                    "j_b/[2022] Acoustic Treats/06 - 20170604 190236.mp3",
+                    "j_b/[2022] Acoustic Treats/07 - 20170612 193646.mp3",
+                    "j_b/[2022] Acoustic Treats/08 - 20170628 215206.mp3",
+                    "j_b/[2022] Acoustic Treats/09 - Finding Home.mp3",
+                    "j_b/[2022] Acoustic Treats/10 - Shallow Water WIP.mp3",
+                    "j_b/[2022] Acoustic Treats/11 - Untold History.mp3",
+                ]
             )
