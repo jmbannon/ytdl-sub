@@ -61,9 +61,16 @@ jobs:
     strategy:
       matrix:
         arch: [ "aarch64", "x86_64" ]
-    runs-on: ubuntu-latest
+        include:
+          - arch: "aarch64"
+            runner: "ubuntu-24.04-arm"
+            container: "quay.io/pypa/manylinux_2_28_aarch64"
+          - arch: "x86_64"
+            runner: "ubuntu-latest"
+            container: "quay.io/pypa/manylinux_2_28_x86_64"
+    runs-on: ${{ matrix.runner }}
     container:
-      image: quay.io/pypa/manylinux_2_28_x86_64
+      image: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
