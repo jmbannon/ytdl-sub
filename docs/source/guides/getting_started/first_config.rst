@@ -3,12 +3,31 @@ Basic Configuration
 
 A configuration file serves two purposes:
 
-1. Set advanced functionality that is not specifiable in a subscription file, such as working directory location. These
-   are set underneath ``configuration``.
-2. Create custom presets, which can drastically simplify your subscription file. These are defined underneath ``presets``.
-   Presets are intended to be applicable and reusable across multiple subscriptions.
+1. Set application-level functionality that is not specifiable in a subscription file.
+  .. note::
 
-Below is a common configuration:
+   ytdl-sub does not require a configuration file. However,
+   certain application settings may be desirable for tweak, such as setting
+   ``working_directory`` to make ytdl-sub perform the initial download
+   to an SSD drive.
+
+2. Create custom presets.
+  .. note::
+
+    In the prior Initial Subscription examples, we leveraged the prebuilt preset
+    ``Jellyfin TV Show by Date``. This preset is entirely built using the same
+    YAML configuration system offered to users by using a configuration file.
+
+The following section attempts to demystify and explain how to...
+
+- Set an application setting
+- Know whether or not custom presets are actually needed
+- How to create a custom preset
+- How to use a custom preset on subscriptions
+
+-------------
+
+how this works, and show-case how
 
 .. code-block:: yaml
   :linenos:
