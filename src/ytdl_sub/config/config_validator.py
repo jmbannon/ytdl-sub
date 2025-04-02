@@ -61,7 +61,7 @@ class PersistLogsValidator(StrictDictValidator):
                 raise self._validation_exception(f"Invalid datetime string: {str(exc)}")
 
         self._keep_successful_logs = self._validate_key(
-            key="keep_successful_logs", validator=StringValidator, default=True
+            key="keep_successful_logs", validator=BoolValidator, default=True
         )
 
     @property
