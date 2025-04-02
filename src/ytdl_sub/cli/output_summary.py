@@ -59,8 +59,6 @@ def output_summary(subscriptions: List[Subscription], config: ConfigFile) -> Non
 
     suppress_colors = config.config_options.suppress_colors
 
-    logger.info(f"The suppress_colors option is {suppress_colors}")
-
     # Initialize totals to 0
     total_subs: int = len(subscriptions)
     total_subs_str = f"Total: {total_subs}"
