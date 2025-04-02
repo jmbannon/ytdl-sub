@@ -271,6 +271,6 @@ def main() -> List[Subscription]:
             transaction_log_file_path=args.transaction_log,
         )
 
-    output_summary(subscriptions)
+    output_summary(subscriptions, config=config)
 
     return subscriptions
