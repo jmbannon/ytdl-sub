@@ -35,10 +35,28 @@ presets:
 
   # TV show from one or more sources. Uses {url}'s avatar and banner as poster and fanart
   _tv_show_by_date:
-    preset: "_multi_url_bilateral"
+    preset:
+      - "_multi_url_bilateral"
+      - "_tv_show_by_date_asserts"
     overrides:
       avatar_uncropped_thumbnail_file_name: "{tv_show_poster_file_name}"
       banner_uncropped_thumbnail_file_name: "{tv_show_fanart_file_name}"
+
+  _tv_show_by_date_asserts:
+    overrides:
+      s01_url: ""
+      s01_name: ""
+      assert_not_collection: >-
+        {
+          %assert(
+            %and(
+              %not( %bool(s01_url) ),
+              %not( %bool(s01_name) )
+            ),
+            "Provided `s01_url` or `s01_name` variable to TV Show by Date preset when it expects `url`. Perhaps you meant to use the `TV Show Collection` preset?"
+          )
+        }
+          
 
 ####################################################################################################
 
