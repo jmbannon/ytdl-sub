@@ -37,12 +37,12 @@ presets:
   _tv_show_by_date:
     preset:
       - "_multi_url_bilateral"
-      - "_tv_show_collection_asserts"
+      - "_tv_show_by_date_asserts"
     overrides:
       avatar_uncropped_thumbnail_file_name: "{tv_show_poster_file_name}"
       banner_uncropped_thumbnail_file_name: "{tv_show_fanart_file_name}"
 
-  _tv_show_collection_asserts:
+  _tv_show_by_date_asserts:
     overrides:
       s01_url: ""
       s01_name: ""
