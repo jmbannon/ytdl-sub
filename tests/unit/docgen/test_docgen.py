@@ -1,5 +1,6 @@
 from typing import Type
 
+from tools.docgen.configuration import ConfigurationDocGen
 from tools.docgen.docgen import DocGen
 from tools.docgen.entry_variables import EntryVariablesDocGen
 from tools.docgen.plugins import PluginsDocGen
@@ -28,3 +29,6 @@ class TestDocGen:
 
     def test_plugins_generated(self):
         _test_doc_gen(PluginsDocGen)
+
+    def test_configuration_generated(self):
+        _test_doc_gen(ConfigurationDocGen)
