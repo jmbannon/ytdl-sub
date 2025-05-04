@@ -1,3 +1,4 @@
+import os
 import tempfile
 from pathlib import Path
 
@@ -34,7 +35,8 @@ class TestStringFormatterFilePathValidator:
                 Script({"file_name": formatter.format_string}).resolve().get_str("file_name")
             )
 
-            assert truncated_file_path.count(".") == ext.count(".")
+            _, truncated_file_name = os.path.split(truncated_file_path)
+            assert truncated_file_name.count(".") == ext.count(".")
             assert str(Path(temp_dir)) in truncated_file_path
             assert ext in truncated_file_path
 
