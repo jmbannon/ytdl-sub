@@ -62,6 +62,7 @@ presets:
   _tv_show_collection:
     preset:
       - "_tv_show_collection_bilateral"
+      - "_tv_show_collection_asserts"
 
     download:
       - url: "{collection_season_1_url}"
@@ -1015,6 +1016,16 @@ presets:
         ytdl_options:
           playlist_items: "-1:0:-1"
 
+  _tv_show_collection_asserts:
+    overrides:
+      url: ""
+      assert_not_by_date: >-
+        {
+          %assert(
+            %not( %bool(url) ),
+            "Provided `url` to TV Show Collection preset when it expects `s01_url`. Perhaps you meant to use the `TV Show by Date` preset?"
+          )
+        }
 
 ####################################################################################################
 # DEPRECATED SEASON PRESETS
