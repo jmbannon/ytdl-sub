@@ -5,13 +5,13 @@ from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import List
-from typing import Optional
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.xml import XmlElement
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_string
@@ -19,8 +19,8 @@ from ytdl_sub.utils.xml import to_xml
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 from ytdl_sub.validators.nfo_validators import NfoTagsValidator
 from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.validators import BoolValidator
 
 
 class SharedNfoTagsOptions(ToggleableOptionsDictValidator):
@@ -54,7 +54,7 @@ class SharedNfoTagsOptions(ToggleableOptionsDictValidator):
         )
         self._tags = self._validate_key_if_present(key="tags", validator=NfoTagsValidator)
         self._kodi_safe = self._validate_key_if_present(
-            key="kodi_safe", validator=BoolValidator, default=False
+            key="kodi_safe", validator=OverridesBooleanFormatterValidator, default="False"
         ).value
 
     @property
@@ -81,9 +81,9 @@ class SharedNfoTagsOptions(ToggleableOptionsDictValidator):
         return self._tags
 
     @property
-    def kodi_safe(self) -> Optional[bool]:
+    def kodi_safe(self) -> OverridesBooleanFormatterValidator:
         """
-        :expected type: Optional[Boolean]
+        :expected type: OverridesBooleanFormatterValidator
         :description:
           Defaults to False. Kodi does not support > 3-byte unicode characters, which include
           emojis and some foreign language characters. Setting this to True will replace those
@@ -141,7 +141,9 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
         if not nfo_tags:
             return
 
-        if self.plugin_options.kodi_safe:
+        if ScriptUtils.bool_formatter_output(
+            self.overrides.apply_formatter(self.plugin_options.kodi_safe)
+        ):
             nfo_root = to_max_3_byte_utf8_string(nfo_root)
             nfo_tags = {
                 to_max_3_byte_utf8_string(key): [
