@@ -54,7 +54,7 @@ class SharedNfoTagsOptions(ToggleableOptionsDictValidator):
         self._tags = self._validate_key_if_present(key="tags", validator=NfoTagsValidator)
         self._kodi_safe = self._validate_key_if_present(
             key="kodi_safe", validator=OverridesBooleanFormatterValidator, default="False"
-        ).value
+        )
 
     @property
     def nfo_name(self) -> StringFormatterFileNameValidator:
