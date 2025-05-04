@@ -11,7 +11,6 @@ from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.xml import XmlElement
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
 from ytdl_sub.utils.xml import to_max_3_byte_utf8_string
@@ -141,9 +140,7 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
         if not nfo_tags:
             return
 
-        if ScriptUtils.bool_formatter_output(
-            self.overrides.apply_formatter(self.plugin_options.kodi_safe)
-        ):
+        if self.overrides.evaluate_boolean(self.plugin_options.kodi_safe):
             nfo_root = to_max_3_byte_utf8_string(nfo_root)
             nfo_tags = {
                 to_max_3_byte_utf8_string(key): [

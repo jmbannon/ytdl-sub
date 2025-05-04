@@ -5,7 +5,6 @@ from typing import Tuple
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.utils.datetime import to_date_str
-from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 
@@ -95,9 +94,7 @@ class DateRangePlugin(Plugin[DateRangeOptions]):
                 date_validator=self.plugin_options.after, overrides=self.overrides
             )
             after_filter = f"upload_date >= {after_str}"
-            if ScriptUtils.bool_formatter_output(
-                self.overrides.apply_formatter(self.plugin_options.breaks)
-            ):
+            if self.overrides.evaluate_boolean(self.plugin_options.breaks):
                 breaking_match_filters.append(after_filter)
             else:
                 match_filters.append(after_filter)

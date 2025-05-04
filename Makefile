@@ -14,9 +14,9 @@ else
 endif
 
 lint:
-	python3 -m isort . && \
-		python3 -m black . && \
-		python3 -m pylint src
+	python3 -m isort .
+	python3 -m black .
+	python3 -m pylint src
 check_lint:
 	isort . --check-only --diff  \
 		&& black . --check  \

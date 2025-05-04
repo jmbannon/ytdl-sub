@@ -221,3 +221,12 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         return self._apply_to_resolvable(
             formatter=formatter, entry=None, function_overrides=None
         ).native
+
+    def evaluate_boolean(
+        self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
+    ) -> bool:
+        """
+        Apply a formatter, and evaluate it to a boolean
+        """
+        output = self.apply_formatter(formatter=formatter, entry=entry)
+        return ScriptUtils.bool_formatter_output(output)

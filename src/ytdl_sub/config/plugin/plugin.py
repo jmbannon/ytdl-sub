@@ -13,7 +13,6 @@ from ytdl_sub.config.validators.options import OptionsValidatorT
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -49,9 +48,7 @@ class Plugin(BasePlugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
         Returns True if enabled, False if disabled.
         """
         if isinstance(self.plugin_options, ToggleableOptionsDictValidator):
-            return ScriptUtils.bool_formatter_output(
-                self.overrides.apply_formatter(self.plugin_options.enable)
-            )
+            return self.overrides.evaluate_boolean(self.plugin_options.enable)
         return True
 
     def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
