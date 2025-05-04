@@ -44,10 +44,7 @@ class MainArguments:
         short="-m",
         long="--match",
     )
-    SUPPRESS_COLORS = CLIArgument(
-        short="-nc",
-        long="--suppress-colors"
-    )
+    SUPPRESS_COLORS = CLIArgument(short="-nc", long="--suppress-colors")
 
     @classmethod
     def all(cls) -> List[CLIArgument]:
@@ -139,7 +136,7 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         MainArguments.SUPPRESS_COLORS.long,
         action="store_true",
         help="do not use colors in ytdl-sub output",
-        default=argparse.SUPPRESS if suppress_defaults else False
+        default=argparse.SUPPRESS if suppress_defaults else False,
     )
     arg_parser.add_argument(
         MainArguments.MATCH.short,

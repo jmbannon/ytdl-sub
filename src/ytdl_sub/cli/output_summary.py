@@ -4,7 +4,6 @@ from colorama import Fore
 
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.config.config_file import ConfigFile
 
 logger = Logger.get()
 
@@ -95,7 +94,9 @@ def output_summary(subscriptions: List[Subscription], suppress_colors: bool) -> 
         )
 
     total_errors_str = (
-        _green("Success", suppress_colors) if total_errors == 0 else _red(f"Error{'s' if total_errors > 1 else ''}", suppress_colors)
+        _green("Success", suppress_colors)
+        if total_errors == 0
+        else _red(f"Error{'s' if total_errors > 1 else ''}", suppress_colors)
     )
 
     summary.append(
