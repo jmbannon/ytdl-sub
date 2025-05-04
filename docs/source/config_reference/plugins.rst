@@ -456,7 +456,7 @@ with a ``.nfo`` extension. You can add any values into the NFO.
 
 ``kodi_safe``
 
-:expected type: Optional[Boolean]
+:expected type: OverridesBooleanFormatterValidator
 :description:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
@@ -554,7 +554,7 @@ Usage:
 
 ``kodi_safe``
 
-:expected type: Optional[Boolean]
+:expected type: OverridesBooleanFormatterValidator
 :description:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
