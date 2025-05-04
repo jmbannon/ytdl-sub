@@ -44,6 +44,10 @@ class MainArguments:
         short="-m",
         long="--match",
     )
+    SUPPRESS_COLORS = CLIArgument(
+        short="-nc",
+        long="--suppress-colors"
+    )
 
     @classmethod
     def all(cls) -> List[CLIArgument]:
@@ -59,6 +63,7 @@ class MainArguments:
             cls.TRANSACTION_LOG,
             cls.SUPPRESS_TRANSACTION_LOG,
             cls.MATCH,
+            cls.SUPPRESS_COLORS,
         ]
 
     @classmethod
@@ -128,6 +133,13 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         action="store_true",
         help="do not output transaction logs to console or file",
         default=argparse.SUPPRESS if suppress_defaults else False,
+    )
+    arg_parser.add_argument(
+        MainArguments.SUPPRESS_COLORS.short,
+        MainArguments.SUPPRESS_COLORS.long,
+        action="store_true",
+        help="do not use colors in ytdl-sub output",
+        default=argparse.SUPPRESS if suppress_defaults else False
     )
     arg_parser.add_argument(
         MainArguments.MATCH.short,

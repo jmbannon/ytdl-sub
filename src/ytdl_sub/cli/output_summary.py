@@ -36,14 +36,14 @@ def _color_int(value: int, suppress_colors: bool = False) -> str:
     return _no_color(str_int, suppress_colors)
 
 
-def output_summary(subscriptions: List[Subscription], config: ConfigFile) -> None:
+def output_summary(subscriptions: List[Subscription], suppress_colors: bool) -> None:
     """
     Parameters
     ----------
     subscriptions
         Processed subscriptions
-    config
-        ConfigFile instance
+    suppress_colors
+        Whether to have color or not
 
     Returns
     -------
@@ -56,8 +56,6 @@ def output_summary(subscriptions: List[Subscription], config: ConfigFile) -> Non
         return
 
     summary: List[str] = []
-
-    suppress_colors = config.config_options.suppress_colors
 
     # Initialize totals to 0
     total_subs: int = len(subscriptions)

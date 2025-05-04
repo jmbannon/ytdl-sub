@@ -108,7 +108,6 @@ class ConfigOptions(StrictDictValidator):
         "ffprobe_path",
         "file_name_max_bytes",
         "experimental",
-        "suppress_colors",
     }
 
     def __init__(self, name: str, value: Any):
@@ -142,9 +141,6 @@ class ConfigOptions(StrictDictValidator):
         )
         self._file_name_max_bytes = self._validate_key(
             key="file_name_max_bytes", validator=IntValidator, default=MAX_FILE_NAME_BYTES
-        )
-        self._suppress_colors = self._validate_key_if_present(
-            key="suppress_colors", validator=BoolValidator, default=False
         )
 
     @property
@@ -239,12 +235,6 @@ class ConfigOptions(StrictDictValidator):
         """
         return self._ffprobe_path.value
 
-    @property
-    def suppress_colors(self) -> bool:
-        """
-        Flag to disable colors in the output summary
-        """
-        return self._suppress_colors.value
 
 class ConfigValidator(StrictDictValidator):
     _optional_keys = {"configuration", "presets"}
