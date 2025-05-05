@@ -56,19 +56,63 @@ presets:
             "Provided `s01_url` or `s01_name` variable to TV Show by Date preset when it expects `url`. Perhaps you meant to use the `TV Show Collection` preset?"
           )
         }
-          
 
 ####################################################################################################
+  _tv_show_by_date_season_ordering:
+    overrides:
+      tv_show_by_date_season_ordering: >-
+        { %throw("Must specify tv_show_by_date_season_ordering") }
+
+      "%season_ordering_":
+         { %eq( %lower(tv_show_by_date_season_ordering), $0 ) }
+
+      season_number: >-
+        {
+          %elif(
+            %season_ordering_( "year" ),         upload_year,
+            %season_ordering_( "year-month" ),   %concat(upload_year, upload_month_padded),
+            %throw(
+              "tv_show_by_date_season_ordering must be one of the following: 'year', 'year-month'"
+            )
+          )
+        }
+
+      # both year and year-month are fixed width, until the year 10000 :)
+      season_number_padded: "{season_number}"
+
+  # TODO
+  _tv_show_by_date_episode_ordering:
+    overrides:
+      tv_show_by_date_season_ordering: >-
+        { %throw("Must specify tv_show_by_date_season_ordering") }
+
+      "%season_ordering_":
+         { %eq( %lower(tv_show_by_date_season_ordering), $0 ) }
+
+      season_number: >-
+        {
+          %elif(
+            %season_ordering_( "year" ),         upload_year,
+            %season_ordering_( "year-month" ),   %concat(upload_year, upload_month_padded),
+            %throw(
+              "tv_show_by_date_season_ordering must be one of the following: 'year', 'year-month'"
+            )
+          )
+        }
+
+      # both year and year-month are fixed width, until the year 10000 :)
+      season_number_padded: "{season_number}"
+
+####################################################################################################
+# LEGACY PRESETS
 
   _season_by_year:
     overrides:
-      season_number: "{upload_year}"
-      season_number_padded: "{season_number}"
+      tv_show_by_date_season_ordering: "year"
 
   _season_by_year_month:
     overrides:
-      season_number: "{upload_year}{upload_month_padded}"
-      season_number_padded: "{season_number}"
+      tv_show_by_date_season_ordering: "year-month"
 
 ####################################################################################################
 
