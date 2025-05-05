@@ -634,7 +634,7 @@ capitalize
 
 concat
 ~~~~~~
-:spec: ``concat(values: String, ...) -> String``
+:spec: ``concat(values: AnyArgument, ...) -> String``
 
 :description:
   Concatenate multiple Strings into a single String.

@@ -74,24 +74,47 @@ Must define ``tv_show_directory``. Available presets:
 Advanced Usage
 ~~~~~~~~~~~~~~
 
-If you prefer a different organization method, you can instead apply multiple presets to your subscriptions.
+If you prefer a different season/episode organization method, you can set the following override variables.
 
-You will need a base of one of the below:
+.. code-block:: yaml
 
-* ``kodi_tv_show_by_date``
-* ``jellyfin_tv_show_by_date``
-* ``plex_tv_show_by_date``
+   __preset__:
+     overrides:
+       tv_show_directory: "/tv_shows"
+       tv_show_by_date_season_ordering: "year-month"
+       tv_show_by_date_episode_ordering: "day"
 
-And then add one of these:
+Or for a specific preset
 
-* ``season_by_year__episode_by_month_day``
-* ``season_by_year_month__episode_by_day``
-* ``season_by_year__episode_by_month_day_reversed``
-  
-  * Episode numbers are reversed, meaning more recent episodes appear at the top of a season by having a lower value.
-* ``season_by_year__episode_by_download_index``
-  
-  * Episodes are numbered by the download order. NOTE that this is fetched using the length of the download archive. Do not use if you intend to remove old videos.
+.. code-block:: yaml
+
+       "~Kids Toys Play":
+          url: "https://www.youtube.com/@KidsToysPlayChannel"
+          tv_show_by_date_season_ordering: "year-month"
+          tv_show_by_date_episode_ordering: "day"
+
+The following are supported.
+
+**tv_show_by_date_season_ordering**
+
+* upload-year
+* upload-year-month
+* release-year
+* release-year-month
+
+**tv_show_by_date_episode_ordering**
+
+* upload-day
+* upload-month-day
+* upload-month-day-reversed
+
+  * Reversed means more recent episodes appear at the top of a season by having a lower value.
+* release-day
+* release-month-day
+* release-month-day-reversed
+* download-index
+
+  * Episodes are numbered by the download order. **NOTE**: this is fetched using the length of the download archive. Do not use if you intend to remove old videos.
 
 
 TV Show Collection
