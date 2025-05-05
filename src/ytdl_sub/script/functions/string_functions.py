@@ -181,7 +181,8 @@ class StringFunctions:
     def join(separator: String, array: Array) -> String:
         """
         :description:
-            Join all elements in the array together as a string, and insert the separator between them.
+            Join all elements in the array together as a string, and insert the
+            separator between them.
 
         :usage:
 

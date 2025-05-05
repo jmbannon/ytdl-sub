@@ -155,7 +155,11 @@ class TestNumericFunctions:
 
     @pytest.mark.parametrize(
         "value, expected_output",
-        [("['a', 'b', 'c']", 'a, b, c'), ("['nope', [], {}]", 'nope, [], {}'), ("['a', 1, 3.14, True]", 'a, 1, 3.14, true')],
+        [
+            ("['a', 'b', 'c']", "a, b, c"),
+            ("['nope', [], {}]", "nope, [], {}"),
+            ("['a', 1, 3.14, True]", "a, 1, 3.14, true"),
+        ],
     )
     def test_join(self, value, expected_output):
         output = single_variable_output(f"{{%join(', ', {value})}}")
@@ -163,7 +167,7 @@ class TestNumericFunctions:
 
     @pytest.mark.parametrize(
         "value, expected_output",
-        [(" delete outer ", 'delete outer'), (" delete me\n\n", 'delete me')],
+        [(" delete outer ", "delete outer"), (" delete me\n\n", "delete me")],
     )
     def test_strip(self, value, expected_output):
         output = single_variable_output(f"{{%strip('{value}')}}")

@@ -660,6 +660,24 @@ contains_any
 :description:
     Returns true if any element in ``contains_array`` is in ``string``. False otherwise.
 
+join
+~~~~
+:spec: ``join(separator: String, array: Array) -> String``
+
+:description:
+    Join all elements in the array together as a string, and insert the
+    separator between them.
+
+:usage:
+
+.. code-block:: python
+
+   {
+     %join( ", ", ["item1", "item2"] )
+   }
+
+   # "item1, item2"
+
 lower
 ~~~~~
 :spec: ``lower(string: String) -> String``
@@ -709,6 +727,23 @@ string
 
 :description:
   Cast to String.
+
+strip
+~~~~~
+:spec: ``strip(string: String) -> String``
+
+:description:
+    Strip a string of all its whitespace at the beginning and end.
+
+:usage:
+
+.. code-block:: python
+
+   {
+     %trim(" delete the outer! ")
+   }
+
+   # "delete the outer!"
 
 titlecase
 ~~~~~~~~~
