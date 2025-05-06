@@ -99,7 +99,7 @@ presets:
             %episode_ordering_( "release-day" ),                [ %concat(release_day, upload_date_index_padded), 4 ],
             %episode_ordering_( "release-month-day" ),          [ %concat(release_month, release_day_padded, upload_date_index_padded), 6],
             %episode_ordering_( "release-month-day-reversed" ), [ %concat(release_day_of_year_reversed, upload_date_index_reversed_padded), 5],
-            %episode_ordering_( "download-index" ),     [ download_index, 6 ],
+            %episode_ordering_( "download-index" ),             [ download_index, 6 ],
             %throw(
               'tv_show_by_date_episode_ordering must be one of the following: "upload-day", "upload-month-day", "upload-month-day-reversed", "release-day", "release-month-day", "release-month-day-reversed", "download-index"'
             )
