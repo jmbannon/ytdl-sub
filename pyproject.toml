@@ -49,7 +49,7 @@ test = [
 lint = [
     "black==24.10.0",
     "isort==6.0.1",
-    "pylint==3.3.6",
+    "pylint==3.3.7",
 ]
 docs = [
     "sphinx>=7,<9",
