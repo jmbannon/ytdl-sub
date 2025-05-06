@@ -31,6 +31,7 @@ def _initialize_download_archive(
         file_name=overrides.apply_formatter(output_options.download_archive_name),
         working_directory=working_directory,
         output_directory=output_directory,
+        entry_date_eval=output_options.keep_files_date_eval,
         migrated_file_name=migrated_file_name,
     ).reinitialize(dry_run=True)
 

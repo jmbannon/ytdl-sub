@@ -14,6 +14,7 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.validators.string_formatter_validators import (
     UnstructuredOverridesDictFormatterValidator,
 )
+from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 
 
@@ -64,6 +65,20 @@ class YTDLOptions(UnstructuredOverridesDictFormatterValidator):
 # Disable for proper docstring formatting
 # pylint: disable=line-too-long
 
+class KeepFilesDateEvalValidator(StringSelectValidator):
+    UPLOAD_DATE = "upload_date"
+    RELEASE_DATE = "release_date"
+    _expected_value_type_name = "keep_files_date_eval"
+    _select_values = {UPLOAD_DATE, RELEASE_DATE}
+
+    @property
+    def is_upload_date(self) -> bool:
+        return self.value == self.UPLOAD_DATE
+
+    @property
+    def is_release_date(self) -> bool:
+        return self.value == self.RELEASE_DATE
+
 
 class OutputOptions(StrictDictValidator):
     """
@@ -87,6 +102,8 @@ class OutputOptions(StrictDictValidator):
              maintain_download_archive: True
              keep_files_before: now
              keep_files_after: 19000101
+             keep_max_files: 1000
+             keep_files_date_eval: "upload_date"
     """
 
     _required_keys = {"output_directory", "file_name"}
@@ -99,6 +116,7 @@ class OutputOptions(StrictDictValidator):
         "keep_files_before",
         "keep_files_after",
         "keep_max_files",
+        "keep_files_date_eval",
     }
 
     @classmethod
@@ -155,6 +173,9 @@ class OutputOptions(StrictDictValidator):
         )
         self._keep_max_files = self._validate_key_if_present(
             "keep_max_files", OverridesIntegerFormatterValidator
+        )
+        self._keep_files_date_eval = self._validate_key_if_present(
+            "keep_files_date_eval", KeepFilesDateEvalValidator, default=KeepFilesDateEvalValidator.UPLOAD_DATE
         )
 
         if (
@@ -271,6 +292,16 @@ class OutputOptions(StrictDictValidator):
           ``keep_max_files``.
         """
         return self._keep_files_after
+
+    @property
+    def keep_files_date_eval(self) -> Optional[KeepFilesDateEvalValidator]:
+        """
+        :expected type: str
+        :description:
+            When using keep_files_before/after, uses the date set in this field for evaluation.
+            Supports ``upload_date``, ``release_date``, defaults to ``upload_date``.
+        """
+        return self._keep_files_date_eval
 
     @property
     def keep_max_files(self) -> Optional[OverridesIntegerFormatterValidator]:
