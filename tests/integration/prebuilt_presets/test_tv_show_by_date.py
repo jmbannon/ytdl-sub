@@ -1,15 +1,31 @@
+import re
+from typing import Set
+
 import pytest
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
+from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
 DEFAULT_SEASON_ORDERING = "upload-year"
 DEFAULT_EPISODE_ORDERING = "upload-month-day"
 
+VALID_ORDERING_COMBOS =         [
+            # upload
+            ("upload-year", "upload-month-day"),
+            ("upload-year", "upload-month-day-reversed"),
+            ("upload-year", "download-index"),
+            ("upload-year-month", "upload-day"),
+            # release
+            ("release-year", "release-month-day"),
+            ("release-year", "release-month-day-reversed"),
+            ("release-year", "download-index"),
+            ("release-year-month", "release-day"),
+        ]
 
 class TestPrebuiltTVShowPresets:
 
@@ -133,18 +149,7 @@ class TestPrebuiltTVShowPresets:
 
     @pytest.mark.parametrize(
         "season_ordering, episode_ordering",
-        [
-            # upload
-            ("upload-year", "upload-month-day"),
-            ("upload-year", "upload-month-day-reversed"),
-            ("upload-year", "download-index"),
-            ("upload-year-month", "upload-day"),
-            # release
-            ("release-year", "release-month-day"),
-            ("release-year", "release-month-day-reversed"),
-            ("release-year", "download-index"),
-            ("release-year-month", "release-day"),
-        ]
+        VALID_ORDERING_COMBOS,
     )
     def test_episode_ordering_presets(
         self,
@@ -167,3 +172,89 @@ class TestPrebuiltTVShowPresets:
                 season_ordering=season_ordering,
                 episode_ordering=episode_ordering,
             )
+
+    def test_invalid_season_ordering(
+        self, config, subscription_name, output_directory, mock_download_collection_entries
+    ):
+        expected_message = (
+            'tv_show_by_date_season_ordering must be one of the following: '
+            '"upload-year", '
+            '"upload-year-month", '
+            '"release-year", '
+            '"release-year-month"'
+        )
+
+        with (
+            mock_download_collection_entries(is_youtube_channel=True, num_urls=1),
+            pytest.raises(UserThrownRuntimeError, match=re.escape(expected_message)),
+        ):
+            self.run(
+                config=config,
+                subscription_name=subscription_name,
+                output_directory=output_directory,
+                tv_show_preset="Kodi TV Show by Date",
+                season_ordering="nope",
+                episode_ordering=DEFAULT_EPISODE_ORDERING,
+            )
+
+    def test_invalid_episode_ordering(
+        self, config, subscription_name, output_directory, mock_download_collection_entries
+    ):
+        expected_message = (
+            'tv_show_by_date_episode_ordering must be one of the following: '
+            '"upload-day", '
+            '"upload-month-day", '
+            '"upload-month-day-reversed", '
+            '"release-day", '
+            '"release-month-day", '
+            '"release-month-day-reversed", '
+            '"download-index"'
+        )
+
+        with (
+            mock_download_collection_entries(is_youtube_channel=True, num_urls=1),
+            pytest.raises(UserThrownRuntimeError, match=re.escape(expected_message)),
+        ):
+            self.run(
+                config=config,
+                subscription_name=subscription_name,
+                output_directory=output_directory,
+                tv_show_preset="Kodi TV Show by Date",
+                season_ordering=DEFAULT_SEASON_ORDERING,
+                episode_ordering="not-a-valid",
+            )
+
+
+    def test_invalid_season_episode_ordering_combo(
+        self, config, subscription_name, output_directory, mock_download_collection_entries
+    ):
+        expected_message = (
+            "Detected incompatibility between tv_show_by_date_season_ordering "
+            "and tv_show_by_date_episode_ordering. Ensure you are not using both "
+            "upload and release date, and that the year/month/day are included in "
+            "the combined season and episode."
+        )
+
+        possible_seasons: Set[str] = set()
+        possible_episodes: Set[str] = set()
+        for season_ordering, episode_ordering in VALID_ORDERING_COMBOS:
+            possible_seasons.add(season_ordering)
+            possible_episodes.add(episode_ordering)
+
+        for season_ordering in possible_seasons:
+            for episode_ordering in possible_episodes:
+                if (season_ordering, episode_ordering) in VALID_ORDERING_COMBOS:
+                    continue
+
+                with (
+                    mock_download_collection_entries(is_youtube_channel=True, num_urls=1),
+                    pytest.raises(UserThrownRuntimeError, match=re.escape(expected_message)),
+                ):
+                    self.run(
+                        config=config,
+                        subscription_name=subscription_name,
+                        output_directory=output_directory,
+                        tv_show_preset="Kodi TV Show by Date",
+                        season_ordering=season_ordering,
+                        episode_ordering=episode_ordering,
+                    )
