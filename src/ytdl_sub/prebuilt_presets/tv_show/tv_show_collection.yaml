@@ -37,25 +37,53 @@ presets:
 
   ###############################
 
-  season_by_collection__episode_by_year_month_day:
+  _tv_show_collection_episode_ordering:
     overrides:
-      episode_number: "{upload_year_truncated}{upload_month_padded}{upload_day_padded}{upload_date_index_padded}"
-      episode_number_padded: "{episode_number}"
+      tv_show_collection_episode_ordering: >-
+        { %throw("Must specify tv_show_collection_episode_ordering") }
+
+      "%episode_ordering_": >-
+        { %eq( %lower(tv_show_collection_episode_ordering), $0 ) }
+
+      episode_number_and_padded_: >-
+        {
+          %elif(
+            %episode_ordering_( "upload-year-month-day" ),           [ %concat(upload_year_truncated, upload_month_padded, upload_day_padded, upload_date_index_padded), 8 ],
+            %episode_ordering_( "upload-year-month-day-reversed" ),  [ %concat(upload_year_truncated_reversed, upload_month_reversed_padded, upload_day_reversed_padded, upload_date_index_reversed_padded), 8],
+            %episode_ordering_( "release-year-month-day" ),          [ %concat(release_year_truncated, release_month_padded, release_day_padded, upload_date_index_padded), 8 ],
+            %episode_ordering_( "release-year-month-day-reversed" ), [ %concat(release_year_truncated_reversed, release_month_reversed_padded, release_day_reversed_padded, upload_date_index_reversed_padded), 8],
+            %episode_ordering_( "playlist-index" ),                  [ %concat(playlist_index), 6],
+            %episode_ordering_( "playlist-index-reversed" ),         [ %concat(playlist_index_reversed), 6],
+            %throw(
+              'tv_show_collection_episode_ordering must be one of the following: "upload-year-month-day", "upload-year-month-day-reversed", "release-year-month-day", "release-year-month-day-reversed", "playlist-index", "playlist-index-reversed"'
+            )
+          )
+        }
+
+      episode_number: "{ %array_at(episode_number_and_padded_, 0) }"
+      episode_number_padded: "{ %pad_zero( %int(episode_number), %int(%array_at(episode_number_and_padded_, 1))) }"
+
+  ### LEGACY PRESETS
+
+  season_by_collection__episode_by_year_month_day:
+    preset: "_tv_show_collection_episode_ordering"
+    overrides:
+      tv_show_collection_episode_ordering: "upload-year-month-day"
 
   season_by_collection__episode_by_year_month_day_reversed:
+    preset: "_tv_show_collection_episode_ordering"
     overrides:
-      episode_number: "{upload_year_truncated_reversed}{upload_month_reversed_padded}{upload_day_reversed_padded}{upload_date_index_reversed_padded}"
-      episode_number_padded: "{episode_number}"
+      tv_show_collection_episode_ordering: "upload-year-month-day-reversed"
 
   season_by_collection__episode_by_playlist_index:
+    preset: "_tv_show_collection_episode_ordering"
     overrides:
-      episode_number: "{playlist_index}"
-      episode_number_padded: "{playlist_index_padded6}"
+      tv_show_collection_episode_ordering: "playlist-index"
 
   season_by_collection__episode_by_playlist_index_reversed:
+    preset: "_tv_show_collection_episode_ordering"
     overrides:
-      episode_number: "{playlist_index_reversed}"
-      episode_number_padded: "{playlist_index_reversed_padded6}"
+      tv_show_collection_episode_ordering: "playlist-index-reversed"
 
   ##############
 
