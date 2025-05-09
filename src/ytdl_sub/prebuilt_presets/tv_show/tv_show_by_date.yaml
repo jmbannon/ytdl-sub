@@ -109,11 +109,13 @@ presets:
       episode_number: "{ %array_at(episode_number_and_padded_, 0) }"
       episode_number_padded: "{ %pad_zero( %int(episode_number), %int(%array_at(episode_number_and_padded_, 1))) }"
       episode_date_standardized: >-
-        %if(
-          %contains(tv_show_by_date_episode_ordering, "release"),
-          release_date_standardized,
-          upload_date_standardized
-        )
+        {
+          %if(
+            %contains(tv_show_by_date_episode_ordering, "release"),
+            release_date_standardized,
+            upload_date_standardized
+          )
+        }
 
 ####################################################################################################
 # LEGACY PRESETS
