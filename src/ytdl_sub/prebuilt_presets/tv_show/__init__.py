@@ -12,28 +12,6 @@ class TvShowByDatePresets(PrebuiltPresets):
     }
 
 
-class TvShowByDateOldPresets(PrebuiltPresets):
-    """
-    TV Show by Date presets create a TV show from a single URL using upload dates as season/episode
-    numbers.
-    """
-
-    preset_names = {
-        "kodi_tv_show_by_date",
-        "jellyfin_tv_show_by_date",
-        "plex_tv_show_by_date",
-    }
-
-
-class TvShowByDateEpisodeFormattingPresets(PrebuiltPresets):
-    preset_names = {
-        "season_by_year__episode_by_month_day",
-        "season_by_year__episode_by_month_day_reversed",
-        "season_by_year_month__episode_by_day",
-        "season_by_year__episode_by_download_index",
-    }
-
-
 class TvShowCollectionPresets(PrebuiltPresets):
     preset_names = {
         "Kodi TV Show Collection",
