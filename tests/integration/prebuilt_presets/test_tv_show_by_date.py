@@ -10,22 +10,22 @@ from ytdl_sub.prebuilt_presets.tv_show import TvShowByDatePresets
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
 
-
 DEFAULT_SEASON_ORDERING = "upload-year"
 DEFAULT_EPISODE_ORDERING = "upload-month-day"
 
-VALID_ORDERING_COMBOS =         [
-            # upload
-            ("upload-year", "upload-month-day"),
-            ("upload-year", "upload-month-day-reversed"),
-            ("upload-year", "download-index"),
-            ("upload-year-month", "upload-day"),
-            # release
-            ("release-year", "release-month-day"),
-            ("release-year", "release-month-day-reversed"),
-            ("release-year", "download-index"),
-            ("release-year-month", "release-day"),
-        ]
+VALID_ORDERING_COMBOS = [
+    # upload
+    ("upload-year", "upload-month-day"),
+    ("upload-year", "upload-month-day-reversed"),
+    ("upload-year", "download-index"),
+    ("upload-year-month", "upload-day"),
+    # release
+    ("release-year", "release-month-day"),
+    ("release-year", "release-month-day-reversed"),
+    ("release-year", "download-index"),
+    ("release-year-month", "release-day"),
+]
+
 
 class TestPrebuiltTVShowPresets:
 
@@ -177,7 +177,7 @@ class TestPrebuiltTVShowPresets:
         self, config, subscription_name, output_directory, mock_download_collection_entries
     ):
         expected_message = (
-            'tv_show_by_date_season_ordering must be one of the following: '
+            "tv_show_by_date_season_ordering must be one of the following: "
             '"upload-year", '
             '"upload-year-month", '
             '"release-year", '
@@ -201,7 +201,7 @@ class TestPrebuiltTVShowPresets:
         self, config, subscription_name, output_directory, mock_download_collection_entries
     ):
         expected_message = (
-            'tv_show_by_date_episode_ordering must be one of the following: '
+            "tv_show_by_date_episode_ordering must be one of the following: "
             '"upload-day", '
             '"upload-month-day", '
             '"upload-month-day-reversed", '
@@ -223,7 +223,6 @@ class TestPrebuiltTVShowPresets:
                 season_ordering=DEFAULT_SEASON_ORDERING,
                 episode_ordering="not-a-valid",
             )
-
 
     def test_invalid_season_episode_ordering_combo(
         self, config, subscription_name, output_directory, mock_download_collection_entries
