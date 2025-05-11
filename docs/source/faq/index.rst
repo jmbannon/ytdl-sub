@@ -80,10 +80,10 @@ This can be prevented by overriding following variables:
 
 .. code-block:: yaml
 
-overrides:
-  tv_show_fanart_file_name: ""  # to stop creation of fanart.jpg in subscription
-  tv_show_poster_file_name: ""  # to stop creation of poster.jpg in subscription
-  thumbnail_name: ""            # to stop creation of episode thumbnails
+  overrides:
+    tv_show_fanart_file_name: ""  # to stop creation of fanart.jpg in subscription
+    tv_show_poster_file_name: ""  # to stop creation of poster.jpg in subscription
+    thumbnail_name: ""            # to stop creation of episode thumbnails
 
 There is a bug where...
 -----------------------
