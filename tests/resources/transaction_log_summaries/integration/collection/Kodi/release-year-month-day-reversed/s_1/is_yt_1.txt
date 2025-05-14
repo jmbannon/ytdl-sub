@@ -1,0 +1,134 @@
+Files created:
+----------------------------------------
+{output_directory}
+  .ytdl-sub-subscription_test-download-archive.json
+  fanart.jpg
+  poster.jpg
+  season01-poster.jpg
+  tvshow.nfo
+    NFO tags:
+      tvshow:
+        genre: ytdl-sub
+        mpaa: TV-14
+        namedseason:
+          attributes:
+            number: 1
+          tag: Named Season 1
+        title: Best Prebuilt TV Show Collection
+{output_directory}/Season 01
+  s01.e100052498 - Mock Entry 20-1-thumb.jpg
+  s01.e100052498 - Mock Entry 20-1.info.json
+  s01.e100052498 - Mock Entry 20-1.mp4
+    Video Tags:
+      contentRating: TV-14
+      date: 2000-08-08
+      episode_id: 100052498
+      genre: ytdl-sub
+      show: Best Prebuilt TV Show Collection
+      synopsis:
+        https://20-1.com
+
+        The Description
+      title: 2000-08-08 - Mock Entry 20-1
+      year: 2000
+  s01.e100052498 - Mock Entry 20-1.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2000-08-08
+        episode: 100052498
+        genre: ytdl-sub
+        mpaa: TV-14
+        plot:
+          https://20-1.com
+
+          The Description
+        season: 1
+        title: 2000-08-08 - Mock Entry 20-1
+        year: 2000
+  s01.e100052499 - Mock Entry 20-2-thumb.jpg
+  s01.e100052499 - Mock Entry 20-2.info.json
+  s01.e100052499 - Mock Entry 20-2.mp4
+    Video Tags:
+      contentRating: TV-14
+      date: 2000-08-08
+      episode_id: 100052499
+      genre: ytdl-sub
+      show: Best Prebuilt TV Show Collection
+      synopsis:
+        https://20-2.com
+
+        The Description
+      title: 2000-08-08 - Mock Entry 20-2
+      year: 2000
+  s01.e100052499 - Mock Entry 20-2.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2000-08-08
+        episode: 100052499
+        genre: ytdl-sub
+        mpaa: TV-14
+        plot:
+          https://20-2.com
+
+          The Description
+        season: 1
+        title: 2000-08-08 - Mock Entry 20-2
+        year: 2000
+  s01.e100052599 - Mock Entry 20-3-thumb.jpg
+  s01.e100052599 - Mock Entry 20-3.info.json
+  s01.e100052599 - Mock Entry 20-3.mp4
+    Video Tags:
+      contentRating: TV-14
+      date: 2000-08-07
+      episode_id: 100052599
+      genre: ytdl-sub
+      show: Best Prebuilt TV Show Collection
+      synopsis:
+        https://20-3.com
+
+        The Description
+      title: 2000-08-07 - Mock Entry 20-3
+      year: 2000
+  s01.e100052599 - Mock Entry 20-3.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2000-08-07
+        episode: 100052599
+        genre: ytdl-sub
+        mpaa: TV-14
+        plot:
+          https://20-3.com
+
+          The Description
+        season: 1
+        title: 2000-08-07 - Mock Entry 20-3
+        year: 2000
+  s01.e99052499 - Mock Entry 21-1-thumb.jpg
+  s01.e99052499 - Mock Entry 21-1.info.json
+  s01.e99052499 - Mock Entry 21-1.mp4
+    Video Tags:
+      contentRating: TV-14
+      date: 2001-08-08
+      episode_id: 99052499
+      genre: ytdl-sub
+      show: Best Prebuilt TV Show Collection
+      synopsis:
+        https://21-1.com
+
+        The Description
+      title: 2001-08-08 - Mock Entry 21-1
+      year: 2001
+  s01.e99052499 - Mock Entry 21-1.nfo
+    NFO tags:
+      episodedetails:
+        aired: 2001-08-08
+        episode: 99052499
+        genre: ytdl-sub
+        mpaa: TV-14
+        plot:
+          https://21-1.com
+
+          The Description
+        season: 1
+        title: 2001-08-08 - Mock Entry 21-1
+        year: 2001

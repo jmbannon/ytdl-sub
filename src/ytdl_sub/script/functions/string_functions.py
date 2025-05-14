@@ -127,12 +127,12 @@ class StringFunctions:
         return Array([String(split_val) for split_val in string.value.split(sep=sep.value)])
 
     @staticmethod
-    def concat(*values: String) -> String:
+    def concat(*values: AnyArgument) -> String:
         """
         :description:
           Concatenate multiple Strings into a single String.
         """
-        return String("".join(val.value for val in values))
+        return String("".join(str(val.value) for val in values))
 
     @staticmethod
     def pad(string: String, length: Integer, char: String) -> String:
