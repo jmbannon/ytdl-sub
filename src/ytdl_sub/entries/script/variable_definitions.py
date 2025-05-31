@@ -823,6 +823,17 @@ class YtdlSubVariableDefinitions(ABC):
             variable_name="upload_date_index_reversed_padded", pad=2
         )
 
+    @cached_property
+    def ytdl_sub_keep_files_date_eval(self: "VariableDefinitions") -> StringVariable:
+        """
+        :description:
+          The standardized date variable supplied in ``output_options.keep_files_date_eval``.
+        """
+        return StringVariable(
+            variable_name="ytdl_sub_entry_date_eval",
+            definition=f"{{%string({self.upload_date_standardized.variable_name})}}",
+        )
+
 
 class EntryVariableDefinitions(ABC):
     @cached_property
@@ -1121,6 +1132,7 @@ class VariableDefinitions(
             self.ytdl_sub_input_url,
             self.ytdl_sub_input_url_index,
             self.ytdl_sub_input_url_count,
+            self.ytdl_sub_keep_files_date_eval,
         }
 
     @cache
