@@ -523,6 +523,32 @@ sub
 
 ----------------------------------------------------------------------------------------------------
 
+Print Functions
+---------------
+
+print
+~~~~~
+:spec: ``print(message: AnyArgument, passthrough: ReturnableArgument) -> ReturnableArgument``
+
+:description:
+  Print the ``message`` and return ``passthrough``.
+
+print_if_false
+~~~~~~~~~~~~~~
+:spec: ``print_if_false(message: AnyArgument, passthrough: ReturnableArgument) -> ReturnableArgument``
+
+:description:
+  Print the ``message`` if ``passthrough`` evaluates to ``false``. Return ``passthrough``.
+
+print_if_true
+~~~~~~~~~~~~~
+:spec: ``print_if_true(message: AnyArgument, passthrough: ReturnableArgument) -> ReturnableArgument``
+
+:description:
+  Print the ``message`` if ``passthrough`` evaluates to ``true``. Return ``passthrough``.
+
+----------------------------------------------------------------------------------------------------
+
 Regex Functions
 ---------------
 
