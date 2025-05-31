@@ -640,6 +640,8 @@ Defines where to output files and thumbnails after all post-processing has compl
          maintain_download_archive: True
          keep_files_before: now
          keep_files_after: 19000101
+         keep_max_files: 1000
+         keep_files_date_eval: "{upload_date_standardized}"
 
 ``download_archive_name``
 
@@ -688,6 +690,16 @@ Defines where to output files and thumbnails after all post-processing has compl
   Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
   files before ``now``, which implies all files. Can be used in conjunction with
   ``keep_max_files``.
+
+
+``keep_files_date_eval``
+
+:expected type: str
+:description:
+    Uses this standardized date in the form of YYYY-MM-DD to record in the
+    download archive for a given entry. Subsequently, uses this value to
+    perform evaluation for keep_files_before/after and keep_max_files. Defaults
+    to the entry's upload_date_standardized variable.
 
 
 ``keep_max_files``
