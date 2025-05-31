@@ -146,7 +146,12 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
     plugin_options_type = SubtitleOptions
 
     def ytdl_options(self) -> Optional[Dict]:
-        builder = YTDLOptionsBuilder().add({"writesubtitles": True})
+        builder = YTDLOptionsBuilder().add(
+            {
+                "writesubtitles": True,
+                "sleep_interval_subtitles": 5.367,  # for safe measure
+            }
+        )
 
         if self.plugin_options.embed_subtitles:
             builder.add(
