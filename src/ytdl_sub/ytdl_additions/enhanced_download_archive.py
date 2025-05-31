@@ -259,9 +259,7 @@ class DownloadMappings:
         -------
         Number of entries in the mapping with this upload date
         """
-        return len(
-            [_ for _ in self._entry_mappings.values() if _.upload_date == standardized_date]
-        )
+        return len([_ for _ in self._entry_mappings.values() if _.upload_date == standardized_date])
 
     def get_num_entries(self) -> int:
         """
