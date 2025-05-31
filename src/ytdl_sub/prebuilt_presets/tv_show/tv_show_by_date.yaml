@@ -56,19 +56,104 @@ presets:
             "Provided `s01_url` or `s01_name` variable to TV Show by Date preset when it expects `url`. Perhaps you meant to use the `TV Show Collection` preset?"
           )
         }
-          
 
 ####################################################################################################
+  _tv_show_by_date_season_episode_ordering:
+    overrides:
+      tv_show_by_date_season_ordering: >-
+        { %throw("Must specify tv_show_by_date_season_ordering") }
+
+      "%season_ordering_": >-
+         { %eq( %lower(tv_show_by_date_season_ordering), $0 ) }
+
+      season_number: >-
+        {
+          %elif(
+            %season_ordering_( "upload-year" ),         upload_year,
+            %season_ordering_( "upload-year-month" ),   %concat(upload_year, upload_month_padded),
+            %season_ordering_( "release-year" ),        release_year,
+            %season_ordering_( "release-year-month" ),  %concat(release_year, release_month_padded),
+            %throw(
+              'tv_show_by_date_season_ordering must be one of the following: "upload-year", "upload-year-month", "release-year", "release-year-month"'
+            )
+          )
+        }
+
+      # both year and year-month are fixed width, until the year 10000 :)
+      season_number_padded: "{season_number}"
+
+      ##################################### episode overrides
+
+      tv_show_by_date_episode_ordering: >-
+        { %throw("Must specify tv_show_by_date_episode_ordering") }
+
+      "%episode_ordering_": >-
+         { %eq( %lower(tv_show_by_date_episode_ordering), $0 ) }
+
+      episode_number_and_padded_: >-
+        {
+          %elif(
+            %episode_ordering_( "upload-day" ),                 [ %concat(upload_day, upload_date_index_padded), 4 ],
+            %episode_ordering_( "upload-month-day" ),           [ %concat(upload_month, upload_day_padded, upload_date_index_padded), 6],
+            %episode_ordering_( "upload-month-day-reversed" ),  [ %concat(upload_day_of_year_reversed, upload_date_index_reversed_padded), 5],
+            %episode_ordering_( "release-day" ),                [ %concat(release_day, upload_date_index_padded), 4 ],
+            %episode_ordering_( "release-month-day" ),          [ %concat(release_month, release_day_padded, upload_date_index_padded), 6],
+            %episode_ordering_( "release-month-day-reversed" ), [ %concat(release_day_of_year_reversed, upload_date_index_reversed_padded), 5],
+            %episode_ordering_( "download-index" ),             [ download_index, 6 ],
+            %throw(
+              'tv_show_by_date_episode_ordering must be one of the following: "upload-day", "upload-month-day", "upload-month-day-reversed", "release-day", "release-month-day", "release-month-day-reversed", "download-index"'
+            )
+          )
+        }
+
+      episode_number: "{ %array_at(episode_number_and_padded_, 0) }"
+      episode_number_padded: "{ %pad_zero( %int(episode_number), %int(%array_at(episode_number_and_padded_, 1))) }"
+      episode_date_standardized: >-
+        {
+          %if(
+            %contains(tv_show_by_date_season_ordering, "release"),
+            release_date_standardized,
+            upload_date_standardized
+          )
+        }
+
+      ##################################### season/episode pairing validation
+
+      "%ordering_pair_eq": >-
+        {
+          %eq([tv_show_by_date_season_ordering, tv_show_by_date_episode_ordering], [$0, $1])
+        }
+      tv_show_by_date_ordering_pair_validation_: >-
+        {
+          %assert_then(
+            %or(
+              %ordering_pair_eq("upload-year", "upload-month-day"),
+              %ordering_pair_eq("upload-year", "upload-month-day-reversed"),
+              %ordering_pair_eq("upload-year", "download-index"),
+              %ordering_pair_eq("upload-year-month", "upload-day"),
+              %ordering_pair_eq("release-year", "release-month-day"),
+              %ordering_pair_eq("release-year", "release-month-day-reversed"),
+              %ordering_pair_eq("release-year", "download-index"),
+              %ordering_pair_eq("release-year-month", "release-day")
+            ),
+            episode_number_and_padded_,
+            "Detected incompatibility between tv_show_by_date_season_ordering and tv_show_by_date_episode_ordering. Ensure you are not using both upload and release date, and that the year/month/day are included in the combined season and episode."
+          )
+        }
+        
+
+####################################################################################################
+# LEGACY PRESETS
 
   _season_by_year:
+    preset: "_tv_show_by_date_season_episode_ordering"
     overrides:
-      season_number: "{upload_year}"
-      season_number_padded: "{season_number}"
+      tv_show_by_date_season_ordering: "upload-year"
 
   _season_by_year_month:
+    preset: "_tv_show_by_date_season_episode_ordering"
     overrides:
-      season_number: "{upload_year}{upload_month_padded}"
-      season_number_padded: "{season_number}"
+      tv_show_by_date_season_ordering: "upload-year-month"
 
 ####################################################################################################
 
@@ -76,26 +161,22 @@ presets:
     preset:
       - "_season_by_year_month"
     overrides:
-      episode_number: "{upload_day}{upload_date_index_padded}"
-      episode_number_padded: "{upload_day_padded}{upload_date_index_padded}"
+      tv_show_by_date_episode_ordering: "upload-day"
 
   season_by_year__episode_by_month_day:
     preset:
       - "_season_by_year"
     overrides:
-      episode_number: "{upload_month}{upload_day_padded}{upload_date_index_padded}"
-      episode_number_padded: "{upload_month_padded}{upload_day_padded}{upload_date_index_padded}"
+      tv_show_by_date_episode_ordering: "upload-month-day"
 
   season_by_year__episode_by_month_day_reversed:
     preset:
       - "_season_by_year"
     overrides:
-      episode_number: "{upload_day_of_year_reversed}{upload_date_index_reversed_padded}"
-      episode_number_padded: "{upload_day_of_year_reversed_padded}{upload_date_index_reversed_padded}"
+      tv_show_by_date_episode_ordering: "upload-month-day-reversed"
 
   season_by_year__episode_by_download_index:
     preset:
       - "_season_by_year"
     overrides:
-      episode_number: "{download_index}"
-      episode_number_padded: "{download_index_padded6}"
+      tv_show_by_date_episode_ordering: "download-index"
