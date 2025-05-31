@@ -111,7 +111,7 @@ presets:
       episode_date_standardized: >-
         {
           %if(
-            %contains(tv_show_by_date_episode_ordering, "release"),
+            %contains(tv_show_by_date_season_ordering, "release"),
             release_date_standardized,
             upload_date_standardized
           )
