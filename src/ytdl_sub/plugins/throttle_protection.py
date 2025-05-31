@@ -202,7 +202,9 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
             )
 
     def ytdl_options(self) -> Optional[Dict]:
-        return {"sleep_interval_requests": self.plugin_options.sleep_per_request_s.max_value()}
+        if self.plugin_options.sleep_per_request_s is not None:
+            return {"sleep_interval_requests": self.plugin_options.sleep_per_request_s.max_value()}
+        return {}
 
     def initialize_subscription(self) -> bool:
         if self.plugin_options.subscription_download_probability:
