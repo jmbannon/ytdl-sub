@@ -76,8 +76,8 @@ If you prefer a different season/episode organization method, you can set the fo
    __preset__:
      overrides:
        tv_show_directory: "/tv_shows"
-       tv_show_by_date_season_ordering: "year-month"
-       tv_show_by_date_episode_ordering: "day"
+       tv_show_by_date_season_ordering: "upload-year-month"
+       tv_show_by_date_episode_ordering: "upload-day"
 
 Or for a specific preset
 
@@ -85,8 +85,8 @@ Or for a specific preset
 
        "~Kids Toys Play":
           url: "https://www.youtube.com/@KidsToysPlayChannel"
-          tv_show_by_date_season_ordering: "year-month"
-          tv_show_by_date_episode_ordering: "day"
+          tv_show_by_date_season_ordering: "upload-year-month"
+          tv_show_by_date_episode_ordering: "upload-day"
 
 The following are supported. Be sure the combined season + episode ordering
 include the year, month, day, i.e. upload-year + upload-month-day.
