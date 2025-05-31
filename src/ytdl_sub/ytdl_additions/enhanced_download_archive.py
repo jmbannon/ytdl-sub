@@ -75,7 +75,7 @@ class DownloadMapping:
         DownloadMapping for the entry
         """
         return DownloadMapping(
-            upload_date=entry.get(v.ytdl_sub_entry_date_eval, str),
+            upload_date=entry.get(v.ytdl_sub_keep_files_date_eval, str),
             extractor=entry.download_archive_extractor,
             file_names=set(),
         )

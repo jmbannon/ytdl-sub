@@ -824,10 +824,10 @@ class YtdlSubVariableDefinitions(ABC):
         )
 
     @cached_property
-    def ytdl_sub_entry_date_eval(self: "VariableDefinitions") -> StringVariable:
+    def ytdl_sub_keep_files_date_eval(self: "VariableDefinitions") -> StringVariable:
         """
         :description:
-          The standardized date variable supplied in ``output_options.entry_date_eval``
+          The standardized date variable supplied in ``output_options.keep_files_date_eval``.
         """
         return StringVariable(
             variable_name="ytdl_sub_entry_date_eval",
@@ -1132,7 +1132,7 @@ class VariableDefinitions(
             self.ytdl_sub_input_url,
             self.ytdl_sub_input_url_index,
             self.ytdl_sub_input_url_count,
-            self.ytdl_sub_entry_date_eval,
+            self.ytdl_sub_keep_files_date_eval,
         }
 
     @cache

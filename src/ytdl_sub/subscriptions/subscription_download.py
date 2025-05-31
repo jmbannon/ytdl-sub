@@ -222,7 +222,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         # Inject OutputOption variables here
         entry.add(
             {
-                VARIABLES.ytdl_sub_entry_date_eval: (
+                VARIABLES.ytdl_sub_keep_files_date_eval: (
                     self.output_options.keep_files_date_eval.format_string
                 )
             }
