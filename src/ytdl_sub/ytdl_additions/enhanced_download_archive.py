@@ -21,7 +21,6 @@ from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.validators.string_formatter_validators import OverridesStandardizedDateValidator
 
 logger = Logger.get("archive")
 
@@ -64,21 +63,19 @@ class DownloadMapping:
         )
 
     @classmethod
-    def from_entry(cls, entry: Entry, entry_date: str) -> "DownloadMapping":
+    def from_entry(cls, entry: Entry) -> "DownloadMapping":
         """
         Parameters
         ----------
         entry
             Entry to create a download mapping for
-        entry_date:
-            Date to use for the entry
 
         Returns
         -------
         DownloadMapping for the entry
         """
         return DownloadMapping(
-            upload_date=entry_date,
+            upload_date=entry.get(v.ytdl_sub_entry_date_eval, str),
             extractor=entry.download_archive_extractor,
             file_names=set(),
         )
@@ -154,25 +151,19 @@ class DownloadArchive:
 class DownloadMappings:
     _strptime_format = "%Y-%m-%d"
 
-    def __init__(self, entry_date_eval: Optional[OverridesStandardizedDateValidator]):
+    def __init__(self):
         """
         Initializes an empty mapping
-
-        entry_date_eval
-            Which date to use for download mapping logging
         """
-        self._entry_date_eval = entry_date_eval
         self._entry_mappings: Dict[str, DownloadMapping] = {}
 
     @classmethod
-    def from_file(cls, json_file_path: str, entry_date_eval: Optional[OverridesStandardizedDateValidator]) -> "DownloadMappings":
+    def from_file(cls, json_file_path: str) -> "DownloadMappings":
         """
         Parameters
         ----------
         json_file_path
             Path to a json file that contains download mappings
-        entry_date_eval
-            Which date to use for download mapping logging
 
         Returns
         -------
@@ -186,7 +177,7 @@ class DownloadMappings:
                 mapping_dict=entry_mappings_json[uid]
             )
 
-        download_mappings = DownloadMappings(entry_date_eval=entry_date_eval)
+        download_mappings = DownloadMappings()
         download_mappings._entry_mappings = entry_mappings_json
         return download_mappings
 
@@ -227,6 +218,7 @@ class DownloadMappings:
             Entry that this file belongs to
         entry_file_path
             Relative path to the file that lives in the output directory
+
         Returns
         -------
         self
@@ -236,15 +228,7 @@ class DownloadMappings:
             uid = parent_uid
 
         if uid not in self.entry_ids:
-            entry_date = entry.get(v.upload_date_standardized, str)
-            if self._entry_date_eval is not None:
-                entry_date = entry
-            elif self._entry_date_eval.is_release_date:
-                entry_date = entry.get(v.release_date_standardized, str)
-            else:
-                raise AssertionError("Unsupported entry_date_eval. Should not reach.")
-
-            self._entry_mappings[uid] = DownloadMapping.from_entry(entry=entry, entry_date=entry_date)
+            self._entry_mappings[uid] = DownloadMapping.from_entry(entry=entry)
 
         self._entry_mappings[uid].file_names.add(entry_file_path)
         return self
@@ -386,7 +370,7 @@ class EnhancedDownloadArchive:
 
     @classmethod
     def _maybe_load_download_mappings(
-        cls, mapping_file_path: str, migrated_mapping_file_path: Optional[str], entry_date_eval: Optional[OverridesStandardizedDateValidator]
+        cls, mapping_file_path: str, migrated_mapping_file_path: Optional[str]
     ) -> DownloadMappings:
         """
         Tries to load download mappings if a file exists. Otherwise returns empty mappings.
@@ -398,22 +382,21 @@ class EnhancedDownloadArchive:
                     "`output_options.migrated_download_archive` to "
                     "`output_options.download_archive`"
                 )
-                return DownloadMappings.from_file(json_file_path=migrated_mapping_file_path, entry_date_eval=entry_date_eval)
+                return DownloadMappings.from_file(migrated_mapping_file_path)
 
             logger.warning(
                 "MIGRATION DETECTED, will write archive file to %s", migrated_mapping_file_path
             )
 
         if os.path.isfile(mapping_file_path):
-            return DownloadMappings.from_file(json_file_path=mapping_file_path, entry_date_eval=entry_date_eval)
-        return DownloadMappings(entry_date_eval=entry_date_eval)
+            return DownloadMappings.from_file(json_file_path=mapping_file_path)
+        return DownloadMappings()
 
     def __init__(
         self,
         file_name: str,
         working_directory: str,
         output_directory: str,
-        entry_date_eval: Optional[OverridesStandardizedDateValidator],
         dry_run: bool = False,
         migrated_file_name: Optional[str] = None,
     ):
@@ -421,9 +404,7 @@ class EnhancedDownloadArchive:
         self._file_handler = FileHandler(
             working_directory=working_directory, output_directory=output_directory, dry_run=dry_run
         )
-        self._entry_date_eval = entry_date_eval
-        # gets reinitialized
-        self._download_mapping = DownloadMappings(entry_date_eval=entry_date_eval)
+        self._download_mapping = DownloadMappings()  # gets reinitialized
         self._migrated_file_name = migrated_file_name
 
         self.num_entries_added: int = 0
@@ -461,7 +442,6 @@ class EnhancedDownloadArchive:
         self._download_mapping = self._maybe_load_download_mappings(
             mapping_file_path=self._output_file_path,
             migrated_mapping_file_path=self._migrated_file_path,
-            entry_date_eval=self._entry_date_eval,
         )
         return self
 

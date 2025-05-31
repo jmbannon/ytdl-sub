@@ -1,16 +1,19 @@
 from typing import Any
 from typing import Dict
 from typing import Optional
+from typing import Set
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
 from ytdl_sub.config.overrides import Overrides
+from ytdl_sub.config.plugin.plugin_operation import PluginOperation
+from ytdl_sub.config.validators.options import OptionsDictValidator
+from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
-from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesIntegerFormatterValidator, \
-    OverridesStandardizedDateValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesIntegerFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import StandardizedDateValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import (
     UnstructuredOverridesDictFormatterValidator,
@@ -66,7 +69,7 @@ class YTDLOptions(UnstructuredOverridesDictFormatterValidator):
 # pylint: disable=line-too-long
 
 
-class OutputOptions(StrictDictValidator):
+class OutputOptions(OptionsDictValidator):
     """
     Defines where to output files and thumbnails after all post-processing has completed.
 
@@ -89,7 +92,7 @@ class OutputOptions(StrictDictValidator):
              keep_files_before: now
              keep_files_after: 19000101
              keep_max_files: 1000
-             keep_files_date_eval: "upload_date"
+             keep_files_date_eval: "{upload_date_standardized}"
     """
 
     _required_keys = {"output_directory", "file_name"}
@@ -103,6 +106,7 @@ class OutputOptions(StrictDictValidator):
         "keep_files_after",
         "keep_max_files",
         "download_archive_standardized_date",
+        "entry_date_eval",
     }
 
     @classmethod
@@ -160,8 +164,10 @@ class OutputOptions(StrictDictValidator):
         self._keep_max_files = self._validate_key_if_present(
             "keep_max_files", OverridesIntegerFormatterValidator
         )
-        self._entry_date_eval = self._validate_key_if_present(
-            "entry_date_eval", OverridesStandardizedDateValidator
+        self._entry_date_eval = self._validate_key(
+            "entry_date_eval",
+            StandardizedDateValidator,
+            default=f"{{{v.upload_date_standardized.variable_name}}}"
         )
 
         if (
@@ -280,7 +286,7 @@ class OutputOptions(StrictDictValidator):
         return self._keep_files_after
 
     @property
-    def entry_date_eval(self) -> Optional[OverridesStandardizedDateValidator]:
+    def entry_date_eval(self) -> StandardizedDateValidator:
         """
         :expected type: str
         :description:
@@ -302,3 +308,10 @@ class OutputOptions(StrictDictValidator):
           applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
         """
         return self._keep_max_files
+
+    def added_variables(self, unresolved_variables: Set[str]) -> Dict[PluginOperation, Set[str]]:
+        return {
+            # PluginOperation.MODIFY_ENTRY_METADATA: {
+            #     VARIABLES.ytdl_sub_entry_date_eval.variable_name
+            # }
+        }

@@ -827,9 +827,12 @@ class YtdlSubVariableDefinitions(ABC):
     def ytdl_sub_entry_date_eval(self: "VariableDefinitions") -> StringVariable:
         """
         :description:
-          The standardized
+          The standardized date variable supplied in ``output_options.entry_date_eval``
         """
-        return StringVariable(variable_name="ytdl_sub_input_url", definition="{ %string('') }")
+        return StringVariable(
+            variable_name="ytdl_sub_entry_date_eval",
+            definition=f"{{%string({self.upload_date_standardized.variable_name})}}",
+        )
 
 
 class EntryVariableDefinitions(ABC):
@@ -1129,6 +1132,7 @@ class VariableDefinitions(
             self.ytdl_sub_input_url,
             self.ytdl_sub_input_url_index,
             self.ytdl_sub_input_url_count,
+            self.ytdl_sub_entry_date_eval,
         }
 
     @cache

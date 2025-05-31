@@ -74,6 +74,20 @@ class StringFormatterValidator(StringValidator):
         return resolved
 
 
+class StandardizedDateValidator(StringFormatterValidator):
+    _expected_value_type_name = "standardized_date"
+
+    def post_process(self, resolved: str) -> str:
+        try:
+            datetime.strptime(resolved, "%Y-%m-%d")
+        except ValueError as exc:
+            raise self._validation_exception(
+                f"Expected a standardized date in the form of YYYY-MM-DD, but received '{resolved}'"
+            ) from exc
+
+        return resolved
+
+
 # pylint: disable=line-too-long
 class OverridesStringFormatterValidator(StringFormatterValidator):
     """
@@ -103,19 +117,6 @@ class OverridesIntegerFormatterValidator(OverridesStringFormatterValidator):
 
         return resolved
 
-
-class OverridesStandardizedDateValidator(OverridesStringFormatterValidator):
-    _expected_value_type_name = "standardized_date"
-
-    def post_process(self, resolved: str) -> str:
-        try:
-            datetime.strptime(resolved, "%Y-%m-%d")
-        except ValueError as exc:
-            raise self._validation_exception(
-                f"Expected a standardized date in the form of YYYY-MM-DD, but received '{resolved}'"
-            ) from exc
-
-        return resolved
 
 class OverridesBooleanFormatterValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "boolean"
