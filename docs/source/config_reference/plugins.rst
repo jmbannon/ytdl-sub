@@ -903,7 +903,7 @@ scripted.
    presets:
      my_example_preset:
        throttle_protection:
-         sleep_per_metadata_s:
+         sleep_per_request_s:
            min: 5.5
            max: 10.4
          sleep_per_download_s:
