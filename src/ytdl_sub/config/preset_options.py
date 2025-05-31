@@ -8,13 +8,13 @@ from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFil
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesIntegerFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesIntegerFormatterValidator, \
+    OverridesStandardizedDateValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import (
     UnstructuredOverridesDictFormatterValidator,
 )
-from ytdl_sub.validators.string_select_validator import StringSelectValidator
 from ytdl_sub.validators.validators import BoolValidator
 
 
@@ -65,20 +65,6 @@ class YTDLOptions(UnstructuredOverridesDictFormatterValidator):
 # Disable for proper docstring formatting
 # pylint: disable=line-too-long
 
-class KeepFilesDateEvalValidator(StringSelectValidator):
-    UPLOAD_DATE = "upload_date"
-    RELEASE_DATE = "release_date"
-    _expected_value_type_name = "keep_files_date_eval"
-    _select_values = {UPLOAD_DATE, RELEASE_DATE}
-
-    @property
-    def is_upload_date(self) -> bool:
-        return self.value == self.UPLOAD_DATE
-
-    @property
-    def is_release_date(self) -> bool:
-        return self.value == self.RELEASE_DATE
-
 
 class OutputOptions(StrictDictValidator):
     """
@@ -116,7 +102,7 @@ class OutputOptions(StrictDictValidator):
         "keep_files_before",
         "keep_files_after",
         "keep_max_files",
-        "keep_files_date_eval",
+        "download_archive_standardized_date",
     }
 
     @classmethod
@@ -174,8 +160,8 @@ class OutputOptions(StrictDictValidator):
         self._keep_max_files = self._validate_key_if_present(
             "keep_max_files", OverridesIntegerFormatterValidator
         )
-        self._keep_files_date_eval = self._validate_key_if_present(
-            "keep_files_date_eval", KeepFilesDateEvalValidator, default=KeepFilesDateEvalValidator.UPLOAD_DATE
+        self._entry_date_eval = self._validate_key_if_present(
+            "entry_date_eval", OverridesStandardizedDateValidator
         )
 
         if (
@@ -294,14 +280,16 @@ class OutputOptions(StrictDictValidator):
         return self._keep_files_after
 
     @property
-    def keep_files_date_eval(self) -> Optional[KeepFilesDateEvalValidator]:
+    def entry_date_eval(self) -> Optional[OverridesStandardizedDateValidator]:
         """
         :expected type: str
         :description:
-            When using keep_files_before/after, uses the date set in this field for evaluation.
-            Supports ``upload_date``, ``release_date``, defaults to ``upload_date``.
+            Uses this standardized date in the form of YYYY-MM-DD to record in the
+            download archive for a given entry. Subsequently, uses this value to
+            perform evaluation for keep_files_before/after and keep_max_files. Defaults
+            to the entry's upload_date_standardized variable.
         """
-        return self._keep_files_date_eval
+        return self._entry_date_eval
 
     @property
     def keep_max_files(self) -> Optional[OverridesIntegerFormatterValidator]:

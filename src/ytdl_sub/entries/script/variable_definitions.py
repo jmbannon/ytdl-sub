@@ -823,6 +823,14 @@ class YtdlSubVariableDefinitions(ABC):
             variable_name="upload_date_index_reversed_padded", pad=2
         )
 
+    @cached_property
+    def ytdl_sub_entry_date_eval(self: "VariableDefinitions") -> StringVariable:
+        """
+        :description:
+          The standardized
+        """
+        return StringVariable(variable_name="ytdl_sub_input_url", definition="{ %string('') }")
+
 
 class EntryVariableDefinitions(ABC):
     @cached_property

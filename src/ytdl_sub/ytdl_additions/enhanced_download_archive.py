@@ -13,7 +13,6 @@ from typing import Set
 from yt_dlp import DateRange
 from yt_dlp.utils import make_archive_id
 
-from ytdl_sub.config.preset_options import KeepFilesDateEvalValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry import ytdl_sub_split_by_chapters_parent_uid
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
@@ -22,6 +21,7 @@ from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.validators.string_formatter_validators import OverridesStandardizedDateValidator
 
 logger = Logger.get("archive")
 
@@ -154,7 +154,7 @@ class DownloadArchive:
 class DownloadMappings:
     _strptime_format = "%Y-%m-%d"
 
-    def __init__(self, entry_date_eval: KeepFilesDateEvalValidator):
+    def __init__(self, entry_date_eval: Optional[OverridesStandardizedDateValidator]):
         """
         Initializes an empty mapping
 
@@ -165,7 +165,7 @@ class DownloadMappings:
         self._entry_mappings: Dict[str, DownloadMapping] = {}
 
     @classmethod
-    def from_file(cls, json_file_path: str, entry_date_eval: KeepFilesDateEvalValidator) -> "DownloadMappings":
+    def from_file(cls, json_file_path: str, entry_date_eval: Optional[OverridesStandardizedDateValidator]) -> "DownloadMappings":
         """
         Parameters
         ----------
@@ -236,8 +236,9 @@ class DownloadMappings:
             uid = parent_uid
 
         if uid not in self.entry_ids:
-            if self._entry_date_eval.is_upload_date:
-                entry_date = entry.get(v.upload_date_standardized, str)
+            entry_date = entry.get(v.upload_date_standardized, str)
+            if self._entry_date_eval is not None:
+                entry_date = entry
             elif self._entry_date_eval.is_release_date:
                 entry_date = entry.get(v.release_date_standardized, str)
             else:
@@ -385,7 +386,7 @@ class EnhancedDownloadArchive:
 
     @classmethod
     def _maybe_load_download_mappings(
-        cls, mapping_file_path: str, migrated_mapping_file_path: Optional[str], entry_date_eval: KeepFilesDateEvalValidator
+        cls, mapping_file_path: str, migrated_mapping_file_path: Optional[str], entry_date_eval: Optional[OverridesStandardizedDateValidator]
     ) -> DownloadMappings:
         """
         Tries to load download mappings if a file exists. Otherwise returns empty mappings.
@@ -412,7 +413,7 @@ class EnhancedDownloadArchive:
         file_name: str,
         working_directory: str,
         output_directory: str,
-        entry_date_eval: KeepFilesDateEvalValidator,
+        entry_date_eval: Optional[OverridesStandardizedDateValidator],
         dry_run: bool = False,
         migrated_file_name: Optional[str] = None,
     ):
@@ -421,7 +422,8 @@ class EnhancedDownloadArchive:
             working_directory=working_directory, output_directory=output_directory, dry_run=dry_run
         )
         self._entry_date_eval = entry_date_eval
-        self._download_mapping = DownloadMappings(entry_date_eval=entry_date_eval)  # gets reinitialized
+        # gets reinitialized
+        self._download_mapping = DownloadMappings(entry_date_eval=entry_date_eval)
         self._migrated_file_name = migrated_file_name
 
         self.num_entries_added: int = 0
