@@ -91,26 +91,32 @@ Or for a specific preset
 The following are supported. Be sure the combined season + episode ordering
 include the year, month, day, i.e. upload-year + upload-month-day.
 
-``tv_show_by_date_season_ordering``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* upload-year
-* upload-year-month
-* release-year
-* release-year-month
+Season Ordering
+~~~~~~~~~~~~~~~
 
-``tv_show_by_date_episode_ordering``
+``tv_show_by_date_season_ordering`` supports one of the following:
+
+* ``upload-year`` (default)
+* ``upload-year-month``
+* ``release-year``
+* ``release-year-month``
+
+
+Episode Ordering
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* upload-day
-* upload-month-day
-* upload-month-day-reversed
+``tv_show_by_date_episode_ordering`` supports one of the following:
+
+* ``upload-month-day`` (default)
+* ``upload-month-day-reversed``
 
   * Reversed means more recent episodes appear at the top of a season by having a lower value.
-* release-day
-* release-month-day
-* release-month-day-reversed
-* download-index
+* ``upload-day``
+* ``release-day``
+* ``release-month-day``
+* ``release-month-day-reversed``
+* ``download-index``
 
   * Episodes are numbered by the download order. **NOTE**: this is fetched using the length of the download archive. Do not use if you intend to remove old videos.
 
@@ -184,16 +190,19 @@ Or for a specific preset
 
 The following are supported.
 
-``tv_show_collection_episode_ordering``
+
+Episode Ordering
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* upload-year-month-day
-* upload-year-month-day-reversed
-* release-year-month-day
-* release-year-month-day-reversed
-* playlist-index
+``tv_show_collection_episode_ordering`` supports one of the following:
 
-  * Only use playlist-index episode formatting for playlists that will be fully downloaded once and never again. Otherwise, indices can change.
-* playlist-index-reversed
+* ``upload-year-month-day`` (default)
+* ``upload-year-month-day-reversed``
+* ``release-year-month-day``
+* ``release-year-month-day-reversed``
+* ``playlist-index``
+
+  * Only use ``playlist-index`` episode formatting for playlists that will be fully downloaded once and never again. Otherwise, indices can change.
+* ``playlist-index-reversed``
 
 TV Show Collection presets use upload-year-month-day as the default.

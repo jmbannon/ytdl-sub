@@ -9,6 +9,7 @@ presets:
       thumbnail_name: "{thumbnail_file_name}"
       info_json_name: "{episode_file_path}.{info_json_ext}"
       maintain_download_archive: True
+      keep_files_date_eval: "{episode_date_standardized}"
 
     ytdl_options:
       break_on_existing: True

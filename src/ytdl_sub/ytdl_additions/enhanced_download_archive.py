@@ -248,11 +248,11 @@ class DownloadMappings:
             del self._entry_mappings[entry_id]
         return self
 
-    def get_num_entries_with_upload_date(self, upload_date_standardized: str) -> int:
+    def get_num_entries_with_date(self, standardized_date: str) -> int:
         """
         Parameters
         ----------
-        upload_date_standardized
+        standardized_date
             A standardized upload date
 
         Returns
@@ -260,7 +260,7 @@ class DownloadMappings:
         Number of entries in the mapping with this upload date
         """
         return len(
-            [_ for _ in self._entry_mappings.values() if _.upload_date == upload_date_standardized]
+            [_ for _ in self._entry_mappings.values() if _.upload_date == standardized_date]
         )
 
     def get_num_entries(self) -> int:

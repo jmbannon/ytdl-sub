@@ -531,8 +531,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             download_logger.info("Entry rejected by download match-filter, skipping ..")
             return None
 
-        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
-            upload_date_standardized=entry.get(v.upload_date_standardized, str)
+        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_date(
+            standardized_date=entry.get(v.ytdl_sub_keep_files_date_eval, str)
         )
         download_idx = self._enhanced_download_archive.num_entries
 
