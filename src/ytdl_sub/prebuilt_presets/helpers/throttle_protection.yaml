@@ -1,0 +1,19 @@
+
+presets:
+
+  global_throttle_protection:
+    throttle_protection:
+      enable: "{%not( disable_throttle_protection )}"
+
+      sleep_per_request_s:
+        min: 1
+        max: 2
+      sleep_per_download_s:
+        min: 15.5
+        max: 34.8
+      sleep_per_subscription_s:
+        min: 23.3
+        max: 43.1
+
+    overrides:
+      disable_throttle_protection: False

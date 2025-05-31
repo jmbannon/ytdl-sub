@@ -3,6 +3,9 @@ presets:
 ####################################################################################################
 
   _episode_base:
+    preset:
+      - "global_throttle_protection"
+
     output_options:
       output_directory: "{tv_show_directory}/{tv_show_name_sanitized}"
       file_name: "{episode_file_path}.{ext}"
