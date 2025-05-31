@@ -19,6 +19,7 @@ def subscription_dict(output_directory):
             "subscription_indent_1": "Acoustic",
             "music_directory": output_directory,
         },
+        "throttle_protection": {"sleep_per_request_s": {"min": 0.1, "max": 0.5}},
     }
 
 

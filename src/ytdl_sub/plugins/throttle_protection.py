@@ -1,5 +1,6 @@
 import random
 import time
+from typing import Dict
 from typing import Optional
 
 from ytdl_sub.config.overrides import Overrides
@@ -40,6 +41,22 @@ class RandomizedRangeValidator(StrictDictValidator):
                 f"max ({self._max}) must be greater than or equal to min ({self._min})"
             )
 
+    def min_value(self) -> float:
+        """
+        Returns
+        -------
+        Minimum value
+        """
+        return self._min
+
+    def max_value(self) -> float:
+        """
+        Returns
+        -------
+        Maximum value
+        """
+        return self._max
+
     def randomized_float(self) -> float:
         """
         Returns
@@ -70,6 +87,9 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
        presets:
          my_example_preset:
            throttle_protection:
+             sleep_per_metadata_s:
+               min: 5.5
+               max: 10.4
              sleep_per_download_s:
                min: 2.2
                max: 10.8
@@ -84,6 +104,7 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
 
     _optional_keys = {
         "enable",
+        "sleep_per_request_s",
         "sleep_per_download_s",
         "sleep_per_subscription_s",
         "max_downloads_per_subscription",
@@ -93,6 +114,9 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
+        self._sleep_per_request_s = self._validate_key_if_present(
+            key="sleep_per_request_s", validator=RandomizedRangeValidator
+        )
         self._sleep_per_download_s = self._validate_key_if_present(
             key="sleep_per_download_s", validator=RandomizedRangeValidator
         )
@@ -105,6 +129,18 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
         self._subscription_download_probability = self._validate_key_if_present(
             key="subscription_download_probability", validator=ProbabilityValidator
         )
+
+    @property
+    def sleep_per_request_s(self) -> Optional[RandomizedRangeValidator]:
+        """
+        :expected type: Optional[Range]
+        :description:
+          Number in seconds to sleep between each request during metadata download. Note that
+          metadata download refers to the initial info.json download, not the actual audio/video
+          download for the entry. Also, yt-dlp only supports a single value at this time for this,
+          so will always use the max value.
+        """
+        return self._sleep_per_request_s
 
     @property
     def sleep_per_download_s(self) -> Optional[RandomizedRangeValidator]:
@@ -164,6 +200,9 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
             self._subscription_max_downloads = (
                 self.plugin_options.max_downloads_per_subscription.randomized_int()
             )
+
+    def ytdl_options(self) -> Optional[Dict]:
+        return {"sleep_interval_requests": self.plugin_options.sleep_per_request_s.max_value()}
 
     def initialize_subscription(self) -> bool:
         if self.plugin_options.subscription_download_probability:
