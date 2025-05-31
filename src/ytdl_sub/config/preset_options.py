@@ -106,7 +106,7 @@ class OutputOptions(OptionsDictValidator):
         "keep_files_after",
         "keep_max_files",
         "download_archive_standardized_date",
-        "entry_date_eval",
+        "keep_files_date_eval",
     }
 
     @classmethod
@@ -164,10 +164,10 @@ class OutputOptions(OptionsDictValidator):
         self._keep_max_files = self._validate_key_if_present(
             "keep_max_files", OverridesIntegerFormatterValidator
         )
-        self._entry_date_eval = self._validate_key(
-            "entry_date_eval",
+        self._keep_files_date_eval = self._validate_key(
+            "keep_files_date_eval",
             StandardizedDateValidator,
-            default=f"{{{v.upload_date_standardized.variable_name}}}"
+            default=f"{{{v.upload_date_standardized.variable_name}}}",
         )
 
         if (
@@ -286,7 +286,7 @@ class OutputOptions(OptionsDictValidator):
         return self._keep_files_after
 
     @property
-    def entry_date_eval(self) -> StandardizedDateValidator:
+    def keep_files_date_eval(self) -> StandardizedDateValidator:
         """
         :expected type: str
         :description:
@@ -295,7 +295,7 @@ class OutputOptions(OptionsDictValidator):
             perform evaluation for keep_files_before/after and keep_max_files. Defaults
             to the entry's upload_date_standardized variable.
         """
-        return self._entry_date_eval
+        return self._keep_files_date_eval
 
     @property
     def keep_max_files(self) -> Optional[OverridesIntegerFormatterValidator]:

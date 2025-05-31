@@ -221,12 +221,16 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         # Inject OutputOption variables here
         entry.add(
-            {VARIABLES.ytdl_sub_entry_date_eval: self.output_options.entry_date_eval.format_string}
+            {
+                VARIABLES.ytdl_sub_entry_date_eval: (
+                    self.output_options.keep_files_date_eval.format_string
+                )
+            }
         )
 
         # Run it to make sure it's actually a standardized date
         _ = self.overrides.apply_formatter(
-            formatter=self.output_options.entry_date_eval, entry=entry
+            formatter=self.output_options.keep_files_date_eval, entry=entry
         )
 
         for plugin in PluginMapping.order_plugins_by(
