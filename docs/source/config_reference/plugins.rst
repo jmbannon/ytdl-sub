@@ -903,6 +903,9 @@ scripted.
    presets:
      my_example_preset:
        throttle_protection:
+         sleep_per_metadata_s:
+           min: 5.5
+           max: 10.4
          sleep_per_download_s:
            min: 2.2
            max: 10.8
@@ -936,6 +939,16 @@ scripted.
 :description:
   Number in seconds to sleep between each download. Does not include time it takes for
   ytdl-sub to perform post-processing.
+
+
+``sleep_per_request_s``
+
+:expected type: Optional[Range]
+:description:
+  Number in seconds to sleep between each request during metadata download. Note that
+  metadata download refers to the initial info.json download, not the actual audio/video
+  download for the entry. Also, yt-dlp only supports a single value at this time for this,
+  so will always use the max value.
 
 
 ``sleep_per_subscription_s``
