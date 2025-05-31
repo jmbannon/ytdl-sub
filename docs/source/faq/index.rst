@@ -63,9 +63,9 @@ See the prebuilt preset :doc:`chunk_initial_download </prebuilt_presets/helpers>
 See the prebuilt preset :doc:`Filter Keywords </prebuilt_presets/helpers>`.
 
 ...prevent creation of NFO file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Creation of NFO files is done by :ref:`NFO tags plugin </config_reference/plugins:nfo_tags>`. It, as any other plugin, can be disabled:
+Creation of NFO files is done by the NFO tags plugin. It, as any other plugin, can be disabled:
 
 .. code-block:: yaml
 
