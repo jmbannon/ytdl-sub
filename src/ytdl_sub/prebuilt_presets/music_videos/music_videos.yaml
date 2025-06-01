@@ -7,6 +7,9 @@ presets:
       - "_music_video_nfo"
       - "_music_video_tags"
 
+  "Emby Music Videos":
+    preset: "Jellyfin Music Videos"
+
   "Kodi Music Videos":
     preset:
       - "_kodi_base"
