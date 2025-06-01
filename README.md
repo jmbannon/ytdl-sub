@@ -71,7 +71,7 @@ __preset__:
     cookiefile: "/config/cookie.txt" 
 
 ###################################################################
-# TV Show Presets. Can replace Plex with Plex/Jellyfin/Kodi
+# TV Show Presets. Can replace Plex with Plex/Jellyfin/Emby/Kodi
 
 Plex TV Show by Date:
 
@@ -106,7 +106,7 @@ Plex TV Show Collection:
       s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
 
 ###################################################################
-# Music Presets. Can replace Plex with Plex/Jellyfin/Kodi
+# Music Presets.
 
 YouTube Releases:
   = Jazz:  # Sets genre tag to "Jazz"
@@ -128,7 +128,7 @@ Bandcamp:
     "Emily Hopkins": "https://emilyharpist.bandcamp.com/"
 
 ###################################################################
-# Music Video Presets
+# Music Video Presets. Can replace Plex with Plex/Jellyfin/Kodi
 "Plex Music Videos":
   = Pop:  # Sets genre tag to "Pop"
     "Rick Astley": "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"

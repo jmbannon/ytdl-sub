@@ -830,6 +830,82 @@ used with no modifications.
 
 ----------------------------------------------------------------------------------------------------
 
+static_nfo_tags
+---------------
+Adds an NFO file for every entry, but does not link it to an entry in the download archive.
+This is intended to produce ``season.nfo``s in each season directory. Each entry within a
+season will overwrite this file with its season name. If the entry gets deleted from ytdl-sub,
+this file will remain since it's not linked.
+
+Usage:
+
+.. code-block:: yaml
+
+   presets:
+     my_example_preset:
+       static_nfo_tags:
+         # required
+         nfo_name: "season.nfo"
+         nfo_root: "season"
+         tags:
+           title: "My custom season name!"
+         # optional
+         kodi_safe: False
+
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
+
+
+``kodi_safe``
+
+:expected type: OverridesBooleanFormatterValidator
+:description:
+  Defaults to False. Kodi does not support > 3-byte unicode characters, which include
+  emojis and some foreign language characters. Setting this to True will replace those
+  characters with '□'.
+
+
+``nfo_name``
+
+:expected type: EntryFormatter
+:description:
+  The NFO file name.
+
+
+``nfo_root``
+
+:expected type: EntryFormatter
+:description:
+  The root tag of the NFO's XML. In the usage above, it would look like
+
+  .. code-block:: xml
+
+     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+     <season>
+     </season>
+
+
+``tags``
+
+:expected type: NfoTags
+:description:
+  Tags within the nfo_root tag. In the usage above, it would look like
+
+  .. code-block:: xml
+
+     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+     <season>
+       <title>My custom season name!</title>
+     </season>
+
+
+----------------------------------------------------------------------------------------------------
+
 subtitles
 ---------
 Defines how to download and store subtitles. Using this plugin creates two new variables:

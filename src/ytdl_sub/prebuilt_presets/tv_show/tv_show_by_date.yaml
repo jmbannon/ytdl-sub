@@ -31,6 +31,9 @@ presets:
       - "plex_tv_show_by_date"
       - "season_by_year__episode_by_month_day"
 
+  "Emby TV Show by Date":
+    preset: "Jellyfin TV Show by Date"
+
 ####################################################################################################
 
   # TV show from one or more sources. Uses {url}'s avatar and banner as poster and fanart

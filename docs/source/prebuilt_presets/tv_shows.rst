@@ -9,16 +9,22 @@ Player-Specific Presets
 
 The following actions are taken based on the indicated player:
 
+Kodi
+--------
+* Everything that the Jellyfin version does
+* Enables ``kodi_safe`` NFOs, replacing 4-byte unicode characters that break kodi with ``□``
 
 Jellyfin
 --------
 * Places any season-specific poster art in the main show folder
 * Generates NFO tags
 
-Kodi
---------
-* Everything that the Jellyfin version does
-* Enables ``kodi_safe`` NFOs, replacing 4-byte unicode characters that break kodi with ``□``
+Emby
+----
+* Places any season-specific poster art in the main show folder
+* Generates NFO tags
+
+  * For named seasons, creates a ``season.nfo`` file per season
 
 Plex
 --------
@@ -39,6 +45,7 @@ Must define ``tv_show_directory``. Available presets:
 
 * ``Kodi TV Show by Date``
 * ``Jellyfin TV Show by Date``
+* ``Emby TV Show by Date``
 * ``Plex TV Show by Date``
 
 .. code-block:: yaml
@@ -147,6 +154,7 @@ Must define ``tv_show_directory``. Available presets:
 
 * ``Kodi TV Show Collection``
 * ``Jellyfin TV Show Collection``
+* ``Emby TV Show Collection``
 * ``Plex TV Show Collection``
 
 .. code-block:: yaml
