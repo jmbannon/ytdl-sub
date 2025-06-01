@@ -23,8 +23,8 @@ from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
 from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
-from ytdl_sub.plugins.static_nfo_tags import StaticNfoTagsPlugin
 from ytdl_sub.plugins.split_by_chapters import SplitByChaptersPlugin
+from ytdl_sub.plugins.static_nfo_tags import StaticNfoTagsPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 from ytdl_sub.plugins.video_tags import VideoTagsPlugin

@@ -20,4 +20,3 @@ class TvShowCollectionPresets(PrebuiltPresets):
         "Emby TV Show Collection",
         "Plex TV Show Collection",
     }
-
