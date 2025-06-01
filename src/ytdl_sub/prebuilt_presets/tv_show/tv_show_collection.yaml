@@ -12,15 +12,26 @@ presets:
     preset:
       - "jellyfin_tv_show_collection"
       - "season_by_collection__episode_by_year_month_day"
-      # Jellyfin/Emby currently do not support reading the namedseason tag from tvshow.nfo and insted rely on a per-folder season.nfo
-      - "_season_nfo_tags"
 
   "Plex TV Show Collection":
     preset:
       - "plex_tv_show_collection"
       - "season_by_collection__episode_by_year_month_day"
 
+  "Emby TV Show Collection":
+    preset: "Jellyfin TV Show Collection"
+
+    # Emby cannot read seasons from tv_show.nfo
+    # Create explicit season NFOs in each season dir
+    season_nfo_tags:
+      nfo_name: "{season_directory_name_sanitized}/season.nfo"
+      nfo_root: "season"
+      tags:
+        title: "{collection_season_name}"
+
+
   ##################
+  # Legacy names
 
   kodi_tv_show_collection:
     preset:
