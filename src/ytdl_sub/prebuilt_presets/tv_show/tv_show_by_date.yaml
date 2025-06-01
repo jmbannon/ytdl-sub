@@ -117,6 +117,15 @@ presets:
           )
         }
 
+      tv_show_date_range_type: >-
+        {
+          %if(
+            %contains(tv_show_by_date_season_ordering, "release"),
+            "release_date",
+            "upload_date"
+          )
+        }
+
       ##################################### season/episode pairing validation
 
       "%ordering_pair_eq": >-

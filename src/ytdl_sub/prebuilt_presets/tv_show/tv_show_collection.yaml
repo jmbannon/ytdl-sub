@@ -71,6 +71,16 @@ presets:
           )
         }
 
+      tv_show_date_range_type: >-
+        {
+          %if(
+            %contains(tv_show_collection_episode_ordering, "release"),
+            "release_date",
+            "upload_date"
+          )
+        }
+        
+
   ### LEGACY PRESETS
 
   season_by_collection__episode_by_year_month_day:
