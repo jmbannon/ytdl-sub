@@ -28,7 +28,7 @@ class OverridesStringSelectValidator(OverridesStringFormatterValidator):
     def post_process(self, resolved: str) -> str:
         if resolved not in self._select_values:
             raise self._validation_exception(
-                f"Must be one of the following values: {', '.join(self._select_values)}"
+                f"Must be one of the following values: {', '.join(sorted(self._select_values))}"
             )
 
         return resolved

@@ -349,12 +349,16 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         return self.download_archive.get_file_handler_transaction_log()
 
-    def get_ytdl_options(self, plugins: Optional[List[Plugin]], dry_run: bool) -> SubscriptionYTDLOptions:
+    def get_ytdl_options(
+        self, plugins: Optional[List[Plugin]], dry_run: bool
+    ) -> SubscriptionYTDLOptions:
         """
         Parameters
         ----------
         plugins
             Optional. If not provided, will reinitialize them
+        dry_run
+            Whether its dry run or not
 
         Returns
         -------
@@ -392,10 +396,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             logging.info("Skipping %s", self.name)
             return FileHandlerTransactionLog()
 
-        subscription_ytdl_options = self.get_ytdl_options(
-            plugins=plugins,
-            dry_run=dry_run
-        )
+        subscription_ytdl_options = self.get_ytdl_options(plugins=plugins, dry_run=dry_run)
 
         downloader = MultiUrlDownloader(
             options=self.downloader_options,
@@ -440,10 +441,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self.download_archive.reinitialize(dry_run=dry_run)
 
         plugins = self._initialize_plugins()
-        subscription_ytdl_options = self.get_ytdl_options(
-            plugins=plugins,
-            dry_run=dry_run
-        )
+        subscription_ytdl_options = self.get_ytdl_options(plugins=plugins, dry_run=dry_run)
 
         # Re-add the original downloader class' plugins
         plugins.extend(

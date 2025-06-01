@@ -1,5 +1,6 @@
-from typing import List, Set
+from typing import List
 from typing import Optional
+from typing import Set
 from typing import Tuple
 
 from ytdl_sub.config.plugin.plugin import Plugin
@@ -35,9 +36,11 @@ class DateRangeOptions(ToggleableOptionsDictValidator):
        date_range:
          before: "now"
          after: "today-2weeks"
+         breaks: True
+         type: "upload_date"
     """
 
-    _optional_keys = {"enable", "before", "after", "breaks"}
+    _optional_keys = {"enable", "before", "after", "breaks", "type"}
 
     def __init__(self, name, value):
         super().__init__(name, value)
@@ -81,7 +84,8 @@ class DateRangeOptions(ToggleableOptionsDictValidator):
         """
         :expected type: Optional[OverridesFormatter]
         :description:
-          Which type of date to use. Must be either ``upload_date`` or ``release_date``
+          Which type of date to use. Must be either ``upload_date`` or ``release_date``.
+          Defaults to ``upload_date``.
         """
         return self._type
 
