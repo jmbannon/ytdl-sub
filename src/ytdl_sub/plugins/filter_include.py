@@ -61,10 +61,10 @@ class FilterIncludePlugin(Plugin[FilterIncludeOptions]):
             return entry
 
         for formatter in self.plugin_options.list:
-            out = ScriptUtils.bool_formatter_output(
+            should_exclude = ScriptUtils.bool_formatter_output(
                 self.overrides.apply_formatter(formatter=formatter, entry=entry)
             )
-            if not bool(out):
+            if not should_exclude:
                 logger.info(
                     "Filtering '%s' from the filter %s evaluating to False",
                     entry.title,

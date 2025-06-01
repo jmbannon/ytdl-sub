@@ -62,6 +62,29 @@ See the prebuilt preset :doc:`chunk_initial_download </prebuilt_presets/helpers>
 
 See the prebuilt preset :doc:`Filter Keywords </prebuilt_presets/helpers>`.
 
+...prevent creation of NFO file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creation of NFO files is done by the NFO tags plugin. It, as any other plugin, can be disabled:
+
+.. code-block:: yaml
+
+  nfo_tags:
+    enabled: False
+
+...prevent download of images
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :ref:`config_reference/prebuilt_presets/tv_show:TV Show` presets by default downloads images corresponding to show and each episode.
+This can be prevented by overriding following variables:
+
+.. code-block:: yaml
+
+  overrides:
+    tv_show_fanart_file_name: ""  # to stop creation of fanart.jpg in subscription
+    tv_show_poster_file_name: ""  # to stop creation of poster.jpg in subscription
+    thumbnail_name: ""            # to stop creation of episode thumbnails
+
 There is a bug where...
 -----------------------
 

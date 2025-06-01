@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Optional
 from unittest.mock import patch
 
 import pytest
@@ -53,6 +54,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         is_youtube_channel: bool = False,
         mock_download_to_working_dir: bool = True,
         is_extracted_audio: bool = False,
+        release_date: Optional[str] = None,
     ) -> Dict:
         entry_dict = {
             v.uid.metadata_key: uid,
@@ -70,6 +72,10 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             v.playlist_metadata.metadata_key: {"thumbnails": []},
             v.description.metadata_key: "The Description",
         }
+
+        # TODO: Make this required eventually
+        if release_date is not None:
+            entry_dict[v.release_date.metadata_key] = release_date
 
         if is_youtube_channel:
             entry_dict[v.playlist_metadata.metadata_key]["thumbnails"] = [
@@ -153,6 +159,7 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="21-1",
                         upload_date="20210808",
+                        release_date="20010808",
                         playlist_title="Download First",
                         playlist_index=1,
                         playlist_count=4,
@@ -163,6 +170,7 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="20-1",
                         upload_date="20200808",
+                        release_date="20000808",
                         playlist_title="Download First",
                         playlist_index=2,
                         playlist_count=4,
@@ -173,6 +181,7 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="20-2",
                         upload_date="20200808",
+                        release_date="20000808",
                         playlist_title="Download First",
                         playlist_index=3,
                         playlist_count=4,
@@ -183,6 +192,7 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="20-3",
                         upload_date="20200807",
+                        release_date="20000807",
                         playlist_title="Download First",
                         playlist_index=4,
                         playlist_count=4,
@@ -196,6 +206,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-3",
                     upload_date="20200807",
+                    release_date="20000807",
                     playlist_title="Download Second",
                     playlist_index=1,
                     playlist_count=5,
@@ -206,6 +217,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-4",
                     upload_date="20200806",
+                    release_date="20000806",
                     playlist_title="Download Second",
                     playlist_index=2,
                     playlist_count=5,
@@ -216,6 +228,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-5",
                     upload_date="20200706",
+                    release_date="20000706",
                     playlist_title="Download Second",
                     playlist_index=3,
                     playlist_count=5,
@@ -226,6 +239,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-6",
                     upload_date="20200706",
+                    release_date="20000706",
                     playlist_title="Download Second",
                     playlist_index=4,
                     playlist_count=5,
@@ -236,6 +250,7 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-7",
                     upload_date="20200606",
+                    release_date="20000606",
                     playlist_title="Download Second",
                     playlist_index=5,
                     playlist_count=5,

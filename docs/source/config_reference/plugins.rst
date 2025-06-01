@@ -456,7 +456,7 @@ with a ``.nfo`` extension. You can add any values into the NFO.
 
 ``kodi_safe``
 
-:expected type: Optional[Boolean]
+:expected type: OverridesBooleanFormatterValidator
 :description:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
@@ -554,7 +554,7 @@ Usage:
 
 ``kodi_safe``
 
-:expected type: Optional[Boolean]
+:expected type: OverridesBooleanFormatterValidator
 :description:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
@@ -640,6 +640,8 @@ Defines where to output files and thumbnails after all post-processing has compl
          maintain_download_archive: True
          keep_files_before: now
          keep_files_after: 19000101
+         keep_max_files: 1000
+         keep_files_date_eval: "{upload_date_standardized}"
 
 ``download_archive_name``
 
@@ -688,6 +690,16 @@ Defines where to output files and thumbnails after all post-processing has compl
   Only keeps files that are uploaded before this datetime. By default, ytdl-sub will keep
   files before ``now``, which implies all files. Can be used in conjunction with
   ``keep_max_files``.
+
+
+``keep_files_date_eval``
+
+:expected type: str
+:description:
+    Uses this standardized date in the form of YYYY-MM-DD to record in the
+    download archive for a given entry. Subsequently, uses this value to
+    perform evaluation for keep_files_before/after and keep_max_files. Defaults
+    to the entry's upload_date_standardized variable.
 
 
 ``keep_max_files``
@@ -966,6 +978,9 @@ scripted.
    presets:
      my_example_preset:
        throttle_protection:
+         sleep_per_request_s:
+           min: 5.5
+           max: 10.4
          sleep_per_download_s:
            min: 2.2
            max: 10.8
@@ -999,6 +1014,16 @@ scripted.
 :description:
   Number in seconds to sleep between each download. Does not include time it takes for
   ytdl-sub to perform post-processing.
+
+
+``sleep_per_request_s``
+
+:expected type: Optional[Range]
+:description:
+  Number in seconds to sleep between each request during metadata download. Note that
+  metadata download refers to the initial info.json download, not the actual audio/video
+  download for the entry. Also, yt-dlp only supports a single value at this time for this,
+  so will always use the max value.
 
 
 ``sleep_per_subscription_s``

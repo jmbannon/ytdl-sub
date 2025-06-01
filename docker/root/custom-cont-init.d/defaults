@@ -1,0 +1,68 @@
+#!/usr/bin/with-contenv bash
+
+echo "Starting ytdl-sub..."
+
+# copy config
+[[ ! -e "$DEFAULT_WORKSPACE/config.yaml" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE" && \
+    cp /defaults/config.yaml "$DEFAULT_WORKSPACE/config.yaml"
+[[ ! -e "$DEFAULT_WORKSPACE/subscriptions.yaml" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE" && \
+    cp /defaults/subscriptions.yaml "$DEFAULT_WORKSPACE/subscriptions.yaml"
+[[ ! -d "$DEFAULT_WORKSPACE/examples" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE/examples" && \
+    cp -r /defaults/examples/* "$DEFAULT_WORKSPACE/examples"
+
+[[ ! -e "/config/.bashrc" ]] && \
+  echo "alias ls='ls --color=auto'" > /config/.bashrc && \
+  echo "cd ." >> /config/.bashrc
+
+# permissions
+chown -R ${PUID:-abc}:${PGID:-abc} \
+    /config
+
+# always create empty cron log file on start
+echo "" > "$LOGS_TO_STDOUT"
+
+# set up cron
+if [ "$CRON_SCHEDULE" != "" ] ; then
+    [[ ! -e "$CRON_SCRIPT" ]] && \
+    cp /defaults/cron "$CRON_SCRIPT"
+
+    # create cron script wrapper
+    echo '#!/bin/bash' > "$CRON_WRAPPER_SCRIPT"
+    echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> "$CRON_WRAPPER_SCRIPT"
+    echo "cd \"$DEFAULT_WORKSPACE\"" >> "$CRON_WRAPPER_SCRIPT"
+    echo ". \"$CRON_SCRIPT\" | tee -a \"$LOGS_TO_STDOUT\"" >> "$CRON_WRAPPER_SCRIPT"
+    chmod +x "$CRON_WRAPPER_SCRIPT"
+    chown abc:abc "$CRON_WRAPPER_SCRIPT"
+
+    # Set the crontab file to the schedule, cleanly
+    CRON_SCHEDULE_CLEAN="${CRON_SCHEDULE//\"/}"
+    CRON_SCHEDULE_CLEAN="${CRON_SCHEDULE_CLEAN//\'/}"
+
+    echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
+    echo "$CRON_SCHEDULE_CLEAN   $CRON_WRAPPER_SCRIPT" >> /config/crontabs/abc
+
+    chmod +x "$CRON_SCRIPT"
+    chown abc:abc "$CRON_SCRIPT"
+
+    crontab -u abc /config/crontabs/abc
+
+    CRON_SUCCESS=$?
+    if [ $CRON_SUCCESS -eq 0 ] ; then
+      echo "Cron enabled with schedule $CRON_SCHEDULE_CLEAN"
+
+      if [ "$CRON_RUN_ON_START" = true ] ; then
+        echo "Running cron script on start in the background"
+        # ensure it runs as abc to respect puid/guid with delay for tail to start
+        su -s "/bin/bash" -c "sleep 5 && . '$CRON_WRAPPER_SCRIPT'" abc > /dev/null 2>&1 &
+      fi
+    else
+      echo "Error in CRON_SCHEDULE definition, disabling cron."
+      exit 1
+    fi
+else
+  echo "CRON_SCHEDULE not specified, leaving crontabs as-is. Current configuration in /config/crontabs/abc"
+  cat /config/crontabs/abc
+fi

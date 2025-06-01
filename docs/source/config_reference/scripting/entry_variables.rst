@@ -659,3 +659,9 @@ ytdl_sub_input_url_index
 :type: ``Integer``
 :description:
   The index of the input URL as defined in the subscription, top-most being the 0th index.
+
+ytdl_sub_keep_files_date_eval
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:type: ``String``
+:description:
+  The standardized date variable supplied in ``output_options.keep_files_date_eval``.

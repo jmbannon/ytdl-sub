@@ -86,6 +86,21 @@ def chapter_description_3() -> str:
 """
 
 
+@pytest.fixture
+def chapter_duplicate_timecodes() -> str:
+    return """01. 00:00 Ocean
+02:41 Dreams
+02:41 Nightmares
+05:16 Future Tales
+08:50 Mind Travelling
+11:05 Love Supreme
+14:17 Reflections
+14:17 Reflections VIP
+16:32 Moonlight Fading
+19:40 Between Two Worlds
+"""
+
+
 class TestChapters:
     def test_chapters_from_str_1(self, chapter_description_1):
         chapters = Chapters.from_string(chapter_description_1)
@@ -104,3 +119,8 @@ class TestChapters:
             chapters.titles[8]
             == "(Nightcore) Electro-Light & Jordan Kelvin James - Wait For You (feat. Anna Yvette)"
         )
+
+    def test_chapters_from_str_with_duplicate_timecodes(self, chapter_duplicate_timecodes):
+        chapters = Chapters.from_string(chapter_duplicate_timecodes)
+        assert len(chapters) == 8
+        assert chapters.titles[5] == "Reflections // Reflections VIP"
