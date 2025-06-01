@@ -8,7 +8,7 @@ class TvShowByDatePresets(PrebuiltPresets):
     preset_names = {
         "Kodi TV Show by Date",
         "Jellyfin TV Show by Date",
-        "Emby TV Show by Date"
+        "Emby TV Show by Date",
         "Plex TV Show by Date",
     }
 
