@@ -12,6 +12,7 @@ from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Tuple
 from unittest.mock import patch
 
 import pytest
@@ -272,3 +273,27 @@ def mock_run_from_cli(args: str) -> List[Subscription]:
     args_list = ["ytdl-sub"] + shlex.split(args)
     with patch.object(sys, "argv", args_list):
         return main()
+
+
+def get_match_filters(
+    subscription: Subscription, dry_run: bool, download_filters: bool
+) -> Tuple[List[str], List[str]]:
+    """
+    Util function to get match filters from a subscription.
+
+    Returns
+    -------
+    match_filters, breaking_match_filters
+    """
+    options = subscription.get_ytdl_options(plugins=None, dry_run=dry_run)
+    options_dict = (
+        options.download_builder().to_dict()
+        if download_filters
+        else options.metadata_builder().to_dict()
+    )
+    if "match_filter" not in options_dict:
+        return [], []
+
+    match_filter_str = repr(options_dict["match_filter"])
+    out = eval(match_filter_str.split("(", maxsplit=1)[-1].split(")")[0])
+    return out

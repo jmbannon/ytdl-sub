@@ -17,6 +17,9 @@ presets:
     chapters:
       embed_chapters: True
 
+    date_range:
+      type: "{tv_show_date_range_type}"
+
     overrides:
 #   MUST DEFINE:
 #     tv_show_directory
@@ -45,3 +48,7 @@ presets:
       episode_file_path: "{season_directory_name_sanitized}/{episode_file_name_sanitized}"
       thumbnail_file_name: "{episode_file_path}-thumb.jpg"
       episode_year: "{%slice(episode_date_standardized, 0, 4)}"
+
+      # Used to determine which date type to use if `Only Recent` preset
+      # is applied
+      tv_show_date_range_type: "upload_date"

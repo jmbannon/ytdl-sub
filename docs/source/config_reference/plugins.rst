@@ -151,6 +151,8 @@ granularity possible.
    date_range:
      before: "now"
      after: "today-2weeks"
+     breaks: True
+     type: "upload_date"
 
 ``after``
 
@@ -181,6 +183,14 @@ granularity possible.
   Can typically be left undefined to always default to enable. For preset convenience,
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
+
+
+``type``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Which type of date to use. Must be either ``upload_date`` or ``release_date``.
+  Defaults to ``upload_date``.
 
 
 ----------------------------------------------------------------------------------------------------
