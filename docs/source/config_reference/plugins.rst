@@ -784,11 +784,48 @@ sanitization on the value when used.
 
 ----------------------------------------------------------------------------------------------------
 
-season_nfo_tags
+split_by_chapters
+-----------------
+Splits a file by chapters into multiple files. Each file becomes its own entry with the
+new variables
+
+  - ``chapter_title``
+  - ``chapter_index``
+  - ``chapter_index_padded``
+  - ``chapter_count``
+
+Note that when using this plugin and performing dry-run, it assumes embedded chapters are being
+used with no modifications.
+
+:Usage:
+
+.. code-block:: yaml
+
+   split_by_chapters:
+     when_no_chapters: "pass"
+
+``when_no_chapters``
+
+:expected type: String
+:description:
+  Behavior to perform when no chapters are present. Supports
+
+    - "pass" (continue processing),
+    - "drop" (exclude it from output)
+    - "error" (stop processing for everything).
+
+  If a file has no chapters and is set to "pass", then ``chapter_title`` is
+  set to the entry's title and ``chapter_index``, ``chapter_count`` are both set to 1.
+
+
+----------------------------------------------------------------------------------------------------
+
+static_nfo_tags
 ---------------
-Adds a single NFO file in the season directory. An NFO file is simply an XML file with a
-``.nfo`` extension. It uses the last entry's source variables which can change per download
-invocation. Be cautious of which variables you use.
+Adds an NFO file for every entry, but does not link it to an entry in the download archive.
+This is intended to produce ``season.nfo``s in each season directory. Each entry within a
+season will overwrite this file with its season name. If the entry gets deleted from ytdl-sub,
+this file will remain since it's not linked.
 
 Usage:
 
@@ -796,7 +833,7 @@ Usage:
 
    presets:
      my_example_preset:
-       season_nfo_tags:
+       static_nfo_tags:
          # required
          nfo_name: "season.nfo"
          nfo_root: "season"
@@ -816,7 +853,7 @@ Usage:
 
 ``kodi_safe``
 
-:expected type: Optional[Boolean]
+:expected type: OverridesBooleanFormatterValidator
 :description:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
@@ -855,42 +892,6 @@ Usage:
      <season>
        <title>My custom season name!</title>
      </season>
-
-
-----------------------------------------------------------------------------------------------------
-
-split_by_chapters
------------------
-Splits a file by chapters into multiple files. Each file becomes its own entry with the
-new variables
-
-  - ``chapter_title``
-  - ``chapter_index``
-  - ``chapter_index_padded``
-  - ``chapter_count``
-
-Note that when using this plugin and performing dry-run, it assumes embedded chapters are being
-used with no modifications.
-
-:Usage:
-
-.. code-block:: yaml
-
-   split_by_chapters:
-     when_no_chapters: "pass"
-
-``when_no_chapters``
-
-:expected type: String
-:description:
-  Behavior to perform when no chapters are present. Supports
-
-    - "pass" (continue processing),
-    - "drop" (exclude it from output)
-    - "error" (stop processing for everything).
-
-  If a file has no chapters and is set to "pass", then ``chapter_title`` is
-  set to the entry's title and ``chapter_index``, ``chapter_count`` are both set to 1.
 
 
 ----------------------------------------------------------------------------------------------------

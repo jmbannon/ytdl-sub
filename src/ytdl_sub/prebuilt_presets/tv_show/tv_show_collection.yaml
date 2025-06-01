@@ -23,7 +23,7 @@ presets:
 
     # Emby cannot read seasons from tv_show.nfo
     # Create explicit season NFOs in each season dir
-    season_nfo_tags:
+    static_nfo_tags:
       nfo_name: "{season_directory_name_sanitized}/season.nfo"
       nfo_root: "season"
       tags:

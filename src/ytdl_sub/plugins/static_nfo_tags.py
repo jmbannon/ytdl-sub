@@ -7,11 +7,12 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 
-class SeasonNfoTagsOptions(SharedNfoTagsOptions):
+class StaticNfoTagsOptions(SharedNfoTagsOptions):
     """
-    Adds a single NFO file in the season directory. An NFO file is simply an XML file with a
-    ``.nfo`` extension. It uses the last entry's source variables which can change per download
-    invocation. Be cautious of which variables you use.
+    Adds an NFO file for every entry, but does not link it to an entry in the download archive.
+    This is intended to produce ``season.nfo``s in each season directory. Each entry within a
+    season will overwrite this file with its season name. If the entry gets deleted from ytdl-sub,
+    this file will remain since it's not linked.
 
     Usage:
 
@@ -19,7 +20,7 @@ class SeasonNfoTagsOptions(SharedNfoTagsOptions):
 
        presets:
          my_example_preset:
-           season_nfo_tags:
+           static_nfo_tags:
              # required
              nfo_name: "season.nfo"
              nfo_root: "season"
@@ -29,10 +30,6 @@ class SeasonNfoTagsOptions(SharedNfoTagsOptions):
              kodi_safe: False
     """
 
-    # Hack to make it so collection named seasons do not error
-    # when adding output_directory_nfo info for plex
-    _required_keys = set()
-    _optional_keys = {"enable", "kodi_safe", "nfo_name", "nfo_root", "tags"}
 
     @property
     def nfo_root(self) -> StringFormatterValidator:
@@ -66,25 +63,11 @@ class SeasonNfoTagsOptions(SharedNfoTagsOptions):
         return self._tags
 
 
-class SeasonNfoTagsPlugin(SharedNfoTagsPlugin):
-    plugin_options_type = SeasonNfoTagsOptions
-
-    def __init__(
-        self,
-        options: SeasonNfoTagsOptions,
-        overrides: Overrides,
-        enhanced_download_archive: EnhancedDownloadArchive,
-    ):
-        super().__init__(options, overrides, enhanced_download_archive)
-        self._created_output_nfo = False
+class StaticNfoTagsPlugin(SharedNfoTagsPlugin):
+    plugin_options_type = StaticNfoTagsOptions
 
     def post_process_entry(self, entry: Entry) -> None:
         """
-        Creates an season NFO file using values defined by the season collection name
+        Creates the NFO from each entry, but does not link/save it to the entry.
         """
-        if (
-            self.plugin_options.nfo_name is not None
-            and self.plugin_options.nfo_root is not None
-        ):
-            self._create_nfo(entry=entry, save_to_entry=False)
-            self._created_output_nfo = True
+        self._create_nfo(entry=entry, save_to_entry=False)
