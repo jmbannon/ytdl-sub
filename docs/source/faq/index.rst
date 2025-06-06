@@ -85,8 +85,74 @@ This can be prevented by overriding following variables:
     tv_show_poster_file_name: ""  # to stop creation of poster.jpg in subscription
     thumbnail_name: ""            # to stop creation of episode thumbnails
 
+...use only part of the media's title
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ytdl-sub offers a range of functions that can be used to parse a subset of a title
+for use in your media player. Consider the example:
+
+* I want to remove "NOVA PBS - " from the title ``NOVA PBS - Hidden Cities All Around Us``.
+
+There are several solutions using ytdl-sub's scripting capabilities to override
+``episode_title`` by manipulating the original media's ``title``.
+
+.. code-block:: yaml
+   :caption: Replace exclusion with empty string
+
+   "~Nova PBS":
+     url: "https://www.youtube.com/@novapbs"
+     episode_title: >-
+       {
+         %replace( title, "NOVA PBS - ", "" )
+       }
+
+.. code-block:: yaml
+   :caption: Split once using delimiter, grab last value in the split array.
+
+   "~Nova PBS":
+     url: "https://www.youtube.com/@novapbs"
+     episode_title: >-
+       {
+         %array_at( %split(title, " - ", 1), -1 )
+       }
+
+.. code-block:: yaml
+   :caption: Regex capture. Supports multiple capture strings and default values if captures are unsuccessful.
+
+   "~Nova PBS":
+     url: "https://www.youtube.com/@novapbs"
+     captured_episode_title: >-
+       {
+         %regex_capture_many(
+           title,
+           [ "NOVA PBS - (.*)" ],
+           [ title ]
+         )
+       }
+     episode_title: >-
+        { %array_at( captured_episode_title, 1 ) }
+
+There is no single solution to this problem - it will vary case-by-case. See
+our full suite of
+:ref:`scripting functions <config_reference/scripting/scripting_functions:Scripting Functions>`
+to create your own clever scraping mechanisms.
+
 There is a bug where...
 -----------------------
+
+..ytdl-sub is not downloading
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Run with ``--log-level verbose`` to see all yt-dlp logs, to rule out whether it is a yt-dlp or ytdl-sub issue.
+
+Any logs showing failed downloads, 403 errors, signs of throttles, etc, are a yt-dlp issue.
+A good strategy is to see if your same issue has been reported in
+`yt-dlp's GitHub issues <https://github.com/yt-dlp/yt-dlp/issues>`_, and search to see if there is a comment including
+a fix or workaround.
+
+If it looks like a ytdl-sub issue, run with ``--log-level debug`` and make a
+`GitHub issue in ytdl-sub <https://github.com/jmbannon/ytdl-sub/issues>`_
+containing these logs and other relevant info.
 
 ...date_range is not downloading older videos after I changed the range
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
