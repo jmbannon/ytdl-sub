@@ -121,7 +121,7 @@ There are several solutions using ytdl-sub's scripting capabilities to override
 
    "~Nova PBS":
      url: "https://www.youtube.com/@novapbs"
-     episode_title: >-
+     captured_episode_title: >-
        {
          %regex_capture_many(
            title,
@@ -129,10 +129,13 @@ There are several solutions using ytdl-sub's scripting capabilities to override
            [ title ]
          )
        }
+     episode_title: >-
+        { %array_at( captured_episode_title, 1 ) }
 
 There is no single solution to this problem - it will vary case-by-case. See
-the full suite of scripting functions
-:ref:`here <config_reference/scripting/scripting_functions:Scripting Functions>`.
+our full suite of
+:ref:`scripting functions <config_reference/scripting/scripting_functions:Scripting Functions>`
+to create your own clever scraping mechanisms.
 
 There is a bug where...
 -----------------------
