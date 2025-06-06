@@ -91,7 +91,7 @@ This can be prevented by overriding following variables:
 ytdl-sub offers a range of functions that can be used to parse a subset of a title
 for use in your media player. Consider the example:
 
-* I want to remove ``NOVA PBS - `` from the title ``NOVA PBS - Hidden Cities All Around Us``
+* I want to remove ``NOVA PBS - `` from the title "NOVA PBS - Hidden Cities All Around Us"
 
 There are several solutions using ytdl-sub's scripting capabilities to set
 ``episode_title`` by manipulating the original media's ``title``.
