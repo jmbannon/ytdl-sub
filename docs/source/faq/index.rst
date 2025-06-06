@@ -93,7 +93,7 @@ for use in your media player. Consider the example:
 
 * I want to remove ``NOVA PBS - `` from the title "NOVA PBS - Hidden Cities All Around Us"
 
-There are several solutions using ytdl-sub's scripting capabilities to set
+There are several solutions using ytdl-sub's scripting capabilities to override
 ``episode_title`` by manipulating the original media's ``title``.
 
 .. code-block:: yaml
