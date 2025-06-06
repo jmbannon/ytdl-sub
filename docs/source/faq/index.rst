@@ -93,8 +93,8 @@ for use in your media player. Consider the example:
 
 * I want to remove ``NOVA PBS - `` from the title ``NOVA PBS - Hidden Cities All Around Us``
 
-There are several solutions using ytdl-sub's scripting capabilities to replace
-``episode_title`` by parsing the original media's ``title``.
+There are several solutions using ytdl-sub's scripting capabilities to set
+``episode_title`` by manipulating the original media's ``title``.
 
 .. code-block:: yaml
    :caption: Replace exclusion with empty string
