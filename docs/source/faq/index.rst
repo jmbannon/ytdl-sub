@@ -103,7 +103,7 @@ There are several solutions using ytdl-sub's scripting capabilities to set
      url: "https://www.youtube.com/@novapbs"
      episode_title: >-
        {
-         %replace(title,  "NOVA PBS - ", "")
+         %replace( title, "NOVA PBS - ", "" )
        }
 
 .. code-block:: yaml
