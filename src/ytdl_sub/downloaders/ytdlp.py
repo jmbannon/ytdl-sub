@@ -17,7 +17,7 @@ from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
-from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.logger import Logger, LoggerLevels
 
 
 class YTDLP:
@@ -123,10 +123,17 @@ class YTDLP:
                 del copied_ytdl_options_overrides["download_archive"]
 
             if num_tries < cls._EXTRACT_ENTRY_NUM_RETRIES:
+                maybe_inform_verbose = ""
+                if Logger.get_log_level().level < LoggerLevels.VERBOSE.level:
+                    maybe_inform_verbose = (
+                        ". Consider inspecting the yt-dlp logs using `--log-level verbose` to "
+                        "see the issue."
+                    )
                 cls.logger.info(
-                    "Failed to download entry. Retrying %d / %d",
+                    "Failed to download entry. Retrying %d / %d%s",
                     num_tries,
                     cls._EXTRACT_ENTRY_NUM_RETRIES,
+                    maybe_inform_verbose
                 )
 
         # Still return if the media file downloaded (thumbnail could be missing)
@@ -223,17 +230,13 @@ class YTDLP:
                 cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
             cls.logger.info(
-                "RejectedVideoReached, stopping additional downloads "
-                "(Can be disable by setting `date_range.breaks` to False. "
-                "If this is unexpected, "
-                "run with `--log-level verbose` to see the yt-dlp logs on why it stopped)"
+                "RejectedVideoReached, stopping additional downloads. "
+                "Can be disable by setting `date_range.breaks` to False."
             )
         except ExistingVideoReached:
             cls.logger.info(
                 "ExistingVideoReached, stopping additional downloads. "
-                "(Can be disable by setting `ytdl_options.break_on_existing` to False. This will "
-                "force yt-dlp to continue scraping all metadata to grab any files you may have "
-                "missed)"
+                "Can be disable by setting `ytdl_options.break_on_existing` to False."
             )
         except MaxDownloadsReached:
             cls.logger.info("MaxDownloadsReached, stopping additional downloads.")
