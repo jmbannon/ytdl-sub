@@ -85,8 +85,63 @@ This can be prevented by overriding following variables:
     tv_show_poster_file_name: ""  # to stop creation of poster.jpg in subscription
     thumbnail_name: ""            # to stop creation of episode thumbnails
 
+...use only part of the media's title
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ytdl-sub offers a range of functions that can be used to parse a subset of a title
+for use in your media player. Consider the example:
+
+* I want to remove ``NOVA PBS - `` from the title ``NOVA PBS - Hidden Cities All Around Us``
+
+There are several solutions using ytdl-sub's scripting capabilities to replace
+``episode_title`` by parsing the original media's ``title``.
+
+.. code-block:: yaml
+   :caption: Replace exclusion with empty string
+
+   "~Nova PBS":
+     url: "https://www.youtube.com/@novapbs"
+     episode_title: >-
+       {
+         %replace(title,  "NOVA PBS - ", "")
+       }
+
+.. code-block:: yaml
+   :caption: Split once using delimiter, grab last value in the split array.
+
+   "~Nova PBS":
+     url: "https://www.youtube.com/@novapbs"
+     episode_title: >-
+       {
+         %array_at( %split(title, " - ", 1), -1 )
+       }
+
+.. code-block:: yaml
+   :caption: Regex capture. Supports multiple capture strings and default values if captures are unsuccessful.
+
+   "~Nova PBS":
+     url: "https://www.youtube.com/@novapbs"
+     episode_title: >-
+       {
+         %regex_capture_many(
+           title,
+           [ "NOVA PBS - (.*)" ],
+           [ title ]
+         )
+       }
+
+There is no single solution to this problem - it will vary case-by-case. See
+the full suite of scripting functions
+:ref:`here <config_reference/scripting/scripting_functions:Scripting Functions>`.
+
 There is a bug where...
 -----------------------
+
+..ytdl-sub is not downloading
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you suspect it is a yt-dlp issue, run with ``--log-level verbose`` to see all yt-dlp logs. If that does not
+show the issue, consider using ``--log-level debug`` and make a GitHub issue containing these logs.
 
 ...date_range is not downloading older videos after I changed the range
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
