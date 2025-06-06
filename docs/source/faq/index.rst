@@ -140,8 +140,16 @@ There is a bug where...
 ..ytdl-sub is not downloading
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you suspect it is a yt-dlp issue, run with ``--log-level verbose`` to see all yt-dlp logs. If that does not
-show the issue, consider using ``--log-level debug`` and make a GitHub issue containing these logs.
+Run with ``--log-level verbose`` to see all yt-dlp logs, to rule out whether it is a yt-dlp or ytdl-sub issue.
+
+Any logs showing failed downloads, 403 errors, signs of throttles, etc, are a yt-dlp issue.
+A good strategy is to see if your same issue has been reported in
+`yt-dlp's GitHub issues <https://github.com/yt-dlp/yt-dlp/issues>`_, and search to see if there is a comment including
+a fix or workaround.
+
+If it looks like a ytdl-sub issue, run with ``--log-level debug`` and make a
+`GitHub issue in ytdl-sub <https://github.com/jmbannon/ytdl-sub/issues>`_
+containing these logs and other relevant info.
 
 ...date_range is not downloading older videos after I changed the range
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
