@@ -17,6 +17,7 @@ from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
@@ -215,9 +216,23 @@ class SubscriptionDownload(BaseSubscription, ABC):
         FileHandler.delete(entry.get_download_thumbnail_path())
         FileHandler.delete(entry.get_download_info_json_path())
 
-    @classmethod
-    def _preprocess_entry(cls, plugins: List[Plugin], entry: Entry) -> Optional[Entry]:
+    def _preprocess_entry(self, plugins: List[Plugin], entry: Entry) -> Optional[Entry]:
         maybe_entry: Optional[Entry] = entry
+
+        # Inject OutputOption variables here
+        entry.add(
+            {
+                VARIABLES.ytdl_sub_keep_files_date_eval: (
+                    self.output_options.keep_files_date_eval.format_string
+                )
+            }
+        )
+
+        # Run it to make sure it's actually a standardized date
+        _ = self.overrides.apply_formatter(
+            formatter=self.output_options.keep_files_date_eval, entry=entry
+        )
+
         for plugin in PluginMapping.order_plugins_by(
             plugins, PluginOperation.MODIFY_ENTRY_METADATA
         ):
@@ -334,6 +349,34 @@ class SubscriptionDownload(BaseSubscription, ABC):
 
         return self.download_archive.get_file_handler_transaction_log()
 
+    def get_ytdl_options(
+        self, plugins: Optional[List[Plugin]], dry_run: bool
+    ) -> SubscriptionYTDLOptions:
+        """
+        Parameters
+        ----------
+        plugins
+            Optional. If not provided, will reinitialize them
+        dry_run
+            Whether its dry run or not
+
+        Returns
+        -------
+        SubscriptionYTDLOptions
+            Both metadata and download ytdl-options
+        """
+        if plugins is None:
+            plugins = self._initialize_plugins()
+
+        return SubscriptionYTDLOptions(
+            preset=self._preset_options,
+            plugins=plugins,
+            enhanced_download_archive=self.download_archive,
+            overrides=self.overrides,
+            working_directory=self.working_directory,
+            dry_run=dry_run,
+        )
+
     def download(self, dry_run: bool = False) -> FileHandlerTransactionLog:
         """
         Performs the subscription download
@@ -353,14 +396,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             logging.info("Skipping %s", self.name)
             return FileHandlerTransactionLog()
 
-        subscription_ytdl_options = SubscriptionYTDLOptions(
-            preset=self._preset_options,
-            plugins=plugins,
-            enhanced_download_archive=self.download_archive,
-            overrides=self.overrides,
-            working_directory=self.working_directory,
-            dry_run=dry_run,
-        )
+        subscription_ytdl_options = self.get_ytdl_options(plugins=plugins, dry_run=dry_run)
 
         downloader = MultiUrlDownloader(
             options=self.downloader_options,
@@ -405,15 +441,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         self.download_archive.reinitialize(dry_run=dry_run)
 
         plugins = self._initialize_plugins()
-
-        subscription_ytdl_options = SubscriptionYTDLOptions(
-            preset=self._preset_options,
-            plugins=plugins,
-            enhanced_download_archive=self.download_archive,
-            overrides=self.overrides,
-            working_directory=self.working_directory,
-            dry_run=dry_run,
-        )
+        subscription_ytdl_options = self.get_ytdl_options(plugins=plugins, dry_run=dry_run)
 
         # Re-add the original downloader class' plugins
         plugins.extend(

@@ -57,13 +57,14 @@ def _add_dummy_overrides(overrides: Overrides) -> Dict[str, str]:
 
 
 def _get_added_and_modified_variables(
-    plugins: PresetPlugins, downloader_options: MultiUrlValidator
+    plugins: PresetPlugins, downloader_options: MultiUrlValidator, output_options: OutputOptions
 ) -> Iterable[Tuple[OptionsValidator, Set[str], Set[str]]]:
     """
     Iterates and returns the plugin options, added variables, modified variables
     """
     options: List[OptionsValidator] = plugins.plugin_options
     options.append(downloader_options)
+    options.append(output_options)
 
     for plugin_options in options:
         added_variables: Set[str] = set()
@@ -117,6 +118,7 @@ class VariableValidation:
         ) in _get_added_and_modified_variables(
             plugins=self.plugins,
             downloader_options=self.downloader_options,
+            output_options=self.output_options,
         ):
 
             for added_variable in added_variables:
@@ -182,6 +184,9 @@ class VariableValidation:
 
         self._add_variables(PluginOperation.DOWNLOADER, options=self.downloader_options)
         self._add_subscription_override_variables()
+
+        # Always add output options first
+        self._add_variables(PluginOperation.MODIFY_ENTRY_METADATA, options=self.output_options)
 
         # Metadata variables to be added
         for plugin_options in PluginMapping.order_options_by(

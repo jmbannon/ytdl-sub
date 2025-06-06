@@ -41,6 +41,20 @@ class StringFunctions:
         )
 
     @staticmethod
+    def contains_all(string: String, contains_array: Array) -> Boolean:
+        """
+        :description:
+            Returns true if all elements in ``contains_array`` are in ``string``. False otherwise.
+        """
+        return Boolean(
+            all(
+                str(val) in string.value
+                for val in contains_array.value
+                if isinstance(val, (String, Integer, Boolean, Float))
+            )
+        )
+
+    @staticmethod
     def slice(string: String, start: Integer, end: Optional[Integer] = None) -> String:
         """
         :description:
@@ -113,12 +127,12 @@ class StringFunctions:
         return Array([String(split_val) for split_val in string.value.split(sep=sep.value)])
 
     @staticmethod
-    def concat(*values: String) -> String:
+    def concat(*values: AnyArgument) -> String:
         """
         :description:
           Concatenate multiple Strings into a single String.
         """
-        return String("".join(val.value for val in values))
+        return String("".join(str(val.value) for val in values))
 
     @staticmethod
     def pad(string: String, length: Integer, char: String) -> String:
@@ -162,3 +176,41 @@ class StringFunctions:
            # World
         """
         return String(string.value.encode("utf-8").decode("unicode_escape"))
+
+    @staticmethod
+    def join(separator: String, array: Array) -> String:
+        """
+        :description:
+            Join all elements in the array together as a string, and insert the
+            separator between them.
+
+        :usage:
+
+        .. code-block:: python
+
+           {
+             %join( ", ", ["item1", "item2"] )
+           }
+
+           # "item1, item2"
+        """
+
+        return String(separator.value.join(str(val) for val in array.value))
+
+    @staticmethod
+    def strip(string: String) -> String:
+        """
+        :description:
+            Strip a string of all its whitespace at the beginning and end.
+
+        :usage:
+
+        .. code-block:: python
+
+           {
+             %trim(" delete the outer! ")
+           }
+
+           # "delete the outer!"
+        """
+        return String(string.value.strip())

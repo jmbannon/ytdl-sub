@@ -61,9 +61,16 @@ jobs:
     strategy:
       matrix:
         arch: [ "aarch64", "x86_64" ]
-    runs-on: ubuntu-latest
+        include:
+          - arch: "aarch64"
+            runner: "ubuntu-24.04-arm"
+            container: "quay.io/pypa/manylinux_2_28_aarch64"
+          - arch: "x86_64"
+            runner: "ubuntu-latest"
+            container: "quay.io/pypa/manylinux_2_28_x86_64"
+    runs-on: ${{ matrix.runner }}
     container:
-      image: quay.io/pypa/manylinux_2_28_x86_64
+      image: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v3
       - name: Write version to init file
@@ -76,17 +83,17 @@ jobs:
           dnf install -y epel-release tar wget make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
       - name: Install Python
         run: |
-          wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tar.xz
-          tar -xf Python-3.10.10.tar.xz
-          cd Python-3.10.10 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+          wget https://www.python.org/ftp/python/3.12.9/Python-3.12.9.tar.xz
+          tar -xf Python-3.12.9.tar.xz
+          cd Python-3.12.9 && ./configure --with-ensurepip=install --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
           make -j 8
           make altinstall
-          python3.10 --version
-          python3.10 -m ensurepip --upgrade
+          python3.12 --version
+          python3.12 -m ensurepip --upgrade
       - name: Build Package
         run: |
-          python3.10 -m pip install -e .
-          python3.10 -m pip install pyinstaller
+          python3.12 -m pip install -e .
+          python3.12 -m pip install pyinstaller
           # Build executable
           pyinstaller ytdl-sub.spec
           mkdir -p /opt/builds
@@ -95,7 +102,7 @@ jobs:
           mv dist/ytdl-sub /opt/builds/ytdl-sub_${{ matrix.arch }}
 
       - name: Upload build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ytdl-sub_${{ matrix.arch }}
           path: /opt/builds/ytdl-sub_${{ matrix.arch }}
@@ -112,7 +119,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.12"
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}'> src/ytdl_sub/__init__.py
@@ -124,7 +131,7 @@ jobs:
           .\dist\ytdl-sub.exe -h
 
       - name: Upload build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ytdl-sub_exe
           path: .\dist\ytdl-sub.exe
@@ -145,19 +152,19 @@ jobs:
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py
 
       - name: Restore exe build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ytdl-sub_exe
           path: /opt/builds
 
       - name: Restore aarch64 build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ytdl-sub_aarch64
           path: /opt/builds
 
       - name: Restore x86_64 build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ytdl-sub_x86_64
           path: /opt/builds
@@ -193,13 +200,13 @@ jobs:
     name: pypi-publish
     needs:
       - version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.12'
       - name: Write version to init file
         run: |
           echo '${{ needs.version.outputs.init_contents }}' > src/ytdl_sub/__init__.py

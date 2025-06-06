@@ -9,12 +9,16 @@ presets:
       thumbnail_name: "{thumbnail_file_name}"
       info_json_name: "{episode_file_path}.{info_json_ext}"
       maintain_download_archive: True
+      keep_files_date_eval: "{episode_date_standardized}"
 
     ytdl_options:
       break_on_existing: True
 
     chapters:
       embed_chapters: True
+
+    date_range:
+      type: "{tv_show_date_range_type}"
 
     overrides:
 #   MUST DEFINE:
@@ -36,14 +40,15 @@ presets:
       tv_show_genre: "{subscription_indent_1}"
       tv_show_content_rating: "{subscription_indent_2}"
       season_directory_name: "Season {season_number_padded}"
-      episode_title: "{upload_date_standardized} - {title}"
+      episode_title: "{episode_date_standardized} - {title}"
       episode_plot: "{webpage_url}\n\n{description}"
-      episode_year: "{upload_year}"
       episode_content_rating: "{tv_show_content_rating}"
       episode_date_standardized: "{upload_date_standardized}"
       episode_file_name: "s{season_number_padded}.e{episode_number_padded} - {file_title}"
       episode_file_path: "{season_directory_name_sanitized}/{episode_file_name_sanitized}"
       thumbnail_file_name: "{episode_file_path}-thumb.jpg"
+      episode_year: "{%slice(episode_date_standardized, 0, 4)}"
 
-
-
+      # Used to determine which date type to use if `Only Recent` preset
+      # is applied
+      tv_show_date_range_type: "upload_date"

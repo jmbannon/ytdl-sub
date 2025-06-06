@@ -4,21 +4,7 @@ Helper Presets
 
 .. hint::
 
-   Apply presets to your subscriptions using pipes:
-
-   .. code-block:: yaml
-     :caption: Pipes can separate presets and values to apply them to all subscriptions below them.
-
-     Plex TV Show by Date | best_video_quality:
-
-       = Documentaries | chunk_initial_download:
-         "NOVA PBS": "https://www.youtube.com/@novapbs"
-         "National Geographic": "https://www.youtube.com/@NatGeo"
-
-       = Documentaries:
-         "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
-
-Common presets are not usable by themselves- setting one of these as the sole preset of your subscription and attempting to download will not work. But you can add these presets to quickly modify an existing preset to better suit your needs.
+   See how to apply helper presets :doc:`here </prebuilt_presets/index>`
 
 Only Recent
 -----------
@@ -42,32 +28,19 @@ upload date is outside of the range, or you hit max files, older videos will be 
 To prevent deletion of files, use the preset ``Only Recent Archive`` instead.
 
 
-Best A/V Quality
-----------------
-
-Add the following preset to download the best available video and audio quality, and remux it into an MP4 container:
-
-``best_video_quality``
-
-
-Max 1080p Video
----------------
-
-Add the following preset to download the best available audio and video quality, with the video not greater than 1080p, and remux it into an MP4 container:
-
-``max_1080p``
-
 Filter Keywords
 ---------------
 
 ``Filter Keywords`` can include or exclude media with any of the listed keywords. Both keywords and title/description are lower-cased before filtering.
 
+Default behavior for Keyword evaluation is ANY, meaning the filter will succeed if any of the keywords are present. This can be set to ANY or ALL using the respective ``_eval`` variable.
+
 Supports the following override variables:
 
-* ``title_include_keywords``
-* ``title_exclude_keywords``
-* ``description_include_keywords``
-* ``description_exclude_keywords``
+* ``title_include_keywords``, ``title_include_eval``
+* ``title_exclude_keywords``, ``title_exclude_eval``
+* ``description_include_keywords``, ``title_exclude_eval``
+* ``description_exclude_keywords``, ``title_exclude_eval``
 
 .. tip::
 
@@ -90,6 +63,13 @@ Supports the following override variables:
             title_include_keywords:
               - "To Catch a Smuggler"
 
+        = Sports:
+          "~Maple Leafs Highlights":
+            url: "https://www.youtube.com/@NHL"
+            title_include_eval: "ALL"
+            title_include_keywords:
+              - "maple leafs"
+              - "highlights"
 
 Chunk Downloads
 ---------------

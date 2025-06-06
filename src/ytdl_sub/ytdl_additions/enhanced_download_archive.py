@@ -75,7 +75,7 @@ class DownloadMapping:
         DownloadMapping for the entry
         """
         return DownloadMapping(
-            upload_date=entry.get(v.upload_date_standardized, str),
+            upload_date=entry.get(v.ytdl_sub_keep_files_date_eval, str),
             extractor=entry.download_archive_extractor,
             file_names=set(),
         )
@@ -248,20 +248,18 @@ class DownloadMappings:
             del self._entry_mappings[entry_id]
         return self
 
-    def get_num_entries_with_upload_date(self, upload_date_standardized: str) -> int:
+    def get_num_entries_with_date(self, standardized_date: str) -> int:
         """
         Parameters
         ----------
-        upload_date_standardized
+        standardized_date
             A standardized upload date
 
         Returns
         -------
         Number of entries in the mapping with this upload date
         """
-        return len(
-            [_ for _ in self._entry_mappings.values() if _.upload_date == upload_date_standardized]
-        )
+        return len([_ for _ in self._entry_mappings.values() if _.upload_date == standardized_date])
 
     def get_num_entries(self) -> int:
         """

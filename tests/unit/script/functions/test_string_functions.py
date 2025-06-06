@@ -127,6 +127,14 @@ class TestNumericFunctions:
         assert output == expected_output
 
     @pytest.mark.parametrize(
+        "value, expected_output",
+        [("['a', 'b', 'c']", False), ("['nope', [], {}]", False), ("['a', 'dog']", True)],
+    )
+    def test_contains_all(self, value, expected_output):
+        output = single_variable_output(f"{{%contains_all('a brown dog', {value})}}")
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
         "input_string, split, max_split, expected_output",
         [
             ("no splits", "' | '", None, ["no splits"]),
@@ -143,4 +151,24 @@ class TestNumericFunctions:
         else:
             output = single_variable_output(f"{{%split('{input_string}', {split})}}")
 
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "value, expected_output",
+        [
+            ("['a', 'b', 'c']", "a, b, c"),
+            ("['nope', [], {}]", "nope, [], {}"),
+            ("['a', 1, 3.14, True]", "a, 1, 3.14, true"),
+        ],
+    )
+    def test_join(self, value, expected_output):
+        output = single_variable_output(f"{{%join(', ', {value})}}")
+        assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "value, expected_output",
+        [(" delete outer ", "delete outer"), (" delete me\n\n", "delete me")],
+    )
+    def test_strip(self, value, expected_output):
+        output = single_variable_output(f"{{%strip('{value}')}}")
         assert output == expected_output

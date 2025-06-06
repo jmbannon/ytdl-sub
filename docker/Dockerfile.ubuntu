@@ -1,10 +1,12 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:jammy
+FROM ghcr.io/linuxserver/baseimage-ubuntu:noble
 
 # https://askubuntu.com/questions/972516/debian-frontend-environment-variable
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Needed for phantomjs
-ENV OPENSSL_CONF=/etc/ssl
+# For phantomjs
+ENV OPENSSL_CONF="/etc/ssl"
+# For downloading thumbnails
+ENV SSL_CERT_DIR="/etc/ssl/certs/"
 
 ###############################################################################
 # YTDL-SUB INSTALL
@@ -23,7 +25,6 @@ RUN mkdir -p /config && \
       g++ \
       nano \
       make \
-      python3.10-dev \
       python3-pip \
       fontconfig \
       xz-utils \
@@ -62,7 +63,7 @@ RUN mkdir -p /config && \
       phantomjs --version ; \
     fi && \
     # Install ytdl-sub, ensure it is installed properly
-    pip install --no-cache-dir ytdl_sub-*.whl && \
+    pip install --no-cache-dir --break-system-packages ytdl_sub-*.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
@@ -71,7 +72,6 @@ RUN mkdir -p /config && \
       make \
       xz-utils \
       bzip2 \
-      python3.10-dev \
       python3-venv && \
     apt-get autoremove -y && \
     apt-get purge -y --auto-remove && \
@@ -81,6 +81,12 @@ RUN mkdir -p /config && \
 # CONTAINER CONFIGS
 
 ENV EDITOR="nano" \
-HOME="/config"
+HOME="/config" \
+DOCKER_MODS=linuxserver/mods:universal-stdout-logs|linuxserver/mods:universal-cron \
+DEFAULT_WORKSPACE=/config \
+CRON_SCRIPT="/config/cron" \
+CRON_WRAPPER_SCRIPT="/config/.cron_wrapper" \
+LOGS_TO_STDOUT=/config/.cron.log \
+LSIO_FIRST_PARTY=false
 
 VOLUME /config

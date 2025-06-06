@@ -1,3 +1,4 @@
+import os
 import tempfile
 from pathlib import Path
 
@@ -34,7 +35,8 @@ class TestStringFormatterFilePathValidator:
                 Script({"file_name": formatter.format_string}).resolve().get_str("file_name")
             )
 
-            assert truncated_file_path.count(".") == ext.count(".")
+            _, truncated_file_name = os.path.split(truncated_file_path)
+            assert truncated_file_name.count(".") == ext.count(".")
             assert str(Path(temp_dir)) in truncated_file_path
             assert ext in truncated_file_path
 
@@ -54,19 +56,17 @@ class TestStringFormatterFilePathValidator:
         if "thumb" not in ext:  # do not put . in front of -thumb
             ext = f".{ext}"  # pytest args with . in the beginning act weird
 
-        base_file_name = "s2023.e031701 - 𝗪𝗔𝗥𝗡𝗜𝗡𝗚： LG Secretly Overhaul This OLED Feature on C３ & G３… Should You Buy C２ Instead？"
+        base_file_name = "s2023.e031701 - 𝗪𝗔𝗥𝗡𝗜𝗡𝗚： {LG} Secretly Overhaul This OLED Feature on C３ & G３… Should You Buy C２ Instead？"
 
         with tempfile.TemporaryDirectory() as temp_dir:
             file_path = str(Path(temp_dir) / f"{base_file_name}{ext}")
 
-            formatter = StringFormatterFileNameValidator(name="test", value=str(file_path))
-            truncated_file_path = formatter.post_process(
-                Script({"file_name": formatter.format_string}).resolve().get_str("file_name")
-            )
+            formatter = StringFormatterFileNameValidator(name="test", value="")
+            truncated_file_path = formatter.post_process(file_path)
 
             assert truncated_file_path == str(
                 Path(temp_dir)
-                / f"s2023.e031701 - 𝗪𝗔𝗥𝗡𝗜𝗡𝗚： LG Secretly Overhaul This OLED Feature on C３ & G３… Should You Buy C２ Instead？{ext}"
+                / f"s2023.e031701 - 𝗪𝗔𝗥𝗡𝗜𝗡𝗚： {{LG}} Secretly Overhaul This OLED Feature on C３ & G３… Should You Buy C２ Instead？{ext}"
             )
 
             # Ensure it can actually open the file

@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from ytdl_sub.script.script import Script
+from ytdl_sub.utils.file_path import FilePathTruncater
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.validators import StringValidator
@@ -45,15 +45,8 @@ class StringFormatterFileNameValidator(StringFormatterValidator):
     _expected_value_type_name = "filepath"
 
     def post_process(self, resolved: str) -> str:
-        return (
-            Script(
-                {
-                    "tmp_var_1": resolved,
-                    "tmp_var_2": "{%to_native_filepath(%truncate_filepath_if_too_long(tmp_var_1))}",
-                }
-            )
-            .resolve()
-            .get_str("tmp_var_2")
+        return FilePathTruncater.to_native_filepath(
+            FilePathTruncater.maybe_truncate_file_path(resolved)
         )
 
 
@@ -61,13 +54,6 @@ class OverridesStringFormatterFilePathValidator(OverridesStringFormatterValidato
     _expected_value_type_name = "static filepath"
 
     def post_process(self, resolved: str) -> str:
-        return (
-            Script(
-                {
-                    "tmp_var_1": resolved,
-                    "tmp_var_2": "{%to_native_filepath(%truncate_filepath_if_too_long(tmp_var_1))}",
-                }
-            )
-            .resolve()
-            .get_str("tmp_var_2")
+        return FilePathTruncater.to_native_filepath(
+            FilePathTruncater.maybe_truncate_file_path(resolved)
         )

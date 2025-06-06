@@ -8,6 +8,7 @@ class MusicVideoPresets(PrebuiltPresets):
     preset_names = {
         "Kodi Music Videos",
         "Jellyfin Music Videos",
+        "Emby Music Videos",
         "Plex Music Videos",
     }
 

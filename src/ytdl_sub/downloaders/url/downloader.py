@@ -25,7 +25,6 @@ from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.thumbnail import ThumbnailTypes
 from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
 from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
@@ -459,11 +458,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         metadata_ytdl_options = self.metadata_ytdl_options(
             ytdl_option_overrides=validator.ytdl_options.to_native_dict(self.overrides)
         )
-        download_reversed = ScriptUtils.bool_formatter_output(
-            self.overrides.apply_formatter(validator.download_reverse)
-        )
-        include_sibling_metadata = ScriptUtils.bool_formatter_output(
-            self.overrides.apply_formatter(validator.include_sibling_metadata)
+        download_reversed = self.overrides.evaluate_boolean(validator.download_reverse)
+        include_sibling_metadata = self.overrides.evaluate_boolean(
+            validator.include_sibling_metadata
         )
 
         parents, orphan_entries = self._download_url_metadata(
@@ -534,8 +531,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             download_logger.info("Entry rejected by download match-filter, skipping ..")
             return None
 
-        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_upload_date(
-            upload_date_standardized=entry.get(v.upload_date_standardized, str)
+        upload_date_idx = self._enhanced_download_archive.mapping.get_num_entries_with_date(
+            standardized_date=entry.get(v.ytdl_sub_keep_files_date_eval, str)
         )
         download_idx = self._enhanced_download_archive.num_entries
 
