@@ -31,10 +31,11 @@ RUN mkdir -p /config && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       apk add --no-cache gcompat && \
-      cd /usr/share && \
-      curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar xj && \
-      mv /usr/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs phantomjs && \
-      rm -rf /usr/share/phantomjs-2.1.1-linux-x86_64 && \
+      cd /defaults && \
+      tar -xzf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+      mv /defaults/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/share/phantomjs && \
+      rm -rf /defaults/phantomjs-2.1.1-linux-x86_64 && \
+      rm phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
       ln -s /usr/share/phantomjs /usr/bin/phantomjs && \
       echo "Phantom JS version:" && \
       phantomjs --version && \
