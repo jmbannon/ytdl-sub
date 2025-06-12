@@ -55,19 +55,18 @@ RUN mkdir -p /config && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       echo "installing phantomjs" && \
-      cd /defaults && \
-      tar -xjvf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
-      mv /defaults/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs && \
-      rm -rf /defaults/phantomjs-2.1.1-linux-x86_64 && \
-      rm phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+      tar -xjvf /defaults/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+      mv phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs && \
+      rm -rf phantomjs-2.1.1-linux-x86_64 && \
+      rm /defaults/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
       echo "Phantom JS version:" && \
       phantomjs --version ; \
     fi && \
     # Install ytdl-sub, ensure it is installed properly
-    pip install --no-cache-dir --break-system-packages ytdl-sub.whl && \
+    pip install --no-cache-dir --break-system-packages ytdl_sub-*.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
-    rm ytdl-sub.whl && \
+    rm ytdl_sub-*.whl && \
     apt-get remove -y \
       g++ \
       make \

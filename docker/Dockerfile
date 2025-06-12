@@ -32,11 +32,10 @@ RUN mkdir -p /config && \
     if [[ $(uname -m) == "x86_64" ]]; then \
       echo "installing phantomjs" && \
       apk add --no-cache gcompat && \
-      cd /defaults && \
-      tar -xjvf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
-      mv /defaults/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/share/phantomjs && \
-      rm -rf /defaults/phantomjs-2.1.1-linux-x86_64 && \
-      rm phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+      tar -xjvf /defaults/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+      mv phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/share/phantomjs && \
+      rm -rf phantomjs-2.1.1-linux-x86_64 && \
+      rm /defaults/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
       ln -s /usr/share/phantomjs /usr/bin/phantomjs && \
       echo "Phantom JS version:" && \
       phantomjs --version && \
@@ -44,10 +43,10 @@ RUN mkdir -p /config && \
     fi && \
     echo "hi" && \
     # Install ytdl-sub, ensure it is installed properly
-    python3 -m pip install --break-system-packages --no-cache-dir ytdl-sub.whl && \
+    python3 -m pip install --break-system-packages --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
-    rm ytdl-sub.whl && \
+    rm ytdl_sub-*.whl && \
     apk del \
       g++ \
       make \
