@@ -33,7 +33,8 @@ RUN mkdir -p /config && \
       echo "installing phantomjs" && \
       apk add --no-cache gcompat && \
       cd /defaults && \
-      tar -xj phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+      ls -lh && \
+      tar -xjvf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
       mv /defaults/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/share/phantomjs && \
       rm -rf /defaults/phantomjs-2.1.1-linux-x86_64 && \
       rm phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
