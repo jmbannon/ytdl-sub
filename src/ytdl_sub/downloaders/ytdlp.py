@@ -17,7 +17,7 @@ from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
-from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.logger import Logger, LoggerLevels
 
 
 class YTDLP:
@@ -123,10 +123,17 @@ class YTDLP:
                 del copied_ytdl_options_overrides["download_archive"]
 
             if num_tries < cls._EXTRACT_ENTRY_NUM_RETRIES:
-                cls.logger.debug(
-                    "Failed to download entry. Retrying %d / %d",
+                maybe_inform_verbose = ""
+                if Logger.get_log_level().level < LoggerLevels.VERBOSE.level:
+                    maybe_inform_verbose = (
+                        ". Consider inspecting the yt-dlp logs using `--log-level verbose` to "
+                        "see the issue."
+                    )
+                cls.logger.info(
+                    "Failed to download entry. Retrying %d / %d%s",
                     num_tries,
                     cls._EXTRACT_ENTRY_NUM_RETRIES,
+                    maybe_inform_verbose
                 )
 
         # Still return if the media file downloaded (thumbnail could be missing)
@@ -222,14 +229,14 @@ class YTDLP:
             ):
                 cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
-            cls.logger.debug(
-                "RejectedVideoReached, stopping additional downloads "
-                "(Can be disable by setting `date_range.breaking` to False)."
+            cls.logger.info(
+                "RejectedVideoReached, stopping additional downloads. "
+                "Can be disable by setting `date_range.breaks` to False."
             )
         except ExistingVideoReached:
-            cls.logger.debug(
+            cls.logger.info(
                 "ExistingVideoReached, stopping additional downloads. "
-                "(Can be disable by setting `ytdl_options.break_on_existing` to False)."
+                "Can be disable by setting `ytdl_options.break_on_existing` to False."
             )
         except MaxDownloadsReached:
             cls.logger.info("MaxDownloadsReached, stopping additional downloads.")
@@ -247,7 +254,7 @@ class YTDLP:
             if uploader_id in entry_ids or not (uploader_url := entry_dict.get("uploader_url")):
                 continue
 
-            cls.logger.debug("Attempting to get parent metadata from URL %s", uploader_url)
+            cls.logger.info("Attempting to get parent metadata from URL %s", uploader_url)
             parent_dict: Optional[Dict] = None
             try:
                 parent_dict = cls.extract_info(
