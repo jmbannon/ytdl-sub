@@ -64,10 +64,10 @@ RUN mkdir -p /config && \
       phantomjs --version ; \
     fi && \
     # Install ytdl-sub, ensure it is installed properly
-    pip install --no-cache-dir --break-system-packages ytdl_sub-*.whl && \
+    pip install --no-cache-dir --break-system-packages ytdl-sub.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
-    rm ytdl_sub-*.whl && \
+    rm ytdl-sub.whl && \
     apt-get remove -y \
       g++ \
       make \

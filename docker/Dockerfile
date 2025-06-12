@@ -44,10 +44,10 @@ RUN mkdir -p /config && \
     fi && \
     echo "hi" && \
     # Install ytdl-sub, ensure it is installed properly
-    python3 -m pip install --break-system-packages --no-cache-dir ytdl_sub-*.whl && \
+    python3 -m pip install --break-system-packages --no-cache-dir ytdl-sub.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
-    rm ytdl_sub-*.whl && \
+    rm ytdl-sub.whl && \
     apk del \
       g++ \
       make \

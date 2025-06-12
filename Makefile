@@ -28,7 +28,7 @@ wheel: clean
 	pip3 install build
 	python3 -m build
 docker_stage: wheel
-	cp dist/*.whl docker/root/
+	cp dist/*.whl docker/root/ytdl-sub.whl
 	cp -R examples docker/root/defaults/
 docker: docker_stage
 	sudo docker build --progress=plain --no-cache -t ytdl-sub:local docker/
