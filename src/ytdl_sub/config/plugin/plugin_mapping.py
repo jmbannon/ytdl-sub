@@ -24,6 +24,7 @@ from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
 from ytdl_sub.plugins.split_by_chapters import SplitByChaptersPlugin
+from ytdl_sub.plugins.square_thumbnail import SquareThumbnailPlugin
 from ytdl_sub.plugins.static_nfo_tags import StaticNfoTagsPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
@@ -40,6 +41,7 @@ class PluginMapping:
         "audio_extract": AudioExtractPlugin,
         "date_range": DateRangePlugin,
         "embed_thumbnail": EmbedThumbnailPlugin,
+        "square_thumbnail": SquareThumbnailPlugin,
         "file_convert": FileConvertPlugin,
         "format": FormatPlugin,
         "match_filters": MatchFiltersPlugin,
@@ -86,6 +88,7 @@ class PluginMapping:
         VideoTagsPlugin,
         NfoTagsPlugin,
         StaticNfoTagsPlugin,
+        SquareThumbnailPlugin,
         EmbedThumbnailPlugin,
     ]
 
