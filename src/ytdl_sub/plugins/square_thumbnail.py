@@ -41,14 +41,14 @@ class SquareThumbnailPlugin(Plugin[SquareThumbnailOptions]):
             ffmpeg_args: List[str] = [
                 "-i",
                 thumbnail_path,
-                "-c:v"
-                "mjpeg"
-                "-qmin"
-                "1"
-                "-qscale:v"
-                "1"
-                "-vf"
-                "crop=min(iw\\,ih):min(iw\\,ih)"
+                "-c:v",
+                "mjpeg",
+                "-qmin",
+                "1",
+                "-qscale:v",
+                "1",
+                "-vf",
+                "crop=min(iw\\,ih):min(iw\\,ih)",
                 "-bitexact",  # for reproducibility
                 tmp_file_path,
             ]
