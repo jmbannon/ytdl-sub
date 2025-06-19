@@ -25,6 +25,7 @@ def should_filter_all_properties(plugin_name: str) -> bool:
         "filter_include",
         "filter_exclude",
         "embed_thumbnail",
+        "square_thumbnail",
         "video_tags",
         "download",
     )

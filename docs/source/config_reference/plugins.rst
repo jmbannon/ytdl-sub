@@ -841,13 +841,6 @@ for representing audio albums.
 
    square_thumbnail: True
 
-``format_string``
-
-Returns
--------
-The literal format string, unformatted.
-
-
 ----------------------------------------------------------------------------------------------------
 
 static_nfo_tags
