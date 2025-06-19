@@ -55,6 +55,7 @@ class TestConfigFilePartiallyValidatesPresets:
     def test_success__empty_plugins(self, plugin: str):
         excluded_plugins = [
             "embed_thumbnail",  # value is bool, not dict
+            "square_thumbnail",
             "format",  # value is string, not dict
             "filter_include",  # is list
             "filter_exclude",  # is list
