@@ -83,6 +83,13 @@ extractor_key
 :description:
   The yt-dlp extractor key
 
+height
+~~~~~~
+:type: ``Integer``
+:description:
+  Height in pixels of the video. If this value is unavailable (i.e. audio download), it
+  will default to 0.
+
 ie_key
 ~~~~~~
 :type: ``String``
@@ -164,6 +171,13 @@ webpage_url
 :type: ``String``
 :description:
   The url to the webpage.
+
+width
+~~~~~
+:type: ``Integer``
+:description:
+  Width in pixels of the video. If this value is unavailable (i.e. audio download), it
+  will default to 0.
 
 ----------------------------------------------------------------------------------------------------
 

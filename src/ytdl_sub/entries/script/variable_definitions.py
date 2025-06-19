@@ -1093,6 +1093,24 @@ class EntryVariableDefinitions(ABC):
             definition="{ {} }",
         )
 
+    @cached_property
+    def height(self: "VariableDefinitions") -> IntegerMetadataVariable:
+        """
+        :description:
+          Height in pixels of the video. If this value is unavailable (i.e. audio download), it
+          will default to 0.
+        """
+        return IntegerMetadataVariable.from_entry(metadata_key="height", default=0)
+
+    @cached_property
+    def width(self: "VariableDefinitions") -> IntegerMetadataVariable:
+        """
+        :description:
+          Width in pixels of the video. If this value is unavailable (i.e. audio download), it
+          will default to 0.
+        """
+        return IntegerMetadataVariable.from_entry(metadata_key="width", default=0)
+
 
 class VariableDefinitions(
     EntryVariableDefinitions,
@@ -1133,6 +1151,8 @@ class VariableDefinitions(
             self.ytdl_sub_input_url_index,
             self.ytdl_sub_input_url_count,
             self.ytdl_sub_keep_files_date_eval,
+            self.width,
+            self.height,
         }
 
     @cache
