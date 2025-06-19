@@ -104,7 +104,7 @@ class Entry(BaseEntry, Scriptable):
                 v.comments: download_entry._kwargs_get(v.comments.metadata_key, []),
                 # Updates with more accurate value, which may differ from the metadata value
                 v.height: download_entry._kwargs_get(v.height.metadata_key, 0),
-                v.width: download_entry._kwargs_get(v.width.metadata_key, 0)
+                v.width: download_entry._kwargs_get(v.width.metadata_key, 0),
             }
         )
         return self
