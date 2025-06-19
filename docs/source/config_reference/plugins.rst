@@ -830,6 +830,26 @@ used with no modifications.
 
 ----------------------------------------------------------------------------------------------------
 
+square_thumbnail
+----------------
+Whether to make thumbnails square. Supports both file and embedded-based thumbnails. Ideal
+for representing audio albums.
+
+:Usage:
+
+.. code-block:: yaml
+
+   square_thumbnail: True
+
+``format_string``
+
+Returns
+-------
+The literal format string, unformatted.
+
+
+----------------------------------------------------------------------------------------------------
+
 static_nfo_tags
 ---------------
 Adds an NFO file for every entry, but does not link it to an entry in the download archive.

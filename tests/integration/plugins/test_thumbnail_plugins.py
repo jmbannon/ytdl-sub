@@ -18,7 +18,7 @@ def square_thumbnail_subscription_dict(output_directory) -> Dict:
             "music_video_artist": "JMC",
             "url": "https://your.name.here",
             "perform_square_thumbnail": True,
-            "perform_embed_thumbnail": False
+            "perform_embed_thumbnail": False,
         },
     }
 
