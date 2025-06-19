@@ -1151,6 +1151,8 @@ class VariableDefinitions(
             self.ytdl_sub_input_url_index,
             self.ytdl_sub_input_url_count,
             self.ytdl_sub_keep_files_date_eval,
+            self.width,
+            self.height,
         }
 
     @cache
