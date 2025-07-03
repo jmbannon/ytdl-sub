@@ -111,8 +111,8 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         MainArguments.LOG_LEVEL.long,
         metavar="|".join(LoggerLevels.names()),
         type=str,
-        help="level of logs to print to console, defaults to info",
-        default=argparse.SUPPRESS if suppress_defaults else LoggerLevels.INFO.name,
+        help="level of logs to print to console, defaults to verbose",
+        default=argparse.SUPPRESS if suppress_defaults else LoggerLevels.VERBOSE.name,
         choices=LoggerLevels.names(),
         dest="ytdl_sub_log_level",
     )
