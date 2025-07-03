@@ -9,6 +9,9 @@ logger = Logger.get(name="preset")
 
 
 def _log(message: AnyArgument, level: Optional[Integer]) -> None:
+    if not str(message):
+        return
+
     if level is None:
         logger.info(str(message))
         return

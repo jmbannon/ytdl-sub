@@ -15,12 +15,15 @@ class TestPrintFunctions:
             ("{%print('hi mom', True)}", "hi mom", True),
             ("{%print('this is great', [1, 2, 3])}", "this is great", [1, 2, 3]),
             ("{%print([1, 2], [3, 4])}", "[1, 2]", [3, 4]),
+            ("{%print('', True)}", None, True),
             # print_if_true
             ("{%print_if_true('hi mom', True)}", "hi mom", True),
             ("{%print_if_true('hi mom', False)}", None, False),
+            ("{%print_if_true('', True)}", None, True),
             # print_if_false
             ("{%print_if_false('hi mom', True)}", None, True),
             ("{%print_if_false('hi mom', False)}", "hi mom", False),
+            ("{%print_if_false('', True)}", None, True),
         ],
     )
     def test_print_functions(
