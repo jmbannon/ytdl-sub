@@ -15,6 +15,7 @@ from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 
 v: VariableDefinitions = VARIABLES
 
@@ -264,6 +265,11 @@ def mock_download_collection_entries(
             patch.object(
                 MultiUrlDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
             ),
+            # Throttle protection is included in all prebuilt presets. Mock the sleep avoid
+            # actual sleeps
+            patch.object(
+                ThrottleProtectionPlugin, "perform_sleep", new=lambda _1, _2: None
+            )
         ):
             # Stub out metadata. TODO: update this if we do metadata plugins
             yield

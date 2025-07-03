@@ -3,6 +3,11 @@ presets:
 ####################################################################################################
 
   _episode_base:
+    preset:
+      # ytdl-sub includes throttle prootection by default or all prebuilt presets.
+      # Can be disabled with override variable `enable_throttle_protection: False`
+      - "_throttle_protection"
+
     output_options:
       output_directory: "{tv_show_directory}/{tv_show_name_sanitized}"
       file_name: "{episode_file_path}.{ext}"
