@@ -265,6 +265,9 @@ def mock_download_collection_entries(
             patch.object(
                 MultiUrlDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
             ),
+            # Throttle protection is included in all prebuilt presets. Mock the sleep avoid
+            # actual sleeps
+            patch.object(ThrottleProtectionPlugin, "perform_sleep", new=lambda _1, _2: None),
         ):
             # Stub out metadata. TODO: update this if we do metadata plugins
             yield

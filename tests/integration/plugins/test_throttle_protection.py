@@ -1,10 +1,8 @@
 from typing import Dict
-from unittest.mock import patch
 
 import pytest
 from conftest import assert_logs
 
-from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 from ytdl_sub.plugins.throttle_protection import logger as throttle_protection_logger
 from ytdl_sub.subscriptions.subscription import Subscription
 
@@ -51,11 +49,6 @@ class TestThrottleProtectionPlugin:
         )
 
         with (
-            patch.object(
-                ThrottleProtectionPlugin,
-                "perform_sleep",
-                new=ThrottleProtectionPlugin.perform_sleep,
-            ),
             mock_download_collection_entries(
                 is_youtube_channel=False, num_urls=1, is_extracted_audio=False
             ),
