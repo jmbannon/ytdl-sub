@@ -1,0 +1,26 @@
+presets:
+
+  _throttle_protection:
+    throttle_protection:
+      enable: >-
+        {
+          %print(
+            %if(
+              enable_throttle_protection,
+              "Throttle protection is enabled. Disable using the override variable `enable_throttle_protection: False`",
+              "Throttle protection is disabled. Use at your own risk!"
+            ),
+            enable_throttle_protection
+          )
+        }
+      sleep_per_request_s:
+        min: 3.5
+        max: 3.5
+      sleep_per_download_s:
+        min: 13.8
+        max: 28.4
+      sleep_per_subscription_s:
+        min: 16.3
+        max: 26.1
+    overrides:
+      enable_throttle_protection: True

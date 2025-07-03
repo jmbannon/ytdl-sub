@@ -55,7 +55,7 @@ class TestThrottleProtectionPlugin:
             assert_logs(
                 logger=throttle_protection_logger,
                 expected_message="Sleeping between downloads for %0.2f seconds",
-                log_level="debug",
+                log_level="info",
                 expected_occurrences=4,
             ),
         ):
@@ -68,7 +68,7 @@ class TestThrottleProtectionPlugin:
             assert_logs(
                 logger=throttle_protection_logger,
                 expected_message="Sleeping between subscriptions for %0.2f seconds",
-                log_level="debug",
+                log_level="info",
                 expected_occurrences=1,
             ),
         ):
@@ -92,7 +92,7 @@ class TestThrottleProtectionPlugin:
         mock_download_collection_entries,
         disable_value,
     ):
-        throttle_subscription_dict["throttle_protection"]["enable"] = disable_value
+        throttle_subscription_dict["overrides"]["enable_throttle_protection"] = disable_value
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
@@ -106,7 +106,7 @@ class TestThrottleProtectionPlugin:
             assert_logs(
                 logger=throttle_protection_logger,
                 expected_message="Sleeping between downloads for %0.2f seconds",
-                log_level="debug",
+                log_level="info",
                 expected_occurrences=0,
             ),
         ):

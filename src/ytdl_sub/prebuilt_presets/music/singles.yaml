@@ -2,6 +2,7 @@ presets:
 
   
   _music_base:
+
     output_options:
       output_directory: "{music_directory}"
       file_name: "{track_full_path}"

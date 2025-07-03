@@ -23,3 +23,4 @@ presets:
   "YouTube Full Albums":
     preset:
       - "_albums_from_chapters"
+      - "_throttle_protection"

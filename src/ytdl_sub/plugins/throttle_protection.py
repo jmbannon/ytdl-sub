@@ -185,6 +185,13 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
 class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
     plugin_options_type = ThrottleProtectionOptions
 
+    @classmethod
+    def perform_sleep(cls, sleep_time: float) -> None:
+        """
+        Wrapper to be able to mock
+        """
+        time.sleep(sleep_time)
+
     def __init__(
         self,
         options: ThrottleProtectionOptions,
@@ -239,7 +246,7 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
             self._subscription_max_downloads is not None
             and self._subscription_download_counter == 0
         ):
-            logger.debug(
+            logger.info(
                 "Setting subscription max downloads to %d", self._subscription_max_downloads
             )
 
@@ -248,8 +255,8 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
 
         if self.plugin_options.sleep_per_download_s:
             sleep_time = self.plugin_options.sleep_per_download_s.randomized_float()
-            logger.debug("Sleeping between downloads for %0.2f seconds", sleep_time)
-            time.sleep(sleep_time)
+            logger.info("Sleeping between downloads for %0.2f seconds", sleep_time)
+            self.perform_sleep(sleep_time)
 
         return None
 
@@ -265,5 +272,5 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
 
         if self.plugin_options.sleep_per_subscription_s:
             sleep_time = self.plugin_options.sleep_per_subscription_s.randomized_float()
-            logger.debug("Sleeping between subscriptions for %0.2f seconds", sleep_time)
-            time.sleep(sleep_time)
+            logger.info("Sleeping between subscriptions for %0.2f seconds", sleep_time)
+            self.perform_sleep(sleep_time)
