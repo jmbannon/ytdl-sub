@@ -88,7 +88,7 @@ Supports the following override variables:
 
    .. code-block:: yaml
 
-      Plex TV Show by Date | Filter Keywords:
+      Plex TV Show by Date | Filter Duration:
 
         = Documentaries:
           "~NOVA PBS":
