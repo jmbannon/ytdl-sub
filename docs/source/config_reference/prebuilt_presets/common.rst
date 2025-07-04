@@ -4,10 +4,15 @@ Common
 
 .. highlight:: yaml
 
-Filtering
--------------
+Filter Keywords
+---------------
 
-.. literalinclude:: /../../src/ytdl_sub/prebuilt_presets/helpers/filtering.yaml
+.. literalinclude:: /../../src/ytdl_sub/prebuilt_presets/helpers/filter_keywords.yaml
+
+Filter Duration
+---------------
+
+.. literalinclude:: /../../src/ytdl_sub/prebuilt_presets/helpers/filter_duration.yaml
 
 Media Quality
 -------------
