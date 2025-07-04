@@ -43,13 +43,14 @@ class TestFilterKeywords:
             transaction_log_summary_file_name=f"integration/prebuilt_presets/filter_keywords_empty.txt",
         )
 
-    @pytest.mark.parametrize("filter_eval, filter_value, filters_all",
+    @pytest.mark.parametrize(
+        "filter_eval, filter_value, filters_all",
         [
             ("min", 10, False),
             ("max", 100, False),
             ("min", 100, True),
             ("max", 10, True),
-        ]
+        ],
     )
     def test_filter_duration(
         self,
@@ -83,13 +84,9 @@ class TestFilterKeywords:
                 transaction_log_summary_file_name=f"integration/prebuilt_presets/filter_duration.txt",
             )
 
-
     @pytest.mark.parametrize(
         "filter_eval",
-        [
-            "min",
-            "max"
-        ],
+        ["min", "max"],
     )
     def test_error_not_numeric(
         self,
@@ -112,4 +109,3 @@ class TestFilterKeywords:
             pytest.raises(UserThrownRuntimeError, match=f"filter_duration args must be numeric"),
         ):
             _ = subscription.download(dry_run=True)
-
