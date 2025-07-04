@@ -71,6 +71,35 @@ Supports the following override variables:
               - "maple leafs"
               - "highlights"
 
+Filter Duration
+---------------
+
+``Filter Duration`` can include or exclude media based on its duration.
+
+Supports the following override variables:
+
+* ``filter_duration_min_s``
+* ``filter_duration_max_s``
+
+.. tip::
+
+   Use the `~` tilda subscription mode to set a subscription's list override variables.
+   Tilda mode allows override variables to be set directly underneath it.
+
+   .. code-block:: yaml
+
+      Plex TV Show by Date | Filter Duration:
+
+        = Documentaries:
+          "~NOVA PBS":
+            url: "https://www.youtube.com/@novapbs"
+            filter_duration_min_s: 120  # Only download videos at least 2m long
+
+        = Sports:
+          "~Maple Leafs Highlights":
+            url: "https://www.youtube.com/@NHL"
+            filter_duration_max_s: 180  # Only get highlight videos less than 3m long
+
 Chunk Downloads
 ---------------
 
