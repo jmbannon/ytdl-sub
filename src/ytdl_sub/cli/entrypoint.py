@@ -1,5 +1,6 @@
 import gc
 import os
+import random
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -114,7 +115,9 @@ def _download_subscriptions_from_yaml_files(
             subscription_override_dict=subscription_override_dict,
         )
 
-    # TODO: shuffle
+    if shuffle:
+        logger.info("Shuffling subscriptions")
+        random.shuffle(subscriptions)
 
     for subscription in subscriptions:
         with subscription.exception_handling():
