@@ -74,6 +74,7 @@ def _download_subscriptions_from_yaml_files(
     subscription_override_dict: Dict,
     update_with_info_json: bool,
     dry_run: bool,
+    shuffle: bool,
 ) -> List[Subscription]:
     """
     Downloads all subscriptions from one or many subscription yaml files.
@@ -90,6 +91,8 @@ def _download_subscriptions_from_yaml_files(
         Whether to actually download or update using existing info json
     dry_run
         Whether to dry run or not
+    shuffle
+        Whether to shuffle the subscription download order
 
     Returns
     -------
@@ -110,6 +113,8 @@ def _download_subscriptions_from_yaml_files(
             subscription_matches=subscription_matches,
             subscription_override_dict=subscription_override_dict,
         )
+
+    # TODO: shuffle
 
     for subscription in subscriptions:
         with subscription.exception_handling():
@@ -248,6 +253,7 @@ def main() -> List[Subscription]:
                 subscription_override_dict=subscription_override_dict,
                 update_with_info_json=args.update_with_info_json,
                 dry_run=args.dry_run,
+                shuffle=args.shuffle,
             )
 
         # One-off download

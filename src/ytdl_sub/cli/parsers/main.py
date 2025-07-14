@@ -172,6 +172,10 @@ class SubArguments:
         short="-o",
         long="--dl-override",
     )
+    SHUFFLE = CLIArgument(
+        short="-sh",
+        long="--shuffle",
+    )
 
 
 subscription_parser = subparsers.add_parser("sub")
@@ -196,6 +200,13 @@ subscription_parser.add_argument(
     type=str,
     help="override all subscription config values using `dl` syntax, "
     "i.e. --dl-override='--ytdl_options.max_downloads 3'",
+)
+subscription_parser.add_argument(
+    SubArguments.SHUFFLE.short,
+    SubArguments.OVERRIDE.long,
+    action="store_true",
+    help="shuffle subscription order when downloading",
+    default=False,
 )
 
 ###################################################################################################
