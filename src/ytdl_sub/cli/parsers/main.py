@@ -203,7 +203,7 @@ subscription_parser.add_argument(
 )
 subscription_parser.add_argument(
     SubArguments.SHUFFLE.short,
-    SubArguments.OVERRIDE.long,
+    SubArguments.SHUFFLE.long,
     action="store_true",
     help="shuffle subscription order when downloading",
     default=False,
