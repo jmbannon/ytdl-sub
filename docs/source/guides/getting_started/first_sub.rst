@@ -57,21 +57,6 @@ which are used by the presets below.
 -------------------------------------
 
 .. code-block:: yaml
-  :lineno-start: 6
-
-  # Can choose between:
-  #  - Plex TV Show by Date:
-  #  - Jellyfin TV Show by Date:
-  #  - Kodi TV Show by Date:
-  #
-
-Lines 6-10 are comments that get ignored when parsing YAML since they are prefixed with ``#``.
-It is good practice to leave informative comments in your config or subscription files to remind
-yourself of various things.
-
--------------------------------------
-
-.. code-block:: yaml
   :lineno-start: 11
 
   Jellyfin TV Show by Date:
