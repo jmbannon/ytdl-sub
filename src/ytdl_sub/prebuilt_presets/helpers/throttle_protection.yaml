@@ -14,8 +14,15 @@ presets:
           )
         }
       sleep_per_request_s:
-        min: 3.5
-        max: 3.5
+        # yt-dlp processes eath request synchronously, so it's intrinsic delay between
+        # requests already represent a maximum close to real app/client behavior in the
+        # field. Add a small additional margin matching the example values from yt-dlp
+        # to be conservative:
+        max: 0.75
+        # Not used at time of writing, but choose a value that would mimic real
+        # app/client behavior in the field. The next request is usually sent right away
+        # if processing the previous request is done asynchronously:
+        min: 0.0
       sleep_per_download_s:
         min: 13.8
         max: 28.4
