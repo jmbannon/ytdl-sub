@@ -1,7 +1,20 @@
+# Defensive settings for make:
+#     https://tech.davis-hansson.com/p/make/
+SHELL:=bash
+.ONESHELL:
+.SHELLFLAGS:=-eu -o pipefail -c
+.SILENT:
+.DELETE_ON_ERROR:
+MAKEFLAGS+=--warn-undefined-variables
+MAKEFLAGS+=--no-builtin-rules
+export PS1?=$$
+# Prefix echoed recipe commands with the recipe line number for debugging:
+export PS4?=:$$LINENO+
+
 # Get version related variables
-export DATE=$(shell date +'%Y.%m.%d')
-export DATE_COMMIT_COUNT=$(shell git rev-list --count HEAD --since="$(DATE) 00:00:00")
-export COMMIT_HASH=$(shell git rev-parse --short HEAD)
+export DATE:=$(shell date +'%Y.%m.%d')
+export DATE_COMMIT_COUNT:=$(shell git rev-list --count HEAD --since="$(DATE) 00:00:00")
+export COMMIT_HASH:=$(shell git rev-parse --short HEAD)
 
 # Set Local version to YYYY.MM.DD-<hash>
 export LOCAL_VERSION="$(DATE)+$(COMMIT_HASH)"
@@ -12,6 +25,15 @@ ifeq ("$(DATE_COMMIT_COUNT)", "0")
 else
 	export PYPI_VERSION="$(DATE).post$(DATE_COMMIT_COUNT)"
 endif
+
+# Finished with `$(shell)`, echo recipe commands going forward
+.SHELLFLAGS+= -x
+
+
+### Top-level targets:
+
+.PHONY: all
+all: check_lint docs docker docker_ubuntu docker_gui
 
 lint:
 	python3 -m isort .
