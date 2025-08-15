@@ -11,6 +11,10 @@ export PS1?=$$
 # Prefix echoed recipe commands with the recipe line number for debugging:
 export PS4?=:$$LINENO+
 
+# Activate the Python virtual environment managed by tox:
+export VIRTUAL_ENV=$(PWD)/.tox/py
+export PATH:=$(VIRTUAL_ENV)/bin:$(PATH)
+
 # Get version related variables
 export DATE:=$(shell date +'%Y.%m.%d')
 export DATE_COMMIT_COUNT:=$(shell git rev-list --count HEAD --since="$(DATE) 00:00:00")
@@ -35,11 +39,11 @@ endif
 .PHONY: all
 all: check_lint docs docker docker_ubuntu docker_gui
 
-lint:
+lint: ./build/log/tox.log
 	python3 -m isort .
 	python3 -m black .
 	python3 -m pylint src
-check_lint:
+check_lint: ./build/log/tox.log
 	isort . --check-only --diff  \
 		&& black . --check  \
 		&& pylint src/
@@ -61,11 +65,12 @@ docker_gui: docker_stage
 executable: clean
 	pyinstaller ytdl-sub.spec
 	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}
-docs:
+docs: ./build/log/tox.log
 	REGENERATE_DOCS=1 pytest tests/unit/docgen/test_docgen.py
 	sphinx-build --fail-on-warning --nitpicky -b html docs/source/ docs/build/
 clean:
 	rm -rf \
+		./.tox/ \
 		.pytest_cache/ \
 		build/ \
 		dist/ \
@@ -77,3 +82,10 @@ clean:
 		coverage.xml
 
 .PHONY: lint check_lint wheel docker_stage docker docs clean
+
+
+### Real Targets:
+
+./build/log/tox.log: ./tox.ini ./pyproject.toml
+	mkdir -pv "$(dir $(@))"
+	tox run-parallel -o --notest | tee -a "$(@)"

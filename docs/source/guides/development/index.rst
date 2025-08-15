@@ -6,19 +6,9 @@ Requirements
 - python >= 3.10
 - ffmpeg/ffprobe 4.4.5 (test checksums rely on this version)
 - make
+- `tox`_
 
-
-Local Install
--------------
-.. tab-set-code::
-
-    .. code-block:: shell
-
-        pip install -e .[test,lint,docs]
-
-    .. code-block:: zsh
-
-        pip install -e .\[test,lint,docs\]
+.. _`tox`: https://tox.wiki/en/4.28.4/installation.html
 
 Linter
 ------
