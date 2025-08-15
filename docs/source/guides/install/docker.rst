@@ -13,25 +13,24 @@ automate running ``ytdl-sub`` in a container running either variant.
 GUI Image
 ---------
 
-The GUI image is based on :lsio-gh:`LSIO's docker-code-server image <\ >` to provide you
-full management of ``ytdl-sub``, such as file editing and terminal access, all within
-your browser using the VS Code web UI. See its documentation regarding environment
-variables and other details. Once running, open `the web UI`_ to edit the
-`configuration`_ and run ``ytdl-sub``.
+The GUI image is based on LSIO's :lsio-gh:`docker-code-server` to provide you full
+management of ``ytdl-sub``, such as file editing and terminal access, all within your
+browser using the VS Code web UI. See its documentation regarding environment variables
+and other details. Once running, open `the web UI`_ to edit the `configuration`_ and run
+``ytdl-sub``.
 
 .. _`the web UI`: http://localhost:8443
 
 Headless Image
 --------------
 
-The headless image is based on :lsio-gh:`LSIO's docker-baseimage-alpine image <\
->`. Once running, the default command just starts services including cron for
-:ref:`Automating Downloads <guides/getting_started/automating_downloads:docker and
-unraid>` but otherwise doesn't run ``ytdl-sub``. You may run arbitrary ``ytdl-sub``
-commands using the ``--rm --user="${PUID}:${PGID}" --entrypoint="ytdl-sub"`` options to
-either ``$ docker run`` or ``$ docker compose run``. Overriding the image's
-``ENTRYPOINT`` is important so that cron doesn't run ``ytdl-sub`` while you're running
-it manually.
+The headless image is based on LSIO's :lsio-gh:`docker-baseimage-alpine`. Once running,
+the default command just starts services including cron for :ref:`Automating Downloads
+<guides/getting_started/automating_downloads:docker and unraid>` but otherwise doesn't
+run ``ytdl-sub``. You may run arbitrary ``ytdl-sub`` commands using the
+``--rm --user="${PUID}:${PGID}" --entrypoint="ytdl-sub"`` options to either ``$ docker
+run`` or ``$ docker compose run``. Overriding the image's ``ENTRYPOINT`` is important so
+that cron doesn't run ``ytdl-sub`` while you're running it manually.
 
 For example::
 
