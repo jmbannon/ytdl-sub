@@ -63,7 +63,7 @@ executable: clean
 	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}
 docs:
 	REGENERATE_DOCS=1 pytest tests/unit/docgen/test_docgen.py
-	sphinx-build -M html docs/source/ docs/build/
+	sphinx-build --fail-on-warning --nitpicky -b html docs/source/ docs/build/
 clean:
 	rm -rf \
 		.pytest_cache/ \
