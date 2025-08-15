@@ -52,7 +52,7 @@ All three types of keys are used for the following:
 - ``= News`` - an override value for genre
 - ``Breaking News``, ``BBC News`` - The subscription names
 
-The bottom-most keys, or leaf keys, should always be the subscription name.
+The lowest level, most indented keys should always be the subscription name.
 It is good practice to put subscription names in quotes to differentiate
 between preset names and subscription names.
 

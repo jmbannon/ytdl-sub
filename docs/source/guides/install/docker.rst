@@ -152,3 +152,11 @@ If you prefer to only run the container once, you can use the CLI command instea
     -v <OPTIONAL/path/to/music_videos>:/music_videos \
     -v <OPTIONAL/path/to/music>:/music \
     ghcr.io/jmbannon/ytdl-sub-gui:latest
+
+Configuration
+-------------
+
+In these examples, the configuration files will be at
+``<path/to/ytdl-sub/config>/config.yaml`` and
+``<path/to/ytdl-sub/config>/subscriptions.yaml``. Starting the container the first time
+will populate those files with default examples.
