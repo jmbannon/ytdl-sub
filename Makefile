@@ -37,8 +37,10 @@ endif
 ### Top-level targets:
 
 .PHONY: all
-all: check_lint docs docker docker_ubuntu docker_gui
+all: test check_lint docs docker docker_ubuntu docker_gui
 
+test: ./build/log/tox.log
+	tox run-parallel -o
 lint: ./build/log/tox.log
 	python3 -m isort .
 	python3 -m black .
