@@ -23,7 +23,7 @@ jobs:
 
     - name: Run linters
       run: |
-        pip install -e .[lint]
+        pip install tox==4.28.4
         make check_lint
 
   test-unit:

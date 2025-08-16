@@ -1,7 +1,24 @@
+# Defensive settings for make:
+#     https://tech.davis-hansson.com/p/make/
+SHELL:=bash
+.ONESHELL:
+.SHELLFLAGS:=-eu -o pipefail -c
+.SILENT:
+.DELETE_ON_ERROR:
+MAKEFLAGS+=--warn-undefined-variables
+MAKEFLAGS+=--no-builtin-rules
+export PS1?=$$
+# Prefix echoed recipe commands with the recipe line number for debugging:
+export PS4?=:$$LINENO+
+
+# Activate the Python virtual environment managed by tox:
+export VIRTUAL_ENV=$(PWD)/.tox/py
+export PATH:=$(VIRTUAL_ENV)/bin:$(PATH)
+
 # Get version related variables
-export DATE=$(shell date +'%Y.%m.%d')
-export DATE_COMMIT_COUNT=$(shell git rev-list --count HEAD --since="$(DATE) 00:00:00")
-export COMMIT_HASH=$(shell git rev-parse --short HEAD)
+export DATE:=$(shell date +'%Y.%m.%d')
+export DATE_COMMIT_COUNT:=$(shell git rev-list --count HEAD --since="$(DATE) 00:00:00")
+export COMMIT_HASH:=$(shell git rev-parse --short HEAD)
 
 # Set Local version to YYYY.MM.DD-<hash>
 export LOCAL_VERSION="$(DATE)+$(COMMIT_HASH)"
@@ -13,11 +30,22 @@ else
 	export PYPI_VERSION="$(DATE).post$(DATE_COMMIT_COUNT)"
 endif
 
-lint:
+# Finished with `$(shell)`, echo recipe commands going forward
+.SHELLFLAGS+= -x
+
+
+### Top-level targets:
+
+.PHONY: all
+all: test check_lint docs docker docker_ubuntu docker_gui
+
+test: ./build/log/tox.log
+	tox run-parallel -o
+lint: ./build/log/tox.log
 	python3 -m isort .
 	python3 -m black .
 	python3 -m pylint src
-check_lint:
+check_lint: ./build/log/tox.log
 	isort . --check-only --diff  \
 		&& black . --check  \
 		&& pylint src/
@@ -39,11 +67,11 @@ docker_gui: docker_stage
 executable: clean
 	pyinstaller ytdl-sub.spec
 	mv dist/ytdl-sub dist/ytdl-sub${EXEC_SUFFIX}
-docs:
-	REGENERATE_DOCS=1 pytest tests/unit/docgen/test_docgen.py
-	sphinx-build -M html docs/source/ docs/build/
+docs: ./build/log/tox.log
+	sphinx-build --fail-on-warning --nitpicky -b html docs/source/ docs/build/
 clean:
 	rm -rf \
+		./.tox/ \
 		.pytest_cache/ \
 		build/ \
 		dist/ \
@@ -55,3 +83,10 @@ clean:
 		coverage.xml
 
 .PHONY: lint check_lint wheel docker_stage docker docs clean
+
+
+### Real Targets:
+
+./build/log/tox.log: ./tox.ini ./pyproject.toml
+	mkdir -pv "$(dir $(@))"
+	tox run-parallel -o --notest | tee -a "$(@)"

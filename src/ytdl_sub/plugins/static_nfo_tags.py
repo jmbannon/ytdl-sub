@@ -7,10 +7,11 @@ from ytdl_sub.validators.string_formatter_validators import StringFormatterValid
 
 class StaticNfoTagsOptions(SharedNfoTagsOptions):
     """
-    Adds an NFO file for every entry, but does not link it to an entry in the download archive.
-    This is intended to produce ``season.nfo``s in each season directory. Each entry within a
-    season will overwrite this file with its season name. If the entry gets deleted from ytdl-sub,
-    this file will remain since it's not linked.
+    Adds an NFO file for every entry, but does not link it to an entry in the download
+    archive.  This is intended to produce ``season.nfo`` files in each season
+    directory. Each entry within a season will overwrite this file with its season
+    name. If the entry gets deleted from ytdl-sub, this file will remain since it's not
+    linked.
 
     Usage:
 

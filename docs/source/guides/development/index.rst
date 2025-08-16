@@ -6,19 +6,9 @@ Requirements
 - python >= 3.10
 - ffmpeg/ffprobe 4.4.5 (test checksums rely on this version)
 - make
+- `tox`_
 
-
-Local Install
--------------
-.. tab-set-code::
-
-    .. code-block:: shell
-
-        pip install -e .[test,lint,docs]
-
-    .. code-block:: zsh
-
-        pip install -e .\[test,lint,docs\]
+.. _`tox`: https://tox.wiki/en/4.28.4/installation.html
 
 Linter
 ------
@@ -45,8 +35,15 @@ command will rebuild those as well.
 
 Testing
 -------
-Tests are written using pytest. Many of them evaluate checksums of output files to ensure no unintended
-changes are introduced to the way ``ytdl-sub`` produces files. This checksum can be inaccurate for
+
+Run the tests with pytest:
+
+.. code-block:: shell
+
+   make test
+
+Many of them evaluate checksums of output files to ensure no unintended changes are
+introduced to the way ``ytdl-sub`` produces files. This checksum can be inaccurate for
 end-to-end tests, but are reliable for integration tests.
 
 If integration tests are failing, ensure...
