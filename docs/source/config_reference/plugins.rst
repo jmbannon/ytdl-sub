@@ -3,7 +3,8 @@
     The respective plugin files under src/ytdl_sub/plugins/
   In order to make a change to this file, edit the respective docstring
   and run `make docs`. This will automatically sync the Python RST-based
-  docstrings into this file.
+  docstrings into this file. If the docstrings and RST file are out of sync,
+  it will fail TestDocGen tests in GitHub CI.
 
 Plugins
 =======

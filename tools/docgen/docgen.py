@@ -24,7 +24,8 @@ class DocGen:
             f"    {cls.DOCSTRING_LOCATION}\n"
             "  In order to make a change to this file, edit the respective docstring\n"
             "  and run `make docs`. This will automatically sync the Python RST-based\n"
-            "  docstrings into this file.\n"
+            "  docstrings into this file. If the docstrings and RST file are out of sync,\n"
+            "  it will fail TestDocGen tests in GitHub CI.\n"
         )
 
     @classmethod
