@@ -10,6 +10,7 @@ from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 class StaticVariablesDocGen(DocGen):
 
     LOCATION = Path("docs/source/config_reference/scripting/static_variables.rst")
+    DOCSTRING_LOCATION = "src/ytdl_sub/entries/variables/override_variables.py"
 
     @classmethod
     def generate(cls) -> str:

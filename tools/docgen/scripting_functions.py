@@ -56,6 +56,7 @@ def get_function_docstring(
 class ScriptingFunctionsDocGen(DocGen):
 
     LOCATION = Path("docs/source/config_reference/scripting/scripting_functions.rst")
+    DOCSTRING_LOCATION = "The respective function files under src/ytdl_sub/script/functions/"
 
     @classmethod
     def generate(cls) -> str:

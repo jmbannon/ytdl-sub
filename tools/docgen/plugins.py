@@ -2,7 +2,6 @@ import inspect
 from pathlib import Path
 from typing import Any
 from typing import Dict
-from typing import Optional
 from typing import Type
 
 from tools.docgen.docgen import DocGen
@@ -72,6 +71,7 @@ def generate_plugin_docs(name: str, options: Type[OptionsValidator], offset: int
 class PluginsDocGen(DocGen):
 
     LOCATION = Path("docs/source/config_reference/plugins.rst")
+    DOCSTRING_LOCATION = "The respective plugin files under src/ytdl_sub/plugins/"
 
     @classmethod
     def generate(cls):
