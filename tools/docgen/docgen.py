@@ -1,7 +1,6 @@
 import os
 from abc import abstractmethod
 from pathlib import Path
-from typing import final
 
 REGENERATE_DOCS: bool = bool(os.environ.get("REGENERATE_DOCS", 0))
 
