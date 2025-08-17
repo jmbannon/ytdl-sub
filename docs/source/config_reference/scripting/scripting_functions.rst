@@ -1,3 +1,9 @@
+..
+  WARNING: This RST file is generated from docstrings in:
+    The respective function files under src/ytdl_sub/script/functions/
+  In order to make a change to this file, edit the respective docstring
+  and run `make docs`. This will automatically sync the Python RST-based
+  docstrings into this file.
 
 Scripting Functions
 ===================
