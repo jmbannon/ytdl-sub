@@ -4,20 +4,23 @@ Getting Started
 Prerequisite Knowledge
 ----------------------
 
-In order to use ``ytdl-sub`` in any of the forms listed in these docs, you will need some basic knowledge.
+As a lower level tool with no GUI, ``ytdl-sub`` requires some technical knowledge. You
+must be able to:
 
-Be sure that you:
-  ☑ Can navigate directories in a command line interface (or CLI)
+- do `basic CLI shell navigation`_
+- read and write `YAML text files`_
 
-  ☑ Have a basic understanding of YAML syntax
+If you plan on using a :ref:`Docker headless image variant
+<guides/install/docker:headless image>` of ``ytdl-sub``, you can:
 
-If you plan on using the headless image of ``ytdl-sub``, you:
-  ☑ Can use ``nano`` or ``vim`` to edit OR
+- use ``$ nano /config/...`` to edit configuration files inside the container
+- or bind mount ``/config/`` as a Docker volume and use the editor of your choice from
+  the host
 
-  ☑ Can mount the config directory somewhere you can open it using gui text editors
+.. _`basic CLI shell navigation`:
+   https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line
+.. _`YAML text files`: http://thomasloven.com/blog/2018/08/YAML-For-Nonprogrammers/
 
-Additional useful (but not required) knowledge:
-  ☑ Understanding how :yt-dlp:`\ ` works
 
 Terminology
 -----------
