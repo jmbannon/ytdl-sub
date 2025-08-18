@@ -154,6 +154,37 @@ suite of :ref:`scripting functions
 <config_reference/scripting/scripting_functions:Scripting Functions>` to create your own
 clever scraping mechanisms.
 
+...force ytdl-sub to re-download a video
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``ytdl-sub`` decides what videos have already been downloaded by entries in :ref:`the
+download archive file <config_reference/plugins:output_options>`,
+``./.ytdl-sub-...-download-archive.json``, at the top of the subscription/series/show
+:ref:`output directory <config_reference/plugins:output_options>` in the appropriate
+``overrides: / ..._directory:`` library path *and* the presence of the corresponding
+downloaded files under the same path. To force ``ytdl-sub`` to re-download an entry both
+need to be removed:
+
+- Move aside the downloaded files:
+
+  Rename or move the downloaded files, including the associated files with the same
+  base/stem name, such as ``./*.nfo``, ``./*.info-json``, etc..
+
+- Ensure ``ytdl-sub`` is not running and won't run, such as by cron:
+
+  ``ytdl-sub`` loads the ``./.ytdl-sub-...-download-archive.json`` file early, keeps it
+  in memory, and writes it back out late. If it's running or starts running while you're
+  modifying that file, then your changes will be overwritten when it exits.
+
+- Remove the ``./.ytdl-sub-...-download-archive.json`` JSON array item:
+
+  Search for the stem name, the basename without any extension or suffix, common to all
+  the downloaded files in this file and delete that whole entry, from the YouTube ID
+  string to the closing curly braces. Be ware of JSON traling commas.
+
+- Run ``$ ytdl-sub sub`` again.
+
+
 There is a bug where...
 -----------------------
 
