@@ -25,9 +25,11 @@ supply a cookies file path.
 .. code-block:: yaml
 
   __preset__:
+    # Variables that override defaults from `overrides:` for presets in YAML keys:
     overrides:
       tv_show_directory: "/tv_shows"
 
+    # Directly set plugin options:
     ytdl_options:
       cookiefile: "/config/cookie.txt"
 

@@ -39,7 +39,7 @@ For most users, ``ytdl-sub`` works as follows:
 Subscriptions use presets
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run ``$ ytdl-sub sub`` to read :doc:`a subscription file <./first_sub>` that defines
+Run ``$ ytdl-sub sub`` to read :doc:`a subscription file <./subscriptions>` that defines
 what subscriptions to download and place into your media library. Each subscription
 selects which :doc:`presets <../../prebuilt_presets/index>` to apply. Those presets
 configure how each subscription is downloaded and placed in the media library.
@@ -94,11 +94,12 @@ Genres are also more often shared between subscriptions than not. To accommodate
 reality, the ancestor keys of subscriptions may also use :ref:`the special '= ...'
 prefix to pass specific overrides
 <config_reference/scripting/static_variables:subscription_indent_i>` supported by the
-preset. By convention in the built-in presets, the first ``= ...`` value specifies the
-genre for all descendant subscriptions.
+preset. By convention in the built-in software and media type presets, the first ``=
+...`` value specifies the genre for all descendant subscriptions.
 
-Finally, ancestor keys may use the ``... | ...`` special character to combine multiple
-presets and/or genres for the descendant subscriptions beneath.
+Finally, ancestor keys may use :ref:`the '... | ...' special character
+<config_reference/subscription_yaml:multi keys>` to combine multiple presets and/or
+genres for the descendant subscriptions beneath.
 
 The configuration file extends pre-defined presets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,22 +140,18 @@ complete details, but for almost all of the use cases served by ``ytdl-sub``, th
 is accurate and representative.
 
 
-Ready to Start?
----------------
+Next Steps
+----------
 
-Now that you've completed your install of ``ytdl-sub``, it's time to get started.  It is
-recommended to go through the below sections in order to fully grasp ytdl-sub.
+With ``ytdl-sub`` installed and the above understood, the next step is to :doc:`start
+adding subscriptions <./subscriptions>`.
 
-
-.. toctree::
-  :maxdepth: 2
-
-  first_sub
-  first_download
-  automating_downloads
-  first_config
 
 .. toctree::
   :hidden:
 
+  subscriptions
+  first_download
+  automating_downloads
+  first_config
   quick_start

@@ -1,8 +1,8 @@
 Initial Download
 ================
 
-Once you have a ``subscriptions.yaml`` file created, you can perform your first
-download. Access ``ytdl-sub``, navigate to the directory containing your
+Once you've created :doc:`a subscriptions file <./subscriptions>`, you can perform your
+first download. Access ``ytdl-sub``, navigate to the directory containing your
 ``subscriptions.yaml`` file.
 
 

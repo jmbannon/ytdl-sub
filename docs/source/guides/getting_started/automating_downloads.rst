@@ -59,3 +59,11 @@ out for us)
 .. code-block:: powershell
 
   ytdl-sub.exe --config \path\to\config\config.yaml sub \path\to\config\subscriptions.yaml
+
+
+Next Steps
+----------
+
+Once you have a significant quantity of subscriptions or have use cases not served using
+:doc:`YAML keys and the special characters <./subscriptions>`, it's time to start
+:doc:`defining your own custom presets <./first_config>`.
