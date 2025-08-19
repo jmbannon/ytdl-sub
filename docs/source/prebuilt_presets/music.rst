@@ -5,11 +5,6 @@ Music Presets
 Music downloadable by yt-dlp comes in many flavors. ``ytdl-sub`` offers a suite of
 various presets for handling some of the most popular forms of uploaded music content.
 
-.. hint::
-
-  The subscription *value* (denoted by =) will set the genre tag for all music scraped
-  under its key for all music presets.
-
 
 YouTube Releases
 ----------------
