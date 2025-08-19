@@ -1,7 +1,8 @@
 import contextlib
 import os
 from pathlib import Path
-from typing import Callable, Any
+from typing import Any
+from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -55,7 +56,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         mock_download_to_working_dir: bool = True,
         is_extracted_audio: bool = False,
         release_date: Optional[str] = None,
-        mock_entry_kwargs: Optional[Dict[str, Any]] = None
+        mock_entry_kwargs: Optional[Dict[str, Any]] = None,
     ) -> Dict:
         entry_dict = {
             v.uid.metadata_key: uid,
@@ -141,7 +142,9 @@ def mock_download_collection_thumbnail(mock_downloaded_file_path):
 
 @pytest.fixture
 def mock_download_collection_entries(
-    mock_download_collection_thumbnail, mock_entry_dict_factory: Callable, working_directory: str,
+    mock_download_collection_thumbnail,
+    mock_entry_dict_factory: Callable,
+    working_directory: str,
 ):
     @contextlib.contextmanager
     def _mock_download_collection_entries_factory(
