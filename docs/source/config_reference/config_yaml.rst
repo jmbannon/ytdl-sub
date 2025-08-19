@@ -82,9 +82,18 @@ Presets also support inheritance from multiple presets:
       - "custom_preset"
       - "parent_preset"
 
-In this example, ``child_preset`` will inherit all fields from ``custom_preset``
-and ``parent_preset`` in that order. The bottom-most preset has the highest
-priority.
+In this example, ``child_preset`` will inherit all fields from ``custom_preset`` and
+``parent_preset`` in that order. The bottom-most preset has the highest priority. More
+specifically, presets are merged using `mergedeep`_ via `a TYPESAFE_ADDITIVE merge`_,
+which means:
+
+- if two conflicting keys arent lists or mappings, overwrite the higher priority one
+- otherwise, combine then re-evaluate
 
 If you are only inheriting from one preset, the syntax ``preset: "parent_preset"`` is
 valid YAML. Inheriting from multiple presets require use of a list.
+
+.. _`mergedeep`:
+   https://mergedeep.readthedocs.io/en/latest/
+.. _`a TYPESAFE_ADDITIVE merge`:
+   https://mergedeep.readthedocs.io/en/latest/index.html#merge-strategies

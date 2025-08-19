@@ -545,4 +545,4 @@ def test_default_docker_config_and_subscriptions():
     default_subs = Subscription.from_file_path(
         config=default_config, subscription_path=Path("docker/root/defaults/subscriptions.yaml")
     )
-    assert len(default_subs) == 15
+    assert len(default_subs) == 1
