@@ -1,7 +1,7 @@
 import contextlib
 import os
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Any
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -55,6 +55,7 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         mock_download_to_working_dir: bool = True,
         is_extracted_audio: bool = False,
         release_date: Optional[str] = None,
+        mock_entry_kwargs: Optional[Dict[str, Any]] = None
     ) -> Dict:
         entry_dict = {
             v.uid.metadata_key: uid,
@@ -104,6 +105,9 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             copy_file_fixture(
                 fixture_name="thumb.jpg", output_file_path=mock_downloaded_file_path(f"{uid}.jpg")
             )
+
+        if mock_entry_kwargs:
+            return dict(entry_dict, **mock_entry_kwargs)
         return entry_dict
 
     return _mock_entry_dict_factory
@@ -137,7 +141,7 @@ def mock_download_collection_thumbnail(mock_downloaded_file_path):
 
 @pytest.fixture
 def mock_download_collection_entries(
-    mock_download_collection_thumbnail, mock_entry_dict_factory: Callable, working_directory: str
+    mock_download_collection_thumbnail, mock_entry_dict_factory: Callable, working_directory: str,
 ):
     @contextlib.contextmanager
     def _mock_download_collection_entries_factory(
@@ -145,6 +149,7 @@ def mock_download_collection_entries(
         num_urls: int = 1,
         is_extracted_audio: bool = False,
         is_dry_run: bool = False,
+        mock_entry_kwargs: Optional[Dict[str, Any]] = None,
     ):
         is_real_run = not is_dry_run
 
@@ -166,6 +171,7 @@ def mock_download_collection_entries(
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
                         mock_download_to_working_dir=is_real_run,
+                        mock_entry_kwargs=mock_entry_kwargs,
                     ),  # 1
                     mock_entry_dict_factory(
                         uid="20-1",
@@ -177,6 +183,7 @@ def mock_download_collection_entries(
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
                         mock_download_to_working_dir=is_real_run,
+                        mock_entry_kwargs=mock_entry_kwargs,
                     ),  # 2  98
                     mock_entry_dict_factory(
                         uid="20-2",
@@ -188,6 +195,7 @@ def mock_download_collection_entries(
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
                         mock_download_to_working_dir=is_real_run,
+                        mock_entry_kwargs=mock_entry_kwargs,
                     ),  # 1  99
                     mock_entry_dict_factory(
                         uid="20-3",
@@ -199,6 +207,7 @@ def mock_download_collection_entries(
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
                         mock_download_to_working_dir=is_real_run,
+                        mock_entry_kwargs=mock_entry_kwargs,
                     ),
                 ]
             return [
@@ -213,6 +222,7 @@ def mock_download_collection_entries(
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=False,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
                 mock_entry_dict_factory(
                     uid="20-4",
@@ -224,6 +234,7 @@ def mock_download_collection_entries(
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=is_real_run,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
                 mock_entry_dict_factory(
                     uid="20-5",
@@ -235,6 +246,7 @@ def mock_download_collection_entries(
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=is_real_run,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
                 mock_entry_dict_factory(
                     uid="20-6",
@@ -246,6 +258,7 @@ def mock_download_collection_entries(
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=is_real_run,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
                 mock_entry_dict_factory(
                     uid="20-7",
@@ -257,6 +270,7 @@ def mock_download_collection_entries(
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=is_real_run,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
             ]
 
