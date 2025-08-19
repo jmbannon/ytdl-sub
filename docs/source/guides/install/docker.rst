@@ -10,6 +10,7 @@ the recommended way of managing a ``ytdl-sub`` docker container.  See :ref:`Auto
 Downloads <guides/getting_started/automating_downloads:docker and unraid>` for how to
 automate running ``ytdl-sub`` in a container running either variant.
 
+
 GUI Image
 ---------
 
@@ -20,6 +21,7 @@ and other details. Once running, open `the web UI`_ to edit the `configuration`_
 ``ytdl-sub``.
 
 .. _`the web UI`: http://localhost:8443
+
 
 Headless Image
 --------------
@@ -35,6 +37,7 @@ that cron doesn't run ``ytdl-sub`` while you're running it manually.
 For example::
 
   $ docker compose run --rm --user="${PUID}:${PGID}" --entrypoint="ytdl-sub" ytdl-sub sub
+
 
 Install with Docker Compose
 ---------------------------
@@ -84,6 +87,7 @@ directory such as:
        #       devices:
        #         - capabilities: ["gpu"]
 
+
 Docker CLI
 ----------
 
@@ -108,6 +112,7 @@ host. The following command is for the gui image:
 
 See `the Docker reference <https://docs.docker.com/engine/reference/run/>`_ for further
 details.
+
 
 Configuration
 -------------

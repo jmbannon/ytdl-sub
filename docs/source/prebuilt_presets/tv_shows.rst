@@ -2,45 +2,57 @@
 TV Show Presets
 ===============
 
-Player-Specific Presets
-=======================
 
-``ytdl-sub`` provides player-specific versions of certain presets, which apply settings to optimize the downloads for that player.
+Player-Specific Presets
+-----------------------
+
+``ytdl-sub`` provides player-specific versions of certain presets, which apply settings
+to optimize the downloads for that player.
 
 The following actions are taken based on the indicated player:
 
 Kodi
---------
+~~~~
+
 * Everything that the Jellyfin version does
-* Enables ``kodi_safe`` NFOs, replacing 4-byte unicode characters that break kodi with ``□``
+* Enables ``kodi_safe`` NFOs, replacing 4-byte unicode characters that break kodi with
+  ``□``
 
 Jellyfin
---------
+~~~~~~~~
+
 * Places any season-specific poster art in the main show folder
 * Generates NFO tags
 
 Emby
-----
+~~~~
+
 * Places any season-specific poster art in the main show folder
 * Generates NFO tags
 
   * For named seasons, creates a ``season.nfo`` file per season
 
 Plex
---------
-* :ref:`Special sanitization <config_reference/scripting/entry_variables:title_sanitized_plex>` of numbers so Plex doesn't recognize numbers that are part of the title as the episode number
+~~~~~~~~
+
+* :ref:`Special sanitization
+  <config_reference/scripting/entry_variables:title_sanitized_plex>` of numbers so Plex
+  doesn't recognize numbers that are part of the title as the episode number
 * Converts all downloaded videos to the mp4 format
 * Places any season-specific poster art into the season folder
 
 ----------------------------------------------
 
-TV Show by Date
-===============
 
-TV Show by Date will organize something like a YouTube channel or playlist into a tv show, where seasons and episodes are organized using upload date.
+TV Show by Date
+---------------
+
+TV Show by Date will organize something like a YouTube channel or playlist into a tv
+show, where seasons and episodes are organized using upload date.
 
 Example
--------
+~~~~~~~
+
 Must define ``tv_show_directory``. Available presets:
 
 * ``Kodi TV Show by Date``
@@ -74,9 +86,10 @@ Must define ``tv_show_directory``. Available presets:
          - "https://www.youtube.com/@rickbeato240"
 
 Advanced Usage
---------------
+~~~~~~~~~~~~~~
 
-If you prefer a different season/episode organization method, you can set the following override variables.
+If you prefer a different season/episode organization method, you can set the following
+override variables.
 
 .. code-block:: yaml
 
@@ -95,12 +108,11 @@ Or for a specific preset
           tv_show_by_date_season_ordering: "upload-year-month"
           tv_show_by_date_episode_ordering: "upload-day"
 
-The following are supported. Be sure the combined season + episode ordering
-include the year, month, day, i.e. upload-year + upload-month-day.
-
+The following are supported. Be sure the combined season + episode ordering include the
+year, month, day, i.e. upload-year + upload-month-day.
 
 Season Ordering
-~~~~~~~~~~~~~~~
+"""""""""""""""
 
 ``tv_show_by_date_season_ordering`` supports one of the following:
 
@@ -109,23 +121,24 @@ Season Ordering
 * ``release-year``
 * ``release-year-month``
 
-
 Episode Ordering
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+""""""""""""""""
 
 ``tv_show_by_date_episode_ordering`` supports one of the following:
 
 * ``upload-month-day`` (default)
 * ``upload-month-day-reversed``
 
-  * Reversed means more recent episodes appear at the top of a season by having a lower value.
+  * Reversed means more recent episodes appear at the top of a season by having a lower
+    value.
 * ``upload-day``
 * ``release-day``
 * ``release-month-day``
 * ``release-month-day-reversed``
 * ``download-index``
 
-  * Episodes are numbered by the download order. **NOTE**: this is fetched using the length of the download archive. Do not use if you intend to remove old videos.
+  * Episodes are numbered by the download order. **NOTE**: this is fetched using the
+    length of the download archive. Do not use if you intend to remove old videos.
 
 TV Show by Date presets use the following for defaults:
 
@@ -135,21 +148,21 @@ TV Show by Date presets use the following for defaults:
    tv_show_by_date_episode_ordering: "upload-month-day"
 
 TV Show Collection
-==================
+------------------
 
 TV Show Collections set each URL as its own season. If a video belongs to multiple URLs
-(i.e. a channel and a channel's playlist), the video will only download once and reside in
-the higher-numbered season.
+(i.e. a channel and a channel's playlist), the video will only download once and reside
+in the higher-numbered season.
 
 Two main use cases of a collection are:
-   1. Organize a YouTube channel TV show where Season 1 contains any video
-      not in a 'season playlist', Season 2 for 'Playlist A', Season 3 for
-      'Playlist B', etc.
-   2. Organize one or more YouTube channels/playlists, where each season
-      represents a separate channel/playlist.
+   1. Organize a YouTube channel TV show where Season 1 contains any video not in a
+      'season playlist', Season 2 for 'Playlist A', Season 3 for 'Playlist B', etc.
+   2. Organize one or more YouTube channels/playlists, where each season represents a
+      separate channel/playlist.
 
 Example
--------
+~~~~~~~
+
 Must define ``tv_show_directory``. Available presets:
 
 * ``Kodi TV Show Collection``
@@ -173,9 +186,10 @@ Must define ``tv_show_directory``. Available presets:
          s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
 
 Advanced Usage
---------------
+~~~~~~~~~~~~~~
 
-If you prefer a different episode organization method, you can set the following override variables.
+If you prefer a different episode organization method, you can set the following
+override variables.
 
 .. code-block:: yaml
 
@@ -198,9 +212,8 @@ Or for a specific preset
 
 The following are supported.
 
-
 Episode Ordering
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+""""""""""""""""
 
 ``tv_show_collection_episode_ordering`` supports one of the following:
 
@@ -210,7 +223,8 @@ Episode Ordering
 * ``release-year-month-day-reversed``
 * ``playlist-index``
 
-  * Only use ``playlist-index`` episode formatting for playlists that will be fully downloaded once and never again. Otherwise, indices can change.
+  * Only use ``playlist-index`` episode formatting for playlists that will be fully
+    downloaded once and never again. Otherwise, indices can change.
 * ``playlist-index-reversed``
 
 TV Show Collection presets use upload-year-month-day as the default.

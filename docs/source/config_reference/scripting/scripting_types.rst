@@ -1,6 +1,7 @@
-
+===============
 Scripting Types
 ===============
+
 
 Types
 -----
@@ -16,8 +17,9 @@ Strings are a series of characters surrounded by quotes.
 
 .. note::
 
-   For non-String types, they must be defined as parameters to scripting functions. This is because
-   anything in a variable definition that is not within curly-braces gets evaluated as a String.
+   For non-String types, they must be defined as parameters to scripting functions. This
+   is because anything in a variable definition that is not within curly-braces gets
+   evaluated as a String.
 
 We can define Strings within curly-braces by setting them as parameters to a function:
 
@@ -65,8 +67,8 @@ There are a few ways to make variables that use curly braces more compact, inclu
 
       string_variable: "{ %string('This is a String variable') }"
 
-In the case that you want to define a string variable that contains both single and double quotes,
-triple-quotes can be used to avoid *closing* the String.
+In the case that you want to define a string variable that contains both single and
+double quotes, triple-quotes can be used to avoid *closing* the String.
 
 .. tab-set::
 
@@ -88,7 +90,8 @@ triple-quotes can be used to avoid *closing* the String.
           %string("""This has both " and ' in it.""")
         }
 
-If you want a plain string that contains literal curly braces, you can escape them like so:
+If you want a plain string that contains literal curly braces, you can escape them like
+so:
 
 .. code-block:: yaml
 
@@ -185,8 +188,8 @@ A type is considered boolean if it spells out ``True`` or ``False``, case-insens
 Array
 ~~~~~
 
-An Array contains multiple types of any kind, including nested Arrays and Maps.
-Arrays are defined using brackets (``[ ]``), and are accessed using zero-based indexing.
+An Array contains multiple types of any kind, including nested Arrays and Maps.  Arrays
+are defined using brackets (``[ ]``), and are accessed using zero-based indexing.
 
 .. tab-set::
 
@@ -227,8 +230,8 @@ Arrays are defined using brackets (``[ ]``), and are accessed using zero-based i
 Map
 ~~~
 
-A Map is a key-value store, containing mappings between keys and values.
-Maps are defined using curly-braces (``{ }``), and are accessed using their keys.
+A Map is a key-value store, containing mappings between keys and values.  Maps are
+defined using curly-braces (``{ }``), and are accessed using their keys.
 
 .. tab-set::
 
@@ -267,6 +270,7 @@ Maps are defined using curly-braces (``{ }``), and are accessed using their keys
 
 Null
 ~~~~
+
 Null is represented by an empty String, and can be conveyed by spelling out ``null``,
 case-insensitive.
 
@@ -297,7 +301,9 @@ Function Type-Hints
 
 AnyArgument
 ~~~~~~~~~~~
-AnyArgument means any of the above Types are valid as input or output to a scripting function.
+
+AnyArgument means any of the above Types are valid as input or output to a scripting
+function.
 
 .. note::
 
@@ -306,13 +312,15 @@ AnyArgument means any of the above Types are valid as input or output to a scrip
 
 Numeric
 ~~~~~~~
+
 Numeric refers to either an Integer or Float.
 
 Optional
 ~~~~~~~~
-Optional means a particular scripting function argument can be either provided or not included.
-For example, the function
-`map_get <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#map-get>`_
+
+Optional means a particular scripting function argument can be either provided or not
+included.  For example, the function `map_get
+<https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#map-get>`_
 has an optional default value. Both of these usages are valid:
 
 .. tab-set::
@@ -331,8 +339,9 @@ has an optional default value. Both of these usages are valid:
 
 Lambda
 ~~~~~~
-Lambda parameters are a reference to a function, and will call that lambda function
-on the input. In this example,
+
+Lambda parameters are a reference to a function, and will call that lambda function on
+the input. In this example,
 
 .. code-block:: yaml
 
@@ -341,20 +350,23 @@ on the input. In this example,
        %array_apply( [ 1, 2, 3, 4], %string )
      }
 
-We apply ``%string`` as a lambda function to
-`array_apply <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-apply>`_,
-which is called on every element in the input array. The output becomes ``["1", "2", "3", "4"]``.
+We apply ``%string`` as a lambda function to `array_apply
+<https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-apply>`_,
+which is called on every element in the input array. The output becomes ``["1", "2",
+"3", "4"]``.
 
-This example has one input-argument being passed into the lambda. For other lambda-based functions
-like `array_enumerate <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-enumerate>`_,
+This example has one input-argument being passed into the lambda. For other lambda-based
+functions like `array_enumerate
+<https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-enumerate>`_,
 it expects the lambda function to have two input arguments. These are denoted using
 ``LambdaTwo``, ``LambdaThree``, etc within the function spec.
 
 LambdaReduce
 ~~~~~~~~~~~~
-LambdaReduce parameters are a reference to a function that will perform a *reduce* - an operation
-that reduces an Array to a single value by calling the LambdaReduce function repeatedly on two
-elements in the Array until it is reduced to a single value.
+
+LambdaReduce parameters are a reference to a function that will perform a *reduce* - an
+operation that reduces an Array to a single value by calling the LambdaReduce function
+repeatedly on two elements in the Array until it is reduced to a single value.
 
 In this example,
 
@@ -365,11 +377,12 @@ In this example,
        %array_reduce( [ 1, 2, 3, 4], %add )
      }
 
-We call
-`array_reduce <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-reduce>`_
-on the input array, using
-`add <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#add>`_
-as the LambdaReduce function. This will reduce the Array to a single value by internally calling
+We call `array_reduce
+<https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#array-reduce>`_
+on the input array, using `add
+<https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#add>`_
+as the LambdaReduce function. This will reduce the Array to a single value by internally
+calling
 
 - *reduce-call 1*: ``%add(1, 2) = 3`` (first two elements)
 - *reduce-call 2*: ``%add(3, 3) = 6`` (output from first two and third element)
@@ -380,9 +393,10 @@ And evaluate to ``10``.
 ReturnableArguments
 ~~~~~~~~~~~~~~~~~~~
 
-Returnable arguments are used in conditional functions like
-`if <https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#if>`_,
-which implies the argument passed into the function is the function's output. For example,
+Returnable arguments are used in conditional functions like `if
+<https://ytdl-sub.readthedocs.io/en/latest/config_reference/scripting/scripting_functions.html#if>`_,
+which implies the argument passed into the function is the function's output. For
+example,
 
 .. code-block:: yaml
 

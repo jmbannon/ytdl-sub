@@ -1,7 +1,8 @@
 ==================
 Configuration File
 ==================
------------
+
+
 config.yaml
 -----------
 
@@ -14,17 +15,19 @@ The ``config.yaml`` is made up of two sections:
   configuration:
   presets:
 
-You can jump to any section and subsection of the config using the navigation
-section to the left.
+You can jump to any section and subsection of the config using the navigation section to
+the left.
 
 Note for Windows users, paths can be represented with ``C:/forward/slashes/like/linux``.
-If you wish to represent paths like Windows, you will need to ``C:\\double\\bashslash\\paths``
-in order to escape the backslash character.
+If you wish to represent paths like Windows, you will need to
+``C:\\double\\bashslash\\paths`` in order to escape the backslash character.
+
 
 configuration
-~~~~~~~~~~~~~
-The ``configuration`` section contains app-wide configs applied to all presets
-and subscriptions.
+-------------
+
+The ``configuration`` section contains app-wide configs applied to all presets and
+subscriptions.
 
 .. autoclass:: ytdl_sub.config.config_validator.ConfigOptions()
   :members:
@@ -32,9 +35,10 @@ and subscriptions.
   :exclude-members: subscription_value, persist_logs, experimental
 
 persist_logs
-""""""""""""
-Within ``configuration``, define whether logs from subscription downloads
-should be persisted.
+~~~~~~~~~~~~
+
+Within ``configuration``, define whether logs from subscription downloads should be
+persisted.
 
 .. code-block:: yaml
 
@@ -49,14 +53,17 @@ Log files are stored as
   :members:
   :member-order: bysource
 
+
 presets
-~~~~~~~
+-------
+
 ``presets`` define a `formula` for how to format downloaded media and metadata.
 
 This section is work-in-progress!
 
 preset
-""""""
+~~~~~~
+
 Presets support inheritance by defining a parent preset:
 
 .. code-block:: yaml

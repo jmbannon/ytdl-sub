@@ -1,6 +1,7 @@
 Getting Started
 ===============
 
+
 Prerequisite Knowledge
 ----------------------
 
@@ -29,13 +30,14 @@ how ``ytdl-sub`` works, how it "thinks". So before you start configuring ``ytdl-
 .. _`YAML text files`: http://thomasloven.com/blog/2018/08/YAML-For-Nonprogrammers/
 
 
+
 Architecture
 ------------
 
 For most users, ``ytdl-sub`` works as follows:
 
 Subscriptions use presets
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run ``$ ytdl-sub sub`` to read :doc:`a subscription file <./first_sub>` that defines
 what subscriptions to download and place into your media library. Each subscription
@@ -43,7 +45,7 @@ selects which :doc:`presets <../../prebuilt_presets/index>` to apply. Those pres
 configure how each subscription is downloaded and placed in the media library.
 
 Presets configure plugins
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :doc:`A preset <../../prebuilt_presets/index>` is effectively a set of plugin
 configurations. Specifically, a preset consists of:
@@ -58,7 +60,7 @@ the same keys for a plugin that one of its base plugins configures, the preset
 configuration overrides the base presets.
 
 Plugins do the work
-^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~
 
 ``ytdl-sub`` applies the plugins that the presets configure when it downloads a
 subscription. :doc:`The plugins <../../config_reference/plugins>` control how to run
@@ -67,18 +69,18 @@ metadata for those media, and how to place the resulting files into your media l
 and more.
 
 Presets and subscriptions accept overrides
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Presets accept override keys and values and the preset uses those overrides to modify
 their plugin configurations. Similarly, individual subscriptions can supply overrides of
 their presets for just that subscription.
 
 Subscriptions are grouped by indentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Most subscriptions have more in common with each other than not. Thus, defining the presets
-and overrides for each subscription would result in mostly repetition and would multiply
-the burden of management for the user. The more subscriptions the more work.
+Most subscriptions have more in common with each other than not. Thus, defining the
+presets and overrides for each subscription would result in mostly repetition and would
+multiply the burden of management for the user. The more subscriptions the more work.
 
 To avoid this redundant work, and so that the subscription configurations describe the
 intent of the user, subscriptions are nested/indented under parent/ancestor keys that
@@ -96,14 +98,14 @@ Finally, ancestor keys may use the ``... | ...`` special character to combine mu
 presets and/or genres for the descendant subscriptions beneath.
 
 The configuration file extends pre-defined presets
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Users define additional presets in :doc:`their configuration file <./first_config>` that
 they then use in most of their subscriptions. Most user-defines presets extend the
 :doc:`../../prebuilt_presets/index` provided by ``ytdl-sub``.
 
 Caveats
-^^^^^^^
+~~~~~~~
 
 Some of these descriptions are not technically complete. For example, a subscription may
 use no preset at all and will just run ``yt-dlp`` without any customization or post
@@ -118,8 +120,10 @@ is accurate and representative.
 
 Ready to Start?
 ---------------
-Now that you've completed your install of ``ytdl-sub``, it's time to get started.
-It is recommended to go through the below sections in order to fully grasp ytdl-sub.
+
+Now that you've completed your install of ``ytdl-sub``, it's time to get started.  It is
+recommended to go through the below sections in order to fully grasp ytdl-sub.
+
 
 .. toctree::
   :maxdepth: 2

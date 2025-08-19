@@ -6,8 +6,10 @@ Media Quality Presets
 
    See how to apply media quality presets :doc:`here </prebuilt_presets/index>`
 
+
 Video
 -----
+
 The following presets set video quality specifications to yt-dlp.
 
 - ``Max Video Quality``
@@ -17,10 +19,12 @@ The following presets set video quality specifications to yt-dlp.
 - ``Max 720p``
 - ``Max 480p``
 
+
 Audio
 -----
-The following presets set audio quality specifications to yt-dlp.
-These assume you are only extracting audio (no video).
+
+The following presets set audio quality specifications to yt-dlp.  These assume you are
+only extracting audio (no video).
 
 - ``Max Audio Quality``, format is determined by the source
 - ``Max MP3 Quality``

@@ -2,11 +2,13 @@ Initial Download
 ================
 
 Once you have a ``subscriptions.yaml`` file created, you can perform your first
-download. Access ``ytdl-sub``, navigate to the directory containing your ``subscriptions.yaml``
-file.
+download. Access ``ytdl-sub``, navigate to the directory containing your
+``subscriptions.yaml`` file.
+
 
 Dry Run
 -------
+
 Performing a dry run is important when applying any change to your subscriptions to
 ensure output looks as expected. Dry runs will pull metadata to *simulate* a download
 without actually downloading the media file.
@@ -15,11 +17,12 @@ without actually downloading the media file.
 
   ytdl-sub --dry-run sub subscriptions.yaml
 
+
 Faster Iteration Cycle
 ----------------------
-Testing subscriptions can take quite some time to perform a full download.
-This can be speed up by applying an override via command-line to set max number
-of downloads.
+
+Testing subscriptions can take quite some time to perform a full download.  This can be
+speed up by applying an override via command-line to set max number of downloads.
 
 .. code-block:: shell
 
@@ -33,17 +36,20 @@ subscriptions can be dry ran using a match.
 
   ytdl-sub --dry-run sub subscriptions.yaml -o '--ytdl_options.max_downloads 3' --match PBS
 
+
 Downloading
 -----------
-Once the subscriptions file is validated, a download can be performed by omitting the dry run argument.
+
+Once the subscriptions file is validated, a download can be performed by omitting the
+dry run argument.
 
 .. code-block:: shell
 
   ytdl-sub sub subscriptions.yaml
 
-Multiple subscription file names can be provided to perform a download on all of them. A single file
-named ``subscriptions.yaml`` does not require a file name specification since it will
-look for that file name by default, making the following command valid.
+Multiple subscription file names can be provided to perform a download on all of them. A
+single file named ``subscriptions.yaml`` does not require a file name specification
+since it will look for that file name by default, making the following command valid.
 
 .. code-block:: shell
 
