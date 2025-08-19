@@ -2,10 +2,6 @@
 Configuration File
 ==================
 
-
-config.yaml
------------
-
 ytdl-sub is configured using a ``config.yaml`` file.
 
 The ``config.yaml`` is made up of two sections:
@@ -57,12 +53,25 @@ Log files are stored as
 presets
 -------
 
-``presets`` define a `formula` for how to format downloaded media and metadata.
+Each key under ``presets:`` defines a `formula` for how to format downloaded media and
+metadata. The key is the name of the preset and the value is a mapping that defines the
+preset.
 
-This section is work-in-progress!
+.. note::
 
-preset
-~~~~~~
+   The ``presets:`` key at the top of the configuration file contains multiple
+   user-defined presets, but *each preset* itself may include a ``presets:`` key that
+   defines *that preset's* base presets. For example:
+
+   .. code-block:: yaml
+
+      presets:
+        Foo Preset:
+          presets:
+	    - "Jellyfin TV Show by Date"
+
+presets
+~~~~~~~
 
 Presets support inheritance by defining a parent preset:
 
