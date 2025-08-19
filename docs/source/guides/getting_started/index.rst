@@ -89,11 +89,11 @@ ancestor keys above that subscription describe the shared presets of that subscr
 and all the other descendant subscriptions under them.
 
 Genres are also more often shared between subscriptions than not. To accommodate that
-reality, the ancestor keys of subscriptions may also use the special ``=`` prefix to
+reality, the ancestor keys of subscriptions may also use the special ``= ...`` prefix to
 specify genres that also apply to all descendant subscriptions.
 
-Finally, ancestor keys may use the `` | `` special character to combine multiple presets
-and/or genres for the descendant subscriptions beneath.
+Finally, ancestor keys may use the ``... | ...`` special character to combine multiple
+presets and/or genres for the descendant subscriptions beneath.
 
 The configuration file extends pre-defined presets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -109,7 +109,7 @@ Some of these descriptions are not technically complete. For example, a subscrip
 use no preset at all and will just run ``yt-dlp`` without any customization or post
 processing. The subscriptions file has special support for :ref:`overriding the presets
 of all subscriptions in the file <config_reference/subscription_yaml:file preset>`. The
-configuration file supports :ref"`a few special options
+configuration file supports :ref:`a few special options
 <config_reference/config_yaml:configuration>` that are not about defining presets. See
 :doc:`the reference documentation <../../config_reference/index>` for technically
 complete details, but for almost all of the use cases served by ``ytdl-sub``, the above
