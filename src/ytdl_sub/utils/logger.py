@@ -126,6 +126,15 @@ class Logger:
         cls._LOGGER_LEVEL = LoggerLevels.from_str(name=log_level_name)
 
     @classmethod
+    def get_log_level(cls) -> LoggerLevel:
+        """
+        Returns
+        -------
+        Application's log level
+        """
+        return cls._LOGGER_LEVEL
+
+    @classmethod
     def _get_formatter(cls) -> logging.Formatter:
         """
         Returns
