@@ -1,9 +1,12 @@
+import re
 from typing import Dict
 
 import pytest
 from conftest import assert_logs
 
 from ytdl_sub.plugins.throttle_protection import logger as throttle_protection_logger
+from ytdl_sub.script.functions.print_functions import logger as script_print_logger
+from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
 
 
@@ -175,3 +178,111 @@ class TestThrottleProtectionPlugin:
             transaction_log = subscription.download(dry_run=True)
 
         assert transaction_log.is_empty
+
+
+class TestResolutionAssert:
+    @pytest.mark.parametrize(
+        "disable_value",
+        [
+            "",
+            False,
+            "{bool_false_variable}",
+            "{empty_string_variable}",
+        ],
+    )
+    def test_disabled(
+        self,
+        config,
+        subscription_name,
+        throttle_subscription_dict,
+        output_directory,
+        mock_download_collection_entries,
+        disable_value,
+    ):
+        throttle_subscription_dict["overrides"]["enable_resolution_assert"] = disable_value
+
+        with assert_logs(
+            logger=script_print_logger,
+            expected_message="Resolution assert is disabled. Use at your own risk!",
+            log_level="info",
+            expected_occurrences=1,
+        ):
+            _ = Subscription.from_dict(
+                config=config,
+                preset_name=subscription_name,
+                preset_dict=throttle_subscription_dict,
+            )
+
+    @pytest.mark.parametrize(
+        "width, height",
+        [
+            (0, 0),  # missing
+            (361, 361),  # min value
+        ],
+    )
+    def test_runs_successfully(
+        self,
+        config,
+        subscription_name,
+        throttle_subscription_dict,
+        output_directory,
+        mock_download_collection_entries,
+        width,
+        height,
+    ):
+        with assert_logs(
+            logger=script_print_logger,
+            expected_message=(
+                "Resolution assert is enabled, will fail on low-quality video downloads and presume throttle. "
+                "Disable using the override variable `enable_resolution_assert: False`"
+            ),
+            log_level="info",
+            expected_occurrences=1,
+        ):
+            subscription = Subscription.from_dict(
+                config=config,
+                preset_name=subscription_name,
+                preset_dict=throttle_subscription_dict,
+            )
+
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False,
+                num_urls=1,
+                is_extracted_audio=False,
+                is_dry_run=True,
+                mock_entry_kwargs={"height": height, "width": width},
+            ),
+        ):
+            _ = subscription.download(dry_run=True)
+
+    def test_fails_low_resolution(
+        self,
+        config,
+        subscription_name,
+        throttle_subscription_dict,
+        output_directory,
+        mock_download_collection_entries,
+    ):
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=throttle_subscription_dict,
+        )
+
+        expected_message = (
+            "Entry Mock Entry 20-3 downloaded at a low resolution (640x360) which is classified as throttle. "
+            "Stopping additional downloads. Disable using the override variable `enable_resolution_assert: False`"
+        )
+
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False,
+                num_urls=1,
+                is_extracted_audio=False,
+                is_dry_run=True,
+                mock_entry_kwargs={"height": 360, "width": 640},
+            ),
+            pytest.raises(UserThrownRuntimeError, match=re.escape(expected_message)),
+        ):
+            _ = subscription.download(dry_run=True)
