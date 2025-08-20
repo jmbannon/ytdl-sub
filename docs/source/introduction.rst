@@ -17,9 +17,13 @@ and how it should appear in your media library servers and applications such as
 To these ends, ``ytdl-sub``:
 
 - wraps and runs `yt-dlp`_, per your configuration to:
+
   - download the media, remux and/or optionally transcode it
+
 - prepares additional metadata both embedded and in external files
+
 - renames the resulting files
+
 - places them in your library
 
 .. figure:: https://user-images.githubusercontent.com/10107080/182677243-b4184e51-9780-4094-bd40-ea4ff58555d0.PNG
