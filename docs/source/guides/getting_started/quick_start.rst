@@ -63,8 +63,9 @@ instructions to the letter.
 
    Repeat steps #4-7 for each of your subscriptions. Be sure to repeat the preview and
    review steps for each subscription. In general, move slowly and carefully review
-   everything. It's best to catch issues early to avoid repeating downloads and to
-   minimize requests to avoid being throttled or banned by servers.
+   everything. It's best to catch issues early :ref:`to avoid repeating downloads and to
+   minimize requests <guides/getting_started/index:minimize the work to only what's
+   necessary>`.
 
 #. Automate downloads:
 

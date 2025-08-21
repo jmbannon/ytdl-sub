@@ -182,27 +182,27 @@ need to be removed:
   the downloaded files in this file and delete that whole entry, from the YouTube ID
   string to the closing curly braces. Be ware of JSON traling commas.
 
-- Run ``$ ytdl-sub sub`` again with the appropriate CLI overrides:
+- Run ``$ ytdl-sub sub`` again with the appropriate CLI plugin options:
 
-  Depending on the presets and overrides of the subscriptions whose downloaded files
-  you've renamed in the steps above, you need to pass some overrides from the command
-  line to tell ``ytdl-sub`` to change its behavior and re-download those files.
+  In normal operation, :ref:`yt-dlp minimizes requests and the files considered for
+  download <guides/getting_started/index:minimize the work to only what's
+  necessary>`. To re-download, those options must be disabled or modified. Disable
+  :ref:`the 'break_on_existing' option <config_reference/plugins:ytdl_options>`, set
+  :ref:`the 'date_range:' plugin <config_reference/plugins:date_range>`, and :ref:`limit
+  the subscriptions <guides/getting_started/first_download:faster iteration cycle>` to
+  download only the files that you've renamed in the steps above.
 
-  Most presets tell ``yt-dlp`` not to bother even looking at videos before the most
-  recently downloaded video :ref:`using 'break_on_existing'
-  <config_reference/plugins:ytdl_options>`. Other presets, such as :ref:`the Only Recent
-  presets <prebuilt_presets/helpers:only recent>`, restrict the videos considered for
-  download by date range.
-
-  Determine the necessary CLI overrides and re-run, for example:
+  Set the appropriate dates and subscription name to include only the files you've
+  renamed, and re-run. For example, if you've renamed all the files from 2024 in the
+  ``NOVA PBS`` subscription:
 
     .. code-block:: shell
 
        ytdl-sub sub -o "\
        --ytdl_options.break_on_existing False \
-       --date_range.after 19700101 \
-       --date_range.before 20380119 \
-       "
+       --date_range.after 20240101 \
+       --date_range.before 20250101 \
+       " --match="NOVA PBS"
 
 
 There is a bug where...
