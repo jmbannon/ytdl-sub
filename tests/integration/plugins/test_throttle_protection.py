@@ -271,8 +271,10 @@ class TestResolutionAssert:
         )
 
         expected_message = (
-            "Entry Mock Entry 20-3 downloaded at a low resolution (640x360) which is classified as throttle. "
-            "Stopping additional downloads. Disable using the override variable `enable_resolution_assert: False`"
+            "Entry Mock Entry 20-3 downloaded at a low resolution (640x360), "
+            "you've probably been throttled. "
+            "Stopping further downloads, wait a few hours and try again. "
+            "Disable using the override variable `enable_resolution_assert: False`"
         )
 
         with (
