@@ -2,8 +2,8 @@
 Linux
 =====
 
-``ytdl-sub`` should be installable using any Linux package manager, and requires ffmpeg to be installed.
-
+``ytdl-sub`` should be installable using any Linux package manager, and requires ffmpeg
+to be installed.
 
 .. tab-set:: 
 
@@ -15,7 +15,8 @@ Linux
       chmod +x ytdl-sub
       ./ytdl-sub -h
 
-    You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is up to date:
+    You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is up to
+    date:
 
     .. code-block:: bash
 
@@ -36,7 +37,8 @@ Linux
       chmod +x ytdl-sub
       ./ytdl-sub -h
 
-    You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is up to date:
+    You can also install using yt-dlp's ffmpeg builds. This ensures your ffmpeg is up to
+    date:
 
     .. code-block:: bash
 

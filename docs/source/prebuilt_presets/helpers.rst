@@ -6,11 +6,13 @@ Helper Presets
 
    See how to apply helper presets :doc:`here </prebuilt_presets/index>`
 
+
 Only Recent
 -----------
 
-To only download a recent number of videos, apply the ``Only Recent`` preset. Once a video's
-upload date is outside of the range, or you hit max files, older videos will be deleted automatically.
+To only download a recent number of videos, apply the ``Only Recent`` preset. Once a
+video's upload date is outside of the range, or you hit max files, older videos will be
+deleted automatically.
 
 .. code-block:: yaml
 
@@ -31,9 +33,12 @@ To prevent deletion of files, use the preset ``Only Recent Archive`` instead.
 Filter Keywords
 ---------------
 
-``Filter Keywords`` can include or exclude media with any of the listed keywords. Both keywords and title/description are lower-cased before filtering.
+``Filter Keywords`` can include or exclude media with any of the listed keywords. Both
+keywords and title/description are lower-cased before filtering.
 
-Default behavior for Keyword evaluation is ANY, meaning the filter will succeed if any of the keywords are present. This can be set to ANY or ALL using the respective ``_eval`` variable.
+Default behavior for Keyword evaluation is ANY, meaning the filter will succeed if any
+of the keywords are present. This can be set to ANY or ALL using the respective
+``_eval`` variable.
 
 Supports the following override variables:
 
@@ -71,6 +76,7 @@ Supports the following override variables:
               - "maple leafs"
               - "highlights"
 
+
 Filter Duration
 ---------------
 
@@ -100,17 +106,19 @@ Supports the following override variables:
             url: "https://www.youtube.com/@NHL"
             filter_duration_max_s: 180  # Only get highlight videos less than 3m long
 
+
 Chunk Downloads
 ---------------
 
-If you are archiving a large channel, ``ytdl-sub`` will try pulling each video's metadata from newest to oldest before
-starting any downloads. It is a long process and not ideal. A better method is to chunk the process by using the
-following preset:
+If you are archiving a large channel, ``ytdl-sub`` will try pulling each video's
+metadata from newest to oldest before starting any downloads. It is a long process and
+not ideal. A better method is to chunk the process by using the following preset:
 
 ``Chunk Downloads``
 
-It will download videos starting from the oldest one, and only download 20 at a time by default. You can
-change this number by setting the override variable ``chunk_max_downloads``.
+It will download videos starting from the oldest one, and only download 20 at a time by
+default. You can change this number by setting the override variable
+``chunk_max_downloads``.
 
 .. code-block:: yaml
 
@@ -129,5 +137,6 @@ change this number by setting the override variable ``chunk_max_downloads``.
      = Documentaries:
        "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
 
-Once the entire channel is downloaded, remove the usage of this preset. It will then pull metadata from newest to
-oldest again, and stop once it reaches a video that has already been downloaded.
+Once the entire channel is downloaded, remove the usage of this preset. It will then
+pull metadata from newest to oldest again, and stop once it reaches a video that has
+already been downloaded.

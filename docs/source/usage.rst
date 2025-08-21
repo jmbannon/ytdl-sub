@@ -1,11 +1,12 @@
 Usage
-=======
+=====
 
 .. code-block::
 
   ytdl-sub [GENERAL OPTIONS] {sub,dl,view} [COMMAND OPTIONS]
 
 For Windows users, it would be ``ytdl-sub.exe``
+
 
 General Options
 ---------------
@@ -28,16 +29,19 @@ General options must be specified before the command (i.e. ``sub``).
   -m MATCH [MATCH ...], --match MATCH [MATCH ...]
                         match subscription names to one or more substrings, and only run those subscriptions
 
+
 Sub Options
 -----------
+
 Download all subscriptions specified in each ``SUBPATH``.
 
 .. code-block::
 
    ytdl-sub [GENERAL OPTIONS] sub [SUBPATH ...]
 
-``SUBPATH`` is one or more paths to subscription files, uses ``subscriptions.yaml`` if not provided.
-It will use the config specified by ``--config``, or ``config.yaml`` if not provided.
+``SUBPATH`` is one or more paths to subscription files, uses ``subscriptions.yaml`` if
+not provided.  It will use the config specified by ``--config``, or ``config.yaml`` if
+not provided.
 
 .. code-block:: text
   :caption: Additional Options
@@ -47,16 +51,19 @@ It will use the config specified by ``--config``, or ``config.yaml`` if not prov
   -o DL_OVERRIDE, --dl-override DL_OVERRIDE
                         override all subscription config values using `dl` syntax, i.e. --dl-override='--ytdl_options.max_downloads 3'
 
+
 Download Options
------------------
+----------------
+
 Download a single subscription in the form of CLI arguments.
 
 .. code-block::
 
   ytdl-sub [GENERAL OPTIONS] dl [SUBSCRIPTION ARGUMENTS]
 
-``SUBSCRIPTION ARGUMENTS`` are exactly the same as YAML arguments, but use periods (``.``) instead
-of indents for specifying YAML from the CLI. For example, you can represent this subscription:
+``SUBSCRIPTION ARGUMENTS`` are exactly the same as YAML arguments, but use periods
+(``.``) instead of indents for specifying YAML from the CLI. For example, you can
+represent this subscription:
 
 .. code-block:: yaml
 
@@ -76,11 +83,13 @@ Using the command:
       --overrides.tv_show_name "Rick A" \
       --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 
-See how to shorten commands using
-`download aliases <https://ytdl-sub.readthedocs.io/en/latest/config_reference/config_yaml.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
+See how to shorten commands using `download aliases
+<https://ytdl-sub.readthedocs.io/en/latest/config_reference/config_yaml.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
+
 
 View Options
------------------
+------------
+
 .. code-block::
 
    ytdl-sub view [-sc] [URL]
@@ -90,6 +99,5 @@ View Options
 
   -sc, --split-chapters
                         View source variables after splitting by chapters
-
 
 Preview the source variables for a given URL. Helps when creating new configs.
