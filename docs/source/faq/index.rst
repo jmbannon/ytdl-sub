@@ -182,7 +182,27 @@ need to be removed:
   the downloaded files in this file and delete that whole entry, from the YouTube ID
   string to the closing curly braces. Be ware of JSON traling commas.
 
-- Run ``$ ytdl-sub sub`` again.
+- Run ``$ ytdl-sub sub`` again with the appropriate CLI overrides:
+
+  Depending on the presets and overrides of the subscriptions whose downloaded files
+  you've renamed in the steps above, you need to pass some overrides from the command
+  line to tell ``ytdl-sub`` to change its behavior and re-download those files.
+
+  Most presets tell ``yt-dlp`` not to bother even looking at videos before the most
+  recently downloaded video :ref:`using 'break_on_existing'
+  <config_reference/plugins:ytdl_options>`. Other presets, such as :ref:`the Only Recent
+  presets <prebuilt_presets/helpers:only recent>`, restrict the videos considered for
+  download by date range.
+
+  Determine the necessary CLI overrides and re-run, for example:
+
+    .. code-block:: shell
+
+       ytdl-sub sub -o "\
+       --ytdl_options.break_on_existing False \
+       --date_range.after 19700101 \
+       --date_range.before 20380119 \
+       "
 
 
 There is a bug where...
