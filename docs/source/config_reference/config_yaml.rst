@@ -60,20 +60,21 @@ preset.
 .. note::
 
    The ``presets:`` key at the top of the configuration file contains multiple
-   user-defined presets, but *each preset* itself may include a ``presets:`` key that
+   user-defined presets, but *each preset* itself may include a ``preset:`` key that
    defines *that preset's* base presets. For example:
 
    .. code-block:: yaml
 
       presets:
         Foo Preset:
-          presets:
-	    - "Jellyfin TV Show by Date"
+          preset:
+            - "Jellyfin TV Show by Date"
+            - "Only Recent"
 
-presets
-~~~~~~~
+preset
+~~~~~~
 
-Presets support inheritance by defining a parent preset:
+Presets support inheritance by defining one or more parent presets:
 
 .. code-block:: yaml
 
@@ -83,11 +84,11 @@ Presets support inheritance by defining a parent preset:
     parent_preset:
       ...
     child_preset:
-      preset: "parent_preset"
+      preset:
+        - "parent_preset"
 
 In the example above, ``child_preset`` inherits all fields defined in ``parent_preset``.
-It is advantageous to use parent presets where possible to reduce duplicate yaml
-definitions.
+Use parent presets where possible to reduce duplicate yaml definitions.
 
 Presets also support inheritance from multiple presets:
 
@@ -106,8 +107,9 @@ which means:
 - if two conflicting keys arent lists or mappings, overwrite the higher priority one
 - otherwise, combine then re-evaluate
 
-If you are only inheriting from one preset, the syntax ``preset: "parent_preset"`` is
-valid YAML. Inheriting from multiple presets require use of a list.
+If you are only inheriting from one preset, using a single string instead of a list is
+valid, for example ``preset: "parent_preset"``, but we recommend always using a list for
+consistent readability between presets.
 
 .. _`mergedeep`:
    https://mergedeep.readthedocs.io/en/latest/
