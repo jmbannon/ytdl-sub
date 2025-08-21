@@ -157,11 +157,14 @@ clever scraping mechanisms.
 ...force ytdl-sub to re-download a file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Sometimes users may wish to replace a file already in the archive, for example, if the
+current file is a lower resolution than desired, missing subtitles, corrupt, etc..
+
 ``ytdl-sub`` decides what files have already been downloaded by entries in :ref:`the
 download archive file <config_reference/plugins:output_options>`,
 ``./.ytdl-sub-...-download-archive.json``, at the top of the subscription/series/show
 :ref:`output directory <config_reference/plugins:output_options>` in the appropriate
-``overrides: / ..._directory:`` library path *and* the presence of the corresponding
+``overrides: / ..._directory:`` library path, *and* the presence of the corresponding
 downloaded files under the same path. To force ``ytdl-sub`` to re-download an entry both
 need to be removed:
 
