@@ -175,4 +175,4 @@ following overrides:
      # Disable resolution quality throttle protection:
      enable_resolution_assert: false
      # Change the resolution below which to assume downloading is throttled:
-     resolution_assert_height_gte: 481
+     resolution_assert_height_gte: 720
