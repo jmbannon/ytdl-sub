@@ -154,10 +154,10 @@ suite of :ref:`scripting functions
 <config_reference/scripting/scripting_functions:Scripting Functions>` to create your own
 clever scraping mechanisms.
 
-...force ytdl-sub to re-download a video
+...force ytdl-sub to re-download a file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``ytdl-sub`` decides what videos have already been downloaded by entries in :ref:`the
+``ytdl-sub`` decides what files have already been downloaded by entries in :ref:`the
 download archive file <config_reference/plugins:output_options>`,
 ``./.ytdl-sub-...-download-archive.json``, at the top of the subscription/series/show
 :ref:`output directory <config_reference/plugins:output_options>` in the appropriate
@@ -203,6 +203,16 @@ need to be removed:
        --date_range.after 20240101 \
        --date_range.before 20250101 \
        " --match="NOVA PBS"
+
+...download a file missing from the archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The root causes are unknown, but sometimes even after successful, complete runs, some
+files will be missing from the archive. To attempt to download those missing files,
+use `the same CLI options as re-downloading a file`_
+
+.. _`the same CLI options as re-downloading a file`:
+   `...force ytdl-sub to re-download a file`_
 
 
 There is a bug where...
