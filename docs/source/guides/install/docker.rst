@@ -119,5 +119,5 @@ Configuration
 
 In these examples, the configuration files will be at
 ``<path/to/ytdl-sub/config>/config.yaml`` and
-``<path/to/ytdl-sub/config>/subscriptions.yaml``. Starting the container the first time
-will populate those files with default examples.
+``<path/to/ytdl-sub/config>/subscriptions.yaml``. Start the container the first time to
+populate those files with default examples.

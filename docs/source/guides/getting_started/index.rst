@@ -65,8 +65,8 @@ Plugins do the work
 ``ytdl-sub`` applies the plugins that the presets configure when it downloads a
 subscription. :doc:`The plugins <../../config_reference/plugins>` control how to run
 ``yt-dlp``, which media in the subscription to download, how to collect and format
-metadata for those media, and how to place the resulting files into your media library,
-and more.
+metadata for those media, how to place the resulting files into your media library, and
+more.
 
 Presets and subscriptions accept overrides
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,7 +101,7 @@ The configuration file extends pre-defined presets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Users define additional presets in :doc:`their configuration file <./first_config>` that
-they then use in most of their subscriptions. Most user-defines presets extend the
+they then use in most of their subscriptions. Most user-defined presets extend the
 :doc:`../../prebuilt_presets/index` provided by ``ytdl-sub``.
 
 Caveats

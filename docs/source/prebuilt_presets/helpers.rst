@@ -140,3 +140,39 @@ default. You can change this number by setting the override variable
 Once the entire channel is downloaded, remove the usage of this preset. It will then
 pull metadata from newest to oldest again, and stop once it reaches a video that has
 already been downloaded.
+
+
+_throttle_protection
+--------------------
+
+.. note::
+
+   This preset is already a base preset of those higher-level presets that require it,
+   so users seldom need to use it directly, for example, unless they're writing presets
+   from scratch.
+
+This preset is primarily a sensible default configuration of :ref:`the
+'throttle_protection' plugin <config_reference/plugins:throttle_protection>` along with
+an override to disable the plugin:
+
+.. code-block:: yaml
+
+   overrides:
+     # Disable throttle protection:
+     enable_throttle_protection: false
+
+In addition to throttling by denying download requests, some services also throttle
+downloads by only allowing downloads of the lowest resolution quality. At the time of
+writing, only YouTube does this by allowing only 360p downloads when throttled. To work
+around this kind of throttling, this preset includes :ref:`an assertion
+<config_reference/scripting/scripting_functions:error functions>` that will stop
+downloading when ``ytdl-sub`` downloads a video at 360p or lower. It supports the
+following overrides:
+
+.. code-block:: yaml
+
+   overrides:
+     # Disable resolution quality throttle protection:
+     enable_resolution_assert: false
+     # Change the resolution below which to assume downloading is throttled:
+     resolution_assert_height_gte: 720

@@ -58,8 +58,13 @@ presets:
             %assert(
               %gte( height, resolution_assert_height_gte ),
               %concat(
-                "Entry ", title, " downloaded at a low resolution (", resolution_readable, ") which is classified as throttle. ",
-                "Stopping additional downloads. Disable using the override variable `enable_resolution_assert: False`"
+                "Entry ",
+                title,
+                " downloaded at a low resolution (",
+                resolution_readable,
+                "), you've probably been throttled. ",
+                "Stopping further downloads, wait a few hours and try again. ",
+                "Disable using the override variable `enable_resolution_assert: False`."
               )
             ),
             "false is no-op"
