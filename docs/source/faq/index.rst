@@ -154,6 +154,70 @@ suite of :ref:`scripting functions
 <config_reference/scripting/scripting_functions:Scripting Functions>` to create your own
 clever scraping mechanisms.
 
+...force ytdl-sub to re-download a file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes users may wish to replace a file already in the archive, for example, if the
+current file is a lower resolution than desired, missing subtitles, corrupt, etc..
+
+``ytdl-sub`` decides what files have already been downloaded by entries in :ref:`the
+download archive file <config_reference/plugins:output_options>`,
+``./.ytdl-sub-...-download-archive.json``, at the top of the subscription/series/show
+:ref:`output directory <config_reference/plugins:output_options>` in the appropriate
+``overrides: / ..._directory:`` library path, *and* the presence of the corresponding
+downloaded files under the same path. To force ``ytdl-sub`` to re-download an entry both
+need to be removed:
+
+- Move aside the downloaded files:
+
+  Rename or move the downloaded files, including the associated files with the same
+  base/stem name, such as ``./*.nfo``, ``./*.info-json``, etc..
+
+- Ensure ``ytdl-sub`` is not running and won't run, such as by cron:
+
+  ``ytdl-sub`` loads the ``./.ytdl-sub-...-download-archive.json`` file early, keeps it
+  in memory, and writes it back out late. If it's running or starts running while you're
+  modifying that file, then your changes will be overwritten when it exits.
+
+- Remove the ``./.ytdl-sub-...-download-archive.json`` JSON array item:
+
+  Search for the stem name, the basename without any extension or suffix, common to all
+  the downloaded files in this file and delete that whole entry, from the YouTube ID
+  string to the closing curly braces. Be ware of JSON traling commas.
+
+- Run ``$ ytdl-sub sub`` again with the appropriate CLI plugin options:
+
+  In normal operation, :ref:`yt-dlp minimizes requests and the files considered for
+  download <guides/getting_started/index:minimize the work to only what's
+  necessary>`. To re-download, those options must be disabled or modified. Disable
+  :ref:`the 'break_on_existing' option <config_reference/plugins:ytdl_options>`, set
+  :ref:`the 'date_range:' plugin <config_reference/plugins:date_range>`, and :ref:`limit
+  the subscriptions <guides/getting_started/first_download:faster iteration cycle>` to
+  download only the files that you've renamed in the steps above.
+
+  Set the appropriate dates and subscription name to include only the files you've
+  renamed, and re-run. For example, if you've renamed all the files from 2024 in the
+  ``NOVA PBS`` subscription:
+
+    .. code-block:: shell
+
+       ytdl-sub sub -o "\
+       --ytdl_options.break_on_existing False \
+       --date_range.after 20240101 \
+       --date_range.before 20250101 \
+       " --match="NOVA PBS"
+
+...download a file missing from the archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The root causes are unknown, but sometimes even after successful, complete runs, some
+files will be missing from the archive. To attempt to download those missing files,
+use `the same CLI options as re-downloading a file`_
+
+.. _`the same CLI options as re-downloading a file`:
+   `...force ytdl-sub to re-download a file`_
+
+
 There is a bug where...
 -----------------------
 

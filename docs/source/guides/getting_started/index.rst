@@ -104,6 +104,24 @@ Users define additional presets in :doc:`their configuration file <./first_confi
 they then use in most of their subscriptions. Most user-defined presets extend the
 :doc:`../../prebuilt_presets/index` provided by ``ytdl-sub``.
 
+Minimize the work to only what's necessary
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Throttling and bans are a core problem for any web scraping tool, perhaps even more so
+for ``yt-dlp``, and no good actor *wants* to be an onerous burden on a
+service. Similarly, many web scraping use cases involve very large sets of data that are
+too big to process as a whole for performance. It's important to narrow the amount of
+data considered and minimize requests.
+
+To these ends, most presets tell ``yt-dlp`` not to consider files before the most
+recently downloaded file using :ref:`the 'break_on_existing' option
+<config_reference/plugins:ytdl_options>`. Similarly, and particularly for huge channels
+or playlists, most users should use either :ref:`an 'Only Recent' preset
+<prebuilt_presets/helpers:only recent>` and/or :ref:`the 'Chunk Downloads' preset
+<prebuilt_presets/helpers:chunk downloads>` to restrict the number of downloads
+considered.
+
+
 Caveats
 ~~~~~~~
 
