@@ -167,14 +167,14 @@ intended download files.
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos after this datetime.
+  Only download videos after or on this datetime, inclusive.
 
 
 ``before``
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos before this datetime.
+  Only download videos only before this datetime, not inclusive.
 
 
 ``breaks``
