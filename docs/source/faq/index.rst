@@ -195,9 +195,10 @@ need to be removed:
   the subscriptions <guides/getting_started/first_download:faster iteration cycle>` to
   download only the files that you've renamed in the steps above.
 
-  Set the appropriate dates and subscription name to include only the files you've
-  renamed, and re-run. For example, if you've renamed all the files from 2024 in the
-  ``NOVA PBS`` subscription:
+  Set the appropriate dates, :ref:`including a sufficient margin
+  <config_reference/plugins:date_range>`, and subscription name to include only the
+  files you've renamed, and re-run. For example, if you've renamed all the files from
+  2024 in the ``NOVA PBS`` subscription:
 
     .. code-block:: shell
 

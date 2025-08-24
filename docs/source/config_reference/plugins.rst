@@ -147,9 +147,11 @@ Dates must adhere to a yt-dlp datetime. From their docs:
    A string in the format YYYYMMDD or
    (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
 
-Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in this.
-Note that yt-dlp will round times to the closest day, meaning that `day` is the lowest
-granularity possible.
+Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in
+this. Note that yt-dlp will round times to the closest day, meaning that `day` is
+the lowest granularity possible. Also note that, considering time zones, it's best
+to include a margin of an extra day on either side to be sure it includes the
+intended download files.
 
 :Usage:
 
@@ -165,14 +167,14 @@ granularity possible.
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos after this datetime.
+  Only download videos after or on this datetime, inclusive.
 
 
 ``before``
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos before this datetime.
+  Only download videos only before this datetime, not inclusive.
 
 
 ``breaks``
