@@ -91,8 +91,11 @@ ancestor keys above that subscription describe the shared presets of that subscr
 and all the other descendant subscriptions under them.
 
 Genres are also more often shared between subscriptions than not. To accommodate that
-reality, the ancestor keys of subscriptions may also use the special ``= ...`` prefix to
-specify genres that also apply to all descendant subscriptions.
+reality, the ancestor keys of subscriptions may also use :ref:`the special '= ...'
+prefix to pass specific overrides
+<config_reference/scripting/static_variables:subscription_indent_i>` supported by the
+preset. By convention in the built-in presets, the first ``= ...`` value specifies the
+genre for all descendant subscriptions.
 
 Finally, ancestor keys may use the ``... | ...`` special character to combine multiple
 presets and/or genres for the descendant subscriptions beneath.
