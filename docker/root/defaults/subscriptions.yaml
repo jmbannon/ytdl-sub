@@ -6,13 +6,13 @@
 __preset__:
   overrides:
     # Root folder of all ytdl-sub TV Shows
-    tv_show_directory: "/tv_shows"
+    tv_show_directory: "/media/Library/Videos/Series"
 
     # Root folder of all ytdl-sub Music
-    music_directory: "/music"
+    music_directory: "/media/Library/Music"
 
     # Root folder of all ytdl-sub Music Videos
-    music_video_directory: "/music_videos"
+    music_video_directory: "/media/Library/Videos/Music"
 
     # For 'Only Recent' preset, only keep vids within this range and limit
     # only_recent_date_range: "2months"

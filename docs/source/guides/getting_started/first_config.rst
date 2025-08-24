@@ -15,7 +15,7 @@ Below is a common configuration:
   :linenos:
 
   configuration:
-    working_directory: '/mnt/ssd/.ytdl-sub-downloads'
+    working_directory: "/media/Library/tmp/.ytdl-sub-working-directory"
 
   presets:
     TV Show:
@@ -37,7 +37,7 @@ Below is a common configuration:
            max: 36
 
       overrides:
-        tv_show_directory: "/ytdl_sub_tv_shows"
+        tv_show_directory: "/media/Library/Videos/Series"
 
     TV Show Only Recent:
       preset:
@@ -49,13 +49,17 @@ Configuration Section
 ---------------------
 
 The :ref:`configuration <config_reference/config_yaml:Configuration File>` section sets
-options for ytdl-sub execution.
+options for ytdl-sub execution. Most users should set the path where ``ytdl-sub``
+temporarily stores downloaded data before assembling it and moving it into your
+library. To avoid unnecessarily long large file renames, use a path on the same
+filesystem as your library in the ``overrides: / *_directory:`` paths:
+
 
 .. code-block:: yaml
   :lineno-start: 1
 
   configuration:
-    working_directory: '/mnt/ssd/.ytdl-sub-downloads'
+    working_directory: "/media/Library/tmp/.ytdl-sub-working-directory"
 
 
 Preset Section
