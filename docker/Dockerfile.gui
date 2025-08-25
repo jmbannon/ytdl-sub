@@ -81,9 +81,10 @@ ENV EDITOR="nano" \
 HOME="/config" \
 DOCKER_MODS=linuxserver/mods:universal-stdout-logs|linuxserver/mods:universal-cron \
 DEFAULT_WORKSPACE=/config/ytdl-sub-configs \
-CRON_SCRIPT="/config/ytdl-sub-configs/cron" \
+CRON_SCRIPT="${DEFAULT_WORKSPACE}/cron" \
 CRON_WRAPPER_SCRIPT="/config/.cron_wrapper" \
 LOGS_TO_STDOUT=/config/.cron.log \
 LSIO_FIRST_PARTY=false
 
 VOLUME /config
+WORKDIR "${DEFAULT_WORKSPACE}"

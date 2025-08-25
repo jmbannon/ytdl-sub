@@ -52,15 +52,30 @@ above command will rebuild those as well.
 
 Testing
 -------
-Tests are written using pytest. Many of them evaluate checksums of output files to ensure no unintended
-changes are introduced to the way ``ytdl-sub`` produces files. This checksum can be inaccurate for
-end-to-end tests, but are reliable for integration tests.
+
+Tests are written using pytest. Many of them evaluate checksums of output files to
+ensure no unintended changes are introduced to the way ``ytdl-sub`` produces files. This
+checksum can be inaccurate for end-to-end tests, but are reliable for integration tests.
 
 If integration tests are failing, ensure...
 
 - you're using the correct ffmpeg version
 - you are developing on Linux or Mac (have not tested windows yet)
 - your local ``ytdl-sub`` dependencies are up-to-date
+
+
+Docker
+------
+
+Test changes to the Docker image variants locally:
+
+.. code-block:: shell
+
+   cd ./docker/testing/
+   make -j run
+
+See ``./docker/testing/docker-compose.yml`` for the Compose services for each image
+variant.
 
 
 IDE Setup
