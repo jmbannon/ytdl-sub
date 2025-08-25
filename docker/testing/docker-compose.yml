@@ -1,5 +1,8 @@
 services:
   ytdl-sub-gui:
+    build:
+      context: "../"
+      dockerfile: "./Dockerfile.gui"
     image: "ytdl-sub-gui:local"
     container_name: "ytdl-sub-gui"
     environment:
@@ -13,9 +16,11 @@ services:
     ports:
       - "8443:8443"
     restart: "unless-stopped"
-  ytdl-sub:
-    image: "ytdl-sub:local"
-    container_name: "ytdl-sub"
+  ytdl-sub-headless:
+    build:
+      context: "../"
+    image: "ytdl-sub-headless:local"
+    container_name: "ytdl-sub-headless"
     environment:
       PUID: "1000"
       PGID: "1000"
@@ -23,9 +28,12 @@ services:
       CRON_SCHEDULE: '"*/1 * * * *"'
       CRON_RUN_ON_START: "true"
     volumes:
-      - "./volumes/ytdl-sub/:/config/"
+      - "./volumes/ytdl-sub-headless/:/config/"
     restart: "unless-stopped"
   ytdl-sub-ubuntu:
+    build:
+      context: "../"
+      dockerfile: "./Dockerfile.ubuntu"
     image: "ytdl-sub-ubuntu:local"
     container_name: "ytdl-sub-ubuntu"
     environment:
