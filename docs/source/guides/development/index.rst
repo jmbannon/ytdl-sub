@@ -64,6 +64,20 @@ If integration tests are failing, ensure...
 - your local ``ytdl-sub`` dependencies are up-to-date
 
 
+Docker
+------
+
+Test changes to the Docker image variants locally:
+
+.. code-block:: shell
+
+   cd ./docker/testing/
+   make -j run
+
+See ``./docker/testing/docker-compose.yml`` for the Compose services for each image
+variant.
+
+
 IDE Setup
 ---------
 
