@@ -33,17 +33,23 @@ subscriptions.
 persist_logs
 ~~~~~~~~~~~~
 
-Within ``configuration``, define whether logs from subscription downloads should be
-persisted.
+Without this key, ``ytdl-sub`` only prints output to it's ``stdout`` and ``stderr``. If
+your configuration includes the ``persist_logs:`` key, then ``ytdl-sub`` also writes log
+files to disk.
+
+.. warning::
+
+   The log files grow rapidly if ``keep_successful_logs:`` is ``true``, the default, and
+   may fill up disk space. Set ``keep_successful_logs: false`` or prune the log files
+   regularly.
+
+For example:
 
 .. code-block:: yaml
 
   configuration:
     persist_logs:
       logs_directory: "/path/to/log/directory"
-
-Log files are stored as
-``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``.
 
 .. autoclass:: ytdl_sub.config.config_validator.PersistLogsValidator()
   :members:

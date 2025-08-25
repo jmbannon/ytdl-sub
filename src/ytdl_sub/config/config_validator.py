@@ -67,7 +67,8 @@ class PersistLogsValidator(StrictDictValidator):
     @property
     def logs_directory(self) -> str:
         """
-        The directory to store the logs in. (required)
+        Write log files to this directory with names like
+        ``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``. (required)
         """
         return self._logs_directory.value
 
@@ -92,7 +93,10 @@ class PersistLogsValidator(StrictDictValidator):
     @property
     def keep_successful_logs(self) -> bool:
         """
-        Whether to store logs when downloading is successful. (default ``True``)
+        If the ``persist_logs:`` key is in the configuration, then ``ytdl-sub`` *always*
+        writes log files for the subscription both for successful downloads and when it
+        encounters an error while downloading. When this key is ``False``, only write
+        log files for errors. (default ``True``)
         """
         return self._keep_successful_logs.value
 
