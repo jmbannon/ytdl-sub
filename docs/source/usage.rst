@@ -11,14 +11,15 @@ For Windows users, it would be ``ytdl-sub.exe``
 General Options
 ---------------
 
-General options must be specified before the command (i.e. ``sub``).
+CLI options common to all sub-commands. Must be specified before the sub-command, for
+example ``$ ytdl-sub --dry-run sub ...``:
 
 .. code-block:: text
 
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
   -c CONFIGPATH, --config CONFIGPATH
-                        path to the config yaml, uses config.yaml if not provided
+                        path to the config yaml, uses ./config.yaml if not provided
   -d, --dry-run         preview what a download would output, does not perform any video downloads or writes to output directories
   -l quiet|info|verbose|debug, --log-level quiet|info|verbose|debug
                         level of logs to print to console, defaults to info
@@ -30,18 +31,19 @@ General options must be specified before the command (i.e. ``sub``).
                         match subscription names to one or more substrings, and only run those subscriptions
 
 
-Sub Options
------------
+Subscriptions Options
+---------------------
 
-Download all subscriptions specified in each ``SUBPATH``.
+Download all subscriptions specified in each :doc:`subscriptions file
+<./guides/getting_started/first_sub>`.
 
 .. code-block::
 
    ytdl-sub [GENERAL OPTIONS] sub [SUBPATH ...]
 
-``SUBPATH`` is one or more paths to subscription files, uses ``subscriptions.yaml`` if
-not provided.  It will use the config specified by ``--config``, or ``config.yaml`` if
-not provided.
+``SUBPATH`` is one or more paths to subscription files and defaults to
+``./subscriptions.yaml`` if none are given.  It will use the config specified by
+``--config``, or ``./config.yaml``, if not provided.
 
 .. code-block:: text
   :caption: Additional Options
@@ -55,15 +57,15 @@ not provided.
 Download Options
 ----------------
 
-Download a single subscription in the form of CLI arguments.
+Download a single subscription in the form of CLI arguments instead of from :doc:`a
+subscriptions file <./guides/getting_started/first_sub>`:
 
 .. code-block::
 
   ytdl-sub [GENERAL OPTIONS] dl [SUBSCRIPTION ARGUMENTS]
 
-``SUBSCRIPTION ARGUMENTS`` are exactly the same as YAML arguments, but use periods
-(``.``) instead of indents for specifying YAML from the CLI. For example, you can
-represent this subscription:
+``SUBSCRIPTION ARGUMENTS`` are the same as YAML arguments, but use periods (``.``)
+instead of indents. For example, you can represent this subscription:
 
 .. code-block:: yaml
 
@@ -90,6 +92,8 @@ See how to shorten commands using `download aliases
 View Options
 ------------
 
+Preview the source variables for a given URL. Helpful to create new subscriptions:
+
 .. code-block::
 
    ytdl-sub view [-sc] [URL]
@@ -99,5 +103,3 @@ View Options
 
   -sc, --split-chapters
                         View source variables after splitting by chapters
-
-Preview the source variables for a given URL. Helps when creating new configs.
