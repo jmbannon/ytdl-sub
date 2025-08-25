@@ -52,9 +52,10 @@ above command will rebuild those as well.
 
 Testing
 -------
-Tests are written using pytest. Many of them evaluate checksums of output files to ensure no unintended
-changes are introduced to the way ``ytdl-sub`` produces files. This checksum can be inaccurate for
-end-to-end tests, but are reliable for integration tests.
+
+Tests are written using pytest. Many of them evaluate checksums of output files to
+ensure no unintended changes are introduced to the way ``ytdl-sub`` produces files. This
+checksum can be inaccurate for end-to-end tests, but are reliable for integration tests.
 
 If integration tests are failing, ensure...
 
