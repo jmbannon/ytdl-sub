@@ -1,9 +1,9 @@
 ###############################################################################
-# Top-level configurations to apply umask and persist error logs
+# Top-level configurations to apply umask and write log files
 configuration:
   umask: "002"
   persist_logs:
-    logs_directory: './logs'
+    logs_directory: '/config/logs'
     keep_successful_logs: False
 
 presets:
