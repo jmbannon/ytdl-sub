@@ -43,5 +43,5 @@ services:
       CRON_SCHEDULE: '"*/1 * * * *"'
       CRON_RUN_ON_START: "true"
     volumes:
-      - "./volumes/ytdl-sub/:/config/"
+      - "./volumes/ytdl-sub-ubuntu/:/config/"
     restart: "unless-stopped"
