@@ -33,7 +33,7 @@ if [ "$CRON_SCHEDULE" != "" ] ; then
     echo '#!/bin/bash' > "$CRON_WRAPPER_SCRIPT"
     echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> "$CRON_WRAPPER_SCRIPT"
     echo "cd \"$DEFAULT_WORKSPACE\"" >> "$CRON_WRAPPER_SCRIPT"
-    echo ". \"$CRON_SCRIPT\" | tee -a \"$LOGS_TO_STDOUT\"" >> "$CRON_WRAPPER_SCRIPT"
+    echo ". \"$CRON_SCRIPT\" |& tee -a \"$LOGS_TO_STDOUT\"" >> "$CRON_WRAPPER_SCRIPT"
     chmod +x "$CRON_WRAPPER_SCRIPT"
     chown abc:abc "$CRON_WRAPPER_SCRIPT"
 
