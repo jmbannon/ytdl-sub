@@ -538,27 +538,26 @@ print
 :spec: ``print(message: AnyArgument, passthrough: ReturnableArgument, level: Optional[Integer]) -> ReturnableArgument``
 
 :description:
-  Print the ``message`` and return ``passthrough``.
-  Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-  Defaults to info.
+  Log the ``message`` and return ``passthrough``. Optionally can pass level,
+  where < 0 is debug, 0 is info, 1 is warning, > 1 is error. (default ``0``)
 
 print_if_false
 ~~~~~~~~~~~~~~
 :spec: ``print_if_false(message: AnyArgument, passthrough: ReturnableArgument, level: Optional[Integer]) -> ReturnableArgument``
 
 :description:
-  Print the ``message`` if ``passthrough`` evaluates to ``false``. Return ``passthrough``.
-  Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-  Defaults to info.
+  Log the ``message`` if ``passthrough`` evaluates to ``false``. Return
+  ``passthrough``. Optionally can pass level, where < 0 is debug, 0 is info, 1
+  is warning, > 1 is error. (default ``0``)
 
 print_if_true
 ~~~~~~~~~~~~~
 :spec: ``print_if_true(message: AnyArgument, passthrough: ReturnableArgument, level: Optional[Integer]) -> ReturnableArgument``
 
 :description:
-  Print the ``message`` if ``passthrough`` evaluates to ``true``. Return ``passthrough``.
-  Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-  Defaults to info.
+  Log the ``message`` if ``passthrough`` evaluates to ``true``. Return
+  ``passthrough``. Optionally can pass level, where < 0 is debug, 0 is info, 1
+  is warning, > 1 is error. (default ``0``)
 
 ----------------------------------------------------------------------------------------------------
 

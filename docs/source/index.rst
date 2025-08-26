@@ -10,5 +10,6 @@ ytdl-sub User Guide
   prebuilt_presets/index
   usage
   config_reference/index
+  debugging
   faq/index
   deprecation_notices
