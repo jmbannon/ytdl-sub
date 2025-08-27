@@ -39,7 +39,7 @@ instructions to the letter.
 
 #. Preview what ``ytdl-sub`` would do for this subscription:
 
-   Run the :ref:`'sub' sub-command <usage:sub options>` but with the ``max_downloads``
+   Run the :ref:`'sub' sub-command <usage:subscriptions options>` but with the ``max_downloads``
    setting from ``yt-dlp`` along with the ``--dry-run`` and ``--match`` options from
    ``ytdl-sub`` to minimize requests and prevent actual downloads. Be sure to update the
    ``--match="..."`` value with the subscription name::
