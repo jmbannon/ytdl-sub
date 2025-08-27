@@ -142,6 +142,24 @@ the second ``= ...`` value specifies the rating for all descendant subscriptions
       "Foo Kids Band": "https://soundcloud.com/foo-kids-band"
 
 
+Override variables for one subscription
+---------------------------------------
+
+Most variable overrides aren't actually specific to just one subscription and should be
+set in :doc:`your own custom presets <./first_config>`. But use :ref:`the override mode
+'~...' prefix <config_reference/subscription_yaml:override mode>` when an override is
+specific to only one subscription and will never be shared with another:
+
+.. code-block:: yaml
+  :caption: subscriptions.yaml
+  :emphasize-lines: 2-
+
+  Jellyfin TV Show by Date:
+    "~NOVA PBS":
+      url: "https://www.youtube.com/@novapbs"
+      tv_show_directory: "/media/Unique/Series/Path"
+
+
 Next Steps
 ----------
 
