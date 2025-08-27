@@ -37,31 +37,12 @@ instructions to the letter.
    ``"https://www.youtube.com/@novapbs"`` value to the URL of the channel or playlist
    for this subscription.
 
-#. Preview what ``ytdl-sub`` would do for this subscription:
-
-   Run the :ref:`'sub' sub-command <usage:subscriptions options>` but with the ``max_downloads``
-   setting from ``yt-dlp`` along with the ``--dry-run`` and ``--match`` options from
-   ``ytdl-sub`` to minimize requests and prevent actual downloads. Be sure to update the
-   ``--match="..."`` value with the subscription name::
-
-     $ ytdl-sub --dry-run sub -o '--ytdl_options.max_downloads 3' --match="NOVA PBS"
-
-   Examine the output carefully.
-
-#. Review the results of real downloads:
-
-   Run it again without the ``--dry-run`` option to actually download media and place
-   the files in your library::
-
-     $ ytdl-sub sub -o '--ytdl_options.max_downloads 3' --match="NOVA PBS"
-
-   Examine the output carefully, then examine how the downloads work in your
-   library. Repeat with a larger value for ``max_downloads`` and examine the output and
-   downloads again.
+#. :ref:`Preview <guides/getting_started/downloading:preview>` and :ref:`Review
+   <guides/getting_started/downloading:review>` the subscription.
 
 #. Add the rest of your subscriptions:
 
-   Repeat steps #4-7 for each of your subscriptions. Be sure to repeat the preview and
+   Repeat steps #3-6 for each of your subscriptions. Be sure to repeat the preview and
    review steps for each subscription. In general, move slowly and carefully review
    everything. It's best to catch issues early :ref:`to avoid repeating downloads and to
    minimize requests <guides/getting_started/index:minimize the work to only what's
