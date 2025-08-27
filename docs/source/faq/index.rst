@@ -172,7 +172,7 @@ need to be removed:
   necessary>`. To re-download, those options must be disabled or modified. Disable
   :ref:`the 'break_on_existing' option <config_reference/plugins:ytdl_options>`, set
   :ref:`the 'date_range:' plugin <config_reference/plugins:date_range>`, and :ref:`limit
-  the subscriptions <guides/getting_started/first_download:faster iteration cycle>` to
+  the subscriptions <guides/getting_started/downloading:preview>` to
   download only the files that you've renamed in the steps above.
 
   Set the appropriate dates, :ref:`including a sufficient margin
@@ -182,11 +182,11 @@ need to be removed:
 
     .. code-block:: shell
 
-       ytdl-sub sub -o "\
+       ytdl-sub --match="NOVA PBS" sub -o "\
        --ytdl_options.break_on_existing False \
        --date_range.after 20240101 \
        --date_range.before 20250101 \
-       " --match="NOVA PBS"
+       "
 
 ...download a file missing from the archive
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

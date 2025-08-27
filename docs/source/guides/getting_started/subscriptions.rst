@@ -163,5 +163,5 @@ specific to only one subscription and will never be shared with another:
 Next Steps
 ----------
 
-Once you've defined your subscriptions, it's time to :doc:`test the configuration and
-try your first download <./first_download>`.
+Once you've defined your subscriptions, it's time to :doc:`test your configuration and
+try your first download <./downloading>`.
