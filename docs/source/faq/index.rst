@@ -25,26 +25,6 @@ by media players. This can be overwritten as you see fit by redefining it:
    overrides:
      episode_title: "{title}"  # Only sets the video title
 
-...get support or reach out to contribute?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you need support, you can:
-
-* :ytdl-sub-gh:`Open an issue on GitHub <issues/new>`
-
-* `Join our Discord <https://discord.gg/v8j9RAHb4k>`_
-
-If you would like to contribute, we're happy to accept any help, even non-coders! To
-find out how you can help this project, you can:
-
-* `Join our Discord <https://discord.gg/v8j9RAHb4k>`_ and leave a comment in
-  #development with where you think you can assist or what skills you would like to
-  contribute.
-
-* If you just want to fix one thing, you're welcome to :ytdl-sub-gh:`submit a pull
-  request <compare>` with information on what issue you're resolving and it will be
-  reviewed as soon as possible.
-
 ...download age-restricted YouTube videos?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -218,24 +198,41 @@ use `the same CLI options as re-downloading a file`_
 .. _`the same CLI options as re-downloading a file`:
    `...force ytdl-sub to re-download a file`_
 
+...get support?
+~~~~~~~~~~~~~~~
+
+See :doc:`the debugging documentation <../debugging>`.
+
+...reach out to contribute?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you would like to contribute, we're happy to accept any help, including from
+non-coders! To find out how you can help this project, you can:
+
+- `Join our Discord <https://discord.gg/v8j9RAHb4k>`_ and leave a comment in
+  #development with where you think you can assist or what skills you would like to
+  contribute.
+
+- If you just want to fix one thing, you're welcome to :ytdl-sub-gh:`submit a pull
+  request <compare>` with information on what issue you're resolving and it will be
+  reviewed as soon as possible.
+
 
 There is a bug where...
 -----------------------
 
-..ytdl-sub is not downloading
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+...ytdl-sub is not downloading
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run with ``--log-level verbose`` to see all yt-dlp logs, to rule out whether it is a
-yt-dlp or ytdl-sub issue.
+...ytdl-sub is downloading at 360p or other lower quality
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Any logs showing failed downloads, 403 errors, signs of throttles, etc, are a yt-dlp
-issue.  A good strategy is to see if your same issue has been reported in `yt-dlp's
-GitHub issues <https://github.com/yt-dlp/yt-dlp/issues>`_, and search to see if there is
-a comment including a fix or workaround.
+...ytdl-sub downloads 2-4 videos and then fails
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If it looks like a ytdl-sub issue, run with ``--log-level debug`` and make a `GitHub
-issue in ytdl-sub <https://github.com/jmbannon/ytdl-sub/issues>`_ containing these logs
-and other relevant info.
+These are often just limits imposed by the external services that are not bugs. There
+may be little that can be done about them, but see :ref:`the '_throttle_protection'
+preset <prebuilt_presets/helpers:_throttle_protection>` for more information.
 
 ...date_range is not downloading older videos after I changed the range
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
