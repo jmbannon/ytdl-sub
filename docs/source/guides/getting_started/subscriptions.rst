@@ -19,9 +19,9 @@ defaults. Tell ``ytdl-sub`` where to put your media using :ref:`overrides
 
   __preset__:
     overrides:
-      tv_show_directory: "/media/Library/Videos/Series"
-      music_directory: "/media/Library/Music"
-      music_video_directory: "/media/Library/Videos/Music"
+      tv_show_directory: "/tv_shows"
+      music_directory: "/music"
+      music_video_directory: "/music_videos"
 
 See the reference documentation for details about :ref:`the '__preset__:' special key
 <config_reference/subscription_yaml:file preset>`.
