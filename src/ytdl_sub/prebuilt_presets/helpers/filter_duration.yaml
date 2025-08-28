@@ -1,9 +1,8 @@
 presets:
 
   #############################################################################
-  # Include Keywords
-  #   Include or exclude media with any of the listed keywords in their titles
-  #   Keywords will check a lower-cased title or description
+  # Filter Duration
+  #   Include or exclude media based on its play time duration
   Filter Duration:
     overrides:
       filter_duration_min_s: 0
