@@ -150,6 +150,9 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
     range-based values, a random number will be chosen within the range to avoid sleeps looking
     scripted.
 
+    Range min and max values support static override variables within their definitions.
+    ``sleep_per_download_s`` supports both static and override variables.
+
     :Usage:
 
     .. code-block:: yaml
