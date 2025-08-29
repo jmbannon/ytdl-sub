@@ -58,7 +58,7 @@ class TestThrottleProtectionPlugin:
             ),
             assert_logs(
                 logger=throttle_protection_logger,
-                expected_message="Sleeping between downloads for %0.2f seconds",
+                expected_message="Sleeping between downloads for 0.01 seconds",
                 log_level="info",
                 expected_occurrences=4,
             ),
