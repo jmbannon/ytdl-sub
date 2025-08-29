@@ -1,10 +1,8 @@
 Debugging
 =========
 
-Run with the ``--log-level verbose`` CLI option to see more information in the output,
-such as all ``yt-dlp`` logs. Run with ``--log-level debug`` to show all log messages,
-often too much information for normal operation but useful when investigating a specific
-problem.
+Run with ``--log-level debug`` to show all log messages, often too much information for
+normal operation but useful when investigating a specific problem.
 
 :ref:`ytdl-sub builds on yt-dlp <introduction:motivation>`, which is in itself a complex
 tool. It performs an intricate and fragile task, web scraping, which in turn :ref:`is
