@@ -37,7 +37,7 @@ Subscriptions Options
 ---------------------
 
 Download all subscriptions specified in each :doc:`subscriptions file
-<./guides/getting_started/first_sub>`.
+<./guides/getting_started/subscriptions>`.
 
 .. code-block::
 
@@ -60,7 +60,7 @@ Download Options
 ----------------
 
 Download a single subscription in the form of CLI arguments instead of from :doc:`a
-subscriptions file <./guides/getting_started/first_sub>`:
+subscriptions file <./guides/getting_started/subscriptions>`:
 
 .. code-block::
 
