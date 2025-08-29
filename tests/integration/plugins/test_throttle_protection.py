@@ -8,6 +8,7 @@ from ytdl_sub.plugins.throttle_protection import logger as throttle_protection_l
 from ytdl_sub.script.functions.print_functions import logger as script_print_logger
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 
 
 @pytest.fixture
@@ -288,3 +289,58 @@ class TestResolutionAssert:
             pytest.raises(UserThrownRuntimeError, match=re.escape(expected_message)),
         ):
             _ = subscription.download(dry_run=True)
+
+    def test_sleep_per_download_supports_entry_variables(
+        self,
+        config,
+        subscription_name,
+        throttle_subscription_dict,
+        output_directory,
+        mock_download_collection_entries,
+    ):
+        throttle_subscription_dict["throttle_protection"]["sleep_per_download_s"] = {
+            "min": "{%mul(3.14, duration)}",
+            "max": "{%mul(3.14, duration)}",
+        }
+
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=throttle_subscription_dict,
+        )
+
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False,
+                num_urls=1,
+                is_extracted_audio=False,
+                mock_entry_kwargs={"duration": 1},
+            ),
+            assert_logs(
+                logger=throttle_protection_logger,
+                expected_message="Sleeping between downloads for 3.14 seconds",
+                log_level="info",
+                expected_occurrences=4,
+            ),
+        ):
+            _ = subscription.download(dry_run=False)
+
+    def test_sleep_per_subscription_does_not_support_entry_variables(
+        self,
+        config,
+        subscription_name,
+        throttle_subscription_dict,
+        output_directory,
+        mock_download_collection_entries,
+    ):
+        throttle_subscription_dict["throttle_protection"]["sleep_per_subscription_s"] = {
+            "min": "{%mul(3.14, duration)}",
+            "max": "{%mul(3.14, duration)}",
+        }
+
+        with pytest.raises(StringFormattingVariableNotFoundException):
+            _ = Subscription.from_dict(
+                config=config,
+                preset_name=subscription_name,
+                preset_dict=throttle_subscription_dict,
+            )
