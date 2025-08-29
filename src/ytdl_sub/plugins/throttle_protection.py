@@ -275,6 +275,10 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         self._subscription_download_counter: int = 0
         self._subscription_max_downloads: Optional[int] = None
 
+        # Compute this during post-processing using entry metadata.
+        # Apply the sleep post-completion.
+        self._entry_sleep_time: Optional[float] = None
+
         # If subscriptions have a max download limit, set it here for the first subscription
         if self.plugin_options.max_downloads_per_subscription:
             self._subscription_max_downloads = (
@@ -333,15 +337,18 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         self._subscription_download_counter += 1
 
         if self.plugin_options.sleep_per_download_s:
-            sleep_time = self.plugin_options.sleep_per_download_s.randomized_float(
+            self._entry_sleep_time = self.plugin_options.sleep_per_download_s.randomized_float(
                 overrides=self.overrides, entry=entry
             )
-            # pylint: disable=logging-fstring-interpolation)
-            # needed to test logs in unit test
-            logger.info(f"Sleeping between downloads for {sleep_time:.2f} seconds")
-            self.perform_sleep(sleep_time)
 
         return None
+
+    def post_completion_entry(self, file_metadata: FileMetadata) -> None:
+        if self._entry_sleep_time:
+            # pylint: disable=logging-fstring-interpolation)
+            # needed to test logs in unit test
+            logger.info(f"Sleeping between downloads for {self._entry_sleep_time:.2f} seconds")
+            self.perform_sleep(self._entry_sleep_time)
 
     def post_process_subscription(self):
         # Reset counter to 0 for the next subscription

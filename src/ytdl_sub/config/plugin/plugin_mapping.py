@@ -92,6 +92,12 @@ class PluginMapping:
         EmbedThumbnailPlugin,
     ]
 
+    _ORDER_POST_COMPLETION: List[Type[Plugin]] = [
+        # Throttle protection should always be last
+        # to not sleep over other logic
+        ThrottleProtectionPlugin
+    ]
+
     @classmethod
     def _order_by(
         cls, plugin_types: List[Type[Plugin]], operation: PluginOperation
@@ -102,6 +108,8 @@ class PluginMapping:
             ordering = cls._ORDER_MODIFY_ENTRY
         elif operation == PluginOperation.POST_PROCESS:
             ordering = cls._ORDER_POST_PROCESS
+        elif operation == PluginOperation.POST_COMPLETION:
+            ordering = cls._ORDER_POST_COMPLETION
         else:
             raise ValueError("PluginOperation does not support ordering")
 

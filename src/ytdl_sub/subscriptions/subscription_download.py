@@ -259,6 +259,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
         if self.maintain_download_archive:
             self.download_archive.save_download_mappings()
 
+        for plugin in PluginMapping.order_plugins_by(plugins, PluginOperation.POST_COMPLETION):
+            plugin.post_completion_entry(file_metadata=entry_metadata)
+
     def _process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata
     ) -> None:

@@ -119,6 +119,17 @@ class Plugin(BasePlugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
         """
         return None
 
+    def post_completion_entry(self, file_metadata: FileMetadata) -> None:
+        """
+        After the entry file is moved to its final location, run this hook.
+
+        Parameters
+        ----------
+        file_metadata
+            Metadata about the completed entry's file download
+        """
+        return None
+
     def post_process_subscription(self):
         """
         After all downloaded files have been post-processed, apply a subscription-wide post process
