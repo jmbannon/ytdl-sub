@@ -1,4 +1,12 @@
-echo "Beginning cron job..."
-
 # Place your ytdl-sub command(s) here.
-# This script is executed in the same relative path as this file.
+#
+# This script is executed in the same directory as this file which also contains the
+# default `./config.yaml` and `./subscriptions.yaml`, so you don't need to use the
+# `--config` CLI option or pass a `SUBPATH` to the `$ ytdl-sub sub` sub-command.
+#
+# To prevent users accidentally triggering throttles or bans or downloading before
+# testing their configuration, these default options only simulate a few
+# downloads. Remove the `--dry-run` and `-o ...` CLI options when you've tested your
+# configuration and you're ready to download entries unattended:
+
+ytdl-sub --dry-run sub -o '--ytdl_options.max_downloads 3'
