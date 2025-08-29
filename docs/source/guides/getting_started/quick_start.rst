@@ -50,5 +50,5 @@ instructions to the letter.
 
 #. Automate downloads:
 
-   :ref:`Set up ytdl-sub to run periodically
-   <guides/getting_started/automating_downloads:docker and unraid>`.
+   :ref:`Set up ytdl-sub to run periodically <guides/getting_started/automating:docker
+   and unraid>`.
