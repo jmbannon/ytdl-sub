@@ -74,6 +74,20 @@ class StringFormatterValidator(StringValidator):
         return resolved
 
 
+class FloatFormatterValidator(StringFormatterValidator):
+    _expected_value_type_name = "float"
+
+    def post_process(self, resolved: str) -> str:
+        try:
+            float(resolved)
+        except Exception as exc:
+            raise self._validation_exception(
+                f"Expected a float, but received '{resolved}'"
+            ) from exc
+
+        return resolved
+
+
 class StandardizedDateValidator(StringFormatterValidator):
     _expected_value_type_name = "standardized_date"
 
@@ -116,6 +130,12 @@ class OverridesIntegerFormatterValidator(OverridesStringFormatterValidator):
             ) from exc
 
         return resolved
+
+
+class OverridesFloatFormatterValidator(FloatFormatterValidator, OverridesStringFormatterValidator):
+    """
+    Float validator but static
+    """
 
 
 class OverridesBooleanFormatterValidator(OverridesStringFormatterValidator):
