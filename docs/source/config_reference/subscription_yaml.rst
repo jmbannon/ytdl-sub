@@ -31,7 +31,7 @@ supply a cookies file path.
 
     # Directly set plugin options:
     ytdl_options:
-      cookiefile: "/config/cookie.txt"
+      cookiefile: "/config/ytdl-sub-configs/cookie.txt"
 
 Layout
 ------
