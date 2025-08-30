@@ -151,7 +151,7 @@ adding subscriptions <./subscriptions>`.
   :hidden:
 
   subscriptions
-  first_download
+  downloading
   automating_downloads
   first_config
   quick_start
