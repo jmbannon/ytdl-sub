@@ -152,6 +152,6 @@ adding subscriptions <./subscriptions>`.
 
   subscriptions
   first_download
-  automating_downloads
+  automating
   first_config
   quick_start
