@@ -237,7 +237,7 @@ class TestResolutionAssert:
                 "Resolution assert is enabled, will fail on low-quality video downloads and presume throttle. "
                 "Disable using the override variable `enable_resolution_assert: False`"
             ),
-            log_level="info",
+            log_level="debug",
             expected_occurrences=1,
         ):
             subscription = Subscription.from_dict(
