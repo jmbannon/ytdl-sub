@@ -205,7 +205,7 @@ class TestResolutionAssert:
         with assert_logs(
             logger=script_print_logger,
             expected_message="Resolution assert is disabled. Use at your own risk!",
-            log_level="info",
+            log_level="debug",
             expected_occurrences=1,
         ):
             _ = Subscription.from_dict(
