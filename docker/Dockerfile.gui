@@ -4,6 +4,8 @@ FROM lscr.io/linuxserver/code-server:4.98.2
 ENV OPENSSL_CONF="/etc/ssl"
 # For downloading thumbnails
 ENV SSL_CERT_DIR="/etc/ssl/certs/"
+# Working directory used at both build and run times:
+ENV DEFAULT_WORKSPACE="/config/ytdl-sub-configs"
 
 ###############################################################################
 # YTDL-SUB INSTALL
@@ -80,7 +82,6 @@ RUN mkdir -p /config && \
 ENV EDITOR="nano" \
 HOME="/config" \
 DOCKER_MODS=linuxserver/mods:universal-stdout-logs|linuxserver/mods:universal-cron \
-DEFAULT_WORKSPACE=/config/ytdl-sub-configs \
 CRON_SCRIPT="${DEFAULT_WORKSPACE}/cron" \
 CRON_WRAPPER_SCRIPT="/config/.cron_wrapper" \
 LOGS_TO_STDOUT=/config/.cron.log \
