@@ -205,7 +205,7 @@ class TestResolutionAssert:
         with assert_logs(
             logger=script_print_logger,
             expected_message="Resolution assert is disabled. Use at your own risk!",
-            log_level="info",
+            log_level="debug",
             expected_occurrences=1,
         ):
             _ = Subscription.from_dict(
@@ -237,7 +237,7 @@ class TestResolutionAssert:
                 "Resolution assert is enabled, will fail on low-quality video downloads and presume throttle. "
                 "Disable using the override variable `enable_resolution_assert: False`"
             ),
-            log_level="info",
+            log_level="debug",
             expected_occurrences=1,
         ):
             subscription = Subscription.from_dict(

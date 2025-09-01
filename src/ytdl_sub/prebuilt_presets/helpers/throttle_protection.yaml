@@ -43,7 +43,8 @@ presets:
               "Resolution assert is enabled, will fail on low-quality video downloads and presume throttle. Disable using the override variable `enable_resolution_assert: False`",
               "Resolution assert is disabled. Use at your own risk!"
             ),
-            enable_resolution_assert
+            enable_resolution_assert,
+            -1
           )
         }
       resolution_readable: "{width}x{height}"
