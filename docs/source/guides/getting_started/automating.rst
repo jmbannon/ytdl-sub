@@ -32,6 +32,24 @@ The container cron wrapper script will write output from the cron job to
 ...`` that file so you can monitor the cron job in the container's output and thus also
 in the Docker logs.
 
+You may also set the ``CRON_RUN_ON_START`` environment variable to ``true`` to have the
+image run your cron script whenever the container starts in addition to the cron
+schedule.
+
+.. warning::
+
+   Using ``CRON_RUN_ON_START`` is not recommended because it may cause your cron script
+   to run too often and may trigger throttles and bans. When enabled, your cron script
+   will run *whenever* the container starts including when the host reboots, when ``#
+   dockerd`` is upgraded, when a new image is pulled, when something applies Compose
+   changes, etc.. This may result in running ``ytdl-sub`` right before or after the next
+   cron scheduled run or even at the same time on top of each other. Instead, run your
+   cron script manually inside the running container as needed:
+
+   .. code-block:: console
+
+      docker compose exec ytdl-sub bash /config/ytdl-sub-configs/cron
+
 
 .. _linux-setup:
 
