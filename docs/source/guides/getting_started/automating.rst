@@ -107,7 +107,7 @@ simplify things by :doc:`defining your own custom presets <./first_config>`.
 .. _`cron`:
    https://en.wikipedia.org/wiki/Cron
 .. _`a cron schedule`:
-   https://en.wikipedia.org/wiki/Cron#Overview
+   https://crontab.cronhub.io/
 
 .. _`the Task Scheduler`:
    https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page
