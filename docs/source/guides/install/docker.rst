@@ -7,8 +7,8 @@ on top. There are two flavors or variants to choose from. For a more user-friend
 experience editing the `configuration`_, we recommend the `GUI image`_
 variant. :ref:`Docker Compose <guides/install/docker:install with docker compose>` is
 the recommended way of managing a ``ytdl-sub`` docker container.  See :ref:`Automating
-Downloads <guides/getting_started/automating:docker and unraid>` for how to automate
-running ``ytdl-sub`` in a container running either variant.
+Downloads <guides/getting_started/automating_downloads:docker and unraid>` for how to
+automate running ``ytdl-sub`` in a container running either variant.
 
 
 GUI Image
@@ -28,8 +28,8 @@ Headless Image
 
 The headless image is based on LSIO's :lsio-gh:`docker-baseimage-alpine`. Once running,
 the default command just starts services including cron for :ref:`Automating Downloads
-<guides/getting_started/automating:docker and unraid>` but otherwise doesn't run
-``ytdl-sub``. You may run arbitrary ``ytdl-sub`` commands using the
+<guides/getting_started/automating_downloads:docker and unraid>` but otherwise doesn't
+run ``ytdl-sub``. You may run arbitrary ``ytdl-sub`` commands using the
 ``--rm --user="${PUID}:${PGID}" --entrypoint="ytdl-sub"`` options to either ``$ docker
 run`` or ``$ docker compose run``. Overriding the image's ``ENTRYPOINT`` is important so
 that cron doesn't run ``ytdl-sub`` while you're running it manually.
