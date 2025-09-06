@@ -15,7 +15,7 @@ Below is a common configuration:
   :linenos:
 
   configuration:
-    working_directory: "/media/Library/tmp/.ytdl-sub-working-directory"
+    working_directory: ".ytdl-sub-working-directory"
 
   presets:
     TV Show:
@@ -37,7 +37,7 @@ Below is a common configuration:
            max: 36
 
       overrides:
-        tv_show_directory: "/media/Library/Videos/Series"
+        tv_show_directory: "/tv_shows"
 
     TV Show Only Recent:
       preset:
@@ -59,7 +59,7 @@ filesystem as your library in the ``overrides: / *_directory:`` paths:
   :lineno-start: 1
 
   configuration:
-    working_directory: "/media/Library/tmp/.ytdl-sub-working-directory"
+    working_directory: ".ytdl-sub-working-directory"
 
 
 Preset Section
