@@ -43,12 +43,7 @@ schedule.
    container starts including when the host reboots, when ``# dockerd`` restarts such as
    when upgrading Docker itself, when a new image is pulled, when something applies
    Compose changes, etc.. This may result in running ``ytdl-sub`` right before or after
-   the next cron scheduled run. Instead, run your cron script manually inside the
-   running container as needed:
-
-   .. code-block:: console
-
-      docker compose exec ytdl-sub bash /config/ytdl-sub-configs/cron
+   the next cron scheduled run.
 
 
 .. _linux-setup:
