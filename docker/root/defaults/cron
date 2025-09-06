@@ -1,4 +1,15 @@
-echo "Beginning cron job..."
-
 # Place your ytdl-sub command(s) here.
-# This script is executed in the same relative path as this file.
+#
+# This script is executed in the same directory as this file which also contains the
+# default `./config.yaml` and `./subscriptions.yaml`, so you don't need to use the
+# `--config` CLI option or pass a `SUBPATH` to the `$ ytdl-sub sub` sub-command.
+#
+# Test your configuration and subscriptions carefully before automating downloads to
+# prevent triggering throttles or bans:
+#
+# https://ytdl-sub.readthedocs.io/en/latest/guides/getting_started/downloading.html
+#
+# Once you've tested your configuration and you're ready to download entries unattended,
+# remove the next line and un-comment the following line:
+echo "WARNING: Read /config/ytdl-sub-configs/cron and modify to automate downloads."
+# ytdl-sub sub
