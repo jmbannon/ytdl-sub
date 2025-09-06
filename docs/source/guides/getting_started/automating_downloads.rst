@@ -41,10 +41,10 @@ schedule.
    Using ``CRON_RUN_ON_START`` is not recommended because it may cause your cron script
    to run too often and may trigger throttles and bans. When enabled, your cron script
    will run *whenever* the container starts including when the host reboots, when ``#
-   dockerd`` is upgraded, when a new image is pulled, when something applies Compose
-   changes, etc.. This may result in running ``ytdl-sub`` right before or after the next
-   cron scheduled run. Instead, run your cron script manually inside the running
-   container as needed:
+   dockerd`` restarts such as when upgrading Docker itself, when a new image is pulled,
+   when something applies Compose changes, etc.. This may result in running ``ytdl-sub``
+   right before or after the next cron scheduled run. Instead, run your cron script
+   manually inside the running container as needed:
 
    .. code-block:: console
 
