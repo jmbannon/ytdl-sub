@@ -22,6 +22,8 @@ environment variable:
     ytdl-sub:
       environment:
         CRON_SCHEDULE: "0 */6 * * *"
+	# WARNING: See "Getting Started" -> "Automating" docs regarding throttles/bans:
+	# CRON_RUN_ON_START: false
 
 Then recreate the container to apply the change and start it to generate the default
 ``/config/ytdl-sub-configs/cron`` script. Read the comments in that script and edit as
