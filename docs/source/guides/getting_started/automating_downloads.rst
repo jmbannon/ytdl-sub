@@ -43,8 +43,8 @@ schedule.
    will run *whenever* the container starts including when the host reboots, when ``#
    dockerd`` is upgraded, when a new image is pulled, when something applies Compose
    changes, etc.. This may result in running ``ytdl-sub`` right before or after the next
-   cron scheduled run or even at the same time on top of each other. Instead, run your
-   cron script manually inside the running container as needed:
+   cron scheduled run. Instead, run your cron script manually inside the running
+   container as needed:
 
    .. code-block:: console
 
