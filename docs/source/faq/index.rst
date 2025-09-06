@@ -41,8 +41,8 @@ download your YouTube cookie, then add it to your :ref:`ytdl options
 ...automate my downloads?
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:doc:`This page </guides/getting_started/automating>` shows how to set up ``ytdl-sub``
-to run automatically on various platforms.
+:doc:`This page </guides/getting_started/automating_downloads>` shows how to set up
+``ytdl-sub`` to run automatically on various platforms.
 
 ...download large channels?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
