@@ -94,8 +94,8 @@ Genres are also more often shared between subscriptions than not. To accommodate
 reality, the ancestor keys of subscriptions may also use :ref:`the special '= ...'
 prefix to pass specific overrides
 <config_reference/scripting/static_variables:subscription_indent_i>` supported by the
-preset. By convention in the built-in software and media type presets, the first ``=
-...`` value specifies the genre for all descendant subscriptions.
+preset. By convention in the pre-built media type presets, the first ``= ...`` value
+specifies the genre for all descendant subscriptions.
 
 Finally, ancestor keys may use :ref:`the '... | ...' special character
 <config_reference/subscription_yaml:multi keys>` to combine multiple presets and/or
