@@ -47,6 +47,16 @@ presets:
             -1
           )
         }
+      # list variable that contains partial titles to ignore
+      resolution_assert_ignore_titles: "{ [] }"
+      resolution_assert_is_ignored: >-
+        {
+          %print_if_true(
+            %concat(title, " has a match in resolution_assert_ignore_titles, skipping resolution assert."),
+            %contains_any(title, resolution_assert_ignore_titles)
+          )
+        }
+
       resolution_readable: "{width}x{height}"
       # height is not a guaranteed populated variable, do not assert if it's missing (which defaults to 0)
       resolution_assert: >-
@@ -54,7 +64,8 @@ presets:
           %if(
             %and(
               enable_resolution_assert,
-              %ne( height, 0 )
+              %ne( height, 0 ),
+              %not(resolution_assert_is_ignored)
             ),
             %assert(
               %gte( height, resolution_assert_height_gte ),

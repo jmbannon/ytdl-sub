@@ -176,3 +176,21 @@ following overrides:
      enable_resolution_assert: false
      # Change the resolution below which to assume downloading is throttled:
      resolution_assert_height_gte: 720
+
+.. _resolution assert handling:
+
+Handling Low Quality Videos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A side effect from throttle protection's resolution assert is, if the only resolution available is 360p or lower, it will
+error. You can either disable resolution assert entirely (see above), or ignore specific titles in the subscription
+using the ``resolution_assert_ignore_titles`` variable. Add a subset of the title (case-sensitive) as a list entry
+to your subscription, like so:
+
+.. code-block:: yaml
+
+   # use tilda mode to set override variables to the subscription
+   "~My Subscription":
+     url: "https://youtube.com/@channel"
+     resolution_assert_ignore_titles:
+       - "This 360p Video Title"

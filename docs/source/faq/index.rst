@@ -287,3 +287,8 @@ tell yt-dlp to explicitly download English metadata using.
   :alt:
      The Plex Agents settings page has Local Media Assets enabled for Personal Media
      Shows and Movies tabs.
+
+...ytdl-sub errors when downloading a 360p video with resolution assert
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:ref:`See how to either ignore this specific video or disable resolution assertion entirely here. <resolution assert handling>`
