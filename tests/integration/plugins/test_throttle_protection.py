@@ -290,6 +290,54 @@ class TestResolutionAssert:
         ):
             _ = subscription.download(dry_run=True)
 
+    def test_ignore_title_low_resolution(
+        self,
+        config,
+        subscription_name,
+        throttle_subscription_dict,
+        output_directory,
+        mock_download_collection_entries,
+    ):
+        throttle_subscription_dict["throttle_protection"]["max_downloads_per_subscription"] = {
+            "max": 1,
+            "min": 1,
+        }
+        throttle_subscription_dict["overrides"]["resolution_assert_ignore_titles"] = [
+            "Entry 20-3",
+        ]
+        subscription = Subscription.from_dict(
+            config=config,
+            preset_name=subscription_name,
+            preset_dict=throttle_subscription_dict,
+        )
+
+        # expected_message = (
+        #     "Entry Mock Entry 20-3 downloaded at a low resolution (640x360), "
+        #     "you've probably been throttled. "
+        #     "Stopping further downloads, wait a few hours and try again. "
+        #     "Disable using the override variable `enable_resolution_assert: False`"
+        # )
+
+        with (
+            mock_download_collection_entries(
+                is_youtube_channel=False,
+                num_urls=1,
+                is_extracted_audio=False,
+                is_dry_run=True,
+                mock_entry_kwargs={"height": 360, "width": 640},
+            ),
+            assert_logs(
+                logger=script_print_logger,
+                expected_message=(
+                    "Mock Entry 20-3 has a match in resolution_assert_ignore_titles, "
+                    "skipping resolution assert."
+                ),
+                log_level="info",
+                expected_occurrences=1,
+            ),
+        ):
+            _ = subscription.download(dry_run=True)
+
     def test_sleep_per_download_supports_entry_variables(
         self,
         config,
