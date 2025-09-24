@@ -15,7 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    "yt-dlp[default]==2025.9.5",
+    "yt-dlp[default]==2025.9.23",
     "colorama~=0.4",
     "mergedeep~=1.3",
     "mediafile~=0.12",
