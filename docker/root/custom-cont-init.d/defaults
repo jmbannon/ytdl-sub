@@ -31,6 +31,8 @@ if [ "$CRON_SCHEDULE" != "" ] ; then
 
     # create cron script wrapper
     echo '#!/bin/bash' > "$CRON_WRAPPER_SCRIPT"
+    # Echo commands for easier user debugging:
+    echo "set -x" >> "$CRON_WRAPPER_SCRIPT"
     echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> "$CRON_WRAPPER_SCRIPT"
     echo "cd \"$DEFAULT_WORKSPACE\"" >> "$CRON_WRAPPER_SCRIPT"
     echo ". \"$CRON_SCRIPT\" | tee -a \"$LOGS_TO_STDOUT\"" >> "$CRON_WRAPPER_SCRIPT"
