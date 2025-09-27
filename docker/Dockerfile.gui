@@ -78,7 +78,7 @@ RUN mkdir -p /config && \
     apt-get autoremove -y && \
     apt-get purge -y --auto-remove && \
     rm -rf /var/lib/apt/lists/* && \
-    python3 -m pip --help \
+    python3 -m pip --help
 
 ###############################################################################
 # CONTAINER CONFIGS

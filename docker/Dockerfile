@@ -55,7 +55,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       g++ \
       make \
       libffi-dev && \
-    python3 -m pip --help \
+    python3 -m pip --help
 
 
 ###############################################################################
