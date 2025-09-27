@@ -77,8 +77,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       g++ \
       make \
       xz-utils \
-      bzip2 \
-      python3-venv && \
+      bzip2 && \
     apt-get autoremove -y && \
     apt-get purge -y --auto-remove && \
     rm -rf /var/lib/apt/lists/* && \
