@@ -81,7 +81,6 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
     apt-get autoremove -y && \
     apt-get purge -y --auto-remove && \
     rm -rf /var/lib/apt/lists/* && \
-    # Ensure we did not delete pip, which is needed for yt-dlp updates
     python3 -m pip --help
 
 ###############################################################################

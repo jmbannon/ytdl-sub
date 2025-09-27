@@ -55,7 +55,6 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       g++ \
       make \
       libffi-dev && \
-    # Ensure we did not delete pip, which is needed for yt-dlp updates
     python3 -m pip --help
 
 
