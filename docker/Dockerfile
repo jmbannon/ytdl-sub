@@ -55,7 +55,6 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       g++ \
       make \
       libffi-dev \
-      py3-pip \
       py3-setuptools
 
 ###############################################################################

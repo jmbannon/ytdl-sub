@@ -41,7 +41,7 @@ else
 fi
 
 # set up cron
-if [ "$CRON_SCHEDULE" == "" ] ; then
+if [ "$CRON_SCHEDULE" != "" ] ; then
     [[ ! -e "$CRON_SCRIPT" ]] && \
     cp /defaults/cron "$CRON_SCRIPT"
 
