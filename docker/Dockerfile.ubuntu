@@ -26,6 +26,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       vim \
       g++ \
       nano \
+      unzip \
       make \
       python3-pip \
       fontconfig \
@@ -64,6 +65,8 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       echo "Phantom JS version:" && \
       phantomjs --version ; \
     fi && \
+    # Install Deno, required for YouTube downloads
+    curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh -s -- -y --no-modify-path && \
     # Install ytdl-sub, ensure it is installed properly
     pip install --no-cache-dir --break-system-packages ytdl_sub-*.whl && \
       ytdl-sub -h && \

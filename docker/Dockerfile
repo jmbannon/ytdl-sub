@@ -18,6 +18,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       vim \
       g++ \
       nano \
+      unzip \
       make \
       libffi-dev \
       "python3>=3.10" \
@@ -43,7 +44,8 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       phantomjs --version && \
       cd -; \
     fi && \
-    echo "hi" && \
+    # Install Deno, required for YouTube downloads
+    curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh -s -- -y --no-modify-path && \
     # Install ytdl-sub, ensure it is installed properly
     python3 -m pip install --break-system-packages --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
