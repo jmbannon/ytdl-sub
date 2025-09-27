@@ -28,16 +28,16 @@ echo "" > "$LOGS_TO_STDOUT"
 # https://github.com/yt-dlp/yt-dlp/wiki/Installation#with-pip
 if [ "$UPDATE_YT_DLP_ON_START" == "stable" ] ; then
     echo "UPDATE_YT_DLP_ON_START is set to stable, attempting to update to a new stable version of yt-dlp if it exists."
-    python3 -m pip install -U "yt-dlp[default]" --break-system-packages --root-user-action
+    python3 -m pip install -U "yt-dlp[default]" --break-system-packages --root-user-action=ignore
 elif [ "$UPDATE_YT_DLP_ON_START" == "nightly" ] ; then
     echo "UPDATE_YT_DLP_ON_START is set to nightly, attempting to update to the latest nightly version of yt-dlp."
-    python3 -m pip install -U --pre "yt-dlp[default]" --root-user-action
+    python3 -m pip install -U --pre "yt-dlp[default]" --root-user-action=ignore
 elif [ "$UPDATE_YT_DLP_ON_START" == "master" ] ; then
     echo "UPDATE_YT_DLP_ON_START is set to master, pulling yt-dlp's latest commit for install."
-    python3 -m pip install -U pip hatchling wheel --root-user-action
-    python3 -m pip install --force-reinstall "yt-dlp[default] @ https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz" --root-user-action
+    python3 -m pip install -U pip hatchling wheel --root-user-action=ignore
+    python3 -m pip install --force-reinstall "yt-dlp[default] @ https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz" --root-user-action=ignore
 else
-  echo "UPDATE_YT_DLP_ON_START is not set, using packaged version."
+    echo "UPDATE_YT_DLP_ON_START is not set, using packaged version."
 fi
 
 # set up cron
