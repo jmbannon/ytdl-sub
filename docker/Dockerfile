@@ -18,7 +18,9 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       vim \
       g++ \
       nano \
+      unzip \
       make \
+      deno \
       libffi-dev \
       "python3>=3.10" \
       py3-pip \
@@ -30,6 +32,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       "aria2>=1.36.0" && \
     ffmpeg -version && \
     aria2c --version && \
+    deno --version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       echo "installing phantomjs" && \
@@ -43,7 +46,6 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       phantomjs --version && \
       cd -; \
     fi && \
-    echo "hi" && \
     # Install ytdl-sub, ensure it is installed properly
     python3 -m pip install --break-system-packages --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
@@ -52,8 +54,9 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
     apk del \
       g++ \
       make \
-      libffi-dev \
-      py3-setuptools
+      libffi-dev && \
+    python3 -m pip --help
+
 
 ###############################################################################
 # CONTAINER CONFIGS

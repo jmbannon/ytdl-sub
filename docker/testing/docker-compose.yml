@@ -9,8 +9,9 @@ services:
       PUID: "1000"
       PGID: "1000"
       TZ: "America/Los_Angeles"
-      CRON_SCHEDULE: '"*/1 * * * *"'
+      CRON_SCHEDULE: '*/1 * * * *'
       CRON_RUN_ON_START: "true"
+      UPDATE_YT_DLP_ON_START: "stable"
     volumes:
       - "./volumes/ytdl-sub-gui/:/config/"
     ports:
@@ -19,14 +20,15 @@ services:
   ytdl-sub-headless:
     build:
       context: "../"
-    image: "ytdl-sub-headless:local"
+    image: "ytdl-sub:local"
     container_name: "ytdl-sub-headless"
     environment:
       PUID: "1000"
       PGID: "1000"
       TZ: "America/Los_Angeles"
-      CRON_SCHEDULE: '"*/1 * * * *"'
+      CRON_SCHEDULE: '*/1 * * * *'
       CRON_RUN_ON_START: "true"
+      UPDATE_YT_DLP_ON_START: "stable"
     volumes:
       - "./volumes/ytdl-sub-headless/:/config/"
     restart: "unless-stopped"
@@ -40,8 +42,9 @@ services:
       PUID: "1000"
       PGID: "1000"
       TZ: "America/Los_Angeles"
-      CRON_SCHEDULE: '"*/1 * * * *"'
+      CRON_SCHEDULE: '*/1 * * * *'
       CRON_RUN_ON_START: "true"
+      UPDATE_YT_DLP_ON_START: "stable"
     volumes:
       - "./volumes/ytdl-sub-ubuntu/:/config/"
     restart: "unless-stopped"

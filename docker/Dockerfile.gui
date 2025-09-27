@@ -23,6 +23,7 @@ RUN mkdir -p /config && \
       vim \
       g++ \
       nano \
+      unzip \
       make \
       python3-pip \
       fontconfig \
@@ -61,8 +62,11 @@ RUN mkdir -p /config && \
       echo "Phantom JS version:" && \
       phantomjs --version ; \
     fi && \
+    # Install Deno, required for YouTube downloads
+    curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh -s -- -y --no-modify-path && \
+    deno --help && \
     # Install ytdl-sub, ensure it is installed properly
-    pip install --no-cache-dir --break-system-packages ytdl_sub-*.whl && \
+    python3 -m pip install --no-cache-dir --break-system-packages ytdl_sub-*.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
@@ -70,11 +74,11 @@ RUN mkdir -p /config && \
       g++ \
       make \
       xz-utils \
-      bzip2 \
-      python3-venv && \
+      bzip2 && \
     apt-get autoremove -y && \
     apt-get purge -y --auto-remove && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    python3 -m pip --help
 
 ###############################################################################
 # CONTAINER CONFIGS
