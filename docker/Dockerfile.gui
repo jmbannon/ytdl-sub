@@ -64,6 +64,7 @@ RUN mkdir -p /config && \
     fi && \
     # Install Deno, required for YouTube downloads
     curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh -s -- -y --no-modify-path && \
+    deno --help &&
     # Install ytdl-sub, ensure it is installed properly
     pip install --no-cache-dir --break-system-packages ytdl_sub-*.whl && \
       ytdl-sub -h && \

@@ -20,6 +20,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       nano \
       unzip \
       make \
+      deno \
       libffi-dev \
       "python3>=3.10" \
       py3-pip \
@@ -31,6 +32,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       "aria2>=1.36.0" && \
     ffmpeg -version && \
     aria2c --version && \
+    deno --version && \
     # Install phantomjs if using x86_64, ensure it is properly installed
     if [[ $(uname -m) == "x86_64" ]]; then \
       echo "installing phantomjs" && \
@@ -44,8 +46,6 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       phantomjs --version && \
       cd -; \
     fi && \
-    # Install Deno, required for YouTube downloads
-    curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh -s -- -y --no-modify-path && \
     # Install ytdl-sub, ensure it is installed properly
     python3 -m pip install --break-system-packages --no-cache-dir ytdl_sub-*.whl && \
       ytdl-sub -h && \
