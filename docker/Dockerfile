@@ -54,8 +54,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
     apk del \
       g++ \
       make \
-      libffi-dev \
-      py3-setuptools
+      libffi-dev
 
 ###############################################################################
 # CONTAINER CONFIGS
