@@ -113,6 +113,22 @@ host. The following command is for the gui image:
 See `the Docker reference <https://docs.docker.com/engine/reference/run/>`_ for further
 details.
 
+Environment Variables
+---------------------
+``ytdl-sub`` docker images support the following environment variables.
+
+.. csv-table:: Docker Environment Variables
+   :header: "Name", "Supported Values", "Description"
+   :widths: 15, 10, 60
+
+   "``PUID``", "integer", "User ID"
+   "``PGID``", "integer", "Group ID"
+   "``TZ``", "timezone", "Optional. Timezone to use in the logs. For supported values, see this `list <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List>`_. "
+   "``CRON_SCHEDULE``", "cron schedule `format <https://crontab.guru/#0_*/6_*_*_*>`_", "Optional. Schedule to run the ``cron`` file in ytdl-sub's container. More info :ref:`here <guides/getting_started/automating_downloads:docker and unraid>`."
+   "``CRON_RUN_ON_START``", "true/false", "Optional. Whether to run the cron script on container start."
+   "``UPDATE_YT_DLP_ON_START``", "stable/nightly/master", "Optional. Whether to update yt-dlp to the latest configured version on container start."
+
+For the GUI image, you can set LSIO's underlying code-server `env variables <https://docs.linuxserver.io/images/docker-code-server/#environment-variables-e>`_ as well."
 
 Configuration
 -------------
