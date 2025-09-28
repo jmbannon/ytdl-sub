@@ -235,7 +235,7 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                     "postprocessors": [
                         {
                             "key": "SponsorBlock",
-                            "when": "pre_process",
+                            "when": "after_filter",
                             "categories": self.plugin_options.sponsorblock_categories,
                         },
                         {"key": "ModifyChapters"},
@@ -279,6 +279,20 @@ class ChaptersPlugin(Plugin[ChaptersOptions]):
                         ]
                     }
                 )
+
+            # Add this to the end to fully replicate sponsorblock chapter removal in yt-dlp
+            # reference: yt-dlp/devscripts/cli_to_api.py --sponsorblock-remove all --embed-chapters
+            if self._is_removing_chapters:
+                builder.add(
+                    {
+                        "postprocessors": [
+                            {'key': 'FFmpegConcat',
+                             'only_multi_video': True,
+                             'when': 'playlist'}
+                        ]
+                    }
+                )
+
 
         return builder.to_dict()
 
