@@ -74,8 +74,6 @@ class TestUrl:
             upload_date_idx=0,
         ).initialize_script(subscription.overrides)
 
-        entry.add({
-            v.ytdl_sub_input_url_index.variable_name: 0
-        })
+        entry.add({v.ytdl_sub_input_url_index.variable_name: 0})
 
         assert downloader.webpage_url(entry) == "youtube.com/test_url_append_test"
