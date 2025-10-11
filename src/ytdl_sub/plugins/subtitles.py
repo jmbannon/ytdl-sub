@@ -234,7 +234,7 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
                 download_subtitle_file_name = entry.base_filename(
                     ext=f"{lang}.{self.plugin_options.subtitles_type}"
                 )
-                if os.path.isfile(download_subtitle_file_name):
+                if os.path.isfile(Path(self.working_directory) / download_subtitle_file_name):
                     download_subtitle_lang_file_names.append((lang, download_subtitle_file_name))
                 elif lang in self.plugin_options.languages_required:
                     raise UserThrownRuntimeError(
