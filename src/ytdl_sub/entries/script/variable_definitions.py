@@ -1162,6 +1162,7 @@ class VariableDefinitions(
         """
         return {
             self.uid,
+            self.extractor,
             self.extractor_key,
             self.epoch,
             self.webpage_url,

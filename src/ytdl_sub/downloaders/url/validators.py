@@ -52,6 +52,7 @@ class UrlValidator(StrictDictValidator):
         "download_reverse",
         "ytdl_options",
         "include_sibling_metadata",
+        "webpage_url",
     }
 
     @classmethod
@@ -88,6 +89,9 @@ class UrlValidator(StrictDictValidator):
             key="include_sibling_metadata",
             validator=OverridesBooleanFormatterValidator,
             default="False",
+        )
+        self._webpage_url = self._validate_key(
+            key="webpage_url", validator=StringFormatterValidator, default="{webpage_url}"
         )
 
     @property
@@ -179,6 +183,19 @@ class UrlValidator(StrictDictValidator):
         ``n^2`` metadata. Defaults to False.
         """
         return self._include_sibling_metadata
+
+    @property
+    def webpage_url(self) -> StringFormatterValidator:
+        """
+        Optional. After ytdl-sub performs the metadata download, it will inspect each
+        entry's .info.json file and perform the actual download from yt-dlp using
+        `webpage_url <config_reference/scripting/entry_variables:webpage_url>`. This
+        can be overwritten by supplying parameter with a modification to ``webpage_url`` in the
+        form of an override variable.
+
+        Defaults to ``{webpage_url}``.
+        """
+        return self._webpage_url
 
 
 class UrlStringOrDictValidator(UrlValidator):
