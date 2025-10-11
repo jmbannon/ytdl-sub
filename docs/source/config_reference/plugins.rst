@@ -980,6 +980,14 @@ It will set the respective language to the correct subtitle file.
   language codes. Defaults to only "en".
 
 
+``languages_required``
+
+:expected type: Optional[List[String]]
+:description:
+  Language code(s) that are required to be present for downloads to continue. If missing,
+  ytdl-sub will throw an error. NOTE: currently this only checks file-based subtitles.
+
+
 ``subtitles_name``
 
 :expected type: Optional[EntryFormatter]
