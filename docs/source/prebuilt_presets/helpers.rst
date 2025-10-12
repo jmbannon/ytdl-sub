@@ -1,3 +1,6 @@
+
+
+
 ==============
 Helper Presets
 ==============
@@ -194,3 +197,41 @@ to your subscription, like so:
      url: "https://youtube.com/@channel"
      resolution_assert_ignore_titles:
        - "This 360p Video Title"
+
+_url
+----
+
+All prebuilt presets share the same internal ``_multi_url`` preset which comes equipped with
+a few available customizations.
+
+Sibling Metadata
+~~~~~~~~~~~~~~~~
+
+*Sibling* refers to any entry within the same *playlist*. For channel downloads, this would
+imply **every** video that gets downloaded since yt-dlp treats the channel as the *playlist*.
+
+Setting the variable ``include_sibling_metadata`` will include all sibling metadata within
+each individual entry's metadata. This is used specifically for music presets. When downloading
+a playlist as an album for example, it will take the max year amongst all the other sibling's metadata
+to have a consistent album year that can be used in file or directory naming.
+
+Webpage URL
+~~~~~~~~~~~
+
+``ytdl-sub`` performs downloads in two stages.
+
+1. Metadata scrape from the original URL
+2. Individual entry downloads
+
+For step 2, ``ytdl-sub`` will use the ``webpage_url`` variable by default for the input URL to yt-dlp.
+This can be modified in case it's not working as expected by using the variable ``modified_webpage_url``.
+
+Example:
+
+.. code-block:: yaml
+  :caption:
+     Removes yt-dlp smuggle data from the URL
+
+   overrides:
+     modified_webpage_url: >-
+       { %regex_sub("#__youtubedl_smuggle=.*", "", webpage_url) }
