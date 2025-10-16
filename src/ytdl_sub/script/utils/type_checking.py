@@ -2,6 +2,7 @@
 import inspect
 from dataclasses import dataclass
 from inspect import FullArgSpec
+from types import NoneType
 from typing import Callable
 from typing import List
 from typing import Optional
@@ -50,7 +51,7 @@ def get_optional_type(optional_type: Type) -> Type[NamedType]:
     -------
     Type within the Optional[Type]
     """
-    return [arg for arg in optional_type.__args__ if arg != type(None)][0]
+    return [arg for arg in optional_type.__args__ if not isinstance(arg, NoneType)][0]
 
 
 def _is_union_compatible(
