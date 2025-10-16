@@ -201,7 +201,11 @@ def add_ffmpeg_metadata_key_values(file_path: str, key_values: Dict[str, str]) -
         "-dn",  # ignore data streams
     ]
     for key, value in key_values.items():
-        ffmpeg_args.extend(["-metadata", f"{key}={value}"])
+        # Some special characters (utf-16 maybe?) have null-byte
+        # which results in ffmpeg error, remove them outright
+        value_null_byte_removed = value.replace('\0', '')
+        ffmpeg_args.extend(["-metadata", f"{key}={value_null_byte_removed}"])
+
     ffmpeg_args.extend(["-codec", "copy", "-bitexact", tmp_file_path])
 
     FFMPEG.run(ffmpeg_args)
