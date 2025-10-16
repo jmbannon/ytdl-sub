@@ -50,6 +50,7 @@ lint = [
     "black==24.10.0",
     "isort==6.1.0",
     "pylint==3.3.8",
+    "ruff==0.14.0",
 ]
 docs = [
     "sphinx>=7,<9",
@@ -100,3 +101,24 @@ include = [
 exclude_also = [
     "raise UNREACHABLE.*",
 ]
+
+# ruff
+[tool.ruff]
+line-length = 100
+indent-width = 4
+
+# Assume Python 3.10
+target-version = "py310"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
