@@ -2,6 +2,8 @@ import os
 
 from ytdl_sub.utils.system import IS_WINDOWS
 
+# pylint: disable=invalid-name
+
 
 def _existing_path(*paths: str) -> str:
     """
