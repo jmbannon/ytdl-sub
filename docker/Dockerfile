@@ -46,8 +46,12 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       phantomjs --version && \
       cd -; \
     fi && \
+    # Configure pip globally
+    echo -e "[global]\nbreak-system-packages = true\nroot-user-action = ignore\nno-cache-dir = true" > /etc/pip.conf && \
+    # Upgrade pip itself (still need to keep the flags here)
+    python3 -m pip install --upgrade pip --break-system-packages --no-cache-dir --root-user-action=ignore && \
     # Install ytdl-sub, ensure it is installed properly
-    python3 -m pip install --break-system-packages --no-cache-dir ytdl_sub-*.whl && \
+    python3 -m pip install ytdl_sub-*.whl && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
