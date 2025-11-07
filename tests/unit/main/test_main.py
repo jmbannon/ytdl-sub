@@ -244,7 +244,9 @@ def test_no_positional_arg_command(mock_sys_exit, tv_show_config_path):
         main()
 
         assert mock_error.call_count == 1
-        assert mock_error.call_args.args[0] == "Must provide one of the commands: sub, dl, view"
+        assert mock_error.call_args.args[0] == (
+            "Must provide one of the commands: sub, dl, view, cli-to-sub"
+        )
 
 
 def test_bad_config_path(mock_sys_exit):
