@@ -105,3 +105,11 @@ Preview the source variables for a given URL. Helpful to create new subscription
 
   -sc, --split-chapters
                         View source variables after splitting by chapters
+
+CLI to SUB Options
+------------------
+Convert yt-dlp cli arguments to ytdl-sub `ytdl_options` arguments.
+
+.. code-block::
+
+   ytdl-sub cli-to-sub [YT-DLP ARGS]

@@ -264,3 +264,18 @@ def test_bad_config_path(mock_sys_exit):
             "The config file 'does_not_exist.yaml' could not be found. "
             "Did you set --config correctly?"
         )
+
+
+def test_cli_to_sub(mock_sys_exit, capsys):
+    with (
+        mock_sys_exit(expected_exit_code=0),
+        patch.object(
+            sys,
+            "argv",
+            ["ytdl-sub", "cli-to-sub", "--mark-watched", "--mtime"],
+        ),
+    ):
+        main()
+
+    captured = capsys.readouterr()
+    assert captured.out == ("ytdl_options:\n  mark_watched: true\n  updatetime: true\n\n")
