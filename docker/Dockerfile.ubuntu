@@ -70,8 +70,8 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
     deno --help && \
     # Configure pip globally
     echo -e "[global]\nbreak-system-packages = true\nroot-user-action = ignore\nno-cache-dir = true" > /etc/pip.conf && \
-    # Install ytdl-sub, ensure it is installed properly
-    python3 -m pip install ytdl_sub-*.whl && \
+    # Install ytdl-sub and yt-dlp dependencies, ensure they are installed properly
+    python3 -m pip install ytdl_sub-*.whl curl-cffi yt-dlp-ejs && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \
