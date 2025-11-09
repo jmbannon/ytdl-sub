@@ -17,12 +17,12 @@ echo "Starting ytdl-sub..."
   echo "alias ls='ls --color=auto'" > /config/.bashrc && \
   echo "cd ." >> /config/.bashrc
 
+# always create empty cron log file on start
+echo "" > "$LOGS_TO_STDOUT"
+
 # permissions
 chown -R ${PUID:-abc}:${PGID:-abc} \
     /config
-
-# always create empty cron log file on start
-echo "" > "$LOGS_TO_STDOUT"
 
 # update command reference:
 # https://github.com/yt-dlp/yt-dlp/wiki/Installation#with-pip
