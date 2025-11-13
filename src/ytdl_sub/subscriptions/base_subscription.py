@@ -22,6 +22,7 @@ def _initialize_download_archive(
     overrides: Overrides,
     working_directory: str,
     output_directory: str,
+    config_options: ConfigOptions,
 ) -> EnhancedDownloadArchive:
     migrated_file_name: Optional[str] = None
     if migrated_file_name_option := output_options.migrated_download_archive_name:
@@ -32,6 +33,7 @@ def _initialize_download_archive(
         working_directory=working_directory,
         output_directory=output_directory,
         migrated_file_name=migrated_file_name,
+        preserve_mtime=config_options.preserve_mtime,
     ).reinitialize(dry_run=True)
 
 
@@ -80,6 +82,7 @@ class BaseSubscription(ABC):
                 overrides=self.overrides,
                 working_directory=self.working_directory,
                 output_directory=self.output_directory,
+                config_options=self._config_options,
             )
         )
 

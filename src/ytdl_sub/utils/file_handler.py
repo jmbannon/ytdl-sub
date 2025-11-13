@@ -2,7 +2,9 @@ import hashlib
 import json
 import os
 import shutil
+import time
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -392,7 +394,7 @@ class FileHandler:
         # Perform the copy by first writing to a temp file, then moving it.
         # This tries to prevent corrupted writes if the processed dies mid-write,
         atomic_dst = f"{dst_file_path}-ytdl-sub-incomplete"
-        shutil.copyfile(src=src_file_path, dst=atomic_dst)
+        shutil.copy2(src=src_file_path, dst=atomic_dst)
         shutil.move(src=atomic_dst, dst=dst_file_path)
 
     @classmethod
@@ -429,6 +431,25 @@ class FileHandler:
         """
         if os.path.isfile(file_path):
             os.remove(file_path)
+
+    @classmethod
+    def set_mtime(cls, file_path: Union[str, Path], mtime: float):
+        """
+        Set the modification time of a file
+
+        Parameters
+        ----------
+        file_path
+            Path to the file to modify
+        mtime
+            Modification time as a Unix timestamp
+        """
+        try:
+            # Set both access time and modification time
+            os.utime(file_path, (mtime, mtime))
+        except OSError:
+            # If file operation fails, silently continue
+            pass
 
     def move_file_to_output_directory(
         self,

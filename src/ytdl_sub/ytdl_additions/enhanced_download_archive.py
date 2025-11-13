@@ -1,6 +1,7 @@
 import copy
 import json
 import os.path
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -397,6 +398,7 @@ class EnhancedDownloadArchive:
         output_directory: str,
         dry_run: bool = False,
         migrated_file_name: Optional[str] = None,
+        preserve_mtime: bool = False,
     ):
         self._file_name = file_name
         self._file_handler = FileHandler(
@@ -404,6 +406,7 @@ class EnhancedDownloadArchive:
         )
         self._download_mapping = DownloadMappings()  # gets reinitialized
         self._migrated_file_name = migrated_file_name
+        self._preserve_mtime = preserve_mtime
 
         self.num_entries_added: int = 0
         self.num_entries_modified: int = 0
@@ -673,6 +676,22 @@ class EnhancedDownloadArchive:
             output_file_name=output_file_name,
             copy_file=copy_file,
         )
+
+        # Set mtime if preserve_mtime is enabled and we have an entry with upload_date
+        if self._preserve_mtime and entry and not self._file_handler.dry_run:
+            upload_date = entry.get(v.upload_date, str)
+            if upload_date:
+                try:
+                    # Convert YYYYMMDD to timestamp
+                    upload_datetime = datetime.strptime(upload_date, "%Y%m%d")
+                    upload_timestamp = time.mktime(upload_datetime.timetuple())
+
+                    # Set mtime on the output file
+                    output_file_path = Path(self._file_handler.output_directory) / output_file_name
+                    FileHandler.set_mtime(output_file_path, upload_timestamp)
+                except (ValueError, OSError):
+                    # If date parsing or file operation fails, silently continue
+                    pass
 
         # Determine if it's the entry file by seeing if the file_name to move matches the entry
         # download file name
