@@ -9,6 +9,7 @@ import pytest
 
 from ytdl_sub.cli.entrypoint import _download_subscriptions_from_yaml_files
 from ytdl_sub.cli.entrypoint import main
+from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
 
@@ -59,6 +60,7 @@ def test_subscription_logs_write_to_file(
                 subscription_override_dict={},
                 update_with_info_json=False,
                 dry_run=dry_run,
+                shuffle=False,
             )
         except ValueError:
             assert not mock_success_output
@@ -120,3 +122,40 @@ def test_update_with_info_json_requires_experimental_flag(
         pytest.raises(ExperimentalFeatureNotEnabled),
     ):
         _ = main()
+
+
+def test_subscription_shuffle(
+    default_config: ConfigFile,
+    mock_subscription_download_factory: Callable,
+    music_video_subscription_path: Path,
+):
+
+    subscription_paths = [str(music_video_subscription_path)]
+
+    with (
+        patch.object(
+            Subscription,
+            "download",
+            new=mock_subscription_download_factory(mock_success_output=True),
+        ),
+    ):
+        out1 = _download_subscriptions_from_yaml_files(
+            config=default_config,
+            subscription_paths=subscription_paths,
+            subscription_matches=[],
+            subscription_override_dict={},
+            update_with_info_json=False,
+            dry_run=True,
+            shuffle=True,
+        )
+        out2 = _download_subscriptions_from_yaml_files(
+            config=default_config,
+            subscription_paths=subscription_paths,
+            subscription_matches=[],
+            subscription_override_dict={},
+            update_with_info_json=False,
+            dry_run=True,
+            shuffle=True,
+        )
+
+    assert [sub.name for sub in out1] != [sub.name for sub in out2]
