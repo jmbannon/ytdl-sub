@@ -73,6 +73,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             file_metadata=entry_metadata,
             output_file_name=output_file_name,
             entry=entry,
+            preserve_mtime=self.output_options.preserve_mtime,
         )
 
         # Always pretend to include the thumbnail in a dry-run
@@ -87,6 +88,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 output_file_name=output_thumbnail_name,
                 entry=entry,
                 copy_file=True,
+                preserve_mtime=self.output_options.preserve_mtime,
             )
         elif not entry.is_thumbnail_downloaded():
             logger.warning(
@@ -106,6 +108,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 file_name=entry.get_download_info_json_name(),
                 output_file_name=output_info_json_name,
                 entry=entry,
+                preserve_mtime=self.output_options.preserve_mtime,
             )
 
     def _delete_working_directory(self, is_error: bool = False) -> None:

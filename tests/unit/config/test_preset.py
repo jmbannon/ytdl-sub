@@ -120,6 +120,26 @@ class TestPreset:
             == "today-2months"
         )
 
+    def test_preset_preserve_mtime_option(self, config_file, youtube_video, output_options):
+        # Test preserve_mtime defaults to False
+        preset_default = Preset(
+            config=config_file,
+            name="test_default",
+            value={"download": youtube_video, "output_options": output_options},
+        )
+        assert preset_default.output_options.preserve_mtime is False
+
+        # Test preserve_mtime can be set to True
+        preset_enabled = Preset(
+            config=config_file,
+            name="test_enabled",
+            value={
+                "download": youtube_video,
+                "output_options": dict(output_options, **{"preserve_mtime": True}),
+            },
+        )
+        assert preset_enabled.output_options.preserve_mtime is True
+
     @pytest.mark.parametrize(
         "parent_preset", ["preset_self_loop", "preset_loop_0", "preset_loop_1"]
     )

@@ -763,6 +763,15 @@ Defines where to output files and thumbnails after all post-processing has compl
   The output directory to store all media files downloaded.
 
 
+``preserve_mtime``
+
+:expected type: Optional[Boolean]
+:description:
+  Preserve the video's original upload time as the file modification time.
+  When True, sets the file's mtime to match the video's upload_date from
+  yt-dlp metadata. Defaults to False.
+
+
 ``thumbnail_name``
 
 :expected type: Optional[EntryFormatter]
