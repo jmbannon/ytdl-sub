@@ -107,6 +107,7 @@ class OutputOptions(OptionsDictValidator):
         "keep_max_files",
         "download_archive_standardized_date",
         "keep_files_date_eval",
+        "preserve_mtime",
     }
 
     @classmethod
@@ -168,6 +169,10 @@ class OutputOptions(OptionsDictValidator):
             "keep_files_date_eval",
             StandardizedDateValidator,
             default=f"{{{v.upload_date_standardized.variable_name}}}",
+        )
+
+        self._preserve_mtime = self._validate_key_if_present(
+            key="preserve_mtime", validator=BoolValidator, default=False
         )
 
         if (
@@ -308,6 +313,17 @@ class OutputOptions(OptionsDictValidator):
           applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
         """
         return self._keep_max_files
+
+    @property
+    def preserve_mtime(self) -> bool:
+        """
+        :expected type: Optional[Boolean]
+        :description:
+          Preserve the video's original upload time as the file modification time.
+          When True, sets the file's mtime to match the video's upload_date from
+          yt-dlp metadata. Defaults to False.
+        """
+        return self._preserve_mtime.value
 
     def added_variables(self, unresolved_variables: Set[str]) -> Dict[PluginOperation, Set[str]]:
         return {

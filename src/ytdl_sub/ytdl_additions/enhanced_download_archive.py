@@ -398,7 +398,6 @@ class EnhancedDownloadArchive:
         output_directory: str,
         dry_run: bool = False,
         migrated_file_name: Optional[str] = None,
-        preserve_mtime: bool = False,
     ):
         self._file_name = file_name
         self._file_handler = FileHandler(
@@ -406,7 +405,6 @@ class EnhancedDownloadArchive:
         )
         self._download_mapping = DownloadMappings()  # gets reinitialized
         self._migrated_file_name = migrated_file_name
-        self._preserve_mtime = preserve_mtime
 
         self.num_entries_added: int = 0
         self.num_entries_modified: int = 0
@@ -645,6 +643,7 @@ class EnhancedDownloadArchive:
         output_file_name: Optional[str] = None,
         entry: Optional[Entry] = None,
         copy_file: bool = False,
+        preserve_mtime: bool = False,
     ):
         """
         Saves a file from the working directory to the output directory and record it in the
@@ -663,6 +662,8 @@ class EnhancedDownloadArchive:
             Optional. Entry that this file belongs to
         copy_file
             Optional. If True, copy the file. Move otherwise
+        preserve_mtime
+            Optional. If True and entry has upload_date, set file mtime to upload date
         """
         if output_file_name is None:
             output_file_name = file_name
@@ -678,7 +679,7 @@ class EnhancedDownloadArchive:
         )
 
         # Set mtime if preserve_mtime is enabled and we have an entry with upload_date
-        if self._preserve_mtime and entry and not self._file_handler.dry_run:
+        if preserve_mtime and entry and not self._file_handler.dry_run:
             upload_date = entry.get(v.upload_date, str)
             if upload_date:
                 try:

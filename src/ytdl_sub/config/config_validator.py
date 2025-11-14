@@ -112,7 +112,6 @@ class ConfigOptions(StrictDictValidator):
         "ffprobe_path",
         "file_name_max_bytes",
         "experimental",
-        "preserve_mtime",
     }
 
     def __init__(self, name: str, value: Any):
@@ -146,9 +145,6 @@ class ConfigOptions(StrictDictValidator):
         )
         self._file_name_max_bytes = self._validate_key(
             key="file_name_max_bytes", validator=IntValidator, default=MAX_FILE_NAME_BYTES
-        )
-        self._preserve_mtime = self._validate_key(
-            key="preserve_mtime", validator=BoolValidator, default=False
         )
 
     @property
@@ -243,15 +239,6 @@ class ConfigOptions(StrictDictValidator):
         ``./ffprobe.exe`` in the same directory as ytdl-sub for Windows)
         """
         return self._ffprobe_path.value
-
-    @property
-    def preserve_mtime(self) -> bool:
-        """
-        Preserve the video's original upload time as the file modification time.
-        When True, sets the file's mtime to match the video's upload_date from
-        yt-dlp metadata. (default ``False``)
-        """
-        return self._preserve_mtime.value
 
 
 class ConfigValidator(StrictDictValidator):

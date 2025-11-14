@@ -392,7 +392,7 @@ class FileHandler:
         # Perform the copy by first writing to a temp file, then moving it.
         # This tries to prevent corrupted writes if the processed dies mid-write,
         atomic_dst = f"{dst_file_path}-ytdl-sub-incomplete"
-        shutil.copy2(src=src_file_path, dst=atomic_dst)
+        shutil.copyfile(src=src_file_path, dst=atomic_dst)
         shutil.move(src=atomic_dst, dst=dst_file_path)
 
     @classmethod
