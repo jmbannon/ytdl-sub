@@ -680,11 +680,11 @@ class EnhancedDownloadArchive:
 
         # Set mtime if preserve_mtime is enabled and we have an entry with upload_date
         if preserve_mtime and entry and not self._file_handler.dry_run:
-            upload_date = entry.get(v.upload_date, str)
+            upload_date = entry.get(v.ytdl_sub_keep_files_date_eval, str)
             if upload_date:
                 try:
-                    # Convert YYYYMMDD to timestamp
-                    upload_datetime = datetime.strptime(upload_date, "%Y%m%d")
+                    # Convert YYYY-mm-dd to timestamp
+                    upload_datetime = datetime.strptime(upload_date, "%Y-%m-%d")
                     upload_timestamp = time.mktime(upload_datetime.timetuple())
 
                     # Set mtime on the output file
