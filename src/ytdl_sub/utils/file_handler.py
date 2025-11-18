@@ -430,6 +430,25 @@ class FileHandler:
         if os.path.isfile(file_path):
             os.remove(file_path)
 
+    @classmethod
+    def set_mtime(cls, file_path: Union[str, Path], mtime: float):
+        """
+        Set the modification time of a file
+
+        Parameters
+        ----------
+        file_path
+            Path to the file to modify
+        mtime
+            Modification time as a Unix timestamp
+        """
+        try:
+            # Set both access time and modification time
+            os.utime(file_path, (mtime, mtime))
+        except OSError:
+            # If file operation fails, silently continue
+            pass
+
     def move_file_to_output_directory(
         self,
         file_name: str,
