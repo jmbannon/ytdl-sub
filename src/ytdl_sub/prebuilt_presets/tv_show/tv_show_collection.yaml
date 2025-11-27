@@ -142,6 +142,38 @@ presets:
             uid: "avatar_uncropped"
           - name: "{tv_show_fanart_file_name}"
             uid: "banner_uncropped"
+      - url: "{s01_url2}"
+        variables:
+          collection_season_number: "1"
+          collection_season_name: "{collection_season_1_name}"
+      - url: "{s01_url3}"
+        variables:
+          collection_season_number: "1"
+          collection_season_name: "{collection_season_1_name}"
+      - url: "{s01_url4}"
+        variables:
+          collection_season_number: "1"
+          collection_season_name: "{collection_season_1_name}"
+      - url: "{s01_url5}"
+        variables:
+          collection_season_number: "1"
+          collection_season_name: "{collection_season_1_name}"
+      - url: "{s01_url6}"
+        variables:
+          collection_season_number: "1"
+          collection_season_name: "{collection_season_1_name}"
+      - url: "{s01_url7}"
+        variables:
+          collection_season_number: "1"
+          collection_season_name: "{collection_season_1_name}"
+      - url: "{s01_url8}"
+        variables:
+          collection_season_number: "1"
+          collection_season_name: "{collection_season_1_name}"
+      - url: "{s01_url9}"
+        variables:
+          collection_season_number: "1"
+          collection_season_name: "{collection_season_1_name}"
 
       - url: "{collection_season_2_url}"
         variables:
@@ -150,6 +182,42 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s02_url2}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
+      - url: "{s02_url3}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
+      - url: "{s02_url4}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
+      - url: "{s02_url5}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
+      - url: "{s02_url6}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
+      - url: "{s02_url7}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
+      - url: "{s02_url8}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
+      - url: "{s02_url9}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
+      - url: "{s02_url10}"
+        variables:
+          collection_season_number: "2"
+          collection_season_name: "{collection_season_2_name}"
 
       - url: "{collection_season_3_url}"
         variables:
@@ -158,6 +226,39 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s03_url2}"
+        variables:
+          collection_season_number: "3"
+          collection_season_name: "{collection_season_3_name}"
+      - url: "{s03_url3}"
+        variables:
+          collection_season_number: "3"
+          collection_season_name: "{collection_season_3_name}"
+      - url: "{s03_url4}"
+        variables:
+          collection_season_number: "3"
+          collection_season_name: "{collection_season_3_name}"
+      - url: "{s03_url5}"
+        variables:
+          collection_season_number: "3"
+          collection_season_name: "{collection_season_3_name}"
+      - url: "{s03_url6}"
+        variables:
+          collection_season_number: "3"
+          collection_season_name: "{collection_season_3_name}"
+      - url: "{s03_url7}"
+        variables:
+          collection_season_number: "3"
+          collection_season_name: "{collection_season_3_name}"
+      - url: "{s03_url8}"
+        variables:
+          collection_season_number: "3"
+          collection_season_name: "{collection_season_3_name}"
+      - url: "{s03_url9}"
+        variables:
+          collection_season_number: "3"
+          collection_season_name: "{collection_season_3_name}"
+
 
       - url: "{collection_season_4_url}"
         variables:
@@ -166,6 +267,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s04_url2}"
+        variables:
+          collection_season_number: "4"
+          collection_season_name: "{collection_season_4_name}"
+      - url: "{s04_url3}"
+        variables:
+          collection_season_number: "4"
+          collection_season_name: "{collection_season_4_name}"
+      - url: "{s04_url4}"
+        variables:
+          collection_season_number: "4"
+          collection_season_name: "{collection_season_4_name}"
+      - url: "{s04_url5}"
+        variables:
+          collection_season_number: "4"
+          collection_season_name: "{collection_season_4_name}"
+      - url: "{s04_url6}"
+        variables:
+          collection_season_number: "4"
+          collection_season_name: "{collection_season_4_name}"
+      - url: "{s04_url7}"
+        variables:
+          collection_season_number: "4"
+          collection_season_name: "{collection_season_4_name}"
+      - url: "{s04_url8}"
+        variables:
+          collection_season_number: "4"
+          collection_season_name: "{collection_season_4_name}"
+      - url: "{s04_url9}"
+        variables:
+          collection_season_number: "4"
+          collection_season_name: "{collection_season_4_name}"
 
       - url: "{collection_season_5_url}"
         variables:
@@ -174,6 +307,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s05_url2}"
+        variables:
+          collection_season_number: "5"
+          collection_season_name: "{collection_season_5_name}"
+      - url: "{s05_url3}"
+        variables:
+          collection_season_number: "5"
+          collection_season_name: "{collection_season_5_name}"
+      - url: "{s05_url4}"
+        variables:
+          collection_season_number: "5"
+          collection_season_name: "{collection_season_5_name}"
+      - url: "{s05_url5}"
+        variables:
+          collection_season_number: "5"
+          collection_season_name: "{collection_season_5_name}"
+      - url: "{s05_url6}"
+        variables:
+          collection_season_number: "5"
+          collection_season_name: "{collection_season_5_name}"
+      - url: "{s05_url7}"
+        variables:
+          collection_season_number: "5"
+          collection_season_name: "{collection_season_5_name}"
+      - url: "{s05_url8}"
+        variables:
+          collection_season_number: "5"
+          collection_season_name: "{collection_season_5_name}"
+      - url: "{s05_url9}"
+        variables:
+          collection_season_number: "5"
+          collection_season_name: "{collection_season_5_name}"
 
       - url: "{collection_season_6_url}"
         variables:
@@ -182,6 +347,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s06_url2}"
+        variables:
+          collection_season_number: "6"
+          collection_season_name: "{collection_season_6_name}"
+      - url: "{s06_url3}"
+        variables:
+          collection_season_number: "6"
+          collection_season_name: "{collection_season_6_name}"
+      - url: "{s06_url4}"
+        variables:
+          collection_season_number: "6"
+          collection_season_name: "{collection_season_6_name}"
+      - url: "{s06_url5}"
+        variables:
+          collection_season_number: "6"
+          collection_season_name: "{collection_season_6_name}"
+      - url: "{s06_url6}"
+        variables:
+          collection_season_number: "6"
+          collection_season_name: "{collection_season_6_name}"
+      - url: "{s06_url7}"
+        variables:
+          collection_season_number: "6"
+          collection_season_name: "{collection_season_6_name}"
+      - url: "{s06_url8}"
+        variables:
+          collection_season_number: "6"
+          collection_season_name: "{collection_season_6_name}"
+      - url: "{s06_url9}"
+        variables:
+          collection_season_number: "6"
+          collection_season_name: "{collection_season_6_name}"
 
       - url: "{collection_season_7_url}"
         variables:
@@ -190,6 +387,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s07_url2}"
+        variables:
+          collection_season_number: "7"
+          collection_season_name: "{collection_season_7_name}"
+      - url: "{s07_url3}"
+        variables:
+          collection_season_number: "7"
+          collection_season_name: "{collection_season_7_name}"
+      - url: "{s07_url4}"
+        variables:
+          collection_season_number: "7"
+          collection_season_name: "{collection_season_7_name}"
+      - url: "{s07_url5}"
+        variables:
+          collection_season_number: "7"
+          collection_season_name: "{collection_season_7_name}"
+      - url: "{s07_url6}"
+        variables:
+          collection_season_number: "7"
+          collection_season_name: "{collection_season_7_name}"
+      - url: "{s07_url7}"
+        variables:
+          collection_season_number: "7"
+          collection_season_name: "{collection_season_7_name}"
+      - url: "{s07_url8}"
+        variables:
+          collection_season_number: "7"
+          collection_season_name: "{collection_season_7_name}"
+      - url: "{s07_url9}"
+        variables:
+          collection_season_number: "7"
+          collection_season_name: "{collection_season_7_name}"
 
       - url: "{collection_season_8_url}"
         variables:
@@ -198,6 +427,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s08_url2}"
+        variables:
+          collection_season_number: "8"
+          collection_season_name: "{collection_season_8_name}"
+      - url: "{s08_url3}"
+        variables:
+          collection_season_number: "8"
+          collection_season_name: "{collection_season_8_name}"
+      - url: "{s08_url4}"
+        variables:
+          collection_season_number: "8"
+          collection_season_name: "{collection_season_8_name}"
+      - url: "{s08_url5}"
+        variables:
+          collection_season_number: "8"
+          collection_season_name: "{collection_season_8_name}"
+      - url: "{s08_url6}"
+        variables:
+          collection_season_number: "8"
+          collection_season_name: "{collection_season_8_name}"
+      - url: "{s08_url7}"
+        variables:
+          collection_season_number: "8"
+          collection_season_name: "{collection_season_8_name}"
+      - url: "{s08_url8}"
+        variables:
+          collection_season_number: "8"
+          collection_season_name: "{collection_season_8_name}"
+      - url: "{s08_url9}"
+        variables:
+          collection_season_number: "8"
+          collection_season_name: "{collection_season_8_name}"
 
       - url: "{collection_season_9_url}"
         variables:
@@ -206,6 +467,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s09_url2}"
+        variables:
+          collection_season_number: "9"
+          collection_season_name: "{collection_season_9_name}"
+      - url: "{s09_url3}"
+        variables:
+          collection_season_number: "9"
+          collection_season_name: "{collection_season_9_name}"
+      - url: "{s09_url4}"
+        variables:
+          collection_season_number: "9"
+          collection_season_name: "{collection_season_9_name}"
+      - url: "{s09_url5}"
+        variables:
+          collection_season_number: "9"
+          collection_season_name: "{collection_season_9_name}"
+      - url: "{s09_url6}"
+        variables:
+          collection_season_number: "9"
+          collection_season_name: "{collection_season_9_name}"
+      - url: "{s09_url7}"
+        variables:
+          collection_season_number: "9"
+          collection_season_name: "{collection_season_9_name}"
+      - url: "{s09_url8}"
+        variables:
+          collection_season_number: "9"
+          collection_season_name: "{collection_season_9_name}"
+      - url: "{s09_url9}"
+        variables:
+          collection_season_number: "9"
+          collection_season_name: "{collection_season_9_name}"
 
       - url: "{collection_season_10_url}"
         variables:
@@ -214,6 +507,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s10_url2}"
+        variables:
+          collection_season_number: "10"
+          collection_season_name: "{collection_season_10_name}"
+      - url: "{s10_url3}"
+        variables:
+          collection_season_number: "10"
+          collection_season_name: "{collection_season_10_name}"
+      - url: "{s10_url4}"
+        variables:
+          collection_season_number: "10"
+          collection_season_name: "{collection_season_10_name}"
+      - url: "{s10_url5}"
+        variables:
+          collection_season_number: "10"
+          collection_season_name: "{collection_season_10_name}"
+      - url: "{s10_url6}"
+        variables:
+          collection_season_number: "10"
+          collection_season_name: "{collection_season_10_name}"
+      - url: "{s10_url7}"
+        variables:
+          collection_season_number: "10"
+          collection_season_name: "{collection_season_10_name}"
+      - url: "{s10_url8}"
+        variables:
+          collection_season_number: "10"
+          collection_season_name: "{collection_season_10_name}"
+      - url: "{s10_url9}"
+        variables:
+          collection_season_number: "10"
+          collection_season_name: "{collection_season_10_name}"
 
       - url: "{collection_season_11_url}"
         variables:
@@ -222,6 +547,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s11_url2}"
+        variables:
+          collection_season_number: "11"
+          collection_season_name: "{collection_season_11_name}"
+      - url: "{s11_url3}"
+        variables:
+          collection_season_number: "11"
+          collection_season_name: "{collection_season_11_name}"
+      - url: "{s11_url4}"
+        variables:
+          collection_season_number: "11"
+          collection_season_name: "{collection_season_11_name}"
+      - url: "{s11_url5}"
+        variables:
+          collection_season_number: "11"
+          collection_season_name: "{collection_season_11_name}"
+      - url: "{s11_url6}"
+        variables:
+          collection_season_number: "11"
+          collection_season_name: "{collection_season_11_name}"
+      - url: "{s11_url7}"
+        variables:
+          collection_season_number: "11"
+          collection_season_name: "{collection_season_11_name}"
+      - url: "{s11_url8}"
+        variables:
+          collection_season_number: "11"
+          collection_season_name: "{collection_season_11_name}"
+      - url: "{s11_url9}"
+        variables:
+          collection_season_number: "11"
+          collection_season_name: "{collection_season_11_name}"
 
       - url: "{collection_season_12_url}"
         variables:
@@ -230,6 +587,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s12_url2}"
+        variables:
+          collection_season_number: "12"
+          collection_season_name: "{collection_season_12_name}"
+      - url: "{s12_url3}"
+        variables:
+          collection_season_number: "12"
+          collection_season_name: "{collection_season_12_name}"
+      - url: "{s12_url4}"
+        variables:
+          collection_season_number: "12"
+          collection_season_name: "{collection_season_12_name}"
+      - url: "{s12_url5}"
+        variables:
+          collection_season_number: "12"
+          collection_season_name: "{collection_season_12_name}"
+      - url: "{s12_url6}"
+        variables:
+          collection_season_number: "12"
+          collection_season_name: "{collection_season_12_name}"
+      - url: "{s12_url7}"
+        variables:
+          collection_season_number: "12"
+          collection_season_name: "{collection_season_12_name}"
+      - url: "{s12_url8}"
+        variables:
+          collection_season_number: "12"
+          collection_season_name: "{collection_season_12_name}"
+      - url: "{s12_url9}"
+        variables:
+          collection_season_number: "12"
+          collection_season_name: "{collection_season_12_name}"
 
       - url: "{collection_season_13_url}"
         variables:
@@ -238,6 +627,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s13_url2}"
+        variables:
+          collection_season_number: "13"
+          collection_season_name: "{collection_season_13_name}"
+      - url: "{s13_url3}"
+        variables:
+          collection_season_number: "13"
+          collection_season_name: "{collection_season_13_name}"
+      - url: "{s13_url4}"
+        variables:
+          collection_season_number: "13"
+          collection_season_name: "{collection_season_13_name}"
+      - url: "{s13_url5}"
+        variables:
+          collection_season_number: "13"
+          collection_season_name: "{collection_season_13_name}"
+      - url: "{s13_url6}"
+        variables:
+          collection_season_number: "13"
+          collection_season_name: "{collection_season_13_name}"
+      - url: "{s13_url7}"
+        variables:
+          collection_season_number: "13"
+          collection_season_name: "{collection_season_13_name}"
+      - url: "{s13_url8}"
+        variables:
+          collection_season_number: "13"
+          collection_season_name: "{collection_season_13_name}"
+      - url: "{s13_url9}"
+        variables:
+          collection_season_number: "13"
+          collection_season_name: "{collection_season_13_name}"
 
       - url: "{collection_season_14_url}"
         variables:
@@ -246,6 +667,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s14_url2}"
+        variables:
+          collection_season_number: "14"
+          collection_season_name: "{collection_season_14_name}"
+      - url: "{s14_url3}"
+        variables:
+          collection_season_number: "14"
+          collection_season_name: "{collection_season_14_name}"
+      - url: "{s14_url4}"
+        variables:
+          collection_season_number: "14"
+          collection_season_name: "{collection_season_14_name}"
+      - url: "{s14_url5}"
+        variables:
+          collection_season_number: "14"
+          collection_season_name: "{collection_season_14_name}"
+      - url: "{s14_url6}"
+        variables:
+          collection_season_number: "14"
+          collection_season_name: "{collection_season_14_name}"
+      - url: "{s14_url7}"
+        variables:
+          collection_season_number: "14"
+          collection_season_name: "{collection_season_14_name}"
+      - url: "{s14_url8}"
+        variables:
+          collection_season_number: "14"
+          collection_season_name: "{collection_season_14_name}"
+      - url: "{s14_url9}"
+        variables:
+          collection_season_number: "14"
+          collection_season_name: "{collection_season_14_name}"
 
       - url: "{collection_season_15_url}"
         variables:
@@ -254,6 +707,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s15_url2}"
+        variables:
+          collection_season_number: "15"
+          collection_season_name: "{collection_season_15_name}"
+      - url: "{s15_url3}"
+        variables:
+          collection_season_number: "15"
+          collection_season_name: "{collection_season_15_name}"
+      - url: "{s15_url4}"
+        variables:
+          collection_season_number: "15"
+          collection_season_name: "{collection_season_15_name}"
+      - url: "{s15_url5}"
+        variables:
+          collection_season_number: "15"
+          collection_season_name: "{collection_season_15_name}"
+      - url: "{s15_url6}"
+        variables:
+          collection_season_number: "15"
+          collection_season_name: "{collection_season_15_name}"
+      - url: "{s15_url7}"
+        variables:
+          collection_season_number: "15"
+          collection_season_name: "{collection_season_15_name}"
+      - url: "{s15_url8}"
+        variables:
+          collection_season_number: "15"
+          collection_season_name: "{collection_season_15_name}"
+      - url: "{s15_url9}"
+        variables:
+          collection_season_number: "15"
+          collection_season_name: "{collection_season_15_name}"
 
       - url: "{collection_season_16_url}"
         variables:
@@ -262,6 +747,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s16_url2}"
+        variables:
+          collection_season_number: "16"
+          collection_season_name: "{collection_season_16_name}"
+      - url: "{s16_url3}"
+        variables:
+          collection_season_number: "16"
+          collection_season_name: "{collection_season_16_name}"
+      - url: "{s16_url4}"
+        variables:
+          collection_season_number: "16"
+          collection_season_name: "{collection_season_16_name}"
+      - url: "{s16_url5}"
+        variables:
+          collection_season_number: "16"
+          collection_season_name: "{collection_season_16_name}"
+      - url: "{s16_url6}"
+        variables:
+          collection_season_number: "16"
+          collection_season_name: "{collection_season_16_name}"
+      - url: "{s16_url7}"
+        variables:
+          collection_season_number: "16"
+          collection_season_name: "{collection_season_16_name}"
+      - url: "{s16_url8}"
+        variables:
+          collection_season_number: "16"
+          collection_season_name: "{collection_season_16_name}"
+      - url: "{s16_url9}"
+        variables:
+          collection_season_number: "16"
+          collection_season_name: "{collection_season_16_name}"
 
       - url: "{collection_season_17_url}"
         variables:
@@ -270,6 +787,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s17_url2}"
+        variables:
+          collection_season_number: "17"
+          collection_season_name: "{collection_season_17_name}"
+      - url: "{s17_url3}"
+        variables:
+          collection_season_number: "17"
+          collection_season_name: "{collection_season_17_name}"
+      - url: "{s17_url4}"
+        variables:
+          collection_season_number: "17"
+          collection_season_name: "{collection_season_17_name}"
+      - url: "{s17_url5}"
+        variables:
+          collection_season_number: "17"
+          collection_season_name: "{collection_season_17_name}"
+      - url: "{s17_url6}"
+        variables:
+          collection_season_number: "17"
+          collection_season_name: "{collection_season_17_name}"
+      - url: "{s17_url7}"
+        variables:
+          collection_season_number: "17"
+          collection_season_name: "{collection_season_17_name}"
+      - url: "{s17_url8}"
+        variables:
+          collection_season_number: "17"
+          collection_season_name: "{collection_season_17_name}"
+      - url: "{s17_url9}"
+        variables:
+          collection_season_number: "17"
+          collection_season_name: "{collection_season_17_name}"
 
       - url: "{collection_season_18_url}"
         variables:
@@ -278,6 +827,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s18_url2}"
+        variables:
+          collection_season_number: "18"
+          collection_season_name: "{collection_season_18_name}"
+      - url: "{s18_url3}"
+        variables:
+          collection_season_number: "18"
+          collection_season_name: "{collection_season_18_name}"
+      - url: "{s18_url4}"
+        variables:
+          collection_season_number: "18"
+          collection_season_name: "{collection_season_18_name}"
+      - url: "{s18_url5}"
+        variables:
+          collection_season_number: "18"
+          collection_season_name: "{collection_season_18_name}"
+      - url: "{s18_url6}"
+        variables:
+          collection_season_number: "18"
+          collection_season_name: "{collection_season_18_name}"
+      - url: "{s18_url7}"
+        variables:
+          collection_season_number: "18"
+          collection_season_name: "{collection_season_18_name}"
+      - url: "{s18_url8}"
+        variables:
+          collection_season_number: "18"
+          collection_season_name: "{collection_season_18_name}"
+      - url: "{s18_url9}"
+        variables:
+          collection_season_number: "18"
+          collection_season_name: "{collection_season_18_name}"
 
       - url: "{collection_season_19_url}"
         variables:
@@ -286,6 +867,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s19_url2}"
+        variables:
+          collection_season_number: "19"
+          collection_season_name: "{collection_season_19_name}"
+      - url: "{s19_url3}"
+        variables:
+          collection_season_number: "19"
+          collection_season_name: "{collection_season_19_name}"
+      - url: "{s19_url4}"
+        variables:
+          collection_season_number: "19"
+          collection_season_name: "{collection_season_19_name}"
+      - url: "{s19_url5}"
+        variables:
+          collection_season_number: "19"
+          collection_season_name: "{collection_season_19_name}"
+      - url: "{s19_url6}"
+        variables:
+          collection_season_number: "19"
+          collection_season_name: "{collection_season_19_name}"
+      - url: "{s19_url7}"
+        variables:
+          collection_season_number: "19"
+          collection_season_name: "{collection_season_19_name}"
+      - url: "{s19_url8}"
+        variables:
+          collection_season_number: "19"
+          collection_season_name: "{collection_season_19_name}"
+      - url: "{s19_url9}"
+        variables:
+          collection_season_number: "19"
+          collection_season_name: "{collection_season_19_name}"
 
       - url: "{collection_season_20_url}"
         variables:
@@ -294,6 +907,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s20_url2}"
+        variables:
+          collection_season_number: "20"
+          collection_season_name: "{collection_season_20_name}"
+      - url: "{s20_url3}"
+        variables:
+          collection_season_number: "20"
+          collection_season_name: "{collection_season_20_name}"
+      - url: "{s20_url4}"
+        variables:
+          collection_season_number: "20"
+          collection_season_name: "{collection_season_20_name}"
+      - url: "{s20_url5}"
+        variables:
+          collection_season_number: "20"
+          collection_season_name: "{collection_season_20_name}"
+      - url: "{s20_url6}"
+        variables:
+          collection_season_number: "20"
+          collection_season_name: "{collection_season_20_name}"
+      - url: "{s20_url7}"
+        variables:
+          collection_season_number: "20"
+          collection_season_name: "{collection_season_20_name}"
+      - url: "{s20_url8}"
+        variables:
+          collection_season_number: "20"
+          collection_season_name: "{collection_season_20_name}"
+      - url: "{s20_url9}"
+        variables:
+          collection_season_number: "20"
+          collection_season_name: "{collection_season_20_name}"
 
       - url: "{collection_season_21_url}"
         variables:
@@ -302,6 +947,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s21_url2}"
+        variables:
+          collection_season_number: "21"
+          collection_season_name: "{collection_season_21_name}"
+      - url: "{s21_url3}"
+        variables:
+          collection_season_number: "21"
+          collection_season_name: "{collection_season_21_name}"
+      - url: "{s21_url4}"
+        variables:
+          collection_season_number: "21"
+          collection_season_name: "{collection_season_21_name}"
+      - url: "{s21_url5}"
+        variables:
+          collection_season_number: "21"
+          collection_season_name: "{collection_season_21_name}"
+      - url: "{s21_url6}"
+        variables:
+          collection_season_number: "21"
+          collection_season_name: "{collection_season_21_name}"
+      - url: "{s21_url7}"
+        variables:
+          collection_season_number: "21"
+          collection_season_name: "{collection_season_21_name}"
+      - url: "{s21_url8}"
+        variables:
+          collection_season_number: "21"
+          collection_season_name: "{collection_season_21_name}"
+      - url: "{s21_url9}"
+        variables:
+          collection_season_number: "21"
+          collection_season_name: "{collection_season_21_name}"
 
       - url: "{collection_season_22_url}"
         variables:
@@ -310,6 +987,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s22_url2}"
+        variables:
+          collection_season_number: "22"
+          collection_season_name: "{collection_season_22_name}"
+      - url: "{s22_url3}"
+        variables:
+          collection_season_number: "22"
+          collection_season_name: "{collection_season_22_name}"
+      - url: "{s22_url4}"
+        variables:
+          collection_season_number: "22"
+          collection_season_name: "{collection_season_22_name}"
+      - url: "{s22_url5}"
+        variables:
+          collection_season_number: "22"
+          collection_season_name: "{collection_season_22_name}"
+      - url: "{s22_url6}"
+        variables:
+          collection_season_number: "22"
+          collection_season_name: "{collection_season_22_name}"
+      - url: "{s22_url7}"
+        variables:
+          collection_season_number: "22"
+          collection_season_name: "{collection_season_22_name}"
+      - url: "{s22_url8}"
+        variables:
+          collection_season_number: "22"
+          collection_season_name: "{collection_season_22_name}"
+      - url: "{s22_url9}"
+        variables:
+          collection_season_number: "22"
+          collection_season_name: "{collection_season_22_name}"
 
       - url: "{collection_season_23_url}"
         variables:
@@ -318,6 +1027,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s23_url2}"
+        variables:
+          collection_season_number: "23"
+          collection_season_name: "{collection_season_23_name}"
+      - url: "{s23_url3}"
+        variables:
+          collection_season_number: "23"
+          collection_season_name: "{collection_season_23_name}"
+      - url: "{s23_url4}"
+        variables:
+          collection_season_number: "23"
+          collection_season_name: "{collection_season_23_name}"
+      - url: "{s23_url5}"
+        variables:
+          collection_season_number: "23"
+          collection_season_name: "{collection_season_23_name}"
+      - url: "{s23_url6}"
+        variables:
+          collection_season_number: "23"
+          collection_season_name: "{collection_season_23_name}"
+      - url: "{s23_url7}"
+        variables:
+          collection_season_number: "23"
+          collection_season_name: "{collection_season_23_name}"
+      - url: "{s23_url8}"
+        variables:
+          collection_season_number: "23"
+          collection_season_name: "{collection_season_23_name}"
+      - url: "{s23_url9}"
+        variables:
+          collection_season_number: "23"
+          collection_season_name: "{collection_season_23_name}"
 
       - url: "{collection_season_24_url}"
         variables:
@@ -326,6 +1067,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s24_url2}"
+        variables:
+          collection_season_number: "24"
+          collection_season_name: "{collection_season_24_name}"
+      - url: "{s24_url3}"
+        variables:
+          collection_season_number: "24"
+          collection_season_name: "{collection_season_24_name}"
+      - url: "{s24_url4}"
+        variables:
+          collection_season_number: "24"
+          collection_season_name: "{collection_season_24_name}"
+      - url: "{s24_url5}"
+        variables:
+          collection_season_number: "24"
+          collection_season_name: "{collection_season_24_name}"
+      - url: "{s24_url6}"
+        variables:
+          collection_season_number: "24"
+          collection_season_name: "{collection_season_24_name}"
+      - url: "{s24_url7}"
+        variables:
+          collection_season_number: "24"
+          collection_season_name: "{collection_season_24_name}"
+      - url: "{s24_url8}"
+        variables:
+          collection_season_number: "24"
+          collection_season_name: "{collection_season_24_name}"
+      - url: "{s24_url9}"
+        variables:
+          collection_season_number: "24"
+          collection_season_name: "{collection_season_24_name}"
 
       - url: "{collection_season_25_url}"
         variables:
@@ -334,6 +1107,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s25_url2}"
+        variables:
+          collection_season_number: "25"
+          collection_season_name: "{collection_season_25_name}"
+      - url: "{s25_url3}"
+        variables:
+          collection_season_number: "25"
+          collection_season_name: "{collection_season_25_name}"
+      - url: "{s25_url4}"
+        variables:
+          collection_season_number: "25"
+          collection_season_name: "{collection_season_25_name}"
+      - url: "{s25_url5}"
+        variables:
+          collection_season_number: "25"
+          collection_season_name: "{collection_season_25_name}"
+      - url: "{s25_url6}"
+        variables:
+          collection_season_number: "25"
+          collection_season_name: "{collection_season_25_name}"
+      - url: "{s25_url7}"
+        variables:
+          collection_season_number: "25"
+          collection_season_name: "{collection_season_25_name}"
+      - url: "{s25_url8}"
+        variables:
+          collection_season_number: "25"
+          collection_season_name: "{collection_season_25_name}"
+      - url: "{s25_url9}"
+        variables:
+          collection_season_number: "25"
+          collection_season_name: "{collection_season_25_name}"
 
       - url: "{collection_season_26_url}"
         variables:
@@ -342,6 +1147,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s26_url2}"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{s26_url3}"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{s26_url4}"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{s26_url5}"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{s26_url6}"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{s26_url7}"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{s26_url8}"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{s26_url9}"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
 
       - url: "{collection_season_27_url}"
         variables:
@@ -350,6 +1187,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s27_url2}"
+        variables:
+          collection_season_number: "27"
+          collection_season_name: "{collection_season_27_name}"
+      - url: "{s27_url3}"
+        variables:
+          collection_season_number: "27"
+          collection_season_name: "{collection_season_27_name}"
+      - url: "{s27_url4}"
+        variables:
+          collection_season_number: "27"
+          collection_season_name: "{collection_season_27_name}"
+      - url: "{s27_url5}"
+        variables:
+          collection_season_number: "27"
+          collection_season_name: "{collection_season_27_name}"
+      - url: "{s27_url6}"
+        variables:
+          collection_season_number: "27"
+          collection_season_name: "{collection_season_27_name}"
+      - url: "{s27_url7}"
+        variables:
+          collection_season_number: "27"
+          collection_season_name: "{collection_season_27_name}"
+      - url: "{s27_url8}"
+        variables:
+          collection_season_number: "27"
+          collection_season_name: "{collection_season_27_name}"
+      - url: "{s27_url9}"
+        variables:
+          collection_season_number: "27"
+          collection_season_name: "{collection_season_27_name}"
 
       - url: "{collection_season_28_url}"
         variables:
@@ -358,6 +1227,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s28_url2}"
+        variables:
+          collection_season_number: "28"
+          collection_season_name: "{collection_season_28_name}"
+      - url: "{s28_url3}"
+        variables:
+          collection_season_number: "28"
+          collection_season_name: "{collection_season_28_name}"
+      - url: "{s28_url4}"
+        variables:
+          collection_season_number: "28"
+          collection_season_name: "{collection_season_28_name}"
+      - url: "{s28_url5}"
+        variables:
+          collection_season_number: "28"
+          collection_season_name: "{collection_season_28_name}"
+      - url: "{s28_url6}"
+        variables:
+          collection_season_number: "28"
+          collection_season_name: "{collection_season_28_name}"
+      - url: "{s28_url7}"
+        variables:
+          collection_season_number: "28"
+          collection_season_name: "{collection_season_28_name}"
+      - url: "{s28_url8}"
+        variables:
+          collection_season_number: "28"
+          collection_season_name: "{collection_season_28_name}"
+      - url: "{s28_url9}"
+        variables:
+          collection_season_number: "28"
+          collection_season_name: "{collection_season_28_name}"
 
       - url: "{collection_season_29_url}"
         variables:
@@ -366,6 +1267,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s29_url2}"
+        variables:
+          collection_season_number: "29"
+          collection_season_name: "{collection_season_29_name}"
+      - url: "{s29_url3}"
+        variables:
+          collection_season_number: "29"
+          collection_season_name: "{collection_season_29_name}"
+      - url: "{s29_url4}"
+        variables:
+          collection_season_number: "29"
+          collection_season_name: "{collection_season_29_name}"
+      - url: "{s29_url5}"
+        variables:
+          collection_season_number: "29"
+          collection_season_name: "{collection_season_29_name}"
+      - url: "{s29_url6}"
+        variables:
+          collection_season_number: "29"
+          collection_season_name: "{collection_season_29_name}"
+      - url: "{s29_url7}"
+        variables:
+          collection_season_number: "29"
+          collection_season_name: "{collection_season_29_name}"
+      - url: "{s29_url8}"
+        variables:
+          collection_season_number: "29"
+          collection_season_name: "{collection_season_29_name}"
+      - url: "{s29_url9}"
+        variables:
+          collection_season_number: "29"
+          collection_season_name: "{collection_season_29_name}"
 
       - url: "{collection_season_30_url}"
         variables:
@@ -374,6 +1307,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s30_url2}"
+        variables:
+          collection_season_number: "30"
+          collection_season_name: "{collection_season_30_name}"
+      - url: "{s30_url3}"
+        variables:
+          collection_season_number: "30"
+          collection_season_name: "{collection_season_30_name}"
+      - url: "{s30_url4}"
+        variables:
+          collection_season_number: "30"
+          collection_season_name: "{collection_season_30_name}"
+      - url: "{s30_url5}"
+        variables:
+          collection_season_number: "30"
+          collection_season_name: "{collection_season_30_name}"
+      - url: "{s30_url6}"
+        variables:
+          collection_season_number: "30"
+          collection_season_name: "{collection_season_30_name}"
+      - url: "{s30_url7}"
+        variables:
+          collection_season_number: "30"
+          collection_season_name: "{collection_season_30_name}"
+      - url: "{s30_url8}"
+        variables:
+          collection_season_number: "30"
+          collection_season_name: "{collection_season_30_name}"
+      - url: "{s30_url9}"
+        variables:
+          collection_season_number: "30"
+          collection_season_name: "{collection_season_30_name}"
 
       - url: "{collection_season_31_url}"
         variables:
@@ -382,6 +1347,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s31_url2}"
+        variables:
+          collection_season_number: "31"
+          collection_season_name: "{collection_season_31_name}"
+      - url: "{s31_url3}"
+        variables:
+          collection_season_number: "31"
+          collection_season_name: "{collection_season_31_name}"
+      - url: "{s31_url4}"
+        variables:
+          collection_season_number: "31"
+          collection_season_name: "{collection_season_31_name}"
+      - url: "{s31_url5}"
+        variables:
+          collection_season_number: "31"
+          collection_season_name: "{collection_season_31_name}"
+      - url: "{s31_url6}"
+        variables:
+          collection_season_number: "31"
+          collection_season_name: "{collection_season_31_name}"
+      - url: "{s31_url7}"
+        variables:
+          collection_season_number: "31"
+          collection_season_name: "{collection_season_31_name}"
+      - url: "{s31_url8}"
+        variables:
+          collection_season_number: "31"
+          collection_season_name: "{collection_season_31_name}"
+      - url: "{s31_url9}"
+        variables:
+          collection_season_number: "31"
+          collection_season_name: "{collection_season_31_name}"
 
       - url: "{collection_season_32_url}"
         variables:
@@ -390,6 +1387,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s32_url2}"
+        variables:
+          collection_season_number: "32"
+          collection_season_name: "{collection_season_32_name}"
+      - url: "{s32_url3}"
+        variables:
+          collection_season_number: "32"
+          collection_season_name: "{collection_season_32_name}"
+      - url: "{s32_url4}"
+        variables:
+          collection_season_number: "32"
+          collection_season_name: "{collection_season_32_name}"
+      - url: "{s32_url5}"
+        variables:
+          collection_season_number: "32"
+          collection_season_name: "{collection_season_32_name}"
+      - url: "{s32_url6}"
+        variables:
+          collection_season_number: "32"
+          collection_season_name: "{collection_season_32_name}"
+      - url: "{s32_url7}"
+        variables:
+          collection_season_number: "32"
+          collection_season_name: "{collection_season_32_name}"
+      - url: "{s32_url8}"
+        variables:
+          collection_season_number: "32"
+          collection_season_name: "{collection_season_32_name}"
+      - url: "{s32_url9}"
+        variables:
+          collection_season_number: "32"
+          collection_season_name: "{collection_season_32_name}"
 
       - url: "{collection_season_33_url}"
         variables:
@@ -398,6 +1427,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s33_url2}"
+        variables:
+          collection_season_number: "33"
+          collection_season_name: "{collection_season_33_name}"
+      - url: "{s33_url3}"
+        variables:
+          collection_season_number: "33"
+          collection_season_name: "{collection_season_33_name}"
+      - url: "{s33_url4}"
+        variables:
+          collection_season_number: "33"
+          collection_season_name: "{collection_season_33_name}"
+      - url: "{s33_url5}"
+        variables:
+          collection_season_number: "33"
+          collection_season_name: "{collection_season_33_name}"
+      - url: "{s33_url6}"
+        variables:
+          collection_season_number: "33"
+          collection_season_name: "{collection_season_33_name}"
+      - url: "{s33_url7}"
+        variables:
+          collection_season_number: "33"
+          collection_season_name: "{collection_season_33_name}"
+      - url: "{s33_url8}"
+        variables:
+          collection_season_number: "33"
+          collection_season_name: "{collection_season_33_name}"
+      - url: "{s33_url9}"
+        variables:
+          collection_season_number: "33"
+          collection_season_name: "{collection_season_33_name}"
 
       - url: "{collection_season_34_url}"
         variables:
@@ -406,6 +1467,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s34_url2}"
+        variables:
+          collection_season_number: "34"
+          collection_season_name: "{collection_season_34_name}"
+      - url: "{s34_url3}"
+        variables:
+          collection_season_number: "34"
+          collection_season_name: "{collection_season_34_name}"
+      - url: "{s34_url4}"
+        variables:
+          collection_season_number: "34"
+          collection_season_name: "{collection_season_34_name}"
+      - url: "{s34_url5}"
+        variables:
+          collection_season_number: "34"
+          collection_season_name: "{collection_season_34_name}"
+      - url: "{s34_url6}"
+        variables:
+          collection_season_number: "34"
+          collection_season_name: "{collection_season_34_name}"
+      - url: "{s34_url7}"
+        variables:
+          collection_season_number: "34"
+          collection_season_name: "{collection_season_34_name}"
+      - url: "{s34_url8}"
+        variables:
+          collection_season_number: "34"
+          collection_season_name: "{collection_season_34_name}"
+      - url: "{s34_url9}"
+        variables:
+          collection_season_number: "34"
+          collection_season_name: "{collection_season_34_name}"
 
       - url: "{collection_season_35_url}"
         variables:
@@ -414,6 +1507,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s35_url2}"
+        variables:
+          collection_season_number: "35"
+          collection_season_name: "{collection_season_35_name}"
+      - url: "{s35_url3}"
+        variables:
+          collection_season_number: "35"
+          collection_season_name: "{collection_season_35_name}"
+      - url: "{s35_url4}"
+        variables:
+          collection_season_number: "35"
+          collection_season_name: "{collection_season_35_name}"
+      - url: "{s35_url5}"
+        variables:
+          collection_season_number: "35"
+          collection_season_name: "{collection_season_35_name}"
+      - url: "{s35_url6}"
+        variables:
+          collection_season_number: "35"
+          collection_season_name: "{collection_season_35_name}"
+      - url: "{s35_url7}"
+        variables:
+          collection_season_number: "35"
+          collection_season_name: "{collection_season_35_name}"
+      - url: "{s35_url8}"
+        variables:
+          collection_season_number: "35"
+          collection_season_name: "{collection_season_35_name}"
+      - url: "{s35_url9}"
+        variables:
+          collection_season_number: "35"
+          collection_season_name: "{collection_season_35_name}"
 
       - url: "{collection_season_36_url}"
         variables:
@@ -422,6 +1547,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s36_url2}"
+        variables:
+          collection_season_number: "36"
+          collection_season_name: "{collection_season_36_name}"
+      - url: "{s36_url3}"
+        variables:
+          collection_season_number: "36"
+          collection_season_name: "{collection_season_36_name}"
+      - url: "{s36_url4}"
+        variables:
+          collection_season_number: "36"
+          collection_season_name: "{collection_season_36_name}"
+      - url: "{s36_url5}"
+        variables:
+          collection_season_number: "36"
+          collection_season_name: "{collection_season_36_name}"
+      - url: "{s36_url6}"
+        variables:
+          collection_season_number: "36"
+          collection_season_name: "{collection_season_36_name}"
+      - url: "{s36_url7}"
+        variables:
+          collection_season_number: "36"
+          collection_season_name: "{collection_season_36_name}"
+      - url: "{s36_url8}"
+        variables:
+          collection_season_number: "36"
+          collection_season_name: "{collection_season_36_name}"
+      - url: "{s36_url9}"
+        variables:
+          collection_season_number: "36"
+          collection_season_name: "{collection_season_36_name}"
 
       - url: "{collection_season_37_url}"
         variables:
@@ -430,6 +1587,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s37_url2}"
+        variables:
+          collection_season_number: "37"
+          collection_season_name: "{collection_season_37_name}"
+      - url: "{s37_url3}"
+        variables:
+          collection_season_number: "37"
+          collection_season_name: "{collection_season_37_name}"
+      - url: "{s37_url4}"
+        variables:
+          collection_season_number: "37"
+          collection_season_name: "{collection_season_37_name}"
+      - url: "{s37_url5}"
+        variables:
+          collection_season_number: "37"
+          collection_season_name: "{collection_season_37_name}"
+      - url: "{s37_url6}"
+        variables:
+          collection_season_number: "37"
+          collection_season_name: "{collection_season_37_name}"
+      - url: "{s37_url7}"
+        variables:
+          collection_season_number: "37"
+          collection_season_name: "{collection_season_37_name}"
+      - url: "{s37_url8}"
+        variables:
+          collection_season_number: "37"
+          collection_season_name: "{collection_season_37_name}"
+      - url: "{s37_url9}"
+        variables:
+          collection_season_number: "37"
+          collection_season_name: "{collection_season_37_name}"
 
       - url: "{collection_season_38_url}"
         variables:
@@ -438,6 +1627,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s38_url2}"
+        variables:
+          collection_season_number: "38"
+          collection_season_name: "{collection_season_38_name}"
+      - url: "{s38_url3}"
+        variables:
+          collection_season_number: "38"
+          collection_season_name: "{collection_season_38_name}"
+      - url: "{s38_url4}"
+        variables:
+          collection_season_number: "38"
+          collection_season_name: "{collection_season_38_name}"
+      - url: "{s38_url5}"
+        variables:
+          collection_season_number: "38"
+          collection_season_name: "{collection_season_38_name}"
+      - url: "{s38_url6}"
+        variables:
+          collection_season_number: "38"
+          collection_season_name: "{collection_season_38_name}"
+      - url: "{s38_url7}"
+        variables:
+          collection_season_number: "38"
+          collection_season_name: "{collection_season_38_name}"
+      - url: "{s38_url8}"
+        variables:
+          collection_season_number: "38"
+          collection_season_name: "{collection_season_38_name}"
+      - url: "{s38_url9}"
+        variables:
+          collection_season_number: "38"
+          collection_season_name: "{collection_season_38_name}"
 
       - url: "{collection_season_39_url}"
         variables:
@@ -446,6 +1667,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s39_url2}"
+        variables:
+          collection_season_number: "39"
+          collection_season_name: "{collection_season_39_name}"
+      - url: "{s39_url3}"
+        variables:
+          collection_season_number: "39"
+          collection_season_name: "{collection_season_39_name}"
+      - url: "{s39_url4}"
+        variables:
+          collection_season_number: "39"
+          collection_season_name: "{collection_season_39_name}"
+      - url: "{s39_url5}"
+        variables:
+          collection_season_number: "39"
+          collection_season_name: "{collection_season_39_name}"
+      - url: "{s39_url6}"
+        variables:
+          collection_season_number: "39"
+          collection_season_name: "{collection_season_39_name}"
+      - url: "{s39_url7}"
+        variables:
+          collection_season_number: "39"
+          collection_season_name: "{collection_season_39_name}"
+      - url: "{s39_url8}"
+        variables:
+          collection_season_number: "39"
+          collection_season_name: "{collection_season_39_name}"
+      - url: "{s39_url9}"
+        variables:
+          collection_season_number: "39"
+          collection_season_name: "{collection_season_39_name}"
 
       - url: "{collection_season_40_url}"
         variables:
@@ -454,6 +1707,38 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{s40_url2}"
+        variables:
+          collection_season_number: "40"
+          collection_season_name: "{collection_season_40_name}"
+      - url: "{s40_url3}"
+        variables:
+          collection_season_number: "40"
+          collection_season_name: "{collection_season_40_name}"
+      - url: "{s40_url4}"
+        variables:
+          collection_season_number: "40"
+          collection_season_name: "{collection_season_40_name}"
+      - url: "{s40_url5}"
+        variables:
+          collection_season_number: "40"
+          collection_season_name: "{collection_season_40_name}"
+      - url: "{s40_url6}"
+        variables:
+          collection_season_number: "40"
+          collection_season_name: "{collection_season_40_name}"
+      - url: "{s40_url7}"
+        variables:
+          collection_season_number: "40"
+          collection_season_name: "{collection_season_40_name}"
+      - url: "{s40_url8}"
+        variables:
+          collection_season_number: "40"
+          collection_season_name: "{collection_season_40_name}"
+      - url: "{s40_url9}"
+        variables:
+          collection_season_number: "40"
+          collection_season_name: "{collection_season_40_name}"
 
     output_directory_nfo_tags:
       tags:
@@ -709,46 +1994,450 @@ presets:
       s39_name: ""
       s40_name: ""
 
-      s01_url: ""
-      s02_url: ""
-      s03_url: ""
-      s04_url: ""
-      s05_url: ""
-      s06_url: ""
-      s07_url: ""
-      s08_url: ""
-      s09_url: ""
-      s10_url: ""
-      s11_url: ""
-      s12_url: ""
-      s13_url: ""
-      s14_url: ""
-      s15_url: ""
-      s16_url: ""
-      s17_url: ""
-      s18_url: ""
-      s19_url: ""
-      s20_url: ""
-      s21_url: ""
-      s22_url: ""
-      s23_url: ""
-      s24_url: ""
-      s25_url: ""
-      s26_url: ""
-      s27_url: ""
-      s28_url: ""
-      s29_url: ""
-      s30_url: ""
-      s31_url: ""
-      s32_url: ""
-      s33_url: ""
-      s34_url: ""
-      s35_url: ""
-      s36_url: ""
-      s37_url: ""
-      s38_url: ""
-      s39_url: ""
-      s40_url: ""
+      # Helper function to get URL from array variable
+      "%season_url_at": >-
+        { %array_at($0, $1, '') }
+
+      s01_url: "{ %season_url_at(s01_urls, 0) }"
+      s01_url2: "{ %season_url_at(s01_urls, 1) }"
+      s01_url3: "{ %season_url_at(s01_urls, 2) }"
+      s01_url4: "{ %season_url_at(s01_urls, 3) }"
+      s01_url5: "{ %season_url_at(s01_urls, 4) }"
+      s01_url6: "{ %season_url_at(s01_urls, 5) }"
+      s01_url7: "{ %season_url_at(s01_urls, 6) }"
+      s01_url8: "{ %season_url_at(s01_urls, 7) }"
+      s01_url9: "{ %season_url_at(s01_urls, 8) }"
+
+      s02_url: "{ %season_url_at(s02_urls, 0) }"
+      s02_url2: "{ %season_url_at(s02_urls, 1) }"
+      s02_url3: "{ %season_url_at(s02_urls, 2) }"
+      s02_url4: "{ %season_url_at(s02_urls, 3) }"
+      s02_url5: "{ %season_url_at(s02_urls, 4) }"
+      s02_url6: "{ %season_url_at(s02_urls, 5) }"
+      s02_url7: "{ %season_url_at(s02_urls, 6) }"
+      s02_url8: "{ %season_url_at(s02_urls, 7) }"
+      s02_url9: "{ %season_url_at(s02_urls, 8) }"
+
+      s03_url: "{ %season_url_at(s03_urls, 0) }"
+      s03_url2: "{ %season_url_at(s03_urls, 1) }"
+      s03_url3: "{ %season_url_at(s03_urls, 2) }"
+      s03_url4: "{ %season_url_at(s03_urls, 3) }"
+      s03_url5: "{ %season_url_at(s03_urls, 4) }"
+      s03_url6: "{ %season_url_at(s03_urls, 5) }"
+      s03_url7: "{ %season_url_at(s03_urls, 6) }"
+      s03_url8: "{ %season_url_at(s03_urls, 7) }"
+      s03_url9: "{ %season_url_at(s03_urls, 8) }"
+
+      s04_url: "{ %season_url_at(s04_urls, 0) }"
+      s04_url2: "{ %season_url_at(s04_urls, 1) }"
+      s04_url3: "{ %season_url_at(s04_urls, 2) }"
+      s04_url4: "{ %season_url_at(s04_urls, 3) }"
+      s04_url5: "{ %season_url_at(s04_urls, 4) }"
+      s04_url6: "{ %season_url_at(s04_urls, 5) }"
+      s04_url7: "{ %season_url_at(s04_urls, 6) }"
+      s04_url8: "{ %season_url_at(s04_urls, 7) }"
+      s04_url9: "{ %season_url_at(s04_urls, 8) }"
+
+      s05_url: "{ %season_url_at(s05_urls, 0) }"
+      s05_url2: "{ %season_url_at(s05_urls, 1) }"
+      s05_url3: "{ %season_url_at(s05_urls, 2) }"
+      s05_url4: "{ %season_url_at(s05_urls, 3) }"
+      s05_url5: "{ %season_url_at(s05_urls, 4) }"
+      s05_url6: "{ %season_url_at(s05_urls, 5) }"
+      s05_url7: "{ %season_url_at(s05_urls, 6) }"
+      s05_url8: "{ %season_url_at(s05_urls, 7) }"
+      s05_url9: "{ %season_url_at(s05_urls, 8) }"
+
+      s06_url: "{ %season_url_at(s06_urls, 0) }"
+      s06_url2: "{ %season_url_at(s06_urls, 1) }"
+      s06_url3: "{ %season_url_at(s06_urls, 2) }"
+      s06_url4: "{ %season_url_at(s06_urls, 3) }"
+      s06_url5: "{ %season_url_at(s06_urls, 4) }"
+      s06_url6: "{ %season_url_at(s06_urls, 5) }"
+      s06_url7: "{ %season_url_at(s06_urls, 6) }"
+      s06_url8: "{ %season_url_at(s06_urls, 7) }"
+      s06_url9: "{ %season_url_at(s06_urls, 8) }"
+
+      s07_url: "{ %season_url_at(s07_urls, 0) }"
+      s07_url2: "{ %season_url_at(s07_urls, 1) }"
+      s07_url3: "{ %season_url_at(s07_urls, 2) }"
+      s07_url4: "{ %season_url_at(s07_urls, 3) }"
+      s07_url5: "{ %season_url_at(s07_urls, 4) }"
+      s07_url6: "{ %season_url_at(s07_urls, 5) }"
+      s07_url7: "{ %season_url_at(s07_urls, 6) }"
+      s07_url8: "{ %season_url_at(s07_urls, 7) }"
+      s07_url9: "{ %season_url_at(s07_urls, 8) }"
+
+      s08_url: "{ %season_url_at(s08_urls, 0) }"
+      s08_url2: "{ %season_url_at(s08_urls, 1) }"
+      s08_url3: "{ %season_url_at(s08_urls, 2) }"
+      s08_url4: "{ %season_url_at(s08_urls, 3) }"
+      s08_url5: "{ %season_url_at(s08_urls, 4) }"
+      s08_url6: "{ %season_url_at(s08_urls, 5) }"
+      s08_url7: "{ %season_url_at(s08_urls, 6) }"
+      s08_url8: "{ %season_url_at(s08_urls, 7) }"
+      s08_url9: "{ %season_url_at(s08_urls, 8) }"
+
+      s09_url: "{ %season_url_at(s09_urls, 0) }"
+      s09_url2: "{ %season_url_at(s09_urls, 1) }"
+      s09_url3: "{ %season_url_at(s09_urls, 2) }"
+      s09_url4: "{ %season_url_at(s09_urls, 3) }"
+      s09_url5: "{ %season_url_at(s09_urls, 4) }"
+      s09_url6: "{ %season_url_at(s09_urls, 5) }"
+      s09_url7: "{ %season_url_at(s09_urls, 6) }"
+      s09_url8: "{ %season_url_at(s09_urls, 7) }"
+      s09_url9: "{ %season_url_at(s09_urls, 8) }"
+
+      s10_url: "{ %season_url_at(s10_urls, 0) }"
+      s10_url2: "{ %season_url_at(s10_urls, 1) }"
+      s10_url3: "{ %season_url_at(s10_urls, 2) }"
+      s10_url4: "{ %season_url_at(s10_urls, 3) }"
+      s10_url5: "{ %season_url_at(s10_urls, 4) }"
+      s10_url6: "{ %season_url_at(s10_urls, 5) }"
+      s10_url7: "{ %season_url_at(s10_urls, 6) }"
+      s10_url8: "{ %season_url_at(s10_urls, 7) }"
+      s10_url9: "{ %season_url_at(s10_urls, 8) }"
+
+      s11_url: "{ %season_url_at(s11_urls, 0) }"
+      s11_url2: "{ %season_url_at(s11_urls, 1) }"
+      s11_url3: "{ %season_url_at(s11_urls, 2) }"
+      s11_url4: "{ %season_url_at(s11_urls, 3) }"
+      s11_url5: "{ %season_url_at(s11_urls, 4) }"
+      s11_url6: "{ %season_url_at(s11_urls, 5) }"
+      s11_url7: "{ %season_url_at(s11_urls, 6) }"
+      s11_url8: "{ %season_url_at(s11_urls, 7) }"
+      s11_url9: "{ %season_url_at(s11_urls, 8) }"
+
+      s12_url: "{ %season_url_at(s12_urls, 0) }"
+      s12_url2: "{ %season_url_at(s12_urls, 1) }"
+      s12_url3: "{ %season_url_at(s12_urls, 2) }"
+      s12_url4: "{ %season_url_at(s12_urls, 3) }"
+      s12_url5: "{ %season_url_at(s12_urls, 4) }"
+      s12_url6: "{ %season_url_at(s12_urls, 5) }"
+      s12_url7: "{ %season_url_at(s12_urls, 6) }"
+      s12_url8: "{ %season_url_at(s12_urls, 7) }"
+      s12_url9: "{ %season_url_at(s12_urls, 8) }"
+
+      s13_url: "{ %season_url_at(s13_urls, 0) }"
+      s13_url2: "{ %season_url_at(s13_urls, 1) }"
+      s13_url3: "{ %season_url_at(s13_urls, 2) }"
+      s13_url4: "{ %season_url_at(s13_urls, 3) }"
+      s13_url5: "{ %season_url_at(s13_urls, 4) }"
+      s13_url6: "{ %season_url_at(s13_urls, 5) }"
+      s13_url7: "{ %season_url_at(s13_urls, 6) }"
+      s13_url8: "{ %season_url_at(s13_urls, 7) }"
+      s13_url9: "{ %season_url_at(s13_urls, 8) }"
+
+      s14_url: "{ %season_url_at(s14_urls, 0) }"
+      s14_url2: "{ %season_url_at(s14_urls, 1) }"
+      s14_url3: "{ %season_url_at(s14_urls, 2) }"
+      s14_url4: "{ %season_url_at(s14_urls, 3) }"
+      s14_url5: "{ %season_url_at(s14_urls, 4) }"
+      s14_url6: "{ %season_url_at(s14_urls, 5) }"
+      s14_url7: "{ %season_url_at(s14_urls, 6) }"
+      s14_url8: "{ %season_url_at(s14_urls, 7) }"
+      s14_url9: "{ %season_url_at(s14_urls, 8) }"
+
+      s15_url: "{ %season_url_at(s15_urls, 0) }"
+      s15_url2: "{ %season_url_at(s15_urls, 1) }"
+      s15_url3: "{ %season_url_at(s15_urls, 2) }"
+      s15_url4: "{ %season_url_at(s15_urls, 3) }"
+      s15_url5: "{ %season_url_at(s15_urls, 4) }"
+      s15_url6: "{ %season_url_at(s15_urls, 5) }"
+      s15_url7: "{ %season_url_at(s15_urls, 6) }"
+      s15_url8: "{ %season_url_at(s15_urls, 7) }"
+      s15_url9: "{ %season_url_at(s15_urls, 8) }"
+
+      s16_url: "{ %season_url_at(s16_urls, 0) }"
+      s16_url2: "{ %season_url_at(s16_urls, 1) }"
+      s16_url3: "{ %season_url_at(s16_urls, 2) }"
+      s16_url4: "{ %season_url_at(s16_urls, 3) }"
+      s16_url5: "{ %season_url_at(s16_urls, 4) }"
+      s16_url6: "{ %season_url_at(s16_urls, 5) }"
+      s16_url7: "{ %season_url_at(s16_urls, 6) }"
+      s16_url8: "{ %season_url_at(s16_urls, 7) }"
+      s16_url9: "{ %season_url_at(s16_urls, 8) }"
+
+      s17_url: "{ %season_url_at(s17_urls, 0) }"
+      s17_url2: "{ %season_url_at(s17_urls, 1) }"
+      s17_url3: "{ %season_url_at(s17_urls, 2) }"
+      s17_url4: "{ %season_url_at(s17_urls, 3) }"
+      s17_url5: "{ %season_url_at(s17_urls, 4) }"
+      s17_url6: "{ %season_url_at(s17_urls, 5) }"
+      s17_url7: "{ %season_url_at(s17_urls, 6) }"
+      s17_url8: "{ %season_url_at(s17_urls, 7) }"
+      s17_url9: "{ %season_url_at(s17_urls, 8) }"
+
+      s18_url: "{ %season_url_at(s18_urls, 0) }"
+      s18_url2: "{ %season_url_at(s18_urls, 1) }"
+      s18_url3: "{ %season_url_at(s18_urls, 2) }"
+      s18_url4: "{ %season_url_at(s18_urls, 3) }"
+      s18_url5: "{ %season_url_at(s18_urls, 4) }"
+      s18_url6: "{ %season_url_at(s18_urls, 5) }"
+      s18_url7: "{ %season_url_at(s18_urls, 6) }"
+      s18_url8: "{ %season_url_at(s18_urls, 7) }"
+      s18_url9: "{ %season_url_at(s18_urls, 8) }"
+
+      s19_url: "{ %season_url_at(s19_urls, 0) }"
+      s19_url2: "{ %season_url_at(s19_urls, 1) }"
+      s19_url3: "{ %season_url_at(s19_urls, 2) }"
+      s19_url4: "{ %season_url_at(s19_urls, 3) }"
+      s19_url5: "{ %season_url_at(s19_urls, 4) }"
+      s19_url6: "{ %season_url_at(s19_urls, 5) }"
+      s19_url7: "{ %season_url_at(s19_urls, 6) }"
+      s19_url8: "{ %season_url_at(s19_urls, 7) }"
+      s19_url9: "{ %season_url_at(s19_urls, 8) }"
+
+      s20_url: "{ %season_url_at(s20_urls, 0) }"
+      s20_url2: "{ %season_url_at(s20_urls, 1) }"
+      s20_url3: "{ %season_url_at(s20_urls, 2) }"
+      s20_url4: "{ %season_url_at(s20_urls, 3) }"
+      s20_url5: "{ %season_url_at(s20_urls, 4) }"
+      s20_url6: "{ %season_url_at(s20_urls, 5) }"
+      s20_url7: "{ %season_url_at(s20_urls, 6) }"
+      s20_url8: "{ %season_url_at(s20_urls, 7) }"
+      s20_url9: "{ %season_url_at(s20_urls, 8) }"
+
+      s21_url: "{ %season_url_at(s21_urls, 0) }"
+      s21_url2: "{ %season_url_at(s21_urls, 1) }"
+      s21_url3: "{ %season_url_at(s21_urls, 2) }"
+      s21_url4: "{ %season_url_at(s21_urls, 3) }"
+      s21_url5: "{ %season_url_at(s21_urls, 4) }"
+      s21_url6: "{ %season_url_at(s21_urls, 5) }"
+      s21_url7: "{ %season_url_at(s21_urls, 6) }"
+      s21_url8: "{ %season_url_at(s21_urls, 7) }"
+      s21_url9: "{ %season_url_at(s21_urls, 8) }"
+
+      s22_url: "{ %season_url_at(s22_urls, 0) }"
+      s22_url2: "{ %season_url_at(s22_urls, 1) }"
+      s22_url3: "{ %season_url_at(s22_urls, 2) }"
+      s22_url4: "{ %season_url_at(s22_urls, 3) }"
+      s22_url5: "{ %season_url_at(s22_urls, 4) }"
+      s22_url6: "{ %season_url_at(s22_urls, 5) }"
+      s22_url7: "{ %season_url_at(s22_urls, 6) }"
+      s22_url8: "{ %season_url_at(s22_urls, 7) }"
+      s22_url9: "{ %season_url_at(s22_urls, 8) }"
+
+      s23_url: "{ %season_url_at(s23_urls, 0) }"
+      s23_url2: "{ %season_url_at(s23_urls, 1) }"
+      s23_url3: "{ %season_url_at(s23_urls, 2) }"
+      s23_url4: "{ %season_url_at(s23_urls, 3) }"
+      s23_url5: "{ %season_url_at(s23_urls, 4) }"
+      s23_url6: "{ %season_url_at(s23_urls, 5) }"
+      s23_url7: "{ %season_url_at(s23_urls, 6) }"
+      s23_url8: "{ %season_url_at(s23_urls, 7) }"
+      s23_url9: "{ %season_url_at(s23_urls, 8) }"
+
+      s24_url: "{ %season_url_at(s24_urls, 0) }"
+      s24_url2: "{ %season_url_at(s24_urls, 1) }"
+      s24_url3: "{ %season_url_at(s24_urls, 2) }"
+      s24_url4: "{ %season_url_at(s24_urls, 3) }"
+      s24_url5: "{ %season_url_at(s24_urls, 4) }"
+      s24_url6: "{ %season_url_at(s24_urls, 5) }"
+      s24_url7: "{ %season_url_at(s24_urls, 6) }"
+      s24_url8: "{ %season_url_at(s24_urls, 7) }"
+      s24_url9: "{ %season_url_at(s24_urls, 8) }"
+
+      s25_url: "{ %season_url_at(s25_urls, 0) }"
+      s25_url2: "{ %season_url_at(s25_urls, 1) }"
+      s25_url3: "{ %season_url_at(s25_urls, 2) }"
+      s25_url4: "{ %season_url_at(s25_urls, 3) }"
+      s25_url5: "{ %season_url_at(s25_urls, 4) }"
+      s25_url6: "{ %season_url_at(s25_urls, 5) }"
+      s25_url7: "{ %season_url_at(s25_urls, 6) }"
+      s25_url8: "{ %season_url_at(s25_urls, 7) }"
+      s25_url9: "{ %season_url_at(s25_urls, 8) }"
+
+      s26_url: "{ %season_url_at(s26_urls, 0) }"
+      s26_url2: "{ %season_url_at(s26_urls, 1) }"
+      s26_url3: "{ %season_url_at(s26_urls, 2) }"
+      s26_url4: "{ %season_url_at(s26_urls, 3) }"
+      s26_url5: "{ %season_url_at(s26_urls, 4) }"
+      s26_url6: "{ %season_url_at(s26_urls, 5) }"
+      s26_url7: "{ %season_url_at(s26_urls, 6) }"
+      s26_url8: "{ %season_url_at(s26_urls, 7) }"
+      s26_url9: "{ %season_url_at(s26_urls, 8) }"
+
+      s27_url: "{ %season_url_at(s27_urls, 0) }"
+      s27_url2: "{ %season_url_at(s27_urls, 1) }"
+      s27_url3: "{ %season_url_at(s27_urls, 2) }"
+      s27_url4: "{ %season_url_at(s27_urls, 3) }"
+      s27_url5: "{ %season_url_at(s27_urls, 4) }"
+      s27_url6: "{ %season_url_at(s27_urls, 5) }"
+      s27_url7: "{ %season_url_at(s27_urls, 6) }"
+      s27_url8: "{ %season_url_at(s27_urls, 7) }"
+      s27_url9: "{ %season_url_at(s27_urls, 8) }"
+
+      s28_url: "{ %season_url_at(s28_urls, 0) }"
+      s28_url2: "{ %season_url_at(s28_urls, 1) }"
+      s28_url3: "{ %season_url_at(s28_urls, 2) }"
+      s28_url4: "{ %season_url_at(s28_urls, 3) }"
+      s28_url5: "{ %season_url_at(s28_urls, 4) }"
+      s28_url6: "{ %season_url_at(s28_urls, 5) }"
+      s28_url7: "{ %season_url_at(s28_urls, 6) }"
+      s28_url8: "{ %season_url_at(s28_urls, 7) }"
+      s28_url9: "{ %season_url_at(s28_urls, 8) }"
+
+      s29_url: "{ %season_url_at(s29_urls, 0) }"
+      s29_url2: "{ %season_url_at(s29_urls, 1) }"
+      s29_url3: "{ %season_url_at(s29_urls, 2) }"
+      s29_url4: "{ %season_url_at(s29_urls, 3) }"
+      s29_url5: "{ %season_url_at(s29_urls, 4) }"
+      s29_url6: "{ %season_url_at(s29_urls, 5) }"
+      s29_url7: "{ %season_url_at(s29_urls, 6) }"
+      s29_url8: "{ %season_url_at(s29_urls, 7) }"
+      s29_url9: "{ %season_url_at(s29_urls, 8) }"
+
+      s30_url: "{ %season_url_at(s30_urls, 0) }"
+      s30_url2: "{ %season_url_at(s30_urls, 1) }"
+      s30_url3: "{ %season_url_at(s30_urls, 2) }"
+      s30_url4: "{ %season_url_at(s30_urls, 3) }"
+      s30_url5: "{ %season_url_at(s30_urls, 4) }"
+      s30_url6: "{ %season_url_at(s30_urls, 5) }"
+      s30_url7: "{ %season_url_at(s30_urls, 6) }"
+      s30_url8: "{ %season_url_at(s30_urls, 7) }"
+      s30_url9: "{ %season_url_at(s30_urls, 8) }"
+
+      s31_url: "{ %season_url_at(s31_urls, 0) }"
+      s31_url2: "{ %season_url_at(s31_urls, 1) }"
+      s31_url3: "{ %season_url_at(s31_urls, 2) }"
+      s31_url4: "{ %season_url_at(s31_urls, 3) }"
+      s31_url5: "{ %season_url_at(s31_urls, 4) }"
+      s31_url6: "{ %season_url_at(s31_urls, 5) }"
+      s31_url7: "{ %season_url_at(s31_urls, 6) }"
+      s31_url8: "{ %season_url_at(s31_urls, 7) }"
+      s31_url9: "{ %season_url_at(s31_urls, 8) }"
+
+      s32_url: "{ %season_url_at(s32_urls, 0) }"
+      s32_url2: "{ %season_url_at(s32_urls, 1) }"
+      s32_url3: "{ %season_url_at(s32_urls, 2) }"
+      s32_url4: "{ %season_url_at(s32_urls, 3) }"
+      s32_url5: "{ %season_url_at(s32_urls, 4) }"
+      s32_url6: "{ %season_url_at(s32_urls, 5) }"
+      s32_url7: "{ %season_url_at(s32_urls, 6) }"
+      s32_url8: "{ %season_url_at(s32_urls, 7) }"
+      s32_url9: "{ %season_url_at(s32_urls, 8) }"
+
+      s33_url: "{ %season_url_at(s33_urls, 0) }"
+      s33_url2: "{ %season_url_at(s33_urls, 1) }"
+      s33_url3: "{ %season_url_at(s33_urls, 2) }"
+      s33_url4: "{ %season_url_at(s33_urls, 3) }"
+      s33_url5: "{ %season_url_at(s33_urls, 4) }"
+      s33_url6: "{ %season_url_at(s33_urls, 5) }"
+      s33_url7: "{ %season_url_at(s33_urls, 6) }"
+      s33_url8: "{ %season_url_at(s33_urls, 7) }"
+      s33_url9: "{ %season_url_at(s33_urls, 8) }"
+
+      s34_url: "{ %season_url_at(s34_urls, 0) }"
+      s34_url2: "{ %season_url_at(s34_urls, 1) }"
+      s34_url3: "{ %season_url_at(s34_urls, 2) }"
+      s34_url4: "{ %season_url_at(s34_urls, 3) }"
+      s34_url5: "{ %season_url_at(s34_urls, 4) }"
+      s34_url6: "{ %season_url_at(s34_urls, 5) }"
+      s34_url7: "{ %season_url_at(s34_urls, 6) }"
+      s34_url8: "{ %season_url_at(s34_urls, 7) }"
+      s34_url9: "{ %season_url_at(s34_urls, 8) }"
+
+      s35_url: "{ %season_url_at(s35_urls, 0) }"
+      s35_url2: "{ %season_url_at(s35_urls, 1) }"
+      s35_url3: "{ %season_url_at(s35_urls, 2) }"
+      s35_url4: "{ %season_url_at(s35_urls, 3) }"
+      s35_url5: "{ %season_url_at(s35_urls, 4) }"
+      s35_url6: "{ %season_url_at(s35_urls, 5) }"
+      s35_url7: "{ %season_url_at(s35_urls, 6) }"
+      s35_url8: "{ %season_url_at(s35_urls, 7) }"
+      s35_url9: "{ %season_url_at(s35_urls, 8) }"
+
+      s36_url: "{ %season_url_at(s36_urls, 0) }"
+      s36_url2: "{ %season_url_at(s36_urls, 1) }"
+      s36_url3: "{ %season_url_at(s36_urls, 2) }"
+      s36_url4: "{ %season_url_at(s36_urls, 3) }"
+      s36_url5: "{ %season_url_at(s36_urls, 4) }"
+      s36_url6: "{ %season_url_at(s36_urls, 5) }"
+      s36_url7: "{ %season_url_at(s36_urls, 6) }"
+      s36_url8: "{ %season_url_at(s36_urls, 7) }"
+      s36_url9: "{ %season_url_at(s36_urls, 8) }"
+
+      s37_url: "{ %season_url_at(s37_urls, 0) }"
+      s37_url2: "{ %season_url_at(s37_urls, 1) }"
+      s37_url3: "{ %season_url_at(s37_urls, 2) }"
+      s37_url4: "{ %season_url_at(s37_urls, 3) }"
+      s37_url5: "{ %season_url_at(s37_urls, 4) }"
+      s37_url6: "{ %season_url_at(s37_urls, 5) }"
+      s37_url7: "{ %season_url_at(s37_urls, 6) }"
+      s37_url8: "{ %season_url_at(s37_urls, 7) }"
+      s37_url9: "{ %season_url_at(s37_urls, 8) }"
+
+      s38_url: "{ %season_url_at(s38_urls, 0) }"
+      s38_url2: "{ %season_url_at(s38_urls, 1) }"
+      s38_url3: "{ %season_url_at(s38_urls, 2) }"
+      s38_url4: "{ %season_url_at(s38_urls, 3) }"
+      s38_url5: "{ %season_url_at(s38_urls, 4) }"
+      s38_url6: "{ %season_url_at(s38_urls, 5) }"
+      s38_url7: "{ %season_url_at(s38_urls, 6) }"
+      s38_url8: "{ %season_url_at(s38_urls, 7) }"
+      s38_url9: "{ %season_url_at(s38_urls, 8) }"
+
+      s39_url: "{ %season_url_at(s39_urls, 0) }"
+      s39_url2: "{ %season_url_at(s39_urls, 1) }"
+      s39_url3: "{ %season_url_at(s39_urls, 2) }"
+      s39_url4: "{ %season_url_at(s39_urls, 3) }"
+      s39_url5: "{ %season_url_at(s39_urls, 4) }"
+      s39_url6: "{ %season_url_at(s39_urls, 5) }"
+      s39_url7: "{ %season_url_at(s39_urls, 6) }"
+      s39_url8: "{ %season_url_at(s39_urls, 7) }"
+      s39_url9: "{ %season_url_at(s39_urls, 8) }"
+
+      s40_url: "{ %season_url_at(s40_urls, 0) }"
+      s40_url2: "{ %season_url_at(s40_urls, 1) }"
+      s40_url3: "{ %season_url_at(s40_urls, 2) }"
+      s40_url4: "{ %season_url_at(s40_urls, 3) }"
+      s40_url5: "{ %season_url_at(s40_urls, 4) }"
+      s40_url6: "{ %season_url_at(s40_urls, 5) }"
+      s40_url7: "{ %season_url_at(s40_urls, 6) }"
+      s40_url8: "{ %season_url_at(s40_urls, 7) }"
+      s40_url9: "{ %season_url_at(s40_urls, 8) }"
+
+      s01_urls: "{ [] }"
+      s02_urls: "{ [] }"
+      s03_urls: "{ [] }"
+      s04_urls: "{ [] }"
+      s05_urls: "{ [] }"
+      s06_urls: "{ [] }"
+      s07_urls: "{ [] }"
+      s08_urls: "{ [] }"
+      s09_urls: "{ [] }"
+      s10_urls: "{ [] }"
+      s11_urls: "{ [] }"
+      s12_urls: "{ [] }"
+      s13_urls: "{ [] }"
+      s14_urls: "{ [] }"
+      s15_urls: "{ [] }"
+      s16_urls: "{ [] }"
+      s17_urls: "{ [] }"
+      s18_urls: "{ [] }"
+      s19_urls: "{ [] }"
+      s20_urls: "{ [] }"
+      s21_urls: "{ [] }"
+      s22_urls: "{ [] }"
+      s23_urls: "{ [] }"
+      s24_urls: "{ [] }"
+      s25_urls: "{ [] }"
+      s26_urls: "{ [] }"
+      s27_urls: "{ [] }"
+      s28_urls: "{ [] }"
+      s29_urls: "{ [] }"
+      s30_urls: "{ [] }"
+      s31_urls: "{ [] }"
+      s32_urls: "{ [] }"
+      s33_urls: "{ [] }"
+      s34_urls: "{ [] }"
+      s35_urls: "{ [] }"
+      s36_urls: "{ [] }"
+      s37_urls: "{ [] }"
+      s38_urls: "{ [] }"
+      s39_urls: "{ [] }"
+      s40_urls: "{ [] }"
 
   _tv_show_collection_bilateral:
     preset:
