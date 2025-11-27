@@ -214,10 +214,6 @@ presets:
         variables:
           collection_season_number: "2"
           collection_season_name: "{collection_season_2_name}"
-      - url: "{s02_url10}"
-        variables:
-          collection_season_number: "2"
-          collection_season_name: "{collection_season_2_name}"
 
       - url: "{collection_season_3_url}"
         variables:
