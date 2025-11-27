@@ -398,8 +398,8 @@ class Script:
 
                 # Otherwise, if it has dependencies that are all resolved, then
                 # resolve the definition
-                elif not definition.is_subset_of(
-                    variables=resolved.keys(), custom_function_definitions=self._functions
+                elif definition.is_subset_of(
+                    variables=resolved, custom_function_definitions=self._functions
                 ):
                     resolved[variable] = unresolved[variable].resolve(
                         resolved_variables=resolved,

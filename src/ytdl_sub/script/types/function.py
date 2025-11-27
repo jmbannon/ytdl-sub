@@ -1,4 +1,3 @@
-import copy
 import functools
 from abc import ABC
 from dataclasses import dataclass
@@ -80,6 +79,10 @@ class CustomFunction(Function, NamedCustomFunction):
                 del resolved_variables[function_arg]
 
             return out
+
+        # Implies the custom function does not exist. This should have
+        # been checked in the parser with
+        raise UNREACHABLE
 
 
 class BuiltInFunction(Function, BuiltInFunctionType):
