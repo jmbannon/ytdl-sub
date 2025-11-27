@@ -50,3 +50,17 @@ class SyntaxTree(VariableDependency):
         if len(self.ast) == 1 and isinstance(self.ast[0], Resolvable):
             return self.ast[0]
         return None
+
+
+@dataclass(frozen=True)
+class ResolvedSyntaxTree(SyntaxTree):
+    def resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, VariableDependency],
+    ) -> Resolvable:
+        return self.ast[0]
+
+    @property
+    def maybe_resolvable(self) -> Optional[Resolvable]:
+        return self.ast[0]

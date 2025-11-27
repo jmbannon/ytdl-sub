@@ -158,10 +158,15 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
             script = entry.script
             unresolvable = entry.unresolvable
 
+        # Update the script internally so long as we are not supplying overrides
+        # that could alter the script with one-off state
+        update = function_overrides is None
+
         try:
             return script.resolve_once(
                 dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
                 unresolvable=unresolvable,
+                update=update,
             )["tmp_var"]
         except ScriptVariableNotResolved as exc:
             raise StringFormattingException(
