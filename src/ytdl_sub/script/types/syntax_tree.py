@@ -47,13 +47,25 @@ class SyntaxTree(VariableDependency):
         -------
         A resolvable if the AST contains a single type that is resolvable. None otherwise.
         """
-        if len(self.ast) == 1 and isinstance(self.ast[0], Resolvable):
-            return self.ast[0]
         return None
+
+    def maybe_resolvable_casted(self) -> "SyntaxTree":
+        """
+        Returns
+        -------
+        Optimized SyntaxTree if its deemed resolvable
+        """
+        if len(self.ast) == 1 and isinstance(self.ast[0], Resolvable):
+            return ResolvedSyntaxTree(self.ast)
+        return self
 
 
 @dataclass(frozen=True)
 class ResolvedSyntaxTree(SyntaxTree):
+    """
+    SyntaxTree with optimized helper functions if it's known to be resolved.
+    """
+
     def resolve(
         self,
         resolved_variables: Dict[Variable, Resolvable],

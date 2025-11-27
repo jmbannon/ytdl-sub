@@ -605,7 +605,7 @@ def parse(
         name=name,
         custom_function_names=custom_function_names,
         variable_names=variable_names,
-    ).ast
+    ).ast.maybe_resolvable_casted()
 
 
 # pylint: enable=invalid-name
