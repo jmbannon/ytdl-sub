@@ -188,8 +188,9 @@ Must define ``tv_show_directory``. Available presets:
          s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
 
 Other notable features include:
+- TV show poster info is pulled from the first URL in s01.
 - Individual seasons support both single and multi URL.
-- Season 0 is supported
+- s00 is supported for specials.
 
 .. code-block:: yaml
 
