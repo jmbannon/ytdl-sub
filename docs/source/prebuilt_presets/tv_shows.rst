@@ -160,6 +160,8 @@ Two main use cases of a collection are:
    2. Organize one or more YouTube channels/playlists, where each season represents a
       separate channel/playlist.
 
+Today, ytdl-supports up to 40 seasons with 11 URLs per season.
+
 Example
 ~~~~~~~
 
@@ -182,6 +184,18 @@ Must define ``tv_show_directory``. Available presets:
        "~Beyond the Guitar":
          s01_name: "Videos"
          s01_url: "https://www.youtube.com/c/BeyondTheGuitar"
+         s02_name: "Covers"
+         s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
+
+Individual seasons support both single and multi URL:
+
+.. code-block:: yaml
+
+       "~Beyond the Guitar":
+         s01_name: "Videos"
+         s01_url:
+           - "https://www.youtube.com/c/BeyondTheGuitar"
+           - "https://www.youtube.com/@BeyondTheGuitarAcademy"
          s02_name: "Covers"
          s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
 
