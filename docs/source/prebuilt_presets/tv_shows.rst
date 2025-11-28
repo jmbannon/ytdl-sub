@@ -189,6 +189,8 @@ Must define ``tv_show_directory``. Available presets:
 
 Other notable features include:
 - TV show poster info is pulled from the first URL in s01.
+- Duplicate videos in different URLs (channel /videos vs playlist) will not download twice.
+  - The video will attributed to the season with the highest number.
 - Individual seasons support both single and multi URL.
 - s00 is supported for specials.
 
