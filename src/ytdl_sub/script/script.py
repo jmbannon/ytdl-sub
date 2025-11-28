@@ -10,6 +10,7 @@ from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.syntax_tree import ResolvedSyntaxTree
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
@@ -273,7 +274,7 @@ class Script:
 
     def _update_internally(self, resolved_variables: Dict[str, Resolvable]) -> None:
         for variable_name, resolved in resolved_variables.items():
-            self._variables[variable_name] = SyntaxTree(ast=[resolved])
+            self._variables[variable_name] = ResolvedSyntaxTree(ast=[resolved])
 
     def _recursive_get_unresolved_output_filter_variables(
         self, current_var: SyntaxTree, subset_to_resolve: Set[str], unresolvable: Set[Variable]
@@ -398,8 +399,8 @@ class Script:
 
                 # Otherwise, if it has dependencies that are all resolved, then
                 # resolve the definition
-                elif not definition.is_subset_of(
-                    variables=resolved.keys(), custom_function_definitions=self._functions
+                elif definition.is_subset_of(
+                    variables=resolved, custom_function_definitions=self._functions
                 ):
                     resolved[variable] = unresolved[variable].resolve(
                         resolved_variables=resolved,
@@ -522,6 +523,7 @@ class Script:
         variable_definitions: Dict[str, str],
         resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
+        update: bool = False,
     ) -> Dict[str, Resolvable]:
         """
         Given a new set of variable definitions, resolve them using the Script, but do not
@@ -536,6 +538,8 @@ class Script:
         unresolvable
             Optional. Unresolvable variables that will be ignored in resolution, including all
             variables with a dependency to them.
+        update
+            Whether to update the script's state with resolved variables. Defaults to False.
 
         Returns
         -------
@@ -548,6 +552,7 @@ class Script:
                 pre_resolved=resolved,
                 unresolvable=unresolvable,
                 output_filter=set(list(variable_definitions.keys())),
+                update=update,
             ).output
         finally:
             for name in variable_definitions.keys():

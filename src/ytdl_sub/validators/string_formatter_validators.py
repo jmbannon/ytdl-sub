@@ -246,6 +246,7 @@ def _validate_formatter(
                 )
             },
             unresolvable=unresolvable,
+            update=True,
         )
     except RuntimeException as exc:
         if isinstance(exc, ScriptVariableNotResolved) and is_static_formatter:

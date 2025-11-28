@@ -1,4 +1,3 @@
-import copy
 import functools
 from abc import ABC
 from dataclasses import dataclass
@@ -58,22 +57,28 @@ class CustomFunction(Function, NamedCustomFunction):
                 # Should be validated in the Script
                 raise UNREACHABLE
 
-            resolved_variables_with_args = copy.deepcopy(resolved_variables)
+            function_args: List[FunctionArgument] = []
             for i, arg in enumerate(resolved_args):
                 function_arg = FunctionArgument.from_idx(idx=i, custom_function_name=self.name)
 
-                if function_arg in resolved_variables_with_args:
+                if function_arg in resolved_variables:
                     # function args should always be unique since they are only defined once
                     # in the custom function as %custom_function_name___idx
                     # and returned as a set from each custom function.
                     raise UNREACHABLE
 
-                resolved_variables_with_args[function_arg] = arg
+                resolved_variables[function_arg] = arg
+                function_args.append(function_arg)
 
-            return custom_functions[self.name].resolve(
-                resolved_variables=resolved_variables_with_args,
+            out = custom_functions[self.name].resolve(
+                resolved_variables=resolved_variables,
                 custom_functions=custom_functions,
             )
+
+            for function_arg in function_args:
+                del resolved_variables[function_arg]
+
+            return out
 
         # Implies the custom function does not exist. This should have
         # been checked in the parser with

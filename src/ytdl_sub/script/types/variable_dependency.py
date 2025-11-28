@@ -162,7 +162,7 @@ class VariableDependency(ABC):
     @final
     def is_subset_of(
         self,
-        variables: Iterable[Variable],
+        variables: Dict[Variable, Resolvable],
         custom_function_definitions: Dict[str, "VariableDependency"],
     ) -> bool:
         """
@@ -171,12 +171,12 @@ class VariableDependency(ABC):
         True if it contains all input variables as a dependency. False otherwise.
         """
         for custom_function in self.custom_functions:
-            if custom_function_definitions[custom_function.name].is_subset_of(
+            if not custom_function_definitions[custom_function.name].is_subset_of(
                 variables=variables, custom_function_definitions=custom_function_definitions
             ):
-                return True
+                return False
 
-        return not self.variables.issubset(variables)
+        return all(var in variables for var in self.variables)
 
     @final
     def contains(
