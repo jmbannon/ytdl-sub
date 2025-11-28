@@ -16,4 +16,7 @@ class TvShowByDatePresets(PrebuiltPresets):
 class TvShowCollectionPresets(PrebuiltPresets):
     preset_names = {
         "Kodi TV Show Collection",
+        "Jellyfin TV Show Collection",
+        "Emby TV Show Collection",
+        "Plex TV Show Collection",
     }
