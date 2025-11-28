@@ -2056,6 +2056,55 @@ presets:
           collection_season_number: "40"
           collection_season_name: "{collection_season_40_name}"
 
+      # Place season 0 at end
+      - url: "{ %get_season_url(collection_season_0_url, 0) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        playlist_thumbnails:
+          - name: "{season_poster_file_name}"
+            uid: "latest_entry"
+      - url: "{ %get_season_url(collection_season_0_url, 1) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 2) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 3) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 4) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 5) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 6) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 7) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 8) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 9) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+      - url: "{ %get_season_url(collection_season_0_url, 10) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+
 
 
     output_directory_nfo_tags:
@@ -2228,6 +2277,7 @@ presets:
       collection_season_38_name: "{s38_name}"
       collection_season_39_name: "{s39_name}"
       collection_season_40_name: "{s40_name}"
+      collection_season_0_name: "{s00_name}"
 
       # Legacy url variable
       collection_season_1_url: "{s01_url}"
@@ -2270,6 +2320,7 @@ presets:
       collection_season_38_url: "{s38_url}"
       collection_season_39_url: "{s39_url}"
       collection_season_40_url: "{s40_url}"
+      collection_season_0_url: "{s00_url}"
 
       s01_name: ""
       s02_name: ""
@@ -2311,6 +2362,7 @@ presets:
       s38_name: ""
       s39_name: ""
       s40_name: ""
+      s00_name: ""
 
       s01_url: ""
       s02_url: ""
@@ -2352,6 +2404,7 @@ presets:
       s38_url: ""
       s39_url: ""
       s40_url: ""
+      s00_url: ""
 
       # $0 - season url variable
       # $1 - get the i'th url from the array
@@ -5501,6 +5554,84 @@ presets:
         variables:
           collection_season_number: "40"
           collection_season_name: "{collection_season_40_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 0) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 1) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 2) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 3) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 4) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 5) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 6) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 7) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 8) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 9) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+      - url: "{ %bilateral_url( %get_season_url(collection_season_0_url, 10) ) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
         download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"

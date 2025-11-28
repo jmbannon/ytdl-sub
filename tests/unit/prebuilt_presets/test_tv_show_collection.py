@@ -26,13 +26,13 @@ class TestTvShowCollectionPreset:
             )
 
     def test_multi_url(self, default_config):
-        num_seasons = 40
+        num_seasons = 40  # excluding season 0
         num_urls_per_season = 11
 
         overrides = {
             "tv_show_directory": "abc",
         }
-        for season_num in range(1, num_seasons + 1):
+        for season_num in range(0, num_seasons + 1):
             overrides[f"s{season_num:02d}_name"] = f"The Season {season_num}"
             overrides[f"s{season_num:02d}_url"] = [
                 f"youtube.com/playlist?url_{season_num}_{i}" for i in range(num_urls_per_season)
@@ -44,13 +44,17 @@ class TestTvShowCollectionPreset:
             preset_dict={"preset": "Jellyfin TV Show Collection", "overrides": overrides},
         )
 
-        assert len(sub.downloader_options.urls.list) == 40 * 11 * 2
+        assert len(sub.downloader_options.urls.list) == (num_seasons + 1) * num_urls_per_season * 2
         url_list = sub.downloader_options.urls.list
         itr = 0
 
         # loop twice for bilateral
         for i in range(2):
-            for season_num in range(1, num_seasons + 1):
+            for season_num in range(1, num_seasons + 2):
+                # Season 0 is placed last, adjust here
+                if season_num == num_seasons + 1:
+                    season_num = 0
+
                 for i in range(num_urls_per_season):
                     url = sub.overrides.apply_formatter(
                         url_list[itr].url,

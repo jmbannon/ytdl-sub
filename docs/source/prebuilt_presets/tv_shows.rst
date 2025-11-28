@@ -187,11 +187,17 @@ Must define ``tv_show_directory``. Available presets:
          s02_name: "Covers"
          s02_url: "https://www.youtube.com/playlist?list=PLE62gWlWZk5NWVAVuf0Lm9jdv_-_KXs0W"
 
-Individual seasons support both single and multi URL:
+Other notable features include:
+- Individual seasons support both single and multi URL.
+- Season 0 is supported
 
 .. code-block:: yaml
 
        "~Beyond the Guitar":
+         s00_name: "Specials"
+         s00_url:
+           - "https://www.youtube.com/watch?v=vXzguOdulAI"
+           - "https://www.youtube.com/watch?v=IGwYDvaGAz0"
          s01_name: "Videos"
          s01_url:
            - "https://www.youtube.com/c/BeyondTheGuitar"
