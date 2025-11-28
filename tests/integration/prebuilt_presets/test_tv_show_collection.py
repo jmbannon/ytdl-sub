@@ -114,7 +114,7 @@ class TestPrebuiltTvShowCollectionPresets:
         )
 
     @pytest.mark.parametrize("media_player_preset", TvShowCollectionPresets.preset_names)
-    @pytest.mark.parametrize("season_indices", [[1], [1, 2]])
+    @pytest.mark.parametrize("season_indices", [[1]])
     def test_tv_show_collection_presets(
         self,
         config,

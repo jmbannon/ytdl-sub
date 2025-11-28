@@ -183,7 +183,7 @@ presets:
           collection_season_number: "1"
           collection_season_name: "{collection_season_1_name}"
 
-      - url: "{%get_season_url(collection_season_2_url, 0)}"
+      - url: "{ %get_season_url(collection_season_2_url, 0) }"
         variables:
           collection_season_number: "2"
           collection_season_name: "{collection_season_2_name}"
@@ -231,7 +231,7 @@ presets:
           collection_season_number: "2"
           collection_season_name: "{collection_season_2_name}"
 
-      - url: "{%get_season_url(collection_season_3_url, 0)}"
+      - url: "{ %get_season_url(collection_season_3_url, 0) }"
         variables:
           collection_season_number: "3"
           collection_season_name: "{collection_season_3_name}"
@@ -279,7 +279,7 @@ presets:
           collection_season_number: "3"
           collection_season_name: "{collection_season_3_name}"
 
-      - url: "{%get_season_url(collection_season_4_url, 0)}"
+      - url: "{ %get_season_url(collection_season_4_url, 0) }"
         variables:
           collection_season_number: "4"
           collection_season_name: "{collection_season_4_name}"
@@ -327,7 +327,7 @@ presets:
           collection_season_number: "4"
           collection_season_name: "{collection_season_4_name}"
 
-      - url: "{%get_season_url(collection_season_5_url, 0)}"
+      - url: "{ %get_season_url(collection_season_5_url, 0) }"
         variables:
           collection_season_number: "5"
           collection_season_name: "{collection_season_5_name}"
@@ -375,7 +375,7 @@ presets:
           collection_season_number: "5"
           collection_season_name: "{collection_season_5_name}"
 
-      - url: "{%get_season_url(collection_season_6_url, 0)}"
+      - url: "{ %get_season_url(collection_season_6_url, 0) }"
         variables:
           collection_season_number: "6"
           collection_season_name: "{collection_season_6_name}"
@@ -423,7 +423,7 @@ presets:
           collection_season_number: "6"
           collection_season_name: "{collection_season_6_name}"
 
-      - url: "{%get_season_url(collection_season_7_url, 0)}"
+      - url: "{ %get_season_url(collection_season_7_url, 0) }"
         variables:
           collection_season_number: "7"
           collection_season_name: "{collection_season_7_name}"
@@ -471,7 +471,7 @@ presets:
           collection_season_number: "7"
           collection_season_name: "{collection_season_7_name}"
 
-      - url: "{%get_season_url(collection_season_8_url, 0)}"
+      - url: "{ %get_season_url(collection_season_8_url, 0) }"
         variables:
           collection_season_number: "8"
           collection_season_name: "{collection_season_8_name}"
@@ -519,7 +519,7 @@ presets:
           collection_season_number: "8"
           collection_season_name: "{collection_season_8_name}"
 
-      - url: "{%get_season_url(collection_season_9_url, 0)}"
+      - url: "{ %get_season_url(collection_season_9_url, 0) }"
         variables:
           collection_season_number: "9"
           collection_season_name: "{collection_season_9_name}"
@@ -1095,54 +1095,6 @@ presets:
           collection_season_number: "20"
           collection_season_name: "{collection_season_20_name}"
 
-      - url: "{%get_season_url(collection_season_20_url, 0)}"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-        playlist_thumbnails:
-          - name: "{season_poster_file_name}"
-            uid: "latest_entry"
-      - url: "{ %get_season_url(collection_season_20_url, 1) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 2) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 3) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 4) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 5) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 6) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 7) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 8) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 9) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-      - url: "{ %get_season_url(collection_season_20_url, 10) }"
-        variables:
-          collection_season_number: "20"
-          collection_season_name: "{collection_season_20_name}"
-
       - url: "{%get_season_url(collection_season_21_url, 0)}"
         variables:
           collection_season_number: "21"
@@ -1390,6 +1342,46 @@ presets:
         playlist_thumbnails:
           - name: "{season_poster_file_name}"
             uid: "latest_entry"
+      - url: "{ %get_season_url(collection_season_26_url, 1) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 2) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 3) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 4) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 5) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 6) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 7) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 8) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 9) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
+      - url: "{ %get_season_url(collection_season_26_url, 10) }"
+        variables:
+          collection_season_number: "26"
+          collection_season_name: "{collection_season_26_name}"
 
       - url: "{%get_season_url(collection_season_27_url, 0)}"
         variables:
