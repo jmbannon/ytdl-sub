@@ -13,6 +13,7 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import Union
 from unittest.mock import patch
 
 import pytest
@@ -165,19 +166,18 @@ def preset_dict_to_dl_args(preset_dict: Dict) -> str:
 
 
 @pytest.fixture
-def preset_dict_to_subscription_yaml_generator() -> Callable:
+def subscription_yaml_file_generator() -> Callable:
     @contextlib.contextmanager
-    def _preset_dict_to_subscription_yaml_generator(subscription_name: str, preset_dict: Dict):
-        subscription_dict = {subscription_name: preset_dict}
+    def _subscription_yaml_file_generator(yaml_dict: Dict):
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
-            tmp_file.write(json.dumps(subscription_dict).encode("utf-8"))
+            tmp_file.write(json.dumps(yaml_dict).encode("utf-8"))
 
         try:
             yield tmp_file.name
         finally:
             FileHandler.delete(tmp_file.name)
 
-    return _preset_dict_to_subscription_yaml_generator
+    return _subscription_yaml_file_generator
 
 
 ###################################################################################################
@@ -224,8 +224,14 @@ def _load_config(config_path: Path, working_directory: str) -> ConfigFile:
 
 
 @pytest.fixture()
-def music_video_subscription_path() -> Path:
-    return Path("examples/music_video_subscriptions.yaml")
+def music_video_subscription_path(
+    output_directory: str, subscription_yaml_file_generator: Callable
+) -> Path:
+    yaml = load_yaml("examples/music_video_subscriptions.yaml")
+    yaml["__preset__"]["overrides"]["music_video_directory"] = output_directory
+
+    with subscription_yaml_file_generator(yaml) as mock_filename:
+        yield mock_filename
 
 
 @pytest.fixture()
@@ -239,13 +245,25 @@ def tv_show_config(working_directory, tv_show_config_path) -> ConfigFile:
 
 
 @pytest.fixture()
-def tv_show_subscriptions_path() -> Path:
-    return Path("examples/tv_show_subscriptions.yaml")
+def tv_show_subscriptions_path(
+    output_directory: str, subscription_yaml_file_generator: Callable
+) -> Path:
+    yaml = load_yaml("examples/tv_show_subscriptions.yaml")
+    yaml["__preset__"]["overrides"]["tv_show_directory"] = output_directory
+
+    with subscription_yaml_file_generator(yaml) as mock_filename:
+        yield mock_filename
 
 
 @pytest.fixture()
-def advanced_tv_show_subscriptions_path() -> Path:
-    return Path("examples/advanced/tv_show_subscriptions.yaml")
+def advanced_tv_show_subscriptions_path(
+    output_directory: str, subscription_yaml_file_generator: Callable
+) -> Path:
+    yaml = load_yaml("examples/advanced/tv_show_subscriptions.yaml")
+    yaml["__preset__"] = {"overrides": {"tv_show_directory": output_directory}}
+
+    with subscription_yaml_file_generator(yaml) as mock_filename:
+        yield mock_filename
 
 
 @pytest.fixture()
@@ -265,8 +283,25 @@ def default_config_path(default_config) -> str:
 
 
 @pytest.fixture()
-def music_subscriptions_path() -> Path:
-    return Path("examples/music_subscriptions.yaml")
+def music_subscriptions_path(
+    output_directory: str, subscription_yaml_file_generator: Callable
+) -> Path:
+    yaml = load_yaml("examples/music_subscriptions.yaml")
+    yaml["__preset__"]["overrides"]["music_directory"] = output_directory
+
+    with subscription_yaml_file_generator(yaml) as mock_filename:
+        yield mock_filename
+
+
+@pytest.fixture()
+def docker_default_subscription_path(
+    output_directory: str, subscription_yaml_file_generator: Callable
+) -> Path:
+    yaml = load_yaml("docker/root/defaults/subscriptions.yaml")
+    yaml["__preset__"]["overrides"]["tv_show_directory"] = output_directory
+
+    with subscription_yaml_file_generator(yaml) as mock_filename:
+        yield mock_filename
 
 
 def mock_run_from_cli(args: str) -> List[Subscription]:

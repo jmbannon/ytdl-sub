@@ -540,9 +540,9 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
     assert gnr.get("url2").native == "https://www.youtube.com/watch?v=OldpIhHPsbs"
 
 
-def test_default_docker_config_and_subscriptions():
+def test_default_docker_config_and_subscriptions(docker_default_subscription_path: Path):
     default_config = ConfigFile.from_file_path("docker/root/defaults/config.yaml")
     default_subs = Subscription.from_file_path(
-        config=default_config, subscription_path=Path("docker/root/defaults/subscriptions.yaml")
+        config=default_config, subscription_path=docker_default_subscription_path
     )
     assert len(default_subs) == 1

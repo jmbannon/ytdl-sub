@@ -10,6 +10,8 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
+from ytdl_sub.utils.exceptions import SubscriptionPermissionError
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -93,6 +95,12 @@ class BaseSubscription(ABC):
         )
 
         self._exception: Optional[Exception] = None
+
+        if not FileHandler.is_path_writable(self.output_directory):
+            raise SubscriptionPermissionError(
+                "ytdl-sub does not have write permissions to the output directory: "
+                f"{self.output_directory}"
+            )
 
     @property
     def download_archive(self) -> EnhancedDownloadArchive:
