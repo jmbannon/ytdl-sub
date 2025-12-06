@@ -380,6 +380,22 @@ class FileHandler:
         return self._file_handler_transaction_log
 
     @classmethod
+    def is_path_writable(cls, src_file_path: Union[str, Path]) -> bool:
+        """"
+        Check whether a path is writable. If it does not exist, try to find the base directory
+        and check permissions on that.
+        """
+        path = os.path.abspath(src_file_path)
+
+        while not os.path.exists(path):
+            new_path = os.path.dirname(path)
+            if new_path == path:  # reached root
+                break
+            path = new_path
+
+        return os.access(path, os.W_OK)
+
+    @classmethod
     def copy(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):
         """
         Parameters

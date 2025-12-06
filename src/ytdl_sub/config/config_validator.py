@@ -12,6 +12,8 @@ from ytdl_sub.config.defaults import DEFAULT_FFPROBE_PATH
 from ytdl_sub.config.defaults import DEFAULT_LOCK_DIRECTORY
 from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
+from ytdl_sub.utils.exceptions import SubscriptionPermissionError
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
 from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -146,6 +148,12 @@ class ConfigOptions(StrictDictValidator):
         self._file_name_max_bytes = self._validate_key(
             key="file_name_max_bytes", validator=IntValidator, default=MAX_FILE_NAME_BYTES
         )
+
+        if not FileHandler.is_path_writable(self.working_directory):
+            raise SubscriptionPermissionError(
+                "ytdl-sub does not have permissions to the working directory: "
+                f"{self.working_directory}"
+            )
 
     @property
     def working_directory(self) -> str:
