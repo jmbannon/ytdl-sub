@@ -381,7 +381,7 @@ class FileHandler:
 
     @classmethod
     def is_path_writable(cls, src_file_path: Union[str, Path]) -> bool:
-        """"
+        """
         Check whether a path is writable. If it does not exist, try to find the base directory
         and check permissions on that.
         """
@@ -394,6 +394,20 @@ class FileHandler:
             path = new_path
 
         return os.access(path, os.W_OK)
+
+    @classmethod
+    def is_file_existent(cls, file_path: Union[str, Path]) -> bool:
+        """
+        Check whether a file exists.
+        """
+        return os.path.isfile(file_path)
+
+    @classmethod
+    def is_file_readable(cls, file_path: Union[str, Path]) -> bool:
+        """
+        Check whether a file exists and is readable.
+        """
+        return cls.is_file_existent(file_path) and os.access(file_path, os.R_OK)
 
     @classmethod
     def copy(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):
