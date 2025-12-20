@@ -176,11 +176,13 @@ class VariableValidation:
         self.resolved_variables |= resolved_variables
         self.unresolved_variables -= resolved_variables
 
-    def ensure_proper_usage(self) -> None:
+    def ensure_proper_usage(self) -> Dict:
         """
         Validate variables resolve as plugins are executed, and return
         a mock script which contains actualized added variables from the plugins
         """
+
+        resolved_subscription: Dict = {}
 
         self._add_variables(PluginOperation.DOWNLOADER, options=self.downloader_options)
         self._add_subscription_override_variables()
@@ -200,16 +202,17 @@ class VariableValidation:
             self._add_variables(PluginOperation.MODIFY_ENTRY, options=plugin_options)
 
             # Validate that any formatter in the plugin options can resolve
-            validate_formatters(
+            resolved_subscription[plugin_options.__class__.__name__] = validate_formatters(
                 script=self.script,
                 unresolved_variables=self.unresolved_variables,
                 validator=plugin_options,
             )
 
-        validate_formatters(
+        resolved_subscription["output_options"] = validate_formatters(
             script=self.script,
             unresolved_variables=self.unresolved_variables,
             validator=self.output_options,
         )
 
         assert not self.unresolved_variables
+        return resolved_subscription
