@@ -245,3 +245,6 @@ class BaseSubscription(ABC):
         Subscription in yaml format
         """
         return self._preset_options.yaml
+
+    def resolved_yaml(self):
+        return self._preset_options.validated_dict

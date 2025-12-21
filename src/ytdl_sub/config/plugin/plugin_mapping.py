@@ -217,3 +217,11 @@ class PluginMapping:
                 f"{', '.join(cls.plugins())}"
             )
         return cls._MAPPING[plugin]
+
+    @classmethod
+    def name_of(cls, plugin_options: OptionsValidator) -> str:
+        for name, plugin_type in cls._MAPPING.items():
+            if plugin_type.plugin_options_type == plugin_options.__class__:
+                return name
+
+        raise ValueError("Plugin name does not exist")

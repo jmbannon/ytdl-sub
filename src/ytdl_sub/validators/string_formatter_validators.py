@@ -246,7 +246,10 @@ def _validate_formatter(
             unresolvable=unresolvable,
             update=True,
         )
-        return out['tmp_var'].native
+
+        if is_static_formatter:
+            return out['tmp_var'].native
+        return formatter_validator.format_string
     except RuntimeException as exc:
         if isinstance(exc, ScriptVariableNotResolved) and is_static_formatter:
             raise StringFormattingVariableNotFoundException(
