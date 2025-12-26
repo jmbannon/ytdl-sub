@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List, Iterable
 from typing import Dict
 from typing import Optional
 from typing import Set
@@ -87,6 +87,19 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
             )
 
         return True
+
+    def ensure_variable_names_not_a_plugin(self, plugin_names: Iterable[str]) -> None:
+        for name in self.keys:
+            if name.startswith("%"):
+                name = name[1:]
+
+            if name in plugin_names:
+                raise self._validation_exception(
+                    f"Override variable with name {name} cannot be used since it is"
+                    " the name of a plugin. Perhaps you meant to define it as a plugin? If so,"
+                    " indent it left to make it at the same level as overrides.",
+                    exception_class=InvalidVariableNameException,
+                )
 
     def ensure_variable_name_valid(self, name: str) -> None:
         """
