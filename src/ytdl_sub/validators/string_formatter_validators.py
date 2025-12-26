@@ -240,15 +240,13 @@ def _validate_formatter(
         )
     try:
         out = mock_script.resolve_once(
-            {
-                "tmp_var": formatter_validator.format_string
-            },
+            {"tmp_var": formatter_validator.format_string},
             unresolvable=unresolvable,
             update=True,
         )
 
         if is_static_formatter:
-            return out['tmp_var'].native
+            return out["tmp_var"].native
         return formatter_validator.format_string
     except RuntimeException as exc:
         if isinstance(exc, ScriptVariableNotResolved) and is_static_formatter:
@@ -270,35 +268,37 @@ def validate_formatters(
     """
     resolved_dict: Dict = {}
     if isinstance(validator, DictValidator):
-        resolved_dict[validator._name] = {}
+        resolved_dict[validator._leaf_name] = {}
         # pylint: disable=protected-access
         # Usage of protected variables in other validators is fine. The reason to keep
         # them protected is for readability when using them in subscriptions.
         for key, validator_value in validator._validator_dict.items():
-            resolved_dict[validator._name][key] = validate_formatters(
+            resolved_dict[validator._leaf_name][key] = validate_formatters(
                 script=script,
                 unresolved_variables=unresolved_variables,
                 validator=validator_value,
             )
         # pylint: enable=protected-access
     elif isinstance(validator, ListValidator):
-        resolved_dict[validator._name] = []
+        resolved_dict[validator._leaf_name] = []
         for list_value in validator.list:
-            resolved_dict[validator._name].append(validate_formatters(
-                script=script,
-                unresolved_variables=unresolved_variables,
-                validator=list_value,
-            ))
+            resolved_dict[validator._leaf_name].append(
+                validate_formatters(
+                    script=script,
+                    unresolved_variables=unresolved_variables,
+                    validator=list_value,
+                )
+            )
     elif isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
-        resolved_dict[validator._name] = _validate_formatter(
+        resolved_dict[validator._leaf_name] = _validate_formatter(
             mock_script=script,
             unresolved_variables=unresolved_variables,
             formatter_validator=validator,
         )
     elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
-        resolved_dict[validator._name] = {}
+        resolved_dict[validator._leaf_name] = {}
         for key, validator_value in validator.dict.items():
-            resolved_dict[validator._name][key] = _validate_formatter(
+            resolved_dict[validator._leaf_name][key] = _validate_formatter(
                 mock_script=script,
                 unresolved_variables=unresolved_variables,
                 formatter_validator=validator_value,

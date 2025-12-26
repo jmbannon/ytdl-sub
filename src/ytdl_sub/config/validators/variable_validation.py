@@ -199,17 +199,16 @@ class VariableValidation:
         for plugin_options in PluginMapping.order_options_by(
             self.plugins.zipped(), PluginOperation.MODIFY_ENTRY
         ):
-            plugin_key = PluginMapping.name_of(plugin_options)
             self._add_variables(PluginOperation.MODIFY_ENTRY, options=plugin_options)
 
             # Validate that any formatter in the plugin options can resolve
-            resolved_subscription[plugin_key] = validate_formatters(
+            resolved_subscription |= validate_formatters(
                 script=self.script,
                 unresolved_variables=self.unresolved_variables,
                 validator=plugin_options,
             )
 
-        resolved_subscription["output_options"] = validate_formatters(
+        resolved_subscription |= validate_formatters(
             script=self.script,
             unresolved_variables=self.unresolved_variables,
             validator=self.output_options,

@@ -274,7 +274,7 @@ class DictValidator(Validator):
             value=self._dict.get(key, default),
         )
 
-        self.__validator_dict[validator_name] = validator_instance
+        self.__validator_dict[key] = validator_instance
         return validator_instance
 
     @final
