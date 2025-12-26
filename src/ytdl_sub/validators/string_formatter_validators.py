@@ -273,7 +273,7 @@ def validate_formatters(
         # Usage of protected variables in other validators is fine. The reason to keep
         # them protected is for readability when using them in subscriptions.
         for key, validator_value in validator._validator_dict.items():
-            resolved_dict[validator._leaf_name][key] = validate_formatters(
+            resolved_dict[validator._leaf_name] |= validate_formatters(
                 script=script,
                 unresolved_variables=unresolved_variables,
                 validator=validator_value,
@@ -298,10 +298,12 @@ def validate_formatters(
     elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
         resolved_dict[validator._leaf_name] = {}
         for key, validator_value in validator.dict.items():
-            resolved_dict[validator._leaf_name][key] = _validate_formatter(
+            resolved_dict[validator._leaf_name] |= _validate_formatter(
                 mock_script=script,
                 unresolved_variables=unresolved_variables,
                 formatter_validator=validator_value,
             )
+    else:
+        resolved_dict[validator._leaf_name] = validator._value
 
     return resolved_dict
