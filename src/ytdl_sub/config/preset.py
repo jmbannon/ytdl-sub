@@ -194,9 +194,7 @@ class Preset(_PresetShell):
         self.plugins: PresetPlugins = self._validate_and_get_plugins()
         self.overrides = self._validate_key(key="overrides", validator=Overrides, default={})
 
-        self.overrides.ensure_variable_names_not_a_plugin(
-            plugin_names=PRESET_KEYS
-        )
+        self.overrides.ensure_variable_names_not_a_plugin(plugin_names=PRESET_KEYS)
 
         VariableValidation(
             downloader_options=self.downloader_options,

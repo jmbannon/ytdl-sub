@@ -456,8 +456,6 @@ class TestPreset:
                         "embed_subtitles": True,
                     },
                     "output_options": {"output_directory": "dir", "file_name": "acjk"},
-                    "overrides": {
-                        "throttle_protection": "nope"
-                    }
+                    "overrides": {"throttle_protection": "nope"},
                 },
             )
