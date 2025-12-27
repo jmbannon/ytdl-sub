@@ -8,6 +8,7 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import YTDLOptions
+from ytdl_sub.config.validators.variable_validation import VariableValidation
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.utils.exceptions import SubscriptionPermissionError
@@ -88,9 +89,9 @@ class BaseSubscription(ABC):
         # Add post-archive variables
         self.overrides.add(
             {
-                SubscriptionVariables.subscription_has_download_archive(): f"""{{
-                        %bool({self.download_archive.num_entries > 0})
-                    }}""",
+                SubscriptionVariables.subscription_has_download_archive(): (
+                    f"{{%bool({self.download_archive.num_entries > 0})}}"
+                ),
             }
         )
 
@@ -101,6 +102,16 @@ class BaseSubscription(ABC):
                 "ytdl-sub does not have write permissions to the output directory: "
                 f"{self.output_directory}"
             )
+
+        self._validated_dict = (
+            VariableValidation(
+                downloader_options=self.downloader_options,
+                output_options=self.output_options,
+                plugins=self.plugins,
+            )
+            .initialize_preset_overrides(overrides=self.overrides)
+            .ensure_proper_usage()
+        )
 
     @property
     def download_archive(self) -> EnhancedDownloadArchive:
@@ -247,4 +258,4 @@ class BaseSubscription(ABC):
         return self._preset_options.yaml
 
     def resolved_yaml(self):
-        return self._preset_options.validated_dict
+        return self._validated_dict

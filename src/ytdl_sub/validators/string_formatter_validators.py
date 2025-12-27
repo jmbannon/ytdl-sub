@@ -272,7 +272,7 @@ def validate_formatters(
         # pylint: disable=protected-access
         # Usage of protected variables in other validators is fine. The reason to keep
         # them protected is for readability when using them in subscriptions.
-        for key, validator_value in validator._validator_dict.items():
+        for validator_value in validator._validator_dict.values():
             resolved_dict[validator._leaf_name] |= validate_formatters(
                 script=script,
                 unresolved_variables=unresolved_variables,

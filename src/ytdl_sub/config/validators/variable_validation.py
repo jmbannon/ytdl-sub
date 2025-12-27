@@ -100,48 +100,21 @@ class VariableValidation:
         self.resolved_variables: Set[str] = set()
         self.unresolved_variables: Set[str] = set()
 
-    def initialize_preset_overrides(self, overrides: Overrides) -> "VariableValidation":
-        """
-        Do some gymnastics to initialize the Overrides script.
-        """
-        override_variables = set(list(overrides.initial_variables().keys()))
+    def initialize_preset_overrides(
+        self,
+        overrides: Overrides,
+    ) -> "VariableValidation":
+        plugin_variables = self.plugins.get_all_variables(
+            additional_options=[self.output_options, self.downloader_options]
+        )
+
+        self.unresolved_variables = plugin_variables
 
         # Set resolved variables as all entry + override variables
         # at this point to generate every possible added/modified variable
-        self.resolved_variables = set(_DUMMY_ENTRY_VARIABLES.keys()) | override_variables
-        plugin_variables: Set[str] = set()
-
-        for (
-            plugin_options,
-            added_variables,
-            modified_variables,
-        ) in _get_added_and_modified_variables(
-            plugins=self.plugins,
-            downloader_options=self.downloader_options,
-            output_options=self.output_options,
-        ):
-
-            for added_variable in added_variables:
-                if not overrides.ensure_added_plugin_variable_valid(added_variable=added_variable):
-                    # pylint: disable=protected-access
-                    raise plugin_options._validation_exception(
-                        f"Cannot use the variable name {added_variable} because it exists as a"
-                        " built-in ytdl-sub variable name."
-                    )
-                    # pylint: enable=protected-access
-
-            # Set unresolved as variables that are added but do not exist as
-            # entry/override variables since they are created at run-time
-            self.unresolved_variables |= added_variables | modified_variables
-            plugin_variables |= added_variables | modified_variables
-
-        # Then update resolved variables to reflect that
-        self.resolved_variables -= self.unresolved_variables
-
-        # Initialize overrides with unresolved variables + modified variables to throw an error.
-        # For modified variables, this is to prevent a resolve(update=True) to setting any
-        # dependencies until it has been explicitly added
-        overrides = overrides.initialize_script(unresolved_variables=self.unresolved_variables)
+        self.resolved_variables = (
+            set(_DUMMY_ENTRY_VARIABLES.keys()) | set(list(overrides.initial_variables().keys()))
+        ) - self.unresolved_variables
 
         # copy the script and mock entry variables
         self.script = copy.deepcopy(overrides.script)
@@ -152,9 +125,6 @@ class VariableValidation:
         )
 
         return self
-
-    def _update_script(self) -> None:
-        _ = self.script.resolve(unresolvable=self.unresolved_variables, update=True)
 
     def _add_subscription_override_variables(self) -> None:
         """
