@@ -220,6 +220,9 @@ class PluginMapping:
 
     @classmethod
     def name_of(cls, plugin_options: OptionsValidator) -> str:
+        """
+        Returns plugin definition's name.
+        """
         for name, plugin_type in cls._MAPPING.items():
             if plugin_type.plugin_options_type == plugin_options.__class__:
                 return name

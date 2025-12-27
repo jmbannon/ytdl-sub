@@ -268,21 +268,21 @@ def validate_formatters(
     """
     resolved_dict: Dict = {}
     if isinstance(validator, DictValidator):
-        resolved_dict[validator._leaf_name] = {}
+        resolved_dict[validator.leaf_name] = {}
         # pylint: disable=protected-access
         # Usage of protected variables in other validators is fine. The reason to keep
         # them protected is for readability when using them in subscriptions.
         for validator_value in validator._validator_dict.values():
-            resolved_dict[validator._leaf_name] |= validate_formatters(
+            resolved_dict[validator.leaf_name] |= validate_formatters(
                 script=script,
                 unresolved_variables=unresolved_variables,
                 validator=validator_value,
             )
         # pylint: enable=protected-access
     elif isinstance(validator, ListValidator):
-        resolved_dict[validator._leaf_name] = []
+        resolved_dict[validator.leaf_name] = []
         for list_value in validator.list:
-            resolved_dict[validator._leaf_name].append(
+            resolved_dict[validator.leaf_name].append(
                 validate_formatters(
                     script=script,
                     unresolved_variables=unresolved_variables,
@@ -290,20 +290,20 @@ def validate_formatters(
                 )
             )
     elif isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
-        resolved_dict[validator._leaf_name] = _validate_formatter(
+        resolved_dict[validator.leaf_name] = _validate_formatter(
             mock_script=script,
             unresolved_variables=unresolved_variables,
             formatter_validator=validator,
         )
     elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
-        resolved_dict[validator._leaf_name] = {}
-        for key, validator_value in validator.dict.items():
-            resolved_dict[validator._leaf_name] |= _validate_formatter(
+        resolved_dict[validator.leaf_name] = {}
+        for validator_value in validator.dict.values():
+            resolved_dict[validator.leaf_name] |= _validate_formatter(
                 mock_script=script,
                 unresolved_variables=unresolved_variables,
                 formatter_validator=validator_value,
             )
     else:
-        resolved_dict[validator._leaf_name] = validator._value
+        resolved_dict[validator.leaf_name] = validator._value
 
     return resolved_dict

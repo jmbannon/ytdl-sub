@@ -68,6 +68,9 @@ class PresetPlugins:
             yield plugin_options, added_variables, modified_variables
 
     def get_all_variables(self, additional_options: List[OptionsValidator]) -> Set[str]:
+        """
+        Returns set of all added and modified variables' names.
+        """
         all_variables: Set[str] = set()
         for _, added, modified in self.get_added_and_modified_variables(additional_options):
             all_variables.update(added)

@@ -103,15 +103,12 @@ class BaseSubscription(ABC):
                 f"{self.output_directory}"
             )
 
-        self._validated_dict = (
-            VariableValidation(
-                downloader_options=self.downloader_options,
-                output_options=self.output_options,
-                plugins=self.plugins,
-            )
-            .initialize_preset_overrides(overrides=self.overrides)
-            .ensure_proper_usage()
-        )
+        self._validated_dict = VariableValidation(
+            overrides=self.overrides,
+            downloader_options=self.downloader_options,
+            output_options=self.output_options,
+            plugins=self.plugins,
+        ).ensure_proper_usage()
 
     @property
     def download_archive(self) -> EnhancedDownloadArchive:
@@ -258,4 +255,9 @@ class BaseSubscription(ABC):
         return self._preset_options.yaml
 
     def resolved_yaml(self):
+        """
+        Returns
+        -------
+        Human-readable, condensed YAML definition of the subscription.
+        """
         return self._validated_dict

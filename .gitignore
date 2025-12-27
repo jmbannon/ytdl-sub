@@ -146,6 +146,7 @@ docker/testing/volumes
 .local/
 
 .ytdl-sub-working-directory
+.ytdl-sub-lock
 
 ffmpeg.exe
 ffprobe.exe

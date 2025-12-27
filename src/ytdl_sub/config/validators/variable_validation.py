@@ -88,10 +88,12 @@ def _override_variables(overrides: Overrides) -> Set[str]:
 class VariableValidation:
     def __init__(
         self,
+        overrides: Overrides,
         downloader_options: MultiUrlValidator,
         output_options: OutputOptions,
         plugins: PresetPlugins,
     ):
+        self.overrides = overrides
         self.downloader_options = downloader_options
         self.output_options = output_options
         self.plugins = plugins
@@ -100,9 +102,10 @@ class VariableValidation:
         self.resolved_variables: Set[str] = set()
         self.unresolved_variables: Set[str] = set()
 
-    def initialize_preset_overrides(
+        self._initialize_mock_script()
+
+    def _initialize_mock_script(
         self,
-        overrides: Overrides,
     ) -> "VariableValidation":
         plugin_variables = self.plugins.get_all_variables(
             additional_options=[self.output_options, self.downloader_options]
@@ -113,13 +116,14 @@ class VariableValidation:
         # Set resolved variables as all entry + override variables
         # at this point to generate every possible added/modified variable
         self.resolved_variables = (
-            set(_DUMMY_ENTRY_VARIABLES.keys()) | set(list(overrides.initial_variables().keys()))
+            set(_DUMMY_ENTRY_VARIABLES.keys())
+            | set(list(self.overrides.initial_variables().keys()))
         ) - self.unresolved_variables
 
         # copy the script and mock entry variables
-        self.script = copy.deepcopy(overrides.script)
+        self.script = copy.deepcopy(self.overrides.script)
         self.script.add(
-            variables=_add_dummy_overrides(overrides=overrides)
+            variables=_add_dummy_overrides(overrides=self.overrides)
             | _add_dummy_variables(variables=plugin_variables)
             | _DUMMY_ENTRY_VARIABLES
         )
