@@ -8,7 +8,7 @@ from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
-from ytdl_sub.script.utils.exceptions import RuntimeException
+from ytdl_sub.script.utils.exceptions import RuntimeException, UserThrownRuntimeError
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
@@ -255,6 +255,12 @@ def _validate_formatter(
                 "entry variables"
             ) from exc
         raise StringFormattingVariableNotFoundException(exc) from exc
+    except UserThrownRuntimeError as exc:
+        # Errors are expected for non-static formatters due to missing entry
+        # data. Raise otherwise.
+        if not is_static_formatter:
+            return formatter_validator.format_string
+        raise exc
 
 
 def validate_formatters(
