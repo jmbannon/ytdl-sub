@@ -240,14 +240,13 @@ def _validate_formatter(
             f"formatter: {', '.join(sorted(unresolved))}"
         )
     try:
-        out = mock_script.resolve_once(
-            {"tmp_var": formatter_validator.format_string},
-            unresolvable=unresolvable,
-            update=True,
-        )
-
         if is_static_formatter:
-            return out["tmp_var"].native
+            return mock_script.resolve_once(
+                {"tmp_var": formatter_validator.format_string},
+                unresolvable=unresolvable,
+                update=True,
+            )["tmp_var"].native
+
         return formatter_validator.format_string
     except RuntimeException as exc:
         if isinstance(exc, ScriptVariableNotResolved) and is_static_formatter:
@@ -274,6 +273,7 @@ def validate_formatters(
     and resolve.
     """
     resolved_dict: Dict = {}
+
     if isinstance(validator, DictValidator):
         resolved_dict[validator.leaf_name] = {}
         # pylint: disable=protected-access
@@ -289,13 +289,13 @@ def validate_formatters(
     elif isinstance(validator, ListValidator):
         resolved_dict[validator.leaf_name] = []
         for list_value in validator.list:
-            resolved_dict[validator.leaf_name].append(
-                validate_formatters(
-                    script=script,
-                    unresolved_variables=unresolved_variables,
-                    validator=list_value,
-                )
+            list_output = validate_formatters(
+                script=script,
+                unresolved_variables=unresolved_variables,
+                validator=list_value,
             )
+            assert len(list_output) == 1
+            resolved_dict[validator.leaf_name].append(list(list_output.values())[0])
     elif isinstance(validator, (StringFormatterValidator, OverridesStringFormatterValidator)):
         resolved_dict[validator.leaf_name] = _validate_formatter(
             mock_script=script,

@@ -548,12 +548,11 @@ def test_default_docker_config_and_subscriptions(docker_default_subscription_pat
     assert len(default_subs) == 1
 
 
-#
-# def test_tv_show_resolved_yaml(config_file: ConfigFile, tv_show_subscriptions_path: Path):
-#     subs = Subscription.from_file_path(
-#         config=config_file, subscription_path=tv_show_subscriptions_path
-#     )
-#
-#     assert len(subs) == 8
-#     yaml_out = subs[0].resolved_yaml()
-#     assert yaml_out == "nope"
+def test_tv_show_resolved_yaml(config_file: ConfigFile, tv_show_subscriptions_path: Path):
+    subs = Subscription.from_file_path(
+        config=config_file, subscription_path=tv_show_subscriptions_path
+    )
+
+    assert len(subs) == 8
+    yaml_out = subs[0].resolved_yaml()
+    assert yaml_out == "nope"

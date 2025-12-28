@@ -15,7 +15,9 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.script import _is_function
 from ytdl_sub.script.utils.exceptions import RuntimeException
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import BASE_SCRIPT
 from ytdl_sub.validators.string_formatter_validators import to_variable_dependency_format_string
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
@@ -48,7 +50,7 @@ def _add_dummy_overrides(overrides: Overrides) -> Dict[str, str]:
         try:
             # Attempt to get the resolved version, which will only happen
             # if it does not have any dependencies to the entry
-            value = overrides.script.get(override_name).native
+            value = ScriptUtils.to_script(overrides.script.get(override_name).native)
         except RuntimeException:
             value = to_variable_dependency_format_string(
                 script=overrides.script,
@@ -190,6 +192,17 @@ class VariableValidation:
             unresolved_variables=self.unresolved_variables,
             validator=self.output_options,
         )
+
+        # TODO: make this a function
+        raw_download_output = validate_formatters(
+            script=self.script,
+            unresolved_variables=self.unresolved_variables,
+            validator=self.downloader_options.urls,
+        )
+        resolved_subscription["download"] = []
+        for url_output in raw_download_output["download"]:
+            if url_output["url"]:
+                resolved_subscription["download"].append(url_output)
 
         assert not self.unresolved_variables
         return resolved_subscription

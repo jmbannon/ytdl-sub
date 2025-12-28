@@ -1,8 +1,11 @@
+import re
+
 import pytest
 
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_sub.utils.exceptions import ValidationException
 
 
 class TestSubscriptionValidation:
@@ -110,6 +113,32 @@ class TestSubscriptionValidation:
                             "output_directory": "{title}",
                             "file_name": "{uid}",
                         },
+                    },
+                ),
+                config=config_file,
+            )
+
+    def test_preset_error_added_url_variable_cannot_resolve(self, config_file, output_options):
+        with pytest.raises(
+            ValidationException,
+            match=re.escape(
+                "variable the_bad_one cannot use the variables subtitles_ext because it "
+                "depends on other variables that are computed later in execution"
+            ),
+        ):
+            _ = Subscription.from_preset(
+                preset=Preset(
+                    config=config_file,
+                    name="test",
+                    value={
+                        "download": {
+                            "url": "youtube.com/watch?v=123abc",
+                            "variables": {"the_bad_one": "{subtitles_ext}"},
+                        },
+                        "subtitles": {
+                            "embed_subtitles": True,
+                        },
+                        "output_options": {"output_directory": "dir", "file_name": "acjk"},
                     },
                 ),
                 config=config_file,
