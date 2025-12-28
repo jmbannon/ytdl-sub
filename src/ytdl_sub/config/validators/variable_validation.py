@@ -15,7 +15,6 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.script import _is_function
 from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.utils.scriptable import BASE_SCRIPT
 from ytdl_sub.validators.string_formatter_validators import to_variable_dependency_format_string
@@ -45,18 +44,15 @@ def _add_dummy_variables(variables: Iterable[str]) -> Dict[str, str]:
 def _add_dummy_overrides(overrides: Overrides) -> Dict[str, str]:
     # Have the dummy override variable contain all variable deps that it uses in the string
     dummy_overrides: Dict[str, str] = {}
-    for override_name, format_string in overrides.dict_with_format_strings.items():
-
-        if _is_function(override_name):
-            continue
-
+    for override_name in overrides.script.variable_names:
         try:
             # Attempt to get the resolved version, which will only happen
             # if it does not have any dependencies to the entry
             value = overrides.script.get(override_name).native
         except RuntimeException:
             value = to_variable_dependency_format_string(
-                script=overrides.script, parsed_format_string=overrides.script._variables[override_name]
+                script=overrides.script,
+                parsed_format_string=overrides.script._variables[override_name],
             )
 
         dummy_overrides[override_name] = value
@@ -130,9 +126,9 @@ class VariableValidation:
         # copy the script and mock entry variables
         self.script = copy.deepcopy(self.overrides.script)
         self.script.add(
-            variables=_add_dummy_overrides(overrides=self.overrides)
+            variables=_DUMMY_ENTRY_VARIABLES
             | _add_dummy_variables(variables=plugin_variables)
-            | _DUMMY_ENTRY_VARIABLES
+            | _add_dummy_overrides(overrides=self.overrides)
         )
 
         return self

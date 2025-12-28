@@ -15,6 +15,7 @@ from ytdl_sub.utils.exceptions import SubscriptionPermissionError
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get("subscription")
@@ -77,6 +78,14 @@ class BaseSubscription(ABC):
             }
         )
 
+        # Validate after adding the subscription name
+        self._validated_dict = VariableValidation(
+            overrides=self.overrides,
+            downloader_options=self.downloader_options,
+            output_options=self.output_options,
+            plugins=self.plugins,
+        ).ensure_proper_usage()
+
         self._enhanced_download_archive: Optional[EnhancedDownloadArchive] = (
             _initialize_download_archive(
                 output_options=self.output_options,
@@ -102,13 +111,6 @@ class BaseSubscription(ABC):
                 "ytdl-sub does not have write permissions to the output directory: "
                 f"{self.output_directory}"
             )
-
-        self._validated_dict = VariableValidation(
-            overrides=self.overrides,
-            downloader_options=self.downloader_options,
-            output_options=self.output_options,
-            plugins=self.plugins,
-        ).ensure_proper_usage()
 
     @property
     def download_archive(self) -> EnhancedDownloadArchive:
@@ -254,10 +256,10 @@ class BaseSubscription(ABC):
         """
         return self._preset_options.yaml
 
-    def resolved_yaml(self):
+    def resolved_yaml(self) -> str:
         """
         Returns
         -------
         Human-readable, condensed YAML definition of the subscription.
         """
-        return self._validated_dict
+        return dump_yaml(self._validated_dict)
