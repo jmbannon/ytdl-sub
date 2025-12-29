@@ -226,6 +226,7 @@ class Preset(_PresetShell):
         self.overrides = self._initialize_overrides_script(
             overrides=self._validate_key(key="overrides", validator=Overrides, default={})
         )
+        self.overrides.ensure_variable_names_not_a_plugin(plugin_names=PRESET_KEYS)
 
     @property
     def name(self) -> str:
