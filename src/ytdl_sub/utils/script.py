@@ -42,7 +42,7 @@ class ScriptUtils:
         if value is None:
             out = ""
         elif isinstance(value, str):
-            out = f'{{%string("""{value}""")}}'
+            out = value
         elif isinstance(value, bool):
             out = f"{{%bool({value})}}"
         elif isinstance(value, int):
