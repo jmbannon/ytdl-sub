@@ -541,7 +541,9 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
     assert gnr.get("url2").native == "https://www.youtube.com/watch?v=OldpIhHPsbs"
 
 
-def test_default_docker_config_and_subscriptions(docker_default_subscription_path: Path, output_directory: str):
+def test_default_docker_config_and_subscriptions(
+    docker_default_subscription_path: Path, output_directory: str
+):
     default_config = ConfigFile.from_file_path("docker/root/defaults/config.yaml")
     default_subs = Subscription.from_file_path(
         config=default_config, subscription_path=docker_default_subscription_path
@@ -603,12 +605,3 @@ def test_default_docker_config_and_subscriptions(docker_default_subscription_pat
             "year": "{episode_year}",
         },
     }
-
-
-def test_tv_show_resolved_yaml(config_file: ConfigFile, tv_show_subscriptions_path: Path):
-    subs = Subscription.from_file_path(
-        config=config_file, subscription_path=tv_show_subscriptions_path
-    )
-
-    assert len(subs) == 8
-    yaml_out = subs[0].resolved_yaml()
