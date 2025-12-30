@@ -181,8 +181,13 @@ class DictFormatterValidator(LiteralDictValidator):
 
     @property
     def dict_with_format_strings(self) -> Dict[str, str]:
-        """Returns dict with the format strings themselves"""
+        """Returns dict with the format strings themselves."""
         return {key: string_formatter.format_string for key, string_formatter in self.dict.items()}
+
+    @property
+    def dict_with_parsed_format_strings(self) -> Dict[str, SyntaxTree]:
+        """Returns dict with the parsed format strings."""
+        return {key: string_formatter.parsed for key, string_formatter in self.dict.items()}
 
 
 class OverridesDictFormatterValidator(DictFormatterValidator):
@@ -253,8 +258,8 @@ def _validate_formatter(
         )
     try:
         if is_static_formatter:
-            return mock_script.resolve_once(
-                {"tmp_var": formatter_validator.format_string},
+            return mock_script.resolve_once_parsed(
+                {"tmp_var": formatter_validator.parsed},
                 unresolvable=unresolved_variables,
                 update=True,
             )["tmp_var"].native

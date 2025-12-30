@@ -4,7 +4,6 @@ from typing import Any
 from typing import Dict
 
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.script import _is_function
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.function import Function
@@ -15,8 +14,10 @@ from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
+from ytdl_sub.script.utils.name_validation import is_function
 
 # pylint: disable=too-many-return-statements
 
@@ -30,9 +31,25 @@ class ScriptUtils:
         sanitized_variables = {
             f"{name}_sanitized": f"{{%sanitize({name})}}"
             for name in variables.keys()
-            if not _is_function(name)
+            if not is_function(name)
         }
         return dict(variables, **sanitized_variables)
+
+    @classmethod
+    def add_sanitized_parsed_variables(
+        cls, variables: Dict[str, SyntaxTree]
+    ) -> Dict[str, SyntaxTree]:
+        """
+        Helper to add sanitized variables to a Script
+        """
+        sanitized_variables = {
+            f"{name}_sanitized": SyntaxTree(
+                ast=[BuiltInFunction(name="sanitize", args=[Variable(name)])]
+            )
+            for name in variables.keys()
+            if not is_function(name)
+        }
+        return variables | sanitized_variables
 
     @classmethod
     def to_script(cls, value: Any, sort_keys: bool = True) -> str:

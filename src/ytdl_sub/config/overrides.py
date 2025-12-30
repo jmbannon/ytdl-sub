@@ -4,15 +4,16 @@ from typing import Iterable
 from typing import Optional
 from typing import Set
 
-import mergedeep
-
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
 from ytdl_sub.entries.variables.override_variables import OverrideHelpers
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
@@ -134,29 +135,35 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
             )
 
     def initial_variables(
-        self, unresolved_variables: Optional[Dict[str, str]] = None
-    ) -> Dict[str, str]:
+        self, unresolved_variables: Optional[Dict[str, SyntaxTree]] = None
+    ) -> Dict[str, SyntaxTree]:
         """
         Returns
         -------
         Variables and format strings for all Override variables + additional variables (Optional)
         """
-        initial_variables: Dict[str, str] = {}
-        mergedeep.merge(
-            initial_variables,
-            self.dict_with_format_strings,
-            unresolved_variables if unresolved_variables else {},
-        )
-        return ScriptUtils.add_sanitized_variables(initial_variables)
+        initial_variables: Dict[str, SyntaxTree] = self.dict_with_parsed_format_strings
+        if unresolved_variables:
+            initial_variables |= unresolved_variables
+        return ScriptUtils.add_sanitized_parsed_variables(initial_variables)
 
     def initialize_script(self, unresolved_variables: Set[str]) -> "Overrides":
         """
         Initialize the override script with any unresolved variables
         """
-        self.script.add(
+        self.script.add_parsed(
             self.initial_variables(
                 unresolved_variables={
-                    var_name: f"{{%throw('Plugin variable {var_name} has not been created yet')}}"
+                    var_name: SyntaxTree(
+                        ast=[
+                            BuiltInFunction(
+                                name="throw",
+                                args=[
+                                    String(f"Plugin variable {var_name} has not been created yet")
+                                ],
+                            )
+                        ]
+                    )
                     for var_name in unresolved_variables
                 }
             )
