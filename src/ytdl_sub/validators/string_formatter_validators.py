@@ -72,6 +72,11 @@ class StringFormatterValidator(StringValidator):
     @property
     @final
     def parsed(self) -> SyntaxTree:
+        """
+        Returns
+        -------
+        The parsed format string.
+        """
         return self._parsed
 
     def post_process(self, resolved: str) -> str:
@@ -318,6 +323,8 @@ def validate_formatters(
                 formatter_validator=validator_value,
             )
     else:
+        # pylint: disable=protected-access
         resolved_dict[validator.leaf_name] = validator._value
+        # pylint: enable=protected-access
 
     return resolved_dict
