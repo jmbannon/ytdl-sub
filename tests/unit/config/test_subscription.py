@@ -6,6 +6,7 @@ from typing import Dict
 from unittest.mock import patch
 
 import pytest
+import yaml
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
@@ -540,12 +541,68 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
     assert gnr.get("url2").native == "https://www.youtube.com/watch?v=OldpIhHPsbs"
 
 
-def test_default_docker_config_and_subscriptions(docker_default_subscription_path: Path):
+def test_default_docker_config_and_subscriptions(docker_default_subscription_path: Path, output_directory: str):
     default_config = ConfigFile.from_file_path("docker/root/defaults/config.yaml")
     default_subs = Subscription.from_file_path(
         config=default_config, subscription_path=docker_default_subscription_path
     )
     assert len(default_subs) == 1
+
+    resolved_yaml_as_json = yaml.safe_load(default_subs[0].resolved_yaml())
+
+    # Since this creates random values, ignore it for this test
+    assert "throttle_protection" in resolved_yaml_as_json
+    del resolved_yaml_as_json["throttle_protection"]
+
+    assert resolved_yaml_as_json == {
+        "chapters": {
+            "allow_chapters_from_comments": False,
+            "embed_chapters": True,
+            "enable": "True",
+            "force_key_frames": False,
+        },
+        "date_range": {"breaks": "True", "enable": "True", "type": "upload_date"},
+        "download": [
+            {
+                "download_reverse": "True",
+                "include_sibling_metadata": False,
+                "playlist_thumbnails": [
+                    {"name": "{avatar_uncropped_thumbnail_file_name}", "uid": "avatar_uncropped"},
+                    {"name": "{banner_uncropped_thumbnail_file_name}", "uid": "banner_uncropped"},
+                ],
+                "source_thumbnails": [
+                    {"name": "{avatar_uncropped_thumbnail_file_name}", "uid": "avatar_uncropped"},
+                    {"name": "{banner_uncropped_thumbnail_file_name}", "uid": "banner_uncropped"},
+                ],
+                "url": "https://www.youtube.com/@novapbs",
+                "variables": {},
+                "webpage_url": "{modified_webpage_url}",
+                "ytdl_options": {},
+            }
+        ],
+        "file_convert": {"convert_to": "mp4", "convert_with": "yt-dlp", "enable": "True"},
+        "format": "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)",
+        "output_options": {
+            "download_archive_name": ".ytdl-sub-NOVA PBS-download-archive.json",
+            "file_name": "{episode_file_path}.{ext}",
+            "info_json_name": "{episode_file_path}.{info_json_ext}",
+            "keep_files_date_eval": "{episode_date_standardized}",
+            "maintain_download_archive": True,
+            "output_directory": f"{output_directory}/NOVA PBS",
+            "preserve_mtime": False,
+            "thumbnail_name": "{thumbnail_file_name}",
+        },
+        "video_tags": {
+            "contentRating": "{episode_content_rating}",
+            "date": "{episode_date_standardized}",
+            "episode_id": "{episode_number}",
+            "genre": "{tv_show_genre}",
+            "show": "{tv_show_name}",
+            "synopsis": "{episode_plot}",
+            "title": "{episode_title}",
+            "year": "{episode_year}",
+        },
+    }
 
 
 def test_tv_show_resolved_yaml(config_file: ConfigFile, tv_show_subscriptions_path: Path):
@@ -555,4 +612,3 @@ def test_tv_show_resolved_yaml(config_file: ConfigFile, tv_show_subscriptions_pa
 
     assert len(subs) == 8
     yaml_out = subs[0].resolved_yaml()
-    print(yaml_out)

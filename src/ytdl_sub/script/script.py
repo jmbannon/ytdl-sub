@@ -20,9 +20,9 @@ from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
-from ytdl_sub.script.utils.name_validation import function_name
 from ytdl_sub.script.utils.name_validation import is_function
 from ytdl_sub.script.utils.name_validation import to_function_definition_name
+from ytdl_sub.script.utils.name_validation import to_function_name
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 from ytdl_sub.script.utils.type_checking import FunctionSpec
 
@@ -226,7 +226,7 @@ class Script:
 
     def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
-            function_name(name) for name in script.keys() if is_function(name)
+            to_function_name(name) for name in script.keys() if is_function(name)
         }
         variable_names: Set[str] = {
             validate_variable_name(name) for name in script.keys() if not is_function(name)
@@ -235,9 +235,9 @@ class Script:
         self._functions: Dict[str, SyntaxTree] = {
             # custom_function_name must be passed to properly type custom function
             # arguments uniquely if they're nested (i.e. $0 to $custom_func___0)
-            function_name(function_key): parse(
+            to_function_name(function_key): parse(
                 text=function_value,
-                name=function_name(function_key),
+                name=to_function_name(function_key),
                 custom_function_names=function_names,
                 variable_names=variable_names,
             )
@@ -470,7 +470,7 @@ class Script:
         added_variables_to_validate: Set[str] = set()
 
         functions_to_add = {
-            function_name(name): definition
+            to_function_name(name): definition
             for name, definition in variables.items()
             if is_function(name)
         }
@@ -522,7 +522,7 @@ class Script:
         added_variables_to_validate: Set[str] = set()
 
         functions_to_add = {
-            function_name(name): definition
+            to_function_name(name): definition
             for name, definition in variables.items()
             if is_function(name)
         }

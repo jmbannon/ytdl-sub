@@ -67,7 +67,7 @@ def is_function(override_name: str):
     return override_name.startswith("%")
 
 
-def function_name(function_key: str) -> str:
+def to_function_name(function_key: str) -> str:
     """
     Drop the % in %custom_function
     """

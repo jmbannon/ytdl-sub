@@ -20,6 +20,8 @@ from ytdl_sub.validators.validators import LiteralDictValidator
 from ytdl_sub.validators.validators import StringValidator
 from ytdl_sub.validators.validators import Validator
 
+# pylint: disable=protected-access
+
 
 class StringFormatterValidator(StringValidator):
     """
@@ -218,10 +220,8 @@ def to_variable_dependency_format_string(script: Script, parsed_format_string: S
     dummy_format_string = ""
     for var in parsed_format_string.variables:
         dummy_format_string += f"{{ {var.name} }}"
-        # pylint: disable=protected-access
         for variable_dependency in script._variables[var.name].variables:
             dummy_format_string += f"{{ {variable_dependency.name} }}"
-        # pylint: enable=protected-access
     return dummy_format_string
 
 
@@ -293,7 +293,6 @@ def validate_formatters(
 
     if isinstance(validator, DictValidator):
         resolved_dict[validator.leaf_name] = {}
-        # pylint: disable=protected-access
         # Usage of protected variables in other validators is fine. The reason to keep
         # them protected is for readability when using them in subscriptions.
         for validator_value in validator._validator_dict.values():
@@ -302,7 +301,6 @@ def validate_formatters(
                 unresolved_variables=unresolved_variables,
                 validator=validator_value,
             )
-        # pylint: enable=protected-access
     elif isinstance(validator, ListValidator):
         resolved_dict[validator.leaf_name] = []
         for list_value in validator.list:
@@ -328,8 +326,6 @@ def validate_formatters(
                 formatter_validator=validator_value,
             )
     else:
-        # pylint: disable=protected-access
         resolved_dict[validator.leaf_name] = validator._value
-        # pylint: enable=protected-access
 
     return resolved_dict
