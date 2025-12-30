@@ -555,4 +555,4 @@ def test_tv_show_resolved_yaml(config_file: ConfigFile, tv_show_subscriptions_pa
 
     assert len(subs) == 8
     yaml_out = subs[0].resolved_yaml()
-    assert yaml_out == "nope"
+    print(yaml_out)

@@ -152,3 +152,5 @@ ffmpeg.exe
 ffprobe.exe
 
 tools/docgen/out
+
+prof/

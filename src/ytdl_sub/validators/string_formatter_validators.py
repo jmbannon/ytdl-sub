@@ -220,13 +220,14 @@ def _validate_formatter(
     unresolved_variables: Set[str],
     formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
 ) -> str:
-    is_static_formatter = False
-    unresolvable = unresolved_variables
-    if isinstance(formatter_validator, OverridesStringFormatterValidator):
-        is_static_formatter = True
-        unresolvable = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
-
     parsed = formatter_validator.parsed
+    if resolved := parsed.maybe_resolvable:
+        return resolved.native
+
+    is_static_formatter = isinstance(formatter_validator, OverridesStringFormatterValidator)
+    if is_static_formatter:
+        unresolved_variables = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
+
     variable_names = {var.name for var in parsed.variables}
     custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
 
@@ -240,7 +241,7 @@ def _validate_formatter(
             "contains the following custom functions that do not exist: "
             f"{', '.join(sorted(custom_function_names - mock_script.function_names))}"
         )
-    if unresolved := variable_names.intersection(unresolvable):
+    if unresolved := variable_names.intersection(unresolved_variables):
         raise StringFormattingVariableNotFoundException(
             "contains the following variables that are unresolved when executing this "
             f"formatter: {', '.join(sorted(unresolved))}"
@@ -249,7 +250,7 @@ def _validate_formatter(
         if is_static_formatter:
             return mock_script.resolve_once(
                 {"tmp_var": formatter_validator.format_string},
-                unresolvable=unresolvable,
+                unresolvable=unresolved_variables,
                 update=True,
             )["tmp_var"].native
 

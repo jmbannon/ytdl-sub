@@ -41,6 +41,7 @@ def should_filter_property(property_name: str) -> bool:
         "list",
         "script",
         "unresolvable",
+        "leaf_name",
     )
 
 
