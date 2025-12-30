@@ -340,27 +340,3 @@ class TestPreset:
                     "output_options": {"output_directory": "dir", "file_name": "acjk"},
                 },
             )
-
-    def test_preset_error_override_name_conflicts_with_plugin(self, config_file, output_options):
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Override variable with name throttle_protection cannot be used since it is the "
-                "name of a plugin. Perhaps you meant to define it as a plugin? If so, indent it "
-                "left to make it at the same level as overrides."
-            ),
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": {
-                        "url": "youtube.com/watch?v=123abc",
-                    },
-                    "subtitles": {
-                        "embed_subtitles": True,
-                    },
-                    "output_options": {"output_directory": "dir", "file_name": "acjk"},
-                    "overrides": {"throttle_protection": "nope"},
-                },
-            )

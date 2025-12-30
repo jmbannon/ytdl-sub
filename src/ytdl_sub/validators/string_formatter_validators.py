@@ -52,7 +52,10 @@ class StringFormatterValidator(StringValidator):
     def __init__(self, name, value: str):
         super().__init__(name=name, value=value)
         try:
-            _ = parse(str(value))
+            self._parsed = parse(
+                text=str(value),
+                name=self.leaf_name,
+            )
         except UserException as exc:
             raise self._validation_exception(exc) from exc
 
@@ -65,6 +68,11 @@ class StringFormatterValidator(StringValidator):
         The literal format string, unformatted.
         """
         return self._value
+
+    @property
+    @final
+    def parsed(self) -> SyntaxTree:
+        return self._parsed
 
     def post_process(self, resolved: str) -> str:
         """
@@ -218,9 +226,7 @@ def _validate_formatter(
         is_static_formatter = True
         unresolvable = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
 
-    parsed = parse(
-        text=formatter_validator.format_string,
-    )
+    parsed = formatter_validator.parsed
     variable_names = {var.name for var in parsed.variables}
     custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
 

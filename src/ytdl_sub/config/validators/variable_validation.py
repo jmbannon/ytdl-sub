@@ -50,7 +50,7 @@ def _add_dummy_overrides(overrides: Overrides) -> Dict[str, str]:
         try:
             # Attempt to get the resolved version, which will only happen
             # if it does not have any dependencies to the entry
-            value = ScriptUtils.to_script(overrides.script.get(override_name).native)
+            value = f'{{%string("""{overrides.script.get(override_name).native}""")}}'
         except RuntimeException:
             value = to_variable_dependency_format_string(
                 script=overrides.script,
