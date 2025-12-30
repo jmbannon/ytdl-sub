@@ -307,10 +307,9 @@ class Script:
 
     def _get_unresolved_output_filter(
         self,
-        unresolved: Dict[Variable, SyntaxTree],
         output_filter: Set[str],
         unresolvable: Set[Variable],
-    ) -> Dict[Variable, SyntaxTree]:
+    ) -> Set[str]:
         """
         When an output filter is applied, only a subset of variables that the filter
         depends on need to be resolved.
@@ -331,7 +330,7 @@ class Script:
                 unresolvable=unresolvable,
             )
 
-        return {var: syntax for var, syntax in unresolved.items() if var.name in subset_to_resolve}
+        return subset_to_resolve
 
     def _resolve(
         self,
@@ -367,18 +366,21 @@ class Script:
 
         unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
         unresolved_filter = set(resolved.keys()).union(unresolvable)
-        unresolved: Dict[Variable, SyntaxTree] = {
-            Variable(name): ast
-            for name, ast in self._variables.items()
-            if Variable(name) not in unresolved_filter
-        }
 
         if output_filter:
-            unresolved = self._get_unresolved_output_filter(
-                unresolved=unresolved,
-                output_filter=output_filter,
-                unresolvable=unresolvable,
-            )
+            unresolved = {
+                Variable(name): self._variables[name]
+                for name in self._get_unresolved_output_filter(
+                    output_filter=output_filter,
+                    unresolvable=unresolvable,
+                )
+            }
+        else:
+            unresolved = {
+                Variable(name): ast
+                for name, ast in self._variables.items()
+                if Variable(name) not in unresolved_filter
+            }
 
         while unresolved:
             unresolved_count: int = len(unresolved)
@@ -556,8 +558,7 @@ class Script:
             ).output
         finally:
             for name in variable_definitions.keys():
-                if name in self._variables:
-                    del self._variables[name]
+                self._variables.pop(name, None)
 
     def get(self, variable_name: str) -> Resolvable:
         """
