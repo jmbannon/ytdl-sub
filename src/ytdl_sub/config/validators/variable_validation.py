@@ -15,9 +15,7 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.script import _is_function
 from ytdl_sub.script.utils.exceptions import RuntimeException
-from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import BASE_SCRIPT
 from ytdl_sub.validators.string_formatter_validators import to_variable_dependency_format_string
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
@@ -127,11 +125,11 @@ class VariableValidation:
 
         # copy the script and mock entry variables
         self.script = copy.deepcopy(self.overrides.script)
-        self.script.add(
-            variables=_DUMMY_ENTRY_VARIABLES
-            | _add_dummy_variables(variables=plugin_variables)
-            | _add_dummy_overrides(overrides=self.overrides)
-        )
+        # self.script.add(
+        #     variables=_DUMMY_ENTRY_VARIABLES
+        #     | _add_dummy_variables(variables=plugin_variables)
+        #     | _add_dummy_overrides(overrides=self.overrides)
+        # )
 
         return self
 
