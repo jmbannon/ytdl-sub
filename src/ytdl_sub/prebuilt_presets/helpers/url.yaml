@@ -54,7 +54,7 @@ presets:
         }
       urls: "{subscription_array}"
       
-      url: ""
+      url: "{subscription_value}"
       url2: ""
       url3: ""
       url4: ""

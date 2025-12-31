@@ -238,12 +238,15 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
     def apply_overrides_formatter_to_native(
         self,
         formatter: OverridesStringFormatterValidator,
+        function_overrides: Optional[Dict[str, str]] = None,
     ) -> Any:
         """
         Parameters
         ----------
         formatter
             Overrides formatter to apply
+        function_overrides
+            Optional. Explicit values to override the overrides themselves and source variables
 
         Returns
         -------
@@ -251,7 +254,7 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         """
         return formatter.post_process_native(
             self._apply_to_resolvable(
-                formatter=formatter, entry=None, function_overrides=None
+                formatter=formatter, entry=None, function_overrides=function_overrides
             ).native
         )
 

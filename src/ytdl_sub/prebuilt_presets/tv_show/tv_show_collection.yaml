@@ -1262,6 +1262,15 @@ presets:
         ytdl_options:
           playlist_items: "-1:0:-1"
 
+      # Season 0 at end (to download first)
+      - url: "{ %array_apply( %get_season_urls(collection_season_0_url), %bilateral_url) }"
+        variables:
+          collection_season_number: "0"
+          collection_season_name: "{collection_season_0_name}"
+        download_reverse: False
+        ytdl_options:
+          playlist_items: "-1:0:-1"
+
   _tv_show_collection_asserts:
     overrides:
       url: ""
