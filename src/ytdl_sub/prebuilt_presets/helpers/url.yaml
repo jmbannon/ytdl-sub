@@ -27,6 +27,7 @@ presets:
             uid: "banner_uncropped"
         include_sibling_metadata: "{include_sibling_metadata}"
         webpage_url: "{modified_webpage_url}"
+
       - url: "{ %array_slice(urls, 1) }"
         include_sibling_metadata: "{include_sibling_metadata}"
         webpage_url: "{modified_webpage_url}"

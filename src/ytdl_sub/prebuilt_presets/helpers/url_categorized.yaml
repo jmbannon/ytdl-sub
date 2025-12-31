@@ -108,7 +108,4 @@ presets:
         }
 
       subscription_map: "{ {} }"
-      urls: >-
-        {[
-          %get_url_i(1), %get_url_i(2), %get_url_i(3), %get_url_i(4)
-        ]}
+      urls: "{ %array_apply(%range(100, 1), %get_url_i) }"

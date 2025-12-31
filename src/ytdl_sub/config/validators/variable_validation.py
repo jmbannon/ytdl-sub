@@ -84,6 +84,9 @@ class VariableValidation:
         )
         resolved_subscription["download"] = []
         for url_output in raw_download_output["download"]:
+            if isinstance(url_output["url"], list):
+                url_output["url"] = [url for url in url_output["url"] if bool(url)]
+
             if url_output["url"]:
                 resolved_subscription["download"].append(url_output)
 
