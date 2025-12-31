@@ -114,6 +114,7 @@ class VariableDependency(ABC):
                 output.add(ParsedCustomFunction(name=arg.name, num_input_args=len(arg.args)))
             if isinstance(arg, VariableDependency):
                 output.update(arg.custom_functions)
+            # if isinstance(arg, Lambda)
 
         return output
 
@@ -189,7 +190,17 @@ class VariableDependency(ABC):
         -------
         True if it contains any of the input variables. False otherwise.
         """
-        for custom_function in self.custom_functions:
+        # If there are lambdas, see if they are custom functions. If so, check them
+        custom_functions_to_check = self.custom_functions
+        for lambda_func in self.lambdas:
+            if lambda_func.value in custom_function_definitions:
+                custom_functions_to_check.add(
+                    ParsedCustomFunction(
+                        name=lambda_func.value, num_input_args=lambda_func.num_input_args()
+                    )
+                )
+
+        for custom_function in custom_functions_to_check:
             if custom_function_definitions[custom_function.name].contains(
                 variables=variables, custom_function_definitions=custom_function_definitions
             ):
