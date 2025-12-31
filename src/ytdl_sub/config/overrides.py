@@ -249,9 +249,11 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         -------
         The native python form of the resolved variable
         """
-        return self._apply_to_resolvable(
-            formatter=formatter, entry=None, function_overrides=None
-        ).native
+        return formatter.post_process_native(
+            self._apply_to_resolvable(
+                formatter=formatter, entry=None, function_overrides=None
+            ).native
+        )
 
     def evaluate_boolean(
         self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
