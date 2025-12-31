@@ -52,12 +52,12 @@ class UrlDownloaderBasePluginExtension(SourcePluginExtension[MultiUrlValidator])
 
         if 0 <= input_url_idx < len(self.plugin_options.urls.list):
             validator = self.plugin_options.urls.list[input_url_idx]
-            if self.overrides.apply_formatter(validator.url) == entry_input_url:
+            if entry_input_url in self.overrides.apply_overrides_formatter_to_native(validator.url):
                 return validator
 
         # Match the first validator based on the URL, if one exists
         for validator in self.plugin_options.urls.list:
-            if self.overrides.apply_formatter(validator.url) == entry_input_url:
+            if entry_input_url in self.overrides.apply_overrides_formatter_to_native(validator.url):
                 return validator
 
         # Return the first validator if none exist
@@ -487,19 +487,27 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         # download the bottom-most urls first since they are top-priority
         for idx, url_validator in reversed(list(enumerate(self.collection.urls.list))):
             # URLs can be empty. If they are, then skip
-            if not (url := self.overrides.apply_formatter(url_validator.url)):
+            if not (urls := self.overrides.apply_overrides_formatter_to_native(url_validator.url)):
                 continue
 
-            for entry in self._download_metadata(url=url, validator=url_validator):
-                entry.initialize_script(self.overrides).add(
-                    {
-                        v.ytdl_sub_input_url: url,
-                        v.ytdl_sub_input_url_index: idx,
-                        v.ytdl_sub_input_url_count: len(self.collection.urls.list),
-                    }
-                )
+            assert isinstance(urls, list)
 
-                yield entry
+            for url in reversed(urls):
+                assert isinstance(url, str)
+
+                if not url:
+                    continue
+
+                for entry in self._download_metadata(url=url, validator=url_validator):
+                    entry.initialize_script(self.overrides).add(
+                        {
+                            v.ytdl_sub_input_url: url,
+                            v.ytdl_sub_input_url_index: idx,
+                            v.ytdl_sub_input_url_count: len(self.collection.urls.list),
+                        }
+                    )
+
+                    yield entry
 
     def download(self, entry: Entry) -> Optional[Entry]:
         """

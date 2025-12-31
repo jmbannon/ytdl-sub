@@ -43,6 +43,20 @@ class UrlThumbnailListValidator(ListValidator[UrlThumbnailValidator]):
     _inner_list_type = UrlThumbnailValidator
 
 
+class OverridesOneOrManyUrlValidator(OverridesStringFormatterValidator):
+    def post_process_native(self, resolved: Any) -> Any:
+        if isinstance(resolved, str):
+            return [resolved]
+        if isinstance(resolved, list):
+            for value in resolved:
+                if not isinstance(value, str):
+                    raise self._validation_exception("Must be a string or an array of strings.")
+            return resolved
+
+        raise self._validation_exception("Must be a string or an array of strings.")
+
+
+
 class UrlValidator(StrictDictValidator):
     _required_keys = {"url"}
     _optional_keys = {
@@ -68,7 +82,7 @@ class UrlValidator(StrictDictValidator):
         super().__init__(name, value)
 
         # TODO: url validate using yt-dlp IE
-        self._url = self._validate_key(key="url", validator=OverridesStringFormatterValidator)
+        self._url = self._validate_key(key="url", validator=OverridesOneOrManyUrlValidator)
         self._variables = self._validate_key_if_present(
             key="variables", validator=DictFormatterValidator, default={}
         )
