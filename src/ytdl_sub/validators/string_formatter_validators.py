@@ -241,6 +241,10 @@ def _validate_formatter(
     variable_names = {var.name for var in parsed.variables}
     custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
 
+    for lambda_func in parsed.lambdas:
+        if lambda_func in mock_script.function_names:
+            custom_function_names.add(lambda_func.value)
+
     if not variable_names.issubset(mock_script.variable_names):
         raise StringFormattingVariableNotFoundException(
             "contains the following variables that do not exist: "

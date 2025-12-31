@@ -288,6 +288,14 @@ class Script:
                 unresolvable=unresolvable,
             )
 
+        for lambda_func in current_var.lambdas:
+            if lambda_func.value in self._functions:
+                subset_to_resolve |= self._recursive_get_unresolved_output_filter_variables(
+                    current_var=self._functions[lambda_func.value],
+                    subset_to_resolve=subset_to_resolve,
+                    unresolvable=unresolvable,
+                )
+
         return subset_to_resolve
 
     def _get_unresolved_output_filter(
