@@ -160,9 +160,20 @@ class VariableDependency(ABC):
         raise UNREACHABLE
 
     @final
-    def _custom_function_dependencies(
+    def custom_function_dependencies(
         self, custom_function_definitions: Dict[str, "VariableDependency"]
     ) -> Set[ParsedCustomFunction]:
+        """
+        Parameters
+        ----------
+        custom_function_definitions
+            Definition of all currently existing custom functions. Needed to check whether
+            a lambda function's input function is custom or not.
+
+        Returns
+        -------
+        All custom function dependencies
+        """
         custom_functions = self.custom_functions
         for lambda_func in self.lambdas:
             if lambda_func.value in custom_function_definitions:
@@ -185,7 +196,7 @@ class VariableDependency(ABC):
         True if it contains all input variables as a dependency. False otherwise.
         """
         # If there are lambdas, see if they are custom functions. If so, check them
-        for custom_function in self._custom_function_dependencies(custom_function_definitions):
+        for custom_function in self.custom_function_dependencies(custom_function_definitions):
             if not custom_function_definitions[custom_function.name].is_subset_of(
                 variables=variables, custom_function_definitions=custom_function_definitions
             ):
@@ -205,7 +216,7 @@ class VariableDependency(ABC):
         True if it contains any of the input variables. False otherwise.
         """
         # If there are lambdas, see if they are custom functions. If so, check them
-        for custom_function in self._custom_function_dependencies(custom_function_definitions):
+        for custom_function in self.custom_function_dependencies(custom_function_definitions):
             if custom_function_definitions[custom_function.name].contains(
                 variables=variables, custom_function_definitions=custom_function_definitions
             ):

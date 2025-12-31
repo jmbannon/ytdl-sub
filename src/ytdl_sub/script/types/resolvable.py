@@ -193,6 +193,14 @@ class NamedCustomFunction(NamedArgument, ABC):
 class ParsedCustomFunction(NamedCustomFunction):
     num_input_args: int
 
+    def definition_name(self) -> str:
+        """
+        Returns
+        -------
+        The function definition name, including the %
+        """
+        return f"%{self.name}"
+
 
 @dataclass(frozen=True)
 class FunctionType(NamedArgument, ABC):
