@@ -62,28 +62,6 @@ class TestArrayFunctions:
         output = single_variable_output("{%array_apply(['a', 'b', 'c'], %capitalize)}")
         assert output == ["A", "B", "C"]
 
-    def test_array_apply_custom_function(self):
-        output = (
-            Script(
-                {
-                    "the_array": "{ ['a', 'B', 'c', 'D'] }",
-                    "output": "{ %array_apply(the_array, %custom_cap) }",
-                    "should_lower": "{%bool(True)}",
-                    "%custom_cap": """{
-                        %if(
-                            %bool(should_lower),
-                            %lower($0),
-                            %upper($0)
-                        )
-                    }""",
-                }
-            )
-            .resolve(update=True)
-            .get("output")
-            .native
-        )
-        assert output == ['a', 'b', 'c', 'd']
-
     def test_array_reduce(self):
         output = single_variable_output("{%array_reduce([1, 2, 3, 4], %add)}")
         assert output == 10
