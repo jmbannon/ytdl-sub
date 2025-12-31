@@ -95,21 +95,11 @@ class Validator(ABC):
 
     @final
     @property
-    def _root_name(self) -> str:
+    def leaf_name(self) -> str:
         """
         Returns
         -------
-        "first" from the first.element.of.the.name
-        """
-        return self._name.split(".")[0]
-
-    @final
-    @property
-    def _leaf_name(self) -> str:
-        """
-        Returns
-        -------
-        "first" from the first.element.of.the.name
+        "name" from the first.element.of.the.name
         """
         return self._name.split(".")[-1]
 
@@ -274,7 +264,7 @@ class DictValidator(Validator):
             value=self._dict.get(key, default),
         )
 
-        self.__validator_dict[validator_name] = validator_instance
+        self.__validator_dict[key] = validator_instance
         return validator_instance
 
     @final

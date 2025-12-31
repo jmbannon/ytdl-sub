@@ -20,26 +20,11 @@ from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
+from ytdl_sub.script.utils.name_validation import is_function
+from ytdl_sub.script.utils.name_validation import to_function_definition_name
+from ytdl_sub.script.utils.name_validation import to_function_name
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 from ytdl_sub.script.utils.type_checking import FunctionSpec
-
-
-def _is_function(override_name: str):
-    return override_name.startswith("%")
-
-
-def _function_name(function_key: str) -> str:
-    """
-    Drop the % in %custom_function
-    """
-    return function_key[1:]
-
-
-def _to_function_definition_name(function_key: str) -> str:
-    """
-    Add % in %custom_function
-    """
-    return f"%{function_key}"
 
 
 class Script:
@@ -241,23 +226,23 @@ class Script:
 
     def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
-            _function_name(name) for name in script.keys() if _is_function(name)
+            to_function_name(name) for name in script.keys() if is_function(name)
         }
         variable_names: Set[str] = {
-            validate_variable_name(name) for name in script.keys() if not _is_function(name)
+            validate_variable_name(name) for name in script.keys() if not is_function(name)
         }
 
         self._functions: Dict[str, SyntaxTree] = {
             # custom_function_name must be passed to properly type custom function
             # arguments uniquely if they're nested (i.e. $0 to $custom_func___0)
-            _function_name(function_key): parse(
+            to_function_name(function_key): parse(
                 text=function_value,
-                name=_function_name(function_key),
+                name=to_function_name(function_key),
                 custom_function_names=function_names,
                 variable_names=variable_names,
             )
             for function_key, function_value in script.items()
-            if _is_function(function_key)
+            if is_function(function_key)
         }
 
         self._variables: Dict[str, SyntaxTree] = {
@@ -268,7 +253,7 @@ class Script:
                 variable_names=variable_names,
             )
             for variable_key, variable_value in script.items()
-            if not _is_function(variable_key)
+            if not is_function(variable_key)
         }
         self._validate()
 
@@ -485,12 +470,12 @@ class Script:
         added_variables_to_validate: Set[str] = set()
 
         functions_to_add = {
-            _function_name(name): definition
+            to_function_name(name): definition
             for name, definition in variables.items()
-            if _is_function(name)
+            if is_function(name)
         }
         variables_to_add = {
-            name: definition for name, definition in variables.items() if not _is_function(name)
+            name: definition for name, definition in variables.items() if not is_function(name)
         }
 
         custom_function_names = set(self._functions.keys()) | functions_to_add.keys()
@@ -507,6 +492,46 @@ class Script:
                     variable_names=variable_names,
                 )
 
+                if parsed.maybe_resolvable is None:
+                    added_variables_to_validate.add(name)
+
+                if name in functions_to_add:
+                    self._functions[name] = parsed
+                else:
+                    self._variables[name] = parsed
+
+        if added_variables_to_validate:
+            self._validate(added_variables=added_variables_to_validate)
+
+        return self
+
+    def add_parsed(self, variables: Dict[str, SyntaxTree]) -> "Script":
+        """
+        Adds already parsed, new variables to the script.
+
+        Parameters
+        ----------
+        variables
+            Mapping containing variable name to definition.
+
+        Returns
+        -------
+        Script
+            self
+        """
+        added_variables_to_validate: Set[str] = set()
+
+        functions_to_add = {
+            to_function_name(name): definition
+            for name, definition in variables.items()
+            if is_function(name)
+        }
+        variables_to_add = {
+            name: definition for name, definition in variables.items() if not is_function(name)
+        }
+
+        for definitions in [functions_to_add, variables_to_add]:
+            for name, parsed in definitions.items():
                 if parsed.maybe_resolvable is None:
                     added_variables_to_validate.add(name)
 
@@ -550,6 +575,46 @@ class Script:
         """
         try:
             self.add(variable_definitions)
+            return self._resolve(
+                pre_resolved=resolved,
+                unresolvable=unresolvable,
+                output_filter=set(list(variable_definitions.keys())),
+                update=update,
+            ).output
+        finally:
+            for name in variable_definitions.keys():
+                self._variables.pop(name, None)
+
+    def resolve_once_parsed(
+        self,
+        variable_definitions: Dict[str, SyntaxTree],
+        resolved: Optional[Dict[str, Resolvable]] = None,
+        unresolvable: Optional[Set[str]] = None,
+        update: bool = False,
+    ) -> Dict[str, Resolvable]:
+        """
+        Given a new set of variable definitions, resolve them using the Script, but do not
+        add them to the Script itself.
+
+        Parameters
+        ----------
+        variable_definitions
+            Variables to resolve, but not store in the Script
+        resolved
+            Optional. Pre-resolved variables that should be used instead of what is in the script.
+        unresolvable
+            Optional. Unresolvable variables that will be ignored in resolution, including all
+            variables with a dependency to them.
+        update
+            Whether to update the script's state with resolved variables. Defaults to False.
+
+        Returns
+        -------
+        Dict[str, Resolvable]
+            Dict containing the variable names to their resolved values.
+        """
+        try:
+            self.add_parsed(variable_definitions)
             return self._resolve(
                 pre_resolved=resolved,
                 unresolvable=unresolvable,
@@ -605,4 +670,4 @@ class Script:
         Set[str]
             Names of all functions within the Script.
         """
-        return set(_to_function_definition_name(name) for name in self._functions.keys())
+        return set(to_function_definition_name(name) for name in self._functions.keys())

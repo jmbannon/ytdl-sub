@@ -31,6 +31,8 @@ from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 from ytdl_sub.script.utils.exceptions import InvalidVariableName
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
+from ytdl_sub.script.utils.name_validation import is_function
+from ytdl_sub.script.utils.name_validation import to_function_name
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 
 # pylint: disable=invalid-name
@@ -144,6 +146,9 @@ class _Parser:
     ):
         self._text = text
         self._name = name
+        if name and is_function(name):
+            self._name = to_function_name(name)
+
         self._custom_function_names = custom_function_names
         self._variable_names = variable_names
         self._pos = 0

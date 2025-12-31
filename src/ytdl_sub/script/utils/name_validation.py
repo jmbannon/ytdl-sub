@@ -58,3 +58,24 @@ def validate_custom_function_name(custom_function_name: str) -> None:
             f"Custom function name '%{custom_function_name}' is invalid:"
             " The name is used by a built-in function and cannot be overwritten."
         )
+
+
+def is_function(override_name: str):
+    """
+    Whether the definition is a function or not.
+    """
+    return override_name.startswith("%")
+
+
+def to_function_name(function_key: str) -> str:
+    """
+    Drop the % in %custom_function
+    """
+    return function_key[1:]
+
+
+def to_function_definition_name(function_key: str) -> str:
+    """
+    Add % in %custom_function
+    """
+    return f"%{function_key}"

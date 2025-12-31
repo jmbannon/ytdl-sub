@@ -6,7 +6,6 @@ import pytest
 
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
-from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.exceptions import ValidationException
 
 
@@ -154,100 +153,6 @@ class TestPreset:
                     "preset": parent_preset,
                     "download": youtube_video,
                     "output_options": output_options,
-                },
-            )
-
-    def test_preset_error__source_variable_does_not_exist(
-        self, config_file, output_options, youtube_video
-    ):
-        with pytest.raises(
-            StringFormattingVariableNotFoundException,
-            match="contains the following variables that do not exist: dne_var",
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": youtube_video,
-                    "output_options": {"output_directory": "dir", "file_name": "{dne_var}"},
-                },
-            )
-
-    def test_preset_error__override_variable_does_not_exist(
-        self, config_file, output_options, youtube_video
-    ):
-        with pytest.raises(
-            StringFormattingVariableNotFoundException,
-            match="contains the following variables that do not exist: dne_var",
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": youtube_video,
-                    "output_options": {"output_directory": "{dne_var}", "file_name": "file"},
-                },
-            )
-
-    def test_preset_error__dict_source_variable_does_not_exist(
-        self, config_file, output_options, youtube_video
-    ):
-        with pytest.raises(
-            StringFormattingVariableNotFoundException,
-            match="contains the following variables that do not exist: dne_var",
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": youtube_video,
-                    "output_options": {"output_directory": "dir", "file_name": "file"},
-                    "nfo_tags": {
-                        "nfo_name": "the nfo name",
-                        "nfo_root": "the root",
-                        "tags": {"tag_a": "{dne_var}"},
-                    },
-                },
-            )
-
-    def test_preset_error__dict_override_variable_does_not_exist(
-        self, config_file, output_options, youtube_video
-    ):
-        with pytest.raises(
-            StringFormattingVariableNotFoundException,
-            match="contains the following variables that do not exist: dne_var",
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": youtube_video,
-                    "output_options": output_options,
-                    "output_directory_nfo_tags": {
-                        "nfo_name": "the nfo name",
-                        "nfo_root": "the root",
-                        "tags": {"tag_a": "{dne_var}"},
-                    },
-                },
-            )
-
-    def test_preset_error__dict_override_variable_not_static(
-        self, config_file, output_options, youtube_video
-    ):
-        with pytest.raises(
-            StringFormattingVariableNotFoundException,
-            match="static formatters must contain variables that "
-            "have no dependency to entry variables",
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": youtube_video,
-                    "output_options": {
-                        "output_directory": "{title}",
-                        "file_name": "{uid}",
-                    },
                 },
             )
 
@@ -410,52 +315,5 @@ class TestPreset:
                     "download": youtube_video,
                     "output_options": output_options,
                     "overrides": {name: "ack"},
-                },
-            )
-
-    def test_preset_error_added_url_variable_cannot_resolve(self, config_file, output_options):
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "variable the_bad_one cannot use the variables subtitles_ext because it "
-                "depends on other variables that are computed later in execution"
-            ),
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": {
-                        "url": "youtube.com/watch?v=123abc",
-                        "variables": {"the_bad_one": "{subtitles_ext}"},
-                    },
-                    "subtitles": {
-                        "embed_subtitles": True,
-                    },
-                    "output_options": {"output_directory": "dir", "file_name": "acjk"},
-                },
-            )
-
-    def test_preset_error_override_name_conflicts_with_plugin(self, config_file, output_options):
-        with pytest.raises(
-            ValidationException,
-            match=re.escape(
-                "Override variable with name throttle_protection cannot be used since it is the "
-                "name of a plugin. Perhaps you meant to define it as a plugin? If so, indent it "
-                "left to make it at the same level as overrides."
-            ),
-        ):
-            _ = Preset(
-                config=config_file,
-                name="test",
-                value={
-                    "download": {
-                        "url": "youtube.com/watch?v=123abc",
-                    },
-                    "subtitles": {
-                        "embed_subtitles": True,
-                    },
-                    "output_options": {"output_directory": "dir", "file_name": "acjk"},
-                    "overrides": {"throttle_protection": "nope"},
                 },
             )

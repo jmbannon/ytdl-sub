@@ -21,7 +21,7 @@ class UrlThumbnailValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._name = self._validate_key(key="name", validator=StringFormatterValidator)
+        self._thumb_name = self._validate_key(key="name", validator=StringFormatterValidator)
         self._uid = self._validate_key(key="uid", validator=OverridesStringFormatterValidator)
 
     @property
@@ -29,7 +29,7 @@ class UrlThumbnailValidator(StrictDictValidator):
         """
         File name for the thumbnail
         """
-        return self._name
+        return self._thumb_name
 
     @property
     def uid(self) -> OverridesStringFormatterValidator:

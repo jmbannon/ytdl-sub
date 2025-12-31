@@ -2,6 +2,7 @@ import copy
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Set
 
 from mergedeep import mergedeep
 
@@ -11,7 +12,6 @@ from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
 from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.config.validators.variable_validation import VariableValidation
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
 from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
@@ -172,6 +172,37 @@ class Preset(_PresetShell):
             mergedeep.merge({}, *reversed(presets_to_merge), strategy=mergedeep.Strategy.ADDITIVE)
         )
 
+    def _initialize_overrides_script(self, overrides: Overrides) -> Overrides:
+        """
+        Do some gymnastics to initialize the Overrides script.
+        """
+        unresolved_variables: Set[str] = set()
+
+        for (
+            plugin_options,
+            added_variables,
+            modified_variables,
+        ) in self.plugins.get_added_and_modified_variables(
+            additional_options=[self.downloader_options, self.output_options]
+        ):
+            for added_variable in added_variables:
+                if not overrides.ensure_added_plugin_variable_valid(added_variable=added_variable):
+                    # pylint: disable=protected-access
+                    raise plugin_options._validation_exception(
+                        f"Cannot use the variable name {added_variable} because it exists as a"
+                        " built-in ytdl-sub variable name."
+                    )
+                    # pylint: enable=protected-access
+
+            # Set unresolved as variables that are added but do not exist as
+            # entry/override variables since they are created at run-time
+            unresolved_variables |= added_variables | modified_variables
+
+        # Initialize overrides with unresolved variables + modified variables to throw an error.
+        # For modified variables, this is to prevent a resolve(update=True) to setting any
+        # dependencies until it has been explicitly added
+        return overrides.initialize_script(unresolved_variables=unresolved_variables)
+
     def __init__(self, config: ConfigValidator, name: str, value: Any):
         super().__init__(name=name, value=value)
 
@@ -192,15 +223,10 @@ class Preset(_PresetShell):
         )
 
         self.plugins: PresetPlugins = self._validate_and_get_plugins()
-        self.overrides = self._validate_key(key="overrides", validator=Overrides, default={})
-
+        self.overrides = self._initialize_overrides_script(
+            overrides=self._validate_key(key="overrides", validator=Overrides, default={})
+        )
         self.overrides.ensure_variable_names_not_a_plugin(plugin_names=PRESET_KEYS)
-
-        VariableValidation(
-            downloader_options=self.downloader_options,
-            output_options=self.output_options,
-            plugins=self.plugins,
-        ).initialize_preset_overrides(overrides=self.overrides).ensure_proper_usage()
 
     @property
     def name(self) -> str:
