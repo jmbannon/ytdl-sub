@@ -6,6 +6,7 @@ from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 
 
@@ -169,3 +170,10 @@ class TestLambdaFunctionIncompatibleNumArguments:
                     "%output": f"{{%array_enumerate(array1, {lambda_value})}}",
                 }
             )
+
+    def test_lambda_with_custom_function_cycle(self):
+        with pytest.raises(
+            CycleDetected,
+            match=re.escape("Cycle detected within these variables: two -> %times_two -> two"),
+        ):
+            Script({"%times_two": "{%mul($0, two)}", "two": "{%times_two(2)}"})
