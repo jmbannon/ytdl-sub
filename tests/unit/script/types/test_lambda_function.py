@@ -81,7 +81,7 @@ class TestLambdaFunction:
             Script(
                 {
                     "the_array": "{ ['a', 'B', 'c', 'D'] }",
-                    "output": "{ %array_apply(the_array, %lower) }",
+                    "output": "{ %array_apply(the_array, %custom_cap) }",
                     "should_lower": "{%bool(True)}",
                     "%custom_cap": """{
                         %if(
