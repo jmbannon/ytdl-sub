@@ -53,7 +53,8 @@ presets:
           ]
         }
       urls: "{subscription_array}"
-      
+
+      subscription_value: ""
       url: "{subscription_value}"
       url2: ""
       url3: ""
