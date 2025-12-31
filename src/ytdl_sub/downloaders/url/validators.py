@@ -56,7 +56,6 @@ class OverridesOneOrManyUrlValidator(OverridesStringFormatterValidator):
         raise self._validation_exception("Must be a string or an array of strings.")
 
 
-
 class UrlValidator(StrictDictValidator):
     _required_keys = {"url"}
     _optional_keys = {
