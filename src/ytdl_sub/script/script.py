@@ -66,6 +66,21 @@ class Script:
                 deps=deps + [dep.name],
             )
 
+        for custom_func in variable_dependency.custom_function_dependencies(
+            custom_function_definitions=self._functions
+        ):
+            for dep in self._functions[custom_func.name].variables:
+                self._ensure_no_cycle(
+                    name=variable_name, dep=dep.name, deps=deps, definitions=self._variables
+                )
+                self._traverse_variable_dependencies(
+                    variable_name=variable_name,
+                    variable_dependency=self._variables[dep.name],
+                    deps=deps + [dep.name],
+                )
+
+
+
     def _ensure_no_variable_cycles(self, variables: Dict[str, SyntaxTree]):
         for variable_name, variable_definition in variables.items():
             self._traverse_variable_dependencies(
