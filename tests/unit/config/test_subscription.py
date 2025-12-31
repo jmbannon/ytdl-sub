@@ -1,4 +1,3 @@
-import json
 import re
 from contextlib import contextmanager
 from pathlib import Path
@@ -473,23 +472,19 @@ def test_advanced_tv_show_subscriptions(
     overrides = subs[5].overrides
 
     assert overrides.script.get("subscription_name").native == "Gardening with Ciscoe"
-    assert (
-        overrides.apply_formatter(overrides.dict["url"])
-        == "https://www.youtube.com/@gardeningwithciscoe4430"
-    )
-    assert (
-        overrides.apply_formatter(overrides.dict["url2"])
-        == "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_"
-    )
 
-    assert overrides.apply_formatter(overrides.dict["subscription_array"]) == json.dumps(
-        [
-            "https://www.youtube.com/@gardeningwithciscoe4430",
-            "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_",
-            "https://www.youtube.com/playlist?list=PLsJlQSR-KjmaQqqJ9jq18cF6XXXAR4kyn",
-            "https://www.youtube.com/watch?v=2vq-vPubS5I",
-        ]
-    )
+    assert overrides.apply_overrides_formatter_to_native(overrides.dict["subscription_array"]) == [
+        "https://www.youtube.com/@gardeningwithciscoe4430",
+        "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_",
+        "https://www.youtube.com/playlist?list=PLsJlQSR-KjmaQqqJ9jq18cF6XXXAR4kyn",
+        "https://www.youtube.com/watch?v=2vq-vPubS5I",
+    ]
+    assert overrides.apply_overrides_formatter_to_native(overrides.dict["urls"]) == [
+        "https://www.youtube.com/@gardeningwithciscoe4430",
+        "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_",
+        "https://www.youtube.com/playlist?list=PLsJlQSR-KjmaQqqJ9jq18cF6XXXAR4kyn",
+        "https://www.youtube.com/watch?v=2vq-vPubS5I",
+    ]
 
 
 def test_music_subscriptions(default_config: ConfigFile, music_subscriptions_path: Path):
@@ -525,7 +520,7 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
     )
     assert jackson.get("subscription_indent_1").native == "Pop"
     assert (
-        jackson.get("url").native
+        jackson.get("urls").native[0]
         == "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
     )
 
@@ -533,12 +528,10 @@ def test_music_video_subscriptions(default_config: ConfigFile, music_video_subsc
     gnr = subs[3].overrides.script
 
     assert gnr.get("subscription_name").native == "Guns N' Roses"
-    assert (
-        gnr.get("url").native
-        == "https://www.youtube.com/playlist?list=PLOTK54q5K4INNXaHKtmXYr6J7CajWjqeJ"
-    )
+    gnr_urls = gnr.get("urls").native
+    assert gnr_urls[0] == "https://www.youtube.com/playlist?list=PLOTK54q5K4INNXaHKtmXYr6J7CajWjqeJ"
     assert gnr.get("subscription_indent_1").native == "Rock"
-    assert gnr.get("url2").native == "https://www.youtube.com/watch?v=OldpIhHPsbs"
+    assert gnr_urls[1] == "https://www.youtube.com/watch?v=OldpIhHPsbs"
 
 
 def test_default_docker_config_and_subscriptions(

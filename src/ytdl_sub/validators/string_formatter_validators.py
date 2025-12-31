@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 from typing import Dict
 from typing import Set
 from typing import Union
@@ -86,6 +87,14 @@ class StringFormatterValidator(StringValidator):
         Returns
         -------
         Apply any post processing to the resolved value
+        """
+        return resolved
+
+    def post_process_native(self, resolved: Any) -> Any:
+        """
+        Returns
+        -------
+        Apply any post processing to the resolved native value.
         """
         return resolved
 
