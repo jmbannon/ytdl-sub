@@ -29,7 +29,7 @@ def subscription_dict(output_directory):
 
 
 class TestBandcamp:
-    @pytest.mark.parametrize("dry_run", [False])
+    @pytest.mark.parametrize("dry_run", [True, False])
     def test_prebuilt_preset_download(
         self,
         subscription_dict,
