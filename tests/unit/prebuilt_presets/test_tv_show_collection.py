@@ -56,22 +56,23 @@ class TestTvShowCollectionPreset:
                     season_num = 0
 
                 for i in range(num_urls_per_season):
-                    url = sub.overrides.apply_formatter(
-                        url_list[itr].url,
-                        function_overrides={
-                            # mock so bilateral url gets enabled
-                            "subscription_has_download_archive": "True"
-                        },
-                    )
-                    variables = url_list[itr].variables.dict
-                    assert url == f"youtube.com/playlist?url_{season_num}_{i}"
-                    assert (
-                        sub.overrides.apply_formatter(variables["collection_season_number"])
-                        == f"{season_num}"
-                    )
-                    assert (
-                        sub.overrides.apply_formatter(variables["collection_season_name"])
-                        == f"The Season {season_num}"
-                    )
+                    for url_validator in url_list[itr].url:
+                        url = sub.overrides.apply_formatter(
+                            url_validator,
+                            function_overrides={
+                                # mock so bilateral url gets enabled
+                                "subscription_has_download_archive": "True"
+                            },
+                        )
+                        variables = url_list[itr].variables.dict
+                        assert url == f"youtube.com/playlist?url_{season_num}_{i}"
+                        assert (
+                            sub.overrides.apply_formatter(variables["collection_season_number"])
+                            == f"{season_num}"
+                        )
+                        assert (
+                            sub.overrides.apply_formatter(variables["collection_season_name"])
+                            == f"The Season {season_num}"
+                        )
 
-                    itr += 1
+                    itr += len(url_list[itr].url)
