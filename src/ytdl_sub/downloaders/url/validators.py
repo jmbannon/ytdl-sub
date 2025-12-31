@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 from typing import Dict
 from typing import Optional
 from typing import Set
@@ -8,7 +8,8 @@ from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.script.parser import parse
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator, \
+    OverridesListFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
@@ -67,8 +68,7 @@ class UrlValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        # TODO: url validate using yt-dlp IE
-        self._url = self._validate_key(key="url", validator=OverridesStringFormatterValidator)
+        self._url = self._validate_key(key="url", validator=OverridesListFormatterValidator)
         self._variables = self._validate_key_if_present(
             key="variables", validator=DictFormatterValidator, default={}
         )
@@ -95,11 +95,11 @@ class UrlValidator(StrictDictValidator):
         )
 
     @property
-    def url(self) -> OverridesStringFormatterValidator:
+    def url(self) -> List[OverridesStringFormatterValidator]:
         """
         Required. URL to download from.
         """
-        return self._url
+        return self._url.list
 
     @property
     def variables(self) -> DictFormatterValidator:

@@ -162,6 +162,10 @@ class ListFormatterValidator(ListValidator[StringFormatterValidator]):
     _inner_list_type = StringFormatterValidator
 
 
+class OverridesListFormatterValidator(ListValidator[OverridesStringFormatterValidator]):
+    _inner_list_type = OverridesStringFormatterValidator
+
+
 class DictFormatterValidator(LiteralDictValidator):
     """
     A dict made up of

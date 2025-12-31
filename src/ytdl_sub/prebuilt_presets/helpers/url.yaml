@@ -27,301 +27,106 @@ presets:
             uid: "banner_uncropped"
         include_sibling_metadata: "{include_sibling_metadata}"
         webpage_url: "{modified_webpage_url}"
-      - url: "{url2}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url3}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url4}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url5}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url6}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url7}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url8}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url9}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url10}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url11}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url12}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url13}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url14}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url15}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url16}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url17}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url18}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url19}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url20}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url21}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url22}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url23}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url24}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url25}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url26}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url27}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url28}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url29}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url30}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url31}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url32}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url33}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url34}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url35}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url36}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url37}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url38}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url39}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url40}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url41}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url42}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url43}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url44}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url45}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url46}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url47}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url48}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url49}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url50}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url51}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url52}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url53}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url54}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url55}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url56}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url57}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url58}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url59}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url60}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url61}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url62}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url63}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url64}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url65}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url66}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url67}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url68}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url69}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url70}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url71}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url72}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url73}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url74}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url75}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url76}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url77}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url78}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url79}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url80}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url81}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url82}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url83}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url84}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url85}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url86}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url87}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url88}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url89}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url90}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url91}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url92}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url93}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url94}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url95}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url96}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url97}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url98}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url99}"
-        include_sibling_metadata: "{include_sibling_metadata}"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{url100}"
+      - url:
+          - "{url2}"
+          - "{url3}"
+          - "{url4}"
+          - "{url5}"
+          - "{url6}"
+          - "{url7}"
+          - "{url8}"
+          - "{url9}"
+          - "{url10}"
+          - "{url11}"
+          - "{url12}"
+          - "{url13}"
+          - "{url14}"
+          - "{url15}"
+          - "{url16}"
+          - "{url17}"
+          - "{url18}"
+          - "{url19}"
+          - "{url20}"
+          - "{url21}"
+          - "{url22}"
+          - "{url23}"
+          - "{url24}"
+          - "{url25}"
+          - "{url26}"
+          - "{url27}"
+          - "{url28}"
+          - "{url29}"
+          - "{url30}"
+          - "{url31}"
+          - "{url32}"
+          - "{url33}"
+          - "{url34}"
+          - "{url35}"
+          - "{url36}"
+          - "{url37}"
+          - "{url38}"
+          - "{url39}"
+          - "{url40}"
+          - "{url41}"
+          - "{url42}"
+          - "{url43}"
+          - "{url44}"
+          - "{url45}"
+          - "{url46}"
+          - "{url47}"
+          - "{url48}"
+          - "{url49}"
+          - "{url50}"
+          - "{url51}"
+          - "{url52}"
+          - "{url53}"
+          - "{url54}"
+          - "{url55}"
+          - "{url56}"
+          - "{url57}"
+          - "{url58}"
+          - "{url59}"
+          - "{url60}"
+          - "{url61}"
+          - "{url62}"
+          - "{url63}"
+          - "{url64}"
+          - "{url65}"
+          - "{url66}"
+          - "{url67}"
+          - "{url68}"
+          - "{url69}"
+          - "{url70}"
+          - "{url71}"
+          - "{url72}"
+          - "{url73}"
+          - "{url74}"
+          - "{url75}"
+          - "{url76}"
+          - "{url77}"
+          - "{url78}"
+          - "{url79}"
+          - "{url80}"
+          - "{url81}"
+          - "{url82}"
+          - "{url83}"
+          - "{url84}"
+          - "{url85}"
+          - "{url86}"
+          - "{url87}"
+          - "{url88}"
+          - "{url89}"
+          - "{url90}"
+          - "{url91}"
+          - "{url92}"
+          - "{url93}"
+          - "{url94}"
+          - "{url95}"
+          - "{url96}"
+          - "{url97}"
+          - "{url98}"
+          - "{url99}"
+          - "{url100}"
         include_sibling_metadata: "{include_sibling_metadata}"
         webpage_url: "{modified_webpage_url}"
     overrides:
@@ -542,502 +347,107 @@ presets:
       - "_url_bilateral_overrides"
 
     download:
-      - url: "{%bilateral_url(url) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url2) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url3) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url4) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url5) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url6) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url7) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url8) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url9) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url10) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url11) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url12) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url13) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url14) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url15) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url16) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url17) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url18) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url19) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url20) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url21) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url22) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url23) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url24) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url25) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url26) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url27) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url28) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url29) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url30) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url31) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url32) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url33) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url34) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url35) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url36) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url37) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url38) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url39) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url40) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url41) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url42) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url43) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url44) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url45) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url46) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url47) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url48) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url49) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url50) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url51) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url52) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url53) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url54) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url55) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url56) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url57) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url58) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url59) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url60) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url61) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url62) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url63) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url64) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url65) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url66) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url67) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url68) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url69) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url70) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url71) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url72) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url73) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url74) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url75) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url76) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url77) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url78) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url79) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url80) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url81) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url82) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url83) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url84) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url85) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url86) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url87) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url88) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url89) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url90) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url91) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url92) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url93) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url94) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url95) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url96) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url97) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url98) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{ %bilateral_url(url99) }"
-        download_reverse: False
-        ytdl_options:
-          playlist_items: "-1:0:-1"
-        webpage_url: "{modified_webpage_url}"
-      - url: "{%bilateral_url(url100) }"
+      - url:
+          - "{ %bilateral_url(url) }"
+          - "{ %bilateral_url(url2) }"
+          - "{ %bilateral_url(url3) }"
+          - "{ %bilateral_url(url4) }"
+          - "{ %bilateral_url(url5) }"
+          - "{ %bilateral_url(url6) }"
+          - "{ %bilateral_url(url7) }"
+          - "{ %bilateral_url(url8) }"
+          - "{ %bilateral_url(url9) }"
+          - "{ %bilateral_url(url10) }"
+          - "{ %bilateral_url(url11) }"
+          - "{ %bilateral_url(url12) }"
+          - "{ %bilateral_url(url13) }"
+          - "{ %bilateral_url(url14) }"
+          - "{ %bilateral_url(url15) }"
+          - "{ %bilateral_url(url16) }"
+          - "{ %bilateral_url(url17) }"
+          - "{ %bilateral_url(url18) }"
+          - "{ %bilateral_url(url19) }"
+          - "{ %bilateral_url(url20) }"
+          - "{ %bilateral_url(url21) }"
+          - "{ %bilateral_url(url22) }"
+          - "{ %bilateral_url(url23) }"
+          - "{ %bilateral_url(url24) }"
+          - "{ %bilateral_url(url25) }"
+          - "{ %bilateral_url(url26) }"
+          - "{ %bilateral_url(url27) }"
+          - "{ %bilateral_url(url28) }"
+          - "{ %bilateral_url(url29) }"
+          - "{ %bilateral_url(url30) }"
+          - "{ %bilateral_url(url31) }"
+          - "{ %bilateral_url(url32) }"
+          - "{ %bilateral_url(url33) }"
+          - "{ %bilateral_url(url34) }"
+          - "{ %bilateral_url(url35) }"
+          - "{ %bilateral_url(url36) }"
+          - "{ %bilateral_url(url37) }"
+          - "{ %bilateral_url(url38) }"
+          - "{ %bilateral_url(url39) }"
+          - "{ %bilateral_url(url40) }"
+          - "{ %bilateral_url(url41) }"
+          - "{ %bilateral_url(url42) }"
+          - "{ %bilateral_url(url43) }"
+          - "{ %bilateral_url(url44) }"
+          - "{ %bilateral_url(url45) }"
+          - "{ %bilateral_url(url46) }"
+          - "{ %bilateral_url(url47) }"
+          - "{ %bilateral_url(url48) }"
+          - "{ %bilateral_url(url49) }"
+          - "{ %bilateral_url(url50) }"
+          - "{ %bilateral_url(url51) }"
+          - "{ %bilateral_url(url52) }"
+          - "{ %bilateral_url(url53) }"
+          - "{ %bilateral_url(url54) }"
+          - "{ %bilateral_url(url55) }"
+          - "{ %bilateral_url(url56) }"
+          - "{ %bilateral_url(url57) }"
+          - "{ %bilateral_url(url58) }"
+          - "{ %bilateral_url(url59) }"
+          - "{ %bilateral_url(url60) }"
+          - "{ %bilateral_url(url61) }"
+          - "{ %bilateral_url(url62) }"
+          - "{ %bilateral_url(url63) }"
+          - "{ %bilateral_url(url64) }"
+          - "{ %bilateral_url(url65) }"
+          - "{ %bilateral_url(url66) }"
+          - "{ %bilateral_url(url67) }"
+          - "{ %bilateral_url(url68) }"
+          - "{ %bilateral_url(url69) }"
+          - "{ %bilateral_url(url70) }"
+          - "{ %bilateral_url(url71) }"
+          - "{ %bilateral_url(url72) }"
+          - "{ %bilateral_url(url73) }"
+          - "{ %bilateral_url(url74) }"
+          - "{ %bilateral_url(url75) }"
+          - "{ %bilateral_url(url76) }"
+          - "{ %bilateral_url(url77) }"
+          - "{ %bilateral_url(url78) }"
+          - "{ %bilateral_url(url79) }"
+          - "{ %bilateral_url(url80) }"
+          - "{ %bilateral_url(url81) }"
+          - "{ %bilateral_url(url82) }"
+          - "{ %bilateral_url(url83) }"
+          - "{ %bilateral_url(url84) }"
+          - "{ %bilateral_url(url85) }"
+          - "{ %bilateral_url(url86) }"
+          - "{ %bilateral_url(url87) }"
+          - "{ %bilateral_url(url88) }"
+          - "{ %bilateral_url(url89) }"
+          - "{ %bilateral_url(url90) }"
+          - "{ %bilateral_url(url91) }"
+          - "{ %bilateral_url(url92) }"
+          - "{ %bilateral_url(url93) }"
+          - "{ %bilateral_url(url94) }"
+          - "{ %bilateral_url(url95) }"
+          - "{ %bilateral_url(url96) }"
+          - "{ %bilateral_url(url97) }"
+          - "{ %bilateral_url(url98) }"
+          - "{ %bilateral_url(url99) }"
+          - "{ %bilateral_url(url100) }"
         download_reverse: False
         ytdl_options:
           playlist_items: "-1:0:-1"

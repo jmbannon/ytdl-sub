@@ -485,21 +485,24 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
     def download_metadata(self) -> Iterable[Entry]:
         """The function to perform the download of all media entries"""
         # download the bottom-most urls first since they are top-priority
-        for idx, url_validator in reversed(list(enumerate(self.collection.urls.list))):
-            # URLs can be empty. If they are, then skip
-            if not (url := self.overrides.apply_formatter(url_validator.url)):
-                continue
+        for idx, validator in reversed(list(enumerate(self.collection.urls.list))):
+            # Iterate the inner url list bottom-most first as well
+            for url_validator in reversed(validator.url):
 
-            for entry in self._download_metadata(url=url, validator=url_validator):
-                entry.initialize_script(self.overrides).add(
-                    {
-                        v.ytdl_sub_input_url: url,
-                        v.ytdl_sub_input_url_index: idx,
-                        v.ytdl_sub_input_url_count: len(self.collection.urls.list),
-                    }
-                )
+                # URLs can be empty. If they are, then skip
+                if not (url := self.overrides.apply_formatter(url_validator)):
+                    continue
 
-                yield entry
+                for entry in self._download_metadata(url=url, validator=validator):
+                    entry.initialize_script(self.overrides).add(
+                        {
+                            v.ytdl_sub_input_url: url,
+                            v.ytdl_sub_input_url_index: idx,
+                            v.ytdl_sub_input_url_count: len(self.collection.urls.list),
+                        }
+                    )
+
+                    yield entry
 
     def download(self, entry: Entry) -> Optional[Entry]:
         """
