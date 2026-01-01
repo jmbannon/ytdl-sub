@@ -225,3 +225,49 @@ view_parser.add_argument("url", help="URL to view source variables for")
 ###################################################################################################
 # CLI-TO-SUB PARSER
 cli_to_sub_parser = subparsers.add_parser("cli-to-sub")
+
+###################################################################################################
+# INSPECT PARSER
+
+
+class InspectArguments:
+    INCLUDE_OVERRIDES = CLIArgument(
+        short="-v",
+        long="--include-overrides",
+    )
+
+
+inspect_parser = subparsers.add_parser("inspect")
+inspect_parser.add_argument(
+    InspectArguments.INCLUDE_OVERRIDES.short,
+    InspectArguments.INCLUDE_OVERRIDES.long,
+    action="store_true",
+    help="Whether to show override variables.",
+    default=False,
+)
+inspect_parser.add_argument(
+    MainArguments.MATCH.short,
+    MainArguments.MATCH.long,
+    dest="match",
+    nargs="+",
+    action="extend",
+    type=str,
+    help="match subscription names to one or more substrings, and only run those subscriptions",
+    default=[],
+)
+
+inspect_parser.add_argument(
+    "subscription_paths",
+    metavar="SUBPATH",
+    nargs="*",
+    help="path to subscription files, uses subscriptions.yaml if not provided",
+    default=["subscriptions.yaml"],
+)
+
+inspect_parser.add_argument(
+    SubArguments.OVERRIDE.short,
+    SubArguments.OVERRIDE.long,
+    type=str,
+    help="override all subscription config values using `dl` syntax, "
+    "i.e. --dl-override='--ytdl_options.max_downloads 3'",
+)
