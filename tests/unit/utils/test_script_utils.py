@@ -18,6 +18,9 @@ class TestScriptUtils:
             "string": "value",
             "quotes": "has '' and \"\"",
             "triple-single-quote": "right here! '''''''''''''''''''''''''''''' ack '''''''",
+            "has-double-quotes": 'i got "some double quotes" in here',
+            "has-single-quotes": "i got 'some single quotes' in here",
+            "has-both-quotes": "i got 'both quotes\" in here",
             "int": 1,
             "bool": True,
             "list": [1, 2, 3],
@@ -60,7 +63,15 @@ class TestScriptUtils:
 
     def test_to_syntax_tree(self):
         out = ScriptUtils.to_native_script(
-            {"{var_a}": "{var_b}", "static_a": "string with {var_c} in it"}
+            {
+                "{var_a}": "{var_b}",
+                "static_a": "string with {var_c} in it",
+                "quotes": "has '' and \"\"",
+                "triple-single-quote": "right here! '''''''''''''''''''''''''''''' ack '''''''",
+                "has-double-quotes": 'i got "some double quotes" in here',
+                "has-single-quotes": "i got 'some single quotes' in here",
+                "has-both-quotes": "i got 'both quotes\" in here",
+            }
         )
         assert parse(out) == SyntaxTree(
             ast=[
@@ -74,6 +85,19 @@ class TestScriptUtils:
                                 BuiltInFunction(name="string", args=[Variable(name="var_c")]),
                                 BuiltInFunction(name="string", args=[String(value=" in it")]),
                             ],
+                        ),
+                        String(value="quotes"): String(value="has '' and \"\""),
+                        String(value="triple-single-quote"): String(
+                            value="right here! '''''''''''''''''''''''''''''' ack '''''''"
+                        ),
+                        String(value="has-double-quotes"): String(
+                            value='i got "some double quotes" in here'
+                        ),
+                        String(value="has-single-quotes"): String(
+                            value="i got 'some single quotes' in here"
+                        ),
+                        String(value="has-both-quotes"): String(
+                            value="i got 'both quotes\" in here"
                         ),
                     }
                 )

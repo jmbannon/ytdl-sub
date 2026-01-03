@@ -7,7 +7,7 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.validators.string_formatter_validators import validate_formatters
+from ytdl_sub.validators.string_formatter_validators import validate_formatters, _validate_formatter
 
 
 class VariableValidation:
