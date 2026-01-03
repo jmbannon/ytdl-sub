@@ -113,7 +113,20 @@ class ScriptUtils:
         if isinstance(arg, String):
             if arg.native == "":
                 return "" if top_level else "''"
-            return arg.native if top_level else f"'''{arg.native}'''"
+
+            contains_single_quote = "'" in arg.native
+            contains_double_quote = '"' in arg.native
+
+            if not contains_single_quote and not contains_double_quote:
+                quote = '"'
+            elif not contains_single_quote and contains_double_quote:
+                quote = "'"
+            elif contains_single_quote and not contains_double_quote:
+                quote = '"'
+            else:
+                quote = "'''"
+
+            return arg.native if top_level else f"{quote}{arg.native}{quote}"
 
         if isinstance(arg, Integer):
             out = f"%int({arg.native})"
