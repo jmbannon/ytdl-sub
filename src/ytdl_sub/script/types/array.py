@@ -11,6 +11,7 @@ from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import ResolvableToJson
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.variable_dependency import TypeT
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 
 
@@ -46,6 +47,25 @@ class UnresolvedArray(_Array, VariableDependency, FutureResolvable):
                 for arg in self.value
             ]
         )
+
+    def partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> "UnresolvedArray" | Resolvable:
+        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+            args=self.value,
+            resolved_variables=resolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        if is_resolvable:
+            return self.resolve(
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        return UnresolvedArray(value=maybe_resolvable_values)
 
     def future_resolvable_type(self) -> Type[Resolvable]:
         return Array

@@ -5,6 +5,7 @@ from typing import Dict
 from typing import Iterable
 from typing import List
 from typing import Set
+from typing import Tuple
 from typing import Type
 from typing import TypeVar
 from typing import final
@@ -138,6 +139,25 @@ class VariableDependency(ABC):
         Resolved value
         """
 
+    @abstractmethod
+    def partial_resolve(
+        self: TypeT,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> TypeT | Resolvable:
+        """
+        Parameters
+        ----------
+        resolved_variables
+            Lookup of variables that have been resolved
+        custom_functions
+            Lookup of any custom functions that have been parsed
+
+        Returns
+        -------
+        Either a fully resolved value or partially resolved value of the same type.
+        """
+
     @classmethod
     def _resolve_argument_type(
         cls,
@@ -222,3 +242,36 @@ class VariableDependency(ABC):
             ):
                 return True
         return len(self.variables.intersection(variables)) > 0
+
+    @classmethod
+    def try_partial_resolve(
+        cls,
+        args: Iterable[Argument],
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Tuple[List[Argument], bool]:
+        maybe_resolvable_args: List[Resolvable | Argument] = []
+        is_resolvable = True
+        for arg in args:
+            if isinstance(arg, Lambda) and arg.value in custom_functions:
+                maybe_resolvable_args.append(arg)
+
+                if not custom_functions[arg.value].is_subset_of(
+                    variables=resolved_variables,
+                    custom_function_definitions=custom_functions,
+                ):
+                    is_resolvable = False
+
+            elif isinstance(arg, VariableDependency):
+                maybe_resolvable_args.append(
+                    arg.partial_resolve(
+                        resolved_variables=resolved_variables, custom_functions=custom_functions
+                    )
+                )
+
+                if not isinstance(maybe_resolvable_args[-1], Resolvable):
+                    is_resolvable = False
+            else:
+                maybe_resolvable_args.append(arg)
+
+        return maybe_resolvable_args, is_resolvable

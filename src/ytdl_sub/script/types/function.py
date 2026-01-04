@@ -22,6 +22,7 @@ from ytdl_sub.script.types.resolvable import ReturnableArgumentA
 from ytdl_sub.script.types.resolvable import ReturnableArgumentB
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.variable_dependency import TypeT
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
@@ -37,6 +38,25 @@ class Function(FunctionType, VariableDependency, ABC):
     @property
     def _iterable_arguments(self) -> List[Argument]:
         return self.args
+
+    def partial_resolve(
+        self: TypeT,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> TypeT | Resolvable:
+        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+            args=self.value,
+            resolved_variables=resolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        if is_resolvable:
+            return self.resolve(
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        return BuiltInFunction(name=self.name, args=maybe_resolvable_values)
 
 
 class CustomFunction(Function, NamedCustomFunction):
