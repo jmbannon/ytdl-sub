@@ -106,6 +106,19 @@ class ScriptUtils:
         raise UNREACHABLE
 
     @classmethod
+    def _get_quote_char(cls, arg: str) -> str:
+        contains_single_quote = "'" in arg
+        contains_double_quote = '"' in arg
+
+        if not contains_single_quote and not contains_double_quote:
+            return '"'
+        if not contains_single_quote and contains_double_quote:
+            return "'"
+        if contains_single_quote and not contains_double_quote:
+            return '"'
+        return "'''"
+
+    @classmethod
     def _to_script_code(cls, arg: Argument, top_level: bool = False) -> str:
         if not top_level and isinstance(arg, (Integer, Boolean, Float)):
             return str(arg.native)
@@ -114,17 +127,7 @@ class ScriptUtils:
             if arg.native == "":
                 return "" if top_level else "''"
 
-            contains_single_quote = "'" in arg.native
-            contains_double_quote = '"' in arg.native
-
-            if not contains_single_quote and not contains_double_quote:
-                quote = '"'
-            elif not contains_single_quote and contains_double_quote:
-                quote = "'"
-            elif contains_single_quote and not contains_double_quote:
-                quote = '"'
-            else:
-                quote = "'''"
+            quote = cls._get_quote_char(arg.native)
 
             return arg.native if top_level else f"{quote}{arg.native}{quote}"
 
