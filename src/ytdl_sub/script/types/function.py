@@ -45,7 +45,7 @@ class Function(FunctionType, VariableDependency, ABC):
         custom_functions: Dict[str, "VariableDependency"],
     ) -> TypeT | Resolvable:
         maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
-            args=self.value,
+            args=self.args,
             resolved_variables=resolved_variables,
             custom_functions=custom_functions,
         )

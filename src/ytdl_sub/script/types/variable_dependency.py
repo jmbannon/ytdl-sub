@@ -271,7 +271,14 @@ class VariableDependency(ABC):
 
                 if not isinstance(maybe_resolvable_args[-1], Resolvable):
                     is_resolvable = False
+            elif isinstance(arg, Variable):
+                if arg not in resolved_variables:
+                    is_resolvable = False
+
+                maybe_resolvable_args.append(arg)
             else:
                 maybe_resolvable_args.append(arg)
 
+        if is_resolvable:
+            print("hmm")
         return maybe_resolvable_args, is_resolvable

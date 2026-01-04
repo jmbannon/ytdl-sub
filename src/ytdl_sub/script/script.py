@@ -695,3 +695,52 @@ class Script:
             Names of all functions within the Script.
         """
         return set(to_function_definition_name(name) for name in self._functions.keys())
+
+    def resolve_partial(
+        self,
+        unresolvable: Optional[Set[str]] = None,
+    ) -> "Script":
+        """
+
+        Returns
+        -------
+        Dict of resolved values
+
+        Raises
+        ------
+        ScriptVariableNotResolved
+            If specifying a filter of variable to resolve, and one of them does not.
+        """
+        resolved: Dict[Variable, Resolvable] = {}
+        unresolved: Dict[Variable, SyntaxTree] = {
+            Variable(name): ast for name, ast in self._variables.items() if name not in unresolvable
+        }
+        unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
+
+        partially_resolved = True
+        while partially_resolved:
+
+            partially_resolved = False
+
+            for variable in list(unresolved.keys()):
+
+                definition = unresolved[variable]
+
+                maybe_resolved = definition.partial_resolve(
+                    resolved_variables=resolved, custom_functions=self._functions
+                )
+                if isinstance(maybe_resolved, Resolvable):
+                    resolved[variable] = maybe_resolved
+                    del unresolved[variable]
+                else:
+                    unresolved[variable] = maybe_resolved
+
+                # If the definition changed, then the script changed
+                # which means we can iterate again
+                partially_resolved |= definition != maybe_resolved
+
+        return Script({}).add_parsed(
+            self._functions
+            | {var.name: definition for var, definition in resolved.items()}
+            | unresolved
+        )
