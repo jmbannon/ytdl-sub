@@ -144,6 +144,12 @@ class ScriptUtils:
         """
         Converts any JSON-compatible value into equivalent script syntax
         """
+        if isinstance(value, SyntaxTree):
+            output = ""
+            for arg in value.ast:
+                output += cls._to_script_code(arg, top_level=True)
+            return output
+
         return cls._to_script_code(cls._to_script_argument(value), top_level=True)
 
     @classmethod

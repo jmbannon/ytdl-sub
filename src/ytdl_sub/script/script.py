@@ -1,4 +1,5 @@
 # pylint: disable=missing-raises-doc
+import copy
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -696,6 +697,11 @@ class Script:
         """
         return set(to_function_definition_name(name) for name in self._functions.keys())
 
+    def _to_syntax_tree(self, maybe_resolved: SyntaxTree | Resolvable) -> SyntaxTree:
+        if isinstance(maybe_resolved, Resolvable):
+            return ResolvedSyntaxTree(ast=[maybe_resolved])
+        return maybe_resolved
+
     def resolve_partial(
         self,
         unresolvable: Optional[Set[str]] = None,
@@ -739,8 +745,8 @@ class Script:
                 # which means we can iterate again
                 partially_resolved |= definition != maybe_resolved
 
-        return Script({}).add_parsed(
-            self._functions
-            | {var.name: definition for var, definition in resolved.items()}
-            | unresolved
+        return copy.deepcopy(self).add_parsed(
+            {var.name: self._variables[var.name] for var in unresolvable}
+            | {var.name: self._to_syntax_tree(definition) for var, definition in resolved.items()}
+            | {var.name: self._to_syntax_tree(definition) for var, definition in unresolved.items()}
         )

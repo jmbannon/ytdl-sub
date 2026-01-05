@@ -11,6 +11,7 @@ from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.script import ScriptUtils
 
 
 @contextmanager
@@ -616,4 +617,6 @@ def test_default_docker_config_and_subscriptions(
     unresolvable.add("sibling_metadata")
 
     out = default_subs[0].overrides.script.resolve_partial(unresolvable=unresolvable)
+    prev = ScriptUtils.to_native_script(out._variables['episode_file_name'])
+
     print("hi")

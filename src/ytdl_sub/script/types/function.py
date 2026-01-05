@@ -39,25 +39,6 @@ class Function(FunctionType, VariableDependency, ABC):
     def _iterable_arguments(self) -> List[Argument]:
         return self.args
 
-    def partial_resolve(
-        self: TypeT,
-        resolved_variables: Dict[Variable, Resolvable],
-        custom_functions: Dict[str, "VariableDependency"],
-    ) -> TypeT | Resolvable:
-        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
-            args=self.args,
-            resolved_variables=resolved_variables,
-            custom_functions=custom_functions,
-        )
-
-        if is_resolvable:
-            return self.resolve(
-                resolved_variables=resolved_variables,
-                custom_functions=custom_functions,
-            )
-
-        return BuiltInFunction(name=self.name, args=maybe_resolvable_values)
-
 
 class CustomFunction(Function, NamedCustomFunction):
     def resolve(
@@ -103,6 +84,28 @@ class CustomFunction(Function, NamedCustomFunction):
         # Implies the custom function does not exist. This should have
         # been checked in the parser with
         raise UNREACHABLE
+
+    def partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> TypeT | Resolvable:
+        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+            args=self.args,
+            resolved_variables=resolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        if any(var not in resolved_variables for var in custom_functions[self.name].variables):
+            is_resolvable = False
+
+        if is_resolvable:
+            return self.resolve(
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        return CustomFunction(name=self.name, args=maybe_resolvable_values)
 
 
 class BuiltInFunction(Function, BuiltInFunctionType):
@@ -331,6 +334,38 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             raise FunctionRuntimeException(
                 f"Runtime error occurred when executing the function %{self.name}: {str(exc)}"
             ) from exc
+
+    def partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> TypeT | Resolvable:
+        conditional_return_args = self.function_spec.conditional_arg_indices(
+            num_input_args=len(self.args)
+        )
+
+        # If the function is conditional, only run if its entirety is resolvable
+        if conditional_return_args:
+            if self.is_subset_of(variables=resolved_variables, custom_function_definitions=custom_functions):
+                return self.resolve(
+                    resolved_variables=resolved_variables,
+                    custom_functions=custom_functions,
+                )
+            return self
+        else:
+            maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+                args=self.args,
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+            if is_resolvable:
+                return self.resolve(
+                    resolved_variables=resolved_variables,
+                    custom_functions=custom_functions,
+                )
+
+        return BuiltInFunction(name=self.name, args=maybe_resolvable_values)
 
     def __hash__(self):
         return hash((self.name, *self.args))
