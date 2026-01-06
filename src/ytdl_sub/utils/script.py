@@ -2,6 +2,7 @@ import json
 import re
 from typing import Any
 from typing import Dict
+from typing import Optional
 
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.array import UnresolvedArray
@@ -156,15 +157,41 @@ class ScriptUtils:
         return f"{{ {out} }}" if top_level else out
 
     @classmethod
+    def _is_top_level_string(cls, tree: SyntaxTree) -> Optional[str]:
+        if not (
+            len(tree.ast) == 1
+            and isinstance(tree.ast[0], BuiltInFunction)
+            and tree.ast[0].name == "concat"
+        ):
+            return None
+
+        output = ""
+        for arg in tree.ast[0].args:
+            if isinstance(arg, BuiltInFunction) and arg.name == "string" and len(arg.args) == 1:
+                output += cls._to_script_code(arg.args[0], top_level=True)
+            else:
+                output += cls._to_script_code(arg, top_level=True)
+
+        return output
+
+    @classmethod
+    def _syntax_tree_to_native_script(cls, tree: SyntaxTree) -> str:
+
+        if (output := cls._is_top_level_string(tree)) is not None:
+            return output
+
+        output = ""
+        for arg in tree.ast:
+            output += cls._to_script_code(arg, top_level=True)
+        return output
+
+    @classmethod
     def to_native_script(cls, value: Any) -> str:
         """
         Converts any JSON-compatible value into equivalent script syntax
         """
         if isinstance(value, SyntaxTree):
-            output = ""
-            for arg in value.ast:
-                output += cls._to_script_code(arg, top_level=True)
-            return output
+            return cls._syntax_tree_to_native_script(value)
 
         return cls._to_script_code(cls._to_script_argument(value), top_level=True)
 

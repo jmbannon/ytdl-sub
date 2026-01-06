@@ -617,6 +617,6 @@ def test_default_docker_config_and_subscriptions(
     unresolvable.add("sibling_metadata")
 
     out = default_subs[0].overrides.script.resolve_partial(unresolvable=unresolvable)
-    prev = ScriptUtils.to_native_script(out._variables['episode_file_name'])
+    prev = ScriptUtils.to_native_script(out._variables["episode_file_name"])
 
     print("hi")

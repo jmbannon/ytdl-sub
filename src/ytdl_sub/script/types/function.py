@@ -346,7 +346,9 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
         # If the function is conditional, only run if its entirety is resolvable
         if conditional_return_args:
-            if self.is_subset_of(variables=resolved_variables, custom_function_definitions=custom_functions):
+            if self.is_subset_of(
+                variables=resolved_variables, custom_function_definitions=custom_functions
+            ):
                 return self.resolve(
                     resolved_variables=resolved_variables,
                     custom_functions=custom_functions,
