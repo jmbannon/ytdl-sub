@@ -51,11 +51,13 @@ class UnresolvedArray(_Array, VariableDependency, FutureResolvable):
     def partial_resolve(
         self: TypeT,
         resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> TypeT | Resolvable:
         maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
             args=self.value,
             resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
             custom_functions=custom_functions,
         )
 

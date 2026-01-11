@@ -15,6 +15,7 @@ from ytdl_sub.script.types.syntax_tree import ResolvedSyntaxTree
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
@@ -697,9 +698,16 @@ class Script:
         """
         return set(to_function_definition_name(name) for name in self._functions.keys())
 
-    def _to_syntax_tree(self, maybe_resolved: SyntaxTree | Resolvable) -> SyntaxTree:
+    def _to_syntax_tree(
+        self, maybe_resolved: SyntaxTree | Resolvable | VariableDependency
+    ) -> SyntaxTree:
         if isinstance(maybe_resolved, Resolvable):
             return ResolvedSyntaxTree(ast=[maybe_resolved])
+        if isinstance(maybe_resolved, SyntaxTree):
+            return maybe_resolved
+        if isinstance(maybe_resolved, VariableDependency):
+            return SyntaxTree(ast=[maybe_resolved])
+
         return maybe_resolved
 
     def resolve_partial(
@@ -718,10 +726,32 @@ class Script:
             If specifying a filter of variable to resolve, and one of them does not.
         """
         resolved: Dict[Variable, Resolvable] = {}
-        unresolved: Dict[Variable, SyntaxTree] = {
-            Variable(name): ast for name, ast in self._variables.items() if name not in unresolvable
-        }
+        unresolved: Dict[Variable, VariableDependency] = {}
         unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
+
+        for variable_name, definition in self._variables.items():
+            assert len(definition.ast) == 1
+            arg = definition.ast[0]
+            variable = Variable(variable_name)
+
+            if variable in unresolvable:
+                continue
+
+            if isinstance(arg, Resolvable):
+                resolved[variable] = arg
+            elif isinstance(arg, Variable):
+                while isinstance(arg, Variable):
+                    if arg in unresolvable:
+                        break
+                    arg = self._variables[arg.name]
+
+                if resolved_arg := arg.maybe_resolvable:
+                    resolved[variable] = resolved_arg
+                else:
+                    assert isinstance(arg, SyntaxTree)
+                    unresolved[variable] = arg.ast[0]
+            else:
+                unresolved[variable] = arg
 
         partially_resolved = True
         while partially_resolved:
@@ -729,11 +759,12 @@ class Script:
             partially_resolved = False
 
             for variable in list(unresolved.keys()):
-
                 definition = unresolved[variable]
 
                 maybe_resolved = definition.partial_resolve(
-                    resolved_variables=resolved, custom_functions=self._functions
+                    resolved_variables=resolved,
+                    unresolved_variables=unresolved,
+                    custom_functions=self._functions,
                 )
                 if isinstance(maybe_resolved, Resolvable):
                     resolved[variable] = maybe_resolved

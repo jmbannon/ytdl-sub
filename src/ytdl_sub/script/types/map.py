@@ -59,17 +59,20 @@ class UnresolvedMap(_Map, VariableDependency, FutureResolvable):
     def partial_resolve(
         self: TypeT,
         resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> TypeT | Resolvable:
         maybe_resolvable_keys, is_keys_resolvable = VariableDependency.try_partial_resolve(
             args=self.value.keys(),
             resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
             custom_functions=custom_functions,
         )
 
         maybe_resolvable_values, is_values_resolvable = VariableDependency.try_partial_resolve(
             args=self.value.values(),
             resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
             custom_functions=custom_functions,
         )
 

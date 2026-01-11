@@ -143,6 +143,7 @@ class VariableDependency(ABC):
     def partial_resolve(
         self: TypeT,
         resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> TypeT | Resolvable:
         """
@@ -150,6 +151,8 @@ class VariableDependency(ABC):
         ----------
         resolved_variables
             Lookup of variables that have been resolved
+        unresolved_variables
+            Lookup of variables that have not been resolved
         custom_functions
             Lookup of any custom functions that have been parsed
 
@@ -248,6 +251,7 @@ class VariableDependency(ABC):
         cls,
         args: Iterable[Argument],
         resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Tuple[List[Argument], bool]:
         maybe_resolvable_args: List[Resolvable | Argument] = []
@@ -265,7 +269,9 @@ class VariableDependency(ABC):
             elif isinstance(arg, VariableDependency):
                 maybe_resolvable_args.append(
                     arg.partial_resolve(
-                        resolved_variables=resolved_variables, custom_functions=custom_functions
+                        resolved_variables=resolved_variables,
+                        unresolved_variables=unresolved_variables,
+                        custom_functions=custom_functions,
                     )
                 )
 
@@ -275,10 +281,14 @@ class VariableDependency(ABC):
                 if arg not in resolved_variables:
                     is_resolvable = False
 
-                maybe_resolvable_args.append(arg)
+                    if arg in unresolved_variables:
+                        maybe_resolvable_args.append(unresolved_variables[arg])
+                    else:
+                        # Must be unresolvable
+                        maybe_resolvable_args.append(arg)
+                else:
+                    maybe_resolvable_args.append(arg)
             else:
                 maybe_resolvable_args.append(arg)
 
-        if is_resolvable:
-            print("hmm")
         return maybe_resolvable_args, is_resolvable

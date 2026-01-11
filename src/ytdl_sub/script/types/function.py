@@ -88,11 +88,13 @@ class CustomFunction(Function, NamedCustomFunction):
     def partial_resolve(
         self,
         resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> TypeT | Resolvable:
         maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
             args=self.args,
             resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
             custom_functions=custom_functions,
         )
 
@@ -338,6 +340,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
     def partial_resolve(
         self,
         resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> TypeT | Resolvable:
         conditional_return_args = self.function_spec.conditional_arg_indices(
@@ -358,6 +361,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
                 args=self.args,
                 resolved_variables=resolved_variables,
+                unresolved_variables=unresolved_variables,
                 custom_functions=custom_functions,
             )
 
