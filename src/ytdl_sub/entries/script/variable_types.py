@@ -22,7 +22,6 @@ VariableT = TypeVar("VariableT", bound="Variable")
 
 
 def _get(
-    cast: str,
     metadata_variable_name: str,
     metadata_key: str,
     variable_name: Optional[str],
@@ -47,7 +46,7 @@ def _get(
     return as_type(
         variable_name=variable_name or metadata_key,
         metadata_key=metadata_key,
-        definition=f"{{ %legacy_bracket_safety(%{cast}({out})) }}",
+        definition=f"{{ {out} }}",
     )
 
 
@@ -182,7 +181,6 @@ class MapMetadataVariable(MetadataVariable, MapVariable):
         Creates a map variable from entry metadata
         """
         return _get(
-            "map",
             metadata_variable_name=ENTRY_METADATA_VARIABLE_NAME,
             metadata_key=metadata_key,
             variable_name=variable_name,
@@ -204,7 +202,6 @@ class ArrayMetadataVariable(MetadataVariable, ArrayVariable):
         Creates an array variable from entry metadata
         """
         return _get(
-            "array",
             metadata_variable_name=ENTRY_METADATA_VARIABLE_NAME,
             metadata_key=metadata_key,
             variable_name=variable_name,
@@ -226,7 +223,6 @@ class StringMetadataVariable(MetadataVariable, StringVariable):
         Creates a string variable from entry metadata
         """
         return _get(
-            "string",
             metadata_variable_name=ENTRY_METADATA_VARIABLE_NAME,
             metadata_key=metadata_key,
             variable_name=variable_name,
@@ -245,7 +241,6 @@ class StringMetadataVariable(MetadataVariable, StringVariable):
         Creates a string variable from playlist metadata
         """
         return _get(
-            "string",
             metadata_variable_name=PLAYLIST_METADATA_VARIABLE_NAME,
             metadata_key=metadata_key,
             variable_name=variable_name,
@@ -264,7 +259,6 @@ class StringMetadataVariable(MetadataVariable, StringVariable):
         Creates a string variable from source metadata
         """
         return _get(
-            "string",
             metadata_variable_name=SOURCE_METADATA_VARIABLE_NAME,
             metadata_key=metadata_key,
             variable_name=variable_name,
@@ -301,7 +295,6 @@ class IntegerMetadataVariable(MetadataVariable, IntegerVariable):
         Creates an int variable from entry metadata
         """
         return _get(
-            "int",
             metadata_variable_name=ENTRY_METADATA_VARIABLE_NAME,
             metadata_key=metadata_key,
             variable_name=variable_name,
@@ -320,7 +313,6 @@ class IntegerMetadataVariable(MetadataVariable, IntegerVariable):
         Creates an int variable from playlist metadata
         """
         return _get(
-            "int",
             metadata_variable_name=PLAYLIST_METADATA_VARIABLE_NAME,
             metadata_key=metadata_key,
             variable_name=variable_name,
