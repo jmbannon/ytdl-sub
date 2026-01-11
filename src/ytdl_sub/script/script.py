@@ -8,6 +8,7 @@ from typing import Set
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script_output import ScriptOutput
+from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -726,7 +727,7 @@ class Script:
             If specifying a filter of variable to resolve, and one of them does not.
         """
         resolved: Dict[Variable, Resolvable] = {}
-        unresolved: Dict[Variable, VariableDependency] = {}
+        unresolved: Dict[Variable, Argument] = {}
         unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
 
         for variable_name, definition in self._variables.items():
@@ -739,17 +740,6 @@ class Script:
 
             if isinstance(arg, Resolvable):
                 resolved[variable] = arg
-            elif isinstance(arg, Variable):
-                while isinstance(arg, Variable):
-                    if arg in unresolvable:
-                        break
-                    arg = self._variables[arg.name]
-
-                if resolved_arg := arg.maybe_resolvable:
-                    resolved[variable] = resolved_arg
-                else:
-                    assert isinstance(arg, SyntaxTree)
-                    unresolved[variable] = arg.ast[0]
             else:
                 unresolved[variable] = arg
 
@@ -761,11 +751,16 @@ class Script:
             for variable in list(unresolved.keys()):
                 definition = unresolved[variable]
 
-                maybe_resolved = definition.partial_resolve(
-                    resolved_variables=resolved,
-                    unresolved_variables=unresolved,
-                    custom_functions=self._functions,
-                )
+                if isinstance(definition, Variable):
+                    maybe_resolved = resolved.get(definition, unresolved[definition])
+                else:
+                    assert isinstance(definition, VariableDependency)
+                    maybe_resolved = definition.partial_resolve(
+                        resolved_variables=resolved,
+                        unresolved_variables=unresolved,
+                        custom_functions=self._functions,
+                    )
+
                 if isinstance(maybe_resolved, Resolvable):
                     resolved[variable] = maybe_resolved
                     del unresolved[variable]

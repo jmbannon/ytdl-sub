@@ -11,6 +11,7 @@ from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.resolvable import Argument
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import FutureResolvable
@@ -337,6 +338,50 @@ class BuiltInFunction(Function, BuiltInFunctionType):
                 f"Runtime error occurred when executing the function %{self.name}: {str(exc)}"
             ) from exc
 
+    def _partial_resolve_conditional(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
+        custom_functions: Dict[str, "VariableDependency"],
+    ):
+        if self.is_subset_of(
+            variables=resolved_variables, custom_function_definitions=custom_functions
+        ):
+            return self.resolve(
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        if self.name == "if":
+            maybe_resolvable_arg, is_resolvable = VariableDependency.try_partial_resolve(
+                args=[self.args[0]],
+                resolved_variables=resolved_variables,
+                unresolved_variables=unresolved_variables,
+                custom_functions=custom_functions,
+            )
+            if is_resolvable:
+                boolean_output = maybe_resolvable_arg[0]
+                assert isinstance(boolean_output, Boolean)
+                return self.args[1] if boolean_output.native else self.args[2]
+
+        if self.name == "elif":
+            for idx in range(0, len(self.args), 2):
+                maybe_resolvable_arg, is_resolvable = VariableDependency.try_partial_resolve(
+                    args=[self.args[idx]],
+                    resolved_variables=resolved_variables,
+                    unresolved_variables=unresolved_variables,
+                    custom_functions=custom_functions,
+                )
+                if is_resolvable:
+                    boolean_output = maybe_resolvable_arg[0]
+                    assert isinstance(boolean_output, Boolean)
+                    if boolean_output.native:
+                        return self.args[idx + 1]
+                else:
+                    break
+
+        return self
+
     def partial_resolve(
         self,
         resolved_variables: Dict[Variable, Resolvable],
@@ -349,27 +394,24 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
         # If the function is conditional, only run if its entirety is resolvable
         if conditional_return_args:
-            if self.is_subset_of(
-                variables=resolved_variables, custom_function_definitions=custom_functions
-            ):
-                return self.resolve(
-                    resolved_variables=resolved_variables,
-                    custom_functions=custom_functions,
-                )
-            return self
-        else:
-            maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
-                args=self.args,
+            return self._partial_resolve_conditional(
                 resolved_variables=resolved_variables,
                 unresolved_variables=unresolved_variables,
                 custom_functions=custom_functions,
             )
 
-            if is_resolvable:
-                return self.resolve(
-                    resolved_variables=resolved_variables,
-                    custom_functions=custom_functions,
-                )
+        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+            args=self.args,
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        if is_resolvable:
+            return self.resolve(
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
 
         return BuiltInFunction(name=self.name, args=maybe_resolvable_values)
 
