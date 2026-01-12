@@ -15,6 +15,7 @@ from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import FutureResolvable
+from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -382,6 +383,30 @@ class BuiltInFunction(Function, BuiltInFunctionType):
 
         return self
 
+    def _try_optimized_partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Argument:
+        # TODO: arg optimization
+        if self.name == "array_at":
+            if (
+                isinstance(self.args[0], UnresolvedArray)
+                and isinstance(self.args[1], Integer)
+                and len(self.args[0].value) >= self.args[1].value
+            ):
+                maybe_resolvable_values, _ = VariableDependency.try_partial_resolve(
+                    args=[self.args[0].value[self.args[1].value]],
+                    resolved_variables=resolved_variables,
+                    unresolved_variables=unresolved_variables,
+                    custom_functions=custom_functions,
+                )
+
+                return maybe_resolvable_values[0]
+
+        return None
+
     def partial_resolve(
         self,
         resolved_variables: Dict[Variable, Resolvable],
@@ -400,6 +425,13 @@ class BuiltInFunction(Function, BuiltInFunctionType):
                 custom_functions=custom_functions,
             )
 
+        if partial_resolved := self._try_optimized_partial_resolve(
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        ):
+            return partial_resolved
+
         maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
             args=self.args,
             resolved_variables=resolved_variables,
@@ -408,7 +440,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         )
 
         if is_resolvable:
-            return self.resolve(
+            return BuiltInFunction(name=self.name, args=maybe_resolvable_values).resolve(
                 resolved_variables=resolved_variables,
                 custom_functions=custom_functions,
             )
