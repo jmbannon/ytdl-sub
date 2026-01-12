@@ -254,6 +254,10 @@ class VariableDependency(ABC):
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Tuple[List[Argument], bool]:
+        """
+        Attempts to resolve a list of arguments. Returns a tuple of them post partially resolved,
+        and a boolean indicating whether all of them are fully resolved.
+        """
         maybe_resolvable_args: List[Resolvable | Argument] = []
         is_resolvable = True
         for arg in args:
