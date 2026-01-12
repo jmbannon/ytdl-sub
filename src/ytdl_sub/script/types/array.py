@@ -29,7 +29,7 @@ class UnresolvedArray(_Array, VariableDependency, FutureResolvable):
     value: List[Argument]
 
     @property
-    def _iterable_arguments(self) -> List[Argument]:
+    def iterable_arguments(self) -> List[Argument]:
         return self.value
 
     def resolve(

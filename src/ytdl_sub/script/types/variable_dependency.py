@@ -28,7 +28,7 @@ TypeT = TypeVar("TypeT")
 class VariableDependency(ABC):
     @property
     @abstractmethod
-    def _iterable_arguments(self) -> List[Argument]:
+    def iterable_arguments(self) -> List[Argument]:
         """
         Returns
         -------
@@ -39,7 +39,7 @@ class VariableDependency(ABC):
         self, ttype: Type[TypeT], subclass: bool = False, instance: bool = True
     ) -> List[TypeT]:
         output: List[TypeT] = []
-        for arg in self._iterable_arguments:
+        for arg in self.iterable_arguments:
             if subclass and issubclass(type(arg), ttype):
                 output.append(arg)
             elif instance and isinstance(arg, ttype):
@@ -105,7 +105,7 @@ class VariableDependency(ABC):
         All CustomFunctions that this depends on.
         """
         output: Set[ParsedCustomFunction] = set()
-        for arg in self._iterable_arguments:
+        for arg in self.iterable_arguments:
             if isinstance(arg, NamedCustomFunction):
                 if not isinstance(arg, FunctionType):
                     # A NamedCustomFunction should also always be a FunctionType

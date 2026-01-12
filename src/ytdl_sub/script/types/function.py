@@ -38,7 +38,7 @@ from ytdl_sub.script.utils.type_checking import is_union
 @dataclass(frozen=True)
 class Function(FunctionType, VariableDependency, ABC):
     @property
-    def _iterable_arguments(self) -> List[Argument]:
+    def iterable_arguments(self) -> List[Argument]:
         return self.args
 
 
@@ -108,8 +108,8 @@ class CustomFunction(Function, NamedCustomFunction):
             else:
                 unresolved_variables[function_arg] = maybe_resolvable_args[i]
 
-        assert len(custom_functions[self.name]._iterable_arguments) == 1
-        custom_function_definition = custom_functions[self.name]._iterable_arguments[0]
+        assert len(custom_functions[self.name].iterable_arguments) == 1
+        custom_function_definition = custom_functions[self.name].iterable_arguments[0]
 
         maybe_resolvable_custom_function, is_resolvable = VariableDependency.try_partial_resolve(
             args=[custom_function_definition],
@@ -118,7 +118,7 @@ class CustomFunction(Function, NamedCustomFunction):
             custom_functions=custom_functions,
         )
 
-        for i, arg in enumerate(self.args):
+        for i in range(len(self.args)):
             function_arg = FunctionArgument.from_idx(idx=i, custom_function_name=self.name)
 
             if isinstance(maybe_resolvable_args[i], Resolvable):

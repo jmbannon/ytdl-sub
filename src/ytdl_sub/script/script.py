@@ -749,9 +749,6 @@ class Script:
             for variable in list(unresolved.keys()):
                 definition = unresolved[variable]
 
-                if variable.name == "tv_show_by_date_ordering_pair_validation_":
-                    print("hih")
-
                 if isinstance(definition, Variable):
                     if definition in unresolvable:
                         maybe_resolved = definition
