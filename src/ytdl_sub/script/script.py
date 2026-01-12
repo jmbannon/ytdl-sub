@@ -559,6 +559,8 @@ class Script:
 
         for definitions in [functions_to_add, variables_to_add]:
             for name, parsed in definitions.items():
+                if isinstance(parsed, Variable):
+                    print("huh")
                 if parsed.maybe_resolvable is None:
                     added_variables_to_validate.add(name)
 
@@ -702,11 +704,9 @@ class Script:
     def _to_syntax_tree(
         self, maybe_resolved: SyntaxTree | Resolvable | VariableDependency
     ) -> SyntaxTree:
-        if isinstance(maybe_resolved, Resolvable):
-            return ResolvedSyntaxTree(ast=[maybe_resolved])
         if isinstance(maybe_resolved, SyntaxTree):
             return maybe_resolved
-        if isinstance(maybe_resolved, VariableDependency):
+        if isinstance(maybe_resolved, (Variable, VariableDependency, Resolvable)):
             return SyntaxTree(ast=[maybe_resolved])
 
         return maybe_resolved
@@ -752,7 +752,10 @@ class Script:
                 definition = unresolved[variable]
 
                 if isinstance(definition, Variable):
-                    maybe_resolved = resolved.get(definition, unresolved[definition])
+                    if definition in unresolvable:
+                        maybe_resolved = definition
+                    else:
+                        maybe_resolved = resolved.get(definition, unresolved[definition])
                 else:
                     assert isinstance(definition, VariableDependency)
                     maybe_resolved = definition.partial_resolve(

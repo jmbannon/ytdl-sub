@@ -8,6 +8,8 @@ import pytest
 import yaml
 
 from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
@@ -615,6 +617,7 @@ def test_default_docker_config_and_subscriptions(
     )
     unresolvable.add("entry_metadata")
     unresolvable.add("sibling_metadata")
+    unresolvable.update(VARIABLES.scripts().keys())
 
     out = default_subs[0].overrides.script.resolve_partial(unresolvable=unresolvable)
     test1 = ScriptUtils.to_native_script(out._variables["episode_file_name"])
