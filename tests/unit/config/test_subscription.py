@@ -600,26 +600,3 @@ def test_default_docker_config_and_subscriptions(
             "year": "{episode_year}",
         },
     }
-
-
-def test_default_docker_config_and_subscriptions(
-    docker_default_subscription_path: Path, output_directory: str
-):
-    default_config = ConfigFile.from_file_path("docker/root/defaults/config.yaml")
-    default_subs = Subscription.from_file_path(
-        config=default_config, subscription_path=docker_default_subscription_path
-    )
-    assert len(default_subs) == 1
-
-    unresolvable = default_subs[0].plugins.get_all_variables(
-        additional_options=[default_subs[0].downloader_options, default_subs[0].output_options]
-    )
-    unresolvable.add("entry_metadata")
-    unresolvable.add("sibling_metadata")
-    unresolvable.update(VARIABLES.scripts().keys())
-
-    out = default_subs[0].overrides.script.resolve_partial(unresolvable=unresolvable)
-    test1 = ScriptUtils.to_native_script(out._variables["episode_file_name"])
-    test2 = ScriptUtils.to_native_script(out._variables["episode_file_path"])
-
-    print("hi")

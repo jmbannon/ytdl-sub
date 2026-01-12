@@ -559,8 +559,6 @@ class Script:
 
         for definitions in [functions_to_add, variables_to_add]:
             for name, parsed in definitions.items():
-                if isinstance(parsed, Variable):
-                    print("huh")
                 if parsed.maybe_resolvable is None:
                     added_variables_to_validate.add(name)
 
