@@ -93,23 +93,44 @@ class CustomFunction(Function, NamedCustomFunction):
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> TypeT | Resolvable:
-        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+        maybe_resolvable_args, _ = VariableDependency.try_partial_resolve(
             args=self.args,
             resolved_variables=resolved_variables,
             unresolved_variables=unresolved_variables,
             custom_functions=custom_functions,
         )
 
-        if any(var not in resolved_variables for var in custom_functions[self.name].variables):
-            is_resolvable = False
+        for i in range(len(self.args)):
+            function_arg = FunctionArgument.from_idx(idx=i, custom_function_name=self.name)
+
+            if isinstance(maybe_resolvable_args[i], Resolvable):
+                resolved_variables[function_arg] = maybe_resolvable_args[i]
+            else:
+                unresolved_variables[function_arg] = maybe_resolvable_args[i]
+
+        assert len(custom_functions[self.name]._iterable_arguments) == 1
+        custom_function_definition = custom_functions[self.name]._iterable_arguments[0]
+
+        maybe_resolvable_custom_function, is_resolvable = VariableDependency.try_partial_resolve(
+            args=[custom_function_definition],
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        for i, arg in enumerate(self.args):
+            function_arg = FunctionArgument.from_idx(idx=i, custom_function_name=self.name)
+
+            if isinstance(maybe_resolvable_args[i], Resolvable):
+                del resolved_variables[function_arg]
+            else:
+                del unresolved_variables[function_arg]
 
         if is_resolvable:
-            return self.resolve(
-                resolved_variables=resolved_variables,
-                custom_functions=custom_functions,
-            )
+            return maybe_resolvable_custom_function[0]
 
-        return CustomFunction(name=self.name, args=maybe_resolvable_values)
+        # Did not resolve custom function arguments, do not proceed
+        return CustomFunction(name=self.name, args=maybe_resolvable_args)
 
 
 class BuiltInFunction(Function, BuiltInFunctionType):
@@ -380,6 +401,19 @@ class BuiltInFunction(Function, BuiltInFunctionType):
                         return self.args[idx + 1]
                 else:
                     break
+
+        if self.name == "assert_then":
+            maybe_resolvable_arg, is_resolvable = VariableDependency.try_partial_resolve(
+                args=[self.args[0]],
+                resolved_variables=resolved_variables,
+                unresolved_variables=unresolved_variables,
+                custom_functions=custom_functions,
+            )
+            if is_resolvable:
+                boolean_output = maybe_resolvable_arg[0]
+                assert isinstance(boolean_output, Boolean)
+                if boolean_output.native:
+                    return self.args[1]
 
         return self
 
