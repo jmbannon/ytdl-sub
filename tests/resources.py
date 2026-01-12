@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict
 
 DISABLE_YOUTUBE_TESTS: bool = True
-REGENERATE_FIXTURES: bool = False
+REGENERATE_FIXTURES: bool = True
 
 RESOURCE_PATH: Path = Path("tests") / "resources"
 _FILE_FIXTURE_PATH: Path = RESOURCE_PATH / "file_fixtures"
@@ -17,13 +17,16 @@ def file_fixture_path(fixture_name: str) -> Path:
 
 
 def expected_json(input_json: Dict, json_name: str) -> Dict:
+    expected_json_path = _EXPECTED_JSON_PATH / json_name
+    os.makedirs(os.path.dirname(expected_json_path), exist_ok=True)
+
     if REGENERATE_FIXTURES:
-        with open(_EXPECTED_JSON_PATH / json_name, "w", encoding="utf-8") as json_file:
+        with open(expected_json_path, "w", encoding="utf-8") as json_file:
             json.dump(input_json, json_file, sort_keys=True, indent=2)
 
         return input_json
 
-    with open(_EXPECTED_JSON_PATH / json_name, "r", encoding="utf-8") as json_file:
+    with open(expected_json_path, "r", encoding="utf-8") as json_file:
         expected_json = json.load(json_file)
 
     return expected_json
