@@ -101,11 +101,12 @@ class CustomFunction(Function, NamedCustomFunction):
 
         for i in range(len(self.args)):
             function_arg = FunctionArgument.from_idx(idx=i, custom_function_name=self.name)
+            function_value = maybe_resolvable_args[i]
 
-            if isinstance(maybe_resolvable_args[i], Resolvable):
-                resolved_variables[function_arg] = maybe_resolvable_args[i]
+            if isinstance(function_value, Resolvable):
+                resolved_variables[function_arg] = function_value
             else:
-                unresolved_variables[function_arg] = maybe_resolvable_args[i]
+                unresolved_variables[function_arg] = function_value
 
         assert len(custom_functions[self.name].iterable_arguments) == 1
         custom_function_definition = custom_functions[self.name].iterable_arguments[0]
@@ -472,13 +473,14 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             custom_functions=custom_functions,
         )
 
+        out = BuiltInFunction(name=self.name, args=maybe_resolvable_values)
         if is_resolvable:
-            return BuiltInFunction(name=self.name, args=maybe_resolvable_values).resolve(
+            return out.resolve(
                 resolved_variables=resolved_variables,
                 custom_functions=custom_functions,
             )
 
-        return BuiltInFunction(name=self.name, args=maybe_resolvable_values)
+        return out
 
     def __hash__(self):
         return hash((self.name, *self.args))

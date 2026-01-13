@@ -47,6 +47,7 @@ class SyntaxTree(VariableDependency):
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, VariableDependency],
     ) -> Argument | Resolvable:
+        # Ensure this does not get returned as a SyntaxTree since nesting them is not supported.
         maybe_resolvable_values, _ = VariableDependency.try_partial_resolve(
             args=self.ast,
             resolved_variables=resolved_variables,
@@ -54,6 +55,7 @@ class SyntaxTree(VariableDependency):
             custom_functions=custom_functions,
         )
 
+        # Mimic the above resolve behavior
         if len(maybe_resolvable_values) > 1:
             return BuiltInFunction(name="concat", args=maybe_resolvable_values)
 

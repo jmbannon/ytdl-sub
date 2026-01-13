@@ -75,13 +75,14 @@ class UnresolvedMap(_Map, VariableDependency, FutureResolvable):
             custom_functions=custom_functions,
         )
 
+        out = UnresolvedMap(value=dict(zip(maybe_resolvable_keys, maybe_resolvable_values)))
         if is_keys_resolvable and is_values_resolvable:
-            return self.resolve(
+            return out.resolve(
                 resolved_variables=resolved_variables,
                 custom_functions=custom_functions,
             )
 
-        return UnresolvedMap(value=dict(zip(maybe_resolvable_keys, maybe_resolvable_values)))
+        return out
 
     def future_resolvable_type(self) -> Type[Resolvable]:
         return Map

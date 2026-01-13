@@ -60,13 +60,13 @@ class UnresolvedArray(_Array, VariableDependency, FutureResolvable):
             custom_functions=custom_functions,
         )
 
+        out = UnresolvedArray(value=maybe_resolvable_values)
         if is_resolvable:
-            return self.resolve(
-                resolved_variables=resolved_variables,
-                custom_functions=custom_functions,
+            return out.resolve(
+                resolved_variables=resolved_variables, custom_functions=custom_functions
             )
 
-        return UnresolvedArray(value=maybe_resolvable_values)
+        return out
 
     def future_resolvable_type(self) -> Type[Resolvable]:
         return Array

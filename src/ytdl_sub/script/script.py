@@ -699,12 +699,6 @@ class Script:
         """
         return set(to_function_definition_name(name) for name in self._functions.keys())
 
-    def _to_syntax_tree(self, maybe_resolved: SyntaxTree | Argument) -> SyntaxTree:
-        if isinstance(maybe_resolved, SyntaxTree):
-            return maybe_resolved
-
-        return SyntaxTree(ast=[maybe_resolved])
-
     def resolve_partial(
         self,
         unresolvable: Optional[Set[str]] = None,
@@ -759,6 +753,6 @@ class Script:
 
         return copy.deepcopy(self).add_parsed(
             {var_name: self._variables[var_name] for var_name in unresolvable}
-            | {var.name: self._to_syntax_tree(definition) for var, definition in resolved.items()}
-            | {var.name: self._to_syntax_tree(definition) for var, definition in unresolved.items()}
+            | {var.name: SyntaxTree(ast=[definition]) for var, definition in resolved.items()}
+            | {var.name: SyntaxTree(ast=[definition]) for var, definition in unresolved.items()}
         )
