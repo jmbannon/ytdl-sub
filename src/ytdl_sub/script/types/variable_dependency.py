@@ -258,25 +258,22 @@ class VariableDependency(ABC):
         Attempts to resolve a list of arguments. Returns a tuple of them post partially resolved,
         and a boolean indicating whether all of them are fully resolved.
         """
-        maybe_resolvable_args: List[Resolvable | Argument | "VariableDependency"] = []
+        maybe_resolvable_args: List[Argument] = []
         is_resolvable = True
         for arg in args:
-            if isinstance(arg, Lambda) and arg.value in custom_functions:
-                maybe_resolvable_args.append(arg)
+            maybe_resolvable_args.append(arg)
 
+            if isinstance(arg, Lambda) and arg.value in custom_functions:
                 if not custom_functions[arg.value].is_subset_of(
                     variables=resolved_variables,
                     custom_function_definitions=custom_functions,
                 ):
                     is_resolvable = False
-
             elif isinstance(arg, VariableDependency):
-                maybe_resolvable_args.append(
-                    arg.partial_resolve(
-                        resolved_variables=resolved_variables,
-                        unresolved_variables=unresolved_variables,
-                        custom_functions=custom_functions,
-                    )
+                maybe_resolvable_args[-1] = arg.partial_resolve(
+                    resolved_variables=resolved_variables,
+                    unresolved_variables=unresolved_variables,
+                    custom_functions=custom_functions,
                 )
 
                 if not isinstance(maybe_resolvable_args[-1], Resolvable):
@@ -284,15 +281,7 @@ class VariableDependency(ABC):
             elif isinstance(arg, Variable):
                 if arg not in resolved_variables:
                     is_resolvable = False
-
                     if arg in unresolved_variables:
-                        maybe_resolvable_args.append(unresolved_variables[arg])
-                    else:
-                        # Must be unresolvable
-                        maybe_resolvable_args.append(arg)
-                else:
-                    maybe_resolvable_args.append(arg)
-            else:
-                maybe_resolvable_args.append(arg)
+                        maybe_resolvable_args[-1] = unresolved_variables[arg]
 
         return maybe_resolvable_args, is_resolvable

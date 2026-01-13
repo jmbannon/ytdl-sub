@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Type
 from typing import Union
 
@@ -422,8 +423,7 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         resolved_variables: Dict[Variable, Resolvable],
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
-    ) -> Argument:
-        # TODO: arg optimization
+    ) -> Optional[Argument]:
         if self.name == "array_at":
             if (
                 isinstance(self.args[0], UnresolvedArray)
