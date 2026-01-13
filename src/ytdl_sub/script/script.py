@@ -704,15 +704,10 @@ class Script:
         unresolvable: Optional[Set[str]] = None,
     ) -> "Script":
         """
-
         Returns
         -------
-        Dict of resolved values
-
-        Raises
-        ------
-        ScriptVariableNotResolved
-            If specifying a filter of variable to resolve, and one of them does not.
+        New (deep-copied) script that resolves inner variables as much
+        as possible.
         """
         unresolvable: Set[str] = unresolvable or {}
         resolved: Dict[Variable, Resolvable] = {}
@@ -753,6 +748,9 @@ class Script:
 
         return copy.deepcopy(self).add_parsed(
             {var_name: self._variables[var_name] for var_name in unresolvable}
-            | {var.name: SyntaxTree(ast=[definition]) for var, definition in resolved.items()}
+            | {
+                var.name: ResolvedSyntaxTree(ast=[definition])
+                for var, definition in resolved.items()
+            }
             | {var.name: SyntaxTree(ast=[definition]) for var, definition in unresolved.items()}
         )

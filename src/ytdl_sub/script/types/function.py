@@ -367,6 +367,10 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ):
+        """
+        If the conditional partially resolvable enough to warrant evaluation,
+        perform it here.
+        """
         if self.is_subset_of(
             variables=resolved_variables, custom_function_definitions=custom_functions
         ):
@@ -424,6 +428,10 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
     ) -> Optional[Argument]:
+        """
+        If a function has enough (but not all) resolved parameters to warrant a return,
+        perform it here.
+        """
         if self.name == "array_at":
             if (
                 isinstance(self.args[0], UnresolvedArray)
@@ -451,7 +459,6 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             num_input_args=len(self.args)
         )
 
-        # If the function is conditional, only run if its entirety is resolvable
         if conditional_return_args:
             return self._partial_resolve_conditional(
                 resolved_variables=resolved_variables,
