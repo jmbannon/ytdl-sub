@@ -3,11 +3,11 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
+from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import String
 from ytdl_sub.script.types.variable import Variable
-from ytdl_sub.script.types.variable_dependency import TypeT
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 
 
@@ -42,25 +42,22 @@ class SyntaxTree(VariableDependency):
         return String("".join([str(res) for res in resolved]))
 
     def partial_resolve(
-        self: TypeT,
+        self,
         resolved_variables: Dict[Variable, Resolvable],
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, VariableDependency],
-    ) -> TypeT | Resolvable:
-        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+    ) -> Argument | Resolvable:
+        maybe_resolvable_values, _ = VariableDependency.try_partial_resolve(
             args=self.ast,
             resolved_variables=resolved_variables,
             unresolved_variables=unresolved_variables,
             custom_functions=custom_functions,
         )
 
-        if is_resolvable:
-            return self.resolve(
-                resolved_variables=resolved_variables,
-                custom_functions=custom_functions,
-            )
+        if len(maybe_resolvable_values) > 1:
+            return BuiltInFunction(name="concat", args=maybe_resolvable_values)
 
-        return SyntaxTree(ast=maybe_resolvable_values)
+        return maybe_resolvable_values[0]
 
     @property
     def maybe_resolvable(self) -> Optional[Resolvable]:
@@ -100,9 +97,9 @@ class ResolvedSyntaxTree(SyntaxTree):
         return self.ast[0]
 
     def partial_resolve(
-        self: TypeT,
+        self,
         resolved_variables: Dict[Variable, Resolvable],
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, VariableDependency],
-    ) -> TypeT | Resolvable:
+    ) -> Argument | Resolvable:
         return self.ast[0]

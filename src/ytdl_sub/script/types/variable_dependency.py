@@ -141,11 +141,11 @@ class VariableDependency(ABC):
 
     @abstractmethod
     def partial_resolve(
-        self: TypeT,
+        self,
         resolved_variables: Dict[Variable, Resolvable],
         unresolved_variables: Dict[Variable, Argument],
         custom_functions: Dict[str, "VariableDependency"],
-    ) -> TypeT | Resolvable:
+    ) -> Argument | Resolvable:
         """
         Parameters
         ----------
@@ -258,7 +258,7 @@ class VariableDependency(ABC):
         Attempts to resolve a list of arguments. Returns a tuple of them post partially resolved,
         and a boolean indicating whether all of them are fully resolved.
         """
-        maybe_resolvable_args: List[Resolvable | Argument] = []
+        maybe_resolvable_args: List[Resolvable | Argument | "VariableDependency"] = []
         is_resolvable = True
         for arg in args:
             if isinstance(arg, Lambda) and arg.value in custom_functions:

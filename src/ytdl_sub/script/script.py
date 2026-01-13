@@ -699,15 +699,11 @@ class Script:
         """
         return set(to_function_definition_name(name) for name in self._functions.keys())
 
-    def _to_syntax_tree(
-        self, maybe_resolved: SyntaxTree | Resolvable | VariableDependency
-    ) -> SyntaxTree:
+    def _to_syntax_tree(self, maybe_resolved: SyntaxTree | Argument) -> SyntaxTree:
         if isinstance(maybe_resolved, SyntaxTree):
             return maybe_resolved
-        if isinstance(maybe_resolved, (Variable, VariableDependency, Resolvable)):
-            return SyntaxTree(ast=[maybe_resolved])
 
-        return maybe_resolved
+        return SyntaxTree(ast=[maybe_resolved])
 
     def resolve_partial(
         self,
@@ -724,22 +720,13 @@ class Script:
         ScriptVariableNotResolved
             If specifying a filter of variable to resolve, and one of them does not.
         """
+        unresolvable: Set[str] = unresolvable or {}
         resolved: Dict[Variable, Resolvable] = {}
-        unresolved: Dict[Variable, Argument] = {}
-        unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
-
-        for variable_name, definition in self._variables.items():
-            assert len(definition.ast) == 1
-            arg = definition.ast[0]
-            variable = Variable(variable_name)
-
-            if variable in unresolvable:
-                continue
-
-            if isinstance(arg, Resolvable):
-                resolved[variable] = arg
-            else:
-                unresolved[variable] = arg
+        unresolved: Dict[Variable, Argument] = {
+            Variable(name): definition
+            for name, definition in self._variables.items()
+            if name not in unresolvable
+        }
 
         partially_resolved = True
         while partially_resolved:
@@ -749,13 +736,10 @@ class Script:
             for variable in list(unresolved.keys()):
                 definition = unresolved[variable]
 
-                if isinstance(definition, Variable):
-                    if definition in unresolvable:
-                        maybe_resolved = definition
-                    else:
-                        maybe_resolved = resolved.get(definition, unresolved[definition])
-                else:
-                    assert isinstance(definition, VariableDependency)
+                maybe_resolved = definition
+                if isinstance(definition, Variable) and definition.name not in unresolvable:
+                    maybe_resolved = resolved.get(definition, unresolved[definition])
+                elif isinstance(definition, VariableDependency):
                     maybe_resolved = definition.partial_resolve(
                         resolved_variables=resolved,
                         unresolved_variables=unresolved,
@@ -764,8 +748,8 @@ class Script:
 
                 if isinstance(maybe_resolved, Resolvable):
                     resolved[variable] = maybe_resolved
-                    partially_resolved = True
                     del unresolved[variable]
+                    partially_resolved = True
                 else:
                     unresolved[variable] = maybe_resolved
 
@@ -774,7 +758,7 @@ class Script:
                 partially_resolved |= definition != maybe_resolved
 
         return copy.deepcopy(self).add_parsed(
-            {var.name: self._variables[var.name] for var in unresolvable}
+            {var_name: self._variables[var_name] for var_name in unresolvable}
             | {var.name: self._to_syntax_tree(definition) for var, definition in resolved.items()}
             | {var.name: self._to_syntax_tree(definition) for var, definition in unresolved.items()}
         )

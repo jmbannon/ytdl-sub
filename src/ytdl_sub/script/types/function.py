@@ -24,7 +24,6 @@ from ytdl_sub.script.types.resolvable import ReturnableArgumentA
 from ytdl_sub.script.types.resolvable import ReturnableArgumentB
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
-from ytdl_sub.script.types.variable_dependency import TypeT
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
@@ -91,8 +90,8 @@ class CustomFunction(Function, NamedCustomFunction):
         self,
         resolved_variables: Dict[Variable, Resolvable],
         unresolved_variables: Dict[Variable, Argument],
-        custom_functions: Dict[str, "VariableDependency"],
-    ) -> TypeT | Resolvable:
+        custom_functions: Dict[str, VariableDependency],
+    ) -> Argument | Resolvable:
         maybe_resolvable_args, _ = VariableDependency.try_partial_resolve(
             args=self.args,
             resolved_variables=resolved_variables,
@@ -445,8 +444,8 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         self,
         resolved_variables: Dict[Variable, Resolvable],
         unresolved_variables: Dict[Variable, Argument],
-        custom_functions: Dict[str, "VariableDependency"],
-    ) -> TypeT | Resolvable:
+        custom_functions: Dict[str, VariableDependency],
+    ) -> Argument | Resolvable:
         conditional_return_args = self.function_spec.conditional_arg_indices(
             num_input_args=len(self.args)
         )

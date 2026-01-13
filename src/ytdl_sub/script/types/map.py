@@ -13,7 +13,6 @@ from ytdl_sub.script.types.resolvable import NonHashable
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.types.resolvable import ResolvableToJson
 from ytdl_sub.script.types.variable import Variable
-from ytdl_sub.script.types.variable_dependency import TypeT
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
 
@@ -57,11 +56,11 @@ class UnresolvedMap(_Map, VariableDependency, FutureResolvable):
         return Map(output)
 
     def partial_resolve(
-        self: TypeT,
+        self,
         resolved_variables: Dict[Variable, Resolvable],
         unresolved_variables: Dict[Variable, Argument],
-        custom_functions: Dict[str, "VariableDependency"],
-    ) -> TypeT | Resolvable:
+        custom_functions: Dict[str, VariableDependency],
+    ) -> Argument | Resolvable:
         maybe_resolvable_keys, is_keys_resolvable = VariableDependency.try_partial_resolve(
             args=self.value.keys(),
             resolved_variables=resolved_variables,
