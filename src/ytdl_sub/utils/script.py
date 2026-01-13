@@ -2,11 +2,14 @@ import json
 import re
 from typing import Any
 from typing import Dict
+from typing import Optional
 
 from ytdl_sub.script.parser import parse
+from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.function import Function
+from ytdl_sub.script.types.map import Map
 from ytdl_sub.script.types.map import UnresolvedMap
 from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import Boolean
@@ -137,9 +140,9 @@ class ScriptUtils:
             out = f"%bool({arg.native})"
         elif isinstance(arg, Float):
             out = f"%float({arg.native})"
-        elif isinstance(arg, UnresolvedArray):
+        elif isinstance(arg, (Array, UnresolvedArray)):
             out = f"[ {', '.join(cls._to_script_code(val) for val in arg.value)} ]"
-        elif isinstance(arg, UnresolvedMap):
+        elif isinstance(arg, (Map, UnresolvedMap)):
             kv_list = (
                 f"{cls._to_script_code(key)}: {cls._to_script_code(val)}"
                 for key, val in arg.value.items()
@@ -156,10 +159,42 @@ class ScriptUtils:
         return f"{{ {out} }}" if top_level else out
 
     @classmethod
+    def _is_top_level_string(cls, tree: SyntaxTree) -> Optional[str]:
+        if not (
+            len(tree.ast) == 1
+            and isinstance(tree.ast[0], BuiltInFunction)
+            and tree.ast[0].name == "concat"
+        ):
+            return None
+
+        output = ""
+        for arg in tree.ast[0].args:
+            if isinstance(arg, BuiltInFunction) and arg.name == "string" and len(arg.args) == 1:
+                output += cls._to_script_code(arg.args[0], top_level=True)
+            else:
+                output += cls._to_script_code(arg, top_level=True)
+
+        return output
+
+    @classmethod
+    def _syntax_tree_to_native_script(cls, tree: SyntaxTree) -> str:
+
+        if (output := cls._is_top_level_string(tree)) is not None:
+            return output
+
+        output = ""
+        for arg in tree.ast:
+            output += cls._to_script_code(arg, top_level=True)
+        return output
+
+    @classmethod
     def to_native_script(cls, value: Any) -> str:
         """
         Converts any JSON-compatible value into equivalent script syntax
         """
+        if isinstance(value, SyntaxTree):
+            return cls._syntax_tree_to_native_script(value)
+
         return cls._to_script_code(cls._to_script_argument(value), top_level=True)
 
     @classmethod
