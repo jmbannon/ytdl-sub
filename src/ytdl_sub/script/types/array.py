@@ -28,7 +28,7 @@ class UnresolvedArray(_Array, VariableDependency, FutureResolvable):
     value: List[Argument]
 
     @property
-    def _iterable_arguments(self) -> List[Argument]:
+    def iterable_arguments(self) -> List[Argument]:
         return self.value
 
     def resolve(
@@ -46,6 +46,27 @@ class UnresolvedArray(_Array, VariableDependency, FutureResolvable):
                 for arg in self.value
             ]
         )
+
+    def partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
+        custom_functions: Dict[str, VariableDependency],
+    ) -> Argument | Resolvable:
+        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+            args=self.value,
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        out = UnresolvedArray(value=maybe_resolvable_values)
+        if is_resolvable:
+            return out.resolve(
+                resolved_variables=resolved_variables, custom_functions=custom_functions
+            )
+
+        return out
 
     def future_resolvable_type(self) -> Type[Resolvable]:
         return Array

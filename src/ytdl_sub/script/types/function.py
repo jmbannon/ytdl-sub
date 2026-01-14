@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Type
 from typing import Union
 
@@ -11,9 +12,11 @@ from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.resolvable import Argument
+from ytdl_sub.script.types.resolvable import Boolean
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import FunctionType
 from ytdl_sub.script.types.resolvable import FutureResolvable
+from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import NamedCustomFunction
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -35,7 +38,7 @@ from ytdl_sub.script.utils.type_checking import is_union
 @dataclass(frozen=True)
 class Function(FunctionType, VariableDependency, ABC):
     @property
-    def _iterable_arguments(self) -> List[Argument]:
+    def iterable_arguments(self) -> List[Argument]:
         return self.args
 
 
@@ -83,6 +86,52 @@ class CustomFunction(Function, NamedCustomFunction):
         # Implies the custom function does not exist. This should have
         # been checked in the parser with
         raise UNREACHABLE
+
+    def partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
+        custom_functions: Dict[str, VariableDependency],
+    ) -> Argument | Resolvable:
+        maybe_resolvable_args, _ = VariableDependency.try_partial_resolve(
+            args=self.args,
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        for i in range(len(self.args)):
+            function_arg = FunctionArgument.from_idx(idx=i, custom_function_name=self.name)
+            function_value = maybe_resolvable_args[i]
+
+            if isinstance(function_value, Resolvable):
+                resolved_variables[function_arg] = function_value
+            else:
+                unresolved_variables[function_arg] = function_value
+
+        assert len(custom_functions[self.name].iterable_arguments) == 1
+        custom_function_definition = custom_functions[self.name].iterable_arguments[0]
+
+        maybe_resolvable_custom_function, is_resolvable = VariableDependency.try_partial_resolve(
+            args=[custom_function_definition],
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        for i in range(len(self.args)):
+            function_arg = FunctionArgument.from_idx(idx=i, custom_function_name=self.name)
+
+            if isinstance(maybe_resolvable_args[i], Resolvable):
+                del resolved_variables[function_arg]
+            else:
+                del unresolved_variables[function_arg]
+
+        if is_resolvable:
+            return maybe_resolvable_custom_function[0]
+
+        # Did not resolve custom function arguments, do not proceed
+        return CustomFunction(name=self.name, args=maybe_resolvable_args)
 
 
 class BuiltInFunction(Function, BuiltInFunctionType):
@@ -311,6 +360,134 @@ class BuiltInFunction(Function, BuiltInFunctionType):
             raise FunctionRuntimeException(
                 f"Runtime error occurred when executing the function %{self.name}: {str(exc)}"
             ) from exc
+
+    def _partial_resolve_conditional(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
+        custom_functions: Dict[str, "VariableDependency"],
+    ):
+        """
+        If the conditional partially resolvable enough to warrant evaluation,
+        perform it here.
+        """
+        if self.is_subset_of(
+            variables=resolved_variables, custom_function_definitions=custom_functions
+        ):
+            return self.resolve(
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        if self.name == "if":
+            maybe_resolvable_arg, is_resolvable = VariableDependency.try_partial_resolve(
+                args=[self.args[0]],
+                resolved_variables=resolved_variables,
+                unresolved_variables=unresolved_variables,
+                custom_functions=custom_functions,
+            )
+            if is_resolvable:
+                boolean_output = maybe_resolvable_arg[0]
+                assert isinstance(boolean_output, Boolean)
+                return self.args[1] if boolean_output.native else self.args[2]
+
+        if self.name == "elif":
+            for idx in range(0, len(self.args), 2):
+                maybe_resolvable_arg, is_resolvable = VariableDependency.try_partial_resolve(
+                    args=[self.args[idx]],
+                    resolved_variables=resolved_variables,
+                    unresolved_variables=unresolved_variables,
+                    custom_functions=custom_functions,
+                )
+                if is_resolvable:
+                    boolean_output = maybe_resolvable_arg[0]
+                    assert isinstance(boolean_output, Boolean)
+                    if boolean_output.native:
+                        return self.args[idx + 1]
+                else:
+                    break
+
+        if self.name == "assert_then":
+            maybe_resolvable_arg, is_resolvable = VariableDependency.try_partial_resolve(
+                args=[self.args[0]],
+                resolved_variables=resolved_variables,
+                unresolved_variables=unresolved_variables,
+                custom_functions=custom_functions,
+            )
+            if is_resolvable:
+                boolean_output = maybe_resolvable_arg[0]
+                assert isinstance(boolean_output, Boolean)
+                if boolean_output.native:
+                    return self.args[1]
+
+        return self
+
+    def _try_optimized_partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
+        custom_functions: Dict[str, "VariableDependency"],
+    ) -> Optional[Argument]:
+        """
+        If a function has enough (but not all) resolved parameters to warrant a return,
+        perform it here.
+        """
+        if self.name == "array_at":
+            if (
+                isinstance(self.args[0], UnresolvedArray)
+                and isinstance(self.args[1], Integer)
+                and len(self.args[0].value) >= self.args[1].value
+            ):
+                maybe_resolvable_values, _ = VariableDependency.try_partial_resolve(
+                    args=[self.args[0].value[self.args[1].value]],
+                    resolved_variables=resolved_variables,
+                    unresolved_variables=unresolved_variables,
+                    custom_functions=custom_functions,
+                )
+
+                return maybe_resolvable_values[0]
+
+        return None
+
+    def partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
+        custom_functions: Dict[str, VariableDependency],
+    ) -> Argument | Resolvable:
+        conditional_return_args = self.function_spec.conditional_arg_indices(
+            num_input_args=len(self.args)
+        )
+
+        if conditional_return_args:
+            return self._partial_resolve_conditional(
+                resolved_variables=resolved_variables,
+                unresolved_variables=unresolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        if partial_resolved := self._try_optimized_partial_resolve(
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        ):
+            return partial_resolved
+
+        maybe_resolvable_values, is_resolvable = VariableDependency.try_partial_resolve(
+            args=self.args,
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        out = BuiltInFunction(name=self.name, args=maybe_resolvable_values)
+        if is_resolvable:
+            return out.resolve(
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        return out
 
     def __hash__(self):
         return hash((self.name, *self.args))
