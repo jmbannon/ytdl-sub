@@ -231,19 +231,42 @@ cli_to_sub_parser = subparsers.add_parser("cli-to-sub")
 
 
 class InspectArguments:
-    INCLUDE_OVERRIDES = CLIArgument(
-        short="-v",
-        long="--include-overrides",
+    LEVEL = CLIArgument(
+        short="-l",
+        long="--level",
+    )
+    LevelChoices: List[str] = [
+        "0",
+        "original",
+        "1",
+        "fill",
+        "2",
+        "resolve",
+        "3",
+        "internal",
+    ]
+
+    MOCK = CLIArgument(
+        short="-m",
+        long="--mock",
     )
 
 
 inspect_parser = subparsers.add_parser("inspect")
 inspect_parser.add_argument(
-    InspectArguments.INCLUDE_OVERRIDES.short,
-    InspectArguments.INCLUDE_OVERRIDES.long,
-    action="store_true",
-    help="Whether to show override variables.",
-    default=False,
+    InspectArguments.LEVEL.short,
+    InspectArguments.LEVEL.long,
+    metavar="|".join(LoggerLevels.names()),
+    type=str,
+    help="""level of inspection to perform:
+      0 - original   present the subscription as-is (default)
+      1 - fill       fill in simple variable types
+      2 - resolve    resolve all variables
+      3 - internal   resolve all variables to their internal representation
+    """,
+    default="0",
+    choices=InspectArguments.LevelChoices,
+    dest="inspection_level",
 )
 inspect_parser.add_argument(
     MainArguments.MATCH.short,
