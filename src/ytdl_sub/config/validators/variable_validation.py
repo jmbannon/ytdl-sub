@@ -7,6 +7,7 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
 
@@ -26,18 +27,21 @@ class VariableValidation:
         self.script = self.overrides.script
         self.unresolved_variables = self.plugins.get_all_variables(
             additional_options=[self.output_options, self.downloader_options]
+        ) | {VARIABLES.entry_metadata.variable_name}
+        self.unresolved_runtime_variables = self.plugins.get_all_variables(
+            additional_options=[self.output_options, self.downloader_options]
         )
 
-    def _add_variables(self, plugin_op: PluginOperation, options: OptionsValidator) -> None:
+    def _add_runtime_variables(self, plugin_op: PluginOperation, options: OptionsValidator) -> None:
         """
         Add dummy variables for script validation
         """
         added_variables = options.added_variables(
-            unresolved_variables=self.unresolved_variables,
+            unresolved_variables=self.unresolved_runtime_variables,
         ).get(plugin_op, set())
         modified_variables = options.modified_variables().get(plugin_op, set())
 
-        self.unresolved_variables -= added_variables | modified_variables
+        self.unresolved_runtime_variables -= added_variables | modified_variables
 
     def ensure_proper_usage(self) -> Dict:
         """
@@ -47,32 +51,38 @@ class VariableValidation:
 
         resolved_subscription: Dict = {}
 
-        self._add_variables(PluginOperation.DOWNLOADER, options=self.downloader_options)
+        self._add_runtime_variables(PluginOperation.DOWNLOADER, options=self.downloader_options)
 
         # Always add output options first
-        self._add_variables(PluginOperation.MODIFY_ENTRY_METADATA, options=self.output_options)
+        self._add_runtime_variables(
+            PluginOperation.MODIFY_ENTRY_METADATA, options=self.output_options
+        )
 
         # Metadata variables to be added
         for plugin_options in PluginMapping.order_options_by(
             self.plugins.zipped(), PluginOperation.MODIFY_ENTRY_METADATA
         ):
-            self._add_variables(PluginOperation.MODIFY_ENTRY_METADATA, options=plugin_options)
+            self._add_runtime_variables(
+                PluginOperation.MODIFY_ENTRY_METADATA, options=plugin_options
+            )
 
         for plugin_options in PluginMapping.order_options_by(
             self.plugins.zipped(), PluginOperation.MODIFY_ENTRY
         ):
-            self._add_variables(PluginOperation.MODIFY_ENTRY, options=plugin_options)
+            self._add_runtime_variables(PluginOperation.MODIFY_ENTRY, options=plugin_options)
 
             # Validate that any formatter in the plugin options can resolve
             resolved_subscription |= validate_formatters(
                 script=self.script,
                 unresolved_variables=self.unresolved_variables,
+                unresolved_runtime_variables=self.unresolved_runtime_variables,
                 validator=plugin_options,
             )
 
         resolved_subscription |= validate_formatters(
             script=self.script,
             unresolved_variables=self.unresolved_variables,
+            unresolved_runtime_variables=self.unresolved_runtime_variables,
             validator=self.output_options,
         )
 
@@ -80,6 +90,7 @@ class VariableValidation:
         raw_download_output = validate_formatters(
             script=self.script,
             unresolved_variables=self.unresolved_variables,
+            unresolved_runtime_variables=self.unresolved_runtime_variables,
             validator=self.downloader_options.urls,
         )
         resolved_subscription["download"] = []
@@ -90,5 +101,5 @@ class VariableValidation:
             if url_output["url"]:
                 resolved_subscription["download"].append(url_output)
 
-        assert not self.unresolved_variables
+        assert not self.unresolved_runtime_variables
         return resolved_subscription

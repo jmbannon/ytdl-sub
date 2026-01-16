@@ -5,7 +5,6 @@ from typing import Set
 from typing import Union
 from typing import final
 
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
@@ -238,6 +237,7 @@ def to_variable_dependency_format_string(script: Script, parsed_format_string: S
 def _validate_formatter(
     mock_script: Script,
     unresolved_variables: Set[str],
+    unresolved_runtime_variables: Set[str],
     formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
 ) -> str:
     parsed = formatter_validator.parsed
@@ -245,8 +245,6 @@ def _validate_formatter(
         return resolved.native
 
     is_static_formatter = isinstance(formatter_validator, OverridesStringFormatterValidator)
-    if is_static_formatter:
-        unresolved_variables = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
 
     variable_names = {var.name for var in parsed.variables}
     custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
@@ -266,7 +264,7 @@ def _validate_formatter(
             "contains the following custom functions that do not exist: "
             f"{', '.join(sorted(custom_function_names - mock_script.function_names))}"
         )
-    if unresolved := variable_names.intersection(unresolved_variables):
+    if unresolved := variable_names.intersection(unresolved_runtime_variables):
         raise StringFormattingVariableNotFoundException(
             "contains the following variables that are unresolved when executing this "
             f"formatter: {', '.join(sorted(unresolved))}"
@@ -298,6 +296,7 @@ def _validate_formatter(
 def validate_formatters(
     script: Script,
     unresolved_variables: Set[str],
+    unresolved_runtime_variables: Set[str],
     validator: Validator,
 ) -> Dict:
     """
@@ -314,6 +313,7 @@ def validate_formatters(
             resolved_dict[validator.leaf_name] |= validate_formatters(
                 script=script,
                 unresolved_variables=unresolved_variables,
+                unresolved_runtime_variables=unresolved_runtime_variables,
                 validator=validator_value,
             )
     elif isinstance(validator, ListValidator):
@@ -322,6 +322,7 @@ def validate_formatters(
             list_output = validate_formatters(
                 script=script,
                 unresolved_variables=unresolved_variables,
+                unresolved_runtime_variables=unresolved_runtime_variables,
                 validator=list_value,
             )
             assert len(list_output) == 1
@@ -330,6 +331,7 @@ def validate_formatters(
         resolved_dict[validator.leaf_name] = _validate_formatter(
             mock_script=script,
             unresolved_variables=unresolved_variables,
+            unresolved_runtime_variables=unresolved_runtime_variables,
             formatter_validator=validator,
         )
     elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
@@ -338,6 +340,7 @@ def validate_formatters(
             resolved_dict[validator.leaf_name] |= _validate_formatter(
                 mock_script=script,
                 unresolved_variables=unresolved_variables,
+                unresolved_runtime_variables=unresolved_runtime_variables,
                 formatter_validator=validator_value,
             )
     else:
