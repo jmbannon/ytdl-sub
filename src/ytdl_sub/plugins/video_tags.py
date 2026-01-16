@@ -34,7 +34,7 @@ class VideoTagsPlugin(Plugin[VideoTagsOptions]):
         Tags the entry's audio file using values defined in the metadata options
         """
         tags_to_write: Dict[str, str] = {}
-        for tag_name, tag_formatter in self.plugin_options.dict.items():
+        for tag_name, tag_formatter in sorted(self.plugin_options.dict.items()):
             tag_value = self.overrides.apply_formatter(formatter=tag_formatter, entry=entry)
             tags_to_write[tag_name] = tag_value
 
