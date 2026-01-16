@@ -269,8 +269,8 @@ class BaseSubscription(ABC):
                 downloader_options=self.downloader_options,
                 output_options=self.output_options,
                 plugins=self.plugins,
+                resolution_level=resolution_level,
             )
-            .set_resolution_level(resolution_level)
             .ensure_proper_usage()
         )
         return dump_yaml(out)

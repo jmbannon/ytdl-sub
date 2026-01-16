@@ -238,6 +238,7 @@ def _validate_formatter(
     mock_script: Script,
     unresolved_variables: Set[str],
     formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
+    resolve_partial: bool = True
 ) -> str:
     parsed = formatter_validator.parsed
     if resolved := parsed.maybe_resolvable:
@@ -249,6 +250,12 @@ def _validate_formatter(
 
     variable_names = {var.name for var in parsed.variables}
     custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
+
+    # if resolve_partial:
+    #     formatter_hash = str(formatter_validator.__hash__())
+    #     mock_script.add_parsed(
+    #         {formatter_hash: formatter_validator.parsed}
+    #     ).resolve_partial(unresolvable=unresolved_variables).definition_of(formatter_hash)
 
     # Add lambda functions to custom function names, if it's custom
     for lambda_func in parsed.lambdas:
