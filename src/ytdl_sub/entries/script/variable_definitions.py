@@ -1136,6 +1136,13 @@ class VariableDefinitions(
         }
 
     @cache
+    def variable_names(self, include_sanitized: bool):
+        var_names: Set[str] = self.scripts().keys()
+        if include_sanitized:
+            var_names |= {f"{name}_sanitized" for name in var_names}
+        return var_names
+
+    @cache
     def injected_variables(self) -> Set[MetadataVariable]:
         """
         Returns variables that get injected in the download-stage

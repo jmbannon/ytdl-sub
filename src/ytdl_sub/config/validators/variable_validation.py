@@ -1,3 +1,4 @@
+import copy
 from typing import Dict
 
 from ytdl_sub.config.overrides import Overrides
@@ -7,10 +8,21 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_types import Variable
+from ytdl_sub.script.script import Script
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
 
+class ResolutionLevel:
+    ORIGINAL = 0
+    FILL = 1
+    RESOLVE = 2
+    INTERNAL = 3
+
+
 class VariableValidation:
+
     def __init__(
         self,
         overrides: Overrides,
@@ -23,7 +35,7 @@ class VariableValidation:
         self.output_options = output_options
         self.plugins = plugins
 
-        self.script = self.overrides.script
+        self.script: Script = self.overrides.script
         self.unresolved_variables = self.plugins.get_all_variables(
             additional_options=[self.output_options, self.downloader_options]
         )
@@ -38,6 +50,30 @@ class VariableValidation:
         modified_variables = options.modified_variables().get(plugin_op, set())
 
         self.unresolved_variables -= added_variables | modified_variables
+
+    def set_resolution_level(self, resolution_level: int) -> "VariableValidation":
+        if resolution_level == ResolutionLevel.ORIGINAL:
+            # Do not perform any resolution of override variables
+            self.unresolved_variables.update(self.overrides.keys)
+        elif resolution_level == ResolutionLevel.FILL:
+            # If anything is resolvable, 'fill' it with the resolved value.
+            # This will happen automatically when validating
+            pass
+        elif resolution_level == ResolutionLevel.RESOLVE:
+            # Partial resolve everything, but not including internal variables
+            self.script = copy.deepcopy(self.script).resolve_partial(
+                unresolvable=self.unresolved_variables
+                | VARIABLES.variable_names(include_sanitized=True)
+            )
+        elif resolution_level == ResolutionLevel.INTERNAL:
+            # Partial resolve everything including internal variables
+            self.script = copy.deepcopy(self.script).resolve_partial(
+                unresolvable=self.unresolved_variables
+            )
+        else:
+            raise ValueError("Invalid resolution level")
+
+        return self
 
     def ensure_proper_usage(self) -> Dict:
         """

@@ -547,9 +547,73 @@ def test_default_docker_config_and_subscriptions(
 
     resolved_yaml_as_json = yaml.safe_load(default_subs[0].resolved_yaml())
 
-    # Since this creates random values, ignore it for this test
-    assert "throttle_protection" in resolved_yaml_as_json
-    del resolved_yaml_as_json["throttle_protection"]
+    assert resolved_yaml_as_json == {
+        "chapters": {
+            "allow_chapters_from_comments": False,
+            "embed_chapters": True,
+            "enable": "True",
+            "force_key_frames": False,
+        },
+        "date_range": {"breaks": "True", "enable": "True", "type": "upload_date"},
+        "download": [
+            {
+                "download_reverse": "True",
+                "include_sibling_metadata": False,
+                "playlist_thumbnails": [
+                    {"name": "{avatar_uncropped_thumbnail_file_name}", "uid": "avatar_uncropped"},
+                    {"name": "{banner_uncropped_thumbnail_file_name}", "uid": "banner_uncropped"},
+                ],
+                "source_thumbnails": [
+                    {"name": "{avatar_uncropped_thumbnail_file_name}", "uid": "avatar_uncropped"},
+                    {"name": "{banner_uncropped_thumbnail_file_name}", "uid": "banner_uncropped"},
+                ],
+                "url": "https://www.youtube.com/@novapbs",
+                "variables": {},
+                "webpage_url": "{modified_webpage_url}",
+                "ytdl_options": {},
+            }
+        ],
+        "file_convert": {"convert_to": "mp4", "convert_with": "yt-dlp", "enable": "True"},
+        "format": "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)",
+        "output_options": {
+            "download_archive_name": ".ytdl-sub-NOVA PBS-download-archive.json",
+            "file_name": "{episode_file_path}.{ext}",
+            "info_json_name": "{episode_file_path}.{info_json_ext}",
+            "keep_files_date_eval": "{episode_date_standardized}",
+            "maintain_download_archive": True,
+            "output_directory": f"{output_directory}/NOVA PBS",
+            "preserve_mtime": False,
+            "thumbnail_name": "{thumbnail_file_name}",
+        },
+        "throttle_protection": {
+            "enable": True,
+            "sleep_per_download_s": {"max": "28.4", "min": "13.8"},
+            "sleep_per_request_s": {"max": "0.75", "min": "0.0"},
+            "sleep_per_subscription_s": {"max": "26.1", "min": "16.3"},
+        },
+        "video_tags": {
+            "contentRating": "{episode_content_rating}",
+            "date": "{episode_date_standardized}",
+            "episode_id": "{episode_number}",
+            "genre": "{tv_show_genre}",
+            "show": "{tv_show_name}",
+            "synopsis": "{episode_plot}",
+            "title": "{episode_title}",
+            "year": "{episode_year}",
+        },
+    }
+
+
+def test_default_docker_config_and_subscriptions(
+    docker_default_subscription_path: Path, output_directory: str
+):
+    default_config = ConfigFile.from_file_path("docker/root/defaults/config.yaml")
+    default_subs = Subscription.from_file_path(
+        config=default_config, subscription_path=docker_default_subscription_path
+    )
+    assert len(default_subs) == 1
+
+    resolved_yaml_as_json = yaml.safe_load(default_subs[0].resolved_yaml(resolution_level=3))
 
     assert resolved_yaml_as_json == {
         "chapters": {
@@ -588,6 +652,12 @@ def test_default_docker_config_and_subscriptions(
             "output_directory": f"{output_directory}/NOVA PBS",
             "preserve_mtime": False,
             "thumbnail_name": "{thumbnail_file_name}",
+        },
+        "throttle_protection": {
+            "enable": True,
+            "sleep_per_download_s": {"max": "28.4", "min": "13.8"},
+            "sleep_per_request_s": {"max": "0.75", "min": "0.0"},
+            "sleep_per_subscription_s": {"max": "26.1", "min": "16.3"},
         },
         "video_tags": {
             "contentRating": "{episode_content_rating}",
