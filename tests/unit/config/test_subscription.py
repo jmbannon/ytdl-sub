@@ -8,6 +8,7 @@ import pytest
 import yaml
 
 from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.config.validators.variable_validation import ResolutionLevel
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -942,7 +943,7 @@ def test_default_docker_config_and_subscriptions_resolved_resolution(
     )
     assert len(default_subs) == 1
 
-    resolved_yaml_as_json = yaml.safe_load(default_subs[0].resolved_yaml(resolution_level=2))
+    resolved_yaml_as_json = yaml.safe_load(default_subs[0].resolved_yaml(resolution_level=ResolutionLevel.RESOLVE))
 
     assert resolved_yaml_as_json == {
         "chapters": {

@@ -1,4 +1,3 @@
-import copy
 from typing import Dict
 
 from ytdl_sub.config.overrides import Overrides
@@ -9,7 +8,6 @@ from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_types import Variable
 from ytdl_sub.script.script import Script
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
@@ -31,9 +29,9 @@ class VariableValidation:
             pass
         elif self._resolution_level == ResolutionLevel.RESOLVE:
             # Partial resolve everything, but not including internal variables
+            self.unresolved_variables |= VARIABLES.variable_names(include_sanitized=True)
             self.script = self.script.resolve_partial(
                 unresolvable=self.unresolved_variables
-                | VARIABLES.variable_names(include_sanitized=True)
             )
         elif self._resolution_level == ResolutionLevel.INTERNAL:
             # Partial resolve everything including internal variables

@@ -13,6 +13,7 @@ from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
+from ytdl_sub.utils.file_handler import get_md5_hash
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
@@ -250,11 +251,11 @@ def _validate_formatter(
     variable_names = {var.name for var in parsed.variables}
     custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
 
-    # if resolve_partial:
-    #     formatter_hash = str(formatter_validator.__hash__())
-    #     mock_script.add_parsed(
-    #         {formatter_hash: formatter_validator.parsed}
-    #     ).resolve_partial(unresolvable=unresolved_variables).definition_of(formatter_hash)
+    if resolve_partial and not is_static_formatter:
+        formatter_hash = get_md5_hash(formatter_validator.format_string)
+        parsed = mock_script.add_parsed(
+            {formatter_hash: formatter_validator.parsed}
+        ).resolve_partial(unresolvable=unresolved_variables).definition_of(formatter_hash)
 
     # Add lambda functions to custom function names, if it's custom
     for lambda_func in parsed.lambdas:
@@ -284,7 +285,7 @@ def _validate_formatter(
                 update=True,
             )["tmp_var"].native
 
-        return formatter_validator.format_string
+        return ScriptUtils.to_native_script(parsed)
     except RuntimeException as exc:
         if isinstance(exc, ScriptVariableNotResolved) and is_static_formatter:
             raise StringFormattingVariableNotFoundException(

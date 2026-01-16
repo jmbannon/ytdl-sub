@@ -734,7 +734,12 @@ class Script:
 
                 maybe_resolved = definition
                 if isinstance(definition, Variable) and definition.name not in unresolvable:
-                    maybe_resolved = resolved.get(definition, unresolved[definition])
+                    if definition in resolved:
+                        maybe_resolved = resolved[definition]
+                    elif definition in unresolved:
+                        maybe_resolved = unresolved[definition]
+                    else:
+                        raise UNREACHABLE
                 elif isinstance(definition, VariableDependency):
                     maybe_resolved = definition.partial_resolve(
                         resolved_variables=resolved,
