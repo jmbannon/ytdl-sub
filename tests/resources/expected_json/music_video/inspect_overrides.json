@@ -10,7 +10,7 @@
   "file_uid": "{ uid_sanitized_plex }",
   "include_sibling_metadata": "{ %bool(False) }",
   "modified_webpage_url": "{ webpage_url }",
-  "music_video_album": "{ %get_url_field( \"category\", music_video_album_default ) }",
+  "music_video_album": "{ %get_url_field( \"category\", \"Music Videos\" ) }",
   "music_video_album_default": "Music Videos",
   "music_video_artist": "Rick Astley",
   "music_video_date": "{ %elif( %contains_url_field( \"date\" ), %get_url_field( \"date\", upload_date_standardized ), %contains_url_field( \"year\" ), %concat( %get_url_field( \"date\", upload_year ), \"-01-01\" ), upload_date_standardized ) }",
