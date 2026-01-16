@@ -1,5 +1,6 @@
 import argparse
 import dataclasses
+from typing import Dict
 from typing import List
 
 from ytdl_sub import __local_version__
@@ -235,19 +236,15 @@ class InspectArguments:
         short="-l",
         long="--level",
     )
-    LevelChoices: List[str] = [
-        "0",
-        "original",
-        "1",
-        "fill",
-        "2",
-        "resolve",
-        "3",
-        "internal",
-    ]
+    LevelChoices: Dict[str, str] = {
+        "0": "original",
+        "1": "fill",
+        "2": "resolve",
+        "3": "internal",
+    }
 
     MOCK = CLIArgument(
-        short="-m",
+        short="-k",
         long="--mock",
     )
 
@@ -256,7 +253,7 @@ inspect_parser = subparsers.add_parser("inspect")
 inspect_parser.add_argument(
     InspectArguments.LEVEL.short,
     InspectArguments.LEVEL.long,
-    metavar="|".join(LoggerLevels.names()),
+    metavar=",".join(str(i) for i in range(4)),
     type=str,
     help="""level of inspection to perform:
       0 - original   present the subscription as-is (default)
@@ -265,7 +262,8 @@ inspect_parser.add_argument(
       3 - internal   resolve all variables to their internal representation
     """,
     default="0",
-    choices=InspectArguments.LevelChoices,
+    choices=list(InspectArguments.LevelChoices.keys())
+    + list(InspectArguments.LevelChoices.values()),
     dest="inspection_level",
 )
 inspect_parser.add_argument(
@@ -293,4 +291,12 @@ inspect_parser.add_argument(
     type=str,
     help="override all subscription config values using `dl` syntax, "
     "i.e. --dl-override='--ytdl_options.max_downloads 3'",
+)
+
+inspect_parser.add_argument(
+    InspectArguments.MOCK.short,
+    InspectArguments.MOCK.long,
+    metavar="VAR=VALUE",
+    nargs="+",
+    help="ability to mock one or more variable values, i.e. --mock 'title=Lets Play'",
 )
