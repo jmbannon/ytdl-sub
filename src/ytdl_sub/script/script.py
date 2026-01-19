@@ -281,10 +281,10 @@ class Script:
             self._variables[variable_name] = ResolvedSyntaxTree(ast=[resolved])
 
     def _recursive_get_unresolved_output_filter_variables(
-        self, current_var: SyntaxTree, subset_to_resolve: Set[str], unresolvable: Set[Variable], allow_partial_resolve: bool = False
+        self, current_var: SyntaxTree, subset_to_resolve: Set[str], unresolvable: Set[Variable]
     ) -> Set[str]:
         for var_dep in current_var.variables:
-            if var_dep in unresolvable and not allow_partial_resolve:
+            if var_dep in unresolvable:
                 raise ScriptVariableNotResolved(
                     f"Output filter variable contains the variable {var_dep} "
                     f"which is set as unresolvable"
@@ -299,14 +299,12 @@ class Script:
                 current_var=self._variables[var_dep.name],
                 subset_to_resolve=subset_to_resolve,
                 unresolvable=unresolvable,
-                allow_partial_resolve=allow_partial_resolve,
             )
         for custom_func_dep in current_var.custom_functions:
             subset_to_resolve |= self._recursive_get_unresolved_output_filter_variables(
                 current_var=self._functions[custom_func_dep.name],
                 subset_to_resolve=subset_to_resolve,
                 unresolvable=unresolvable,
-                allow_partial_resolve=allow_partial_resolve,
             )
 
         for lambda_func in current_var.lambdas:
@@ -315,7 +313,6 @@ class Script:
                     current_var=self._functions[lambda_func.value],
                     subset_to_resolve=subset_to_resolve,
                     unresolvable=unresolvable,
-                    allow_partial_resolve=allow_partial_resolve,
                 )
 
         return subset_to_resolve
@@ -324,7 +321,6 @@ class Script:
         self,
         output_filter: Set[str],
         unresolvable: Set[Variable],
-        allow_partial_resolvable: bool = False,
     ) -> Set[str]:
         """
         When an output filter is applied, only a subset of variables that the filter
@@ -344,7 +340,6 @@ class Script:
                 current_var=self._variables[output_filter_variable],
                 subset_to_resolve=subset_to_resolve,
                 unresolvable=unresolvable,
-                allow_partial_resolve=allow_partial_resolvable,
             )
 
         return subset_to_resolve
