@@ -1,4 +1,5 @@
 from typing import Dict
+from typing import List
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
@@ -19,6 +20,23 @@ class ResolutionLevel:
     RESOLVE = 2
     INTERNAL = 3
 
+    @classmethod
+    def name_of(cls, resolution_level: int) -> str:
+        if resolution_level == cls.ORIGINAL:
+            return "original"
+        if resolution_level == cls.FILL:
+            return "fill"
+        if resolution_level == cls.RESOLVE:
+            return "resolve"
+        if resolution_level == cls.INTERNAL:
+            return "internal"
+
+    @classmethod
+    def all(cls) -> List[int]:
+        return [cls.ORIGINAL, cls.FILL, cls.RESOLVE, cls.INTERNAL]
+
+        raise ValueError("Invalid resolution level")
+
 
 class VariableValidation:
 
@@ -30,17 +48,12 @@ class VariableValidation:
         elif self._resolution_level == ResolutionLevel.RESOLVE:
             # Partial resolve everything, but not including internal variables
             self.unresolved_variables |= VARIABLES.variable_names(include_sanitized=True)
-            self.script = self.script.resolve_partial(
-                unresolvable=self.unresolved_variables
-            )
+            self.script = self.script.resolve_partial(unresolvable=self.unresolved_variables)
         elif self._resolution_level == ResolutionLevel.INTERNAL:
             # Partial resolve everything including internal variables
-            self.script = self.script.resolve_partial(
-                unresolvable=self.unresolved_variables
-            )
+            self.script = self.script.resolve_partial(unresolvable=self.unresolved_variables)
         else:
             raise ValueError("Invalid resolution level for validation")
-
 
     def __init__(
         self,
@@ -48,7 +61,7 @@ class VariableValidation:
         downloader_options: MultiUrlValidator,
         output_options: OutputOptions,
         plugins: PresetPlugins,
-        resolution_level: int = ResolutionLevel.FILL
+        resolution_level: int = ResolutionLevel.FILL,
     ):
         self.overrides = overrides
         self.downloader_options = downloader_options
@@ -76,7 +89,6 @@ class VariableValidation:
         modified_variables = options.modified_variables().get(plugin_op, set())
 
         self.unresolved_runtime_variables -= added_variables | modified_variables
-
 
     def ensure_proper_usage(self) -> Dict:
         """
@@ -136,17 +148,18 @@ class VariableValidation:
                 resolved_subscription["download"].append(url_output)
 
         # TODO: make function
-        resolved_subscription['overrides'] = {}
+        resolved_subscription["overrides"] = {}
         for name in self.overrides.keys:
             value = self.script.definition_of(name)
             if name in self.script.function_names:
                 # Keep custom functions as-is
-                resolved_subscription['overrides'][name] = self.overrides.dict_with_format_strings[name]
+                resolved_subscription["overrides"][name] = self.overrides.dict_with_format_strings[
+                    name
+                ]
             elif resolved := value.maybe_resolvable:
-                resolved_subscription['overrides'][name] = resolved.native
+                resolved_subscription["overrides"][name] = resolved.native
             else:
-                resolved_subscription['overrides'][name] = ScriptUtils.to_native_script(value)
+                resolved_subscription["overrides"][name] = ScriptUtils.to_native_script(value)
 
         assert not self.unresolved_runtime_variables
         return resolved_subscription
-

@@ -680,7 +680,7 @@ class Script:
         raise RuntimeException(f"Tried to get unresolved variable {variable_name}")
 
     def definition_of(self, name: str) -> SyntaxTree:
-        if name.startswith('%') and name[1:] in self._functions:
+        if name.startswith("%") and name[1:] in self._functions:
             return self._functions[name[1:]]
         if name in self._variables:
             return self._variables[name]

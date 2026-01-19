@@ -263,14 +263,14 @@ class BaseSubscription(ABC):
         -------
         Human-readable, condensed YAML definition of the subscription.
         """
-        out = (
-            VariableValidation(
-                overrides=self.overrides,
-                downloader_options=self.downloader_options,
-                output_options=self.output_options,
-                plugins=self.plugins,
-                resolution_level=resolution_level,
-            )
-            .ensure_proper_usage()
-        )
+        if resolution_level == ResolutionLevel.ORIGINAL:
+            return self._preset_options.yaml
+
+        out = VariableValidation(
+            overrides=self.overrides,
+            downloader_options=self.downloader_options,
+            output_options=self.output_options,
+            plugins=self.plugins,
+            resolution_level=resolution_level,
+        ).ensure_proper_usage()
         return dump_yaml(out)
