@@ -281,10 +281,10 @@ class Script:
             self._variables[variable_name] = ResolvedSyntaxTree(ast=[resolved])
 
     def _recursive_get_unresolved_output_filter_variables(
-        self, current_var: SyntaxTree, subset_to_resolve: Set[str], unresolvable: Set[Variable]
+        self, current_var: SyntaxTree, subset_to_resolve: Set[str], unresolvable: Set[Variable], allow_partial_resolve: bool = False
     ) -> Set[str]:
         for var_dep in current_var.variables:
-            if var_dep in unresolvable:
+            if var_dep in unresolvable and not allow_partial_resolve:
                 raise ScriptVariableNotResolved(
                     f"Output filter variable contains the variable {var_dep} "
                     f"which is set as unresolvable"
@@ -299,12 +299,14 @@ class Script:
                 current_var=self._variables[var_dep.name],
                 subset_to_resolve=subset_to_resolve,
                 unresolvable=unresolvable,
+                allow_partial_resolve=allow_partial_resolve,
             )
         for custom_func_dep in current_var.custom_functions:
             subset_to_resolve |= self._recursive_get_unresolved_output_filter_variables(
                 current_var=self._functions[custom_func_dep.name],
                 subset_to_resolve=subset_to_resolve,
                 unresolvable=unresolvable,
+                allow_partial_resolve=allow_partial_resolve,
             )
 
         for lambda_func in current_var.lambdas:
@@ -313,6 +315,7 @@ class Script:
                     current_var=self._functions[lambda_func.value],
                     subset_to_resolve=subset_to_resolve,
                     unresolvable=unresolvable,
+                    allow_partial_resolve=allow_partial_resolve,
                 )
 
         return subset_to_resolve
@@ -321,6 +324,7 @@ class Script:
         self,
         output_filter: Set[str],
         unresolvable: Set[Variable],
+        allow_partial_resolvable: bool = False,
     ) -> Set[str]:
         """
         When an output filter is applied, only a subset of variables that the filter
@@ -340,6 +344,7 @@ class Script:
                 current_var=self._variables[output_filter_variable],
                 subset_to_resolve=subset_to_resolve,
                 unresolvable=unresolvable,
+                allow_partial_resolve=allow_partial_resolvable,
             )
 
         return subset_to_resolve
@@ -706,10 +711,11 @@ class Script:
         """
         return set(to_function_definition_name(name) for name in self._functions.keys())
 
-    def resolve_partial(
+    def _resolve_partial(
         self,
         unresolvable: Optional[Set[str]] = None,
-    ) -> "Script":
+        output_filter: Optional[Set[str]] = None,
+    ) -> Dict[str, SyntaxTree]:
         """
         Returns
         -------
@@ -724,12 +730,14 @@ class Script:
             if name not in unresolvable
         }
 
+        to_partially_resolve: Set[Variable] = {Variable(name) for name in output_filter} if output_filter else set(unresolved.keys())
+
         partially_resolved = True
         while partially_resolved:
 
             partially_resolved = False
 
-            for variable in list(unresolved.keys()):
+            for variable in list(to_partially_resolve):
                 definition = unresolved[variable]
 
                 maybe_resolved = definition
@@ -750,6 +758,7 @@ class Script:
                 if isinstance(maybe_resolved, Resolvable):
                     resolved[variable] = maybe_resolved
                     del unresolved[variable]
+                    to_partially_resolve.remove(variable)
                     partially_resolved = True
                 else:
                     unresolved[variable] = maybe_resolved
@@ -758,11 +767,34 @@ class Script:
                 # which means we can iterate again
                 partially_resolved |= definition != maybe_resolved
 
-        return copy.deepcopy(self).add_parsed(
-            {var_name: self._variables[var_name] for var_name in unresolvable}
-            | {
+        return {
                 var.name: ResolvedSyntaxTree(ast=[definition])
                 for var, definition in resolved.items()
-            }
-            | {var.name: SyntaxTree(ast=[definition]) for var, definition in unresolved.items()}
-        )
+            } | {var.name: SyntaxTree(ast=[definition]) for var, definition in unresolved.items()}
+
+
+    def resolve_partial(
+            self,
+            unresolvable: Optional[Set[str]] = None,
+    ) -> "Script":
+        out = self._resolve_partial(unresolvable=unresolvable)
+
+        return copy.deepcopy(self).add_parsed(
+                    {var_name: self._variables[var_name] for var_name in unresolvable}
+                    | out
+                )
+
+    def resolve_partial_once(
+        self,
+        variable_definitions: Dict[str, SyntaxTree],
+        unresolvable: Optional[Set[str]] = None
+    ) -> Dict[str, SyntaxTree]:
+        try:
+            self.add_parsed(variable_definitions)
+            return self._resolve_partial(
+                unresolvable=unresolvable,
+                output_filter=set(list(variable_definitions.keys())),
+            )
+        finally:
+            for name in variable_definitions.keys():
+                self._variables.pop(name, None)

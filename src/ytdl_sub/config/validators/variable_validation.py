@@ -16,36 +16,28 @@ from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
 class ResolutionLevel:
     ORIGINAL = 0
-    FILL = 1
-    RESOLVE = 2
-    INTERNAL = 3
+    RESOLVE = 1
+    INTERNAL = 2
 
     @classmethod
     def name_of(cls, resolution_level: int) -> str:
         if resolution_level == cls.ORIGINAL:
             return "original"
-        if resolution_level == cls.FILL:
-            return "fill"
         if resolution_level == cls.RESOLVE:
             return "resolve"
         if resolution_level == cls.INTERNAL:
             return "internal"
+        raise ValueError("Invalid resolution level")
 
     @classmethod
     def all(cls) -> List[int]:
-        return [cls.ORIGINAL, cls.FILL, cls.RESOLVE, cls.INTERNAL]
-
-        raise ValueError("Invalid resolution level")
+        return [cls.ORIGINAL, cls.RESOLVE, cls.INTERNAL]
 
 
 class VariableValidation:
 
     def _apply_resolution_level(self) -> None:
-        if self._resolution_level == ResolutionLevel.FILL:
-            # If anything is resolvable, 'fill' it with the resolved value.
-            # This will happen automatically when validating
-            pass
-        elif self._resolution_level == ResolutionLevel.RESOLVE:
+        if self._resolution_level == ResolutionLevel.RESOLVE:
             # Partial resolve everything, but not including internal variables
             self.unresolved_variables |= VARIABLES.variable_names(include_sanitized=True)
             self.script = self.script.resolve_partial(unresolvable=self.unresolved_variables)
@@ -61,7 +53,7 @@ class VariableValidation:
         downloader_options: MultiUrlValidator,
         output_options: OutputOptions,
         plugins: PresetPlugins,
-        resolution_level: int = ResolutionLevel.FILL,
+        resolution_level: int = ResolutionLevel.RESOLVE,
     ):
         self.overrides = overrides
         self.downloader_options = downloader_options

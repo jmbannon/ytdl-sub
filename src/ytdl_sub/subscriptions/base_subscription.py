@@ -257,7 +257,7 @@ class BaseSubscription(ABC):
         """
         return self._preset_options.yaml
 
-    def resolved_yaml(self, resolution_level: int = ResolutionLevel.FILL) -> str:
+    def resolved_yaml(self, resolution_level: int = ResolutionLevel.RESOLVE) -> str:
         """
         Returns
         -------

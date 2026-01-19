@@ -1,0 +1,259 @@
+{
+  "presets": {
+    "NOVA PBS": {
+      "chapters": {
+        "embed_chapters": true
+      },
+      "date_range": {
+        "type": "{tv_show_date_range_type}"
+      },
+      "download": [
+        {
+          "download_reverse": false,
+          "url": "{ %array_apply(urls, %bilateral_url) }",
+          "webpage_url": "{modified_webpage_url}",
+          "ytdl_options": {
+            "playlist_items": "-1:0:-1"
+          }
+        },
+        {
+          "include_sibling_metadata": "{include_sibling_metadata}",
+          "playlist_thumbnails": [
+            {
+              "name": "{avatar_uncropped_thumbnail_file_name}",
+              "uid": "avatar_uncropped"
+            },
+            {
+              "name": "{banner_uncropped_thumbnail_file_name}",
+              "uid": "banner_uncropped"
+            }
+          ],
+          "source_thumbnails": [
+            {
+              "name": "{avatar_uncropped_thumbnail_file_name}",
+              "uid": "avatar_uncropped"
+            },
+            {
+              "name": "{banner_uncropped_thumbnail_file_name}",
+              "uid": "banner_uncropped"
+            }
+          ],
+          "url": "{ %array_at(urls, 0) }",
+          "webpage_url": "{modified_webpage_url}"
+        },
+        {
+          "include_sibling_metadata": "{include_sibling_metadata}",
+          "url": "{ %array_slice(urls, 1) }",
+          "webpage_url": "{modified_webpage_url}"
+        }
+      ],
+      "file_convert": {
+        "convert_to": "mp4"
+      },
+      "format": "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)",
+      "output_options": {
+        "file_name": "{episode_file_path}.{ext}",
+        "info_json_name": "{episode_file_path}.{info_json_ext}",
+        "keep_files_date_eval": "{episode_date_standardized}",
+        "maintain_download_archive": true,
+        "output_directory": "{tv_show_directory}/{tv_show_name_sanitized}",
+        "thumbnail_name": "{thumbnail_file_name}"
+      },
+      "overrides": {
+        "%bilateral_url": "{ \n  %if(\n    %and(\n      enable_bilateral_scraping,\n      subscription_has_download_archive,\n      %is_bilateral_url($0)\n    ),\n    $0,\n    \"\"\n  )\n}",
+        "%episode_ordering_": "{ %eq( %lower(tv_show_by_date_episode_ordering), $0 ) }",
+        "%is_bilateral_url": "{ %contains( $0, \"youtube.com/playlist\" ) }",
+        "%ordering_pair_eq": "{\n  %eq([tv_show_by_date_season_ordering, tv_show_by_date_episode_ordering], [$0, $1])\n}",
+        "%season_ordering_": "{ %eq( %lower(tv_show_by_date_season_ordering), $0 ) }",
+        "assert_not_collection": "{\n  %assert(\n    %and(\n      %not( %bool(s01_url) ),\n      %not( %bool(s01_name) )\n    ),\n    \"Provided `s01_url` or `s01_name` variable to TV Show by Date preset when it expects `url`. Perhaps you meant to use the `TV Show Collection` preset?\"\n  )\n}",
+        "avatar_uncropped_thumbnail_file_name": "{tv_show_poster_file_name}",
+        "banner_uncropped_thumbnail_file_name": "{tv_show_fanart_file_name}",
+        "enable_bilateral_scraping": true,
+        "enable_resolution_assert": true,
+        "enable_throttle_protection": true,
+        "episode_content_rating": "{tv_show_content_rating}",
+        "episode_date_standardized": "{\n  %if(\n    %contains(tv_show_by_date_season_ordering, \"release\"),\n    release_date_standardized,\n    upload_date_standardized\n  )\n}",
+        "episode_file_name": "s{season_number_padded}.e{episode_number_padded} - {file_title}",
+        "episode_file_path": "{season_directory_name_sanitized}/{episode_file_name_sanitized}",
+        "episode_number": "{ %array_at(episode_number_and_padded_, 0) }",
+        "episode_number_and_padded_": "{\n  %elif(\n    %episode_ordering_( \"upload-day\" ),                 [ %concat(upload_day, upload_date_index_padded), 4 ],\n    %episode_ordering_( \"upload-month-day\" ),           [ %concat(upload_month, upload_day_padded, upload_date_index_padded), 6],\n    %episode_ordering_( \"upload-month-day-reversed\" ),  [ %concat(upload_day_of_year_reversed, upload_date_index_reversed_padded), 5],\n    %episode_ordering_( \"release-day\" ),                [ %concat(release_day, upload_date_index_padded), 4 ],\n    %episode_ordering_( \"release-month-day\" ),          [ %concat(release_month, release_day_padded, upload_date_index_padded), 6],\n    %episode_ordering_( \"release-month-day-reversed\" ), [ %concat(release_day_of_year_reversed, upload_date_index_reversed_padded), 5],\n    %episode_ordering_( \"download-index\" ),             [ download_index, 6 ],\n    %throw(\n      'tv_show_by_date_episode_ordering must be one of the following: \"upload-day\", \"upload-month-day\", \"upload-month-day-reversed\", \"release-day\", \"release-month-day\", \"release-month-day-reversed\", \"download-index\"'\n    )\n  )\n}",
+        "episode_number_padded": "{ %pad_zero( %int(episode_number), %int(%array_at(episode_number_and_padded_, 1))) }",
+        "episode_plot": "{webpage_url}\n\n{description}",
+        "episode_title": "{episode_date_standardized} - {title}",
+        "episode_year": "{%slice(episode_date_standardized, 0, 4)}",
+        "file_title": "{title_sanitized_plex}",
+        "file_uid": "{uid_sanitized_plex}",
+        "include_sibling_metadata": false,
+        "modified_webpage_url": "{webpage_url}",
+        "only_recent_date_range": "2months",
+        "only_recent_max_files": 30,
+        "resolution_assert": "{\n  %if(\n    %and(\n      enable_resolution_assert,\n      %ne( height, 0 ),\n      %not(resolution_assert_is_ignored)\n    ),\n    %assert(\n      %gte( height, resolution_assert_height_gte ),\n      %concat(\n        \"Entry \",\n        title,\n        \" downloaded at a low resolution (\",\n        resolution_readable,\n        \"), you've probably been throttled. \",\n        \"Stopping further downloads, wait a few hours and try again. \",\n        \"Disable using the override variable `enable_resolution_assert: False`.\"\n      )\n    ),\n    \"false is no-op\"\n  )\n}",
+        "resolution_assert_height_gte": 361,
+        "resolution_assert_ignore_titles": "{ [] }",
+        "resolution_assert_is_ignored": "{\n  %print_if_true(\n    %concat(title, \" has a match in resolution_assert_ignore_titles, skipping resolution assert.\"),\n    %contains_any(title, resolution_assert_ignore_titles)\n  )\n}",
+        "resolution_assert_print": "{\n  %print(\n    %if(\n      enable_resolution_assert,\n      \"Resolution assert is enabled, will fail on low-quality video downloads and presume throttle. Disable using the override variable `enable_resolution_assert: False`\",\n      \"Resolution assert is disabled. Use at your own risk!\"\n    ),\n    enable_resolution_assert,\n    -1\n  )\n}",
+        "resolution_readable": "{width}x{height}",
+        "s01_name": "",
+        "s01_url": "",
+        "season_directory_name": "Season {season_number_padded}",
+        "season_number": "{\n  %elif(\n    %season_ordering_( \"upload-year\" ),         upload_year,\n    %season_ordering_( \"upload-year-month\" ),   %concat(upload_year, upload_month_padded),\n    %season_ordering_( \"release-year\" ),        release_year,\n    %season_ordering_( \"release-year-month\" ),  %concat(release_year, release_month_padded),\n    %throw(\n      'tv_show_by_date_season_ordering must be one of the following: \"upload-year\", \"upload-year-month\", \"release-year\", \"release-year-month\"'\n    )\n  )\n}",
+        "season_number_padded": "{season_number}",
+        "season_poster_file_name": "{season_directory_name_sanitized}/Season{season_number_padded}.jpg",
+        "subscription_array": "{%from_json('''[\"https://www.youtube.com/@novapbs\"]''')}",
+        "subscription_indent_1": "Documentaries",
+        "subscription_indent_2": "{tv_show_content_rating_default}",
+        "subscription_value": "https://www.youtube.com/@novapbs",
+        "subscription_value_1": "https://www.youtube.com/@novapbs",
+        "thumbnail_file_name": "{episode_file_path}-thumb.jpg",
+        "tv_show_by_date_episode_ordering": "upload-month-day",
+        "tv_show_by_date_ordering_pair_validation_": "{\n  %assert_then(\n    %or(\n      %ordering_pair_eq(\"upload-year\", \"upload-month-day\"),\n      %ordering_pair_eq(\"upload-year\", \"upload-month-day-reversed\"),\n      %ordering_pair_eq(\"upload-year\", \"download-index\"),\n      %ordering_pair_eq(\"upload-year-month\", \"upload-day\"),\n      %ordering_pair_eq(\"release-year\", \"release-month-day\"),\n      %ordering_pair_eq(\"release-year\", \"release-month-day-reversed\"),\n      %ordering_pair_eq(\"release-year\", \"download-index\"),\n      %ordering_pair_eq(\"release-year-month\", \"release-day\")\n    ),\n    episode_number_and_padded_,\n    \"Detected incompatibility between tv_show_by_date_season_ordering and tv_show_by_date_episode_ordering. Ensure you are not using both upload and release date, and that the year/month/day are included in the combined season and episode.\"\n  )\n}",
+        "tv_show_by_date_season_ordering": "upload-year",
+        "tv_show_content_rating": "{subscription_indent_2}",
+        "tv_show_content_rating_default": "TV-14",
+        "tv_show_date_range_type": "{\n  %if(\n    %contains(tv_show_by_date_season_ordering, \"release\"),\n    \"release_date\",\n    \"upload_date\"\n  )\n}",
+        "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpi3yfj1k0",
+        "tv_show_fanart_file_name": "fanart.jpg",
+        "tv_show_genre": "{subscription_indent_1}",
+        "tv_show_genre_default": "ytdl-sub",
+        "tv_show_name": "{subscription_name}",
+        "tv_show_poster_file_name": "poster.jpg",
+        "url": "{subscription_value}",
+        "url10": "",
+        "url100": "",
+        "url11": "",
+        "url12": "",
+        "url13": "",
+        "url14": "",
+        "url15": "",
+        "url16": "",
+        "url17": "",
+        "url18": "",
+        "url19": "",
+        "url2": "",
+        "url20": "",
+        "url21": "",
+        "url22": "",
+        "url23": "",
+        "url24": "",
+        "url25": "",
+        "url26": "",
+        "url27": "",
+        "url28": "",
+        "url29": "",
+        "url3": "",
+        "url30": "",
+        "url31": "",
+        "url32": "",
+        "url33": "",
+        "url34": "",
+        "url35": "",
+        "url36": "",
+        "url37": "",
+        "url38": "",
+        "url39": "",
+        "url4": "",
+        "url40": "",
+        "url41": "",
+        "url42": "",
+        "url43": "",
+        "url44": "",
+        "url45": "",
+        "url46": "",
+        "url47": "",
+        "url48": "",
+        "url49": "",
+        "url5": "",
+        "url50": "",
+        "url51": "",
+        "url52": "",
+        "url53": "",
+        "url54": "",
+        "url55": "",
+        "url56": "",
+        "url57": "",
+        "url58": "",
+        "url59": "",
+        "url6": "",
+        "url60": "",
+        "url61": "",
+        "url62": "",
+        "url63": "",
+        "url64": "",
+        "url65": "",
+        "url66": "",
+        "url67": "",
+        "url68": "",
+        "url69": "",
+        "url7": "",
+        "url70": "",
+        "url71": "",
+        "url72": "",
+        "url73": "",
+        "url74": "",
+        "url75": "",
+        "url76": "",
+        "url77": "",
+        "url78": "",
+        "url79": "",
+        "url8": "",
+        "url80": "",
+        "url81": "",
+        "url82": "",
+        "url83": "",
+        "url84": "",
+        "url85": "",
+        "url86": "",
+        "url87": "",
+        "url88": "",
+        "url89": "",
+        "url9": "",
+        "url90": "",
+        "url91": "",
+        "url92": "",
+        "url93": "",
+        "url94": "",
+        "url95": "",
+        "url96": "",
+        "url97": "",
+        "url98": "",
+        "url99": "",
+        "urls": "{subscription_array}"
+      },
+      "preset": [
+        "_season_by_year",
+        "plex_tv_show_by_date",
+        "season_by_year__episode_by_month_day",
+        "Plex TV Show by Date",
+        "__preset__"
+      ],
+      "throttle_protection": {
+        "enable": "{\n  %print(\n    %if(\n      enable_throttle_protection,\n      \"Throttle protection is enabled. Disable using the override variable `enable_throttle_protection: False`\",\n      \"Throttle protection is disabled. Use at your own risk!\"\n    ),\n    enable_throttle_protection\n  )\n}",
+        "sleep_per_download_s": {
+          "max": 28.4,
+          "min": 13.8
+        },
+        "sleep_per_request_s": {
+          "max": 0.75,
+          "min": 0.0
+        },
+        "sleep_per_subscription_s": {
+          "max": 26.1,
+          "min": 16.3
+        }
+      },
+      "video_tags": {
+        "contentRating": "{episode_content_rating}",
+        "date": "{episode_date_standardized}",
+        "episode_id": "{episode_number}",
+        "genre": "{tv_show_genre}",
+        "show": "{tv_show_name}",
+        "synopsis": "{episode_plot}",
+        "title": "{episode_title}",
+        "year": "{episode_year}"
+      },
+      "ytdl_options": {
+        "break_on_existing": true
+      }
+    }
+  }
+}
