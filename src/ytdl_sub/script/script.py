@@ -784,10 +784,14 @@ class Script:
         unresolvable: Optional[Set[str]] = None,
     ) -> "Script":
         out = self._resolve_partial(unresolvable=unresolvable)
+        for var_name, definition in out.items():
+            self._variables[var_name] = definition
 
-        return copy.deepcopy(self).add_parsed(
-            {var_name: self._variables[var_name] for var_name in unresolvable} | out
-        )
+        return self
+
+        # return copy.deepcopy(self).add_parsed(
+        #     {var_name: self._variables[var_name] for var_name in unresolvable} | out
+        # )
 
     def resolve_partial_once(
         self, variable_definitions: Dict[str, SyntaxTree], unresolvable: Optional[Set[str]] = None
