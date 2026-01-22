@@ -263,6 +263,9 @@ class VariableDependency(ABC):
         for arg in args:
             maybe_resolvable_args.append(arg)
 
+            if hasattr(arg, "ast"):
+                print("sfdsf")
+
             if isinstance(arg, Lambda) and arg.value in custom_functions:
                 if not custom_functions[arg.value].is_subset_of(
                     variables=resolved_variables,

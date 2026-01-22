@@ -725,7 +725,9 @@ class Script:
             if name not in unresolvable
         }
 
-        to_partially_resolve: Set[Variable] = {Variable(name) for name in output_filter} if output_filter else set(unresolved.keys())
+        to_partially_resolve: Set[Variable] = (
+            {Variable(name) for name in output_filter} if output_filter else set(unresolved.keys())
+        )
 
         partially_resolved = True
         while partially_resolved:
@@ -762,27 +764,33 @@ class Script:
                 # which means we can iterate again
                 partially_resolved |= definition != maybe_resolved
 
-        return {
-                var.name: ResolvedSyntaxTree(ast=[definition])
-                for var, definition in resolved.items()
-            } | {var.name: SyntaxTree(ast=[definition]) for var, definition in unresolved.items()}
+        if output_filter:
+            out: Dict[str, SyntaxTree] = {}
+            for name in output_filter:
+                variable_name = Variable(name)
+                if variable_name in resolved:
+                    out[name] = ResolvedSyntaxTree(ast=[resolved[variable_name]])
+                else:
+                    out[name] = SyntaxTree(ast=[unresolved[variable_name]])
 
+            return out
+
+        return {
+            var.name: ResolvedSyntaxTree(ast=[definition]) for var, definition in resolved.items()
+        } | {var.name: SyntaxTree(ast=[definition]) for var, definition in unresolved.items()}
 
     def resolve_partial(
-            self,
-            unresolvable: Optional[Set[str]] = None,
+        self,
+        unresolvable: Optional[Set[str]] = None,
     ) -> "Script":
         out = self._resolve_partial(unresolvable=unresolvable)
 
         return copy.deepcopy(self).add_parsed(
-                    {var_name: self._variables[var_name] for var_name in unresolvable}
-                    | out
-                )
+            {var_name: self._variables[var_name] for var_name in unresolvable} | out
+        )
 
     def resolve_partial_once(
-        self,
-        variable_definitions: Dict[str, SyntaxTree],
-        unresolvable: Optional[Set[str]] = None
+        self, variable_definitions: Dict[str, SyntaxTree], unresolvable: Optional[Set[str]] = None
     ) -> Dict[str, SyntaxTree]:
         try:
             self.add_parsed(variable_definitions)
