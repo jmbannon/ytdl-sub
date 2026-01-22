@@ -55,6 +55,10 @@ class SyntaxTree(VariableDependency):
             custom_functions=custom_functions,
         )
 
+        # If no arguments, must be empty string
+        if len(maybe_resolvable_values) == 0:
+            return String(value="")
+
         # Mimic the above resolve behavior
         if len(maybe_resolvable_values) > 1:
             return BuiltInFunction(name="concat", args=maybe_resolvable_values)

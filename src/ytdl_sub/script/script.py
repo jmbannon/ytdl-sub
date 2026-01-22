@@ -1,5 +1,4 @@
 # pylint: disable=missing-raises-doc
-import copy
 from typing import Dict
 from typing import List
 from typing import Optional
