@@ -742,11 +742,10 @@ class Script:
                 if isinstance(definition, Variable) and definition.name not in unresolvable:
                     if definition in resolved:
                         maybe_resolved = resolved[definition]
+                    elif definition in unresolved:
+                        maybe_resolved = unresolved[definition]
                     else:
-                        # If it's not in resolved, it must be in unresolved.
-                        # Do not modify the definition, this avoids duplicate work because it will
-                        # wait for the single dependent variable to be resolved.
-                        assert definition in unresolved
+                        raise UNREACHABLE
                 elif isinstance(definition, VariableDependency):
                     maybe_resolved = definition.partial_resolve(
                         resolved_variables=resolved,
@@ -784,8 +783,9 @@ class Script:
     def resolve_partial(
         self,
         unresolvable: Optional[Set[str]] = None,
+        output_filter: Optional[Set[str]] = None,
     ) -> "Script":
-        out = self._resolve_partial(unresolvable=unresolvable)
+        out = self._resolve_partial(unresolvable=unresolvable, output_filter=output_filter)
         for var_name, definition in out.items():
             self._variables[var_name] = definition
 

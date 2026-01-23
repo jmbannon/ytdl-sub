@@ -281,5 +281,7 @@ class VariableDependency(ABC):
             elif isinstance(arg, Variable):
                 if arg not in resolved_variables:
                     is_resolvable = False
+                    if arg in unresolved_variables:
+                        maybe_resolvable_args[-1] = unresolved_variables[arg]
 
         return maybe_resolvable_args, is_resolvable

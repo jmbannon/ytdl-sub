@@ -1,5 +1,6 @@
 from typing import Dict
 from typing import List
+from typing import Set
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
@@ -36,14 +37,29 @@ class ResolutionLevel:
 
 class VariableValidation:
 
+    def _get_resolve_partial_filter(self) -> Set[str]:
+        # Exclude sanitized variables from partial validation. This lessens the work
+        # and prevents double-evaluation, which can lead to bad behavior like double-prints.
+        return {
+            name
+            for name in self.script.variable_names
+            if name not in self.unresolved_variables and not name.endswith("_sanitized")
+        }
+
     def _apply_resolution_level(self) -> None:
         if self._resolution_level == ResolutionLevel.RESOLVE:
             # Partial resolve everything, but not including internal variables
             self.unresolved_variables |= VARIABLES.variable_names(include_sanitized=True)
-            self.script = self.script.resolve_partial(unresolvable=self.unresolved_variables)
+            self.script = self.script.resolve_partial(
+                unresolvable=self.unresolved_variables,
+                output_filter=self._get_resolve_partial_filter(),
+            )
         elif self._resolution_level == ResolutionLevel.INTERNAL:
             # Partial resolve everything including internal variables
-            self.script = self.script.resolve_partial(unresolvable=self.unresolved_variables)
+            self.script = self.script.resolve_partial(
+                unresolvable=self.unresolved_variables,
+                output_filter=self._get_resolve_partial_filter(),
+            )
         else:
             raise ValueError("Invalid resolution level for validation")
 
