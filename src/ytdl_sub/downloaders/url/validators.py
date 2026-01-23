@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 from typing import Dict
 from typing import Optional
 from typing import Set
@@ -44,7 +44,7 @@ class UrlThumbnailListValidator(ListValidator[UrlThumbnailValidator]):
 
 
 class OverridesOneOrManyUrlValidator(OverridesStringFormatterValidator):
-    def post_process(self, resolved: Any) -> Any:
+    def post_process(self, resolved: Any) -> List[str]:
         if isinstance(resolved, str):
             return [resolved]
         if isinstance(resolved, list):
