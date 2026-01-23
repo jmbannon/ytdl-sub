@@ -1,4 +1,5 @@
 # pylint: disable=missing-raises-doc
+from collections import defaultdict
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -37,59 +38,71 @@ class Script:
         ``{ %custom_function: syntax }``
     """
 
-    def _ensure_no_cycle(
+    def _throw_cycle_error(
         self, name: str, dep: str, deps: List[str], definitions: Dict[str, SyntaxTree]
     ):
-        if dep not in definitions:
-            return  # does not exist, will throw downstream in parser
+        type_name, pre = (
+            ("custom functions", "%") if definitions is self._functions else ("variables", "")
+        )
+        cycle_deps = [name] + deps + [dep]
+        cycle_deps_str = " -> ".join([f"{pre}{name}" for name in cycle_deps])
 
-        if name in deps + [dep]:
-            type_name, pre = (
-                ("custom functions", "%") if definitions is self._functions else ("variables", "")
-            )
-            cycle_deps = [name] + deps + [dep]
-            cycle_deps_str = " -> ".join([f"{pre}{name}" for name in cycle_deps])
-
-            raise CycleDetected(f"Cycle detected within these {type_name}: {cycle_deps_str}")
+        raise CycleDetected(f"Cycle detected within these {type_name}: {cycle_deps_str}")
 
     def _traverse_variable_dependencies(
         self,
         variable_name: str,
         variable_dependency: SyntaxTree,
         deps: List[str],
+        ensured: Dict[str, Set[str]],
     ) -> None:
         for dep in variable_dependency.variables:
-            self._ensure_no_cycle(
-                name=variable_name, dep=dep.name, deps=deps, definitions=self._variables
-            )
+            if variable_name == dep.name:
+                self._throw_cycle_error(
+                    name=variable_name, dep=dep.name, deps=deps, definitions=self._variables
+                )
+
+            if dep.name in ensured[variable_name]:
+                continue
+
             self._traverse_variable_dependencies(
                 variable_name=variable_name,
                 variable_dependency=self._variables[dep.name],
                 deps=deps + [dep.name],
+                ensured=ensured,
             )
+            ensured[variable_name].add(dep.name)
 
         for custom_func in variable_dependency.custom_function_dependencies(
             custom_function_definitions=self._functions
         ):
             for dep in self._functions[custom_func.name].variables:
-                self._ensure_no_cycle(
-                    name=variable_name,
-                    dep=dep.name,
-                    deps=deps + [custom_func.definition_name()],
-                    definitions=self._variables,
-                )
+                if variable_name == dep.name:
+                    self._throw_cycle_error(
+                        name=variable_name,
+                        dep=dep.name,
+                        deps=deps + [custom_func.definition_name()],
+                        definitions=self._variables,
+                    )
+                if dep.name in ensured[variable_name]:
+                    continue
+
                 self._traverse_variable_dependencies(
                     variable_name=variable_name,
                     variable_dependency=self._variables[dep.name],
                     deps=deps + [custom_func.definition_name(), dep.name],
+                    ensured=ensured,
                 )
+                ensured[variable_name].add(dep.name)
 
     def _ensure_no_variable_cycles(self, variables: Dict[str, SyntaxTree]):
+        ensured: Dict[str, Set[str]] = defaultdict(set)
         for variable_name, variable_definition in variables.items():
             self._traverse_variable_dependencies(
                 variable_name=variable_name,
                 variable_dependency=variable_definition,
                 deps=[],
+                ensured=ensured,
             )
 
     def _traverse_custom_function_dependencies(
@@ -99,9 +112,10 @@ class Script:
         deps: List[str],
     ) -> None:
         for dep in custom_function_dependency.custom_functions:
-            self._ensure_no_cycle(
-                name=custom_function_name, dep=dep.name, deps=deps, definitions=self._functions
-            )
+            if custom_function_name == dep.name:
+                self._throw_cycle_error(
+                    name=custom_function_name, dep=dep.name, deps=deps, definitions=self._functions
+                )
             self._traverse_custom_function_dependencies(
                 custom_function_name=custom_function_name,
                 custom_function_dependency=self._functions[dep.name],
