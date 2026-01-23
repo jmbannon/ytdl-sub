@@ -52,12 +52,12 @@ class UrlDownloaderBasePluginExtension(SourcePluginExtension[MultiUrlValidator])
 
         if 0 <= input_url_idx < len(self.plugin_options.urls.list):
             validator = self.plugin_options.urls.list[input_url_idx]
-            if entry_input_url in self.overrides.apply_formatter(validator.url):
+            if entry_input_url in self.overrides.apply_formatter(validator.url, expected_type=list):
                 return validator
 
         # Match the first validator based on the URL, if one exists
         for validator in self.plugin_options.urls.list:
-            if entry_input_url in self.overrides.apply_formatter(validator.url):
+            if entry_input_url in self.overrides.apply_formatter(validator.url, expected_type=list):
                 return validator
 
         # Return the first validator if none exist
