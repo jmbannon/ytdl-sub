@@ -57,7 +57,7 @@ class TestTvShowCollectionPreset:
 
                 # is_bilateral
                 if i == 0:
-                    url = sub.overrides.apply_overrides_formatter_to_native(
+                    url = sub.overrides.apply_formatter(
                         url_list[itr].url,
                         function_overrides={
                             # mock so bilateral url gets enabled
@@ -81,7 +81,7 @@ class TestTvShowCollectionPreset:
                 # not bilateral
                 else:
                     for j in range(2):
-                        url = sub.overrides.apply_overrides_formatter_to_native(
+                        url = sub.overrides.apply_formatter(
                             url_list[itr + j].url,
                             function_overrides={
                                 # mock so bilateral url gets enabled

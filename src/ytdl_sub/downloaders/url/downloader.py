@@ -52,12 +52,12 @@ class UrlDownloaderBasePluginExtension(SourcePluginExtension[MultiUrlValidator])
 
         if 0 <= input_url_idx < len(self.plugin_options.urls.list):
             validator = self.plugin_options.urls.list[input_url_idx]
-            if entry_input_url in self.overrides.apply_overrides_formatter_to_native(validator.url):
+            if entry_input_url in self.overrides.apply_formatter(validator.url):
                 return validator
 
         # Match the first validator based on the URL, if one exists
         for validator in self.plugin_options.urls.list:
-            if entry_input_url in self.overrides.apply_overrides_formatter_to_native(validator.url):
+            if entry_input_url in self.overrides.apply_formatter(validator.url):
                 return validator
 
         # Return the first validator if none exist
@@ -487,7 +487,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         # download the bottom-most urls first since they are top-priority
         for idx, url_validator in reversed(list(enumerate(self.collection.urls.list))):
             # URLs can be empty. If they are, then skip
-            if not (urls := self.overrides.apply_overrides_formatter_to_native(url_validator.url)):
+            if not (urls := self.overrides.apply_formatter(url_validator.url)):
                 continue
 
             assert isinstance(urls, list)

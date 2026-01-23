@@ -20,7 +20,6 @@ from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
 
@@ -207,7 +206,7 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         formatter: StringFormatterValidator,
         entry: Optional[Entry] = None,
         function_overrides: Optional[Dict[str, str]] = None,
-    ) -> str:
+    ) -> Any:
         """
         Parameters
         ----------
@@ -228,33 +227,8 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
             If the formatter that is trying to be resolved cannot
         """
         return formatter.post_process(
-            str(
-                self._apply_to_resolvable(
-                    formatter=formatter, entry=entry, function_overrides=function_overrides
-                )
-            )
-        )
-
-    def apply_overrides_formatter_to_native(
-        self,
-        formatter: OverridesStringFormatterValidator,
-        function_overrides: Optional[Dict[str, str]] = None,
-    ) -> Any:
-        """
-        Parameters
-        ----------
-        formatter
-            Overrides formatter to apply
-        function_overrides
-            Optional. Explicit values to override the overrides themselves and source variables
-
-        Returns
-        -------
-        The native python form of the resolved variable
-        """
-        return formatter.post_process_native(
             self._apply_to_resolvable(
-                formatter=formatter, entry=None, function_overrides=function_overrides
+                formatter=formatter, entry=entry, function_overrides=function_overrides
             ).native
         )
 

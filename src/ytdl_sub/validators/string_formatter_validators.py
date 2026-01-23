@@ -82,21 +82,13 @@ class StringFormatterValidator(StringValidator):
         """
         return self._parsed
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: Any) -> Any:
         """
         Returns
         -------
-        Apply any post processing to the resolved value
+        Apply any post processing to the resolved value. Defaults to casting it to string.
         """
-        return resolved
-
-    def post_process_native(self, resolved: Any) -> Any:
-        """
-        Returns
-        -------
-        Apply any post processing to the resolved native value.
-        """
-        return resolved
+        return str(resolved)
 
 
 class FloatFormatterValidator(StringFormatterValidator):

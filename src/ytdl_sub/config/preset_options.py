@@ -62,10 +62,7 @@ class YTDLOptions(UnstructuredOverridesDictFormatterValidator):
         Materializes the entire ytdl-options dict from OverrideStringFormatters into
         native python.
         """
-        out = {
-            key: overrides.apply_overrides_formatter_to_native(val)
-            for key, val in self.dict.items()
-        }
+        out = {key: overrides.apply_formatter(val) for key, val in self.dict.items()}
         if "cookiefile" in out:
             if not FileHandler.is_file_existent(out["cookiefile"]):
                 raise ValidationException(
