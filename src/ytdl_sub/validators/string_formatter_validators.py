@@ -119,6 +119,13 @@ class StandardizedDateValidator(StringFormatterValidator):
         return resolved
 
 
+class BooleanFormatterValidator(StringFormatterValidator):
+    _expected_value_type_name = "boolean"
+
+    def post_process(self, resolved: Any) -> bool:
+        return ScriptUtils.bool_formatter_output(output=str(resolved))
+
+
 # pylint: disable=line-too-long
 class OverridesStringFormatterValidator(StringFormatterValidator):
     """
@@ -154,7 +161,9 @@ class OverridesFloatFormatterValidator(FloatFormatterValidator, OverridesStringF
     """
 
 
-class OverridesBooleanFormatterValidator(OverridesStringFormatterValidator):
+class OverridesBooleanFormatterValidator(
+    BooleanFormatterValidator, OverridesStringFormatterValidator
+):
     _expected_value_type_name = "boolean"
 
     def post_process(self, resolved: Any) -> bool:
