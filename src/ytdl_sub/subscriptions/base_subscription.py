@@ -272,5 +272,5 @@ class BaseSubscription(ABC):
             output_options=self.output_options,
             plugins=self.plugins,
             resolution_level=resolution_level,
-        ).ensure_proper_usage()
+        ).ensure_proper_usage(partial_resolve_formatters=True)
         return dump_yaml(out)

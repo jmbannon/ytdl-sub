@@ -23,7 +23,7 @@ def _ensure_resolved_yaml(
 
     if resolution_level > ResolutionLevel.ORIGINAL:
         expected_out["output_options"]["output_directory"] = FilePathTruncater.to_native_filepath(
-            expected_out["output_options"]["output_directory"]
+            str(Path(output_directory) / sub.name)
         )
 
     if "tv_show_directory" in expected_out["overrides"]:

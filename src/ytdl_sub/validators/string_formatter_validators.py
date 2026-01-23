@@ -13,7 +13,6 @@ from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.script.utils.exceptions import UserException
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
-from ytdl_sub.utils.file_handler import get_md5_hash
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.validators import DictValidator
 from ytdl_sub.validators.validators import ListValidator
@@ -240,7 +239,7 @@ def _validate_formatter(
     unresolved_variables: Set[str],
     unresolved_runtime_variables: Set[str],
     formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
-    resolve_partial: bool = True,
+    partial_resolve_entry_formatters: bool,
 ) -> str:
     parsed = formatter_validator.parsed
     if resolved := parsed.maybe_resolvable:
@@ -272,13 +271,11 @@ def _validate_formatter(
             f"formatter: {', '.join(sorted(unresolved))}"
         )
 
-    if resolve_partial and not is_static_formatter:
-        formatter_hash = get_md5_hash(formatter_validator.format_string)
-
+    if partial_resolve_entry_formatters and not is_static_formatter:
         parsed = mock_script.resolve_partial_once(
-            variable_definitions={formatter_hash: formatter_validator.parsed},
+            variable_definitions={"tmp_var": formatter_validator.parsed},
             unresolvable=unresolved_variables,
-        )[formatter_hash]
+        )["tmp_var"]
 
     try:
         if is_static_formatter:
@@ -309,6 +306,7 @@ def validate_formatters(
     unresolved_variables: Set[str],
     unresolved_runtime_variables: Set[str],
     validator: Validator,
+    partial_resolve_formatters: bool,
 ) -> Dict:
     """
     Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
@@ -326,6 +324,7 @@ def validate_formatters(
                 unresolved_variables=unresolved_variables,
                 unresolved_runtime_variables=unresolved_runtime_variables,
                 validator=validator_value,
+                partial_resolve_formatters=partial_resolve_formatters,
             )
     elif isinstance(validator, ListValidator):
         resolved_dict[validator.leaf_name] = []
@@ -335,6 +334,7 @@ def validate_formatters(
                 unresolved_variables=unresolved_variables,
                 unresolved_runtime_variables=unresolved_runtime_variables,
                 validator=list_value,
+                partial_resolve_formatters=partial_resolve_formatters,
             )
             assert len(list_output) == 1
             resolved_dict[validator.leaf_name].append(list(list_output.values())[0])
@@ -344,6 +344,7 @@ def validate_formatters(
             unresolved_variables=unresolved_variables,
             unresolved_runtime_variables=unresolved_runtime_variables,
             formatter_validator=validator,
+            partial_resolve_entry_formatters=partial_resolve_formatters,
         )
     elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
         resolved_dict[validator.leaf_name] = {}
@@ -353,6 +354,7 @@ def validate_formatters(
                 unresolved_variables=unresolved_variables,
                 unresolved_runtime_variables=unresolved_runtime_variables,
                 formatter_validator=validator_value,
+                partial_resolve_entry_formatters=partial_resolve_formatters,
             )
     else:
         resolved_dict[validator.leaf_name] = validator._value

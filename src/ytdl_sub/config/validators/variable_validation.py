@@ -108,7 +108,7 @@ class VariableValidation:
 
         self.unresolved_runtime_variables -= added_variables | modified_variables
 
-    def ensure_proper_usage(self) -> Dict:
+    def ensure_proper_usage(self, partial_resolve_formatters: bool = False) -> Dict:
         """
         Validate variables resolve as plugins are executed, and return
         a mock script which contains actualized added variables from the plugins
@@ -141,6 +141,7 @@ class VariableValidation:
                 unresolved_variables=self.unresolved_variables,
                 unresolved_runtime_variables=self.unresolved_runtime_variables,
                 validator=plugin_options,
+                partial_resolve_formatters=partial_resolve_formatters,
             )
 
         resolved_subscription |= validate_formatters(
@@ -148,6 +149,7 @@ class VariableValidation:
             unresolved_variables=self.unresolved_variables,
             unresolved_runtime_variables=self.unresolved_runtime_variables,
             validator=self.output_options,
+            partial_resolve_formatters=partial_resolve_formatters,
         )
 
         # TODO: make this a function
@@ -156,6 +158,7 @@ class VariableValidation:
             unresolved_variables=self.unresolved_variables,
             unresolved_runtime_variables=self.unresolved_runtime_variables,
             validator=self.downloader_options.urls,
+            partial_resolve_formatters=partial_resolve_formatters,
         )
         resolved_subscription["download"] = []
         for url_output in raw_download_output["download"]:
