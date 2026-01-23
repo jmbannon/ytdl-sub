@@ -62,8 +62,6 @@ class Script:
             self._ensure_no_cycle(
                 name=variable_name, dep=dep.name, deps=deps, definitions=self._variables
             )
-            if dep.name not in self._variables:
-                print("h")
             self._traverse_variable_dependencies(
                 variable_name=variable_name,
                 variable_dependency=self._variables[dep.name],
@@ -681,6 +679,11 @@ class Script:
         raise RuntimeException(f"Tried to get unresolved variable {variable_name}")
 
     def definition_of(self, name: str) -> SyntaxTree:
+        """
+        Returns
+        -------
+        The definition of the variable or function.
+        """
         if name.startswith("%") and name[1:] in self._functions:
             return self._functions[name[1:]]
         if name in self._variables:
@@ -707,25 +710,13 @@ class Script:
         """
         return set(to_function_definition_name(name) for name in self._functions.keys())
 
-    def _resolve_partial(
+    def _resolve_partial_loop(
         self,
-        unresolvable: Optional[Set[str]] = None,
-        output_filter: Optional[Set[str]] = None,
-    ) -> Dict[str, SyntaxTree]:
-        """
-        Returns
-        -------
-        New (deep-copied) script that resolves inner variables as much
-        as possible.
-        """
-        unresolvable: Set[str] = unresolvable or {}
-        resolved: Dict[Variable, Resolvable] = {}
-        unresolved: Dict[Variable, Argument] = {
-            Variable(name): definition
-            for name, definition in self._variables.items()
-            if name not in unresolvable
-        }
-
+        output_filter: Optional[Set[str]],
+        resolved: Dict[Variable, Resolvable],
+        unresolved: Dict[Variable, Argument],
+        unresolvable: Optional[Set[str]],
+    ):
         to_partially_resolve: Set[Variable] = (
             {Variable(name) for name in output_filter} if output_filter else set(unresolved.keys())
         )
@@ -738,9 +729,6 @@ class Script:
             for variable in list(to_partially_resolve):
                 definition = unresolved[variable]
                 maybe_resolved = definition
-
-                if variable.name == 'upload_date_index_padded':
-                    print('hm')
 
                 if isinstance(definition, Variable) and definition.name not in unresolvable:
                     if definition in resolved:
@@ -768,6 +756,32 @@ class Script:
                 # which means we can iterate again
                 partially_resolved |= definition != maybe_resolved
 
+    def _resolve_partial(
+        self,
+        unresolvable: Optional[Set[str]] = None,
+        output_filter: Optional[Set[str]] = None,
+    ) -> Dict[str, SyntaxTree]:
+        """
+        Returns
+        -------
+        New (deep-copied) script that resolves inner variables as much
+        as possible.
+        """
+        unresolvable: Set[str] = unresolvable or {}
+        resolved: Dict[Variable, Resolvable] = {}
+        unresolved: Dict[Variable, Argument] = {
+            Variable(name): definition
+            for name, definition in self._variables.items()
+            if name not in unresolvable
+        }
+
+        self._resolve_partial_loop(
+            output_filter=output_filter,
+            resolved=resolved,
+            unresolved=unresolved,
+            unresolvable=unresolvable,
+        )
+
         if output_filter:
             out: Dict[str, SyntaxTree] = {}
             for name in output_filter:
@@ -788,19 +802,21 @@ class Script:
         unresolvable: Optional[Set[str]] = None,
         output_filter: Optional[Set[str]] = None,
     ) -> "Script":
+        """
+        Updates the internal script to resolve as much as possible.
+        """
         out = self._resolve_partial(unresolvable=unresolvable, output_filter=output_filter)
         for var_name, definition in out.items():
             self._variables[var_name] = definition
 
         return self
 
-        # return copy.deepcopy(self).add_parsed(
-        #     {var_name: self._variables[var_name] for var_name in unresolvable} | out
-        # )
-
     def resolve_partial_once(
         self, variable_definitions: Dict[str, SyntaxTree], unresolvable: Optional[Set[str]] = None
     ) -> Dict[str, SyntaxTree]:
+        """
+        Partially resolves the input variable definitions as much as possible.
+        """
         try:
             self.add_parsed(variable_definitions)
             return self._resolve_partial(

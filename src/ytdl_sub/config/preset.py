@@ -255,11 +255,18 @@ class Preset(_PresetShell):
         """
         return cls(config=config, name=preset_name, value=preset_dict)
 
-    @property
-    def yaml(self) -> str:
+    def yaml(self, subscription_only: bool) -> str:
         """
+        Parameters
+        ----------
+        subscription_only:
+            Only include the subscription contents, not the surrounding boiler-plate.
+
         Returns
         -------
         Preset in YAML format
         """
+        if subscription_only:
+            return dump_yaml(self._value)
+
         return dump_yaml({"presets": {self._name: self._value}})

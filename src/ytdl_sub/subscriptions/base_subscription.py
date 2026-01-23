@@ -255,7 +255,7 @@ class BaseSubscription(ABC):
         -------
         Subscription in yaml format
         """
-        return self._preset_options.yaml
+        return self._preset_options.yaml(subscription_only=False)
 
     def resolved_yaml(self, resolution_level: int = ResolutionLevel.RESOLVE) -> str:
         """
@@ -264,7 +264,7 @@ class BaseSubscription(ABC):
         Human-readable, condensed YAML definition of the subscription.
         """
         if resolution_level == ResolutionLevel.ORIGINAL:
-            return self._preset_options.yaml
+            return self._preset_options.yaml(subscription_only=True)
 
         out = VariableValidation(
             overrides=self.overrides,

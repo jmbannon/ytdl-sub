@@ -1137,6 +1137,9 @@ class VariableDefinitions(
 
     @cache
     def variable_names(self, include_sanitized: bool):
+        """
+        Returns all variable names, and can include sanitized.
+        """
         var_names: Set[str] = self.scripts().keys()
         if include_sanitized:
             var_names |= {f"{name}_sanitized" for name in var_names}
