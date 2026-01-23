@@ -737,15 +737,16 @@ class Script:
 
             for variable in list(to_partially_resolve):
                 definition = unresolved[variable]
-
                 maybe_resolved = definition
+
                 if isinstance(definition, Variable) and definition.name not in unresolvable:
                     if definition in resolved:
                         maybe_resolved = resolved[definition]
-                    elif definition in unresolved:
-                        maybe_resolved = unresolved[definition]
                     else:
-                        raise UNREACHABLE
+                        # If it's not in resolved, it must be in unresolved.
+                        # Do not modify the definition, this avoids duplicate work because it will
+                        # wait for the single dependent variable to be resolved.
+                        assert definition in unresolved
                 elif isinstance(definition, VariableDependency):
                     maybe_resolved = definition.partial_resolve(
                         resolved_variables=resolved,
