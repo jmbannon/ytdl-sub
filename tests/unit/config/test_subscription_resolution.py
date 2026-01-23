@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -21,7 +22,9 @@ def _ensure_resolved_yaml(
     expected_out = expected_json(out, expected_out_filename)
 
     if resolution_level > ResolutionLevel.ORIGINAL:
-        expected_out["output_options"]["output_directory"] = str(Path(output_directory) / sub.name)
+        expected_out["output_options"]["output_directory"] = str(
+            os.path.join(output_directory, sub.name)
+        )
     if "tv_show_directory" in expected_out["overrides"]:
         expected_out["overrides"]["tv_show_directory"] = output_directory
     if "music_directory" in expected_out["overrides"]:
