@@ -62,6 +62,8 @@ class Script:
             self._ensure_no_cycle(
                 name=variable_name, dep=dep.name, deps=deps, definitions=self._variables
             )
+            if dep.name not in self._variables:
+                print("h")
             self._traverse_variable_dependencies(
                 variable_name=variable_name,
                 variable_dependency=self._variables[dep.name],

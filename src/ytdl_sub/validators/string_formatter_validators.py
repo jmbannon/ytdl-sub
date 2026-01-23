@@ -251,14 +251,6 @@ def _validate_formatter(
     variable_names = {var.name for var in parsed.variables}
     custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
 
-    if resolve_partial and not is_static_formatter:
-        formatter_hash = get_md5_hash(formatter_validator.format_string)
-
-        parsed = mock_script.resolve_partial_once(
-            variable_definitions={formatter_hash: formatter_validator.parsed},
-            unresolvable=unresolved_variables,
-        )[formatter_hash]
-
     # Add lambda functions to custom function names, if it's custom
     for lambda_func in parsed.lambdas:
         if lambda_func in mock_script.function_names:
@@ -279,6 +271,15 @@ def _validate_formatter(
             "contains the following variables that are unresolved when executing this "
             f"formatter: {', '.join(sorted(unresolved))}"
         )
+
+    if resolve_partial and not is_static_formatter:
+        formatter_hash = get_md5_hash(formatter_validator.format_string)
+
+        parsed = mock_script.resolve_partial_once(
+            variable_definitions={formatter_hash: formatter_validator.parsed},
+            unresolvable=unresolved_variables,
+        )[formatter_hash]
+
     try:
         if is_static_formatter:
             return mock_script.resolve_once_parsed(
