@@ -9,7 +9,7 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, UNRESOLVED_VARIABLES
 from ytdl_sub.script.script import Script
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
@@ -79,7 +79,7 @@ class VariableValidation:
         self.script: Script = self.overrides.script
         self.unresolved_variables = self.plugins.get_all_variables(
             additional_options=[self.output_options, self.downloader_options]
-        ) | {VARIABLES.entry_metadata.variable_name}
+        ) | UNRESOLVED_VARIABLES
         self.unresolved_runtime_variables = self.plugins.get_all_variables(
             additional_options=[self.output_options, self.downloader_options]
         )

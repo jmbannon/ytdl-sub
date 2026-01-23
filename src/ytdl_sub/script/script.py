@@ -739,6 +739,9 @@ class Script:
                 definition = unresolved[variable]
                 maybe_resolved = definition
 
+                if variable.name == 'upload_date_index_padded':
+                    print('hm')
+
                 if isinstance(definition, Variable) and definition.name not in unresolvable:
                     if definition in resolved:
                         maybe_resolved = resolved[definition]
