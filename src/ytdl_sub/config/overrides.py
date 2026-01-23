@@ -3,6 +3,8 @@ from typing import Dict
 from typing import Iterable
 from typing import Optional
 from typing import Set
+from typing import Type
+from typing import TypeVar
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
@@ -22,6 +24,8 @@ from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
+
+ExpectedT = TypeVar("ExpectedT")
 
 
 class Overrides(UnstructuredDictFormatterValidator, Scriptable):
@@ -206,7 +210,8 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         formatter: StringFormatterValidator,
         entry: Optional[Entry] = None,
         function_overrides: Optional[Dict[str, str]] = None,
-    ) -> Any:
+        expected_type: Type[ExpectedT] = str,
+    ) -> ExpectedT:
         """
         Parameters
         ----------
@@ -216,6 +221,8 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
             Optional. Entry to add source variables to the formatter
         function_overrides
             Optional. Explicit values to override the overrides themselves and source variables
+        expected_type
+            The expected type that should return. Defaults to string.
 
         Returns
         -------
@@ -226,17 +233,15 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         StringFormattingException
             If the formatter that is trying to be resolved cannot
         """
-        return formatter.post_process(
+        out = formatter.post_process(
             self._apply_to_resolvable(
                 formatter=formatter, entry=entry, function_overrides=function_overrides
             ).native
         )
 
-    def evaluate_boolean(
-        self, formatter: StringFormatterValidator, entry: Optional[Entry] = None
-    ) -> bool:
-        """
-        Apply a formatter, and evaluate it to a boolean
-        """
-        output = self.apply_formatter(formatter=formatter, entry=entry)
-        return ScriptUtils.bool_formatter_output(output)
+        if not isinstance(out, expected_type):
+            raise StringFormattingException(
+                f"Expected type {expected_type.__name__}, but received '{out.__class__.__name__}'"
+            )
+
+        return out

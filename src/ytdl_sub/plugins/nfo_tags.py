@@ -140,7 +140,7 @@ class SharedNfoTagsPlugin(Plugin[SharedNfoTagsOptions], ABC):
         if not nfo_tags:
             return
 
-        if self.overrides.evaluate_boolean(self.plugin_options.kodi_safe):
+        if self.overrides.apply_formatter(self.plugin_options.kodi_safe, expected_type=bool):
             nfo_root = to_max_3_byte_utf8_string(nfo_root)
             nfo_tags = {
                 to_max_3_byte_utf8_string(key): [

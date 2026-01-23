@@ -94,15 +94,15 @@ class StringFormatterValidator(StringValidator):
 class FloatFormatterValidator(StringFormatterValidator):
     _expected_value_type_name = "float"
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: str) -> float:
         try:
-            float(resolved)
+            out = float(resolved)
         except Exception as exc:
             raise self._validation_exception(
                 f"Expected a float, but received '{resolved}'"
             ) from exc
 
-        return resolved
+        return out
 
 
 class StandardizedDateValidator(StringFormatterValidator):
@@ -138,15 +138,14 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 class OverridesIntegerFormatterValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "integer"
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: str) -> int:
         try:
-            int(resolved)
+            out = int(resolved)
         except Exception as exc:
             raise self._validation_exception(
                 f"Expected an integer, but received '{resolved}'"
             ) from exc
-
-        return resolved
+        return out
 
 
 class OverridesFloatFormatterValidator(FloatFormatterValidator, OverridesStringFormatterValidator):
@@ -157,6 +156,9 @@ class OverridesFloatFormatterValidator(FloatFormatterValidator, OverridesStringF
 
 class OverridesBooleanFormatterValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "boolean"
+
+    def post_process(self, resolved: Any) -> bool:
+        return ScriptUtils.bool_formatter_output(output=str(resolved))
 
 
 class ListFormatterValidator(ListValidator[StringFormatterValidator]):

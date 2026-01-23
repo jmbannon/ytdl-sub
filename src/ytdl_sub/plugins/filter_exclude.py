@@ -52,7 +52,9 @@ class FilterExcludePlugin(Plugin[FilterExcludeOptions]):
             return entry
 
         for formatter in self.plugin_options.list:
-            should_exclude = self.overrides.evaluate_boolean(formatter=formatter, entry=entry)
+            should_exclude = self.overrides.apply_formatter(
+                formatter=formatter, entry=entry, expected_type=bool
+            )
 
             if should_exclude:
                 logger.info(

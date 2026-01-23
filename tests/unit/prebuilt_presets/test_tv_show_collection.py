@@ -63,6 +63,7 @@ class TestTvShowCollectionPreset:
                             # mock so bilateral url gets enabled
                             "subscription_has_download_archive": "True"
                         },
+                        expected_type=list,
                     )
                     assert url == [
                         f"youtube.com/playlist?url_{season_num}_{i}"
@@ -87,6 +88,7 @@ class TestTvShowCollectionPreset:
                                 # mock so bilateral url gets enabled
                                 "subscription_has_download_archive": "True"
                             },
+                            expected_type=list,
                         )
 
                         # First instance is the first url to get thumbnails
