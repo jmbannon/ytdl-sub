@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import pytest
@@ -8,6 +7,7 @@ from resources import expected_json
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.validators.variable_validation import ResolutionLevel
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.file_path import FilePathTruncater
 
 
 def _ensure_resolved_yaml(
@@ -22,9 +22,10 @@ def _ensure_resolved_yaml(
     expected_out = expected_json(out, expected_out_filename)
 
     if resolution_level > ResolutionLevel.ORIGINAL:
-        expected_out["output_options"]["output_directory"] = (
-            f"{output_directory}{os.path.sep}{sub.name}"
+        expected_out["output_options"]["output_directory"] = FilePathTruncater.to_native_filepath(
+            expected_out["output_options"]["output_directory"]
         )
+
     if "tv_show_directory" in expected_out["overrides"]:
         expected_out["overrides"]["tv_show_directory"] = output_directory
     if "music_directory" in expected_out["overrides"]:
