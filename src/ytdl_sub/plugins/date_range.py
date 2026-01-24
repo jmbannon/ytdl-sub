@@ -116,7 +116,7 @@ class DateRangePlugin(Plugin[DateRangeOptions]):
                 date_validator=self.plugin_options.after, overrides=self.overrides
             )
             after_filter = f"{date_type} >= {after_str}"
-            if self.overrides.apply_formatter(self.plugin_options.breaks, expected_type=bool):
+            if self.overrides.evaluate_boolean(self.plugin_options.breaks):
                 breaking_match_filters.append(after_filter)
             else:
                 match_filters.append(after_filter)
