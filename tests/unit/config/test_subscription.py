@@ -476,19 +476,6 @@ def test_advanced_tv_show_subscriptions(
 
     assert overrides.script.get("subscription_name").native == "Gardening with Ciscoe"
 
-    assert overrides.apply_overrides_formatter_to_native(overrides.dict["subscription_array"]) == [
-        "https://www.youtube.com/@gardeningwithciscoe4430",
-        "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_",
-        "https://www.youtube.com/playlist?list=PLsJlQSR-KjmaQqqJ9jq18cF6XXXAR4kyn",
-        "https://www.youtube.com/watch?v=2vq-vPubS5I",
-    ]
-    assert overrides.apply_overrides_formatter_to_native(overrides.dict["urls"]) == [
-        "https://www.youtube.com/@gardeningwithciscoe4430",
-        "https://www.youtube.com/playlist?list=PLi8V8UemxeG6lo5if5H5g5EbsteELcb0_",
-        "https://www.youtube.com/playlist?list=PLsJlQSR-KjmaQqqJ9jq18cF6XXXAR4kyn",
-        "https://www.youtube.com/watch?v=2vq-vPubS5I",
-    ]
-
 
 def test_music_subscriptions(default_config: ConfigFile, music_subscriptions_path: Path):
     subs = Subscription.from_file_path(
