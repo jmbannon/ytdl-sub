@@ -31,7 +31,7 @@ class SquareThumbnailPlugin(Plugin[SquareThumbnailOptions]):
 
     @property
     def _square_thumbnail(self) -> bool:
-        return self.overrides.evaluate_boolean(self.plugin_options)
+        return self.overrides.apply_formatter(self.plugin_options, expected_type=bool)
 
     @classmethod
     def _convert_to_square_thumbnail(cls, entry: Entry) -> None:
