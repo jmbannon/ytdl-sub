@@ -2,17 +2,17 @@
   "chapters": {
     "allow_chapters_from_comments": false,
     "embed_chapters": true,
-    "enable": "True",
+    "enable": true,
     "force_key_frames": false
   },
   "date_range": {
-    "breaks": "True",
-    "enable": "True",
+    "breaks": true,
+    "enable": true,
     "type": "upload_date"
   },
   "download": [
     {
-      "download_reverse": "True",
+      "download_reverse": true,
       "include_sibling_metadata": false,
       "playlist_thumbnails": [
         {
@@ -34,7 +34,9 @@
           "uid": "banner_uncropped"
         }
       ],
-      "url": "https://www.youtube.com/@novapbs",
+      "url": [
+        "https://www.youtube.com/@novapbs"
+      ],
       "variables": {},
       "webpage_url": "{ webpage_url }",
       "ytdl_options": {}
@@ -43,7 +45,7 @@
   "file_convert": {
     "convert_to": "mp4",
     "convert_with": "yt-dlp",
-    "enable": "True"
+    "enable": true
   },
   "format": "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)",
   "output_options": {
@@ -52,7 +54,7 @@
     "info_json_name": "{ %concat( %string( %sanitize( %concat( \"Season \", %string( upload_year ) ) ) ), \"/\", %string( %sanitize( %concat( \"s\", %string( upload_year ), \".e\", %string( %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) ), \" - \", %string( title_sanitized_plex ) ) ) ) ) }.{ info_json_ext }",
     "keep_files_date_eval": "{ upload_date_standardized }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmptcec16mv/NOVA PBS",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpk9271nih/NOVA PBS",
     "preserve_mtime": false,
     "thumbnail_name": "{ %concat( %string( %sanitize( %concat( \"Season \", %string( upload_year ) ) ) ), \"/\", %string( %sanitize( %concat( \"s\", %string( upload_year ), \".e\", %string( %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) ), \" - \", %string( title_sanitized_plex ) ) ) ) ) }-thumb.jpg"
   },
@@ -110,7 +112,7 @@
     "tv_show_content_rating": "TV-14",
     "tv_show_content_rating_default": "TV-14",
     "tv_show_date_range_type": "upload_date",
-    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmptcec16mv",
+    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpk9271nih",
     "tv_show_fanart_file_name": "fanart.jpg",
     "tv_show_genre": "Documentaries",
     "tv_show_genre_default": "ytdl-sub",
@@ -223,16 +225,16 @@
   "throttle_protection": {
     "enable": true,
     "sleep_per_download_s": {
-      "max": "28.4",
-      "min": "13.8"
+      "max": 28.4,
+      "min": 13.8
     },
     "sleep_per_request_s": {
-      "max": "0.75",
-      "min": "0.0"
+      "max": 0.75,
+      "min": 0.0
     },
     "sleep_per_subscription_s": {
-      "max": "26.1",
-      "min": "16.3"
+      "max": 26.1,
+      "min": 16.3
     }
   },
   "video_tags": {

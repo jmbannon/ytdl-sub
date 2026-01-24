@@ -11,7 +11,6 @@ from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.script.utils.exceptions import UserException
-from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.validators import DictValidator
@@ -225,28 +224,16 @@ class UnstructuredOverridesDictFormatterValidator(UnstructuredDictFormatterValid
     _key_validator = OverridesStringFormatterValidator
 
 
-def to_variable_dependency_format_string(script: Script, parsed_format_string: SyntaxTree) -> str:
-    """
-    Create a dummy format string that contains all variable deps as a string.
-    """
-    dummy_format_string = ""
-    for var in parsed_format_string.variables:
-        dummy_format_string += f"{{ {var.name} }}"
-        for variable_dependency in script._variables[var.name].variables:
-            dummy_format_string += f"{{ {variable_dependency.name} }}"
-    return dummy_format_string
-
-
 def _validate_formatter(
     mock_script: Script,
     unresolved_variables: Set[str],
     unresolved_runtime_variables: Set[str],
     formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
     partial_resolve_entry_formatters: bool,
-) -> str:
+) -> Any:
     parsed = formatter_validator.parsed
     if resolved := parsed.maybe_resolvable:
-        return resolved.native
+        return formatter_validator.post_process(resolved.native)
 
     is_static_formatter = isinstance(formatter_validator, OverridesStringFormatterValidator)
 
@@ -282,11 +269,16 @@ def _validate_formatter(
 
     try:
         if is_static_formatter:
-            return mock_script.resolve_once_parsed(
-                {"tmp_var": formatter_validator.parsed},
-                unresolvable=unresolved_variables,
-                update=True,
-            )["tmp_var"].native
+            return formatter_validator.post_process(
+                mock_script.resolve_once_parsed(
+                    {"tmp_var": formatter_validator.parsed},
+                    unresolvable=unresolved_variables,
+                    update=True,
+                )["tmp_var"].native
+            )
+
+        if maybe_resolved := parsed.maybe_resolvable:
+            return formatter_validator.post_process(maybe_resolved)
 
         return ScriptUtils.to_native_script(parsed)
     except RuntimeException as exc:
@@ -296,12 +288,6 @@ def _validate_formatter(
                 "entry variables"
             ) from exc
         raise StringFormattingVariableNotFoundException(exc) from exc
-    except UserThrownRuntimeError as exc:
-        # Errors are expected for non-static formatters due to missing entry
-        # data. Raise otherwise.
-        if not is_static_formatter:
-            return formatter_validator.format_string
-        raise exc
 
 
 def validate_formatters(

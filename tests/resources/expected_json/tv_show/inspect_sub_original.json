@@ -109,7 +109,7 @@
     "tv_show_content_rating": "{subscription_indent_2}",
     "tv_show_content_rating_default": "TV-14",
     "tv_show_date_range_type": "{\n  %if(\n    %contains(tv_show_by_date_season_ordering, \"release\"),\n    \"release_date\",\n    \"upload_date\"\n  )\n}",
-    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpjjbduqm_",
+    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpg7qxc12z",
     "tv_show_fanart_file_name": "fanart.jpg",
     "tv_show_genre": "{subscription_indent_1}",
     "tv_show_genre_default": "ytdl-sub",
