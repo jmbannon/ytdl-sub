@@ -73,3 +73,31 @@ class TestYtdlOptions:
                 preset_name="test_ytdl_options",
                 preset_dict=preset_dict,
             ).download(dry_run=False)
+
+    def test_ytdl_option_types_preserved(
+        self,
+        default_config: ConfigFile,
+        output_directory: str,
+    ):
+        preset_dict = {
+            "download": "https://your.name.here",
+            "output_options": {"output_directory": output_directory, "file_name": "will_error.mp4"},
+            "ytdl_options": {
+                "break_on_existing": True,
+                "js_runtimes": {"deno": {"path": "/usr/local/bin/deno"}},
+            },
+        }
+
+        sub = Subscription.from_dict(
+            config=default_config,
+            preset_name="test_ytdl_options",
+            preset_dict=preset_dict,
+        )
+
+        expected = {
+            "break_on_existing": True,
+            "js_runtimes": {"deno": {"path": "/usr/local/bin/deno"}},
+        }
+        out = sub.ytdl_options.to_native_dict(sub.overrides)
+
+        assert out == expected
