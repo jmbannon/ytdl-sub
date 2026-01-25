@@ -71,7 +71,7 @@ class TestThrottleProtectionPlugin:
             ),
             assert_logs(
                 logger=throttle_protection_logger,
-                expected_message="Sleeping between subscriptions for %0.2f seconds",
+                expected_message="Sleeping between subscriptions for 0.02 seconds",
                 log_level="info",
                 expected_occurrences=1,
             ),
@@ -139,7 +139,7 @@ class TestThrottleProtectionPlugin:
             ),
             assert_logs(
                 logger=throttle_protection_logger,
-                expected_message="Reached subscription max downloads of %d",
+                expected_message="Reached subscription max downloads of 0 for throttle protection",
                 log_level="info",
                 expected_occurrences=1,
             ),

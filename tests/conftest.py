@@ -117,7 +117,8 @@ def assert_logs(
         yield
 
     for call_args in patched_debug.call_args_list:
-        occurrences += int(expected_message in call_args.args[0])
+        full_print = call_args.args[0] % call_args.args[1:]
+        occurrences += int(expected_message in full_print)
 
     if expected_occurrences is not None:
         assert (
