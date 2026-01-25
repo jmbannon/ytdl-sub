@@ -82,35 +82,27 @@ class StringFormatterValidator(StringValidator):
         """
         return self._parsed
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: Any) -> Any:
         """
         Returns
         -------
-        Apply any post processing to the resolved value
+        Apply any post processing to the resolved value. Defaults to casting it to string.
         """
-        return resolved
-
-    def post_process_native(self, resolved: Any) -> Any:
-        """
-        Returns
-        -------
-        Apply any post processing to the resolved native value.
-        """
-        return resolved
+        return str(resolved)
 
 
 class FloatFormatterValidator(StringFormatterValidator):
     _expected_value_type_name = "float"
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: str) -> float:
         try:
-            float(resolved)
+            out = float(resolved)
         except Exception as exc:
             raise self._validation_exception(
                 f"Expected a float, but received '{resolved}'"
             ) from exc
 
-        return resolved
+        return out
 
 
 class StandardizedDateValidator(StringFormatterValidator):
@@ -125,6 +117,13 @@ class StandardizedDateValidator(StringFormatterValidator):
             ) from exc
 
         return resolved
+
+
+class BooleanFormatterValidator(StringFormatterValidator):
+    _expected_value_type_name = "boolean"
+
+    def post_process(self, resolved: Any) -> bool:
+        return ScriptUtils.bool_formatter_output(output=str(resolved))
 
 
 # pylint: disable=line-too-long
@@ -146,15 +145,14 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 class OverridesIntegerFormatterValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "integer"
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: str) -> int:
         try:
-            int(resolved)
+            out = int(resolved)
         except Exception as exc:
             raise self._validation_exception(
                 f"Expected an integer, but received '{resolved}'"
             ) from exc
-
-        return resolved
+        return out
 
 
 class OverridesFloatFormatterValidator(FloatFormatterValidator, OverridesStringFormatterValidator):
@@ -163,8 +161,13 @@ class OverridesFloatFormatterValidator(FloatFormatterValidator, OverridesStringF
     """
 
 
-class OverridesBooleanFormatterValidator(OverridesStringFormatterValidator):
+class OverridesBooleanFormatterValidator(
+    BooleanFormatterValidator, OverridesStringFormatterValidator
+):
     _expected_value_type_name = "boolean"
+
+    def post_process(self, resolved: Any) -> bool:
+        return ScriptUtils.bool_formatter_output(output=str(resolved))
 
 
 class ListFormatterValidator(ListValidator[StringFormatterValidator]):

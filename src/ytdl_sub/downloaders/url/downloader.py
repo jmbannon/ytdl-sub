@@ -52,12 +52,12 @@ class UrlDownloaderBasePluginExtension(SourcePluginExtension[MultiUrlValidator])
 
         if 0 <= input_url_idx < len(self.plugin_options.urls.list):
             validator = self.plugin_options.urls.list[input_url_idx]
-            if entry_input_url in self.overrides.apply_overrides_formatter_to_native(validator.url):
+            if entry_input_url in self.overrides.apply_formatter(validator.url, expected_type=list):
                 return validator
 
         # Match the first validator based on the URL, if one exists
         for validator in self.plugin_options.urls.list:
-            if entry_input_url in self.overrides.apply_overrides_formatter_to_native(validator.url):
+            if entry_input_url in self.overrides.apply_formatter(validator.url, expected_type=list):
                 return validator
 
         # Return the first validator if none exist
@@ -382,7 +382,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         entries_to_iter: List[Optional[Entry]] = entries
 
         indices = list(range(len(entries_to_iter)))
-        if self.overrides.evaluate_boolean(validator.download_reverse):
+        if self.overrides.apply_formatter(validator.download_reverse, expected_type=bool):
             indices = reversed(indices)
 
         for idx in indices:
@@ -461,8 +461,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             ytdl_option_overrides=validator.ytdl_options.to_native_dict(self.overrides)
         )
 
-        include_sibling_metadata = self.overrides.evaluate_boolean(
-            validator.include_sibling_metadata
+        include_sibling_metadata = self.overrides.apply_formatter(
+            validator.include_sibling_metadata, expected_type=bool
         )
 
         parents, orphan_entries = self._download_url_metadata(
@@ -487,10 +487,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         # download the bottom-most urls first since they are top-priority
         for idx, url_validator in reversed(list(enumerate(self.collection.urls.list))):
             # URLs can be empty. If they are, then skip
-            if not (urls := self.overrides.apply_overrides_formatter_to_native(url_validator.url)):
+            if not (urls := self.overrides.apply_formatter(url_validator.url, expected_type=list)):
                 continue
-
-            assert isinstance(urls, list)
 
             for url in reversed(urls):
                 assert isinstance(url, str)
