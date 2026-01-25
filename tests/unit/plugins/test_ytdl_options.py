@@ -11,6 +11,7 @@ from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.ffmpeg import FFMPEG
+from ytdl_sub.utils.file_path import FilePathTruncater
 
 
 @pytest.fixture
@@ -31,7 +32,9 @@ class TestYtdlOptions:
     ):
         expected_ytdl_options = {
             "ignoreerrors": True,
-            "outtmpl": f"{working_directory}/test_ytdl_options/%(id)S.%(ext)s",
+            "outtmpl": FilePathTruncater.to_native_filepath(
+                f"{working_directory}/test_ytdl_options/%(id)S.%(ext)s"
+            ),
             "writethumbnail": False,
             "ffmpeg_location": FFMPEG.ffmpeg_path(),
             "match_filter": yt_dlp.utils.match_filter_func(
