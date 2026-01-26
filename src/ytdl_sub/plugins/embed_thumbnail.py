@@ -33,7 +33,7 @@ class EmbedThumbnailPlugin(Plugin[EmbedThumbnailOptions]):
 
     @property
     def _embed_thumbnail(self) -> bool:
-        return self.overrides.evaluate_boolean(self.plugin_options)
+        return self.overrides.apply_formatter(self.plugin_options, expected_type=bool)
 
     @classmethod
     def _embed_video_thumbnail(cls, entry: Entry) -> None:

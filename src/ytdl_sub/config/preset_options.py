@@ -63,7 +63,7 @@ class YTDLOptions(UnstructuredOverridesDictFormatterValidator):
         native python.
         """
         out = {
-            key: overrides.apply_overrides_formatter_to_native(val)
+            key: overrides.apply_formatter(val, expected_type=object)
             for key, val in self.dict.items()
         }
         if "cookiefile" in out:
