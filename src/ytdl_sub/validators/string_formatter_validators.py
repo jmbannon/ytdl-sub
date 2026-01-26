@@ -212,7 +212,22 @@ class OverridesDictFormatterValidator(DictFormatterValidator):
     _key_validator = OverridesStringFormatterValidator
 
 
+class AnyFormatterValidator(StringFormatterValidator):
+    """
+    Applies no post-processing.
+    """
+
+    def post_process(self, resolved: Any) -> Any:
+        return resolved
+
+
+class AnyOverridesFormatterValidator(AnyFormatterValidator, OverridesStringFormatterValidator):
+    pass
+
+
 class UnstructuredDictFormatterValidator(DictFormatterValidator):
+    _key_validator = AnyFormatterValidator
+
     def __init__(self, name, value):
         # Convert the unstructured-ness into a script
         if isinstance(value, dict):
@@ -221,7 +236,7 @@ class UnstructuredDictFormatterValidator(DictFormatterValidator):
 
 
 class UnstructuredOverridesDictFormatterValidator(UnstructuredDictFormatterValidator):
-    _key_validator = OverridesStringFormatterValidator
+    _key_validator = AnyOverridesFormatterValidator
 
 
 def _validate_formatter(
