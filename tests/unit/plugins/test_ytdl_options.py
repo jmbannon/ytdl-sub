@@ -82,17 +82,16 @@ class TestYtdlOptions:
         default_config: ConfigFile,
         output_directory: str,
     ):
-        expected = {
-            "break_on_existing": True,
-            "js_runtimes": {"deno": {"path": "/usr/local/bin/deno"}},
-            "string_path": "test",
-            "list_test": ["hmmm"],
-        }
-
         preset_dict = {
             "download": "https://your.name.here",
             "output_options": {"output_directory": output_directory, "file_name": "will_error.mp4"},
-            "ytdl_options": expected,
+            "ytdl_options": {
+                "break_on_existing": True,
+                "js_runtimes": {"deno": {"path": "/usr/local/bin/{dnope}"}},
+                "string_path": "verify overrides: {test_string}",
+                "list_test": ["hmmm"],
+            },
+            "overrides": {"test_string": "hi", "dnope": "deno"},
         }
 
         sub = Subscription.from_dict(
@@ -102,4 +101,11 @@ class TestYtdlOptions:
         )
 
         out = sub.ytdl_options.to_native_dict(sub.overrides)
+        expected = {
+            "break_on_existing": True,
+            "js_runtimes": {"deno": {"path": "/usr/local/bin/deno"}},
+            "string_path": "verify overrides: hi",
+            "list_test": ["hmmm"],
+        }
+
         assert out == expected
