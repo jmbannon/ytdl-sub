@@ -50,13 +50,13 @@
   "format": "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)",
   "output_options": {
     "download_archive_name": ".ytdl-sub-NOVA PBS-download-archive.json",
-    "file_name": "{ %concat( %string( %sanitize( %concat( \"Season \", %string( upload_year ) ) ) ), \"/\", %string( %sanitize( %concat( \"s\", %string( upload_year ), \".e\", %string( %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) ), \" - \", %string( title_sanitized_plex ) ) ) ) ) }.{ ext }",
-    "info_json_name": "{ %concat( %string( %sanitize( %concat( \"Season \", %string( upload_year ) ) ) ), \"/\", %string( %sanitize( %concat( \"s\", %string( upload_year ), \".e\", %string( %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) ), \" - \", %string( title_sanitized_plex ) ) ) ) ) }.{ info_json_ext }",
+    "file_name": "{ %concat( %sanitize( %concat( \"Season \", upload_year ) ), \"/\", %sanitize( %concat( \"s\", upload_year, \".e\", %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ), \" - \", title_sanitized_plex ) ) ) }.{ ext }",
+    "info_json_name": "{ %concat( %sanitize( %concat( \"Season \", upload_year ) ), \"/\", %sanitize( %concat( \"s\", upload_year, \".e\", %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ), \" - \", title_sanitized_plex ) ) ) }.{ info_json_ext }",
     "keep_files_date_eval": "{ upload_date_standardized }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpk9271nih/NOVA PBS",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpnhm5yd08/NOVA PBS",
     "preserve_mtime": false,
-    "thumbnail_name": "{ %concat( %string( %sanitize( %concat( \"Season \", %string( upload_year ) ) ) ), \"/\", %string( %sanitize( %concat( \"s\", %string( upload_year ), \".e\", %string( %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) ), \" - \", %string( title_sanitized_plex ) ) ) ) ) }-thumb.jpg"
+    "thumbnail_name": "{ %concat( %sanitize( %concat( \"Season \", upload_year ) ), \"/\", %sanitize( %concat( \"s\", upload_year, \".e\", %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ), \" - \", title_sanitized_plex ) ) ) }-thumb.jpg"
   },
   "overrides": {
     "%bilateral_url": "{ %if( %and( enable_bilateral_scraping, subscription_has_download_archive, %is_bilateral_url( $0 ) ), $0, '' ) }",
@@ -73,7 +73,7 @@
     "episode_content_rating": "TV-14",
     "episode_date_standardized": "{ upload_date_standardized }",
     "episode_file_name": "s{ upload_year }.e{ %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) } - { title_sanitized_plex }",
-    "episode_file_path": "{ %sanitize( %concat( \"Season \", %string( upload_year ) ) ) }/{ %sanitize( %concat( \"s\", %string( upload_year ), \".e\", %string( %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) ), \" - \", %string( title_sanitized_plex ) ) ) }",
+    "episode_file_path": "{ %sanitize( %concat( \"Season \", upload_year ) ) }/{ %sanitize( %concat( \"s\", upload_year, \".e\", %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ), \" - \", title_sanitized_plex ) ) }",
     "episode_number": "{ upload_month }{ upload_day_padded }{ upload_date_index_padded }",
     "episode_number_and_padded_": "{ [ %concat( upload_month, upload_day_padded, upload_date_index_padded ), 6 ] }",
     "episode_number_padded": "{ %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) }",
@@ -97,7 +97,7 @@
     "season_directory_name": "Season { upload_year }",
     "season_number": "{ upload_year }",
     "season_number_padded": "{ upload_year }",
-    "season_poster_file_name": "{ %sanitize( %concat( \"Season \", %string( upload_year ) ) ) }/Season{ upload_year }.jpg",
+    "season_poster_file_name": "{ %sanitize( %concat( \"Season \", upload_year ) ) }/Season{ upload_year }.jpg",
     "subscription_array": [
       "https://www.youtube.com/@novapbs"
     ],
@@ -105,14 +105,14 @@
     "subscription_indent_2": "TV-14",
     "subscription_value": "https://www.youtube.com/@novapbs",
     "subscription_value_1": "https://www.youtube.com/@novapbs",
-    "thumbnail_file_name": "{ %concat( %string( %sanitize( %concat( \"Season \", %string( upload_year ) ) ) ), \"/\", %string( %sanitize( %concat( \"s\", %string( upload_year ), \".e\", %string( %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ) ), \" - \", %string( title_sanitized_plex ) ) ) ) ) }-thumb.jpg",
+    "thumbnail_file_name": "{ %concat( %sanitize( %concat( \"Season \", upload_year ) ), \"/\", %sanitize( %concat( \"s\", upload_year, \".e\", %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ), \" - \", title_sanitized_plex ) ) ) }-thumb.jpg",
     "tv_show_by_date_episode_ordering": "upload-month-day",
     "tv_show_by_date_ordering_pair_validation_": "{ [ %concat( upload_month, upload_day_padded, upload_date_index_padded ), 6 ] }",
     "tv_show_by_date_season_ordering": "upload-year",
     "tv_show_content_rating": "TV-14",
     "tv_show_content_rating_default": "TV-14",
     "tv_show_date_range_type": "upload_date",
-    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpk9271nih",
+    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpnhm5yd08",
     "tv_show_fanart_file_name": "fanart.jpg",
     "tv_show_genre": "Documentaries",
     "tv_show_genre_default": "ytdl-sub",

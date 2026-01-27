@@ -155,8 +155,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
             keep_max_files: Optional[int] = None
             if self.output_options.keep_max_files:
                 # validated it can be cast to int within the validator
-                keep_max_files = int(
-                    self.overrides.apply_formatter(self.output_options.keep_max_files)
+                keep_max_files = self.overrides.apply_formatter(
+                    self.output_options.keep_max_files, expected_type=int
                 )
 
             if date_range_to_keep or self.output_options.keep_max_files is not None:
