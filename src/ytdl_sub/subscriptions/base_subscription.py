@@ -8,6 +8,7 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import YTDLOptions
+from ytdl_sub.config.validators.variable_validation import ResolutionLevel
 from ytdl_sub.config.validators.variable_validation import VariableValidation
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
@@ -79,7 +80,7 @@ class BaseSubscription(ABC):
         )
 
         # Validate after adding the subscription name
-        self._validated_dict = VariableValidation(
+        _ = VariableValidation(
             overrides=self.overrides,
             downloader_options=self.downloader_options,
             output_options=self.output_options,
@@ -254,12 +255,22 @@ class BaseSubscription(ABC):
         -------
         Subscription in yaml format
         """
-        return self._preset_options.yaml
+        return self._preset_options.yaml(subscription_only=False)
 
-    def resolved_yaml(self) -> str:
+    def resolved_yaml(self, resolution_level: int = ResolutionLevel.RESOLVE) -> str:
         """
         Returns
         -------
         Human-readable, condensed YAML definition of the subscription.
         """
-        return dump_yaml(self._validated_dict)
+        if resolution_level == ResolutionLevel.ORIGINAL:
+            return self._preset_options.yaml(subscription_only=True)
+
+        out = VariableValidation(
+            overrides=self.overrides,
+            downloader_options=self.downloader_options,
+            output_options=self.output_options,
+            plugins=self.plugins,
+            resolution_level=resolution_level,
+        ).ensure_proper_usage(partial_resolve_formatters=True)
+        return dump_yaml(out)
