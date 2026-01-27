@@ -94,8 +94,8 @@ class SubscriptionYTDLOptions:
                 self._enhanced_download_archive.working_ytdl_file_path
             )
         if self._preset.output_options.keep_max_files:
-            keep_max_files = int(
-                self._overrides.apply_formatter(self._preset.output_options.keep_max_files)
+            keep_max_files = self._overrides.apply_formatter(
+                self._preset.output_options.keep_max_files, expected_type=int
             )
             if keep_max_files > 0:
                 # yt-dlp has a weird bug with max_downloads=1, set to 2 for safe measure
