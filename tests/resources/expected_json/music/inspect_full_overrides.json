@@ -1,5 +1,5 @@
 {
-  "album_cover_path": "Lester Young/{ %concat( \"[\", %string( %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ) ), \"] \", %string( %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) ) }/folder.jpg",
+  "album_cover_path": "Lester Young/{ %concat( \"[\", %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ), \"] \", %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) }/folder.{ thumbnail_ext }",
   "album_dir": "[{ %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ) }] { %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) }",
   "artist_dir": "Lester Young",
   "avatar_uncropped_thumbnail_file_name": "",
@@ -24,7 +24,7 @@
   "track_artist": "Lester Young",
   "track_date": "{ %string( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"date_standardized\" ) ) }",
   "track_file_name": "{ %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ) } - { %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) }.{ ext }",
-  "track_full_path": "Lester Young/{ %concat( \"[\", %string( %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ) ), \"] \", %string( %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) ) }/{ %concat( %string( %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ) ), \" - \", %string( %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ), \".\", %string( ext ) ) }",
+  "track_full_path": "{ artist_dir }/{ %concat( \"[\", %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ), \"] \", %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) }/{ %concat( %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ), \" - \", %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ), \".\", ext ) }",
   "track_genre": "Jazz",
   "track_genre_default": "Unset",
   "track_number": "{ %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ) }",

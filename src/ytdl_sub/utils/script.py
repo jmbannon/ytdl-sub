@@ -87,9 +87,8 @@ class ScriptUtils:
             ast = parse(text=value).ast
             if len(ast) == 1:
                 return ast[0]
-            return BuiltInFunction(
-                name="concat", args=[BuiltInFunction(name="string", args=[arg]) for arg in ast]
-            )
+
+            return BuiltInFunction(name="concat", args=ast)
         if isinstance(value, bool):
             return Boolean(value)
         if isinstance(value, int):

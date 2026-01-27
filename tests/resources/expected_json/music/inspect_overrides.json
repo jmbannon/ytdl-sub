@@ -1,5 +1,5 @@
 {
-  "album_cover_path": "Lester Young/{ %concat( \"[\", %string( playlist_max_upload_year ), \"] \", %string( %sanitize( playlist_title ) ) ) }/folder.{ thumbnail_ext }",
+  "album_cover_path": "Lester Young/{ %concat( \"[\", playlist_max_upload_year, \"] \", %sanitize( playlist_title ) ) }/folder.{ thumbnail_ext }",
   "album_dir": "[{ playlist_max_upload_year }] { %sanitize( playlist_title ) }",
   "artist_dir": "Lester Young",
   "avatar_uncropped_thumbnail_file_name": "",
@@ -24,7 +24,7 @@
   "track_artist": "Lester Young",
   "track_date": "{ upload_date_standardized }",
   "track_file_name": "{ playlist_index_padded } - { %sanitize( title ) }.{ ext }",
-  "track_full_path": "Lester Young/{ %concat( \"[\", %string( playlist_max_upload_year ), \"] \", %string( %sanitize( playlist_title ) ) ) }/{ %concat( %string( playlist_index_padded ), \" - \", %string( %sanitize( title ) ), \".\", %string( ext ) ) }",
+  "track_full_path": "{ artist_dir }/{ %concat( \"[\", playlist_max_upload_year, \"] \", %sanitize( playlist_title ) ) }/{ %concat( playlist_index_padded, \" - \", %sanitize( title ), \".\", ext ) }",
   "track_genre": "Jazz",
   "track_genre_default": "Unset",
   "track_number": "{ playlist_index }",
