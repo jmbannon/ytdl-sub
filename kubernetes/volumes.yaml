@@ -1,0 +1,38 @@
+# Final media storage.
+# This should have enough space to store all the media you download. If you already have
+# a media volume that you're serving stuff from (plex, etc.), then you can mount it
+# here, or do the opposite and mount this volume to your running media server pods.
+# It's recommended to use a separate volume from your other media downloads for safety.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: yt-media
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      # Set to the size of the storage volume you need
+      storage: 100Gi
+  # Will use the default storage class if not set, otherwise set to your desired
+  # storageclass name.
+  #storageClassName: my-video-storage-name
+---
+
+# For persistence of your cache, it is recommended to use a PVC for your /cache
+# directory. Make sure the storage is fast enough, since it will be used as a cache for
+# downloading a lot of small files, as well as temporary files while ytdl and ffmpeg do
+# their work.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: yt-cache
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      # You probably don't need much storage, but that depends on the kinds of videos
+      # you download. I'd recommend at least 10Gi.
+      storage: 16Gi
+  #storageClassName: my-fast-storage-name
