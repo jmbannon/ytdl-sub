@@ -87,7 +87,7 @@ def working_directory() -> str:
 @pytest.fixture()
 def output_directory() -> str:
     with tempfile.TemporaryDirectory() as temp_dir:
-        yield temp_dir
+        yield os.path.normpath(temp_dir)
 
 
 @pytest.fixture()
@@ -173,10 +173,11 @@ def subscription_yaml_file_generator() -> Callable:
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
             tmp_file.write(json.dumps(yaml_dict).encode("utf-8"))
 
+        file_path = os.path.normpath(tmp_file.name)
         try:
-            yield tmp_file.name
+            yield file_path
         finally:
-            FileHandler.delete(tmp_file.name)
+            FileHandler.delete(file_path)
 
     return _subscription_yaml_file_generator
 
@@ -277,10 +278,11 @@ def default_config_path(default_config) -> str:
     with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as tmp_file:
         tmp_file.write(json.dumps(default_config._value).encode("utf-8"))
 
+    file_path = os.path.normpath(tmp_file.name)
     try:
-        yield tmp_file.name
+        yield file_path
     finally:
-        FileHandler.delete(tmp_file.name)
+        FileHandler.delete(file_path)
 
 
 @pytest.fixture()

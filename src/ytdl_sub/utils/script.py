@@ -130,7 +130,6 @@ class ScriptUtils:
                 return "" if top_level else "''"
 
             quote = cls._get_quote_char(arg.native)
-
             return arg.native if top_level else f"{quote}{arg.native}{quote}"
 
         if isinstance(arg, Integer):
