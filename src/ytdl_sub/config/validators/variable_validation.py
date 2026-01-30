@@ -90,5 +90,11 @@ class VariableValidation:
             if url_output["url"]:
                 resolved_subscription["download"].append(url_output)
 
+        resolved_subscription |= validate_formatters(
+            script=self.script,
+            unresolved_variables=self.unresolved_variables,
+            validator=self.overrides,
+        )
+
         assert not self.unresolved_variables
         return resolved_subscription

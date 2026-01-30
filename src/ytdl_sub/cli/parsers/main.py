@@ -1,5 +1,6 @@
 import argparse
 import dataclasses
+from typing import Dict
 from typing import List
 
 from ytdl_sub import __local_version__
@@ -225,3 +226,77 @@ view_parser.add_argument("url", help="URL to view source variables for")
 ###################################################################################################
 # CLI-TO-SUB PARSER
 cli_to_sub_parser = subparsers.add_parser("cli-to-sub")
+
+###################################################################################################
+# INSPECT PARSER
+
+
+class InspectArguments:
+    LEVEL = CLIArgument(
+        short="-l",
+        long="--level",
+    )
+    LevelChoices: Dict[str, str] = {
+        "0": "original",
+        "1": "fill",
+        "2": "resolve",
+        "3": "internal",
+    }
+
+    MOCK = CLIArgument(
+        short="-k",
+        long="--mock",
+    )
+
+
+inspect_parser = subparsers.add_parser("inspect")
+inspect_parser.add_argument(
+    InspectArguments.LEVEL.short,
+    InspectArguments.LEVEL.long,
+    metavar=",".join(str(i) for i in range(4)),
+    type=str,
+    help="""level of inspection to perform:
+      0 - original   present the subscription as-is (default)
+      1 - fill       fill in simple variable types
+      2 - resolve    resolve all variables
+      3 - internal   resolve all variables to their internal representation
+    """,
+    default="0",
+    choices=list(InspectArguments.LevelChoices.keys())
+    + list(InspectArguments.LevelChoices.values()),
+    dest="inspection_level",
+)
+inspect_parser.add_argument(
+    MainArguments.MATCH.short,
+    MainArguments.MATCH.long,
+    dest="match",
+    nargs="+",
+    action="extend",
+    type=str,
+    help="match subscription names to one or more substrings, and only run those subscriptions",
+    default=[],
+)
+
+inspect_parser.add_argument(
+    "subscription_paths",
+    metavar="SUBPATH",
+    nargs="*",
+    help="path to subscription files, uses subscriptions.yaml if not provided",
+    default=["subscriptions.yaml"],
+)
+
+inspect_parser.add_argument(
+    SubArguments.OVERRIDE.short,
+    SubArguments.OVERRIDE.long,
+    type=str,
+    help="override all subscription config values using `dl` syntax, "
+    "i.e. --dl-override='--ytdl_options.max_downloads 3'",
+)
+
+inspect_parser.add_argument(
+    InspectArguments.MOCK.short,
+    InspectArguments.MOCK.long,
+    metavar="VAR=VALUE",
+    nargs="+",
+    help="ability to mock one or more variable values, i.e. --mock 'title=Lets Play'",
+)
