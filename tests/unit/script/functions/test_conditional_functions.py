@@ -3,6 +3,9 @@ import re
 import pytest
 from unit.script.conftest import single_variable_output
 
+from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
+from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 
 
@@ -135,3 +138,29 @@ class TestConditionalFunction:
     ):
         output = single_variable_output(function_str)
         assert output == expected_output
+
+    def test_if_partial_resolve(self):
+        assert (
+            Script(
+                {
+                    "aa": "a",
+                    "bb": "unresolvable!",
+                    "cc": "{%if( true, aa, bb )}",
+                }
+            )
+            .resolve_partial(unresolvable={"bb"})
+            .get("cc")
+            .native
+            == "a"
+        )
+
+    def test_if_partial_resolve_unresolved(self):
+        assert Script(
+            {
+                "aa": "a",
+                "bb": "unresolvable!",
+                "cc": "{%if( false, aa, bb )}",
+            }
+        ).resolve_partial(unresolvable={"bb"}).definition_of("cc") == SyntaxTree(
+            ast=[Variable("bb")]
+        )
