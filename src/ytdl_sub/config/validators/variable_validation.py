@@ -12,14 +12,16 @@ from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.script.variable_definitions import UNRESOLVED_VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.utils.name_validation import is_function
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
 
 class ResolutionLevel:
     ORIGINAL = 0
-    RESOLVE = 1
-    INTERNAL = 2
+    FILL = 1
+    RESOLVE = 2
+    INTERNAL = 3
 
     @classmethod
     def name_of(cls, resolution_level: int) -> str:
@@ -28,6 +30,8 @@ class ResolutionLevel:
         """
         if resolution_level == cls.ORIGINAL:
             return "original"
+        if resolution_level == cls.FILL:
+            return "fill"
         if resolution_level == cls.RESOLVE:
             return "resolve"
         if resolution_level == cls.INTERNAL:
@@ -39,7 +43,7 @@ class ResolutionLevel:
         """
         All possible resolution levels.
         """
-        return [cls.ORIGINAL, cls.RESOLVE, cls.INTERNAL]
+        return [cls.ORIGINAL, cls.FILL, cls.RESOLVE, cls.INTERNAL]
 
 
 class VariableValidation:
@@ -54,21 +58,27 @@ class VariableValidation:
         }
 
     def _apply_resolution_level(self) -> None:
-        if self._resolution_level == ResolutionLevel.RESOLVE:
+        if self._resolution_level == ResolutionLevel.FILL:
+            self.unresolved_variables |= VARIABLES.variable_names(include_sanitized=True)
+            # Only partial resolve definitions that are already resolved
+            self.unresolved_variables |= {
+                name
+                for name in self.overrides.keys
+                if not is_function(name) and not self.script.definition_of(name).maybe_resolvable
+            }
+        elif self._resolution_level == ResolutionLevel.RESOLVE:
             # Partial resolve everything, but not including internal variables
             self.unresolved_variables |= VARIABLES.variable_names(include_sanitized=True)
-            self.script = self.script.resolve_partial(
-                unresolvable=self.unresolved_variables,
-                output_filter=self._get_resolve_partial_filter(),
-            )
         elif self._resolution_level == ResolutionLevel.INTERNAL:
             # Partial resolve everything including internal variables
-            self.script = self.script.resolve_partial(
-                unresolvable=self.unresolved_variables,
-                output_filter=self._get_resolve_partial_filter(),
-            )
+            pass
         else:
             raise ValueError("Invalid resolution level for validation")
+
+        self.script = self.script.resolve_partial(
+            unresolvable=self.unresolved_variables,
+            output_filter=self._get_resolve_partial_filter(),
+        )
 
     def __init__(
         self,

@@ -54,7 +54,7 @@
     "info_json_name": "{ %concat( %sanitize( %concat( \"Season \", %int( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"year\" ) ) ) ), \"/\", %sanitize( %concat( \"s\", %int( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"year\" ) ), \".e\", %pad_zero( %int( %concat( %int( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"month\" ) ), %string( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"day_padded\" ) ), %pad_zero( upload_date_index, 2 ) ) ), 6 ), \" - \", %sanitize_plex_episode( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) ) }.info.json",
     "keep_files_date_eval": "{ %string( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"date_standardized\" ) ) }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp6np_7efb/NOVA PBS",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpps6shcpt/NOVA PBS",
     "preserve_mtime": false,
     "thumbnail_name": "{ %concat( %sanitize( %concat( \"Season \", %int( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"year\" ) ) ) ), \"/\", %sanitize( %concat( \"s\", %int( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"year\" ) ), \".e\", %pad_zero( %int( %concat( %int( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"month\" ) ), %string( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"day_padded\" ) ), %pad_zero( upload_date_index, 2 ) ) ), 6 ), \" - \", %sanitize_plex_episode( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) ) }-thumb.jpg"
   },
@@ -112,7 +112,7 @@
     "tv_show_content_rating": "TV-14",
     "tv_show_content_rating_default": "TV-14",
     "tv_show_date_range_type": "upload_date",
-    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp6np_7efb",
+    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpps6shcpt",
     "tv_show_fanart_file_name": "fanart.jpg",
     "tv_show_genre": "Documentaries",
     "tv_show_genre_default": "ytdl-sub",

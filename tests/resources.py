@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict
 
 DISABLE_YOUTUBE_TESTS: bool = True
-REGENERATE_FIXTURES: bool = False
+REGENERATE_FIXTURES: bool = True
 
 RESOURCE_PATH: Path = Path("tests") / "resources"
 _FILE_FIXTURE_PATH: Path = RESOURCE_PATH / "file_fixtures"
