@@ -177,3 +177,20 @@ class TestLambdaFunctionIncompatibleNumArguments:
             match=re.escape("Cycle detected within these variables: two -> %times_two -> two"),
         ):
             Script({"%times_two": "{%mul($0, two)}", "two": "{%times_two(2)}"})
+
+    def test_partial_resolve_nested_lambda_custom_functions_within_custom_functions(self):
+        assert (
+            Script(
+                {
+                    "%nest4": "{%mul($0, 2)}",
+                    "%nest3": "{%array_at(%array_apply([$0], %nest4), 0)}",
+                    "%nest2": "{%array_at(%array_apply([$0], %nest3), 0)}",
+                    "%nest1": "{%array_at(%array_apply([$0], %nest2), 0)}",
+                    "output": "{%array_at(%array_apply([2], %nest1), 0)}",
+                }
+            )
+            .resolve_partial()
+            .get("output")
+            .native
+            == 4
+        )

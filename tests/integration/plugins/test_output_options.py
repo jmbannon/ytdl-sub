@@ -236,24 +236,14 @@ class TestOutputOptions:
     ):
         output_options_subscription_dict["output_options"]["keep_files_date_eval"] = "nope"
 
-        subscription = Subscription.from_dict(
-            config=config,
-            preset_name=subscription_name,
-            preset_dict=output_options_subscription_dict,
-        )
-
         expected_error_msg = (
             "Validation error in subscription_test.output_options.keep_files_date_eval: "
             "Expected a standardized date in the form of YYYY-MM-DD, but received 'nope'"
         )
 
-        with (
-            mock_download_collection_entries(
-                is_youtube_channel=False,
-                num_urls=1,
-                is_extracted_audio=False,
-                is_dry_run=True,
-            ),
-            pytest.raises(ValidationException, match=re.escape(expected_error_msg)),
-        ):
-            subscription.download(dry_run=True)
+        with pytest.raises(ValidationException, match=re.escape(expected_error_msg)):
+            _ = Subscription.from_dict(
+                config=config,
+                preset_name=subscription_name,
+                preset_dict=output_options_subscription_dict,
+            )
