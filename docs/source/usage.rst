@@ -1,5 +1,5 @@
 Usage
-=======
+=====
 
 .. code-block::
 
@@ -7,10 +7,12 @@ Usage
 
 For Windows users, it would be ``ytdl-sub.exe``
 
+
 General Options
 ---------------
 
-General options must be specified before the command (i.e. ``sub``).
+CLI options common to all sub-commands. Must be specified before the sub-command, for
+example ``$ ytdl-sub --dry-run sub ...``:
 
 .. code-block:: text
 
@@ -20,24 +22,30 @@ General options must be specified before the command (i.e. ``sub``).
                         path to the config yaml, uses config.yaml if not provided
   -d, --dry-run         preview what a download would output, does not perform any video downloads or writes to output directories
   -l quiet|info|verbose|debug, --log-level quiet|info|verbose|debug
-                        level of logs to print to console, defaults to info
+                        level of logs to print to console, defaults to verbose
   -t TRANSACTIONPATH, --transaction-log TRANSACTIONPATH
                         path to store the transaction log output of all files added, modified, deleted
   -st, --suppress-transaction-log
                         do not output transaction logs to console or file
+  -nc, --suppress-colors
+                        do not use colors in ytdl-sub output
   -m MATCH [MATCH ...], --match MATCH [MATCH ...]
                         match subscription names to one or more substrings, and only run those subscriptions
 
-Sub Options
------------
-Download all subscriptions specified in each ``SUBPATH``.
+
+Subscriptions Options
+---------------------
+
+Download all subscriptions specified in each :doc:`subscriptions file
+<./guides/getting_started/subscriptions>`.
 
 .. code-block::
 
    ytdl-sub [GENERAL OPTIONS] sub [SUBPATH ...]
 
-``SUBPATH`` is one or more paths to subscription files, uses ``subscriptions.yaml`` if not provided.
-It will use the config specified by ``--config``, or ``config.yaml`` if not provided.
+``SUBPATH`` is one or more paths to subscription files and defaults to
+``./subscriptions.yaml`` if none are given.  It will use the config specified by
+``--config``, or ``./config.yaml``, if not provided.
 
 .. code-block:: text
   :caption: Additional Options
@@ -47,16 +55,19 @@ It will use the config specified by ``--config``, or ``config.yaml`` if not prov
   -o DL_OVERRIDE, --dl-override DL_OVERRIDE
                         override all subscription config values using `dl` syntax, i.e. --dl-override='--ytdl_options.max_downloads 3'
 
+
 Download Options
------------------
-Download a single subscription in the form of CLI arguments.
+----------------
+
+Download a single subscription in the form of CLI arguments instead of from :doc:`a
+subscriptions file <./guides/getting_started/subscriptions>`:
 
 .. code-block::
 
   ytdl-sub [GENERAL OPTIONS] dl [SUBSCRIPTION ARGUMENTS]
 
-``SUBSCRIPTION ARGUMENTS`` are exactly the same as YAML arguments, but use periods (``.``) instead
-of indents for specifying YAML from the CLI. For example, you can represent this subscription:
+``SUBSCRIPTION ARGUMENTS`` are the same as YAML arguments, but use periods (``.``)
+instead of indents. For example, you can represent this subscription:
 
 .. code-block:: yaml
 
@@ -76,11 +87,15 @@ Using the command:
       --overrides.tv_show_name "Rick A" \
       --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 
-See how to shorten commands using
-`download aliases <https://ytdl-sub.readthedocs.io/en/latest/config_reference/config_yaml.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
+See how to shorten commands using `download aliases
+<https://ytdl-sub.readthedocs.io/en/latest/config_reference/config_yaml.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
+
 
 View Options
------------------
+------------
+
+Preview the source variables for a given URL. Helpful to create new subscriptions:
+
 .. code-block::
 
    ytdl-sub view [-sc] [URL]
@@ -91,5 +106,10 @@ View Options
   -sc, --split-chapters
                         View source variables after splitting by chapters
 
+CLI to SUB Options
+------------------
+Convert yt-dlp cli arguments to ytdl-sub `ytdl_options` arguments.
 
-Preview the source variables for a given URL. Helps when creating new configs.
+.. code-block::
+
+   ytdl-sub cli-to-sub [YT-DLP ARGS]

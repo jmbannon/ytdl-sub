@@ -12,6 +12,8 @@ from ytdl_sub.config.defaults import DEFAULT_FFPROBE_PATH
 from ytdl_sub.config.defaults import DEFAULT_LOCK_DIRECTORY
 from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
+from ytdl_sub.utils.exceptions import SubscriptionPermissionError
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
 from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
@@ -67,7 +69,8 @@ class PersistLogsValidator(StrictDictValidator):
     @property
     def logs_directory(self) -> str:
         """
-        Required. The directory to store the logs in.
+        Write log files to this directory with names like
+        ``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``. (required)
         """
         return self._logs_directory.value
 
@@ -92,7 +95,10 @@ class PersistLogsValidator(StrictDictValidator):
     @property
     def keep_successful_logs(self) -> bool:
         """
-        Optional. Whether to store logs when downloading is successful. Defaults to True.
+        If the ``persist_logs:`` key is in the configuration, then ``ytdl-sub`` *always*
+        writes log files for the subscription both for successful downloads and when it
+        encounters an error while downloading. When this key is ``False``, only write
+        log files for errors. (default ``True``)
         """
         return self._keep_successful_logs.value
 
@@ -143,11 +149,17 @@ class ConfigOptions(StrictDictValidator):
             key="file_name_max_bytes", validator=IntValidator, default=MAX_FILE_NAME_BYTES
         )
 
+        if not FileHandler.is_path_writable(self.working_directory):
+            raise SubscriptionPermissionError(
+                "ytdl-sub does not have permissions to the working directory: "
+                f"{self.working_directory}"
+            )
+
     @property
     def working_directory(self) -> str:
         """
         The directory to temporarily store downloaded files before moving them into their final
-        directory. Defaults to .ytdl-sub-working-directory
+        directory. (default ``./.ytdl-sub-working-directory``)
         """
         # Expands tildas to actual paths, use native os sep
         return os.path.expanduser(self._working_directory.value.replace(posixpath.sep, os.sep))
@@ -155,7 +167,7 @@ class ConfigOptions(StrictDictValidator):
     @property
     def umask(self) -> Optional[str]:
         """
-        Umask (octal format) to apply to every created file. Defaults to "022".
+        Umask in octal format to apply to every created file. (default ``022``)
         """
         return self._umask.value
 
@@ -214,24 +226,25 @@ class ConfigOptions(StrictDictValidator):
     def lock_directory(self) -> str:
         """
         The directory to temporarily store file locks, which prevents multiple instances
-        of ``ytdl-sub`` from running. Note that file locks do not work on network-mounted
-        directories. Ensure that this directory resides on the host machine. Defaults to ``/tmp``.
+        of ``ytdl-sub`` from running. Note that file locks do not work on
+        network-mounted directories. Ensure that this directory resides on the host
+        machine. (default ``/tmp``)
         """
         return self._lock_directory.value
 
     @property
     def ffmpeg_path(self) -> str:
         """
-        Path to ffmpeg executable. Defaults to ``/usr/bin/ffmpeg`` for Linux, and
-        ``ffmpeg.exe`` for Windows (in the same directory as ytdl-sub).
+        Path to ffmpeg executable. (default ``/usr/bin/ffmpeg`` for Linux,
+        ``./ffmpeg.exe`` in the same directory as ytdl-sub for Windows)
         """
         return self._ffmpeg_path.value
 
     @property
     def ffprobe_path(self) -> str:
         """
-        Path to ffprobe executable. Defaults to ``/usr/bin/ffprobe`` for Linux, and
-        ``ffprobe.exe`` for Windows (in the same directory as ytdl-sub).
+        Path to ffprobe executable. (default ``/usr/bin/ffprobe`` for Linux,
+        ``./ffprobe.exe`` in the same directory as ytdl-sub for Windows)
         """
         return self._ffprobe_path.value
 

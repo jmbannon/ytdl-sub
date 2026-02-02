@@ -1,3 +1,10 @@
+..
+  WARNING: This RST file is generated from docstrings in:
+    The respective function files under src/ytdl_sub/script/functions/
+  In order to make a change to this file, edit the respective docstring
+  and run `make docs`. This will automatically sync the Python RST-based
+  docstrings into this file. If the docstrings and RST file are out of sync,
+  it will fail TestDocGen tests in GitHub CI.
 
 Scripting Functions
 ===================
@@ -514,6 +521,13 @@ pow
 :description:
   ``**`` operator. Returns the exponential of the base and exponent value.
 
+range
+~~~~~
+:spec: ``range(end: Integer, start: Optional[Integer], step: Optional[Integer]) -> Array``
+
+:description:
+  Returns the desired range of Integers in the form of an Array.
+
 sub
 ~~~
 :spec: ``sub(values: Numeric, ...) -> Numeric``
@@ -531,27 +545,26 @@ print
 :spec: ``print(message: AnyArgument, passthrough: ReturnableArgument, level: Optional[Integer]) -> ReturnableArgument``
 
 :description:
-  Print the ``message`` and return ``passthrough``.
-  Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-  Defaults to info.
+  Log the ``message`` and return ``passthrough``. Optionally can pass level,
+  where < 0 is debug, 0 is info, 1 is warning, > 1 is error. (default ``0``)
 
 print_if_false
 ~~~~~~~~~~~~~~
 :spec: ``print_if_false(message: AnyArgument, passthrough: ReturnableArgument, level: Optional[Integer]) -> ReturnableArgument``
 
 :description:
-  Print the ``message`` if ``passthrough`` evaluates to ``false``. Return ``passthrough``.
-  Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-  Defaults to info.
+  Log the ``message`` if ``passthrough`` evaluates to ``false``. Return
+  ``passthrough``. Optionally can pass level, where < 0 is debug, 0 is info, 1
+  is warning, > 1 is error. (default ``0``)
 
 print_if_true
 ~~~~~~~~~~~~~
 :spec: ``print_if_true(message: AnyArgument, passthrough: ReturnableArgument, level: Optional[Integer]) -> ReturnableArgument``
 
 :description:
-  Print the ``message`` if ``passthrough`` evaluates to ``true``. Return ``passthrough``.
-  Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-  Defaults to info.
+  Log the ``message`` if ``passthrough`` evaluates to ``true``. Return
+  ``passthrough``. Optionally can pass level, where < 0 is debug, 0 is info, 1
+  is warning, > 1 is error. (default ``0``)
 
 ----------------------------------------------------------------------------------------------------
 

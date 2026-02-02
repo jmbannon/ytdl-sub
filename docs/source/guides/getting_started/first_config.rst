@@ -3,10 +3,11 @@ Basic Configuration
 
 A configuration file serves two purposes:
 
-1. Set advanced functionality that is not specifiable in a subscription file, such as working directory location. These
-   are set underneath ``configuration``.
-2. Create custom presets, which can drastically simplify your subscription file. These are defined underneath ``presets``.
-   Presets are intended to be applicable and reusable across multiple subscriptions.
+1. Set advanced functionality that is not specifiable in a subscription file, such as
+   working directory location. These are set underneath ``configuration``.
+2. Create custom presets, which can drastically simplify your subscription file. These
+   are defined underneath ``presets``.  Presets are intended to be applicable and
+   reusable across multiple subscriptions.
 
 Below is a common configuration:
 
@@ -14,7 +15,7 @@ Below is a common configuration:
   :linenos:
 
   configuration:
-    working_directory: '/mnt/ssd/.ytdl-sub-downloads'
+    working_directory: ".ytdl-sub-working-directory"
 
   presets:
     TV Show:
@@ -36,28 +37,36 @@ Below is a common configuration:
            max: 36
 
       overrides:
-        tv_show_directory: "/ytdl_sub_tv_shows"
+        tv_show_directory: "/tv_shows"
 
     TV Show Only Recent:
       preset:
         - "TV Show"
         - "Only Recent"
 
+
 Configuration Section
 ---------------------
 
-The :ref:`configuration <config_reference/config_yaml:Configuration File>` section sets options for ytdl-sub execution.
+The :ref:`configuration <config_reference/config_yaml:Configuration File>` section sets
+options for ytdl-sub execution. Most users should set the path where ``ytdl-sub``
+temporarily stores downloaded data before assembling it and moving it into your
+library. To avoid unnecessarily long large file renames, use a path on the same
+filesystem as your library in the ``overrides: / *_directory:`` paths:
+
 
 .. code-block:: yaml
   :lineno-start: 1
 
   configuration:
-    working_directory: '/mnt/ssd/.ytdl-sub-downloads'
+    working_directory: ".ytdl-sub-working-directory"
+
 
 Preset Section
 --------------
 
-Underneath ``presets``, we define two custom presets with the names ``TV Show`` and ``TV Show Only Recent``.
+Underneath ``presets``, we define two custom presets with the names ``TV Show`` and ``TV
+Show Only Recent``.
 
 .. code-block:: yaml
 
@@ -68,6 +77,7 @@ Underneath ``presets``, we define two custom presets with the names ``TV Show`` 
       ...
 
 The indentation example above shows how to define multiple presets.
+
 
 Custom Preset Definition
 ------------------------
@@ -88,12 +98,15 @@ Before we break down the above ``TV Show`` preset, lets first outline a preset l
 
 Presets can contain three important things:
 
-1. ``preset`` section, which can inherit :ref:`prebuilt presets <config_reference/prebuilt_presets/index:Prebuilt Preset Reference>`
-   or other presets defined in your config.
+1. ``preset`` section, which can inherit :ref:`prebuilt presets
+   <config_reference/prebuilt_presets/index:Prebuilt Preset Reference>` or other presets
+   defined in your config.
 2. :ref:`Plugin definitions <config_reference/plugins:Plugins>`
-3. :ref:`overrides <config_reference/plugins:overrides>`, which can override inherited preset variables
+3. :ref:`overrides <config_reference/plugins:overrides>`, which can override inherited
+   preset variables
 
-Presets do not have to define all of these, as we'll see in the ``TV Show Only Recent`` preset.
+Presets do not have to define all of these, as we'll see in the ``TV Show Only Recent``
+preset.
 
 Inheriting Presets
 ~~~~~~~~~~~~~~~~~~
@@ -106,14 +119,16 @@ Inheriting Presets
         - "Jellyfin TV Show by Date"
         - "Max 1080p"
 
-The following snippet shows that the ``TV Show`` preset will inherit all properties
-of the prebuilt presets ``Jellyfin TV Show by Date`` and ``Max 1080p`` in that order.
+The following snippet shows that the ``TV Show`` preset will inherit all properties of
+the prebuilt presets ``Jellyfin TV Show by Date`` and ``Max 1080p`` in that order.
 
 Order matters for preset inheritance. Bottom-most presets will override ones above them.
 
-It is highly advisable to use :ref:`prebuilt presets <config_reference/prebuilt_presets/index:Prebuilt Preset Reference>` as
-a starting point for custom preset building, as they do the work of preset building to ensure things show as expected
-in their respective media players. Read on to see how to override prebuilt preset specifics such as title.
+It is highly advisable to use :ref:`prebuilt presets
+<config_reference/prebuilt_presets/index:Prebuilt Preset Reference>` as a starting point
+for custom preset building, as they do the work of preset building to ensure things show
+as expected in their respective media players. Read on to see how to override prebuilt
+preset specifics such as title.
 
 Defining Plugins
 ~~~~~~~~~~~~~~~~
@@ -134,17 +149,18 @@ Defining Plugins
            min: 10
            max: 36
 
-Our ``TV Show`` sets two plugins, :ref:`throttle_protection <config_reference/plugins:throttle_protection>` and
-:ref:`embed_thumbnail <config_reference/plugins:embed_thumbnail>`. Each plugin's documentation shows the respective
-fields that they support.
+Our ``TV Show`` sets two plugins, :ref:`throttle_protection
+<config_reference/plugins:throttle_protection>` and :ref:`embed_thumbnail
+<config_reference/plugins:embed_thumbnail>`. Each plugin's documentation shows the
+respective fields that they support.
 
-If an inherited preset defines the same plugin, the custom preset will use 'merge-and-append' strategy to
-combine their definitions. What this means is:
+If an inherited preset defines the same plugin, the custom preset will use
+'merge-and-append' strategy to combine their definitions. What this means is:
 
-1. If the field is a map (i.e. has sub-params like ``sleep_per_download_s`` above) or array, it will try to merge them
-2. If both the inherited preset and custom preset set the same exact field and value (i.e. ``embed_thumbnail``)
-   the custom preset will overwrite it
-
+1. If the field is a map (i.e. has sub-params like ``sleep_per_download_s`` above) or
+   array, it will try to merge them
+2. If both the inherited preset and custom preset set the same exact field and value
+   (i.e. ``embed_thumbnail``) the custom preset will overwrite it
 
 Setting Override Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,27 +171,31 @@ Setting Override Variables
       overrides:
         tv_show_directory: "/ytdl_sub_tv_shows"
 
-All override variables reside underneath the :ref:`overrides <config_reference/plugins:overrides>` section.
+All override variables reside underneath the :ref:`overrides
+<config_reference/plugins:overrides>` section.
 
-It is important to remember that individual subscriptions can override specific override variables.
-When defining variables in a preset, it is best practice to define them with the intention that
+It is important to remember that individual subscriptions can override specific override
+variables.  When defining variables in a preset, it is best practice to define them with
+the intention that
 
 1. All subscriptions will use its value them
-2. Use them as placeholders to perform other logic, then have subscriptions or child presets
-   define their specific value
+2. Use them as placeholders to perform other logic, then have subscriptions or child
+   presets define their specific value
 
-For simplicity, we'll focus on (1) for now. The above snippet sets the ``tv_show_directory``
-variable to a file path. This variable name is specific to the prebuilt TV show presets.
+For simplicity, we'll focus on (1) for now. The above snippet sets the
+``tv_show_directory`` variable to a file path. This variable name is specific to the
+prebuilt TV show presets.
 
-See the :ref:`prebuilt preset reference <config_reference/prebuilt_presets/index:Prebuilt Preset Reference>`
-to see all available variables that are overridable.
+See the :ref:`prebuilt preset reference
+<config_reference/prebuilt_presets/index:Prebuilt Preset Reference>` to see all
+available variables that are overridable.
 
 
 Using Custom Presets in Subscriptions
 --------------------------------------
 
-Subscription files can use custom presets just like any other prebuilt preset.
-Below shows a complete subscription file using the above two custom presets.
+Subscription files can use custom presets just like any other prebuilt preset.  Below
+shows a complete subscription file using the above two custom presets.
 
 .. code-block:: yaml
 
@@ -193,11 +213,12 @@ Below shows a complete subscription file using the above two custom presets.
 Notice how we do not need to define ``tv_show_directory`` in the ``__preset__`` section
 like in prior examples. This is because our custom presets do the work of defining it.
 
+
 Reference Custom Config in the CLI
 ----------------------------------
 
-Be sure to tell ytdl-sub to use your config by using the argument
-``--config /path/to/config.yaml``.
+Be sure to tell ytdl-sub to use your config by using the argument ``--config
+/path/to/config.yaml``.
 
-If you run ytdl-sub in the same directory, and the config file is named ``config.yaml``, it will
-use it by default.
+If you run ytdl-sub in the same directory, and the config file is named ``config.yaml``,
+it will use it by default.

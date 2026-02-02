@@ -1,39 +1,50 @@
 services:
   ytdl-sub-gui:
-    image: ytdl-sub-gui:local
-    container_name: ytdl-sub-gui
+    build:
+      context: "../"
+      dockerfile: "./Dockerfile.gui"
+    image: "ytdl-sub-gui:local"
+    container_name: "ytdl-sub-gui"
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Los_Angeles
-      - CRON_SCHEDULE="*/1 * * * *"
-      - CRON_RUN_ON_START=true
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "America/Los_Angeles"
+      CRON_SCHEDULE: '*/1 * * * *'
+      CRON_RUN_ON_START: "true"
+      UPDATE_YT_DLP_ON_START: "stable"
     volumes:
-      - ./volumes/ytdl-sub-gui:/config
+      - "./volumes/ytdl-sub-gui/:/config/"
     ports:
-      - 8443:8443
-    restart: unless-stopped
-  ytdl-sub:
-    image: ytdl-sub:local
-    container_name: ytdl-sub
+      - "8443:8443"
+    restart: "unless-stopped"
+  ytdl-sub-headless:
+    build:
+      context: "../"
+    image: "ytdl-sub:local"
+    container_name: "ytdl-sub-headless"
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Los_Angeles
-      - CRON_SCHEDULE="*/1 * * * *"
-      - CRON_RUN_ON_START=true
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "America/Los_Angeles"
+      CRON_SCHEDULE: '*/1 * * * *'
+      CRON_RUN_ON_START: "true"
+      UPDATE_YT_DLP_ON_START: "stable"
     volumes:
-      - ./volumes/ytdl-sub:/config
-    restart: unless-stopped
+      - "./volumes/ytdl-sub-headless/:/config/"
+    restart: "unless-stopped"
   ytdl-sub-ubuntu:
-    image: ytdl-sub-ubuntu:local
-    container_name: ytdl-sub-ubuntu
+    build:
+      context: "../"
+      dockerfile: "./Dockerfile.ubuntu"
+    image: "ytdl-sub-ubuntu:local"
+    container_name: "ytdl-sub-ubuntu"
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Los_Angeles
-      - CRON_SCHEDULE="*/1 * * * *"
-      - CRON_RUN_ON_START=true
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "America/Los_Angeles"
+      CRON_SCHEDULE: '*/1 * * * *'
+      CRON_RUN_ON_START: "true"
+      UPDATE_YT_DLP_ON_START: "stable"
     volumes:
-      - ./volumes/ytdl-sub:/config
-    restart: unless-stopped
+      - "./volumes/ytdl-sub-ubuntu/:/config/"
+    restart: "unless-stopped"

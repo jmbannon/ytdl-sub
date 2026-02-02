@@ -25,6 +25,7 @@ def _variable_class_to_name(obj: Type[Any]) -> str:
 class EntryVariablesDocGen(DocGen):
 
     LOCATION = Path("docs/source/config_reference/scripting/entry_variables.rst")
+    DOCSTRING_LOCATION = "src/ytdl_sub/entries/script/variable_definitions.py"
 
     @classmethod
     def generate(cls) -> str:

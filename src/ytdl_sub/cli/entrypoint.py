@@ -13,6 +13,7 @@ from yt_dlp.utils import sanitize_filename
 from ytdl_sub.cli.output_summary import output_summary
 from ytdl_sub.cli.output_transaction_log import _maybe_validate_transaction_log_file
 from ytdl_sub.cli.output_transaction_log import output_transaction_log
+from ytdl_sub.cli.parsers.cli_to_sub import print_cli_to_sub
 from ytdl_sub.cli.parsers.dl import DownloadArgsParser
 from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME
 from ytdl_sub.cli.parsers.main import parser
@@ -214,6 +215,10 @@ def main() -> List[Subscription]:
 
     args, extra_args = parser.parse_known_args()
 
+    if args.subparser == "cli-to-sub":
+        print_cli_to_sub(args=extra_args)
+        return []
+
     # Load the config
     if args.config:
         config = ConfigFile.from_file_path(args.config)
@@ -272,7 +277,7 @@ def main() -> List[Subscription]:
                 _view_url_from_cli(config=config, url=args.url, split_chapters=args.split_chapters)
             )
         else:
-            raise ValidationException("Must provide one of the commands: sub, dl, view")
+            raise ValidationException("Must provide one of the commands: sub, dl, view, cli-to-sub")
 
     if not args.suppress_transaction_log:
         output_transaction_log(

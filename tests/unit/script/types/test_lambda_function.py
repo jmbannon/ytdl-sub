@@ -6,6 +6,7 @@ from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 
 
@@ -75,6 +76,28 @@ class TestLambdaFunction:
         )
 
         assert script.resolve().get("category_url_map").native == {1: 1, 2: 2, 3: 3}
+
+    def test_array_apply_custom_function(self):
+        output = (
+            Script(
+                {
+                    "the_array": "{ ['a', 'B', 'c', 'D'] }",
+                    "output": "{ %array_apply(the_array, %custom_cap) }",
+                    "should_lower": "{%bool(True)}",
+                    "%custom_cap": """{
+                        %if(
+                            %bool(should_lower),
+                            %lower($0),
+                            %upper($0)
+                        )
+                    }""",
+                }
+            )
+            .resolve(update=True)
+            .get("output")
+            .native
+        )
+        assert output == ["a", "b", "c", "d"]
 
 
 class TestLambdaFunctionIncompatibleNumArguments:
@@ -147,3 +170,27 @@ class TestLambdaFunctionIncompatibleNumArguments:
                     "%output": f"{{%array_enumerate(array1, {lambda_value})}}",
                 }
             )
+
+    def test_lambda_with_custom_function_cycle(self):
+        with pytest.raises(
+            CycleDetected,
+            match=re.escape("Cycle detected within these variables: two -> %times_two -> two"),
+        ):
+            Script({"%times_two": "{%mul($0, two)}", "two": "{%times_two(2)}"})
+
+    def test_partial_resolve_nested_lambda_custom_functions_within_custom_functions(self):
+        assert (
+            Script(
+                {
+                    "%nest4": "{%mul($0, 2)}",
+                    "%nest3": "{%array_at(%array_apply([$0], %nest4), 0)}",
+                    "%nest2": "{%array_at(%array_apply([$0], %nest3), 0)}",
+                    "%nest1": "{%array_at(%array_apply([$0], %nest2), 0)}",
+                    "output": "{%array_at(%array_apply([2], %nest1), 0)}",
+                }
+            )
+            .resolve_partial()
+            .get("output")
+            .native
+            == 4
+        )

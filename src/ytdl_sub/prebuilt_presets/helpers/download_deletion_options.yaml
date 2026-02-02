@@ -11,8 +11,7 @@ presets:
 
     # Set the default date_range to 2 months
     overrides:
-      date_range: "2months"  # keep for legacy-reasons
-      only_recent_date_range: "{date_range}"
+      only_recent_date_range: "2months"
 
   #############################################################################
   # Only Recent

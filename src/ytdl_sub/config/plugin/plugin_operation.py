@@ -6,3 +6,4 @@ class PluginOperation(Enum):
     MODIFY_ENTRY_METADATA = 0
     MODIFY_ENTRY = 1
     POST_PROCESS = 2
+    POST_COMPLETION = 3

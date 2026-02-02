@@ -1,3 +1,10 @@
+..
+  WARNING: This RST file is generated from docstrings in:
+    src/ytdl_sub/entries/variables/override_variables.py
+  In order to make a change to this file, edit the respective docstring
+  and run `make docs`. This will automatically sync the Python RST-based
+  docstrings into this file. If the docstrings and RST file are out of sync,
+  it will fail TestDocGen tests in GitHub CI.
 
 Static Variables
 ================
@@ -24,16 +31,21 @@ otherwise.
 
 subscription_indent_i
 ~~~~~~~~~~~~~~~~~~~~~
-For subscriptions in the form of
+For subscriptions where the ancestor keys contain the ``= ...`` prefix, the
+variables ``subscription_indent_1``, ``subscription_indent_2``, and so on get
+set to each subsequent value. For example, given the following subscriptions
+file snippet:
 
 .. code-block:: yaml
 
-   Preset | = Indent Value 1:
-     = Indent Value 2:
+   Preset 1 | = Indent Value 1 | Preset 2:
+     Preset 3 | = Indent Value 2 | Preset 4:
        "Subscription Name": "https://..."
 
-``subscription_indent_1`` and ``subscription_indent_2`` get set to
-``Indent Value 1`` and ``Indent Value 2``.
+The ``{subscription_indent_1}`` variable will be ``Indent Value 1`` and
+``{subscription_indent_2}`` will be ``Indent Value 2``. The most common use of
+these variables is to :doc:`set the genre and rating for subscriptions from the
+YAML keys <../prebuilt_presets/tv_show>`.
 
 subscription_map
 ~~~~~~~~~~~~~~~~

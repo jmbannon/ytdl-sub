@@ -1,3 +1,10 @@
+..
+  WARNING: This RST file is generated from docstrings in:
+    The respective plugin files under src/ytdl_sub/plugins/
+  In order to make a change to this file, edit the respective docstring
+  and run `make docs`. This will automatically sync the Python RST-based
+  docstrings into this file. If the docstrings and RST file are out of sync,
+  it will fail TestDocGen tests in GitHub CI.
 
 Plugins
 =======
@@ -140,9 +147,11 @@ Dates must adhere to a yt-dlp datetime. From their docs:
    A string in the format YYYYMMDD or
    (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
 
-Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in this.
-Note that yt-dlp will round times to the closest day, meaning that `day` is the lowest
-granularity possible.
+Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in
+this. Note that yt-dlp will round times to the closest day, meaning that `day` is
+the lowest granularity possible. Also note that, considering time zones, it's best
+to include a margin of an extra day on either side to be sure it includes the
+intended download files.
 
 :Usage:
 
@@ -158,14 +167,14 @@ granularity possible.
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos after this datetime.
+  Only download videos after or on this datetime, inclusive.
 
 
 ``before``
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos before this datetime.
+  Only download videos only before this datetime, not inclusive.
 
 
 ``breaks``
@@ -754,6 +763,15 @@ Defines where to output files and thumbnails after all post-processing has compl
   The output directory to store all media files downloaded.
 
 
+``preserve_mtime``
+
+:expected type: Optional[Boolean]
+:description:
+  Preserve the video's original upload time as the file modification time.
+  When True, sets the file's mtime to match the video's upload_date from
+  yt-dlp metadata. Defaults to False.
+
+
 ``thumbnail_name``
 
 :expected type: Optional[EntryFormatter]
@@ -845,10 +863,11 @@ for representing audio albums.
 
 static_nfo_tags
 ---------------
-Adds an NFO file for every entry, but does not link it to an entry in the download archive.
-This is intended to produce ``season.nfo``s in each season directory. Each entry within a
-season will overwrite this file with its season name. If the entry gets deleted from ytdl-sub,
-this file will remain since it's not linked.
+Adds an NFO file for every entry, but does not link it to an entry in the download
+archive.  This is intended to produce ``season.nfo`` files in each season
+directory. Each entry within a season will overwrite this file with its season
+name. If the entry gets deleted from ytdl-sub, this file will remain since it's not
+linked.
 
 Usage:
 
@@ -970,6 +989,14 @@ It will set the respective language to the correct subtitle file.
   language codes. Defaults to only "en".
 
 
+``languages_required``
+
+:expected type: Optional[List[String]]
+:description:
+  Language code(s) that are required to be present for downloads to continue. If missing,
+  ytdl-sub will throw an error. NOTE: currently this only checks file-based subtitles.
+
+
 ``subtitles_name``
 
 :expected type: Optional[EntryFormatter]
@@ -994,6 +1021,9 @@ throttle_protection
 Provides options to make ytdl-sub look more 'human-like' to protect from throttling. For
 range-based values, a random number will be chosen within the range to avoid sleeps looking
 scripted.
+
+Range min and max values support static override variables within their definitions.
+``sleep_per_download_s`` supports both static and override variables.
 
 :Usage:
 

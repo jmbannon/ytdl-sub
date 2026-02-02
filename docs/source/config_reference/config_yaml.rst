@@ -1,9 +1,6 @@
 ==================
 Configuration File
 ==================
------------
-config.yaml
------------
 
 ytdl-sub is configured using a ``config.yaml`` file.
 
@@ -14,17 +11,19 @@ The ``config.yaml`` is made up of two sections:
   configuration:
   presets:
 
-You can jump to any section and subsection of the config using the navigation
-section to the left.
+You can jump to any section and subsection of the config using the navigation section to
+the left.
 
 Note for Windows users, paths can be represented with ``C:/forward/slashes/like/linux``.
-If you wish to represent paths like Windows, you will need to ``C:\\double\\bashslash\\paths``
-in order to escape the backslash character.
+If you wish to represent paths like Windows, you will need to
+``C:\\double\\bashslash\\paths`` in order to escape the backslash character.
+
 
 configuration
-~~~~~~~~~~~~~
-The ``configuration`` section contains app-wide configs applied to all presets
-and subscriptions.
+-------------
+
+The ``configuration`` section contains app-wide configs applied to all presets and
+subscriptions.
 
 .. autoclass:: ytdl_sub.config.config_validator.ConfigOptions()
   :members:
@@ -32,9 +31,19 @@ and subscriptions.
   :exclude-members: subscription_value, persist_logs, experimental
 
 persist_logs
-""""""""""""
-Within ``configuration``, define whether logs from subscription downloads
-should be persisted.
+~~~~~~~~~~~~
+
+Without this key, ``ytdl-sub`` only prints output to it's ``stdout`` and ``stderr``. If
+your configuration includes the ``persist_logs:`` key, then ``ytdl-sub`` also writes log
+files to disk.
+
+.. warning::
+
+   The log files grow rapidly if ``keep_successful_logs:`` is ``true``, the default, and
+   may fill up disk space. Set ``keep_successful_logs: false`` or prune the log files
+   regularly.
+
+For example:
 
 .. code-block:: yaml
 
@@ -42,22 +51,36 @@ should be persisted.
     persist_logs:
       logs_directory: "/path/to/log/directory"
 
-Log files are stored as
-``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``.
-
 .. autoclass:: ytdl_sub.config.config_validator.PersistLogsValidator()
   :members:
   :member-order: bysource
 
-presets
-~~~~~~~
-``presets`` define a `formula` for how to format downloaded media and metadata.
 
-This section is work-in-progress!
+presets
+-------
+
+Each key under ``presets:`` defines a `formula` for how to format downloaded media and
+metadata. The key is the name of the preset and the value is a mapping that defines the
+preset.
+
+.. note::
+
+   The ``presets:`` key at the top of the configuration file contains multiple
+   user-defined presets, but *each preset* itself may include a ``preset:`` key that
+   defines *that preset's* base presets. For example:
+
+   .. code-block:: yaml
+
+      presets:
+        Foo Preset:
+          preset:
+            - "Jellyfin TV Show by Date"
+            - "Only Recent"
 
 preset
-""""""
-Presets support inheritance by defining a parent preset:
+~~~~~~
+
+Presets support inheritance by defining one or more parent presets:
 
 .. code-block:: yaml
 
@@ -67,11 +90,11 @@ Presets support inheritance by defining a parent preset:
     parent_preset:
       ...
     child_preset:
-      preset: "parent_preset"
+      preset:
+        - "parent_preset"
 
 In the example above, ``child_preset`` inherits all fields defined in ``parent_preset``.
-It is advantageous to use parent presets where possible to reduce duplicate yaml
-definitions.
+Use parent presets where possible to reduce duplicate yaml definitions.
 
 Presets also support inheritance from multiple presets:
 
@@ -82,9 +105,19 @@ Presets also support inheritance from multiple presets:
       - "custom_preset"
       - "parent_preset"
 
-In this example, ``child_preset`` will inherit all fields from ``custom_preset``
-and ``parent_preset`` in that order. The bottom-most preset has the highest
-priority.
+In this example, ``child_preset`` will inherit all fields from ``custom_preset`` and
+``parent_preset`` in that order. The bottom-most preset has the highest priority. More
+specifically, presets are merged using `mergedeep`_ via `a TYPESAFE_ADDITIVE merge`_,
+which means:
 
-If you are only inheriting from one preset, the syntax ``preset: "parent_preset"`` is
-valid YAML. Inheriting from multiple presets require use of a list.
+- if two conflicting keys arent lists or mappings, overwrite the higher priority one
+- otherwise, combine then re-evaluate
+
+If you are only inheriting from one preset, using a single string instead of a list is
+valid, for example ``preset: "parent_preset"``, but we recommend always using a list for
+consistent readability between presets.
+
+.. _`mergedeep`:
+   https://mergedeep.readthedocs.io/en/latest/
+.. _`a TYPESAFE_ADDITIVE merge`:
+   https://mergedeep.readthedocs.io/en/latest/index.html#merge-strategies

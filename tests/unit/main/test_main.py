@@ -244,7 +244,9 @@ def test_no_positional_arg_command(mock_sys_exit, tv_show_config_path):
         main()
 
         assert mock_error.call_count == 1
-        assert mock_error.call_args.args[0] == "Must provide one of the commands: sub, dl, view"
+        assert mock_error.call_args.args[0] == (
+            "Must provide one of the commands: sub, dl, view, cli-to-sub"
+        )
 
 
 def test_bad_config_path(mock_sys_exit):
@@ -264,3 +266,18 @@ def test_bad_config_path(mock_sys_exit):
             "The config file 'does_not_exist.yaml' could not be found. "
             "Did you set --config correctly?"
         )
+
+
+def test_cli_to_sub(mock_sys_exit, capsys):
+    with (
+        mock_sys_exit(expected_exit_code=0),
+        patch.object(
+            sys,
+            "argv",
+            ["ytdl-sub", "cli-to-sub", "--mark-watched", "--mtime"],
+        ),
+    ):
+        main()
+
+    captured = capsys.readouterr()
+    assert captured.out == ("ytdl_options:\n  mark_watched: true\n  updatetime: true\n\n")

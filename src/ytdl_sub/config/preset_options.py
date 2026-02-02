@@ -8,6 +8,9 @@ from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
+from ytdl_sub.utils.exceptions import SubscriptionPermissionError
+from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
@@ -57,12 +60,24 @@ class YTDLOptions(UnstructuredOverridesDictFormatterValidator):
     def to_native_dict(self, overrides: Overrides) -> Dict:
         """
         Materializes the entire ytdl-options dict from OverrideStringFormatters into
-        native python
+        native python.
         """
-        return {
-            key: overrides.apply_overrides_formatter_to_native(val)
+        out = {
+            key: overrides.apply_formatter(val, expected_type=object)
             for key, val in self.dict.items()
         }
+        if "cookiefile" in out:
+            if not FileHandler.is_file_existent(out["cookiefile"]):
+                raise ValidationException(
+                    f"Specified cookiefile {out['cookiefile']} but it does not exist as a file."
+                )
+
+            if not FileHandler.is_file_readable(out["cookiefile"]):
+                raise SubscriptionPermissionError(
+                    f"Cannot read cookiefile {out['cookiefile']} due to permissions issue."
+                )
+
+        return out
 
 
 # Disable for proper docstring formatting
@@ -107,6 +122,7 @@ class OutputOptions(OptionsDictValidator):
         "keep_max_files",
         "download_archive_standardized_date",
         "keep_files_date_eval",
+        "preserve_mtime",
     }
 
     @classmethod
@@ -168,6 +184,10 @@ class OutputOptions(OptionsDictValidator):
             "keep_files_date_eval",
             StandardizedDateValidator,
             default=f"{{{v.upload_date_standardized.variable_name}}}",
+        )
+
+        self._preserve_mtime = self._validate_key_if_present(
+            key="preserve_mtime", validator=BoolValidator, default=False
         )
 
         if (
@@ -308,6 +328,17 @@ class OutputOptions(OptionsDictValidator):
           applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
         """
         return self._keep_max_files
+
+    @property
+    def preserve_mtime(self) -> bool:
+        """
+        :expected type: Optional[Boolean]
+        :description:
+          Preserve the video's original upload time as the file modification time.
+          When True, sets the file's mtime to match the video's upload_date from
+          yt-dlp metadata. Defaults to False.
+        """
+        return self._preserve_mtime.value
 
     def added_variables(self, unresolved_variables: Set[str]) -> Dict[PluginOperation, Set[str]]:
         return {

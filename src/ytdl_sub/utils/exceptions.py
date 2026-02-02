@@ -40,3 +40,7 @@ class FileNotDownloadedException(ValueError):
 
 class ExperimentalFeatureNotEnabled(ValidationException):
     """Feature is not enabled for usage"""
+
+
+class SubscriptionPermissionError(ValidationException):
+    """Early-caught permission error"""

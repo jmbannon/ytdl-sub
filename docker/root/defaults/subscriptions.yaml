@@ -15,12 +15,12 @@ __preset__:
     music_video_directory: "/music_videos"
 
     # For 'Only Recent' preset, only keep vids within this range and limit
-    only_recent_date_range: "2months"
-    only_recent_max_files: 30
+    # only_recent_date_range: "2months"
+    # only_recent_max_files: 30
 
   # Pass any arg directly to yt-dlp's Python API
-  ytdl_options:
-    cookiefile: "/config/cookie.txt"
+  # ytdl_options:
+  #   cookiefile: "/config/cookie.txt"
 
 ###################################################################
 # Subscriptions nested under this will use the
@@ -35,52 +35,54 @@ Plex TV Show by Date:
   # Sets genre tag to "Documentaries"
   = Documentaries:
     "NOVA PBS": "https://www.youtube.com/@novapbs"
-    "National Geographic": "https://www.youtube.com/@NatGeo"
-    "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
+    # "National Geographic": "https://www.youtube.com/@NatGeo"
+    # "Cosmos - What If": "https://www.youtube.com/playlist?list=PLZdXRHYAVxTJno6oFF9nLGuwXNGYHmE8U"
 
   # Sets genre tag to "Kids", "TV-Y" for content rating
-  = Kids | = TV-Y:
-    "Jake Trains": "https://www.youtube.com/@JakeTrains"
-    "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
+  # = Kids | = TV-Y:
+  #   "Jake Trains": "https://www.youtube.com/@JakeTrains"
+  #   "Kids Toys Play": "https://www.youtube.com/@KidsToysPlayChannel"
 
-  = Music:
-    # TV show subscriptions can support multiple urls and store in the same TV Show
-    "Rick Beato":
-      - "https://www.youtube.com/@RickBeato"
-      - "https://www.youtube.com/@rickbeato240"
+  # = Music:
+  #   # TV show subscriptions can support multiple urls and store in the same TV Show
+  #   "Rick Beato":
+  #     - "https://www.youtube.com/@RickBeato"
+  #     - "https://www.youtube.com/@rickbeato240"
 
   # Set genre tag to "News", use `Only Recent` preset to only store videos uploaded recently
-  = News | Only Recent:
-    "BBC News": "https://www.youtube.com/@BBCNews"
+  # = News | Only Recent:
+  #   "BBC News": "https://www.youtube.com/@BBCNews"
 
 ###################################################################
 # Subscriptions nested under these will use the various prebuilt
 # music presets
-YouTube Releases:
-  = Jazz:  # Sets genre tag to "Jazz"
-    "Thelonious Monk": "https://www.youtube.com/@theloniousmonk3870/releases"
 
-YouTube Full Albums:
-  = Lofi:
-    "Game Chops": "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
+# YouTube Releases:
+#   = Jazz:  # Sets genre tag to "Jazz"
+#     "Thelonious Monk": "https://www.youtube.com/@theloniousmonk3870/releases"
 
-SoundCloud Discography:
-  = Chill Hop:
-    "UKNOWY": "https://soundcloud.com/uknowymunich"
-  = Synthwave:
-    "Lazerdiscs Records": "https://soundcloud.com/lazerdiscsrecords"
-    "Earmake": "https://soundcloud.com/earmake"
+# YouTube Full Albums:
+#   = Lofi:
+#     "Game Chops": "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
 
-Bandcamp:
-  = Lofi:
-    "Emily Hopkins": "https://emilyharpist.bandcamp.com/"
+# SoundCloud Discography:
+#   = Chill Hop:
+#     "UKNOWY": "https://soundcloud.com/uknowymunich"
+#   = Synthwave:
+#     "Lazerdiscs Records": "https://soundcloud.com/lazerdiscsrecords"
+#     "Earmake": "https://soundcloud.com/earmake"
+
+# Bandcamp:
+#   = Lofi:
+#     "Emily Hopkins": "https://emilyharpist.bandcamp.com/"
 
 ###################################################################
 # Can choose between:
 #   - Plex Music Videos:
 #   - Jellyfin Music Videos:
 #   - Kodi Music Videos:
-"Plex Music Videos":
-  = Pop:  # Sets genre tag to "Pop"
-    "Rick Astley": "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
-    "Michael Jackson": "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"
+
+# "Plex Music Videos":
+#   = Pop:  # Sets genre tag to "Pop"
+#     "Rick Astley": "https://www.youtube.com/playlist?list=PLlaN88a7y2_plecYoJxvRFTLHVbIVAOoc"
+#     "Michael Jackson": "https://www.youtube.com/playlist?list=OLAK5uy_mnY03zP6abNWH929q2XhGzWD_2uKJ_n8E"

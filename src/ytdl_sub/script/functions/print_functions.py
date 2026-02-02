@@ -34,9 +34,8 @@ class PrintFunctions:
     ) -> ReturnableArgument:
         """
         :description:
-          Print the ``message`` and return ``passthrough``.
-          Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-          Defaults to info.
+          Log the ``message`` and return ``passthrough``. Optionally can pass level,
+          where < 0 is debug, 0 is info, 1 is warning, > 1 is error. (default ``0``)
         """
         _log(message=message, level=level)
         return passthrough
@@ -47,9 +46,9 @@ class PrintFunctions:
     ) -> ReturnableArgument:
         """
         :description:
-          Print the ``message`` if ``passthrough`` evaluates to ``true``. Return ``passthrough``.
-          Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-          Defaults to info.
+          Log the ``message`` if ``passthrough`` evaluates to ``true``. Return
+          ``passthrough``. Optionally can pass level, where < 0 is debug, 0 is info, 1
+          is warning, > 1 is error. (default ``0``)
         """
         if passthrough.value:
             _log(message=message, level=level)
@@ -61,9 +60,9 @@ class PrintFunctions:
     ) -> ReturnableArgument:
         """
         :description:
-          Print the ``message`` if ``passthrough`` evaluates to ``false``. Return ``passthrough``.
-          Optionally can pass level, where < 0 is debug, 0 is info, 1 is warning, > 1 is error.
-          Defaults to info.
+          Log the ``message`` if ``passthrough`` evaluates to ``false``. Return
+          ``passthrough``. Optionally can pass level, where < 0 is debug, 0 is info, 1
+          is warning, > 1 is error. (default ``0``)
         """
         if not passthrough.value:
             _log(message=message, level=level)

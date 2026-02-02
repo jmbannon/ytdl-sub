@@ -52,12 +52,12 @@ class UrlDownloaderBasePluginExtension(SourcePluginExtension[MultiUrlValidator])
 
         if 0 <= input_url_idx < len(self.plugin_options.urls.list):
             validator = self.plugin_options.urls.list[input_url_idx]
-            if self.overrides.apply_formatter(validator.url) == entry_input_url:
+            if entry_input_url in self.overrides.apply_formatter(validator.url, expected_type=list):
                 return validator
 
         # Match the first validator based on the URL, if one exists
         for validator in self.plugin_options.urls.list:
-            if self.overrides.apply_formatter(validator.url) == entry_input_url:
+            if entry_input_url in self.overrides.apply_formatter(validator.url, expected_type=list):
                 return validator
 
         # Return the first validator if none exist
@@ -257,6 +257,16 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             .to_dict()
         )
 
+    def webpage_url(self, entry: Entry) -> str:
+        """
+        Returns
+        -------
+        The webpage_url to use for the actual download
+        """
+        url_idx = entry.get(v.ytdl_sub_input_url_index, int)
+        webpage_url_formatter = self.plugin_options.urls.list[url_idx].webpage_url
+        return self.overrides.apply_formatter(webpage_url_formatter, entry=entry)
+
     def metadata_ytdl_options(self, ytdl_option_overrides: Dict) -> Dict:
         """
         Returns
@@ -358,7 +368,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                 if (self.is_dry_run or not self.is_entry_thumbnails_enabled)
                 else entry.is_thumbnail_downloaded_via_ytdlp
             ),
-            url=entry.webpage_url,
+            url=self.webpage_url(entry=entry),
         )
         return Entry(
             download_entry_dict,
@@ -366,13 +376,13 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         )
 
     def _iterate_child_entries(
-        self, entries: List[Entry], download_reversed: bool
+        self, entries: List[Entry], validator: UrlValidator
     ) -> Iterator[Entry]:
         # Iterate a list of entries, and delete the entries after yielding
         entries_to_iter: List[Optional[Entry]] = entries
 
         indices = list(range(len(entries_to_iter)))
-        if download_reversed:
+        if self.overrides.apply_formatter(validator.download_reverse, expected_type=bool):
             indices = reversed(indices)
 
         for idx in indices:
@@ -394,17 +404,13 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             entries_to_iter[idx] = None
 
     def _iterate_parent_entry(
-        self, parent: EntryParent, download_reversed: bool
+        self, parent: EntryParent, validator: UrlValidator
     ) -> Iterator[Entry]:
-        yield from self._iterate_child_entries(
-            entries=parent.entry_children(), download_reversed=download_reversed
-        )
+        yield from self._iterate_child_entries(entries=parent.entry_children(), validator=validator)
 
         # Recursion the parent's parent entries
         for parent_child in reversed(parent.parent_children()):
-            yield from self._iterate_parent_entry(
-                parent=parent_child, download_reversed=download_reversed
-            )
+            yield from self._iterate_parent_entry(parent=parent_child, validator=validator)
 
     def _download_url_metadata(
         self, url: str, include_sibling_metadata: bool, ytdl_options_overrides: Dict
@@ -438,7 +444,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         self,
         parents: List[EntryParent],
         orphans: List[Entry],
-        download_reversed: bool,
+        validator: UrlValidator,
     ) -> Iterator[Entry]:
         """
         Downloads the leaf entries from EntryParent trees
@@ -446,21 +452,17 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         # Delete info json files afterwards so other collection URLs do not use them
         with self._separate_download_archives(clear_info_json_files=True):
             for parent in parents:
-                yield from self._iterate_parent_entry(
-                    parent=parent, download_reversed=download_reversed
-                )
+                yield from self._iterate_parent_entry(parent=parent, validator=validator)
 
-            yield from self._iterate_child_entries(
-                entries=orphans, download_reversed=download_reversed
-            )
+            yield from self._iterate_child_entries(entries=orphans, validator=validator)
 
     def _download_metadata(self, url: str, validator: UrlValidator) -> Iterable[Entry]:
         metadata_ytdl_options = self.metadata_ytdl_options(
             ytdl_option_overrides=validator.ytdl_options.to_native_dict(self.overrides)
         )
-        download_reversed = self.overrides.evaluate_boolean(validator.download_reverse)
-        include_sibling_metadata = self.overrides.evaluate_boolean(
-            validator.include_sibling_metadata
+
+        include_sibling_metadata = self.overrides.apply_formatter(
+            validator.include_sibling_metadata, expected_type=bool
         )
 
         parents, orphan_entries = self._download_url_metadata(
@@ -469,16 +471,15 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             ytdl_options_overrides=metadata_ytdl_options,
         )
 
-        # TODO: Encapsulate this logic into its own class
         self._url_state = URLDownloadState(
-            entries_total=sum(parent.num_children() for parent in parents) + len(orphan_entries)
+            entries_total=sum(parent.num_children() for parent in parents) + len(orphan_entries),
         )
 
         download_logger.info("Beginning downloads for %s", url)
         yield from self._iterate_entries(
             parents=parents,
             orphans=orphan_entries,
-            download_reversed=download_reversed,
+            validator=validator,
         )
 
     def download_metadata(self) -> Iterable[Entry]:
@@ -486,19 +487,25 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         # download the bottom-most urls first since they are top-priority
         for idx, url_validator in reversed(list(enumerate(self.collection.urls.list))):
             # URLs can be empty. If they are, then skip
-            if not (url := self.overrides.apply_formatter(url_validator.url)):
+            if not (urls := self.overrides.apply_formatter(url_validator.url, expected_type=list)):
                 continue
 
-            for entry in self._download_metadata(url=url, validator=url_validator):
-                entry.initialize_script(self.overrides).add(
-                    {
-                        v.ytdl_sub_input_url: url,
-                        v.ytdl_sub_input_url_index: idx,
-                        v.ytdl_sub_input_url_count: len(self.collection.urls.list),
-                    }
-                )
+            for url in reversed(urls):
+                assert isinstance(url, str)
 
-                yield entry
+                if not url:
+                    continue
+
+                for entry in self._download_metadata(url=url, validator=url_validator):
+                    entry.initialize_script(self.overrides).add(
+                        {
+                            v.ytdl_sub_input_url: url,
+                            v.ytdl_sub_input_url_index: idx,
+                            v.ytdl_sub_input_url_count: len(self.collection.urls.list),
+                        }
+                    )
+
+                    yield entry
 
     def download(self, entry: Entry) -> Optional[Entry]:
         """

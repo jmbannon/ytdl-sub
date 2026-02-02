@@ -9,6 +9,7 @@ Automating Downloads
 
 .. _cron scheduling syntax: https://crontab.guru/#0_*/6_*_*_*
 
+
 .. _docker-unraid-setup:
 
 Docker and Unraid
@@ -26,11 +27,13 @@ ENV variables to your docker setup.
         - CRON_RUN_ON_START=false
 
 
-- ``CRON_SCHEDULE`` follows the standard `cron scheduling syntax`_. The above value will run the script once every 6 hours.
-- ``CRON_RUN_ON_START`` toggles whether to run your cron script on container start in addition to the cron schedule.
+- ``CRON_SCHEDULE`` follows the standard `cron scheduling syntax`_. The above value will
+  run the script once every 6 hours.
+- ``CRON_RUN_ON_START`` toggles whether to run your cron script on container start in
+  addition to the cron schedule.
 
-The cron script will reside in the main directory with the file name ``cron``.
-Cron logs should show when viewing the Docker logs.
+The cron script will reside in the main directory with the file name ``cron``.  Cron
+logs should show when viewing the Docker logs.
 
 
 .. _linux-setup:
@@ -45,14 +48,22 @@ Must configure crontab manually, like so:
   0     */6     *       *       *       /config/run_cron
 
 
-
-
 .. _windows-setup:
 
 Windows
 -------
-To be tested (please contact code owner or join the discord server if you can test this out for us)
+
+To be tested (please contact code owner or join the discord server if you can test this
+out for us)
 
 .. code-block:: powershell
 
   ytdl-sub.exe --config \path\to\config\config.yaml sub \path\to\config\subscriptions.yaml
+
+
+Next Steps
+----------
+
+Once you have a significant quantity of subscriptions or have use cases not served using
+:doc:`YAML keys and the special characters <./subscriptions>`, it's time to start
+:doc:`defining your own custom presets <./first_config>`.

@@ -17,12 +17,28 @@ echo "Starting ytdl-sub..."
   echo "alias ls='ls --color=auto'" > /config/.bashrc && \
   echo "cd ." >> /config/.bashrc
 
+# always create empty cron log file on start
+echo "" > "$LOGS_TO_STDOUT"
+
 # permissions
 chown -R ${PUID:-abc}:${PGID:-abc} \
     /config
 
-# always create empty cron log file on start
-echo "" > "$LOGS_TO_STDOUT"
+# update command reference:
+# https://github.com/yt-dlp/yt-dlp/wiki/Installation#with-pip
+if [ "$UPDATE_YT_DLP_ON_START" == "stable" ] ; then
+    echo "UPDATE_YT_DLP_ON_START is set to stable, attempting to update to a new stable version of yt-dlp if it exists."
+    python3 -m pip install -U "yt-dlp[default]" 
+elif [ "$UPDATE_YT_DLP_ON_START" == "nightly" ] ; then
+    echo "UPDATE_YT_DLP_ON_START is set to nightly, attempting to update to the latest nightly version of yt-dlp."
+    python3 -m pip install -U --pre "yt-dlp[default]"
+elif [ "$UPDATE_YT_DLP_ON_START" == "master" ] ; then
+    echo "UPDATE_YT_DLP_ON_START is set to master, pulling yt-dlp's latest commit for install."
+    python3 -m pip install -U pip hatchling wheel
+    python3 -m pip install --force-reinstall "yt-dlp[default] @ https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz"
+else
+    echo "UPDATE_YT_DLP_ON_START is not set, using packaged version."
+fi
 
 # set up cron
 if [ "$CRON_SCHEDULE" != "" ] ; then
@@ -33,7 +49,7 @@ if [ "$CRON_SCHEDULE" != "" ] ; then
     echo '#!/bin/bash' > "$CRON_WRAPPER_SCRIPT"
     echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> "$CRON_WRAPPER_SCRIPT"
     echo "cd \"$DEFAULT_WORKSPACE\"" >> "$CRON_WRAPPER_SCRIPT"
-    echo ". \"$CRON_SCRIPT\" | tee -a \"$LOGS_TO_STDOUT\"" >> "$CRON_WRAPPER_SCRIPT"
+    echo ". \"$CRON_SCRIPT\" >> \"$LOGS_TO_STDOUT\" 2>&1" >> "$CRON_WRAPPER_SCRIPT"
     chmod +x "$CRON_WRAPPER_SCRIPT"
     chown abc:abc "$CRON_WRAPPER_SCRIPT"
 

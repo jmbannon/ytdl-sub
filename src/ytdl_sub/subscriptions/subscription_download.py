@@ -73,6 +73,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
             file_metadata=entry_metadata,
             output_file_name=output_file_name,
             entry=entry,
+            preserve_mtime=self.output_options.preserve_mtime,
         )
 
         # Always pretend to include the thumbnail in a dry-run
@@ -87,6 +88,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 output_file_name=output_thumbnail_name,
                 entry=entry,
                 copy_file=True,
+                preserve_mtime=self.output_options.preserve_mtime,
             )
         elif not entry.is_thumbnail_downloaded():
             logger.warning(
@@ -106,6 +108,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 file_name=entry.get_download_info_json_name(),
                 output_file_name=output_info_json_name,
                 entry=entry,
+                preserve_mtime=self.output_options.preserve_mtime,
             )
 
     def _delete_working_directory(self, is_error: bool = False) -> None:
@@ -152,8 +155,8 @@ class SubscriptionDownload(BaseSubscription, ABC):
             keep_max_files: Optional[int] = None
             if self.output_options.keep_max_files:
                 # validated it can be cast to int within the validator
-                keep_max_files = int(
-                    self.overrides.apply_formatter(self.output_options.keep_max_files)
+                keep_max_files = self.overrides.apply_formatter(
+                    self.output_options.keep_max_files, expected_type=int
                 )
 
             if date_range_to_keep or self.output_options.keep_max_files is not None:
@@ -258,6 +261,9 @@ class SubscriptionDownload(BaseSubscription, ABC):
         # Re-save the download archive after each entry is moved to the output directory
         if self.maintain_download_archive:
             self.download_archive.save_download_mappings()
+
+        for plugin in PluginMapping.order_plugins_by(plugins, PluginOperation.POST_COMPLETION):
+            plugin.post_completion_entry(file_metadata=entry_metadata)
 
     def _process_entry(
         self, plugins: List[Plugin], dry_run: bool, entry: Entry, entry_metadata: FileMetadata

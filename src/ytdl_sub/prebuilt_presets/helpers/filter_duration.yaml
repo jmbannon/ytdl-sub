@@ -1,0 +1,34 @@
+presets:
+
+  #############################################################################
+  # Filter Duration
+  #   Include or exclude media based on its play time duration
+  Filter Duration:
+    overrides:
+      filter_duration_min_s: 0
+      filter_duration_max_s: 4294967296
+
+      "%filter_duration_ensure_numeric": >-
+        {
+          %assert_then(
+            %is_numeric($0),
+            $0,
+            "filter_duration args must be numeric"
+          )
+        }
+
+      filter_duration_zero_msg: "Duration metadata for {title} is missing, cannot perform filter."
+
+      "%filter_duration_eval": >-
+        {
+          %if(
+            %eq(duration, 0),
+            %print(filter_duration_zero_msg, False)
+            $0
+          )
+        }
+
+
+    filter_exclude:
+        - "{ %filter_duration_eval( %lt(duration, %filter_duration_ensure_numeric(filter_duration_min_s)) ) }"
+        - "{ %filter_duration_eval( %gt(duration, %filter_duration_ensure_numeric(filter_duration_max_s)) ) }"

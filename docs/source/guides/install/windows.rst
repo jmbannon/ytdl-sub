@@ -1,5 +1,7 @@
+=======
 Windows
---------------
+=======
+
 From powershell, run:
 
 .. code-block:: powershell

@@ -1,6 +1,7 @@
 import copy
 import json
 import os.path
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -642,6 +643,7 @@ class EnhancedDownloadArchive:
         output_file_name: Optional[str] = None,
         entry: Optional[Entry] = None,
         copy_file: bool = False,
+        preserve_mtime: bool = False,
     ):
         """
         Saves a file from the working directory to the output directory and record it in the
@@ -660,6 +662,8 @@ class EnhancedDownloadArchive:
             Optional. Entry that this file belongs to
         copy_file
             Optional. If True, copy the file. Move otherwise
+        preserve_mtime
+            Optional. If True and entry has upload_date, set file mtime to upload date
         """
         if output_file_name is None:
             output_file_name = file_name
@@ -673,6 +677,22 @@ class EnhancedDownloadArchive:
             output_file_name=output_file_name,
             copy_file=copy_file,
         )
+
+        # Set mtime if preserve_mtime is enabled and we have an entry with upload_date
+        if preserve_mtime and entry and not self._file_handler.dry_run:
+            upload_date = entry.get(v.ytdl_sub_keep_files_date_eval, str)
+            if upload_date:
+                try:
+                    # Convert YYYY-mm-dd to timestamp
+                    upload_datetime = datetime.strptime(upload_date, "%Y-%m-%d")
+                    upload_timestamp = time.mktime(upload_datetime.timetuple())
+
+                    # Set mtime on the output file
+                    output_file_path = Path(self._file_handler.output_directory) / output_file_name
+                    FileHandler.set_mtime(output_file_path, upload_timestamp)
+                except (ValueError, OSError):
+                    # If date parsing or file operation fails, silently continue
+                    pass
 
         # Determine if it's the entry file by seeing if the file_name to move matches the entry
         # download file name

@@ -1,7 +1,10 @@
 import random
 import time
+from abc import ABC
 from typing import Dict
 from typing import Optional
+from typing import Type
+from typing import TypeVar
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import Plugin
@@ -10,17 +13,22 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.validators import FloatValidator
+from ytdl_sub.validators.string_formatter_validators import FloatFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesFloatFormatterValidator
 from ytdl_sub.validators.validators import ProbabilityValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get("throttle-protection")
 
+FloatValidatorT = TypeVar("FloatValidatorT", bound=FloatFormatterValidator)
 
-class RandomizedRangeValidator(StrictDictValidator):
+
+class _RandomizedRangeValidator(StrictDictValidator, ABC):
     """
-    Validator to specify a float range between [min, max)
+    Base class for range validation, to support both entry and static overrides.
     """
+
+    _float_validator: Type[FloatValidatorT]
 
     _required_keys = {"max"}
     _optional_keys = {"min"}
@@ -28,50 +36,112 @@ class RandomizedRangeValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._max = self._validate_key(key="max", validator=FloatValidator).value
+        self._max = self._validate_key(key="max", validator=self._float_validator)
         self._min = self._validate_key_if_present(
-            key="min", validator=FloatValidator, default=0.0
-        ).value
+            key="min", validator=self._float_validator, default=0.0
+        )
 
-        if self._min < 0:
-            raise self._validation_exception("min must be greater than zero")
+    def _randomized_float(self, overrides: Overrides, entry: Optional[Entry] = None) -> float:
+        actualized_min = overrides.apply_formatter(self._min, entry=entry, expected_type=float)
+        actualized_max = overrides.apply_formatter(self._max, entry=entry, expected_type=float)
 
-        if self._max < self._min:
+        if actualized_min < 0:
             raise self._validation_exception(
-                f"max ({self._max}) must be greater than or equal to min ({self._min})"
+                f"min must be greater than zero, received {actualized_min}"
+            )
+        if actualized_max < actualized_min:
+            raise self._validation_exception(
+                f"max ({actualized_max}) must be greater than or equal to min ({actualized_min})"
             )
 
-    def min_value(self) -> float:
-        """
-        Returns
-        -------
-        Minimum value
-        """
-        return self._min
+        return random.uniform(actualized_min, actualized_max)
 
-    def max_value(self) -> float:
-        """
-        Returns
-        -------
-        Maximum value
-        """
-        return self._max
-
-    def randomized_float(self) -> float:
-        """
-        Returns
-        -------
-        A random float within the range
-        """
-        return random.uniform(self._min, self._max)
-
-    def randomized_int(self) -> int:
+    def _randomized_int(self, overrides: Overrides, entry: Optional[Entry] = None) -> int:
         """
         Returns
         -------
         A random float within the range, then cast to an integer (floored)
         """
-        return int(self.randomized_float())
+        return int(self._randomized_float(overrides, entry=entry))
+
+    def _max_value(self, overrides: Overrides, entry: Optional[Entry] = None) -> float:
+        """
+        Returns
+        -------
+        Max possible value
+        """
+        actualized_max = overrides.apply_formatter(self._max, entry=entry, expected_type=float)
+        if actualized_max < 0:
+            raise self._validation_exception(
+                f"max must be greater than zero, received {actualized_max}"
+            )
+        return actualized_max
+
+
+class RandomizedRangeValidator(_RandomizedRangeValidator):
+    """
+    Validator to specify a float range between [min, max) with both
+    override and entry variable support.
+    """
+
+    _float_validator = FloatFormatterValidator
+
+    def randomized_float(self, overrides: Overrides, entry: Entry) -> float:
+        """
+        Returns
+        -------
+        A random float within the range
+        """
+        return self._randomized_float(overrides=overrides, entry=entry)
+
+    def randomized_int(self, overrides: Overrides, entry: Entry) -> int:
+        """
+        Returns
+        -------
+        A random float within the range, then cast to an integer (floored)
+        """
+        return self._randomized_int(overrides=overrides, entry=entry)
+
+    def max_value(self, overrides: Overrides, entry: Entry) -> float:
+        """
+        Returns
+        -------
+        Max possible value
+        """
+        return self._max_value(overrides=overrides, entry=entry)
+
+
+class RandomizedRangeOverridesValidator(_RandomizedRangeValidator):
+    """
+    Validator to specify a float range between [min, max) with
+    static variable support.
+    """
+
+    _float_validator = OverridesFloatFormatterValidator
+
+    def randomized_float(self, overrides: Overrides) -> float:
+        """
+        Returns
+        -------
+        A random float within the range
+        """
+        return self._randomized_float(overrides=overrides)
+
+    def randomized_int(self, overrides: Overrides) -> int:
+        """
+        Returns
+        -------
+        A random float within the range, then cast to an integer (floored)
+        """
+        return self._randomized_int(overrides=overrides)
+
+    def max_value(self, overrides: Overrides) -> float:
+        """
+        Returns
+        -------
+        Max possible value
+        """
+        return self._max_value(overrides=overrides)
 
 
 class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
@@ -79,6 +149,9 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
     Provides options to make ytdl-sub look more 'human-like' to protect from throttling. For
     range-based values, a random number will be chosen within the range to avoid sleeps looking
     scripted.
+
+    Range min and max values support static override variables within their definitions.
+    ``sleep_per_download_s`` supports both static and override variables.
 
     :Usage:
 
@@ -115,16 +188,16 @@ class ThrottleProtectionOptions(ToggleableOptionsDictValidator):
         super().__init__(name, value)
 
         self._sleep_per_request_s = self._validate_key_if_present(
-            key="sleep_per_request_s", validator=RandomizedRangeValidator
+            key="sleep_per_request_s", validator=RandomizedRangeOverridesValidator
         )
         self._sleep_per_download_s = self._validate_key_if_present(
             key="sleep_per_download_s", validator=RandomizedRangeValidator
         )
         self._sleep_per_subscription_s = self._validate_key_if_present(
-            key="sleep_per_subscription_s", validator=RandomizedRangeValidator
+            key="sleep_per_subscription_s", validator=RandomizedRangeOverridesValidator
         )
         self._max_downloads_per_subscription = self._validate_key_if_present(
-            key="max_downloads_per_subscription", validator=RandomizedRangeValidator
+            key="max_downloads_per_subscription", validator=RandomizedRangeOverridesValidator
         )
         self._subscription_download_probability = self._validate_key_if_present(
             key="subscription_download_probability", validator=ProbabilityValidator
@@ -202,15 +275,25 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         self._subscription_download_counter: int = 0
         self._subscription_max_downloads: Optional[int] = None
 
+        # Compute this during post-processing using entry metadata.
+        # Apply the sleep post-completion.
+        self._entry_sleep_time: Optional[float] = None
+
         # If subscriptions have a max download limit, set it here for the first subscription
         if self.plugin_options.max_downloads_per_subscription:
             self._subscription_max_downloads = (
-                self.plugin_options.max_downloads_per_subscription.randomized_int()
+                self.plugin_options.max_downloads_per_subscription.randomized_int(
+                    overrides=self.overrides
+                )
             )
 
     def ytdl_options(self) -> Optional[Dict]:
         if self.plugin_options.sleep_per_request_s is not None:
-            return {"sleep_interval_requests": self.plugin_options.sleep_per_request_s.max_value()}
+            return {
+                "sleep_interval_requests": self.plugin_options.sleep_per_request_s.max_value(
+                    overrides=self.overrides
+                )
+            }
         return {}
 
     def initialize_subscription(self) -> bool:
@@ -254,11 +337,18 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         self._subscription_download_counter += 1
 
         if self.plugin_options.sleep_per_download_s:
-            sleep_time = self.plugin_options.sleep_per_download_s.randomized_float()
-            logger.info("Sleeping between downloads for %0.2f seconds", sleep_time)
-            self.perform_sleep(sleep_time)
+            self._entry_sleep_time = self.plugin_options.sleep_per_download_s.randomized_float(
+                overrides=self.overrides, entry=entry
+            )
 
         return None
+
+    def post_completion_entry(self, file_metadata: FileMetadata) -> None:
+        if self._entry_sleep_time:
+            # pylint: disable=logging-fstring-interpolation)
+            # needed to test logs in unit test
+            logger.info(f"Sleeping between downloads for {self._entry_sleep_time:.2f} seconds")
+            self.perform_sleep(self._entry_sleep_time)
 
     def post_process_subscription(self):
         # Reset counter to 0 for the next subscription
@@ -267,10 +357,14 @@ class ThrottleProtectionPlugin(Plugin[ThrottleProtectionOptions]):
         # If present, reset max downloads for the next subscription
         if self.plugin_options.max_downloads_per_subscription:
             self._subscription_max_downloads = (
-                self.plugin_options.max_downloads_per_subscription.randomized_int
+                self.plugin_options.max_downloads_per_subscription.randomized_int(
+                    overrides=self.overrides
+                )
             )
 
         if self.plugin_options.sleep_per_subscription_s:
-            sleep_time = self.plugin_options.sleep_per_subscription_s.randomized_float()
+            sleep_time = self.plugin_options.sleep_per_subscription_s.randomized_float(
+                overrides=self.overrides
+            )
             logger.info("Sleeping between subscriptions for %0.2f seconds", sleep_time)
             self.perform_sleep(sleep_time)

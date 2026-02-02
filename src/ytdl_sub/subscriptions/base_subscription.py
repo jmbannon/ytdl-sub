@@ -8,10 +8,15 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.preset_options import YTDLOptions
+from ytdl_sub.config.validators.variable_validation import ResolutionLevel
+from ytdl_sub.config.validators.variable_validation import VariableValidation
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
+from ytdl_sub.utils.exceptions import SubscriptionPermissionError
+from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get("subscription")
@@ -74,6 +79,14 @@ class BaseSubscription(ABC):
             }
         )
 
+        # Validate after adding the subscription name
+        _ = VariableValidation(
+            overrides=self.overrides,
+            downloader_options=self.downloader_options,
+            output_options=self.output_options,
+            plugins=self.plugins,
+        ).ensure_proper_usage()
+
         self._enhanced_download_archive: Optional[EnhancedDownloadArchive] = (
             _initialize_download_archive(
                 output_options=self.output_options,
@@ -86,13 +99,19 @@ class BaseSubscription(ABC):
         # Add post-archive variables
         self.overrides.add(
             {
-                SubscriptionVariables.subscription_has_download_archive(): f"""{{
-                        %bool({self.download_archive.num_entries > 0})
-                    }}""",
+                SubscriptionVariables.subscription_has_download_archive(): (
+                    f"{{%bool({self.download_archive.num_entries > 0})}}"
+                ),
             }
         )
 
         self._exception: Optional[Exception] = None
+
+        if not FileHandler.is_path_writable(self.output_directory):
+            raise SubscriptionPermissionError(
+                "ytdl-sub does not have write permissions to the output directory: "
+                f"{self.output_directory}"
+            )
 
     @property
     def download_archive(self) -> EnhancedDownloadArchive:
@@ -236,4 +255,22 @@ class BaseSubscription(ABC):
         -------
         Subscription in yaml format
         """
-        return self._preset_options.yaml
+        return self._preset_options.yaml(subscription_only=False)
+
+    def resolved_yaml(self, resolution_level: int = ResolutionLevel.RESOLVE) -> str:
+        """
+        Returns
+        -------
+        Human-readable, condensed YAML definition of the subscription.
+        """
+        if resolution_level == ResolutionLevel.ORIGINAL:
+            return self._preset_options.yaml(subscription_only=True)
+
+        out = VariableValidation(
+            overrides=self.overrides,
+            downloader_options=self.downloader_options,
+            output_options=self.output_options,
+            plugins=self.plugins,
+            resolution_level=resolution_level,
+        ).ensure_proper_usage(partial_resolve_formatters=True)
+        return dump_yaml(out)

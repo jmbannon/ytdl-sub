@@ -1,0 +1,227 @@
+{
+  "audio_extract": {
+    "codec": "best"
+  },
+  "download": [
+    {
+      "include_sibling_metadata": "{include_sibling_metadata}",
+      "playlist_thumbnails": [
+        {
+          "name": "{avatar_uncropped_thumbnail_file_name}",
+          "uid": "avatar_uncropped"
+        },
+        {
+          "name": "{banner_uncropped_thumbnail_file_name}",
+          "uid": "banner_uncropped"
+        }
+      ],
+      "source_thumbnails": [
+        {
+          "name": "{avatar_uncropped_thumbnail_file_name}",
+          "uid": "avatar_uncropped"
+        },
+        {
+          "name": "{banner_uncropped_thumbnail_file_name}",
+          "uid": "banner_uncropped"
+        }
+      ],
+      "url": "{ %array_at(urls, 0) }",
+      "webpage_url": "{modified_webpage_url}"
+    },
+    {
+      "include_sibling_metadata": "{include_sibling_metadata}",
+      "url": "{ %array_slice(urls, 1) }",
+      "webpage_url": "{modified_webpage_url}"
+    }
+  ],
+  "format": "ba[ext=webm]/ba",
+  "music_tags": {
+    "album": "{track_album}",
+    "albumartist": "{track_album_artist}",
+    "albumartists": [
+      "{track_album_artist}"
+    ],
+    "artist": "{track_artist}",
+    "artists": [
+      "{track_artist}"
+    ],
+    "date": "{track_date}",
+    "genres": [
+      "{track_genre}"
+    ],
+    "original_date": "{track_original_date}",
+    "title": "{track_title}",
+    "track": "{track_number}",
+    "tracktotal": "{track_total}",
+    "year": "{track_year}"
+  },
+  "output_options": {
+    "file_name": "{track_full_path}",
+    "maintain_download_archive": true,
+    "output_directory": "{music_directory}",
+    "thumbnail_name": "{album_cover_path}"
+  },
+  "overrides": {
+    "album_cover_path": "{artist_dir}/{album_dir}/folder.{thumbnail_ext}",
+    "album_dir": "[{track_year}] {track_album_sanitized}",
+    "artist_dir": "{track_artist_sanitized}",
+    "avatar_uncropped_thumbnail_file_name": "",
+    "banner_uncropped_thumbnail_file_name": "",
+    "enable_resolution_assert": true,
+    "enable_throttle_protection": true,
+    "include_sibling_metadata": true,
+    "modified_webpage_url": "{webpage_url}",
+    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpk6coazyn",
+    "resolution_assert": "{\n  %if(\n    %and(\n      enable_resolution_assert,\n      %ne( height, 0 ),\n      %not(resolution_assert_is_ignored)\n    ),\n    %assert(\n      %gte( height, resolution_assert_height_gte ),\n      %concat(\n        \"Entry \",\n        title,\n        \" downloaded at a low resolution (\",\n        resolution_readable,\n        \"), you've probably been throttled. \",\n        \"Stopping further downloads, wait a few hours and try again. \",\n        \"Disable using the override variable `enable_resolution_assert: False`.\"\n      )\n    ),\n    \"false is no-op\"\n  )\n}",
+    "resolution_assert_height_gte": 361,
+    "resolution_assert_ignore_titles": "{ [] }",
+    "resolution_assert_is_ignored": "{\n  %print_if_true(\n    %concat(title, \" has a match in resolution_assert_ignore_titles, skipping resolution assert.\"),\n    %contains_any(title, resolution_assert_ignore_titles)\n  )\n}",
+    "resolution_assert_print": "{\n  %print(\n    %if(\n      enable_resolution_assert,\n      \"Resolution assert is enabled, will fail on low-quality video downloads and presume throttle. Disable using the override variable `enable_resolution_assert: False`\",\n      \"Resolution assert is disabled. Use at your own risk!\"\n    ),\n    enable_resolution_assert,\n    -1\n  )\n}",
+    "resolution_readable": "{width}x{height}",
+    "subscription_array": "{%from_json('''[\"https://www.youtube.com/channel/UCsItMF6_fP754ihIsSRLk5A/playlists\"]''')}",
+    "subscription_indent_1": "Jazz",
+    "subscription_value": "https://www.youtube.com/channel/UCsItMF6_fP754ihIsSRLk5A/playlists",
+    "subscription_value_1": "https://www.youtube.com/channel/UCsItMF6_fP754ihIsSRLk5A/playlists",
+    "track_album": "{playlist_title}",
+    "track_album_artist": "{track_artist}",
+    "track_artist": "{subscription_name}",
+    "track_date": "{upload_date_standardized}",
+    "track_file_name": "{track_number_padded} - {track_title_sanitized}.{ext}",
+    "track_full_path": "{artist_dir}/{album_dir}/{track_file_name}",
+    "track_genre": "{subscription_indent_1}",
+    "track_genre_default": "Unset",
+    "track_number": "{playlist_index}",
+    "track_number_padded": "{playlist_index_padded}",
+    "track_original_date": "{track_date}",
+    "track_title": "{title}",
+    "track_total": "{playlist_count}",
+    "track_year": "{playlist_max_upload_year}",
+    "url": "{subscription_value}",
+    "url10": "",
+    "url100": "",
+    "url11": "",
+    "url12": "",
+    "url13": "",
+    "url14": "",
+    "url15": "",
+    "url16": "",
+    "url17": "",
+    "url18": "",
+    "url19": "",
+    "url2": "",
+    "url20": "",
+    "url21": "",
+    "url22": "",
+    "url23": "",
+    "url24": "",
+    "url25": "",
+    "url26": "",
+    "url27": "",
+    "url28": "",
+    "url29": "",
+    "url3": "",
+    "url30": "",
+    "url31": "",
+    "url32": "",
+    "url33": "",
+    "url34": "",
+    "url35": "",
+    "url36": "",
+    "url37": "",
+    "url38": "",
+    "url39": "",
+    "url4": "",
+    "url40": "",
+    "url41": "",
+    "url42": "",
+    "url43": "",
+    "url44": "",
+    "url45": "",
+    "url46": "",
+    "url47": "",
+    "url48": "",
+    "url49": "",
+    "url5": "",
+    "url50": "",
+    "url51": "",
+    "url52": "",
+    "url53": "",
+    "url54": "",
+    "url55": "",
+    "url56": "",
+    "url57": "",
+    "url58": "",
+    "url59": "",
+    "url6": "",
+    "url60": "",
+    "url61": "",
+    "url62": "",
+    "url63": "",
+    "url64": "",
+    "url65": "",
+    "url66": "",
+    "url67": "",
+    "url68": "",
+    "url69": "",
+    "url7": "",
+    "url70": "",
+    "url71": "",
+    "url72": "",
+    "url73": "",
+    "url74": "",
+    "url75": "",
+    "url76": "",
+    "url77": "",
+    "url78": "",
+    "url79": "",
+    "url8": "",
+    "url80": "",
+    "url81": "",
+    "url82": "",
+    "url83": "",
+    "url84": "",
+    "url85": "",
+    "url86": "",
+    "url87": "",
+    "url88": "",
+    "url89": "",
+    "url9": "",
+    "url90": "",
+    "url91": "",
+    "url92": "",
+    "url93": "",
+    "url94": "",
+    "url95": "",
+    "url96": "",
+    "url97": "",
+    "url98": "",
+    "url99": "",
+    "urls": "{subscription_array}"
+  },
+  "preset": [
+    "_music_base",
+    "_multi_url",
+    "_albums_from_playlists",
+    "_throttle_protection",
+    "YouTube Releases",
+    "__preset__"
+  ],
+  "throttle_protection": {
+    "enable": "{\n  %print(\n    %if(\n      enable_throttle_protection,\n      \"Throttle protection is enabled. Disable using the override variable `enable_throttle_protection: False`\",\n      \"Throttle protection is disabled. Use at your own risk!\"\n    ),\n    enable_throttle_protection\n  )\n}",
+    "sleep_per_download_s": {
+      "max": 28.4,
+      "min": 13.8
+    },
+    "sleep_per_request_s": {
+      "max": 0.75,
+      "min": 0.0
+    },
+    "sleep_per_subscription_s": {
+      "max": 26.1,
+      "min": 16.3
+    }
+  },
+  "ytdl_options": {
+    "break_on_existing": true
+  }
+}

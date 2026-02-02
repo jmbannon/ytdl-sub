@@ -48,7 +48,7 @@ class Plugin(BasePlugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
         Returns True if enabled, False if disabled.
         """
         if isinstance(self.plugin_options, ToggleableOptionsDictValidator):
-            return self.overrides.evaluate_boolean(self.plugin_options.enable)
+            return self.overrides.apply_formatter(self.plugin_options.enable, expected_type=bool)
         return True
 
     def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:
@@ -116,6 +116,17 @@ class Plugin(BasePlugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
         Returns
         -------
         Optional file metadata for the entry media file.
+        """
+        return None
+
+    def post_completion_entry(self, file_metadata: FileMetadata) -> None:
+        """
+        After the entry file is moved to its final location, run this hook.
+
+        Parameters
+        ----------
+        file_metadata
+            Metadata about the completed entry's file download
         """
         return None
 
