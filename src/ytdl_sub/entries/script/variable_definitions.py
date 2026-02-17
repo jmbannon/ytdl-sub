@@ -823,6 +823,17 @@ class YtdlSubVariableDefinitions(ABC):
             variable_name="upload_date_index_reversed_padded", pad=2
         )
 
+    @cached_property
+    def ytdl_sub_keep_files_date_eval(self: "VariableDefinitions") -> StringVariable:
+        """
+        :description:
+          The standardized date variable supplied in ``output_options.keep_files_date_eval``.
+        """
+        return StringVariable(
+            variable_name="ytdl_sub_entry_date_eval",
+            definition=f"{{%string({self.upload_date_standardized.variable_name})}}",
+        )
+
 
 class EntryVariableDefinitions(ABC):
     @cached_property
@@ -1082,6 +1093,24 @@ class EntryVariableDefinitions(ABC):
             definition="{ {} }",
         )
 
+    @cached_property
+    def height(self: "VariableDefinitions") -> IntegerMetadataVariable:
+        """
+        :description:
+          Height in pixels of the video. If this value is unavailable (i.e. audio download), it
+          will default to 0.
+        """
+        return IntegerMetadataVariable.from_entry(metadata_key="height", default=0)
+
+    @cached_property
+    def width(self: "VariableDefinitions") -> IntegerMetadataVariable:
+        """
+        :description:
+          Width in pixels of the video. If this value is unavailable (i.e. audio download), it
+          will default to 0.
+        """
+        return IntegerMetadataVariable.from_entry(metadata_key="width", default=0)
+
 
 class VariableDefinitions(
     EntryVariableDefinitions,
@@ -1107,6 +1136,16 @@ class VariableDefinitions(
         }
 
     @cache
+    def variable_names(self, include_sanitized: bool):
+        """
+        Returns all variable names, and can include sanitized.
+        """
+        var_names: Set[str] = self.scripts().keys()
+        if include_sanitized:
+            var_names |= {f"{name}_sanitized" for name in var_names}
+        return var_names
+
+    @cache
     def injected_variables(self) -> Set[MetadataVariable]:
         """
         Returns variables that get injected in the download-stage
@@ -1121,6 +1160,9 @@ class VariableDefinitions(
             self.ytdl_sub_input_url,
             self.ytdl_sub_input_url_index,
             self.ytdl_sub_input_url_count,
+            self.ytdl_sub_keep_files_date_eval,
+            self.width,
+            self.height,
         }
 
     @cache
@@ -1130,6 +1172,7 @@ class VariableDefinitions(
         """
         return {
             self.uid,
+            self.extractor,
             self.extractor_key,
             self.epoch,
             self.webpage_url,

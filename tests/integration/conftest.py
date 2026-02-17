@@ -1,10 +1,11 @@
 import contextlib
 import os
-import shutil
 from pathlib import Path
+from typing import Any
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Optional
 from unittest.mock import patch
 
 import pytest
@@ -15,6 +16,7 @@ from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 
 v: VariableDefinitions = VARIABLES
 
@@ -53,6 +55,8 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
         is_youtube_channel: bool = False,
         mock_download_to_working_dir: bool = True,
         is_extracted_audio: bool = False,
+        release_date: Optional[str] = None,
+        mock_entry_kwargs: Optional[Dict[str, Any]] = None,
     ) -> Dict:
         entry_dict = {
             v.uid.metadata_key: uid,
@@ -70,6 +74,10 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             v.playlist_metadata.metadata_key: {"thumbnails": []},
             v.description.metadata_key: "The Description",
         }
+
+        # TODO: Make this required eventually
+        if release_date is not None:
+            entry_dict[v.release_date.metadata_key] = release_date
 
         if is_youtube_channel:
             entry_dict[v.playlist_metadata.metadata_key]["thumbnails"] = [
@@ -98,6 +106,9 @@ def mock_entry_dict_factory(mock_downloaded_file_path) -> Callable:
             copy_file_fixture(
                 fixture_name="thumb.jpg", output_file_path=mock_downloaded_file_path(f"{uid}.jpg")
             )
+
+        if mock_entry_kwargs:
+            return dict(entry_dict, **mock_entry_kwargs)
         return entry_dict
 
     return _mock_entry_dict_factory
@@ -131,7 +142,9 @@ def mock_download_collection_thumbnail(mock_downloaded_file_path):
 
 @pytest.fixture
 def mock_download_collection_entries(
-    mock_download_collection_thumbnail, mock_entry_dict_factory: Callable, working_directory: str
+    mock_download_collection_thumbnail,
+    mock_entry_dict_factory: Callable,
+    working_directory: str,
 ):
     @contextlib.contextmanager
     def _mock_download_collection_entries_factory(
@@ -139,6 +152,7 @@ def mock_download_collection_entries(
         num_urls: int = 1,
         is_extracted_audio: bool = False,
         is_dry_run: bool = False,
+        mock_entry_kwargs: Optional[Dict[str, Any]] = None,
     ):
         is_real_run = not is_dry_run
 
@@ -153,42 +167,50 @@ def mock_download_collection_entries(
                     mock_entry_dict_factory(
                         uid="21-1",
                         upload_date="20210808",
+                        release_date="20010808",
                         playlist_title="Download First",
                         playlist_index=1,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
                         mock_download_to_working_dir=is_real_run,
+                        mock_entry_kwargs=mock_entry_kwargs,
                     ),  # 1
                     mock_entry_dict_factory(
                         uid="20-1",
                         upload_date="20200808",
+                        release_date="20000808",
                         playlist_title="Download First",
                         playlist_index=2,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
                         mock_download_to_working_dir=is_real_run,
+                        mock_entry_kwargs=mock_entry_kwargs,
                     ),  # 2  98
                     mock_entry_dict_factory(
                         uid="20-2",
                         upload_date="20200808",
+                        release_date="20000808",
                         playlist_title="Download First",
                         playlist_index=3,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
                         mock_download_to_working_dir=is_real_run,
+                        mock_entry_kwargs=mock_entry_kwargs,
                     ),  # 1  99
                     mock_entry_dict_factory(
                         uid="20-3",
                         upload_date="20200807",
+                        release_date="20000807",
                         playlist_title="Download First",
                         playlist_index=4,
                         playlist_count=4,
                         is_youtube_channel=is_youtube_channel,
                         is_extracted_audio=is_extracted_audio,
                         mock_download_to_working_dir=is_real_run,
+                        mock_entry_kwargs=mock_entry_kwargs,
                     ),
                 ]
             return [
@@ -196,52 +218,62 @@ def mock_download_collection_entries(
                 mock_entry_dict_factory(
                     uid="20-3",
                     upload_date="20200807",
+                    release_date="20000807",
                     playlist_title="Download Second",
                     playlist_index=1,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=False,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
                 mock_entry_dict_factory(
                     uid="20-4",
                     upload_date="20200806",
+                    release_date="20000806",
                     playlist_title="Download Second",
                     playlist_index=2,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=is_real_run,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
                 mock_entry_dict_factory(
                     uid="20-5",
                     upload_date="20200706",
+                    release_date="20000706",
                     playlist_title="Download Second",
                     playlist_index=3,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=is_real_run,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
                 mock_entry_dict_factory(
                     uid="20-6",
                     upload_date="20200706",
+                    release_date="20000706",
                     playlist_title="Download Second",
                     playlist_index=4,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=is_real_run,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
                 mock_entry_dict_factory(
                     uid="20-7",
                     upload_date="20200606",
+                    release_date="20000606",
                     playlist_title="Download Second",
                     playlist_index=5,
                     playlist_count=5,
                     is_youtube_channel=is_youtube_channel,
                     is_extracted_audio=is_extracted_audio,
                     mock_download_to_working_dir=is_real_run,
+                    mock_entry_kwargs=mock_entry_kwargs,
                 ),
             ]
 
@@ -250,6 +282,9 @@ def mock_download_collection_entries(
             patch.object(
                 MultiUrlDownloader, "_extract_entry_info_with_retry", new=lambda _, entry: entry
             ),
+            # Throttle protection is included in all prebuilt presets. Mock the sleep avoid
+            # actual sleeps
+            patch.object(ThrottleProtectionPlugin, "perform_sleep", new=lambda _1, _2: None),
         ):
             # Stub out metadata. TODO: update this if we do metadata plugins
             yield

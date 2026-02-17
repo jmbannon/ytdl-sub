@@ -76,3 +76,15 @@ class TestNumericFunctions:
     def test_pow(self, values: str, expected_output: float):
         output = single_variable_output(f"{{ %pow({values}) }}")
         assert output == expected_output
+
+    @pytest.mark.parametrize(
+        "values, expected_output",
+        [
+            ("5", [0, 1, 2, 3, 4]),
+            ("5, 1", [1, 2, 3, 4]),
+            ("5, 1, 2", [1, 3]),
+        ],
+    )
+    def test_range(self, values: str, expected_output: float):
+        output = single_variable_output(f"{{ %range({values}) }}")
+        assert output == expected_output

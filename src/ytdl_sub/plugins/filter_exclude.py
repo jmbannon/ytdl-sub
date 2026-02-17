@@ -7,14 +7,14 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.script import ScriptUtils
-from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import BooleanFormatterValidator
+from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get("filter-exclude")
 
 
-class FilterExcludeOptions(ListFormatterValidator, OptionsValidator):
+class FilterExcludeOptions(ListValidator[BooleanFormatterValidator], OptionsValidator):
     """
     Applies a conditional OR on any number of filters comprised of either variables or scripts.
     If any filter evaluates to True, the entry will be excluded.
@@ -29,6 +29,8 @@ class FilterExcludeOptions(ListFormatterValidator, OptionsValidator):
          - >-
            { %contains( %lower(description), '#short' ) }
     """
+
+    _inner_list_type = BooleanFormatterValidator
 
 
 class FilterExcludePlugin(Plugin[FilterExcludeOptions]):
@@ -53,10 +55,11 @@ class FilterExcludePlugin(Plugin[FilterExcludeOptions]):
             return entry
 
         for formatter in self.plugin_options.list:
-            out = ScriptUtils.bool_formatter_output(
-                self.overrides.apply_formatter(formatter=formatter, entry=entry)
+            should_exclude = self.overrides.apply_formatter(
+                formatter=formatter, entry=entry, expected_type=bool
             )
-            if bool(out):
+
+            if should_exclude:
                 logger.info(
                     "Filtering '%s' from the filter %s evaluating to True",
                     entry.title,

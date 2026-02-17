@@ -1,3 +1,10 @@
+..
+  WARNING: This RST file is generated from docstrings in:
+    The respective plugin files under src/ytdl_sub/plugins/
+  In order to make a change to this file, edit the respective docstring
+  and run `make docs`. This will automatically sync the Python RST-based
+  docstrings into this file. If the docstrings and RST file are out of sync,
+  it will fail TestDocGen tests in GitHub CI.
 
 Plugins
 =======
@@ -28,6 +35,12 @@ Extracts audio from a video file.
   Can typically be left undefined to always default to enable. For preset convenience,
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
 
 ``quality``
 
@@ -95,6 +108,12 @@ chapters and remove specific ones. Can also remove chapters using regex.
   Defaults to False. Force keyframes at cuts when removing sections. This is slow due to
   needing a re-encode, but the resulting video may have fewer artifacts around the cuts.
 
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
+
 ``remove_chapters_regex``
 
 :expected type: Optional[List[RegexString]
@@ -130,9 +149,11 @@ Dates must adhere to a yt-dlp datetime. From their docs:
    A string in the format YYYYMMDD or
    (now|today|yesterday|date)[+-][0-9](microsecond|second|minute|hour|day|week|month|year)(s)
 
-Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in this.
-Note that yt-dlp will round times to the closest day, meaning that `day` is the lowest
-granularity possible.
+Valid examples are ``now-2weeks`` or ``20200101``. Can use override variables in
+this. Note that yt-dlp will round times to the closest day, meaning that `day` is
+the lowest granularity possible. Also note that, considering time zones, it's best
+to include a margin of an extra day on either side to be sure it includes the
+intended download files.
 
 :Usage:
 
@@ -141,18 +162,20 @@ granularity possible.
    date_range:
      before: "now"
      after: "today-2weeks"
+     breaks: True
+     type: "upload_date"
 
 ``after``
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos after this datetime.
+  Only download videos after or on this datetime, inclusive.
 
 ``before``
 
 :expected type: Optional[OverridesFormatter]
 :description:
-  Only download videos before this datetime.
+  Only download videos only before this datetime, not inclusive.
 
 ``breaks``
 
@@ -168,6 +191,19 @@ granularity possible.
   Can typically be left undefined to always default to enable. For preset convenience,
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
+
+``type``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Which type of date to use. Must be either ``upload_date`` or ``release_date``.
+  Defaults to ``upload_date``.
 
 ----------------------------------------------------------------------------------------------------
 
@@ -299,6 +335,12 @@ Also supports custom ffmpeg conversions:
 
   The output file will use the extension specified in ``convert_to``. Post-processing args
   can still be set  with ``convert_with`` set to ``yt-dlp``.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
 
 ----------------------------------------------------------------------------------------------------
 
@@ -437,11 +479,17 @@ with a ``.nfo`` extension. You can add any values into the NFO.
 
 ``kodi_safe``
 
-:expected type: Optional[Boolean]
+:expected type: OverridesBooleanFormatterValidator
 :description:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
   characters with '□'.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
 
 ``nfo_name``
 
@@ -530,11 +578,17 @@ Usage:
 
 ``kodi_safe``
 
-:expected type: Optional[Boolean]
+:expected type: OverridesBooleanFormatterValidator
 :description:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
   characters with '□'.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
 
 ``nfo_name``
 
@@ -612,6 +666,8 @@ Defines where to output files and thumbnails after all post-processing has compl
          maintain_download_archive: True
          keep_files_before: now
          keep_files_after: 19000101
+         keep_max_files: 1000
+         keep_files_date_eval: "{upload_date_standardized}"
 
 ``download_archive_name``
 
@@ -657,6 +713,15 @@ Defines where to output files and thumbnails after all post-processing has compl
   files before ``now``, which implies all files. Can be used in conjunction with
   ``keep_max_files``.
 
+``keep_files_date_eval``
+
+:expected type: str
+:description:
+    Uses this standardized date in the form of YYYY-MM-DD to record in the
+    download archive for a given entry. Subsequently, uses this value to
+    perform evaluation for keep_files_before/after and keep_max_files. Defaults
+    to the entry's upload_date_standardized variable.
+
 ``keep_max_files``
 
 :expected type: Optional[OverridesFormatter]
@@ -665,6 +730,12 @@ Defines where to output files and thumbnails after all post-processing has compl
 
   Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
   applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
 
 ``maintain_download_archive``
 
@@ -694,6 +765,14 @@ Defines where to output files and thumbnails after all post-processing has compl
 :expected type: OverridesFormatter
 :description:
   The output directory to store all media files downloaded.
+
+``preserve_mtime``
+
+:expected type: Optional[Boolean]
+:description:
+  Preserve the video's original upload time as the file modification time.
+  When True, sets the file's mtime to match the video's upload_date from
+  yt-dlp metadata. Defaults to False.
 
 ``thumbnail_name``
 
@@ -732,6 +811,16 @@ In addition, any override variable defined will automatically create a ``sanitiz
 for use. In the example above, ``output_directory_sanitized`` will exist and perform
 sanitization on the value when used.
 
+``dict_with_parsed_format_strings``
+
+Returns dict with the parsed format strings.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
+
 ----------------------------------------------------------------------------------------------------
 
 split_by_chapters
@@ -754,6 +843,12 @@ used with no modifications.
    split_by_chapters:
      when_no_chapters: "pass"
 
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
+
 ``when_no_chapters``
 
 :expected type: String
@@ -766,6 +861,97 @@ used with no modifications.
 
   If a file has no chapters and is set to "pass", then ``chapter_title`` is
   set to the entry's title and ``chapter_index``, ``chapter_count`` are both set to 1.
+
+----------------------------------------------------------------------------------------------------
+
+square_thumbnail
+----------------
+Whether to make thumbnails square. Supports both file and embedded-based thumbnails. Ideal
+for representing audio albums.
+
+:Usage:
+
+.. code-block:: yaml
+
+   square_thumbnail: True
+
+----------------------------------------------------------------------------------------------------
+
+static_nfo_tags
+---------------
+Adds an NFO file for every entry, but does not link it to an entry in the download
+archive.  This is intended to produce ``season.nfo`` files in each season
+directory. Each entry within a season will overwrite this file with its season
+name. If the entry gets deleted from ytdl-sub, this file will remain since it's not
+linked.
+
+Usage:
+
+.. code-block:: yaml
+
+   presets:
+     my_example_preset:
+       static_nfo_tags:
+         # required
+         nfo_name: "season.nfo"
+         nfo_root: "season"
+         tags:
+           title: "My custom season name!"
+         # optional
+         kodi_safe: False
+
+``enable``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Can typically be left undefined to always default to enable. For preset convenience,
+  this field can be set using an override variable to easily toggle whether this plugin
+  is enabled or not via Boolean.
+
+``kodi_safe``
+
+:expected type: OverridesBooleanFormatterValidator
+:description:
+  Defaults to False. Kodi does not support > 3-byte unicode characters, which include
+  emojis and some foreign language characters. Setting this to True will replace those
+  characters with '□'.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
+
+``nfo_name``
+
+:expected type: EntryFormatter
+:description:
+  The NFO file name.
+
+``nfo_root``
+
+:expected type: EntryFormatter
+:description:
+  The root tag of the NFO's XML. In the usage above, it would look like
+
+  .. code-block:: xml
+
+     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+     <season>
+     </season>
+
+``tags``
+
+:expected type: NfoTags
+:description:
+  Tags within the nfo_root tag. In the usage above, it would look like
+
+  .. code-block:: xml
+
+     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+     <season>
+       <title>My custom season name!</title>
+     </season>
 
 ----------------------------------------------------------------------------------------------------
 
@@ -816,6 +1002,19 @@ It will set the respective language to the correct subtitle file.
   Language code(s) to download for subtitles. Supports a single or list of multiple
   language codes. Defaults to only "en".
 
+``languages_required``
+
+:expected type: Optional[List[String]]
+:description:
+  Language code(s) that are required to be present for downloads to continue. If missing,
+  ytdl-sub will throw an error. NOTE: currently this only checks file-based subtitles.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
+
 ``subtitles_name``
 
 :expected type: Optional[EntryFormatter]
@@ -839,6 +1038,9 @@ Provides options to make ytdl-sub look more 'human-like' to protect from throttl
 range-based values, a random number will be chosen within the range to avoid sleeps looking
 scripted.
 
+Range min and max values support static override variables within their definitions.
+``sleep_per_download_s`` supports both static and override variables.
+
 :Usage:
 
 .. code-block:: yaml
@@ -846,6 +1048,9 @@ scripted.
    presets:
      my_example_preset:
        throttle_protection:
+         sleep_per_request_s:
+           min: 5.5
+           max: 10.4
          sleep_per_download_s:
            min: 2.2
            max: 10.8
@@ -865,6 +1070,12 @@ scripted.
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
+
 ``max_downloads_per_subscription``
 
 :expected type: Optional[Range]
@@ -877,6 +1088,15 @@ scripted.
 :description:
   Number in seconds to sleep between each download. Does not include time it takes for
   ytdl-sub to perform post-processing.
+
+``sleep_per_request_s``
+
+:expected type: Optional[Range]
+:description:
+  Number in seconds to sleep between each request during metadata download. Note that
+  metadata download refers to the initial info.json download, not the actual audio/video
+  download for the entry. Also, yt-dlp only supports a single value at this time for this,
+  so will always use the max value.
 
 ``sleep_per_subscription_s``
 
@@ -940,3 +1160,13 @@ for more details.
 
 
 where each key is a ytdl argument. Include in the example are some popular ytdl_options.
+
+``dict_with_parsed_format_strings``
+
+Returns dict with the parsed format strings.
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name

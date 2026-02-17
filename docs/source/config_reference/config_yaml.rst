@@ -1,3 +1,10 @@
+..
+  WARNING: This RST file is generated from docstrings in:
+    The respective function docstrings within ytdl_sub/config/config_validator.py
+  In order to make a change to this file, edit the respective docstring
+  and run `make docs`. This will automatically sync the Python RST-based
+  docstrings into this file. If the docstrings and RST file are out of sync,
+  it will fail TestDocGen tests in GitHub CI.
 
 Configuration File
 ==================
@@ -38,25 +45,38 @@ Enables modifying subscription files using info.json files using the argument
 ``--update-with-info-json``. This feature is still being tested and has the ability to
 destroy files. Ensure you have a full backup before usage. You have been warned!
 
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
+
 ffmpeg_path
 -----------
-Path to ffmpeg executable. Defaults to ``/usr/bin/ffmpeg`` for Linux, and
-``ffmpeg.exe`` for Windows (in the same directory as ytdl-sub).
+Path to ffmpeg executable. (default ``/usr/bin/ffmpeg`` for Linux,
+``./ffmpeg.exe`` in the same directory as ytdl-sub for Windows)
 
 ffprobe_path
 ------------
-Path to ffprobe executable. Defaults to ``/usr/bin/ffprobe`` for Linux, and
-``ffprobe.exe`` for Windows (in the same directory as ytdl-sub).
+Path to ffprobe executable. (default ``/usr/bin/ffprobe`` for Linux,
+``./ffprobe.exe`` in the same directory as ytdl-sub for Windows)
 
 file_name_max_bytes
 -------------------
 Max file name size in bytes. Most OS's typically default to 255 bytes.
 
+leaf_name
+---------
+Returns
+-------
+"name" from the first.element.of.the.name
+
 lock_directory
 --------------
 The directory to temporarily store file locks, which prevents multiple instances
-of ``ytdl-sub`` from running. Note that file locks do not work on network-mounted
-directories. Ensure that this directory resides on the host machine. Defaults to ``/tmp``.
+of ``ytdl-sub`` from running. Note that file locks do not work on
+network-mounted directories. Ensure that this directory resides on the host
+machine. (default ``/tmp``)
 
 persist_logs
 ------------
@@ -64,17 +84,27 @@ TODO(jessebannon) fill out
 
 ``keep_successful_logs``
 
-Optional. Whether to store logs when downloading is successful. Defaults to True.
+If the ``persist_logs:`` key is in the configuration, then ``ytdl-sub`` *always*
+writes log files for the subscription both for successful downloads and when it
+encounters an error while downloading. When this key is ``False``, only write
+log files for errors. (default ``True``)
+
+``leaf_name``
+
+Returns
+-------
+"name" from the first.element.of.the.name
 
 ``logs_directory``
 
-Required. The directory to store the logs in.
+Write log files to this directory with names like
+``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``. (required)
 
 umask
 -----
-Umask (octal format) to apply to every created file. Defaults to "022".
+Umask in octal format to apply to every created file. (default ``022``)
 
 working_directory
 -----------------
 The directory to temporarily store downloaded files before moving them into their final
-directory. Defaults to .ytdl-sub-working-directory
+directory. (default ``./.ytdl-sub-working-directory``)

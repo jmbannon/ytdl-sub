@@ -44,6 +44,7 @@ class MainArguments:
         short="-m",
         long="--match",
     )
+    SUPPRESS_COLORS = CLIArgument(short="-nc", long="--suppress-colors")
 
     @classmethod
     def all(cls) -> List[CLIArgument]:
@@ -59,6 +60,7 @@ class MainArguments:
             cls.TRANSACTION_LOG,
             cls.SUPPRESS_TRANSACTION_LOG,
             cls.MATCH,
+            cls.SUPPRESS_COLORS,
         ]
 
     @classmethod
@@ -109,8 +111,8 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         MainArguments.LOG_LEVEL.long,
         metavar="|".join(LoggerLevels.names()),
         type=str,
-        help="level of logs to print to console, defaults to info",
-        default=argparse.SUPPRESS if suppress_defaults else LoggerLevels.INFO.name,
+        help="level of logs to print to console, defaults to verbose",
+        default=argparse.SUPPRESS if suppress_defaults else LoggerLevels.VERBOSE.name,
         choices=LoggerLevels.names(),
         dest="ytdl_sub_log_level",
     )
@@ -127,6 +129,13 @@ def _add_shared_arguments(arg_parser: argparse.ArgumentParser, suppress_defaults
         MainArguments.SUPPRESS_TRANSACTION_LOG.long,
         action="store_true",
         help="do not output transaction logs to console or file",
+        default=argparse.SUPPRESS if suppress_defaults else False,
+    )
+    arg_parser.add_argument(
+        MainArguments.SUPPRESS_COLORS.short,
+        MainArguments.SUPPRESS_COLORS.long,
+        action="store_true",
+        help="do not use colors in ytdl-sub output",
         default=argparse.SUPPRESS if suppress_defaults else False,
     )
     arg_parser.add_argument(
@@ -212,3 +221,7 @@ view_parser.add_argument(
     help="View source variables after splitting by chapters",
 )
 view_parser.add_argument("url", help="URL to view source variables for")
+
+###################################################################################################
+# CLI-TO-SUB PARSER
+cli_to_sub_parser = subparsers.add_parser("cli-to-sub")

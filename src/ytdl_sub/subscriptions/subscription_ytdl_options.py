@@ -19,6 +19,7 @@ from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
 from ytdl_sub.plugins.match_filters import combine_filters
 from ytdl_sub.plugins.match_filters import default_filters
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
+from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 from ytdl_sub.utils.ffmpeg import FFMPEG
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
@@ -93,8 +94,8 @@ class SubscriptionYTDLOptions:
                 self._enhanced_download_archive.working_ytdl_file_path
             )
         if self._preset.output_options.keep_max_files:
-            keep_max_files = int(
-                self._overrides.apply_formatter(self._preset.output_options.keep_max_files)
+            keep_max_files = self._overrides.apply_formatter(
+                self._preset.output_options.keep_max_files, expected_type=int
             )
             if keep_max_files > 0:
                 # yt-dlp has a weird bug with max_downloads=1, set to 2 for safe measure
@@ -175,6 +176,7 @@ class SubscriptionYTDLOptions:
             self._global_options,
             self._output_options,
             self._plugin_match_filters,
+            self._plugin_ytdl_options(ThrottleProtectionPlugin),
             self._plugin_ytdl_options(FormatPlugin),
             self._plugin_ytdl_options(AudioExtractPlugin),  # will override format
             self._user_ytdl_options,  # user ytdl options...

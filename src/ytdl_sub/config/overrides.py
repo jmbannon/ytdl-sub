@@ -1,9 +1,10 @@
 from typing import Any
 from typing import Dict
+from typing import Iterable
 from typing import Optional
 from typing import Set
-
-import mergedeep
+from typing import Type
+from typing import TypeVar
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
@@ -11,16 +12,20 @@ from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARI
 from ytdl_sub.entries.variables.override_variables import OverrideHelpers
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
+from ytdl_sub.script.types.function import BuiltInFunction
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
+
+ExpectedT = TypeVar("ExpectedT")
 
 
 class Overrides(UnstructuredDictFormatterValidator, Scriptable):
@@ -88,6 +93,24 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
 
         return True
 
+    def ensure_variable_names_not_a_plugin(self, plugin_names: Iterable[str]) -> None:
+        """
+        Throws an error if an override variable or function has the same name as a
+        preset key. This is to avoid confusion when accidentally defining things in
+        overrides that are meant to be in the preset.
+        """
+        for name in self.keys:
+            if name.startswith("%"):
+                name = name[1:]
+
+            if name in plugin_names:
+                raise self._validation_exception(
+                    f"Override variable with name {name} cannot be used since it is"
+                    " the name of a plugin. Perhaps you meant to define it as a plugin? If so,"
+                    " indent it left to make it at the same level as overrides.",
+                    exception_class=InvalidVariableNameException,
+                )
+
     def ensure_variable_name_valid(self, name: str) -> None:
         """
         Ensures the variable name does not collide with any entry variables or built-in functions.
@@ -115,29 +138,35 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
             )
 
     def initial_variables(
-        self, unresolved_variables: Optional[Dict[str, str]] = None
-    ) -> Dict[str, str]:
+        self, unresolved_variables: Optional[Dict[str, SyntaxTree]] = None
+    ) -> Dict[str, SyntaxTree]:
         """
         Returns
         -------
         Variables and format strings for all Override variables + additional variables (Optional)
         """
-        initial_variables: Dict[str, str] = {}
-        mergedeep.merge(
-            initial_variables,
-            self.dict_with_format_strings,
-            unresolved_variables if unresolved_variables else {},
-        )
-        return ScriptUtils.add_sanitized_variables(initial_variables)
+        initial_variables: Dict[str, SyntaxTree] = self.dict_with_parsed_format_strings
+        if unresolved_variables:
+            initial_variables |= unresolved_variables
+        return ScriptUtils.add_sanitized_parsed_variables(initial_variables)
 
     def initialize_script(self, unresolved_variables: Set[str]) -> "Overrides":
         """
         Initialize the override script with any unresolved variables
         """
-        self.script.add(
+        self.script.add_parsed(
             self.initial_variables(
                 unresolved_variables={
-                    var_name: f"{{%throw('Plugin variable {var_name} has not been created yet')}}"
+                    var_name: SyntaxTree(
+                        ast=[
+                            BuiltInFunction(
+                                name="throw",
+                                args=[
+                                    String(f"Plugin variable {var_name} has not been created yet")
+                                ],
+                            )
+                        ]
+                    )
                     for var_name in unresolved_variables
                 }
             )
@@ -158,10 +187,15 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
             script = entry.script
             unresolvable = entry.unresolvable
 
+        # Update the script internally so long as we are not supplying overrides
+        # that could alter the script with one-off state
+        update = function_overrides is None
+
         try:
             return script.resolve_once(
                 dict({"tmp_var": formatter.format_string}, **(function_overrides or {})),
                 unresolvable=unresolvable,
+                update=update,
             )["tmp_var"]
         except ScriptVariableNotResolved as exc:
             raise StringFormattingException(
@@ -176,7 +210,8 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         formatter: StringFormatterValidator,
         entry: Optional[Entry] = None,
         function_overrides: Optional[Dict[str, str]] = None,
-    ) -> str:
+        expected_type: Type[ExpectedT] = str,
+    ) -> ExpectedT:
         """
         Parameters
         ----------
@@ -186,6 +221,8 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
             Optional. Entry to add source variables to the formatter
         function_overrides
             Optional. Explicit values to override the overrides themselves and source variables
+        expected_type
+            The expected type that should return. Defaults to string.
 
         Returns
         -------
@@ -196,28 +233,15 @@ class Overrides(UnstructuredDictFormatterValidator, Scriptable):
         StringFormattingException
             If the formatter that is trying to be resolved cannot
         """
-        return formatter.post_process(
-            str(
-                self._apply_to_resolvable(
-                    formatter=formatter, entry=entry, function_overrides=function_overrides
-                )
-            )
+        out = formatter.post_process(
+            self._apply_to_resolvable(
+                formatter=formatter, entry=entry, function_overrides=function_overrides
+            ).native
         )
 
-    def apply_overrides_formatter_to_native(
-        self,
-        formatter: OverridesStringFormatterValidator,
-    ) -> Any:
-        """
-        Parameters
-        ----------
-        formatter
-            Overrides formatter to apply
+        if not isinstance(out, expected_type):
+            raise StringFormattingException(
+                f"Expected type {expected_type.__name__}, but received '{out.__class__.__name__}'"
+            )
 
-        Returns
-        -------
-        The native python form of the resolved variable
-        """
-        return self._apply_to_resolvable(
-            formatter=formatter, entry=None, function_overrides=None
-        ).native
+        return out

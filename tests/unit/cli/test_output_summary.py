@@ -36,7 +36,7 @@ def test_output_summary_no_errors():
         ]
     )
 
-    output_summary(subscriptions=mock_subscriptions)
+    output_summary(subscriptions=mock_subscriptions, suppress_colors=False)
 
 
 def test_output_summary_one_error():
@@ -50,7 +50,7 @@ def test_output_summary_one_error():
         ]
     )
 
-    output_summary(subscriptions=mock_subscriptions)
+    output_summary(subscriptions=mock_subscriptions, suppress_colors=False)
 
 
 def test_output_summary_multiple_errors():
@@ -64,4 +64,4 @@ def test_output_summary_multiple_errors():
         ]
     )
 
-    output_summary(subscriptions=mock_subscriptions)
+    output_summary(subscriptions=mock_subscriptions, suppress_colors=True)

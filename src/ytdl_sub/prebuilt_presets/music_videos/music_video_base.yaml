@@ -2,6 +2,9 @@ presets:
   _music_video_base:
 
     preset:
+      # ytdl-sub includes throttle prootection by default or all prebuilt presets.
+      # Can be disabled with override variable `enable_throttle_protection: False`
+      - "_throttle_protection"
       - "_url_categorized"
 
     output_options:

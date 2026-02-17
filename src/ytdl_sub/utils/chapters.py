@@ -220,10 +220,17 @@ class Chapters:
             # Timestamp captured, store it
             if match := Timestamp.TIMESTAMP_REGEX.search(line):
                 timestamp_str = match.group(1)
-                timestamps.append(Timestamp.from_str(timestamp_str))
 
                 # Remove timestamp and surrounding whitespace from it
                 title_str = re.sub(f"\\s*{re.escape(timestamp_str)}\\s*", " ", line).strip()
+
+                timestamp = Timestamp.from_str(timestamp_str)
+                if timestamps and (timestamps[-1].timestamp_sec == timestamp.timestamp_sec):
+                    # duplicate timestamp... combine into one chapter
+                    titles[-1] += " // " + title_str
+                    continue
+                timestamps.append(timestamp)
+
                 titles.append(title_str)
 
         # If more than 3 timestamps were parsed, return it

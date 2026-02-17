@@ -1,14 +1,25 @@
 Deprecation Notices
 ===================
 
+Dec 2025
+--------
+
+Override variables names can no longer be plugin names, to avoid the common pitfall of
+defining a plugin underneath ``overrides``.
+
+In the past, there was usage of a ``date_range`` override variable in a few example configs
+that complimented the ``Only Recent`` preset. This overrride variable usage needs to be
+replaced with ``only_recent_date_range``.
+
 Sep 2024
 --------
 
 regex plugin
 ~~~~~~~~~~~~
+
 Regex plugin has been removed in favor of scripting. The function
-:ref:`config_reference/scripting/scripting_functions:regex_capture_many`
-has been created to replicate the plugin's behavior. See the following converted example:
+:ref:`config_reference/scripting/scripting_functions:regex_capture_many` has been
+created to replicate the plugin's behavior. See the following converted example:
 
 .. code-block:: yaml
   :caption: regex plugin
@@ -40,13 +51,16 @@ has been created to replicate the plugin's behavior. See the following converted
         }
       track_title: "{%array_at(captured_track_title, 1)}"
 
+
 Oct 2023
 --------
 
 subscription preset and value
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The use of ``__value__`` will go away in Dec 2023 in favor of the method found in
-:ref:`config_reference/subscription_yaml:Subscription File`. ``__preset__`` will still be supported for the time being.
+:ref:`config_reference/subscription_yaml:Subscription File`. ``__preset__`` will still
+be supported for the time being.
 
 July 2023
 ---------
@@ -54,8 +68,9 @@ July 2023
 music_tags
 ~~~~~~~~~~
 
-Music tags are getting simplified. ``tags`` will now reside directly under music_tags, and
-``embed_thumbnail`` is getting moved to its own plugin (supports video files as well). Convert from:
+Music tags are getting simplified. ``tags`` will now reside directly under music_tags,
+and ``embed_thumbnail`` is getting moved to its own plugin (supports video files as
+well). Convert from:
 
 .. code-block:: yaml
 
@@ -79,8 +94,8 @@ The old format will be removed in October 2023.
 video_tags
 ~~~~~~~~~~
 
-Video tags are getting simplified as well. ``tags`` will now reside directly under video_tags.
-Convert from:
+Video tags are getting simplified as well. ``tags`` will now reside directly under
+video_tags.  Convert from:
 
 .. code-block:: yaml
 

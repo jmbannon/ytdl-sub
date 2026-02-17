@@ -11,9 +11,6 @@ from ytdl_sub.entries.script.variable_types import Variable
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.utils.name_validation import is_valid_name
 
-# TODO: use this
-SUBSCRIPTION_ARRAY = "subscription_array"
-
 
 class SubscriptionVariables:
     @staticmethod
@@ -55,16 +52,21 @@ class SubscriptionVariables:
     @staticmethod
     def subscription_indent_i(index: int) -> StringVariable:
         """
-        For subscriptions in the form of
+        For subscriptions where the ancestor keys contain the ``= ...`` prefix, the
+        variables ``subscription_indent_1``, ``subscription_indent_2``, and so on get
+        set to each subsequent value. For example, given the following subscriptions
+        file snippet:
 
         .. code-block:: yaml
 
-           Preset | = Indent Value 1:
-             = Indent Value 2:
+           Preset 1 | = Indent Value 1 | Preset 2:
+             Preset 3 | = Indent Value 2 | Preset 4:
                "Subscription Name": "https://..."
 
-        ``subscription_indent_1`` and ``subscription_indent_2`` get set to
-        ``Indent Value 1`` and ``Indent Value 2``.
+        The ``{subscription_indent_1}`` variable will be ``Indent Value 1`` and
+        ``{subscription_indent_2}`` will be ``Indent Value 2``. The most common use of
+        these variables is to :doc:`set the genre and rating for subscriptions from the
+        YAML keys <../prebuilt_presets/tv_show>`.
         """
         return StringVariable(
             variable_name=f"subscription_indent_{index + 1}", definition="{ %string('') }"
@@ -158,7 +160,7 @@ class OverrideHelpers:
         True if the override name itself is valid. False otherwise.
         """
         if name.startswith("%"):
-            return is_valid_name(name=name[1:])
+            name = name[1:]
 
         return is_valid_name(name=name)
 

@@ -1,0 +1,84 @@
+presets:
+
+  _throttle_protection:
+    throttle_protection:
+      enable: >-
+        {
+          %print(
+            %if(
+              enable_throttle_protection,
+              "Throttle protection is enabled. Disable using the override variable `enable_throttle_protection: False`",
+              "Throttle protection is disabled. Use at your own risk!"
+            ),
+            enable_throttle_protection
+          )
+        }
+      sleep_per_request_s:
+        # yt-dlp processes eath request synchronously, so it's intrinsic delay between
+        # requests already represent a maximum close to real app/client behavior in the
+        # field. Add a small additional margin matching the example values from yt-dlp
+        # to be conservative:
+        max: 0.75
+        # Not used at time of writing, but choose a value that would mimic real
+        # app/client behavior in the field. The next request is usually sent right away
+        # if processing the previous request is done asynchronously:
+        min: 0.0
+      sleep_per_download_s:
+        min: 13.8
+        max: 28.4
+      sleep_per_subscription_s:
+        min: 16.3
+        max: 26.1
+    overrides:
+      enable_throttle_protection: True
+
+      ##### Resolution Assert
+      enable_resolution_assert: True
+      resolution_assert_height_gte: 361
+      resolution_assert_print: >-
+        {
+          %print(
+            %if(
+              enable_resolution_assert,
+              "Resolution assert is enabled, will fail on low-quality video downloads and presume throttle. Disable using the override variable `enable_resolution_assert: False`",
+              "Resolution assert is disabled. Use at your own risk!"
+            ),
+            enable_resolution_assert,
+            -1
+          )
+        }
+      # list variable that contains partial titles to ignore
+      resolution_assert_ignore_titles: "{ [] }"
+      resolution_assert_is_ignored: >-
+        {
+          %print_if_true(
+            %concat(title, " has a match in resolution_assert_ignore_titles, skipping resolution assert."),
+            %contains_any(title, resolution_assert_ignore_titles)
+          )
+        }
+
+      resolution_readable: "{width}x{height}"
+      # height is not a guaranteed populated variable, do not assert if it's missing (which defaults to 0)
+      resolution_assert: >-
+        {
+          %if(
+            %and(
+              enable_resolution_assert,
+              %ne( height, 0 ),
+              %not(resolution_assert_is_ignored)
+            ),
+            %assert(
+              %gte( height, resolution_assert_height_gte ),
+              %concat(
+                "Entry ",
+                title,
+                " downloaded at a low resolution (",
+                resolution_readable,
+                "), you've probably been throttled. ",
+                "Stopping further downloads, wait a few hours and try again. ",
+                "Disable using the override variable `enable_resolution_assert: False`."
+              )
+            ),
+            "false is no-op"
+          )
+        }

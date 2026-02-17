@@ -21,6 +21,7 @@ PLUGIN_NAMES_TO_SKIP_PROPERTIES: Set[str] = {
     "filter_include",
     "filter_exclude",
     "embed_thumbnail",
+    "square_thumbnail",
     "video_tags",
     "download",
 }
@@ -29,6 +30,7 @@ PLUGIN_NAMES_TO_SKIP_PROPERTIES: Set[str] = {
 class PluginsDocGen(DocGen):
 
     LOCATION = Path("docs/source/config_reference/plugins.rst")
+    DOCSTRING_LOCATION = "The respective plugin files under src/ytdl_sub/plugins/"
 
     @classmethod
     def generate(cls):

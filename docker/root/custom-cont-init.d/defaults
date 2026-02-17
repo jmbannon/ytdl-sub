@@ -1,0 +1,84 @@
+#!/usr/bin/with-contenv bash
+
+echo "Starting ytdl-sub..."
+
+# copy config
+[[ ! -e "$DEFAULT_WORKSPACE/config.yaml" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE" && \
+    cp /defaults/config.yaml "$DEFAULT_WORKSPACE/config.yaml"
+[[ ! -e "$DEFAULT_WORKSPACE/subscriptions.yaml" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE" && \
+    cp /defaults/subscriptions.yaml "$DEFAULT_WORKSPACE/subscriptions.yaml"
+[[ ! -d "$DEFAULT_WORKSPACE/examples" ]] && \
+    mkdir -p "$DEFAULT_WORKSPACE/examples" && \
+    cp -r /defaults/examples/* "$DEFAULT_WORKSPACE/examples"
+
+[[ ! -e "/config/.bashrc" ]] && \
+  echo "alias ls='ls --color=auto'" > /config/.bashrc && \
+  echo "cd ." >> /config/.bashrc
+
+# always create empty cron log file on start
+echo "" > "$LOGS_TO_STDOUT"
+
+# permissions
+chown -R ${PUID:-abc}:${PGID:-abc} \
+    /config
+
+# update command reference:
+# https://github.com/yt-dlp/yt-dlp/wiki/Installation#with-pip
+if [ "$UPDATE_YT_DLP_ON_START" == "stable" ] ; then
+    echo "UPDATE_YT_DLP_ON_START is set to stable, attempting to update to a new stable version of yt-dlp if it exists."
+    python3 -m pip install -U "yt-dlp[default]" 
+elif [ "$UPDATE_YT_DLP_ON_START" == "nightly" ] ; then
+    echo "UPDATE_YT_DLP_ON_START is set to nightly, attempting to update to the latest nightly version of yt-dlp."
+    python3 -m pip install -U --pre "yt-dlp[default]"
+elif [ "$UPDATE_YT_DLP_ON_START" == "master" ] ; then
+    echo "UPDATE_YT_DLP_ON_START is set to master, pulling yt-dlp's latest commit for install."
+    python3 -m pip install -U pip hatchling wheel
+    python3 -m pip install --force-reinstall "yt-dlp[default] @ https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz"
+else
+    echo "UPDATE_YT_DLP_ON_START is not set, using packaged version."
+fi
+
+# set up cron
+if [ "$CRON_SCHEDULE" != "" ] ; then
+    [[ ! -e "$CRON_SCRIPT" ]] && \
+    cp /defaults/cron "$CRON_SCRIPT"
+
+    # create cron script wrapper
+    echo '#!/bin/bash' > "$CRON_WRAPPER_SCRIPT"
+    echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> "$CRON_WRAPPER_SCRIPT"
+    echo "cd \"$DEFAULT_WORKSPACE\"" >> "$CRON_WRAPPER_SCRIPT"
+    echo ". \"$CRON_SCRIPT\" >> \"$LOGS_TO_STDOUT\" 2>&1" >> "$CRON_WRAPPER_SCRIPT"
+    chmod +x "$CRON_WRAPPER_SCRIPT"
+    chown abc:abc "$CRON_WRAPPER_SCRIPT"
+
+    # Set the crontab file to the schedule, cleanly
+    CRON_SCHEDULE_CLEAN="${CRON_SCHEDULE//\"/}"
+    CRON_SCHEDULE_CLEAN="${CRON_SCHEDULE_CLEAN//\'/}"
+
+    echo "# min   hour    day     month   weekday command" > /config/crontabs/abc
+    echo "$CRON_SCHEDULE_CLEAN   $CRON_WRAPPER_SCRIPT" >> /config/crontabs/abc
+
+    chmod +x "$CRON_SCRIPT"
+    chown abc:abc "$CRON_SCRIPT"
+
+    crontab -u abc /config/crontabs/abc
+
+    CRON_SUCCESS=$?
+    if [ $CRON_SUCCESS -eq 0 ] ; then
+      echo "Cron enabled with schedule $CRON_SCHEDULE_CLEAN"
+
+      if [ "$CRON_RUN_ON_START" = true ] ; then
+        echo "Running cron script on start in the background"
+        # ensure it runs as abc to respect puid/guid with delay for tail to start
+        su -s "/bin/bash" -c "sleep 5 && . '$CRON_WRAPPER_SCRIPT'" abc > /dev/null 2>&1 &
+      fi
+    else
+      echo "Error in CRON_SCHEDULE definition, disabling cron."
+      exit 1
+    fi
+else
+  echo "CRON_SCHEDULE not specified, leaving crontabs as-is. Current configuration in /config/crontabs/abc"
+  cat /config/crontabs/abc
+fi

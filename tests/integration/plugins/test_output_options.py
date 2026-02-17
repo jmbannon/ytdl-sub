@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from typing import Dict
 from unittest.mock import patch
@@ -11,6 +12,7 @@ from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
 
@@ -223,3 +225,25 @@ class TestOutputOptions:
             dry_run=False,
             expected_download_summary_file_name="plugins/output_options/test_missing_thumb.json",
         )
+
+    def test_invalid_keep_files_date_eval(
+        self,
+        config: ConfigFile,
+        subscription_name: str,
+        output_options_subscription_dict: Dict,
+        output_directory: str,
+        mock_download_collection_entries,
+    ):
+        output_options_subscription_dict["output_options"]["keep_files_date_eval"] = "nope"
+
+        expected_error_msg = (
+            "Validation error in subscription_test.output_options.keep_files_date_eval: "
+            "Expected a standardized date in the form of YYYY-MM-DD, but received 'nope'"
+        )
+
+        with pytest.raises(ValidationException, match=re.escape(expected_error_msg)):
+            _ = Subscription.from_dict(
+                config=config,
+                preset_name=subscription_name,
+                preset_dict=output_options_subscription_dict,
+            )

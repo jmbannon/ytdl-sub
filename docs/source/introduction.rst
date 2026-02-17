@@ -8,10 +8,23 @@ What is ytdl-sub?
 .. _plex: https://github.com/plexinc/pms-docker
 .. _emby: https://github.com/plexinc/pms-docker
 
-``ytdl-sub`` is a command-line tool that downloads media via `yt-dlp`_ and prepares it for your favorite media player (`Kodi`_, `Jellyfin`_, `Plex`_, `Emby`_, modern music players).
+``ytdl-sub`` is a command-line tool that builds on and orchestrates `yt-dlp`_ to
+download media from YouTube and/or other online services. It provides a declarative,
+expressive YAML configuration system that allows you to describe which media to download
+and how it should appear in your media library servers and applications such as
+`Jellyfin`_, `Plex`_, `Emby`_, `Kodi`_, modern music players, etc..
 
-Visual examples
-===============
+To these ends, ``ytdl-sub``:
+
+- wraps and runs `yt-dlp`_, per your configuration to:
+
+  - download the media, remux and/or optionally transcode it
+
+- prepares additional metadata both embedded and in external files
+
+- renames the resulting files
+
+- places them in your library
 
 .. figure:: https://user-images.githubusercontent.com/10107080/182677243-b4184e51-9780-4094-bd40-ea4ff58555d0.PNG
   :alt: The Jellyfin web interface, showing the thumbnails of various YouTube shows.
@@ -34,10 +47,52 @@ Visual examples
   SoundCloud albums and singles in MusicBee
 
 
-Why ytdl-sub?
--------------
-There is a lack of open-source tools to download media and generate metadata to play it in these players. Most solutions involve using multiple tools or bash scripts to achieve this. ``ytdl-sub`` aims to consolidate all of this logic into a single easy-to-use application that can run automatically once configured.
+Motivation
+----------
+
+`yt-dlp`_ has grown into a well maintained, central repository of the intricate,
+inscrutable, and extensive technical knowledge required to automate downloading media
+from online services. When those services change their APIs or otherwise change
+behavior, `yt-dlp`_ is the central, low-level tool to update. It does a best-in-class
+job at that task, and it does that job more effectively by narrowing focus to just that.
+As much knowledge as it encapsulates and as well as it does that, it still requires a
+great deal of additional knowledge to make its output accessible to end-users. Mostly
+this gap is about extracting and formatting metadata and correctly placing the resulting
+output files in a media library.
+
+A number of tools, applications, and other projects have grown up around that central
+`yt-dlp`_ pillar to fill in those gaps, and this project was one of the early
+entrants. Many are `full-featured services that provide web UIs`_ including some that
+`provide media player web UIs`_. Most of those other projects necessarily narrow their
+scope to provide a more polished and integrated user experience.
+
+Similarly, ``ytdl-sub`` can run automatically to accomplish the same goals, but aims to
+serve users that need lower-level control and/or have use cases not covered by the more
+narrow scope of those other projects. To some degree, this makes this project
+intrinsically less user friendly and requires more technical experience or learning.
+
+Want something that "Just Works", try one of the other projects; we recommend
+`Pinchflat`_ as the next step towards that end. Want to download from more than just
+YouTube? Don't like the other restrictions inherent in the goals of those other
+projects? Have unique use cases? Then dig in, learn, and we hope ``ytdl-sub`` gives you
+enough rope and `a foot-gun`_ to get you there.
+
+.. _`full-featured services that provide web UIs`:
+   https://github.com/kieraneglin/pinchflat
+.. _`provide media player web UIs`:
+   https://www.tubearchivist.com/
+.. _`Pinchflat`: `full-featured services that provide web UIs`_
+.. _`a foot-gun`: https://en.wiktionary.org/wiki/footgun
+
 
 Why download instead of stream?
 -------------------------------
-We believe it is important to download what you like because there is no guarantee it will stay online forever. We also believe it is important to download it in such a way that it is easy to consume. Most solutions today force you to watch/listen to your downloaded content via file system or web browser. ``ytdl-sub`` aims to format downloaded content for any media player.
+
+Most of the tools in this `yt-dlp`_ ecosystem serve a similar set of larger, more
+general use cases, and so does ``ytdl-sub``:
+
+- Don't rely on profit-driven corporate persons to keep more obscure content available.
+- Even if they do, don't depend on them to make it possible to use it in different ways.
+- Even when you pay, don't count on them not inserting ads later.
+- Regardless, don't depend on them to curate content for yourself and/or your family.
+- Free yourself and/or your family from what the algorithm would feed them next.

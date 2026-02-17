@@ -16,4 +16,7 @@
 # See the documentation above on how to build your own custom presets.
 #
 configuration:
+  # Avoid unnecessarily long large file renames, set this to a path on the same
+  # filesystem as the destination for downloaded files in the `overrides: /
+  # *_directory:` paths:
   working_directory: ".ytdl-sub-working-directory"

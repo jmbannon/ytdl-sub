@@ -18,6 +18,7 @@ presets:
   "YouTube Releases":
     preset:
       - "_albums_from_playlists"
+      - "_throttle_protection"
 
   "Bandcamp":
     preset:

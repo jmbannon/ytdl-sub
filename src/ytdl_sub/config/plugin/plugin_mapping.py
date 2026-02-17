@@ -24,6 +24,8 @@ from ytdl_sub.plugins.music_tags import MusicTagsPlugin
 from ytdl_sub.plugins.nfo_tags import NfoTagsPlugin
 from ytdl_sub.plugins.output_directory_nfo_tags import OutputDirectoryNfoTagsPlugin
 from ytdl_sub.plugins.split_by_chapters import SplitByChaptersPlugin
+from ytdl_sub.plugins.square_thumbnail import SquareThumbnailPlugin
+from ytdl_sub.plugins.static_nfo_tags import StaticNfoTagsPlugin
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 from ytdl_sub.plugins.video_tags import VideoTagsPlugin
@@ -39,6 +41,7 @@ class PluginMapping:
         "audio_extract": AudioExtractPlugin,
         "date_range": DateRangePlugin,
         "embed_thumbnail": EmbedThumbnailPlugin,
+        "square_thumbnail": SquareThumbnailPlugin,
         "file_convert": FileConvertPlugin,
         "format": FormatPlugin,
         "match_filters": MatchFiltersPlugin,
@@ -46,6 +49,7 @@ class PluginMapping:
         "video_tags": VideoTagsPlugin,
         "nfo_tags": NfoTagsPlugin,
         "output_directory_nfo_tags": OutputDirectoryNfoTagsPlugin,
+        "static_nfo_tags": StaticNfoTagsPlugin,
         "subtitles": SubtitlesPlugin,
         "chapters": ChaptersPlugin,
         "split_by_chapters": SplitByChaptersPlugin,
@@ -83,7 +87,15 @@ class PluginMapping:
         MusicTagsPlugin,
         VideoTagsPlugin,
         NfoTagsPlugin,
+        StaticNfoTagsPlugin,
+        SquareThumbnailPlugin,
         EmbedThumbnailPlugin,
+    ]
+
+    _ORDER_POST_COMPLETION: List[Type[Plugin]] = [
+        # Throttle protection should always be last
+        # to not sleep over other logic
+        ThrottleProtectionPlugin
     ]
 
     @classmethod
@@ -96,6 +108,8 @@ class PluginMapping:
             ordering = cls._ORDER_MODIFY_ENTRY
         elif operation == PluginOperation.POST_PROCESS:
             ordering = cls._ORDER_POST_PROCESS
+        elif operation == PluginOperation.POST_COMPLETION:
+            ordering = cls._ORDER_POST_COMPLETION
         else:
             raise ValueError("PluginOperation does not support ordering")
 

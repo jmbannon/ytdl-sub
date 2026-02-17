@@ -45,6 +45,7 @@ else:
         )
 
         try:
+            os.makedirs(os.path.dirname(lock_file_path), exist_ok=True)
             lock_file = open(lock_file_path, "w", encoding="utf-8")
         except FileNotFoundError as exc:
             # pylint: disable=line-too-long

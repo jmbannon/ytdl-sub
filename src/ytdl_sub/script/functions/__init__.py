@@ -9,6 +9,7 @@ from ytdl_sub.script.functions.error_functions import ErrorFunctions
 from ytdl_sub.script.functions.json_functions import JsonFunctions
 from ytdl_sub.script.functions.map_functions import MapFunctions
 from ytdl_sub.script.functions.numeric_functions import NumericFunctions
+from ytdl_sub.script.functions.print_functions import PrintFunctions
 from ytdl_sub.script.functions.regex_functions import RegexFunctions
 from ytdl_sub.script.functions.string_functions import StringFunctions
 from ytdl_sub.script.types.resolvable import Resolvable
@@ -26,6 +27,7 @@ class Functions(
     RegexFunctions,
     DateFunctions,
     JsonFunctions,
+    PrintFunctions,
 ):
     _custom_functions: Dict[str, Callable[..., Resolvable]] = {}
 

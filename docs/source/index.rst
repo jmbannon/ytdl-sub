@@ -10,7 +10,6 @@ ytdl-sub User Guide
   prebuilt_presets/index
   usage
   config_reference/index
+  debugging
   faq/index
   deprecation_notices
-
-.. note:: The docs are heavily work-in-progress. Please bear with us while we're under construction!

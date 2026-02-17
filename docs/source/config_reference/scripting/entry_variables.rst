@@ -1,3 +1,10 @@
+..
+  WARNING: This RST file is generated from docstrings in:
+    src/ytdl_sub/entries/script/variable_definitions.py
+  In order to make a change to this file, edit the respective docstring
+  and run `make docs`. This will automatically sync the Python RST-based
+  docstrings into this file. If the docstrings and RST file are out of sync,
+  it will fail TestDocGen tests in GitHub CI.
 
 Entry Variables
 ===============
@@ -83,6 +90,13 @@ extractor_key
 :description:
   The yt-dlp extractor key
 
+height
+~~~~~~
+:type: ``Integer``
+:description:
+  Height in pixels of the video. If this value is unavailable (i.e. audio download), it
+  will default to 0.
+
 ie_key
 ~~~~~~
 :type: ``String``
@@ -164,6 +178,13 @@ webpage_url
 :type: ``String``
 :description:
   The url to the webpage.
+
+width
+~~~~~
+:type: ``Integer``
+:description:
+  Width in pixels of the video. If this value is unavailable (i.e. audio download), it
+  will default to 0.
 
 ----------------------------------------------------------------------------------------------------
 
@@ -659,3 +680,9 @@ ytdl_sub_input_url_index
 :type: ``Integer``
 :description:
   The index of the input URL as defined in the subscription, top-most being the 0th index.
+
+ytdl_sub_keep_files_date_eval
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:type: ``String``
+:description:
+  The standardized date variable supplied in ``output_options.keep_files_date_eval``.

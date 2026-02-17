@@ -1,4 +1,5 @@
 # pylint: disable=missing-raises-doc
+from collections import defaultdict
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -7,38 +8,26 @@ from typing import Set
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script_output import ScriptOutput
+from ytdl_sub.script.types.resolvable import Argument
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.syntax_tree import ResolvedSyntaxTree
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import FunctionArgument
 from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
 from ytdl_sub.script.utils.exceptions import RuntimeException
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
+from ytdl_sub.script.utils.name_validation import is_function
+from ytdl_sub.script.utils.name_validation import to_function_definition_name
+from ytdl_sub.script.utils.name_validation import to_function_name
 from ytdl_sub.script.utils.name_validation import validate_variable_name
 from ytdl_sub.script.utils.type_checking import FunctionSpec
-
-
-def _is_function(override_name: str):
-    return override_name.startswith("%")
-
-
-def _function_name(function_key: str) -> str:
-    """
-    Drop the % in %custom_function
-    """
-    return function_key[1:]
-
-
-def _to_function_definition_name(function_key: str) -> str:
-    """
-    Add % in %custom_function
-    """
-    return f"%{function_key}"
 
 
 class Script:
@@ -49,43 +38,71 @@ class Script:
         ``{ %custom_function: syntax }``
     """
 
-    def _ensure_no_cycle(
+    def _throw_cycle_error(
         self, name: str, dep: str, deps: List[str], definitions: Dict[str, SyntaxTree]
     ):
-        if dep not in definitions:
-            return  # does not exist, will throw downstream in parser
+        type_name, pre = (
+            ("custom functions", "%") if definitions is self._functions else ("variables", "")
+        )
+        cycle_deps = [name] + deps + [dep]
+        cycle_deps_str = " -> ".join([f"{pre}{name}" for name in cycle_deps])
 
-        if name in deps + [dep]:
-            type_name, pre = (
-                ("custom functions", "%") if definitions is self._functions else ("variables", "")
-            )
-            cycle_deps = [name] + deps + [dep]
-            cycle_deps_str = " -> ".join([f"{pre}{name}" for name in cycle_deps])
-
-            raise CycleDetected(f"Cycle detected within these {type_name}: {cycle_deps_str}")
+        raise CycleDetected(f"Cycle detected within these {type_name}: {cycle_deps_str}")
 
     def _traverse_variable_dependencies(
         self,
         variable_name: str,
         variable_dependency: SyntaxTree,
         deps: List[str],
+        ensured: Dict[str, Set[str]],
     ) -> None:
         for dep in variable_dependency.variables:
-            self._ensure_no_cycle(
-                name=variable_name, dep=dep.name, deps=deps, definitions=self._variables
-            )
+            if variable_name == dep.name:
+                self._throw_cycle_error(
+                    name=variable_name, dep=dep.name, deps=deps, definitions=self._variables
+                )
+
+            if dep.name in ensured[variable_name]:
+                continue
+
             self._traverse_variable_dependencies(
                 variable_name=variable_name,
                 variable_dependency=self._variables[dep.name],
                 deps=deps + [dep.name],
+                ensured=ensured,
             )
+            ensured[variable_name].add(dep.name)
+
+        for custom_func in variable_dependency.custom_function_dependencies(
+            custom_function_definitions=self._functions
+        ):
+            for dep in self._functions[custom_func.name].variables:
+                if variable_name == dep.name:
+                    self._throw_cycle_error(
+                        name=variable_name,
+                        dep=dep.name,
+                        deps=deps + [custom_func.definition_name()],
+                        definitions=self._variables,
+                    )
+                if dep.name in ensured[variable_name]:
+                    continue
+
+                self._traverse_variable_dependencies(
+                    variable_name=variable_name,
+                    variable_dependency=self._variables[dep.name],
+                    deps=deps + [custom_func.definition_name(), dep.name],
+                    ensured=ensured,
+                )
+                ensured[variable_name].add(dep.name)
 
     def _ensure_no_variable_cycles(self, variables: Dict[str, SyntaxTree]):
+        ensured: Dict[str, Set[str]] = defaultdict(set)
         for variable_name, variable_definition in variables.items():
             self._traverse_variable_dependencies(
                 variable_name=variable_name,
                 variable_dependency=variable_definition,
                 deps=[],
+                ensured=ensured,
             )
 
     def _traverse_custom_function_dependencies(
@@ -95,9 +112,10 @@ class Script:
         deps: List[str],
     ) -> None:
         for dep in custom_function_dependency.custom_functions:
-            self._ensure_no_cycle(
-                name=custom_function_name, dep=dep.name, deps=deps, definitions=self._functions
-            )
+            if custom_function_name == dep.name:
+                self._throw_cycle_error(
+                    name=custom_function_name, dep=dep.name, deps=deps, definitions=self._functions
+                )
             self._traverse_custom_function_dependencies(
                 custom_function_name=custom_function_name,
                 custom_function_dependency=self._functions[dep.name],
@@ -240,23 +258,23 @@ class Script:
 
     def __init__(self, script: Dict[str, str]):
         function_names: Set[str] = {
-            _function_name(name) for name in script.keys() if _is_function(name)
+            to_function_name(name) for name in script.keys() if is_function(name)
         }
         variable_names: Set[str] = {
-            validate_variable_name(name) for name in script.keys() if not _is_function(name)
+            validate_variable_name(name) for name in script.keys() if not is_function(name)
         }
 
         self._functions: Dict[str, SyntaxTree] = {
             # custom_function_name must be passed to properly type custom function
             # arguments uniquely if they're nested (i.e. $0 to $custom_func___0)
-            _function_name(function_key): parse(
+            to_function_name(function_key): parse(
                 text=function_value,
-                name=_function_name(function_key),
+                name=to_function_name(function_key),
                 custom_function_names=function_names,
                 variable_names=variable_names,
             )
             for function_key, function_value in script.items()
-            if _is_function(function_key)
+            if is_function(function_key)
         }
 
         self._variables: Dict[str, SyntaxTree] = {
@@ -267,13 +285,13 @@ class Script:
                 variable_names=variable_names,
             )
             for variable_key, variable_value in script.items()
-            if not _is_function(variable_key)
+            if not is_function(variable_key)
         }
         self._validate()
 
     def _update_internally(self, resolved_variables: Dict[str, Resolvable]) -> None:
         for variable_name, resolved in resolved_variables.items():
-            self._variables[variable_name] = SyntaxTree(ast=[resolved])
+            self._variables[variable_name] = ResolvedSyntaxTree(ast=[resolved])
 
     def _recursive_get_unresolved_output_filter_variables(
         self, current_var: SyntaxTree, subset_to_resolve: Set[str], unresolvable: Set[Variable]
@@ -302,14 +320,21 @@ class Script:
                 unresolvable=unresolvable,
             )
 
+        for lambda_func in current_var.lambdas:
+            if lambda_func.value in self._functions:
+                subset_to_resolve |= self._recursive_get_unresolved_output_filter_variables(
+                    current_var=self._functions[lambda_func.value],
+                    subset_to_resolve=subset_to_resolve,
+                    unresolvable=unresolvable,
+                )
+
         return subset_to_resolve
 
     def _get_unresolved_output_filter(
         self,
-        unresolved: Dict[Variable, SyntaxTree],
         output_filter: Set[str],
         unresolvable: Set[Variable],
-    ) -> Dict[Variable, SyntaxTree]:
+    ) -> Set[str]:
         """
         When an output filter is applied, only a subset of variables that the filter
         depends on need to be resolved.
@@ -330,7 +355,7 @@ class Script:
                 unresolvable=unresolvable,
             )
 
-        return {var: syntax for var, syntax in unresolved.items() if var.name in subset_to_resolve}
+        return subset_to_resolve
 
     def _resolve(
         self,
@@ -366,18 +391,21 @@ class Script:
 
         unresolvable: Set[Variable] = {Variable(name) for name in (unresolvable or {})}
         unresolved_filter = set(resolved.keys()).union(unresolvable)
-        unresolved: Dict[Variable, SyntaxTree] = {
-            Variable(name): ast
-            for name, ast in self._variables.items()
-            if Variable(name) not in unresolved_filter
-        }
 
         if output_filter:
-            unresolved = self._get_unresolved_output_filter(
-                unresolved=unresolved,
-                output_filter=output_filter,
-                unresolvable=unresolvable,
-            )
+            unresolved = {
+                Variable(name): self._variables[name]
+                for name in self._get_unresolved_output_filter(
+                    output_filter=output_filter,
+                    unresolvable=unresolvable,
+                )
+            }
+        else:
+            unresolved = {
+                Variable(name): ast
+                for name, ast in self._variables.items()
+                if Variable(name) not in unresolved_filter
+            }
 
         while unresolved:
             unresolved_count: int = len(unresolved)
@@ -398,8 +426,8 @@ class Script:
 
                 # Otherwise, if it has dependencies that are all resolved, then
                 # resolve the definition
-                elif not definition.is_subset_of(
-                    variables=resolved.keys(), custom_function_definitions=self._functions
+                elif definition.is_subset_of(
+                    variables=resolved, custom_function_definitions=self._functions
                 ):
                     resolved[variable] = unresolved[variable].resolve(
                         resolved_variables=resolved,
@@ -482,12 +510,12 @@ class Script:
         added_variables_to_validate: Set[str] = set()
 
         functions_to_add = {
-            _function_name(name): definition
+            to_function_name(name): definition
             for name, definition in variables.items()
-            if _is_function(name)
+            if is_function(name)
         }
         variables_to_add = {
-            name: definition for name, definition in variables.items() if not _is_function(name)
+            name: definition for name, definition in variables.items() if not is_function(name)
         }
 
         custom_function_names = set(self._functions.keys()) | functions_to_add.keys()
@@ -517,11 +545,52 @@ class Script:
 
         return self
 
+    def add_parsed(self, variables: Dict[str, SyntaxTree]) -> "Script":
+        """
+        Adds already parsed, new variables to the script.
+
+        Parameters
+        ----------
+        variables
+            Mapping containing variable name to definition.
+
+        Returns
+        -------
+        Script
+            self
+        """
+        added_variables_to_validate: Set[str] = set()
+
+        functions_to_add = {
+            to_function_name(name): definition
+            for name, definition in variables.items()
+            if is_function(name)
+        }
+        variables_to_add = {
+            name: definition for name, definition in variables.items() if not is_function(name)
+        }
+
+        for definitions in [functions_to_add, variables_to_add]:
+            for name, parsed in definitions.items():
+                if parsed.maybe_resolvable is None:
+                    added_variables_to_validate.add(name)
+
+                if name in functions_to_add:
+                    self._functions[name] = parsed
+                else:
+                    self._variables[name] = parsed
+
+        if added_variables_to_validate:
+            self._validate(added_variables=added_variables_to_validate)
+
+        return self
+
     def resolve_once(
         self,
         variable_definitions: Dict[str, str],
         resolved: Optional[Dict[str, Resolvable]] = None,
         unresolvable: Optional[Set[str]] = None,
+        update: bool = False,
     ) -> Dict[str, Resolvable]:
         """
         Given a new set of variable definitions, resolve them using the Script, but do not
@@ -536,6 +605,8 @@ class Script:
         unresolvable
             Optional. Unresolvable variables that will be ignored in resolution, including all
             variables with a dependency to them.
+        update
+            Whether to update the script's state with resolved variables. Defaults to False.
 
         Returns
         -------
@@ -548,11 +619,51 @@ class Script:
                 pre_resolved=resolved,
                 unresolvable=unresolvable,
                 output_filter=set(list(variable_definitions.keys())),
+                update=update,
             ).output
         finally:
             for name in variable_definitions.keys():
-                if name in self._variables:
-                    del self._variables[name]
+                self._variables.pop(name, None)
+
+    def resolve_once_parsed(
+        self,
+        variable_definitions: Dict[str, SyntaxTree],
+        resolved: Optional[Dict[str, Resolvable]] = None,
+        unresolvable: Optional[Set[str]] = None,
+        update: bool = False,
+    ) -> Dict[str, Resolvable]:
+        """
+        Given a new set of variable definitions, resolve them using the Script, but do not
+        add them to the Script itself.
+
+        Parameters
+        ----------
+        variable_definitions
+            Variables to resolve, but not store in the Script
+        resolved
+            Optional. Pre-resolved variables that should be used instead of what is in the script.
+        unresolvable
+            Optional. Unresolvable variables that will be ignored in resolution, including all
+            variables with a dependency to them.
+        update
+            Whether to update the script's state with resolved variables. Defaults to False.
+
+        Returns
+        -------
+        Dict[str, Resolvable]
+            Dict containing the variable names to their resolved values.
+        """
+        try:
+            self.add_parsed(variable_definitions)
+            return self._resolve(
+                pre_resolved=resolved,
+                unresolvable=unresolvable,
+                output_filter=set(list(variable_definitions.keys())),
+                update=update,
+            ).output
+        finally:
+            for name in variable_definitions.keys():
+                self._variables.pop(name, None)
 
     def get(self, variable_name: str) -> Resolvable:
         """
@@ -581,6 +692,18 @@ class Script:
 
         raise RuntimeException(f"Tried to get unresolved variable {variable_name}")
 
+    def definition_of(self, name: str) -> SyntaxTree:
+        """
+        Returns
+        -------
+        The definition of the variable or function.
+        """
+        if name.startswith("%") and name[1:] in self._functions:
+            return self._functions[name[1:]]
+        if name in self._variables:
+            return self._variables[name]
+        raise RuntimeException(f"Tried to get non-existent definition with name {name}")
+
     @property
     def variable_names(self) -> Set[str]:
         """
@@ -599,4 +722,121 @@ class Script:
         Set[str]
             Names of all functions within the Script.
         """
-        return set(_to_function_definition_name(name) for name in self._functions.keys())
+        return set(to_function_definition_name(name) for name in self._functions.keys())
+
+    def _resolve_partial_loop(
+        self,
+        output_filter: Optional[Set[str]],
+        resolved: Dict[Variable, Resolvable],
+        unresolved: Dict[Variable, Argument],
+        unresolvable: Optional[Set[str]],
+    ):
+        to_partially_resolve: Set[Variable] = (
+            {Variable(name) for name in output_filter} if output_filter else set(unresolved.keys())
+        )
+
+        partially_resolved = True
+        while partially_resolved:
+
+            partially_resolved = False
+
+            for variable in list(to_partially_resolve):
+                definition = unresolved[variable]
+                maybe_resolved = definition
+
+                if isinstance(definition, Variable) and definition.name not in unresolvable:
+                    if definition in resolved:
+                        maybe_resolved = resolved[definition]
+                    elif definition in unresolved:
+                        maybe_resolved = unresolved[definition]
+                    else:
+                        raise UNREACHABLE
+                elif isinstance(definition, VariableDependency):
+                    maybe_resolved = definition.partial_resolve(
+                        resolved_variables=resolved,
+                        unresolved_variables=unresolved,
+                        custom_functions=self._functions,
+                    )
+
+                if isinstance(maybe_resolved, Resolvable):
+                    resolved[variable] = maybe_resolved
+                    del unresolved[variable]
+                    to_partially_resolve.remove(variable)
+                    partially_resolved = True
+                else:
+                    unresolved[variable] = maybe_resolved
+
+                # If the definition changed, then the script changed
+                # which means we can iterate again
+                partially_resolved |= definition != maybe_resolved
+
+    def _resolve_partial(
+        self,
+        unresolvable: Optional[Set[str]] = None,
+        output_filter: Optional[Set[str]] = None,
+    ) -> Dict[str, SyntaxTree]:
+        """
+        Returns
+        -------
+        New (deep-copied) script that resolves inner variables as much
+        as possible.
+        """
+        unresolvable: Set[str] = unresolvable or {}
+        resolved: Dict[Variable, Resolvable] = {}
+        unresolved: Dict[Variable, Argument] = {
+            Variable(name): definition
+            for name, definition in self._variables.items()
+            if name not in unresolvable
+        }
+
+        self._resolve_partial_loop(
+            output_filter=output_filter,
+            resolved=resolved,
+            unresolved=unresolved,
+            unresolvable=unresolvable,
+        )
+
+        if output_filter:
+            out: Dict[str, SyntaxTree] = {}
+            for name in output_filter:
+                variable_name = Variable(name)
+                if variable_name in resolved:
+                    out[name] = ResolvedSyntaxTree(ast=[resolved[variable_name]])
+                else:
+                    out[name] = SyntaxTree(ast=[unresolved[variable_name]])
+
+            return out
+
+        return {
+            var.name: ResolvedSyntaxTree(ast=[definition]) for var, definition in resolved.items()
+        } | {var.name: SyntaxTree(ast=[definition]) for var, definition in unresolved.items()}
+
+    def resolve_partial(
+        self,
+        unresolvable: Optional[Set[str]] = None,
+        output_filter: Optional[Set[str]] = None,
+    ) -> "Script":
+        """
+        Updates the internal script to resolve as much as possible.
+        """
+        out = self._resolve_partial(unresolvable=unresolvable, output_filter=output_filter)
+        for var_name, definition in out.items():
+            self._variables[var_name] = definition
+
+        return self
+
+    def resolve_partial_once(
+        self, variable_definitions: Dict[str, SyntaxTree], unresolvable: Optional[Set[str]] = None
+    ) -> Dict[str, SyntaxTree]:
+        """
+        Partially resolves the input variable definitions as much as possible.
+        """
+        try:
+            self.add_parsed(variable_definitions)
+            return self._resolve_partial(
+                unresolvable=unresolvable,
+                output_filter=set(list(variable_definitions.keys())),
+            )
+        finally:
+            for name in variable_definitions.keys():
+                self._variables.pop(name, None)

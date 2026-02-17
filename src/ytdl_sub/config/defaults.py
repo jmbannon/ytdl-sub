@@ -2,6 +2,8 @@ import os
 
 from ytdl_sub.utils.system import IS_WINDOWS
 
+# pylint: disable=invalid-name
+
 
 def _existing_path(*paths: str) -> str:
     """
@@ -22,7 +24,7 @@ if IS_WINDOWS:
 
     MAX_FILE_NAME_BYTES = 255
 else:
-    DEFAULT_LOCK_DIRECTORY = "/tmp"
+    DEFAULT_LOCK_DIRECTORY = ".ytdl-sub-lock"
     DEFAULT_FFMPEG_PATH = os.getenv(
         "YTDL_SUB_FFMPEG_PATH", _existing_path("/usr/bin/ffmpeg", "/usr/local/bin/ffmpeg")
     )

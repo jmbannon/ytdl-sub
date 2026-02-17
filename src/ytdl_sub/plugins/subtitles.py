@@ -1,8 +1,10 @@
+import os
 from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Set
+from typing import Tuple
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
@@ -11,6 +13,7 @@ from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
@@ -57,6 +60,7 @@ class SubtitleOptions(ToggleableOptionsDictValidator):
         "subtitles_type",
         "embed_subtitles",
         "languages",
+        "languages_required",
         "allow_auto_generated_subtitles",
     }
 
@@ -75,6 +79,9 @@ class SubtitleOptions(ToggleableOptionsDictValidator):
         ).value
         self._languages = self._validate_key_if_present(
             key="languages", validator=StringListValidator, default=["en"]
+        ).list
+        self._languages_required = self._validate_key_if_present(
+            key="languages_required", validator=StringListValidator, default=[]
         ).list
         self._allow_auto_generated_subtitles = self._validate_key_if_present(
             key="allow_auto_generated_subtitles", validator=BoolValidator, default=False
@@ -122,6 +129,16 @@ class SubtitleOptions(ToggleableOptionsDictValidator):
         return [lang.value for lang in self._languages]
 
     @property
+    def languages_required(self) -> Optional[List[str]]:
+        """
+        :expected type: Optional[List[String]]
+        :description:
+          Language code(s) that are required to be present for downloads to continue. If missing,
+          ytdl-sub will throw an error. NOTE: currently this only checks file-based subtitles.
+        """
+        return [lang.value for lang in self._languages_required]
+
+    @property
     def allow_auto_generated_subtitles(self) -> Optional[bool]:
         """
         :expected type: Optional[Boolean]
@@ -146,7 +163,12 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
     plugin_options_type = SubtitleOptions
 
     def ytdl_options(self) -> Optional[Dict]:
-        builder = YTDLOptionsBuilder().add({"writesubtitles": True})
+        builder = YTDLOptionsBuilder().add(
+            {
+                "writesubtitles": True,
+                "sleep_interval_subtitles": 5.367,  # for safe measure
+            }
+        )
 
         if self.plugin_options.embed_subtitles:
             builder.add(
@@ -206,7 +228,21 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
         if self.plugin_options.embed_subtitles:
             file_metadata = FileMetadata(f"Embedded subtitles with lang(s) {', '.join(langs)}")
         if self.plugin_options.subtitles_name:
+            download_subtitle_lang_file_names: List[Tuple[str, str]] = []
+
             for lang in langs:
+                download_subtitle_file_name = entry.base_filename(
+                    ext=f"{lang}.{self.plugin_options.subtitles_type}"
+                )
+                if os.path.isfile(Path(self.working_directory) / download_subtitle_file_name):
+                    download_subtitle_lang_file_names.append((lang, download_subtitle_file_name))
+                elif lang in self.plugin_options.languages_required:
+                    raise UserThrownRuntimeError(
+                        f"Required the subtitle lang {lang}, but the file could not be found for "
+                        f"the entry {entry.title}."
+                    )
+
+            for lang, file_name in download_subtitle_lang_file_names:
                 output_subtitle_file_name = self.overrides.apply_formatter(
                     formatter=self.plugin_options.subtitles_name,
                     entry=entry,
@@ -214,9 +250,7 @@ class SubtitlesPlugin(Plugin[SubtitleOptions]):
                 )
 
                 self.save_file(
-                    file_name=entry.base_filename(
-                        ext=f"{lang}.{self.plugin_options.subtitles_type}"
-                    ),
+                    file_name=file_name,
                     output_file_name=output_subtitle_file_name,
                     entry=entry,
                 )

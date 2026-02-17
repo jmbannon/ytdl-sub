@@ -11,12 +11,12 @@ from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
-from ytdl_sub.validators.validators import BoolValidator
+from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 
 logger = Logger.get("embed-thumbnail")
 
 
-class EmbedThumbnailOptions(BoolValidator, OptionsValidator):
+class EmbedThumbnailOptions(OverridesBooleanFormatterValidator, OptionsValidator):
     """
     Whether to embed thumbnails to the audio/video file or not.
 
@@ -33,7 +33,7 @@ class EmbedThumbnailPlugin(Plugin[EmbedThumbnailOptions]):
 
     @property
     def _embed_thumbnail(self) -> bool:
-        return self.plugin_options.value
+        return self.overrides.apply_formatter(self.plugin_options, expected_type=bool)
 
     @classmethod
     def _embed_video_thumbnail(cls, entry: Entry) -> None:
