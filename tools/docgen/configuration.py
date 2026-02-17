@@ -30,7 +30,7 @@ class ConfigurationDocGen(DocGen):
             offset=0,
             skip_properties=False,
             recurse_property_options=False,
-            property_sections=False
+            property_sections=False,
         )
 
         return docs
