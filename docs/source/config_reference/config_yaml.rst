@@ -1,7 +1,13 @@
-==================
+..
+  WARNING: This RST file is generated from docstrings in:
+    The respective function docstrings within ytdl_sub/config/config_validator.py
+  In order to make a change to this file, edit the respective docstring
+  and run `make docs`. This will automatically sync the Python RST-based
+  docstrings into this file. If the docstrings and RST file are out of sync,
+  it will fail TestDocGen tests in GitHub CI.
+
 Configuration File
 ==================
-
 ytdl-sub is configured using a ``config.yaml`` file.
 
 The ``config.yaml`` is made up of two sections:
@@ -11,113 +17,105 @@ The ``config.yaml`` is made up of two sections:
   configuration:
   presets:
 
-You can jump to any section and subsection of the config using the navigation section to
-the left.
 
 Note for Windows users, paths can be represented with ``C:/forward/slashes/like/linux``.
-If you wish to represent paths like Windows, you will need to
-``C:\\double\\bashslash\\paths`` in order to escape the backslash character.
+If you prefer to use a Windows backslash, note that it must have
+``C:\double\bashslash\paths`` in order to escape the backslash character. This is due to
+it being a YAML escape character.
 
+dl_aliases
+----------
+.. _dl_aliases:
 
-configuration
--------------
-
-The ``configuration`` section contains app-wide configs applied to all presets and
-subscriptions.
-
-.. autoclass:: ytdl_sub.config.config_validator.ConfigOptions()
-  :members:
-  :member-order: bysource
-  :exclude-members: subscription_value, persist_logs, experimental
-
-persist_logs
-~~~~~~~~~~~~
-
-Without this key, ``ytdl-sub`` only prints output to it's ``stdout`` and ``stderr``. If
-your configuration includes the ``persist_logs:`` key, then ``ytdl-sub`` also writes log
-files to disk.
-
-.. warning::
-
-   The log files grow rapidly if ``keep_successful_logs:`` is ``true``, the default, and
-   may fill up disk space. Set ``keep_successful_logs: false`` or prune the log files
-   regularly.
-
-For example:
+Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
 
 .. code-block:: yaml
 
-  configuration:
-    persist_logs:
-      logs_directory: "/path/to/log/directory"
+   configuration:
+     dl_aliases:
+       mv: "--preset music_video"
+       u: "--download.url"
 
-.. autoclass:: ytdl_sub.config.config_validator.PersistLogsValidator()
-  :members:
-  :member-order: bysource
+Simplifies
 
+.. code-block:: bash
 
-presets
--------
+   ytdl-sub dl --preset "Jellyfin Music Videos" --download.url "youtube.com/watch?v=a1b2c3"
 
-Each key under ``presets:`` defines a `formula` for how to format downloaded media and
-metadata. The key is the name of the preset and the value is a mapping that defines the
-preset.
+to
 
-.. note::
+.. code-block:: bash
 
-   The ``presets:`` key at the top of the configuration file contains multiple
-   user-defined presets, but *each preset* itself may include a ``preset:`` key that
-   defines *that preset's* base presets. For example:
+   ytdl-sub dl --mv --u "youtube.com/watch?v=a1b2c3"
+
+experimental
+------------
+Experimental flags reside under the ``experimental`` key:
 
    .. code-block:: yaml
 
-      presets:
-        Foo Preset:
-          preset:
-            - "Jellyfin TV Show by Date"
-            - "Only Recent"
+      configuration:
+        experimental:
+          enable_update_with_info_json: True
 
-preset
-~~~~~~
+``enable_update_with_info_json``
 
-Presets support inheritance by defining one or more parent presets:
+Enables modifying subscription files using info.json files using the argument
+``--update-with-info-json``. This feature is still being tested and has the ability to
+destroy files. Ensure you have a full backup before usage. You have been warned!
 
-.. code-block:: yaml
+ffmpeg_path
+-----------
+Path to ffmpeg executable. (default ``/usr/bin/ffmpeg`` for Linux,
+``./ffmpeg.exe`` in the same directory as ytdl-sub for Windows)
 
-  presets:
-    custom_preset:
-      ...
-    parent_preset:
-      ...
-    child_preset:
-      preset:
-        - "parent_preset"
+ffprobe_path
+------------
+Path to ffprobe executable. (default ``/usr/bin/ffprobe`` for Linux,
+``./ffprobe.exe`` in the same directory as ytdl-sub for Windows)
 
-In the example above, ``child_preset`` inherits all fields defined in ``parent_preset``.
-Use parent presets where possible to reduce duplicate yaml definitions.
+file_name_max_bytes
+-------------------
+Max file name size in bytes. Most OS's typically default to 255 bytes.
 
-Presets also support inheritance from multiple presets:
+lock_directory
+--------------
+The directory to temporarily store file locks, which prevents multiple instances
+of ``ytdl-sub`` from running. Note that file locks do not work on
+network-mounted directories. Ensure that this directory resides on the host
+machine. (default ``/tmp``)
 
-.. code-block:: yaml
+persist_logs
+------------
+TODO(jessebannon) fill out
 
-  child_preset:
-    preset:
-      - "custom_preset"
-      - "parent_preset"
+``keep_successful_logs``
 
-In this example, ``child_preset`` will inherit all fields from ``custom_preset`` and
-``parent_preset`` in that order. The bottom-most preset has the highest priority. More
-specifically, presets are merged using `mergedeep`_ via `a TYPESAFE_ADDITIVE merge`_,
-which means:
+If the ``persist_logs:`` key is in the configuration, then ``ytdl-sub`` *always*
+writes log files for the subscription both for successful downloads and when it
+encounters an error while downloading. When this key is ``False``, only write
+log files for errors. (default ``True``)
 
-- if two conflicting keys arent lists or mappings, overwrite the higher priority one
-- otherwise, combine then re-evaluate
+``logs_directory``
 
-If you are only inheriting from one preset, using a single string instead of a list is
-valid, for example ``preset: "parent_preset"``, but we recommend always using a list for
-consistent readability between presets.
+Write log files to this directory with names like
+``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``. (required)
 
-.. _`mergedeep`:
-   https://mergedeep.readthedocs.io/en/latest/
-.. _`a TYPESAFE_ADDITIVE merge`:
-   https://mergedeep.readthedocs.io/en/latest/index.html#merge-strategies
+umask
+-----
+Umask in octal format to apply to every created file. (default ``022``)
+
+working_directory
+-----------------
+The directory to temporarily store downloaded files before moving them into their final
+directory. (default ``./.ytdl-sub-working-directory``)
+
+Presets
+=======
+Hmmmm
+
+``name``
+
+Returns
+-------
+Name of the preset
