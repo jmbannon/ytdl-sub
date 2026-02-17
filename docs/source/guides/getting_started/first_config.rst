@@ -4,6 +4,7 @@ Basic Configuration
 A configuration file serves two purposes:
 
 1. Set application-level functionality that is not specifiable in a subscription file.
+
   .. note::
 
    ytdl-sub does not require a configuration file. However,
@@ -12,6 +13,7 @@ A configuration file serves two purposes:
    to an SSD drive.
 
 2. Create custom presets.
+
   .. note::
 
     In the prior Initial Subscription examples, we leveraged the prebuilt preset
