@@ -109,3 +109,13 @@ working_directory
 -----------------
 The directory to temporarily store downloaded files before moving them into their final
 directory. (default ``./.ytdl-sub-working-directory``)
+
+Presets
+=======
+Hmmmm
+
+``name``
+
+Returns
+-------
+Name of the preset

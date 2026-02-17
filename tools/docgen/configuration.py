@@ -3,6 +3,7 @@ from pathlib import Path
 from tools.docgen.docgen import DocGen
 from tools.docgen.utils import generate_options_validator_docs
 from ytdl_sub.config.config_validator import ConfigOptions
+from ytdl_sub.config.preset import Preset
 
 
 class ConfigurationDocGen(DocGen):
@@ -21,6 +22,15 @@ class ConfigurationDocGen(DocGen):
             skip_properties=False,
             recurse_property_options=True,
             property_sections=True,
+        )
+
+        docs += generate_options_validator_docs(
+            name="Presets",
+            options=Preset,
+            offset=0,
+            skip_properties=False,
+            recurse_property_options=False,
+            property_sections=False
         )
 
         return docs

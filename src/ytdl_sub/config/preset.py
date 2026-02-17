@@ -55,6 +55,10 @@ class _PresetShell(StrictDictValidator):
 
 
 class Preset(_PresetShell):
+    """
+    Hmmmm
+    """
+
     @classmethod
     def preset_partial_validate(cls, config: ConfigValidator, name: str, value: Any) -> None:
         """
