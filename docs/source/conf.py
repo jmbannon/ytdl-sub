@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "ytdl-sub"
-copyright = "2024, Jesse Bannon"
+copyright = "2026, Jesse Bannon"
 author = "Jesse Bannon"
 release = ""
 
@@ -15,10 +15,8 @@ release = ""
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.extlinks",
-    "sphinx.ext.napoleon",
     "sphinx_copybutton",
     "sphinx_design",
 ]
@@ -71,18 +69,3 @@ extlinks = {
     "ytdl-sub-gh": ("https://github.com/jmbannon/ytdl-sub/%s", "src %s"),
 }
 
-# -- Options for autodoc ----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#configuration
-
-# Automatically extract typehints when specified and place them in
-# descriptions of the relevant function/method.
-autodoc_default_options = {
-    "autodoc_typehints_format": "short",
-    "autodoc_class_signature": "separated",
-    "add_module_names": False,
-    # "add_class_names": False,
-}
-
-python_use_unqualified_type_names = True
-napoleon_numpy_docstring = True
-napoleon_use_rtype = False
