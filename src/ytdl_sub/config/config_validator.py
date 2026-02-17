@@ -113,7 +113,20 @@ class PersistLogsValidator(StrictDictValidator):
 
 class ConfigOptions(StrictDictValidator):
     """
-    Something
+    ytdl-sub is configured using a ``config.yaml`` file.
+
+    The ``config.yaml`` is made up of two sections:
+
+    .. code-block:: yaml
+
+      configuration:
+      presets:
+
+
+    Note for Windows users, paths can be represented with ``C:/forward/slashes/like/linux``.
+    If you prefer to use a Windows backslash, note that it must have
+    ``C:\\double\\bashslash\\paths`` in order to escape the backslash character. This is due to
+    it being a YAML escape character.
     """
 
     _optional_keys = {
