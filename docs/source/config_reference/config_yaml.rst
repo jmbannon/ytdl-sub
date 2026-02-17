@@ -45,12 +45,6 @@ Enables modifying subscription files using info.json files using the argument
 ``--update-with-info-json``. This feature is still being tested and has the ability to
 destroy files. Ensure you have a full backup before usage. You have been warned!
 
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
-
 ffmpeg_path
 -----------
 Path to ffmpeg executable. (default ``/usr/bin/ffmpeg`` for Linux,
@@ -64,12 +58,6 @@ Path to ffprobe executable. (default ``/usr/bin/ffprobe`` for Linux,
 file_name_max_bytes
 -------------------
 Max file name size in bytes. Most OS's typically default to 255 bytes.
-
-leaf_name
----------
-Returns
--------
-"name" from the first.element.of.the.name
 
 lock_directory
 --------------
@@ -88,12 +76,6 @@ If the ``persist_logs:`` key is in the configuration, then ``ytdl-sub`` *always*
 writes log files for the subscription both for successful downloads and when it
 encounters an error while downloading. When this key is ``False``, only write
 log files for errors. (default ``True``)
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
 
 ``logs_directory``
 

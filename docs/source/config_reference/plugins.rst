@@ -36,12 +36,6 @@ Extracts audio from a video file.
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
-
 ``quality``
 
 :expected type: Float
@@ -107,12 +101,6 @@ chapters and remove specific ones. Can also remove chapters using regex.
 :description:
   Defaults to False. Force keyframes at cuts when removing sections. This is slow due to
   needing a re-encode, but the resulting video may have fewer artifacts around the cuts.
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
 
 ``remove_chapters_regex``
 
@@ -191,12 +179,6 @@ intended download files.
   Can typically be left undefined to always default to enable. For preset convenience,
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
 
 ``type``
 
@@ -335,12 +317,6 @@ Also supports custom ffmpeg conversions:
 
   The output file will use the extension specified in ``convert_to``. Post-processing args
   can still be set  with ``convert_with`` set to ``yt-dlp``.
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
 
 ----------------------------------------------------------------------------------------------------
 
@@ -485,12 +461,6 @@ with a ``.nfo`` extension. You can add any values into the NFO.
   emojis and some foreign language characters. Setting this to True will replace those
   characters with '□'.
 
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
-
 ``nfo_name``
 
 :expected type: EntryFormatter
@@ -583,12 +553,6 @@ Usage:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
   characters with '□'.
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
 
 ``nfo_name``
 
@@ -731,12 +695,6 @@ Defines where to output files and thumbnails after all post-processing has compl
   Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
   applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
 
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
-
 ``maintain_download_archive``
 
 :expected type: Optional[Boolean]
@@ -811,16 +769,6 @@ In addition, any override variable defined will automatically create a ``sanitiz
 for use. In the example above, ``output_directory_sanitized`` will exist and perform
 sanitization on the value when used.
 
-``dict_with_parsed_format_strings``
-
-Returns dict with the parsed format strings.
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
-
 ----------------------------------------------------------------------------------------------------
 
 split_by_chapters
@@ -842,12 +790,6 @@ used with no modifications.
 
    split_by_chapters:
      when_no_chapters: "pass"
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
 
 ``when_no_chapters``
 
@@ -915,12 +857,6 @@ Usage:
   Defaults to False. Kodi does not support > 3-byte unicode characters, which include
   emojis and some foreign language characters. Setting this to True will replace those
   characters with '□'.
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
 
 ``nfo_name``
 
@@ -1009,12 +945,6 @@ It will set the respective language to the correct subtitle file.
   Language code(s) that are required to be present for downloads to continue. If missing,
   ytdl-sub will throw an error. NOTE: currently this only checks file-based subtitles.
 
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
-
 ``subtitles_name``
 
 :expected type: Optional[EntryFormatter]
@@ -1069,12 +999,6 @@ Range min and max values support static override variables within their definiti
   Can typically be left undefined to always default to enable. For preset convenience,
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
 
 ``max_downloads_per_subscription``
 
@@ -1160,13 +1084,3 @@ for more details.
 
 
 where each key is a ytdl argument. Include in the example are some popular ytdl_options.
-
-``dict_with_parsed_format_strings``
-
-Returns dict with the parsed format strings.
-
-``leaf_name``
-
-Returns
--------
-"name" from the first.element.of.the.name
