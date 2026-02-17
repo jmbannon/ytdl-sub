@@ -25,7 +25,13 @@ from ytdl_sub.validators.validators import StringValidator
 
 class ExperimentalValidator(StrictDictValidator):
     """
-    TODO(jessebannon) fill out
+    Experimental flags reside under the ``experimental`` key:
+
+       .. code-block:: yaml
+
+          configuration:
+            experimental:
+              enable_update_with_info_json: True
     """
 
     _optional_keys = {"enable_update_with_info_json"}
