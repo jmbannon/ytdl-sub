@@ -48,7 +48,7 @@ test = [
 ]
 lint = [
     "black==24.10.0",
-    "isort==7.0.0",
+    "isort==8.0.0",
     "pylint==4.0.1",
 ]
 docs = [
