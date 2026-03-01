@@ -69,7 +69,7 @@ presets:
     # ytdl_options lets you pass any arg into yt-dlp's Python API
     ytdl_options:
       # Set the cookie file
-      # cookiefile: "/config/youtube_cookies.txt"
+      # cookiefile: "/config/ytdl-sub-configs/youtube_cookies.txt"
 
       # For YouTube, get English metadata if multiple languages are present
       extractor_args:

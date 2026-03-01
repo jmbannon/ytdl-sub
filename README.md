@@ -68,7 +68,7 @@ __preset__:
     
   # Pass any arg directly to yt-dlp's Python API
   ytdl_options:
-    cookiefile: "/config/cookie.txt" 
+    cookiefile: "/config/ytdl-sub-configs/cookie.txt"
 
 ###################################################################
 # TV Show Presets. Can replace Plex with Plex/Jellyfin/Emby/Kodi

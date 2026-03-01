@@ -38,6 +38,13 @@ For example::
 
   $ docker compose run --rm --user="${PUID}:${PGID}" --entrypoint="ytdl-sub" ytdl-sub sub
 
+.. note::
+
+   In `the recommended GUI image <gui image_>`_, the ``DEFAULT_WORKSPACE`` directory is
+   ``/config/ytdl-sub-configs/`` which is used throughout the documentation and
+   examples. In the headless images, that directory is just ``/config/``, so substitute
+   that path if using a headless image.
+
 
 Install with Docker Compose
 ---------------------------
