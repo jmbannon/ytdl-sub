@@ -28,7 +28,7 @@ class ConfigurationDocGen(DocGen):
             name="Presets",
             options=Preset,
             offset=0,
-            skip_properties=False,
+            skip_properties=True,
             recurse_property_options=False,
             property_sections=False,
         )

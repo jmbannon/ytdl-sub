@@ -20,14 +20,37 @@ The ``config.yaml`` is made up of two sections:
 
 Note for Windows users, paths can be represented with ``C:/forward/slashes/like/linux``.
 If you prefer to use a Windows backslash, note that it must have
-``C:\double\bashslash\paths`` in order to escape the backslash character. This is due to
-it being a YAML escape character.
+``C:\\double\\bashslash\\paths`` in order to escape the backslash character. This is due
+to it being a YAML escape character.
+
+.. code-block:: yaml
+
+  configuration:
+    dl_aliases:
+      mv: "--preset music_video"
+      u: "--download.url"
+
+    experimental:
+      enable_update_with_info_json: True
+
+    ffmpeg_path: "/usr/bin/ffmpeg"
+    ffprobe_path: "/usr/bin/ffprobe"
+
+    file_name_max_bytes: 255
+    lock_directory: "/tmp"
+
+    persist_logs:
+      keep_successful_logs: True
+      logs_directory: "/var/log/ytdl-sub-logs"
+
+    umask: "022"
+    working_directory: ".ytdl-sub-working-directory"
 
 dl_aliases
 ----------
 .. _dl_aliases:
 
-Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
+Alias definitions to shorten :ref:`dl arguments <usage:Download Options>`. For example,
 
 .. code-block:: yaml
 
@@ -50,13 +73,7 @@ to
 
 experimental
 ------------
-Experimental flags reside under the ``experimental`` key:
-
-   .. code-block:: yaml
-
-      configuration:
-        experimental:
-          enable_update_with_info_json: True
+Experimental flags reside under the ``experimental`` key.
 
 ``enable_update_with_info_json``
 
@@ -66,13 +83,13 @@ destroy files. Ensure you have a full backup before usage. You have been warned!
 
 ffmpeg_path
 -----------
-Path to ffmpeg executable. (default ``/usr/bin/ffmpeg`` for Linux,
-``./ffmpeg.exe`` in the same directory as ytdl-sub for Windows)
+Path to ffmpeg executable. Defaults to ``/usr/bin/ffmpeg`` for Linux,
+``./ffmpeg.exe`` in the same directory as ytdl-sub for Windows.
 
 ffprobe_path
 ------------
-Path to ffprobe executable. (default ``/usr/bin/ffprobe`` for Linux,
-``./ffprobe.exe`` in the same directory as ytdl-sub for Windows)
+Path to ffprobe executable. Defaults to ``/usr/bin/ffprobe`` for Linux,
+``./ffprobe.exe`` in the same directory as ytdl-sub for Windows.
 
 file_name_max_bytes
 -------------------
@@ -83,39 +100,35 @@ lock_directory
 The directory to temporarily store file locks, which prevents multiple instances
 of ``ytdl-sub`` from running. Note that file locks do not work on
 network-mounted directories. Ensure that this directory resides on the host
-machine. (default ``/tmp``)
+machine. Defaults to ``/tmp``.
 
 persist_logs
 ------------
-TODO(jessebannon) fill out
+By default, no logs are persisted. Specifying this key will enable persisted logs. The following
+options are available.
 
 ``keep_successful_logs``
 
-If the ``persist_logs:`` key is in the configuration, then ``ytdl-sub`` *always*
-writes log files for the subscription both for successful downloads and when it
-encounters an error while downloading. When this key is ``False``, only write
-log files for errors. (default ``True``)
+Defaults to ``True``. When this key is ``False``, only write log files for failed
+subscriptions.
 
 ``logs_directory``
 
-Write log files to this directory with names like
-``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``. (required)
+Required field. Write log files to this directory with names like
+``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``.
 
 umask
 -----
-Umask in octal format to apply to every created file. (default ``022``)
+Umask in octal format to apply to every created file. Defaults to ``022``.
 
 working_directory
 -----------------
 The directory to temporarily store downloaded files before moving them into their final
-directory. (default ``./.ytdl-sub-working-directory``)
+directory. Defaults to ``.ytdl-sub-working-directory``, created in the same directory
+that ytdl-sub is invoked from.
 
 Presets
 =======
-Hmmmm
-
-``name``
-
-Returns
--------
-Name of the preset
+Custom presets are defined in this section. Refer to the
+:ref:`Getting Started Guide<guides/getting_started/first_config:Basic Configuration>`
+on how to configure.

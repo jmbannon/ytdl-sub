@@ -25,13 +25,7 @@ from ytdl_sub.validators.validators import StringValidator
 
 class ExperimentalValidator(StrictDictValidator):
     """
-    Experimental flags reside under the ``experimental`` key:
-
-       .. code-block:: yaml
-
-          configuration:
-            experimental:
-              enable_update_with_info_json: True
+    Experimental flags reside under the ``experimental`` key.
     """
 
     _optional_keys = {"enable_update_with_info_json"}
@@ -56,7 +50,8 @@ class ExperimentalValidator(StrictDictValidator):
 
 class PersistLogsValidator(StrictDictValidator):
     """
-    TODO(jessebannon) fill out
+    By default, no logs are persisted. Specifying this key will enable persisted logs. The following
+    options are available.
     """
 
     _required_keys = {"logs_directory"}
@@ -83,8 +78,8 @@ class PersistLogsValidator(StrictDictValidator):
     @property
     def logs_directory(self) -> str:
         """
-        Write log files to this directory with names like
-        ``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``. (required)
+        Required field. Write log files to this directory with names like
+        ``YYYY-mm-dd-HHMMSS.subscription_name.(success|error).log``.
         """
         return self._logs_directory.value
 
@@ -109,10 +104,8 @@ class PersistLogsValidator(StrictDictValidator):
     @property
     def keep_successful_logs(self) -> bool:
         """
-        If the ``persist_logs:`` key is in the configuration, then ``ytdl-sub`` *always*
-        writes log files for the subscription both for successful downloads and when it
-        encounters an error while downloading. When this key is ``False``, only write
-        log files for errors. (default ``True``)
+        Defaults to ``True``. When this key is ``False``, only write log files for failed
+        subscriptions.
         """
         return self._keep_successful_logs.value
 
@@ -131,8 +124,32 @@ class ConfigOptions(StrictDictValidator):
 
     Note for Windows users, paths can be represented with ``C:/forward/slashes/like/linux``.
     If you prefer to use a Windows backslash, note that it must have
-    ``C:\\double\\bashslash\\paths`` in order to escape the backslash character. This is due to
-    it being a YAML escape character.
+    ``C:\\\\double\\\\bashslash\\\\paths`` in order to escape the backslash character. This is due
+    to it being a YAML escape character.
+
+    .. code-block:: yaml
+
+      configuration:
+        dl_aliases:
+          mv: "--preset music_video"
+          u: "--download.url"
+
+        experimental:
+          enable_update_with_info_json: True
+
+        ffmpeg_path: "/usr/bin/ffmpeg"
+        ffprobe_path: "/usr/bin/ffprobe"
+
+        file_name_max_bytes: 255
+        lock_directory: "/tmp"
+
+        persist_logs:
+          keep_successful_logs: True
+          logs_directory: "/var/log/ytdl-sub-logs"
+
+        umask: "022"
+        working_directory: ".ytdl-sub-working-directory"
+
     """
 
     _optional_keys = {
@@ -190,7 +207,8 @@ class ConfigOptions(StrictDictValidator):
     def working_directory(self) -> str:
         """
         The directory to temporarily store downloaded files before moving them into their final
-        directory. (default ``./.ytdl-sub-working-directory``)
+        directory. Defaults to ``.ytdl-sub-working-directory``, created in the same directory
+        that ytdl-sub is invoked from.
         """
         # Expands tildas to actual paths, use native os sep
         return os.path.expanduser(self._working_directory.value.replace(posixpath.sep, os.sep))
@@ -198,7 +216,7 @@ class ConfigOptions(StrictDictValidator):
     @property
     def umask(self) -> Optional[str]:
         """
-        Umask in octal format to apply to every created file. (default ``022``)
+        Umask in octal format to apply to every created file. Defaults to ``022``.
         """
         return self._umask.value
 
@@ -207,7 +225,7 @@ class ConfigOptions(StrictDictValidator):
         """
         .. _dl_aliases:
 
-        Alias definitions to shorten ``ytdl-sub dl`` arguments. For example,
+        Alias definitions to shorten :ref:`dl arguments <usage:Download Options>`. For example,
 
         .. code-block:: yaml
 
@@ -259,23 +277,23 @@ class ConfigOptions(StrictDictValidator):
         The directory to temporarily store file locks, which prevents multiple instances
         of ``ytdl-sub`` from running. Note that file locks do not work on
         network-mounted directories. Ensure that this directory resides on the host
-        machine. (default ``/tmp``)
+        machine. Defaults to ``/tmp``.
         """
         return self._lock_directory.value
 
     @property
     def ffmpeg_path(self) -> str:
         """
-        Path to ffmpeg executable. (default ``/usr/bin/ffmpeg`` for Linux,
-        ``./ffmpeg.exe`` in the same directory as ytdl-sub for Windows)
+        Path to ffmpeg executable. Defaults to ``/usr/bin/ffmpeg`` for Linux,
+        ``./ffmpeg.exe`` in the same directory as ytdl-sub for Windows.
         """
         return self._ffmpeg_path.value
 
     @property
     def ffprobe_path(self) -> str:
         """
-        Path to ffprobe executable. (default ``/usr/bin/ffprobe`` for Linux,
-        ``./ffprobe.exe`` in the same directory as ytdl-sub for Windows)
+        Path to ffprobe executable. Defaults to ``/usr/bin/ffprobe`` for Linux,
+        ``./ffprobe.exe`` in the same directory as ytdl-sub for Windows.
         """
         return self._ffprobe_path.value
 

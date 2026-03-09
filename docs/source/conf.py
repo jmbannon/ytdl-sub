@@ -68,4 +68,3 @@ extlinks = {
     "lsio-gh": ("https://github.com/linuxserver/%s", "%s image"),
     "ytdl-sub-gh": ("https://github.com/jmbannon/ytdl-sub/%s", "src %s"),
 }
-

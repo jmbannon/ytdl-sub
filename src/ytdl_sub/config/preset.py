@@ -56,7 +56,9 @@ class _PresetShell(StrictDictValidator):
 
 class Preset(_PresetShell):
     """
-    Hmmmm
+    Custom presets are defined in this section. Refer to the
+    :ref:`Getting Started Guide<guides/getting_started/first_config:Basic Configuration>`
+    on how to configure.
     """
 
     @classmethod
