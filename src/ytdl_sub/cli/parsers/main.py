@@ -307,6 +307,6 @@ inspect_parser.add_argument(
     InspectArguments.MOCK.short,
     InspectArguments.MOCK.long,
     metavar="VAR=VALUE",
-    nargs="+",
+    action="append",
     help="ability to mock one or more variable values, i.e. --mock 'title=Lets Play'",
 )

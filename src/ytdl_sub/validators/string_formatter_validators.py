@@ -293,7 +293,7 @@ def _validate_formatter(
             )
 
         if maybe_resolved := parsed.maybe_resolvable:
-            return formatter_validator.post_process(maybe_resolved)
+            return formatter_validator.post_process(maybe_resolved.native)
 
         return ScriptUtils.to_native_script(parsed)
     except RuntimeException as exc:

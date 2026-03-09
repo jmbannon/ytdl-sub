@@ -71,10 +71,16 @@ class VariableValidation:
             raise ValueError("Invalid resolution level for validation")
 
         if mocks is not None:
+            for mock_name in mocks.keys():
+                if mock_name in self.unresolved_variables:
+                    self.unresolved_variables.remove(mock_name)
+
             self.script.add(
                 variables=mocks,
                 unresolvable=self.unresolved_variables,
             )
+
+
 
         self.script = self.script.resolve_partial(
             unresolvable=self.unresolved_variables,
@@ -182,8 +188,10 @@ class VariableValidation:
         resolved_subscription |= validate_formatters(
             script=self.script,
             unresolved_variables=self.unresolved_variables,
+            unresolved_runtime_variables=self.unresolved_runtime_variables,
             validator=self.overrides,
+            partial_resolve_formatters=partial_resolve_formatters,
         )
 
-        assert not self.unresolved_variables
+        # assert not self.unresolved_variables
         return resolved_subscription

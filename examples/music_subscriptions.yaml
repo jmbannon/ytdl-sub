@@ -13,7 +13,7 @@
 # Override variables globally for all subscriptions
 __preset__:
   overrides:
-    music_directory: "/music"
+    music_directory: "music"
 
 # Supports downloading YouTube /releases tab. Also works for any playlist (or playlist of playlists)
 # where each video is a single track.
