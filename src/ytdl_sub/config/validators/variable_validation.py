@@ -10,6 +10,7 @@ from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.script.variable_definitions import UNRESOLVED_VARIABLES, VARIABLES
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.name_validation import is_function
+from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import validate_formatters
 
 
@@ -125,6 +126,22 @@ class VariableValidation:
 
         self.unresolved_runtime_variables -= added_variables | modified_variables
 
+    def _output_override_variables(self) -> Dict:
+        output = {}
+        for name in self.overrides.keys:
+            value = self.script.definition_of(name)
+            if name in self.script.function_names:
+                # Keep custom functions as-is
+                output[name] = self.overrides.dict_with_format_strings[
+                    name
+                ]
+            elif resolved := value.maybe_resolvable:
+                output[name] = resolved.native
+            else:
+                output[name] = ScriptUtils.to_native_script(value)
+
+        return output
+
     def ensure_proper_usage(self, partial_resolve_formatters: bool = False) -> Dict:
         """
         Validate variables resolve as plugins are executed, and return
@@ -185,13 +202,7 @@ class VariableValidation:
             if url_output["url"]:
                 resolved_subscription["download"].append(url_output)
 
-        resolved_subscription |= validate_formatters(
-            script=self.script,
-            unresolved_variables=self.unresolved_variables,
-            unresolved_runtime_variables=self.unresolved_runtime_variables,
-            validator=self.overrides,
-            partial_resolve_formatters=partial_resolve_formatters,
-        )
+        resolved_subscription["overrides"] = self._output_override_variables()
 
         # assert not self.unresolved_variables
         return resolved_subscription

@@ -71,7 +71,7 @@
     "music_video_album_default": "Music Videos",
     "music_video_artist": "{subscription_name}",
     "music_video_date": "{ \n  %elif(\n    %contains_url_field(\"date\"),\n    %get_url_field(\"date\", upload_date_standardized),\n\n    %contains_url_field(\"year\"),\n    %concat( %get_url_field(\"date\", upload_year), \"-01-01\"),\n\n    upload_date_standardized\n  )\n}",
-    "music_video_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpko32uxsq",
+    "music_video_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpjq3ge5bi",
     "music_video_file_name": "{music_video_artist_sanitized}/{music_video_title_sanitized}{music_video_file_name_suffix}",
     "music_video_file_name_suffix": "",
     "music_video_genre": "{subscription_indent_1}",
