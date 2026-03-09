@@ -260,17 +260,17 @@ class InspectArguments:
     )
 
 
-inspect_parser = subparsers.add_parser("inspect")
+inspect_parser = subparsers.add_parser("inspect", formatter_class=argparse.RawTextHelpFormatter)
 inspect_parser.add_argument(
     InspectArguments.LEVEL.short,
     InspectArguments.LEVEL.long,
     metavar=",".join(str(i) for i in range(4)),
     type=str,
     help="""level of inspection to perform:
-      0 - original   present the subscription as-is (default)
-      1 - fill       fill in simple variable types
-      2 - resolve    resolve all variables
-      3 - internal   resolve all variables to their internal representation
+    0 - original   present the subscription as-is (default)
+    1 - fill       fill in defined values
+    2 - resolve    resolve all variables
+    3 - internal   resolve all variables to their internal representation
     """,
     default="0",
     choices=list(InspectArguments.LevelChoices.keys())
