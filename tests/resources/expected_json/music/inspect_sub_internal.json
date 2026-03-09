@@ -79,7 +79,7 @@
     "file_name": "Lester Young/{ %concat( \"[\", %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ), \"] \", %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) }/{ %concat( %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ), \" - \", %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ), \".\", ext ) }",
     "keep_files_date_eval": "{ %string( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"date_standardized\" ) ) }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpdu1vad67",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpji2e3xeg",
     "preserve_mtime": false,
     "thumbnail_name": "Lester Young/{ %concat( \"[\", %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ), \"] \", %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) }/folder.jpg"
   },
@@ -93,12 +93,12 @@
     "enable_throttle_protection": true,
     "include_sibling_metadata": true,
     "modified_webpage_url": "{ %map_get( entry_metadata, \"webpage_url\" ) }",
-    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpdu1vad67",
+    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpji2e3xeg",
     "resolution_assert": "{ %if( %and( enable_resolution_assert, %ne( height, 0 ), %not( resolution_assert_is_ignored ) ), %assert( %gte( height, resolution_assert_height_gte ), %concat( \"Entry \", title, \" downloaded at a low resolution (\", resolution_readable, \"), you've probably been throttled. \", \"Stopping further downloads, wait a few hours and try again. \", \"Disable using the override variable `enable_resolution_assert: False`.\" ) ), \"false is no-op\" ) }",
     "resolution_assert_height_gte": 361,
     "resolution_assert_ignore_titles": "{ [  ] }",
     "resolution_assert_is_ignored": "{ %print_if_true( %concat( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ), \" has a match in resolution_assert_ignore_titles, skipping resolution assert.\" ), %contains_any( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ), [  ] ) ) }",
-    "resolution_assert_print": true,
+    "resolution_assert_print": "{ %print( %if( enable_resolution_assert, \"Resolution assert is enabled, will fail on low-quality video downloads and presume throttle. Disable using the override variable `enable_resolution_assert: False`\", \"Resolution assert is disabled. Use at your own risk!\" ), True, -1 ) }",
     "resolution_readable": "{ width }x{ height }",
     "subscription_array": [
       "https://www.youtube.com/channel/UCsItMF6_fP754ihIsSRLk5A/playlists"
