@@ -1,5 +1,6 @@
 from typing import Any
 from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Set
 
@@ -21,7 +22,7 @@ class UrlThumbnailValidator(StrictDictValidator):
     def __init__(self, name, value):
         super().__init__(name, value)
 
-        self._name = self._validate_key(key="name", validator=StringFormatterValidator)
+        self._thumb_name = self._validate_key(key="name", validator=StringFormatterValidator)
         self._uid = self._validate_key(key="uid", validator=OverridesStringFormatterValidator)
 
     @property
@@ -29,7 +30,7 @@ class UrlThumbnailValidator(StrictDictValidator):
         """
         File name for the thumbnail
         """
-        return self._name
+        return self._thumb_name
 
     @property
     def uid(self) -> OverridesStringFormatterValidator:
@@ -41,6 +42,19 @@ class UrlThumbnailValidator(StrictDictValidator):
 
 class UrlThumbnailListValidator(ListValidator[UrlThumbnailValidator]):
     _inner_list_type = UrlThumbnailValidator
+
+
+class OverridesOneOrManyUrlValidator(OverridesStringFormatterValidator):
+    def post_process(self, resolved: Any) -> List[str]:
+        if isinstance(resolved, str):
+            return [resolved]
+        if isinstance(resolved, list):
+            for value in resolved:
+                if not isinstance(value, str):
+                    raise self._validation_exception("Must be a string or an array of strings.")
+            return resolved
+
+        raise self._validation_exception("Must be a string or an array of strings.")
 
 
 class UrlValidator(StrictDictValidator):
@@ -68,7 +82,7 @@ class UrlValidator(StrictDictValidator):
         super().__init__(name, value)
 
         # TODO: url validate using yt-dlp IE
-        self._url = self._validate_key(key="url", validator=OverridesStringFormatterValidator)
+        self._url = self._validate_key(key="url", validator=OverridesOneOrManyUrlValidator)
         self._variables = self._validate_key_if_present(
             key="variables", validator=DictFormatterValidator, default={}
         )

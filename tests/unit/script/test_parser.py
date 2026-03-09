@@ -16,6 +16,7 @@ from ytdl_sub.script.types.resolvable import Float
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.resolvable import Lambda
 from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.syntax_tree import ResolvedSyntaxTree
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
@@ -24,7 +25,7 @@ from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 class TestParser:
     def test_simple(self):
         parsed = parse("hello world")
-        assert parsed == SyntaxTree([String(value="hello world")])
+        assert parsed == ResolvedSyntaxTree([String(value="hello world")])
         assert parsed.variables == set()
 
     def test_single_function_one_arg(self):

@@ -8,7 +8,7 @@ presets:
       urls:
         # The first URL will be all the artist's tracks.
         # Treat these as singles - an album with a single track
-        - url: "{url}/tracks"
+        - url: "{url}"
           include_sibling_metadata: False
           variables:
             sc_track_album: "{title}"

@@ -11,9 +11,6 @@ from ytdl_sub.entries.script.variable_types import Variable
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.utils.name_validation import is_valid_name
 
-# TODO: use this
-SUBSCRIPTION_ARRAY = "subscription_array"
-
 
 class SubscriptionVariables:
     @staticmethod
@@ -163,7 +160,7 @@ class OverrideHelpers:
         True if the override name itself is valid. False otherwise.
         """
         if name.startswith("%"):
-            return is_valid_name(name=name[1:])
+            name = name[1:]
 
         return is_valid_name(name=name)
 

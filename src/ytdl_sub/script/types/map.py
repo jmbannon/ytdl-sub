@@ -31,7 +31,7 @@ class UnresolvedMap(_Map, VariableDependency, FutureResolvable):
     value: Dict[Argument, Argument]
 
     @property
-    def _iterable_arguments(self) -> List[Argument]:
+    def iterable_arguments(self) -> List[Argument]:
         return list(itertools.chain(*self.value.items()))
 
     def resolve(
@@ -54,6 +54,35 @@ class UnresolvedMap(_Map, VariableDependency, FutureResolvable):
             )
 
         return Map(output)
+
+    def partial_resolve(
+        self,
+        resolved_variables: Dict[Variable, Resolvable],
+        unresolved_variables: Dict[Variable, Argument],
+        custom_functions: Dict[str, VariableDependency],
+    ) -> Argument | Resolvable:
+        maybe_resolvable_keys, is_keys_resolvable = VariableDependency.try_partial_resolve(
+            args=self.value.keys(),
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        maybe_resolvable_values, is_values_resolvable = VariableDependency.try_partial_resolve(
+            args=self.value.values(),
+            resolved_variables=resolved_variables,
+            unresolved_variables=unresolved_variables,
+            custom_functions=custom_functions,
+        )
+
+        out = UnresolvedMap(value=dict(zip(maybe_resolvable_keys, maybe_resolvable_values)))
+        if is_keys_resolvable and is_values_resolvable:
+            return out.resolve(
+                resolved_variables=resolved_variables,
+                custom_functions=custom_functions,
+            )
+
+        return out
 
     def future_resolvable_type(self) -> Type[Resolvable]:
         return Map

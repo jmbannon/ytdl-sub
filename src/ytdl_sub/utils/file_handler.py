@@ -380,6 +380,36 @@ class FileHandler:
         return self._file_handler_transaction_log
 
     @classmethod
+    def is_path_writable(cls, src_file_path: Union[str, Path]) -> bool:
+        """
+        Check whether a path is writable. If it does not exist, try to find the base directory
+        and check permissions on that.
+        """
+        path = os.path.abspath(src_file_path)
+
+        while not os.path.exists(path):
+            new_path = os.path.dirname(path)
+            if new_path == path:  # reached root
+                break
+            path = new_path
+
+        return os.access(path, os.W_OK)
+
+    @classmethod
+    def is_file_existent(cls, file_path: Union[str, Path]) -> bool:
+        """
+        Check whether a file exists.
+        """
+        return os.path.isfile(file_path)
+
+    @classmethod
+    def is_file_readable(cls, file_path: Union[str, Path]) -> bool:
+        """
+        Check whether a file exists and is readable.
+        """
+        return cls.is_file_existent(file_path) and os.access(file_path, os.R_OK)
+
+    @classmethod
     def copy(cls, src_file_path: Union[str, Path], dst_file_path: Union[str, Path]):
         """
         Parameters
@@ -429,6 +459,25 @@ class FileHandler:
         """
         if os.path.isfile(file_path):
             os.remove(file_path)
+
+    @classmethod
+    def set_mtime(cls, file_path: Union[str, Path], mtime: float):
+        """
+        Set the modification time of a file
+
+        Parameters
+        ----------
+        file_path
+            Path to the file to modify
+        mtime
+            Modification time as a Unix timestamp
+        """
+        try:
+            # Set both access time and modification time
+            os.utime(file_path, (mtime, mtime))
+        except OSError:
+            # If file operation fails, silently continue
+            pass
 
     def move_file_to_output_directory(
         self,

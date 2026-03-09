@@ -46,8 +46,10 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       phantomjs --version && \
       cd -; \
     fi && \
-    # Install ytdl-sub, ensure it is installed properly
-    python3 -m pip install --break-system-packages --no-cache-dir ytdl_sub-*.whl && \
+    # Configure pip globally
+    echo -e "[global]\nbreak-system-packages = true\nroot-user-action = ignore\nno-cache-dir = true" > /etc/pip.conf && \
+    # Install ytdl-sub and yt-dlp dependencies, ensure they are installed properly
+    python3 -m pip install ytdl_sub-*.whl curl-cffi yt-dlp-ejs && \
       ytdl-sub -h && \
     # Delete unneeded packages after install
     rm ytdl_sub-*.whl && \

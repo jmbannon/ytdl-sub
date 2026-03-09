@@ -521,6 +521,13 @@ pow
 :description:
   ``**`` operator. Returns the exponential of the base and exponent value.
 
+range
+~~~~~
+:spec: ``range(end: Integer, start: Optional[Integer], step: Optional[Integer]) -> Array``
+
+:description:
+  Returns the desired range of Integers in the form of an Array.
+
 sub
 ~~~
 :spec: ``sub(values: Numeric, ...) -> Numeric``

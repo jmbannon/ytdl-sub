@@ -87,8 +87,7 @@ Using the command:
       --overrides.tv_show_name "Rick A" \
       --overrides.url: "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
 
-See how to shorten commands using `download aliases
-<https://ytdl-sub.readthedocs.io/en/latest/config_reference/config_yaml.html#ytdl_sub.config.config_validator.ConfigOptions.dl_aliases>`_.
+See how to shorten commands using :ref:`download aliases <config_reference/config_yaml:dl_aliases>`.
 
 
 View Options
@@ -105,3 +104,11 @@ Preview the source variables for a given URL. Helpful to create new subscription
 
   -sc, --split-chapters
                         View source variables after splitting by chapters
+
+CLI to SUB Options
+------------------
+Convert yt-dlp cli arguments to ytdl-sub `ytdl_options` arguments.
+
+.. code-block::
+
+   ytdl-sub cli-to-sub [YT-DLP ARGS]

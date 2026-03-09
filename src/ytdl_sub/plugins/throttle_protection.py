@@ -42,8 +42,8 @@ class _RandomizedRangeValidator(StrictDictValidator, ABC):
         )
 
     def _randomized_float(self, overrides: Overrides, entry: Optional[Entry] = None) -> float:
-        actualized_min = float(overrides.apply_formatter(self._min, entry=entry))
-        actualized_max = float(overrides.apply_formatter(self._max, entry=entry))
+        actualized_min = overrides.apply_formatter(self._min, entry=entry, expected_type=float)
+        actualized_max = overrides.apply_formatter(self._max, entry=entry, expected_type=float)
 
         if actualized_min < 0:
             raise self._validation_exception(
@@ -70,7 +70,7 @@ class _RandomizedRangeValidator(StrictDictValidator, ABC):
         -------
         Max possible value
         """
-        actualized_max = float(overrides.apply_formatter(self._max, entry=entry))
+        actualized_max = overrides.apply_formatter(self._max, entry=entry, expected_type=float)
         if actualized_max < 0:
             raise self._validation_exception(
                 f"max must be greater than zero, received {actualized_max}"

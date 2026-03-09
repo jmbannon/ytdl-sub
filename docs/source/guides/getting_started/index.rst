@@ -134,7 +134,7 @@ use no preset at all and will just run ``yt-dlp`` without any customization or p
 processing. The subscriptions file has special support for :ref:`overriding the presets
 of all subscriptions in the file <config_reference/subscription_yaml:file preset>`. The
 configuration file supports :ref:`a few special options
-<config_reference/config_yaml:configuration>` that are not about defining presets. See
+<config_reference/config_yaml:Configuration File>` that are not about defining presets. See
 :doc:`the reference documentation <../../config_reference/index>` for technically
 complete details, but for almost all of the use cases served by ``ytdl-sub``, the above
 is accurate and representative.

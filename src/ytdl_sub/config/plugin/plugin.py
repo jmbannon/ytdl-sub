@@ -48,7 +48,7 @@ class Plugin(BasePlugin[OptionsValidatorT], Generic[OptionsValidatorT], ABC):
         Returns True if enabled, False if disabled.
         """
         if isinstance(self.plugin_options, ToggleableOptionsDictValidator):
-            return self.overrides.evaluate_boolean(self.plugin_options.enable)
+            return self.overrides.apply_formatter(self.plugin_options.enable, expected_type=bool)
         return True
 
     def ytdl_options_match_filters(self) -> Tuple[List[str], List[str]]:

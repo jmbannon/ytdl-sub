@@ -1,6 +1,15 @@
 Deprecation Notices
 ===================
 
+Dec 2025
+--------
+
+Override variables names can no longer be plugin names, to avoid the common pitfall of
+defining a plugin underneath ``overrides``.
+
+In the past, there was usage of a ``date_range`` override variable in a few example configs
+that complimented the ``Only Recent`` preset. This overrride variable usage needs to be
+replaced with ``only_recent_date_range``.
 
 Sep 2024
 --------

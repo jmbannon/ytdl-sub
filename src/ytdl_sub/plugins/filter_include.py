@@ -7,14 +7,14 @@ from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.script import ScriptUtils
-from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import BooleanFormatterValidator
+from ytdl_sub.validators.validators import ListValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 logger = Logger.get("filter-include")
 
 
-class FilterIncludeOptions(ListFormatterValidator, OptionsValidator):
+class FilterIncludeOptions(ListValidator[BooleanFormatterValidator], OptionsValidator):
     """
     Applies a conditional AND on any number of filters comprised of either variables or scripts.
     If all filters evaluate to True, the entry will be included.
@@ -37,6 +37,8 @@ class FilterIncludeOptions(ListFormatterValidator, OptionsValidator):
              )
            }
     """
+
+    _inner_list_type = BooleanFormatterValidator
 
 
 class FilterIncludePlugin(Plugin[FilterIncludeOptions]):
@@ -61,8 +63,8 @@ class FilterIncludePlugin(Plugin[FilterIncludeOptions]):
             return entry
 
         for formatter in self.plugin_options.list:
-            should_exclude = ScriptUtils.bool_formatter_output(
-                self.overrides.apply_formatter(formatter=formatter, entry=entry)
+            should_exclude = self.overrides.apply_formatter(
+                formatter=formatter, entry=entry, expected_type=bool
             )
             if not should_exclude:
                 logger.info(

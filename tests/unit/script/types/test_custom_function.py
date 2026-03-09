@@ -5,7 +5,9 @@ import pytest
 from ytdl_sub.script.parser import CUSTOM_FUNCTION_ARGUMENTS_ONLY_ARGS
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
+from ytdl_sub.script.types.function import CustomFunction
 from ytdl_sub.script.types.resolvable import Integer
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.utils.exceptions import CycleDetected
 from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
 from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArgumentName
@@ -251,3 +253,30 @@ class TestCustomFunction:
                     "output": "{%mul(%func1(1), 1)}",
                 }
             )
+
+    def test_partial_resolve_custom_functions_any_order_via_init(self):
+        assert (
+            Script(
+                {
+                    "%custom_cubed": "{%mul(%custom_square($0),$0)}",
+                    "%custom_square": "{%mul($0, $0)}",
+                    "output": "{%custom_cubed(3)}",
+                }
+            )
+            .resolve_partial()
+            .get("output")
+            .native
+            == 27
+        )
+
+    def test_partial_resolve_unresolved(self):
+        assert Script(
+            {
+                "aa": "nope",
+                "%custom_cubed": "{%mul(%custom_square($0),$0)}",
+                "%custom_square": "{%mul($0, aa)}",
+                "output": "{%custom_cubed(3)}",
+            }
+        ).resolve_partial(unresolvable={"aa"}).definition_of("output") == SyntaxTree(
+            ast=[CustomFunction(name="custom_cubed", args=[Integer(3)])]
+        )
