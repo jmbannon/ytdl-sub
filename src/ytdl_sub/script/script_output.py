@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
-from typing import Dict
+from typing import Any, Dict
 
 from ytdl_sub.script.types.resolvable import Resolvable
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved

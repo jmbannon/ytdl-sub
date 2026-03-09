@@ -36,7 +36,6 @@ def output_options_subscription_dict(output_directory) -> Dict:
 
 
 class TestOutputOptions:
-
     @classmethod
     def _ensure_subscription_migrates(
         cls,
@@ -114,9 +113,9 @@ class TestOutputOptions:
             expected_download_summary_file_name="plugins/output_options/pre_migration.json",
         )
 
-        output_options_subscription_dict["output_options"][
-            "migrated_download_archive_name"
-        ] = ".ytdl-sub-{tv_show_name_sanitized}-migrated-download-archive.json"
+        output_options_subscription_dict["output_options"]["migrated_download_archive_name"] = (
+            ".ytdl-sub-{tv_show_name_sanitized}-migrated-download-archive.json"
+        )
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,
@@ -236,24 +235,14 @@ class TestOutputOptions:
     ):
         output_options_subscription_dict["output_options"]["keep_files_date_eval"] = "nope"
 
-        subscription = Subscription.from_dict(
-            config=config,
-            preset_name=subscription_name,
-            preset_dict=output_options_subscription_dict,
-        )
-
         expected_error_msg = (
             "Validation error in subscription_test.output_options.keep_files_date_eval: "
             "Expected a standardized date in the form of YYYY-MM-DD, but received 'nope'"
         )
 
-        with (
-            mock_download_collection_entries(
-                is_youtube_channel=False,
-                num_urls=1,
-                is_extracted_audio=False,
-                is_dry_run=True,
-            ),
-            pytest.raises(ValidationException, match=re.escape(expected_error_msg)),
-        ):
-            subscription.download(dry_run=True)
+        with pytest.raises(ValidationException, match=re.escape(expected_error_msg)):
+            _ = Subscription.from_dict(
+                config=config,
+                preset_name=subscription_name,
+                preset_dict=output_options_subscription_dict,
+            )

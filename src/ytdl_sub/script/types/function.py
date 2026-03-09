@@ -1,38 +1,34 @@
 import functools
 from abc import ABC
 from dataclasses import dataclass
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Type
-from typing import Union
+from typing import Callable, Dict, List, Optional, Type, Union
 
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.array import UnresolvedArray
-from ytdl_sub.script.types.resolvable import Argument
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import BuiltInFunctionType
-from ytdl_sub.script.types.resolvable import FunctionType
-from ytdl_sub.script.types.resolvable import FutureResolvable
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import NamedCustomFunction
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import ReturnableArgument
-from ytdl_sub.script.types.resolvable import ReturnableArgumentA
-from ytdl_sub.script.types.resolvable import ReturnableArgumentB
-from ytdl_sub.script.types.variable import FunctionArgument
-from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.array import Array, UnresolvedArray
+from ytdl_sub.script.types.resolvable import (
+    Argument,
+    Boolean,
+    BuiltInFunctionType,
+    FunctionType,
+    FutureResolvable,
+    Integer,
+    Lambda,
+    NamedCustomFunction,
+    Resolvable,
+    ReturnableArgument,
+    ReturnableArgumentA,
+    ReturnableArgumentB,
+)
+from ytdl_sub.script.types.variable import FunctionArgument, Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 from ytdl_sub.script.utils.exception_formatters import FunctionArgumentsExceptionFormatter
-from ytdl_sub.script.utils.exceptions import UNREACHABLE
-from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
-from ytdl_sub.script.utils.exceptions import RuntimeException
-from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
-from ytdl_sub.script.utils.type_checking import FunctionSpec
-from ytdl_sub.script.utils.type_checking import is_union
+from ytdl_sub.script.utils.exceptions import (
+    UNREACHABLE,
+    FunctionRuntimeException,
+    RuntimeException,
+    UserThrownRuntimeError,
+)
+from ytdl_sub.script.utils.type_checking import FunctionSpec, is_union
 
 
 @dataclass(frozen=True)
@@ -371,13 +367,6 @@ class BuiltInFunction(Function, BuiltInFunctionType):
         If the conditional partially resolvable enough to warrant evaluation,
         perform it here.
         """
-        if self.is_subset_of(
-            variables=resolved_variables, custom_function_definitions=custom_functions
-        ):
-            return self.resolve(
-                resolved_variables=resolved_variables,
-                custom_functions=custom_functions,
-            )
 
         if self.name == "if":
             maybe_resolvable_arg, is_resolvable = VariableDependency.try_partial_resolve(

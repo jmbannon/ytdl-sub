@@ -4,8 +4,7 @@ import pytest
 
 from ytdl_sub.config.preset import Preset
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
-from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException, ValidationException
 
 
 class TestSubscriptionValidation:

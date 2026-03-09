@@ -1,25 +1,23 @@
 from datetime import datetime
-from typing import Any
-from typing import Dict
-from typing import Set
-from typing import Union
-from typing import final
+from typing import Any, Dict, Set, Union, final
 
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
-from ytdl_sub.script.utils.exceptions import RuntimeException
-from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
-from ytdl_sub.script.utils.exceptions import UserException
-from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
+from ytdl_sub.script.utils.exceptions import (
+    RuntimeException,
+    ScriptVariableNotResolved,
+    UserException,
+)
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.script import ScriptUtils
-from ytdl_sub.validators.validators import DictValidator
-from ytdl_sub.validators.validators import ListValidator
-from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import StringValidator
-from ytdl_sub.validators.validators import Validator
+from ytdl_sub.validators.validators import (
+    DictValidator,
+    ListValidator,
+    LiteralDictValidator,
+    StringValidator,
+    Validator,
+)
 
 # pylint: disable=protected-access
 
@@ -82,35 +80,27 @@ class StringFormatterValidator(StringValidator):
         """
         return self._parsed
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: Any) -> Any:
         """
         Returns
         -------
-        Apply any post processing to the resolved value
+        Apply any post processing to the resolved value. Defaults to casting it to string.
         """
-        return resolved
-
-    def post_process_native(self, resolved: Any) -> Any:
-        """
-        Returns
-        -------
-        Apply any post processing to the resolved native value.
-        """
-        return resolved
+        return str(resolved)
 
 
 class FloatFormatterValidator(StringFormatterValidator):
     _expected_value_type_name = "float"
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: str) -> float:
         try:
-            float(resolved)
+            out = float(resolved)
         except Exception as exc:
             raise self._validation_exception(
                 f"Expected a float, but received '{resolved}'"
             ) from exc
 
-        return resolved
+        return out
 
 
 class StandardizedDateValidator(StringFormatterValidator):
@@ -125,6 +115,13 @@ class StandardizedDateValidator(StringFormatterValidator):
             ) from exc
 
         return resolved
+
+
+class BooleanFormatterValidator(StringFormatterValidator):
+    _expected_value_type_name = "boolean"
+
+    def post_process(self, resolved: Any) -> bool:
+        return ScriptUtils.bool_formatter_output(output=str(resolved))
 
 
 # pylint: disable=line-too-long
@@ -146,15 +143,14 @@ class OverridesStringFormatterValidator(StringFormatterValidator):
 class OverridesIntegerFormatterValidator(OverridesStringFormatterValidator):
     _expected_value_type_name = "integer"
 
-    def post_process(self, resolved: str) -> str:
+    def post_process(self, resolved: str) -> int:
         try:
-            int(resolved)
+            out = int(resolved)
         except Exception as exc:
             raise self._validation_exception(
                 f"Expected an integer, but received '{resolved}'"
             ) from exc
-
-        return resolved
+        return out
 
 
 class OverridesFloatFormatterValidator(FloatFormatterValidator, OverridesStringFormatterValidator):
@@ -163,8 +159,13 @@ class OverridesFloatFormatterValidator(FloatFormatterValidator, OverridesStringF
     """
 
 
-class OverridesBooleanFormatterValidator(OverridesStringFormatterValidator):
+class OverridesBooleanFormatterValidator(
+    BooleanFormatterValidator, OverridesStringFormatterValidator
+):
     _expected_value_type_name = "boolean"
+
+    def post_process(self, resolved: Any) -> bool:
+        return ScriptUtils.bool_formatter_output(output=str(resolved))
 
 
 class ListFormatterValidator(ListValidator[StringFormatterValidator]):
@@ -183,12 +184,13 @@ class DictFormatterValidator(LiteralDictValidator):
         super().__init__(name, value)
 
         for key in self._keys:
-            self._value[key] = self._validate_key(key=key, validator=self._key_validator)
+            # Gets stored in __validator_dict
+            _ = self._validate_key(key=key, validator=self._key_validator)
 
     @property
     def dict(self) -> Dict[str, StringFormatterValidator]:
         """Returns dict with string formatter values"""
-        return self._value
+        return self._validator_dict
 
     @property
     def dict_with_format_strings(self) -> Dict[str, str]:
@@ -210,7 +212,22 @@ class OverridesDictFormatterValidator(DictFormatterValidator):
     _key_validator = OverridesStringFormatterValidator
 
 
+class AnyFormatterValidator(StringFormatterValidator):
+    """
+    Applies no post-processing.
+    """
+
+    def post_process(self, resolved: Any) -> Any:
+        return resolved
+
+
+class AnyOverridesFormatterValidator(AnyFormatterValidator, OverridesStringFormatterValidator):
+    pass
+
+
 class UnstructuredDictFormatterValidator(DictFormatterValidator):
+    _key_validator = AnyFormatterValidator
+
     def __init__(self, name, value):
         # Convert the unstructured-ness into a script
         if isinstance(value, dict):
@@ -219,33 +236,21 @@ class UnstructuredDictFormatterValidator(DictFormatterValidator):
 
 
 class UnstructuredOverridesDictFormatterValidator(UnstructuredDictFormatterValidator):
-    _key_validator = OverridesStringFormatterValidator
-
-
-def to_variable_dependency_format_string(script: Script, parsed_format_string: SyntaxTree) -> str:
-    """
-    Create a dummy format string that contains all variable deps as a string.
-    """
-    dummy_format_string = ""
-    for var in parsed_format_string.variables:
-        dummy_format_string += f"{{ {var.name} }}"
-        for variable_dependency in script._variables[var.name].variables:
-            dummy_format_string += f"{{ {variable_dependency.name} }}"
-    return dummy_format_string
+    _key_validator = AnyOverridesFormatterValidator
 
 
 def _validate_formatter(
     mock_script: Script,
     unresolved_variables: Set[str],
+    unresolved_runtime_variables: Set[str],
     formatter_validator: Union[StringFormatterValidator, OverridesStringFormatterValidator],
-) -> str:
+    partial_resolve_entry_formatters: bool,
+) -> Any:
     parsed = formatter_validator.parsed
     if resolved := parsed.maybe_resolvable:
-        return resolved.native
+        return formatter_validator.post_process(resolved.native)
 
     is_static_formatter = isinstance(formatter_validator, OverridesStringFormatterValidator)
-    if is_static_formatter:
-        unresolved_variables = unresolved_variables.union({VARIABLES.entry_metadata.variable_name})
 
     variable_names = {var.name for var in parsed.variables}
     custom_function_names = {f"%{func.name}" for func in parsed.custom_functions}
@@ -265,20 +270,32 @@ def _validate_formatter(
             "contains the following custom functions that do not exist: "
             f"{', '.join(sorted(custom_function_names - mock_script.function_names))}"
         )
-    if unresolved := variable_names.intersection(unresolved_variables):
+    if unresolved := variable_names.intersection(unresolved_runtime_variables):
         raise StringFormattingVariableNotFoundException(
             "contains the following variables that are unresolved when executing this "
             f"formatter: {', '.join(sorted(unresolved))}"
         )
+
+    if partial_resolve_entry_formatters and not is_static_formatter:
+        parsed = mock_script.resolve_partial_once(
+            variable_definitions={"tmp_var": formatter_validator.parsed},
+            unresolvable=unresolved_variables,
+        )["tmp_var"]
+
     try:
         if is_static_formatter:
-            return mock_script.resolve_once_parsed(
-                {"tmp_var": formatter_validator.parsed},
-                unresolvable=unresolved_variables,
-                update=True,
-            )["tmp_var"].native
+            return formatter_validator.post_process(
+                mock_script.resolve_once_parsed(
+                    {"tmp_var": formatter_validator.parsed},
+                    unresolvable=unresolved_variables,
+                    update=True,
+                )["tmp_var"].native
+            )
 
-        return formatter_validator.format_string
+        if maybe_resolved := parsed.maybe_resolvable:
+            return formatter_validator.post_process(maybe_resolved)
+
+        return ScriptUtils.to_native_script(parsed)
     except RuntimeException as exc:
         if isinstance(exc, ScriptVariableNotResolved) and is_static_formatter:
             raise StringFormattingVariableNotFoundException(
@@ -286,18 +303,14 @@ def _validate_formatter(
                 "entry variables"
             ) from exc
         raise StringFormattingVariableNotFoundException(exc) from exc
-    except UserThrownRuntimeError as exc:
-        # Errors are expected for non-static formatters due to missing entry
-        # data. Raise otherwise.
-        if not is_static_formatter:
-            return formatter_validator.format_string
-        raise exc
 
 
 def validate_formatters(
     script: Script,
     unresolved_variables: Set[str],
+    unresolved_runtime_variables: Set[str],
     validator: Validator,
+    partial_resolve_formatters: bool,
 ) -> Dict:
     """
     Ensure all OverridesStringFormatterValidator's only contain variables from the overrides
@@ -313,7 +326,9 @@ def validate_formatters(
             resolved_dict[validator.leaf_name] |= validate_formatters(
                 script=script,
                 unresolved_variables=unresolved_variables,
+                unresolved_runtime_variables=unresolved_runtime_variables,
                 validator=validator_value,
+                partial_resolve_formatters=partial_resolve_formatters,
             )
     elif isinstance(validator, ListValidator):
         resolved_dict[validator.leaf_name] = []
@@ -321,7 +336,9 @@ def validate_formatters(
             list_output = validate_formatters(
                 script=script,
                 unresolved_variables=unresolved_variables,
+                unresolved_runtime_variables=unresolved_runtime_variables,
                 validator=list_value,
+                partial_resolve_formatters=partial_resolve_formatters,
             )
             assert len(list_output) == 1
             resolved_dict[validator.leaf_name].append(list(list_output.values())[0])
@@ -329,7 +346,9 @@ def validate_formatters(
         resolved_dict[validator.leaf_name] = _validate_formatter(
             mock_script=script,
             unresolved_variables=unresolved_variables,
+            unresolved_runtime_variables=unresolved_runtime_variables,
             formatter_validator=validator,
+            partial_resolve_entry_formatters=partial_resolve_formatters,
         )
     elif isinstance(validator, (DictFormatterValidator, OverridesDictFormatterValidator)):
         resolved_dict[validator.leaf_name] = {}
@@ -337,7 +356,9 @@ def validate_formatters(
             resolved_dict[validator.leaf_name] |= _validate_formatter(
                 mock_script=script,
                 unresolved_variables=unresolved_variables,
+                unresolved_runtime_variables=unresolved_runtime_variables,
                 formatter_validator=validator_value,
+                partial_resolve_entry_formatters=partial_resolve_formatters,
             )
     else:
         resolved_dict[validator.leaf_name] = validator._value

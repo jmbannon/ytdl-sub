@@ -1,21 +1,21 @@
 from abc import ABC
-from functools import cache
-from functools import cached_property
-from typing import Dict
-from typing import Set
+from functools import cache, cached_property
+from typing import Dict, Set
 
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
-from ytdl_sub.entries.script.variable_types import ArrayMetadataVariable
-from ytdl_sub.entries.script.variable_types import IntegerMetadataVariable
-from ytdl_sub.entries.script.variable_types import IntegerVariable
-from ytdl_sub.entries.script.variable_types import MapMetadataVariable
-from ytdl_sub.entries.script.variable_types import MapVariable
-from ytdl_sub.entries.script.variable_types import MetadataVariable
-from ytdl_sub.entries.script.variable_types import StringDateMetadataVariable
-from ytdl_sub.entries.script.variable_types import StringDateVariable
-from ytdl_sub.entries.script.variable_types import StringMetadataVariable
-from ytdl_sub.entries.script.variable_types import StringVariable
-from ytdl_sub.entries.script.variable_types import Variable
+from ytdl_sub.entries.script.variable_types import (
+    ArrayMetadataVariable,
+    IntegerMetadataVariable,
+    IntegerVariable,
+    MapMetadataVariable,
+    MapVariable,
+    MetadataVariable,
+    StringDateMetadataVariable,
+    StringDateVariable,
+    StringMetadataVariable,
+    StringVariable,
+    Variable,
+)
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member
@@ -1134,6 +1134,16 @@ class VariableDefinitions(
                 if isinstance(getattr(self, attr), Variable)
             ]
         }
+
+    @cache
+    def variable_names(self, include_sanitized: bool):
+        """
+        Returns all variable names, and can include sanitized.
+        """
+        var_names: Set[str] = self.scripts().keys()
+        if include_sanitized:
+            var_names |= {f"{name}_sanitized" for name in var_names}
+        return var_names
 
     @cache
     def injected_variables(self) -> Set[MetadataVariable]:

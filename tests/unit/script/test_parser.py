@@ -1,23 +1,19 @@
 import re
-from typing import Optional
-from typing import Union
+from typing import Optional, Union
 
 import pytest
 
-from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
-from ytdl_sub.script.parser import BRACKET_INVALID_CHAR
-from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
-from ytdl_sub.script.parser import ParsedArgType
-from ytdl_sub.script.parser import parse
+from ytdl_sub.script.parser import (
+    _UNEXPECTED_CHAR_ARGUMENT,
+    BRACKET_INVALID_CHAR,
+    BRACKET_NOT_CLOSED,
+    ParsedArgType,
+    parse,
+)
 from ytdl_sub.script.types.array import UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import String
-from ytdl_sub.script.types.syntax_tree import ResolvedSyntaxTree
-from ytdl_sub.script.types.syntax_tree import SyntaxTree
+from ytdl_sub.script.types.resolvable import Boolean, Float, Integer, Lambda, String
+from ytdl_sub.script.types.syntax_tree import ResolvedSyntaxTree, SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 

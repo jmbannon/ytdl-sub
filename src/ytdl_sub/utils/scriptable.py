@@ -1,13 +1,9 @@
 import copy
 from abc import ABC
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Set
+from typing import Any, Dict, Optional, Set
 
 from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
-from ytdl_sub.entries.script.variable_definitions import UNRESOLVED_VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
+from ytdl_sub.entries.script.variable_definitions import UNRESOLVED_VARIABLES, VARIABLE_SCRIPTS
 from ytdl_sub.entries.script.variable_types import Variable
 from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_DEFINITIONS
 from ytdl_sub.script.script import Script

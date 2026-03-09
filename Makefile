@@ -36,12 +36,12 @@ endif
 all: check_lint docs docker docker_ubuntu docker_gui
 
 lint:
-	python3 -m isort .
-	python3 -m black .
+	python3 -m ruff format .
+	python3 -m ruff check --fix .
 	python3 -m pylint src
 check_lint:
-	isort . --check-only --diff  \
-		&& black . --check  \
+	ruff format --check .  \
+        && ruff check .  \
 		&& pylint src/
 wheel: clean
 	$(shell echo "__pypi_version__ = \"$(PYPI_VERSION)\"" > src/ytdl_sub/__init__.py)

@@ -1,12 +1,10 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import FFMPEG
-from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.file_handler import FileHandler, FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
 
@@ -31,7 +29,7 @@ class SquareThumbnailPlugin(Plugin[SquareThumbnailOptions]):
 
     @property
     def _square_thumbnail(self) -> bool:
-        return self.overrides.evaluate_boolean(self.plugin_options)
+        return self.overrides.apply_formatter(self.plugin_options, expected_type=bool)
 
     @classmethod
     def _convert_to_square_thumbnail(cls, entry: Entry) -> None:

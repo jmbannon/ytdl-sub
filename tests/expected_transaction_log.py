@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 from typing import List
 
-from resources import REGENERATE_FIXTURES
-from resources import RESOURCE_PATH
+from resources import REGENERATE_FIXTURES, RESOURCE_PATH
 
 from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
 
@@ -48,9 +47,9 @@ def assert_transaction_log_matches(
     # Split, ensure there are the same number of new lines
     summary_lines: List[str] = summary.split("\n")
     expected_summary_lines: List[str] = expected_summary.split("\n")
-    assert len(summary_lines) == len(
-        expected_summary_lines
-    ), f"Summary number of lines differ: {len(summary_lines) != len(expected_summary_lines)}"
+    assert len(summary_lines) == len(expected_summary_lines), (
+        f"Summary number of lines differ: {len(summary_lines) != len(expected_summary_lines)}"
+    )
 
     # Ensure each line equals
     for idx in range(len(summary_lines)):

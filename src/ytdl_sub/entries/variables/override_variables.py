@@ -1,13 +1,14 @@
-from typing import Dict
-from typing import Set
+from typing import Dict, Set
 
 from ytdl_sub.entries.script.function_scripts import CUSTOM_FUNCTION_SCRIPTS
 from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
-from ytdl_sub.entries.script.variable_types import ArrayVariable
-from ytdl_sub.entries.script.variable_types import BooleanVariable
-from ytdl_sub.entries.script.variable_types import MapVariable
-from ytdl_sub.entries.script.variable_types import StringVariable
-from ytdl_sub.entries.script.variable_types import Variable
+from ytdl_sub.entries.script.variable_types import (
+    ArrayVariable,
+    BooleanVariable,
+    MapVariable,
+    StringVariable,
+    Variable,
+)
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.utils.name_validation import is_valid_name
 

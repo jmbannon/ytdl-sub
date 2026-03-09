@@ -1,6 +1,5 @@
 import logging
-from typing import Any
-from typing import Optional
+from typing import Any, Optional
 from unittest.mock import patch
 
 import pytest

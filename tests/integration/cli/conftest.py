@@ -1,8 +1,6 @@
-import datetime
 import os
 import shutil
 import tempfile
-import time
 from typing import Callable
 from unittest.mock import patch
 
@@ -11,8 +9,7 @@ import pytest
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
-from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.file_handler import FileHandlerTransactionLog, FileMetadata
 from ytdl_sub.utils.logger import Logger
 
 

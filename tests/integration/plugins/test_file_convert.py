@@ -52,7 +52,7 @@ class TestFileConvert:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name=f"plugins/file_convert/custom_ffmpeg_args.txt",
+            transaction_log_summary_file_name="plugins/file_convert/custom_ffmpeg_args.txt",
         )
         assert_expected_downloads(
             output_directory=output_directory,

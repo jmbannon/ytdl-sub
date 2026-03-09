@@ -1,22 +1,20 @@
 import copy
 import dataclasses
-from abc import ABC
-from abc import abstractmethod
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import final
+from abc import ABC, abstractmethod
+from typing import Dict, List, Optional, final
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
-from ytdl_sub.validators.validators import DictValidator
-from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import StringListValidator
-from ytdl_sub.validators.validators import StringValidator
-from ytdl_sub.validators.validators import Validator
+from ytdl_sub.validators.validators import (
+    DictValidator,
+    LiteralDictValidator,
+    StringListValidator,
+    StringValidator,
+    Validator,
+)
 
 
 class SubscriptionOutput(Validator, ABC):

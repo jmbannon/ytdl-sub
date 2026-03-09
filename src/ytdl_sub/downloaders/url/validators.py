@@ -1,17 +1,16 @@
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Set
+from typing import Any, Dict, List, Optional, Set
 
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.script.parser import parse
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    DictFormatterValidator,
+    OverridesBooleanFormatterValidator,
+    OverridesStringFormatterValidator,
+    StringFormatterValidator,
+)
 from ytdl_sub.validators.validators import ListValidator
 
 
@@ -44,7 +43,7 @@ class UrlThumbnailListValidator(ListValidator[UrlThumbnailValidator]):
 
 
 class OverridesOneOrManyUrlValidator(OverridesStringFormatterValidator):
-    def post_process_native(self, resolved: Any) -> Any:
+    def post_process(self, resolved: Any) -> List[str]:
         if isinstance(resolved, str):
             return [resolved]
         if isinstance(resolved, list):

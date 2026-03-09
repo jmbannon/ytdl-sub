@@ -1,11 +1,8 @@
-import pytest
-
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.system import IS_WINDOWS
 
 
 class TestFileHandler:
-
     def test_directory_exists(self):
         if IS_WINDOWS:
             return

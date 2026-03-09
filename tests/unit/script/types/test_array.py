@@ -2,14 +2,17 @@ import re
 
 import pytest
 
-from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
-from ytdl_sub.script.parser import _UNEXPECTED_COMMA_ARGUMENT
-from ytdl_sub.script.parser import ParsedArgType
+from ytdl_sub.script.parser import (
+    _UNEXPECTED_CHAR_ARGUMENT,
+    _UNEXPECTED_COMMA_ARGUMENT,
+    ParsedArgType,
+)
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Float, String
+from ytdl_sub.script.types.syntax_tree import SyntaxTree
+from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 
@@ -95,7 +98,7 @@ class TestArray:
     @pytest.mark.parametrize(
         "array",
         [
-            "{]}" "{      ]}",
+            "{]}{      ]}",
             "{\n]}",
         ],
     )
@@ -116,4 +119,30 @@ class TestArray:
             }
         ).resolve() == ScriptOutput(
             {"aa": String("a"), "bb": String("b"), "cc": String('return ["a", "b"]')}
+        )
+
+    def test_partial_resolve(self):
+        assert (
+            Script(
+                {
+                    "aa": "a",
+                    "bb": "unresolvable!",
+                    "cc": "{%array_at( [aa, bb], 0 )}",
+                }
+            )
+            .resolve_partial(unresolvable={"bb"})
+            .get("cc")
+            .native
+            == "a"
+        )
+
+    def test_partial_resolve_unresolved(self):
+        assert Script(
+            {
+                "aa": "a",
+                "bb": "unresolvable!",
+                "cc": "{%array_at( [aa, bb], 1 )}",
+            }
+        ).resolve_partial(unresolvable={"bb"}).definition_of("cc") == SyntaxTree(
+            ast=[Variable("bb")]
         )

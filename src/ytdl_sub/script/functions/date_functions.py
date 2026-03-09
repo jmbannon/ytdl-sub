@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Integer, String
 
 
 class DateFunctions:

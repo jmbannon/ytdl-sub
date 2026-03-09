@@ -2,8 +2,7 @@ from typing import Dict
 from unittest.mock import patch
 
 import pytest
-from conftest import mock_run_from_cli
-from conftest import preset_dict_to_dl_args
+from conftest import mock_run_from_cli, preset_dict_to_dl_args
 from expected_download import assert_expected_downloads
 from expected_transaction_log import assert_transaction_log_matches
 

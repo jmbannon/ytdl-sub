@@ -1,14 +1,12 @@
 import pytest
-from yt_dlp.utils import sanitize_filename
 
-from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import (
+    DictFormatterValidator,
+    OverridesDictFormatterValidator,
+    OverridesStringFormatterValidator,
+    StringFormatterValidator,
+    UnstructuredDictFormatterValidator,
     UnstructuredOverridesDictFormatterValidator,
 )
 
@@ -115,12 +113,12 @@ class TestUnstructuredDictFormatterValidator(object):
         assert len(validator.dict) == 8
         assert all(isinstance(val, expected_formatter_class) for val in validator.dict.values())
         assert validator.dict_with_format_strings == {
-            "key1": '{ %concat( %string( "string with " ), %string( variable ) ) }',
+            "key1": '{ %concat( "string with ", variable ) }',
             "key2": "no variables",
             "key3": "{ %int(3) }",
             "key4": "{ %float(4.132) }",
             "key5": "{ %bool(True) }",
-            "key6": '{ { %concat( %string( variable ), %string( "_key" ) ): "value", "static_key": %concat( %string( variable ), %string( "_value" ) ) } }',
-            "key7": '{ [ "list_1", %concat( %string( "list_" ), %string( variable_2 ) ) ] }',
-            "key8": '{ %concat( %string( "string " ), %string( variable1 ), %string( " with multiple " ), %string( variable2 ) ) }',
+            "key6": '{ { %concat( variable, "_key" ): "value", "static_key": %concat( variable, "_value" ) } }',
+            "key7": '{ [ "list_1", %concat( "list_", variable_2 ) ] }',
+            "key8": '{ %concat( "string ", variable1, " with multiple ", variable2 ) }',
         }

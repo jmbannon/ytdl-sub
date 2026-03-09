@@ -1,26 +1,24 @@
 import gc
 import os
+import random
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Dict, List, Optional
 
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.cli.output_summary import output_summary
-from ytdl_sub.cli.output_transaction_log import _maybe_validate_transaction_log_file
-from ytdl_sub.cli.output_transaction_log import output_transaction_log
+from ytdl_sub.cli.output_transaction_log import (
+    _maybe_validate_transaction_log_file,
+    output_transaction_log,
+)
 from ytdl_sub.cli.parsers.cli_to_sub import print_cli_to_sub
 from ytdl_sub.cli.parsers.dl import DownloadArgsParser
-from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME
-from ytdl_sub.cli.parsers.main import InspectArguments
-from ytdl_sub.cli.parsers.main import parser
+from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME, parser, InspectArguments
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
-from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled, ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_lock import working_directory_lock
 from ytdl_sub.utils.logger import Logger
@@ -78,6 +76,7 @@ def _download_subscriptions_from_yaml_files(
     subscription_override_dict: Dict,
     update_with_info_json: bool,
     dry_run: bool,
+    shuffle: bool,
 ) -> List[Subscription]:
     """
     Downloads all subscriptions from one or many subscription yaml files.
@@ -94,6 +93,8 @@ def _download_subscriptions_from_yaml_files(
         Whether to actually download or update using existing info json
     dry_run
         Whether to dry run or not
+    shuffle
+        Whether to shuffle the subscription download order
 
     Returns
     -------
@@ -114,6 +115,10 @@ def _download_subscriptions_from_yaml_files(
             subscription_matches=subscription_matches,
             subscription_override_dict=subscription_override_dict,
         )
+
+    if shuffle:
+        logger.info("Shuffling subscriptions")
+        random.shuffle(subscriptions)
 
     for subscription in subscriptions:
         with subscription.exception_handling():
@@ -320,6 +325,7 @@ def main() -> List[Subscription]:
                 subscription_override_dict=subscription_override_dict,
                 update_with_info_json=args.update_with_info_json,
                 dry_run=args.dry_run,
+                shuffle=args.shuffle,
             )
 
         # One-off download

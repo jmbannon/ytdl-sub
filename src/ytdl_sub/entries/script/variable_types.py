@@ -1,17 +1,10 @@
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Type
-from typing import TypeVar
+from typing import Dict, List, Optional, Type, TypeVar
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.map import Map
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Boolean, Integer, String
 
 ENTRY_METADATA_VARIABLE_NAME = "entry_metadata"
 PLAYLIST_METADATA_VARIABLE_NAME = "playlist_metadata"

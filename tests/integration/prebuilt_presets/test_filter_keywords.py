@@ -17,7 +17,6 @@ def filter_subscription_dict(output_directory):
 
 
 class TestFilterKeywords:
-
     def test_no_overrides(
         self,
         config,
@@ -40,7 +39,7 @@ class TestFilterKeywords:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name=f"integration/prebuilt_presets/filter_keywords_empty.txt",
+            transaction_log_summary_file_name="integration/prebuilt_presets/filter_keywords_empty.txt",
         )
 
     @pytest.mark.parametrize("filter_mode", ["include", "exclude"])

@@ -1,9 +1,7 @@
 import re
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
-from ytdl_sub.validators.validators import ListValidator
-from ytdl_sub.validators.validators import StringValidator
+from ytdl_sub.validators.validators import ListValidator, StringValidator
 
 
 class RegexValidator(StringValidator):

@@ -1,10 +1,7 @@
 import random
 import time
 from abc import ABC
-from typing import Dict
-from typing import Optional
-from typing import Type
-from typing import TypeVar
+from typing import Dict, Optional, Type, TypeVar
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import Plugin
@@ -13,8 +10,10 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.string_formatter_validators import FloatFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesFloatFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    FloatFormatterValidator,
+    OverridesFloatFormatterValidator,
+)
 from ytdl_sub.validators.validators import ProbabilityValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
@@ -42,8 +41,8 @@ class _RandomizedRangeValidator(StrictDictValidator, ABC):
         )
 
     def _randomized_float(self, overrides: Overrides, entry: Optional[Entry] = None) -> float:
-        actualized_min = float(overrides.apply_formatter(self._min, entry=entry))
-        actualized_max = float(overrides.apply_formatter(self._max, entry=entry))
+        actualized_min = overrides.apply_formatter(self._min, entry=entry, expected_type=float)
+        actualized_max = overrides.apply_formatter(self._max, entry=entry, expected_type=float)
 
         if actualized_min < 0:
             raise self._validation_exception(
@@ -70,7 +69,7 @@ class _RandomizedRangeValidator(StrictDictValidator, ABC):
         -------
         Max possible value
         """
-        actualized_max = float(overrides.apply_formatter(self._max, entry=entry))
+        actualized_max = overrides.apply_formatter(self._max, entry=entry, expected_type=float)
         if actualized_max < 0:
             raise self._validation_exception(
                 f"max must be greater than zero, received {actualized_max}"

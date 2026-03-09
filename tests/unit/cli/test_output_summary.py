@@ -1,14 +1,11 @@
-from typing import List
-from typing import Optional
-from typing import Tuple
-from unittest.mock import MagicMock
-from unittest.mock import Mock
+from typing import List, Optional, Tuple
+from unittest.mock import MagicMock, Mock
 
 from ytdl_sub.cli.output_summary import output_summary
 
 
 def _to_mock_subscriptions(
-    subscription_values: List[Tuple[str, int, int, int, int, Optional[Exception]]]
+    subscription_values: List[Tuple[str, int, int, int, int, Optional[Exception]]],
 ) -> List[MagicMock]:
     mock_subscriptions: List[MagicMock] = []
     for values in subscription_values:

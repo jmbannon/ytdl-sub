@@ -3,12 +3,14 @@ from typing import Any
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.map import Map
-from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import (
+    AnyArgument,
+    Boolean,
+    Float,
+    Integer,
+    Resolvable,
+    String,
+)
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
 

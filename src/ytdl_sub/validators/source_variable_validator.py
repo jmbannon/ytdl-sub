@@ -1,7 +1,6 @@
 from ytdl_sub.script.utils.name_validation import is_valid_name
 from ytdl_sub.utils.exceptions import InvalidVariableNameException
-from ytdl_sub.validators.validators import ListValidator
-from ytdl_sub.validators.validators import StringValidator
+from ytdl_sub.validators.validators import ListValidator, StringValidator
 
 
 class SourceVariableNameValidator(StringValidator):

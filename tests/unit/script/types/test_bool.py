@@ -5,8 +5,7 @@ import pytest
 from ytdl_sub.script.parser import BOOLEAN_ONLY_ARGS
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Boolean, String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 

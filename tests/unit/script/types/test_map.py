@@ -2,20 +2,20 @@ import re
 
 import pytest
 
-from ytdl_sub.script.parser import _UNEXPECTED_COMMA_ARGUMENT
-from ytdl_sub.script.parser import BRACKET_NOT_CLOSED
-from ytdl_sub.script.parser import MAP_KEY_MULTIPLE_VALUES
-from ytdl_sub.script.parser import MAP_KEY_NOT_HASHABLE
-from ytdl_sub.script.parser import MAP_KEY_WITH_NO_VALUE
-from ytdl_sub.script.parser import MAP_MISSING_KEY
-from ytdl_sub.script.parser import ParsedArgType
+from ytdl_sub.script.parser import (
+    _UNEXPECTED_COMMA_ARGUMENT,
+    BRACKET_NOT_CLOSED,
+    MAP_KEY_MULTIPLE_VALUES,
+    MAP_KEY_NOT_HASHABLE,
+    MAP_KEY_WITH_NO_VALUE,
+    MAP_MISSING_KEY,
+    ParsedArgType,
+)
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.map import Map
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import String
-from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
-from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
+from ytdl_sub.script.types.resolvable import Float, String
+from ytdl_sub.script.utils.exceptions import InvalidSyntaxException, KeyNotHashableRuntimeException
 
 
 class TestMap:

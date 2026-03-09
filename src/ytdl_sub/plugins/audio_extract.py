@@ -1,21 +1,19 @@
 import os.path
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Set
+from typing import Any, Dict, Optional, Set
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.utils.exceptions import FileNotDownloadedException
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
-from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_TYPES_EXTENSION_MAPPING
-from ytdl_sub.validators.audo_codec_validator import AudioTypeValidator
+from ytdl_sub.validators.audo_codec_validator import (
+    AUDIO_CODEC_EXTS,
+    AUDIO_CODEC_TYPES_EXTENSION_MAPPING,
+    AudioTypeValidator,
+)
 from ytdl_sub.validators.validators import FloatValidator
 
 v: VariableDefinitions = VARIABLES

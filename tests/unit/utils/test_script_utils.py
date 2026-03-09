@@ -81,9 +81,9 @@ class TestScriptUtils:
                         String(value="static_a"): BuiltInFunction(
                             name="concat",
                             args=[
-                                BuiltInFunction(name="string", args=[String(value="string with ")]),
-                                BuiltInFunction(name="string", args=[Variable(name="var_c")]),
-                                BuiltInFunction(name="string", args=[String(value=" in it")]),
+                                String(value="string with "),
+                                Variable(name="var_c"),
+                                String(value=" in it"),
                             ],
                         ),
                         String(value="quotes"): String(value="has '' and \"\""),

@@ -28,7 +28,6 @@ Extracts audio from a video file.
   The codec to output after extracting the audio. Supported codecs are aac, flac, mp3, m4a,
   opus, vorbis, wav, and best to grab the best possible format at runtime.
 
-
 ``enable``
 
 :expected type: Optional[OverridesFormatter]
@@ -37,14 +36,12 @@ Extracts audio from a video file.
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-
 ``quality``
 
 :expected type: Float
 :description:
   Optional. Specify ffmpeg audio quality. Insert a value between ``0`` (better) and ``9``
   (worse) for variable bitrate, or a specific bitrate like ``128`` for 128k.
-
 
 ----------------------------------------------------------------------------------------------------
 
@@ -84,13 +81,11 @@ chapters and remove specific ones. Can also remove chapters using regex.
   Defaults to False. If chapters do not exist in the video/description itself, attempt to
   scrape comments to find the chapters.
 
-
 ``embed_chapters``
 
 :expected type: Optional[Boolean]
 :description:
   Defaults to True. Embed chapters into the file.
-
 
 ``enable``
 
@@ -100,7 +95,6 @@ chapters and remove specific ones. Can also remove chapters using regex.
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-
 ``force_key_frames``
 
 :expected type: Optional[Boolean]
@@ -108,14 +102,12 @@ chapters and remove specific ones. Can also remove chapters using regex.
   Defaults to False. Force keyframes at cuts when removing sections. This is slow due to
   needing a re-encode, but the resulting video may have fewer artifacts around the cuts.
 
-
 ``remove_chapters_regex``
 
 :expected type: Optional[List[RegexString]
 :description:
   List of regex patterns to match chapter titles against and remove them from the
   entry.
-
 
 ``remove_sponsorblock_categories``
 
@@ -125,7 +117,6 @@ chapters and remove specific ones. Can also remove chapters using regex.
   categories that are specified in ``sponsorblock_categories`` or "all", which removes
   everything specified in ``sponsorblock_categories``.
 
-
 ``sponsorblock_categories``
 
 :expected type: Optional[List[String]]
@@ -133,7 +124,6 @@ chapters and remove specific ones. Can also remove chapters using regex.
   List of SponsorBlock categories to embed as chapters. Supports "sponsor",
   "intro", "outro", "selfpromo", "preview", "filler", "interaction", "music_offtopic",
   "poi_highlight", or "all" to include all categories.
-
 
 ----------------------------------------------------------------------------------------------------
 
@@ -169,13 +159,11 @@ intended download files.
 :description:
   Only download videos after or on this datetime, inclusive.
 
-
 ``before``
 
 :expected type: Optional[OverridesFormatter]
 :description:
   Only download videos only before this datetime, not inclusive.
-
 
 ``breaks``
 
@@ -183,7 +171,6 @@ intended download files.
 :description:
   Toggle to enable breaking subsequent metadata downloads if an entry's upload date
   is out of range. Defaults to True.
-
 
 ``enable``
 
@@ -193,14 +180,12 @@ intended download files.
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-
 ``type``
 
 :expected type: Optional[OverridesFormatter]
 :description:
   Which type of date to use. Must be either ``upload_date`` or ``release_date``.
   Defaults to ``upload_date``.
-
 
 ----------------------------------------------------------------------------------------------------
 
@@ -305,7 +290,6 @@ Also supports custom ffmpeg conversions:
     - Video: avi, flv, mkv, mov, mp4, webm
     - Audio: aac, flac, mp3, m4a, opus, vorbis, wav
 
-
 ``convert_with``
 
 :expected type: Optional[String]
@@ -314,7 +298,6 @@ Also supports custom ffmpeg conversions:
   yt-dlp whereas ``ffmpeg`` specifies it will be converted using a custom command specified
   with ``ffmpeg_post_process_args``. Defaults to ``yt-dlp``.
 
-
 ``enable``
 
 :expected type: Optional[OverridesFormatter]
@@ -322,7 +305,6 @@ Also supports custom ffmpeg conversions:
   Can typically be left undefined to always default to enable. For preset convenience,
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
-
 
 ``ffmpeg_post_process_args``
 
@@ -335,7 +317,6 @@ Also supports custom ffmpeg conversions:
 
   The output file will use the extension specified in ``convert_to``. Post-processing args
   can still be set  with ``convert_with`` set to ``yt-dlp``.
-
 
 ----------------------------------------------------------------------------------------------------
 
@@ -472,7 +453,6 @@ with a ``.nfo`` extension. You can add any values into the NFO.
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-
 ``kodi_safe``
 
 :expected type: OverridesBooleanFormatterValidator
@@ -481,13 +461,11 @@ with a ``.nfo`` extension. You can add any values into the NFO.
   emojis and some foreign language characters. Setting this to True will replace those
   characters with '□'.
 
-
 ``nfo_name``
 
 :expected type: EntryFormatter
 :description:
   The NFO file name.
-
 
 ``nfo_root``
 
@@ -500,7 +478,6 @@ with a ``.nfo`` extension. You can add any values into the NFO.
      <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
      <episodedetails>
      </episodedetails>
-
 
 ``tags``
 
@@ -538,7 +515,6 @@ with a ``.nfo`` extension. You can add any values into the NFO.
      <genre>Comedy</genre>
      <genre>Drama</genre>
 
-
 ----------------------------------------------------------------------------------------------------
 
 output_directory_nfo_tags
@@ -570,7 +546,6 @@ Usage:
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-
 ``kodi_safe``
 
 :expected type: OverridesBooleanFormatterValidator
@@ -579,13 +554,11 @@ Usage:
   emojis and some foreign language characters. Setting this to True will replace those
   characters with '□'.
 
-
 ``nfo_name``
 
 :expected type: EntryFormatter
 :description:
   The NFO file name.
-
 
 ``nfo_root``
 
@@ -598,7 +571,6 @@ Usage:
      <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
      <tvshow>
      </tvshow>
-
 
 ``tags``
 
@@ -634,7 +606,6 @@ Usage:
      <genre>Comedy</genre>
      <genre>Drama</genre>
 
-
 ----------------------------------------------------------------------------------------------------
 
 output_options
@@ -669,14 +640,12 @@ Defines where to output files and thumbnails after all post-processing has compl
   The file name to store a subscriptions download archive placed relative to
   the output directory. Defaults to ``.ytdl-sub-{subscription_name}-download-archive.json``
 
-
 ``file_name``
 
 :expected type: EntryFormatter
 :description:
   The file name for the media file. This can include directories such as
   ``"Season {upload_year}/{title}.{ext}"``, and will be placed in the output directory.
-
 
 ``info_json_name``
 
@@ -685,7 +654,6 @@ Defines where to output files and thumbnails after all post-processing has compl
   The file name for the media's info json file. This can include directories such
   as ``"Season {upload_year}/{title}.{info_json_ext}"``, and will be placed in the output
   directory. Can be set to empty string or `null` to disable info json writes.
-
 
 ``keep_files_after``
 
@@ -698,7 +666,6 @@ Defines where to output files and thumbnails after all post-processing has compl
   files after ``19000101``, which implies all files. Can be used in conjunction with
   ``keep_max_files``.
 
-
 ``keep_files_before``
 
 :expected type: Optional[OverridesFormatter]
@@ -710,7 +677,6 @@ Defines where to output files and thumbnails after all post-processing has compl
   files before ``now``, which implies all files. Can be used in conjunction with
   ``keep_max_files``.
 
-
 ``keep_files_date_eval``
 
 :expected type: str
@@ -720,7 +686,6 @@ Defines where to output files and thumbnails after all post-processing has compl
     perform evaluation for keep_files_before/after and keep_max_files. Defaults
     to the entry's upload_date_standardized variable.
 
-
 ``keep_max_files``
 
 :expected type: Optional[OverridesFormatter]
@@ -729,7 +694,6 @@ Defines where to output files and thumbnails after all post-processing has compl
 
   Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
   applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
-
 
 ``maintain_download_archive``
 
@@ -745,7 +709,6 @@ Defines where to output files and thumbnails after all post-processing has compl
 
   Defaults to False.
 
-
 ``migrated_download_archive_name``
 
 :expected type: Optional[OverridesFormatter]
@@ -755,13 +718,11 @@ Defines where to output files and thumbnails after all post-processing has compl
   name first, and fallback to ``download_archive_name``. It will always save to this file
   and remove the original ``download_archive_name``.
 
-
 ``output_directory``
 
 :expected type: OverridesFormatter
 :description:
   The output directory to store all media files downloaded.
-
 
 ``preserve_mtime``
 
@@ -771,7 +732,6 @@ Defines where to output files and thumbnails after all post-processing has compl
   When True, sets the file's mtime to match the video's upload_date from
   yt-dlp metadata. Defaults to False.
 
-
 ``thumbnail_name``
 
 :expected type: Optional[EntryFormatter]
@@ -779,7 +739,6 @@ Defines where to output files and thumbnails after all post-processing has compl
   The file name for the media's thumbnail image. This can include directories such
   as ``"Season {upload_year}/{title}.{thumbnail_ext}"``, and will be placed in the output
   directory. Can be set to empty string or `null` to disable thumbnail writes.
-
 
 ----------------------------------------------------------------------------------------------------
 
@@ -845,7 +804,6 @@ used with no modifications.
   If a file has no chapters and is set to "pass", then ``chapter_title`` is
   set to the entry's title and ``chapter_index``, ``chapter_count`` are both set to 1.
 
-
 ----------------------------------------------------------------------------------------------------
 
 square_thumbnail
@@ -892,7 +850,6 @@ Usage:
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-
 ``kodi_safe``
 
 :expected type: OverridesBooleanFormatterValidator
@@ -901,13 +858,11 @@ Usage:
   emojis and some foreign language characters. Setting this to True will replace those
   characters with '□'.
 
-
 ``nfo_name``
 
 :expected type: EntryFormatter
 :description:
   The NFO file name.
-
 
 ``nfo_root``
 
@@ -921,7 +876,6 @@ Usage:
      <season>
      </season>
 
-
 ``tags``
 
 :expected type: NfoTags
@@ -934,7 +888,6 @@ Usage:
      <season>
        <title>My custom season name!</title>
      </season>
-
 
 ----------------------------------------------------------------------------------------------------
 
@@ -963,14 +916,12 @@ It will set the respective language to the correct subtitle file.
 :description:
   Defaults to False. Whether to allow auto generated subtitles.
 
-
 ``embed_subtitles``
 
 :expected type: Optional[Boolean]
 :description:
   Defaults to False. Whether to embed the subtitles into the video file. Note that
   webm files can only embed "vtt" subtitle types.
-
 
 ``enable``
 
@@ -980,7 +931,6 @@ It will set the respective language to the correct subtitle file.
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-
 ``languages``
 
 :expected type: Optional[List[String]]
@@ -988,14 +938,12 @@ It will set the respective language to the correct subtitle file.
   Language code(s) to download for subtitles. Supports a single or list of multiple
   language codes. Defaults to only "en".
 
-
 ``languages_required``
 
 :expected type: Optional[List[String]]
 :description:
   Language code(s) that are required to be present for downloads to continue. If missing,
   ytdl-sub will throw an error. NOTE: currently this only checks file-based subtitles.
-
 
 ``subtitles_name``
 
@@ -1006,13 +954,11 @@ It will set the respective language to the correct subtitle file.
   and will be placed in the output directory. ``lang`` is dynamic since you can download
   multiple subtitles. It will set the respective language to the correct subtitle file.
 
-
 ``subtitles_type``
 
 :expected type: Optional[String]
 :description:
   Defaults to "srt". One of the subtitle file types "srt", "vtt", "ass", "lrc".
-
 
 ----------------------------------------------------------------------------------------------------
 
@@ -1054,13 +1000,11 @@ Range min and max values support static override variables within their definiti
   this field can be set using an override variable to easily toggle whether this plugin
   is enabled or not via Boolean.
 
-
 ``max_downloads_per_subscription``
 
 :expected type: Optional[Range]
 :description:
   Number of downloads to perform per subscription.
-
 
 ``sleep_per_download_s``
 
@@ -1068,7 +1012,6 @@ Range min and max values support static override variables within their definiti
 :description:
   Number in seconds to sleep between each download. Does not include time it takes for
   ytdl-sub to perform post-processing.
-
 
 ``sleep_per_request_s``
 
@@ -1079,13 +1022,11 @@ Range min and max values support static override variables within their definiti
   download for the entry. Also, yt-dlp only supports a single value at this time for this,
   so will always use the max value.
 
-
 ``sleep_per_subscription_s``
 
 :expected type: Optional[Range]
 :description:
   Number in seconds to sleep between each subscription.
-
 
 ``subscription_download_probability``
 
@@ -1094,7 +1035,6 @@ Range min and max values support static override variables within their definiti
   Probability to perform any downloads, recomputed for each subscription. This is only
   recommended to set if you run ytdl-sub in a cron-job, that way you are statistically
   guaranteed over time to eventually download the subscription.
-
 
 ----------------------------------------------------------------------------------------------------
 

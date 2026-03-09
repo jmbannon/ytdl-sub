@@ -1,13 +1,6 @@
 import copy
 from abc import ABC
-from typing import Any
-from typing import Dict
-from typing import Generic
-from typing import List
-from typing import Optional
-from typing import Type
-from typing import TypeVar
-from typing import final
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, final
 
 from ytdl_sub.utils.exceptions import ValidationException
 
@@ -173,7 +166,7 @@ class ListValidator(Validator, ABC, Generic[ValidatorT]):
 
         super().__init__(name, value)
         self._list: List[ValidatorT] = [
-            self._inner_list_type(name=f"{name}.{i+1}", value=val)
+            self._inner_list_type(name=f"{name}.{i + 1}", value=val)
             for i, val in enumerate(self._value)
         ]
 

@@ -1,33 +1,29 @@
 import contextlib
 import os
 from pathlib import Path
-from typing import Dict
-from typing import Iterable
-from typing import Iterator
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from typing import Dict, Iterable, Iterator, List, Optional, Set, Tuple
 
 from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.downloaders.source_plugin import SourcePlugin
-from ytdl_sub.downloaders.source_plugin import SourcePluginExtension
-from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.downloaders.url.validators import UrlThumbnailListValidator
-from ytdl_sub.downloaders.url.validators import UrlValidator
+from ytdl_sub.downloaders.source_plugin import SourcePlugin, SourcePluginExtension
+from ytdl_sub.downloaders.url.validators import (
+    MultiUrlValidator,
+    UrlThumbnailListValidator,
+    UrlValidator,
+)
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.thumbnail import ThumbnailTypes
-from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
-from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
+from ytdl_sub.utils.thumbnail import (
+    ThumbnailTypes,
+    download_and_convert_url_thumbnail,
+    try_convert_download_thumbnail,
+)
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 v: VariableDefinitions = VARIABLES
@@ -52,12 +48,12 @@ class UrlDownloaderBasePluginExtension(SourcePluginExtension[MultiUrlValidator])
 
         if 0 <= input_url_idx < len(self.plugin_options.urls.list):
             validator = self.plugin_options.urls.list[input_url_idx]
-            if entry_input_url in self.overrides.apply_overrides_formatter_to_native(validator.url):
+            if entry_input_url in self.overrides.apply_formatter(validator.url, expected_type=list):
                 return validator
 
         # Match the first validator based on the URL, if one exists
         for validator in self.plugin_options.urls.list:
-            if entry_input_url in self.overrides.apply_overrides_formatter_to_native(validator.url):
+            if entry_input_url in self.overrides.apply_formatter(validator.url, expected_type=list):
                 return validator
 
         # Return the first validator if none exist
@@ -97,7 +93,6 @@ class UrlDownloaderThumbnailPlugin(UrlDownloaderBasePluginExtension):
 
             # If latest entry, always update the thumbnail on each entry
             if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
-
                 # always save in dry-run even if it doesn't exist...
                 if self.is_dry_run or entry.is_thumbnail_downloaded():
                     self.save_file(
@@ -382,7 +377,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         entries_to_iter: List[Optional[Entry]] = entries
 
         indices = list(range(len(entries_to_iter)))
-        if self.overrides.evaluate_boolean(validator.download_reverse):
+        if self.overrides.apply_formatter(validator.download_reverse, expected_type=bool):
             indices = reversed(indices)
 
         for idx in indices:
@@ -461,8 +456,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             ytdl_option_overrides=validator.ytdl_options.to_native_dict(self.overrides)
         )
 
-        include_sibling_metadata = self.overrides.evaluate_boolean(
-            validator.include_sibling_metadata
+        include_sibling_metadata = self.overrides.apply_formatter(
+            validator.include_sibling_metadata, expected_type=bool
         )
 
         parents, orphan_entries = self._download_url_metadata(
@@ -487,10 +482,8 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         # download the bottom-most urls first since they are top-priority
         for idx, url_validator in reversed(list(enumerate(self.collection.urls.list))):
             # URLs can be empty. If they are, then skip
-            if not (urls := self.overrides.apply_overrides_formatter_to_native(url_validator.url)):
+            if not (urls := self.overrides.apply_formatter(url_validator.url, expected_type=list)):
                 continue
-
-            assert isinstance(urls, list)
 
             for url in reversed(urls):
                 assert isinstance(url, str)

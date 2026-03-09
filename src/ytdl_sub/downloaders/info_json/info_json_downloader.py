@@ -1,24 +1,24 @@
 import copy
 import json
 from pathlib import Path
-from typing import Dict
-from typing import Iterable
-from typing import List
-from typing import Optional
+from typing import Dict, Iterable, List, Optional
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLE_SCRIPTS
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import (
+    VARIABLE_SCRIPTS,
+    VARIABLES,
+    VariableDefinitions,
+)
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import get_file_extension
-from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping
-from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+from ytdl_sub.utils.file_handler import FileHandler, get_file_extension
+from ytdl_sub.ytdl_additions.enhanced_download_archive import (
+    DownloadMapping,
+    EnhancedDownloadArchive,
+)
 
 v: VariableDefinitions = VARIABLES
 

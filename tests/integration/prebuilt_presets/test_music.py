@@ -10,7 +10,6 @@ from ytdl_sub.subscriptions.subscription import Subscription
 @pytest.mark.usefixtures(mock_chapters_class.__name__)
 @pytest.mark.parametrize("music_preset", MusicPresets.preset_names)
 class TestPrebuiltMusicPresets:
-
     def test_presets_run(
         self,
         config,

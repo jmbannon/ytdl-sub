@@ -1,12 +1,8 @@
 from dataclasses import dataclass
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Dict, List, Optional
 
 from ytdl_sub.script.types.function import BuiltInFunction
-from ytdl_sub.script.types.resolvable import Argument
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Argument, Resolvable, String
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 
@@ -54,6 +50,10 @@ class SyntaxTree(VariableDependency):
             unresolved_variables=unresolved_variables,
             custom_functions=custom_functions,
         )
+
+        # If no arguments, must be empty string
+        if len(maybe_resolvable_values) == 0:
+            return String(value="")
 
         # Mimic the above resolve behavior
         if len(maybe_resolvable_values) > 1:

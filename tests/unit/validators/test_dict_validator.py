@@ -1,10 +1,12 @@
 import pytest
 
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.validators.validators import BoolValidator
-from ytdl_sub.validators.validators import DictValidator
-from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import StringValidator
+from ytdl_sub.validators.validators import (
+    BoolValidator,
+    DictValidator,
+    LiteralDictValidator,
+    StringValidator,
+)
 
 
 class TestDictValidator:

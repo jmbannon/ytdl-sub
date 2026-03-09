@@ -5,22 +5,14 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
+from typing import Any, Dict, List, Optional, Set
 
 from yt_dlp import DateRange
 from yt_dlp.utils import make_archive_id
 
-from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.entry import ytdl_sub_split_by_chapters_parent_uid
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
-from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
-from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.entries.entry import Entry, ytdl_sub_split_by_chapters_parent_uid
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
+from ytdl_sub.utils.file_handler import FileHandler, FileHandlerTransactionLog, FileMetadata
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get("archive")

@@ -1,8 +1,7 @@
 import re
 
 from ytdl_sub.script.functions import Functions
-from ytdl_sub.script.utils.exceptions import InvalidFunctionName
-from ytdl_sub.script.utils.exceptions import InvalidVariableName
+from ytdl_sub.script.utils.exceptions import InvalidFunctionName, InvalidVariableName
 
 _NAME_REGEX_VALIDATOR = re.compile(r"^[a-z][a-z0-9_]*$")
 

@@ -17,7 +17,6 @@ def filter_subscription_dict(output_directory):
 
 
 class TestFilterKeywords:
-
     def test_no_overrides(
         self,
         config,
@@ -40,7 +39,7 @@ class TestFilterKeywords:
         assert_transaction_log_matches(
             output_directory=output_directory,
             transaction_log=transaction_log,
-            transaction_log_summary_file_name=f"integration/prebuilt_presets/filter_keywords_empty.txt",
+            transaction_log_summary_file_name="integration/prebuilt_presets/filter_keywords_empty.txt",
         )
 
     @pytest.mark.parametrize(
@@ -81,7 +80,7 @@ class TestFilterKeywords:
             assert_transaction_log_matches(
                 output_directory=output_directory,
                 transaction_log=transaction_log,
-                transaction_log_summary_file_name=f"integration/prebuilt_presets/filter_duration.txt",
+                transaction_log_summary_file_name="integration/prebuilt_presets/filter_duration.txt",
             )
 
     @pytest.mark.parametrize(
@@ -106,6 +105,6 @@ class TestFilterKeywords:
 
         with (
             mock_download_collection_entries(is_youtube_channel=False, num_urls=1, is_dry_run=True),
-            pytest.raises(UserThrownRuntimeError, match=f"filter_duration args must be numeric"),
+            pytest.raises(UserThrownRuntimeError, match="filter_duration args must be numeric"),
         ):
             _ = subscription.download(dry_run=True)

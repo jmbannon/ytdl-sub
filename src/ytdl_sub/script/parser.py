@@ -1,39 +1,31 @@
 import json
 from enum import Enum
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
+from typing import Dict, List, Optional, Set
 
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.types.array import UnresolvedArray
-from ytdl_sub.script.types.function import Argument
-from ytdl_sub.script.types.function import BuiltInFunction
-from ytdl_sub.script.types.function import CustomFunction
-from ytdl_sub.script.types.function import Function
+from ytdl_sub.script.types.function import Argument, BuiltInFunction, CustomFunction, Function
 from ytdl_sub.script.types.map import UnresolvedMap
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import NonHashable
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Boolean, Float, Integer, Lambda, NonHashable, String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
-from ytdl_sub.script.types.variable import FunctionArgument
-from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.variable import FunctionArgument, Variable
 from ytdl_sub.script.utils.exception_formatters import ParserExceptionFormatter
-from ytdl_sub.script.utils.exceptions import UNREACHABLE
-from ytdl_sub.script.utils.exceptions import CycleDetected
-from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
-from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
-from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArgumentName
-from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
-from ytdl_sub.script.utils.exceptions import InvalidVariableName
-from ytdl_sub.script.utils.exceptions import UserException
-from ytdl_sub.script.utils.exceptions import VariableDoesNotExist
-from ytdl_sub.script.utils.name_validation import is_function
-from ytdl_sub.script.utils.name_validation import to_function_name
-from ytdl_sub.script.utils.name_validation import validate_variable_name
+from ytdl_sub.script.utils.exceptions import (
+    UNREACHABLE,
+    CycleDetected,
+    FunctionDoesNotExist,
+    IncompatibleFunctionArguments,
+    InvalidCustomFunctionArgumentName,
+    InvalidSyntaxException,
+    InvalidVariableName,
+    UserException,
+    VariableDoesNotExist,
+)
+from ytdl_sub.script.utils.name_validation import (
+    is_function,
+    to_function_name,
+    validate_variable_name,
+)
 
 # pylint: disable=invalid-name
 # pylint: disable=too-many-branches
@@ -580,7 +572,6 @@ class _Parser:
         return True
 
     def _parse(self) -> SyntaxTree:
-
         while ch := self._read():
             continue_parse = self._parse_main_loop(ch)
             if not continue_parse:

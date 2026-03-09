@@ -7,7 +7,6 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 class TestTvShowCollectionPreset:
-
     def test_url_error_thrown(self, default_config):
         with pytest.raises(
             UserThrownRuntimeError,
@@ -57,12 +56,13 @@ class TestTvShowCollectionPreset:
 
                 # is_bilateral
                 if i == 0:
-                    url = sub.overrides.apply_overrides_formatter_to_native(
+                    url = sub.overrides.apply_formatter(
                         url_list[itr].url,
                         function_overrides={
                             # mock so bilateral url gets enabled
                             "subscription_has_download_archive": "True"
                         },
+                        expected_type=list,
                     )
                     assert url == [
                         f"youtube.com/playlist?url_{season_num}_{i}"
@@ -81,12 +81,13 @@ class TestTvShowCollectionPreset:
                 # not bilateral
                 else:
                     for j in range(2):
-                        url = sub.overrides.apply_overrides_formatter_to_native(
+                        url = sub.overrides.apply_formatter(
                             url_list[itr + j].url,
                             function_overrides={
                                 # mock so bilateral url gets enabled
                                 "subscription_has_download_archive": "True"
                             },
+                            expected_type=list,
                         )
 
                         # First instance is the first url to get thumbnails

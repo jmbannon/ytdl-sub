@@ -1,7 +1,4 @@
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from typing import List, Optional, Set, Tuple
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
@@ -116,7 +113,7 @@ class DateRangePlugin(Plugin[DateRangeOptions]):
                 date_validator=self.plugin_options.after, overrides=self.overrides
             )
             after_filter = f"{date_type} >= {after_str}"
-            if self.overrides.evaluate_boolean(self.plugin_options.breaks):
+            if self.overrides.apply_formatter(self.plugin_options.breaks, expected_type=bool):
                 breaking_match_filters.append(after_filter)
             else:
                 match_filters.append(after_filter)

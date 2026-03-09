@@ -1,6 +1,5 @@
 import os
-from typing import Any
-from typing import Dict
+from typing import Any, Dict
 
 from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.preset import Preset

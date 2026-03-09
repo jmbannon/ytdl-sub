@@ -1,18 +1,21 @@
-from typing import Dict
-from typing import Optional
+from typing import Dict, Optional
 
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.map import Map
-from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Hashable
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import LambdaThree
-from ytdl_sub.script.types.resolvable import LambdaTwo
-from ytdl_sub.script.types.resolvable import String
-from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
-from ytdl_sub.script.utils.exceptions import KeyDoesNotExistRuntimeException
-from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
+from ytdl_sub.script.types.resolvable import (
+    AnyArgument,
+    Boolean,
+    Hashable,
+    Integer,
+    LambdaThree,
+    LambdaTwo,
+    String,
+)
+from ytdl_sub.script.utils.exceptions import (
+    FunctionRuntimeException,
+    KeyDoesNotExistRuntimeException,
+    KeyNotHashableRuntimeException,
+)
 
 
 class MapFunctions:
