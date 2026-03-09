@@ -28,7 +28,6 @@ VALID_ORDERING_COMBOS = [
 
 
 class TestPrebuiltTVShowPresets:
-
     @staticmethod
     def run(
         config: ConfigFile,
@@ -40,7 +39,6 @@ class TestPrebuiltTVShowPresets:
         is_youtube_channel: bool = True,
         is_many_urls: bool = False,
     ):
-
         expected_summary_name = "integration/by-date/{}/{}/{}/is_yt_{}{}".format(
             tv_show_preset.split(" ")[0],
             season_ordering,
@@ -136,7 +134,6 @@ class TestPrebuiltTVShowPresets:
         mock_download_collection_entries,
         tv_show_preset: str,
     ):
-
         with mock_download_collection_entries(is_youtube_channel=True):
             self.run(
                 config=config,
@@ -160,7 +157,6 @@ class TestPrebuiltTVShowPresets:
         season_ordering: str,
         episode_ordering: str,
     ):
-
         with mock_download_collection_entries(
             is_youtube_channel=True,
         ):

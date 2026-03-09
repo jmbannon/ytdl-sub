@@ -1,8 +1,6 @@
 import subprocess
 import tempfile
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Dict, List, Optional
 
 from ytdl_sub.utils.chapters import Chapters
 from ytdl_sub.utils.exceptions import ValidationException

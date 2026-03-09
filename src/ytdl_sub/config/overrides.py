@@ -1,29 +1,28 @@
-from typing import Any
-from typing import Dict
-from typing import Iterable
-from typing import Optional
-from typing import Set
-from typing import Type
-from typing import TypeVar
+from typing import Any, Dict, Iterable, Optional, Set, Type, TypeVar
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.variables.override_variables import REQUIRED_OVERRIDE_VARIABLE_NAMES
-from ytdl_sub.entries.variables.override_variables import OverrideHelpers
+from ytdl_sub.entries.variables.override_variables import (
+    REQUIRED_OVERRIDE_VARIABLE_NAMES,
+    OverrideHelpers,
+)
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.function import BuiltInFunction
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Resolvable, String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
-from ytdl_sub.utils.exceptions import InvalidVariableNameException
-from ytdl_sub.utils.exceptions import StringFormattingException
-from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.exceptions import (
+    InvalidVariableNameException,
+    StringFormattingException,
+    ValidationException,
+)
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    StringFormatterValidator,
+    UnstructuredDictFormatterValidator,
+)
 
 ExpectedT = TypeVar("ExpectedT")
 

@@ -1,6 +1,5 @@
 import re
-from typing import Any
-from typing import Dict
+from typing import Any, Dict
 
 import pytest
 from conftest import get_match_filters
@@ -73,7 +72,7 @@ class TestDateRange:
             subscription=sub, dry_run=False, download_filters=False
         )
         assert metadata_filter == [
-            f"!is_live & !is_upcoming & !post_live & upload_date < 20250530 & upload_date >= 20250510"
+            "!is_live & !is_upcoming & !post_live & upload_date < 20250530 & upload_date >= 20250510"
         ]
         assert not metadata_breaking_filter
 

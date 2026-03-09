@@ -1,7 +1,4 @@
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from typing import List, Optional, Set, Tuple
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator

@@ -12,16 +12,15 @@ from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.logger import LoggerLevels
+from ytdl_sub.utils.logger import Logger, LoggerLevels
 
 
 @pytest.fixture
 def expected_uncaught_error_message():
     return (
-        f"Version %s\nPlease upload the error log file '%s' and make a "
-        f"Github issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
-        f"command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!"
+        "Version %s\nPlease upload the error log file '%s' and make a "
+        "Github issue at https://github.com/jmbannon/ytdl-sub/issues with your config and "
+        "command/subscription yaml file to reproduce. Thanks for trying ytdl-sub!"
     )
 
 

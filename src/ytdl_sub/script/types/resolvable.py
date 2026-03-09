@@ -1,12 +1,7 @@
 import json
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
-from typing import Generic
-from typing import List
-from typing import Type
-from typing import TypeVar
+from typing import Any, Generic, List, Type, TypeVar
 
 T = TypeVar("T")
 NumericT = TypeVar("NumericT", bound=int | float)

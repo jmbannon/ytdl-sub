@@ -8,7 +8,6 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 class TestTvShowByDatePreset:
-
     def test_s01_error_thrown(self, default_config):
         with pytest.raises(
             UserThrownRuntimeError,

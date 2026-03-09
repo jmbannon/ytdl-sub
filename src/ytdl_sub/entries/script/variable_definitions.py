@@ -1,21 +1,21 @@
 from abc import ABC
-from functools import cache
-from functools import cached_property
-from typing import Dict
-from typing import Set
+from functools import cache, cached_property
+from typing import Dict, Set
 
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
-from ytdl_sub.entries.script.variable_types import ArrayMetadataVariable
-from ytdl_sub.entries.script.variable_types import IntegerMetadataVariable
-from ytdl_sub.entries.script.variable_types import IntegerVariable
-from ytdl_sub.entries.script.variable_types import MapMetadataVariable
-from ytdl_sub.entries.script.variable_types import MapVariable
-from ytdl_sub.entries.script.variable_types import MetadataVariable
-from ytdl_sub.entries.script.variable_types import StringDateMetadataVariable
-from ytdl_sub.entries.script.variable_types import StringDateVariable
-from ytdl_sub.entries.script.variable_types import StringMetadataVariable
-from ytdl_sub.entries.script.variable_types import StringVariable
-from ytdl_sub.entries.script.variable_types import Variable
+from ytdl_sub.entries.script.variable_types import (
+    ArrayMetadataVariable,
+    IntegerMetadataVariable,
+    IntegerVariable,
+    MapMetadataVariable,
+    MapVariable,
+    MetadataVariable,
+    StringDateMetadataVariable,
+    StringDateVariable,
+    StringMetadataVariable,
+    StringVariable,
+    Variable,
+)
 
 # This file contains mixins to a BaseEntry subclass. Ignore pylint's "no kwargs member" suggestion
 # pylint: disable=no-member

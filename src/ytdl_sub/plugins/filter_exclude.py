@@ -1,5 +1,4 @@
-from typing import Dict
-from typing import Optional
+from typing import Dict, Optional
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import Plugin

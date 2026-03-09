@@ -1,9 +1,11 @@
 from typing import Union
 
-from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import ReturnableArgumentA
-from ytdl_sub.script.types.resolvable import ReturnableArgumentB
+from ytdl_sub.script.types.resolvable import (
+    AnyArgument,
+    Boolean,
+    ReturnableArgumentA,
+    ReturnableArgumentB,
+)
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 
 

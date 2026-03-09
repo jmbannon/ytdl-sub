@@ -1,22 +1,12 @@
 import json
 import re
-from typing import Any
-from typing import Dict
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from ytdl_sub.script.parser import parse
-from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.array import UnresolvedArray
-from ytdl_sub.script.types.function import BuiltInFunction
-from ytdl_sub.script.types.function import Function
-from ytdl_sub.script.types.map import Map
-from ytdl_sub.script.types.map import UnresolvedMap
-from ytdl_sub.script.types.resolvable import Argument
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.array import Array, UnresolvedArray
+from ytdl_sub.script.types.function import BuiltInFunction, Function
+from ytdl_sub.script.types.map import Map, UnresolvedMap
+from ytdl_sub.script.types.resolvable import Argument, Boolean, Float, Integer, Lambda, String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
@@ -177,7 +167,6 @@ class ScriptUtils:
 
     @classmethod
     def _syntax_tree_to_native_script(cls, tree: SyntaxTree) -> str:
-
         if (output := cls._is_top_level_string(tree)) is not None:
             return output
 

@@ -1,20 +1,15 @@
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from functools import cached_property
-from typing import Dict
-from typing import Generic
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Type
+from typing import Dict, Generic, List, Optional, Tuple, Type
 
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.config.validators.options import OptionsValidatorT
-from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
+from ytdl_sub.config.validators.options import OptionsValidatorT, ToggleableOptionsDictValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadArchiver
-from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
+from ytdl_sub.ytdl_additions.enhanced_download_archive import (
+    DownloadArchiver,
+    EnhancedDownloadArchive,
+)
 
 # pylint: disable=unused-argument
 

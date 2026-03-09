@@ -1,32 +1,28 @@
 # pylint: disable=missing-raises-doc
 from collections import defaultdict
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
+from typing import Dict, List, Optional, Set
 
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script_output import ScriptOutput
-from ytdl_sub.script.types.resolvable import Argument
-from ytdl_sub.script.types.resolvable import BuiltInFunctionType
-from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.syntax_tree import ResolvedSyntaxTree
-from ytdl_sub.script.types.syntax_tree import SyntaxTree
-from ytdl_sub.script.types.variable import FunctionArgument
-from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.resolvable import Argument, BuiltInFunctionType, Lambda, Resolvable
+from ytdl_sub.script.types.syntax_tree import ResolvedSyntaxTree, SyntaxTree
+from ytdl_sub.script.types.variable import FunctionArgument, Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
-from ytdl_sub.script.utils.exceptions import UNREACHABLE
-from ytdl_sub.script.utils.exceptions import CycleDetected
-from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
-from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
-from ytdl_sub.script.utils.exceptions import RuntimeException
-from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
-from ytdl_sub.script.utils.name_validation import is_function
-from ytdl_sub.script.utils.name_validation import to_function_definition_name
-from ytdl_sub.script.utils.name_validation import to_function_name
-from ytdl_sub.script.utils.name_validation import validate_variable_name
+from ytdl_sub.script.utils.exceptions import (
+    UNREACHABLE,
+    CycleDetected,
+    IncompatibleFunctionArguments,
+    InvalidCustomFunctionArguments,
+    RuntimeException,
+    ScriptVariableNotResolved,
+)
+from ytdl_sub.script.utils.name_validation import (
+    is_function,
+    to_function_definition_name,
+    to_function_name,
+    validate_variable_name,
+)
 from ytdl_sub.script.utils.type_checking import FunctionSpec
 
 
@@ -737,7 +733,6 @@ class Script:
 
         partially_resolved = True
         while partially_resolved:
-
             partially_resolved = False
 
             for variable in list(to_partially_resolve):

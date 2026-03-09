@@ -1,16 +1,15 @@
 from pathlib import Path
-from typing import Any
-from typing import Dict
-from typing import Type
+from typing import Any, Dict, Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import cached_properties
-from tools.docgen.utils import camel_case_to_human
-from tools.docgen.utils import get_function_docs
-from tools.docgen.utils import line_section
-from tools.docgen.utils import section
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from tools.docgen.utils import (
+    cached_properties,
+    camel_case_to_human,
+    get_function_docs,
+    line_section,
+    section,
+)
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 
 
 def _variable_class_to_name(obj: Type[Any]) -> str:
@@ -23,7 +22,6 @@ def _variable_class_to_name(obj: Type[Any]) -> str:
 
 
 class EntryVariablesDocGen(DocGen):
-
     LOCATION = Path("docs/source/config_reference/scripting/entry_variables.rst")
     DOCSTRING_LOCATION = "src/ytdl_sub/entries/script/variable_definitions.py"
 

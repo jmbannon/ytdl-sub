@@ -1,6 +1,5 @@
 import re
-from typing import Any
-from typing import Dict
+from typing import Any, Dict
 
 import pytest
 import yt_dlp
@@ -23,7 +22,6 @@ def preset_dict(output_directory) -> Dict[str, Any]:
 
 
 class TestYtdlOptions:
-
     def test_ytdl_options_are_strings(
         self,
         default_config: ConfigFile,

@@ -1,14 +1,12 @@
 import pytest
-from yt_dlp.utils import sanitize_filename
 
-from ytdl_sub.utils.exceptions import StringFormattingException
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesDictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import UnstructuredDictFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import (
+    DictFormatterValidator,
+    OverridesDictFormatterValidator,
+    OverridesStringFormatterValidator,
+    StringFormatterValidator,
+    UnstructuredDictFormatterValidator,
     UnstructuredOverridesDictFormatterValidator,
 )
 

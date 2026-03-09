@@ -3,24 +3,20 @@ import inspect
 from dataclasses import dataclass
 from inspect import FullArgSpec
 from types import NoneType
-from typing import Callable
-from typing import List
-from typing import Optional
-from typing import Type
-from typing import TypeVar
-from typing import Union
-from typing import get_origin
+from typing import Callable, List, Optional, Type, TypeVar, Union, get_origin
 
-from ytdl_sub.script.types.resolvable import Argument
-from ytdl_sub.script.types.resolvable import BuiltInFunctionType
-from ytdl_sub.script.types.resolvable import FutureResolvable
-from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import LambdaReduce
-from ytdl_sub.script.types.resolvable import LambdaThree
-from ytdl_sub.script.types.resolvable import LambdaTwo
-from ytdl_sub.script.types.resolvable import NamedCustomFunction
-from ytdl_sub.script.types.resolvable import NamedType
-from ytdl_sub.script.types.resolvable import Resolvable
+from ytdl_sub.script.types.resolvable import (
+    Argument,
+    BuiltInFunctionType,
+    FutureResolvable,
+    Lambda,
+    LambdaReduce,
+    LambdaThree,
+    LambdaTwo,
+    NamedCustomFunction,
+    NamedType,
+    Resolvable,
+)
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 

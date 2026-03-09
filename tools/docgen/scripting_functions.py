@@ -1,15 +1,9 @@
 import inspect
 from pathlib import Path
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Type
+from typing import Any, Dict, Optional, Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import camel_case_to_human
-from tools.docgen.utils import line_section
-from tools.docgen.utils import section
-from tools.docgen.utils import static_methods
+from tools.docgen.utils import camel_case_to_human, line_section, section, static_methods
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
 from ytdl_sub.script.functions import Functions
 from ytdl_sub.script.utils.type_checking import FunctionSpec
@@ -54,7 +48,6 @@ def get_function_docstring(
 
 
 class ScriptingFunctionsDocGen(DocGen):
-
     LOCATION = Path("docs/source/config_reference/scripting/scripting_functions.rst")
     DOCSTRING_LOCATION = "The respective function files under src/ytdl_sub/script/functions/"
 

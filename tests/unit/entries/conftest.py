@@ -1,7 +1,6 @@
 import pytest
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 
 
 @pytest.fixture

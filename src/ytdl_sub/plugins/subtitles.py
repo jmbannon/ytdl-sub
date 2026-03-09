@@ -1,28 +1,21 @@
 import os
 from pathlib import Path
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
-from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.file_handler import FileHandler, FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
-from ytdl_sub.validators.validators import BoolValidator
-from ytdl_sub.validators.validators import StringListValidator
+from ytdl_sub.validators.validators import BoolValidator, StringListValidator
 
 v: VariableDefinitions = VARIABLES
 

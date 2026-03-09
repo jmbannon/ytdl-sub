@@ -2,24 +2,25 @@ import os
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
-from typing import Dict
-from typing import List
+from typing import Any, Dict, List
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import FileMetadata
-from ytdl_sub.utils.xml import XmlElement
-from ytdl_sub.utils.xml import to_max_3_byte_utf8_dict
-from ytdl_sub.utils.xml import to_max_3_byte_utf8_string
-from ytdl_sub.utils.xml import to_xml
+from ytdl_sub.utils.file_handler import FileHandler, FileMetadata
+from ytdl_sub.utils.xml import (
+    XmlElement,
+    to_max_3_byte_utf8_dict,
+    to_max_3_byte_utf8_string,
+    to_xml,
+)
 from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
 from ytdl_sub.validators.nfo_validators import NfoTagsValidator
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    DictFormatterValidator,
+    OverridesBooleanFormatterValidator,
+    StringFormatterValidator,
+)
 
 
 class SharedNfoTagsOptions(ToggleableOptionsDictValidator):

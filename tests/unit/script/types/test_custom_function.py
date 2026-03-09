@@ -8,11 +8,13 @@ from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.function import CustomFunction
 from ytdl_sub.script.types.resolvable import Integer
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
-from ytdl_sub.script.utils.exceptions import CycleDetected
-from ytdl_sub.script.utils.exceptions import FunctionDoesNotExist
-from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArgumentName
-from ytdl_sub.script.utils.exceptions import InvalidCustomFunctionArguments
-from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
+from ytdl_sub.script.utils.exceptions import (
+    CycleDetected,
+    FunctionDoesNotExist,
+    InvalidCustomFunctionArgumentName,
+    InvalidCustomFunctionArguments,
+    InvalidSyntaxException,
+)
 
 
 class TestCustomFunction:

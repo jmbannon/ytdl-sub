@@ -1,26 +1,27 @@
 import os
 import posixpath
-from typing import Any
-from typing import Dict
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from mergedeep import mergedeep
 from yt_dlp.utils import datetime_from_str
 
-from ytdl_sub.config.defaults import DEFAULT_FFMPEG_PATH
-from ytdl_sub.config.defaults import DEFAULT_FFPROBE_PATH
-from ytdl_sub.config.defaults import DEFAULT_LOCK_DIRECTORY
-from ytdl_sub.config.defaults import MAX_FILE_NAME_BYTES
+from ytdl_sub.config.defaults import (
+    DEFAULT_FFMPEG_PATH,
+    DEFAULT_FFPROBE_PATH,
+    DEFAULT_LOCK_DIRECTORY,
+    MAX_FILE_NAME_BYTES,
+)
 from ytdl_sub.prebuilt_presets import PREBUILT_PRESETS
 from ytdl_sub.utils.exceptions import SubscriptionPermissionError
 from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.validators.file_path_validators import FFmpegFileValidator
-from ytdl_sub.validators.file_path_validators import FFprobeFileValidator
+from ytdl_sub.validators.file_path_validators import FFmpegFileValidator, FFprobeFileValidator
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.validators import BoolValidator
-from ytdl_sub.validators.validators import IntValidator
-from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import StringValidator
+from ytdl_sub.validators.validators import (
+    BoolValidator,
+    IntValidator,
+    LiteralDictValidator,
+    StringValidator,
+)
 
 
 class ExperimentalValidator(StrictDictValidator):

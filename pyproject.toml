@@ -47,10 +47,8 @@ test = [
     "pytest-rerunfailures>=14,<17",
 ]
 lint = [
-    "black==24.10.0",
-    "isort==7.0.0",
     "pylint==4.0.1",
-    "ruff==0.14.0",
+    "ruff==0.15.5",
 ]
 docs = [
     "sphinx>=7,<10",
@@ -66,15 +64,6 @@ build = [
 ]
 [project.scripts]
 ytdl-sub = "ytdl_sub.main:main"
-
-[tool.isort]
-profile = "black"
-line_length = 100
-force_single_line = true
-
-[tool.black]
-line_length = 100
-target-version = ["py310"]
 
 [tool.pylint.MASTER]
 disable = [
@@ -111,7 +100,7 @@ indent-width = 4
 target-version = "py310"
 
 [tool.ruff.lint]
-extend-select = ["I", "PL"]
+extend-select = ["I"]
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

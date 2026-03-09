@@ -66,7 +66,7 @@ class TestRegexFunctions:
             match="no regex strings were captured for input string the string",
         ):
             single_variable_output(
-                f"""{{
+                """{
             %regex_capture_many(
                 "the string",
                 [
@@ -74,7 +74,7 @@ class TestRegexFunctions:
                     "not here either (.*)"
                 ]
             )
-        }}"""
+        }"""
             )
 
     def test_regex_capture_many_fails_unequal_capture_groups(self):
@@ -83,7 +83,7 @@ class TestRegexFunctions:
             match="regex_array elements must contain the same number of capture groups",
         ):
             single_variable_output(
-                f"""{{
+                """{
             %regex_capture_many(
                 "the string",
                 [
@@ -91,5 +91,5 @@ class TestRegexFunctions:
                     "(.*) not equal to 1 (.*)"
                 ]
             )
-        }}"""
+        }"""
             )

@@ -1,5 +1,4 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import mediafile
 
@@ -7,8 +6,7 @@ from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import FFMPEG
-from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.file_handler import FileHandler, FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
 from ytdl_sub.validators.string_formatter_validators import OverridesBooleanFormatterValidator

@@ -2,14 +2,15 @@ import re
 
 import pytest
 
-from ytdl_sub.script.parser import _UNEXPECTED_CHAR_ARGUMENT
-from ytdl_sub.script.parser import _UNEXPECTED_COMMA_ARGUMENT
-from ytdl_sub.script.parser import ParsedArgType
+from ytdl_sub.script.parser import (
+    _UNEXPECTED_CHAR_ARGUMENT,
+    _UNEXPECTED_COMMA_ARGUMENT,
+    ParsedArgType,
+)
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Float, String
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
@@ -97,7 +98,7 @@ class TestArray:
     @pytest.mark.parametrize(
         "array",
         [
-            "{]}" "{      ]}",
+            "{]}{      ]}",
             "{\n]}",
         ],
     )

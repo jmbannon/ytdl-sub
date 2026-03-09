@@ -1,15 +1,14 @@
 from abc import ABC
 from dataclasses import dataclass
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Type
+from typing import Any, Dict, List, Type
 
-from ytdl_sub.script.types.resolvable import Argument
-from ytdl_sub.script.types.resolvable import FutureResolvable
-from ytdl_sub.script.types.resolvable import NonHashable
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import ResolvableToJson
+from ytdl_sub.script.types.resolvable import (
+    Argument,
+    FutureResolvable,
+    NonHashable,
+    Resolvable,
+    ResolvableToJson,
+)
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 

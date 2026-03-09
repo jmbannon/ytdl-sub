@@ -53,7 +53,6 @@ def tv_show_collection_bilateral_dict(output_directory):
 
 @pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
 class TestBilateral:
-
     def test_tv_show_by_date_downloads_bilateral(
         self,
         tv_show_by_date_bilateral_dict: Dict,

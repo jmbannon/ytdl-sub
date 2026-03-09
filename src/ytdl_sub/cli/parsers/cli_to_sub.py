@@ -18,7 +18,6 @@ create_parser = yt_dlp.options.create_parser
 
 
 def parse_patched_options(opts):
-
     patched_parser = create_parser()
     patched_parser.defaults.update(
         {

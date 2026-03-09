@@ -6,8 +6,7 @@ from typing import Dict
 import yaml
 from yaml import YAMLError
 
-from ytdl_sub.utils.exceptions import FileNotFoundException
-from ytdl_sub.utils.exceptions import InvalidYamlException
+from ytdl_sub.utils.exceptions import FileNotFoundException, InvalidYamlException
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get(name="yaml")

@@ -1,22 +1,21 @@
 from collections import defaultdict
 from datetime import datetime
-from typing import Any
-from typing import Dict
-from typing import List
+from typing import Any, Dict, List
 
 import mediafile
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
-from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    ListFormatterValidator,
+    StringFormatterValidator,
+)
 
 v: VariableDefinitions = VARIABLES
 
@@ -147,8 +146,7 @@ class MusicTagsPlugin(Plugin[MusicTagsOptions]):
                 else:
                     if len(tag_value) > 1:
                         logger.warning(
-                            "Music tag '%s' does not support lists. "
-                            "Only setting the first element",
+                            "Music tag '%s' does not support lists. Only setting the first element",
                             tag_name,
                         )
                     setattr(audio_file, tag_name, tag_value[0])

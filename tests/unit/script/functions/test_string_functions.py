@@ -1,5 +1,4 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import pytest
 from unit.script.conftest import single_variable_output

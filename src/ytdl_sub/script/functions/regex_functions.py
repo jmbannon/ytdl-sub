@@ -1,15 +1,9 @@
 import re
-from typing import AnyStr
-from typing import List
-from typing import Match
-from typing import Optional
+from typing import AnyStr, List, Match, Optional
 
 from ytdl_sub.script.functions.array_functions import ArrayFunctions
 from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Boolean, Float, Integer, String
 from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
 
 

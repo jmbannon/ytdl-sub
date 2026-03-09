@@ -1,6 +1,4 @@
-from typing import Dict
-from typing import List
-from typing import Set
+from typing import Dict, List, Set
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
@@ -9,8 +7,7 @@ from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset_options import OutputOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.entries.script.variable_definitions import UNRESOLVED_VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_definitions import UNRESOLVED_VARIABLES, VARIABLES
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.utils.name_validation import is_function
 from ytdl_sub.utils.script import ScriptUtils
@@ -47,7 +44,6 @@ class ResolutionLevel:
 
 
 class VariableValidation:
-
     def _get_resolve_partial_filter(self) -> Set[str]:
         # Exclude sanitized variables from partial validation. This lessens the work
         # and prevents double-evaluation, which can lead to bad behavior like double-prints.

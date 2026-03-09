@@ -3,24 +3,15 @@ import copy
 import json
 import os
 from pathlib import Path
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Type
-from typing import TypeVar
-from typing import final
+from typing import Any, Dict, Optional, Type, TypeVar, final
 
 from ytdl_sub.entries.base_entry import BaseEntry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
-from ytdl_sub.entries.script.variable_types import ArrayVariable
-from ytdl_sub.entries.script.variable_types import StringVariable
-from ytdl_sub.entries.script.variable_types import Variable
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
+from ytdl_sub.entries.script.variable_types import ArrayVariable, StringVariable, Variable
 from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
 from ytdl_sub.utils.script import ScriptUtils
 from ytdl_sub.utils.scriptable import Scriptable
-from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS
-from ytdl_sub.validators.audo_codec_validator import VIDEO_CODEC_EXTS
+from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS, VIDEO_CODEC_EXTS
 
 v: VariableDefinitions = VARIABLES
 

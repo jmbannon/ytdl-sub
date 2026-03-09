@@ -1,11 +1,7 @@
 import contextlib
 import os
 from pathlib import Path
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Any, Callable, Dict, List, Optional
 from unittest.mock import patch
 
 import pytest
@@ -14,8 +10,7 @@ from resources import copy_file_fixture
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdlp import YTDLP
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 
 v: VariableDefinitions = VARIABLES

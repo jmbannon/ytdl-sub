@@ -6,15 +6,12 @@ from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
 from ytdl_sub.config.preset import Preset
-from ytdl_sub.config.preset_options import OutputOptions
-from ytdl_sub.config.preset_options import YTDLOptions
-from ytdl_sub.config.validators.variable_validation import ResolutionLevel
-from ytdl_sub.config.validators.variable_validation import VariableValidation
+from ytdl_sub.config.preset_options import OutputOptions, YTDLOptions
+from ytdl_sub.config.validators.variable_validation import ResolutionLevel, VariableValidation
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 from ytdl_sub.utils.exceptions import SubscriptionPermissionError
-from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
+from ytdl_sub.utils.file_handler import FileHandler, FileHandlerTransactionLog
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive

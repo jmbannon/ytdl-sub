@@ -1,7 +1,6 @@
 import pytest
 
-from ytdl_sub.utils.chapters import Chapters
-from ytdl_sub.utils.chapters import Timestamp
+from ytdl_sub.utils.chapters import Chapters, Timestamp
 
 
 class TestTimestamp:

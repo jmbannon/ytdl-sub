@@ -3,8 +3,7 @@ import re
 import pytest
 from unit.script.conftest import single_variable_output
 
-from ytdl_sub.script.parser import STRINGS_NOT_CLOSED
-from ytdl_sub.script.parser import STRINGS_ONLY_ARGS
+from ytdl_sub.script.parser import STRINGS_NOT_CLOSED, STRINGS_ONLY_ARGS
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.resolvable import String

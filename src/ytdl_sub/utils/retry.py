@@ -1,8 +1,5 @@
 from time import sleep
-from typing import Any
-from typing import Optional
-from typing import Tuple
-from typing import Type
+from typing import Any, Optional, Tuple, Type
 
 from ytdl_sub.utils.logger import Logger
 

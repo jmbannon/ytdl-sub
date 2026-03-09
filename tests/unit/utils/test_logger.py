@@ -3,8 +3,7 @@ import time
 
 import pytest
 
-from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.logger import LoggerLevels
+from ytdl_sub.utils.logger import Logger, LoggerLevels
 
 
 class TestLogger:

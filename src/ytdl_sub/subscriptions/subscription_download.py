@@ -4,15 +4,15 @@ import os
 import shutil
 from abc import ABC
 from pathlib import Path
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
-from ytdl_sub.config.plugin.plugin import Plugin
-from ytdl_sub.config.plugin.plugin import SplitPlugin
+from ytdl_sub.config.plugin.plugin import Plugin, SplitPlugin
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
-from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloader
-from ytdl_sub.downloaders.info_json.info_json_downloader import InfoJsonDownloaderOptions
+from ytdl_sub.downloaders.info_json.info_json_downloader import (
+    InfoJsonDownloader,
+    InfoJsonDownloaderOptions,
+)
 from ytdl_sub.downloaders.source_plugin import SourcePlugin
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
@@ -22,9 +22,7 @@ from ytdl_sub.subscriptions.base_subscription import BaseSubscription
 from ytdl_sub.subscriptions.subscription_ytdl_options import SubscriptionYTDLOptions
 from ytdl_sub.utils.datetime import to_date_range
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.file_handler import FileHandlerTransactionLog
-from ytdl_sub.utils.file_handler import FileMetadata
+from ytdl_sub.utils.file_handler import FileHandler, FileHandlerTransactionLog, FileMetadata
 from ytdl_sub.utils.logger import Logger
 
 logger: logging.Logger = Logger.get()

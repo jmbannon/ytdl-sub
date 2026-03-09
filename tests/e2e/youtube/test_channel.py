@@ -1,5 +1,4 @@
-from typing import Callable
-from typing import Dict
+from typing import Callable, Dict
 
 import pytest
 from expected_download import assert_expected_downloads

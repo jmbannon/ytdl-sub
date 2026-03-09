@@ -1,8 +1,7 @@
 import pytest
 
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.validators.regex_validator import RegexListValidator
-from ytdl_sub.validators.regex_validator import RegexValidator
+from ytdl_sub.validators.regex_validator import RegexListValidator, RegexValidator
 
 
 @pytest.mark.parametrize(

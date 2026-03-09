@@ -1,14 +1,11 @@
 from pathlib import Path
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import get_function_docs
-from tools.docgen.utils import section
-from tools.docgen.utils import static_methods
+from tools.docgen.utils import get_function_docs, section, static_methods
 from ytdl_sub.entries.variables.override_variables import SubscriptionVariables
 
 
 class StaticVariablesDocGen(DocGen):
-
     LOCATION = Path("docs/source/config_reference/scripting/static_variables.rst")
     DOCSTRING_LOCATION = "src/ytdl_sub/entries/variables/override_variables.py"
 

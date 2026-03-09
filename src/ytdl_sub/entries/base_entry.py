@@ -1,18 +1,11 @@
 # pylint: disable=protected-access
 from abc import ABC
 from pathlib import Path
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Type
-from typing import TypeVar
-from typing import final
+from typing import Any, Dict, Optional, Type, TypeVar, final
 
-from yt_dlp.utils import LazyList
-from yt_dlp.utils import sanitize_filename
+from yt_dlp.utils import LazyList, sanitize_filename
 
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 
 v: VariableDefinitions = VARIABLES
 
