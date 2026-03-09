@@ -55,6 +55,12 @@ class _PresetShell(StrictDictValidator):
 
 
 class Preset(_PresetShell):
+    """
+    Custom presets are defined in this section. Refer to the
+    :ref:`Getting Started Guide<guides/getting_started/first_config:Basic Configuration>`
+    on how to configure.
+    """
+
     @classmethod
     def preset_partial_validate(cls, config: ConfigValidator, name: str, value: Any) -> None:
         """
