@@ -1,14 +1,10 @@
 import shlex
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Callable, Dict, List, Optional
 
 import pytest
 
 from ytdl_sub.cli.parsers.dl import DownloadArgsParser
-from ytdl_sub.cli.parsers.main import MainArguments
-from ytdl_sub.cli.parsers.main import parser
+from ytdl_sub.cli.parsers.main import MainArguments, parser
 from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.utils.exceptions import InvalidDlArguments
 
@@ -164,7 +160,7 @@ class TestDownloadArgsParser:
 
         with pytest.raises(
             InvalidDlArguments,
-            match=f"Invalid dl argument --parameter.using.list: "
+            match="Invalid dl argument --parameter.using.list: "
             "Cannot specify an argument to be two different types",
         ):
             DownloadArgsParser(

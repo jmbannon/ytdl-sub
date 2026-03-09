@@ -201,7 +201,7 @@ class TestPreset:
         with pytest.raises(
             ValidationException,
             match=re.escape(
-                f"Override variable with name subtitles_ext cannot be used since"
+                "Override variable with name subtitles_ext cannot be used since"
                 " it is added by a plugin."
             ),
         ):

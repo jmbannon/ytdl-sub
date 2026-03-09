@@ -7,19 +7,12 @@ import shutil
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Union
+from typing import Any, Callable, Dict, List, Optional, Tuple
 from unittest.mock import patch
 
 import pytest
 from expected_download import _get_files_in_directory
-from resources import copy_file_fixture
-from resources import file_fixture_path
+from resources import copy_file_fixture, file_fixture_path
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.cli.entrypoint import main
@@ -28,8 +21,7 @@ from ytdl_sub.entries.script.custom_functions import CustomFunctions
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
 from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.logger import LoggerLevels
+from ytdl_sub.utils.logger import Logger, LoggerLevels
 from ytdl_sub.utils.yaml import load_yaml
 
 
@@ -121,9 +113,9 @@ def assert_logs(
         occurrences += int(expected_message in full_print)
 
     if expected_occurrences is not None:
-        assert (
-            occurrences == expected_occurrences
-        ), f"{expected_message} was expected {expected_occurrences} times, got {occurrences}"
+        assert occurrences == expected_occurrences, (
+            f"{expected_message} was expected {expected_occurrences} times, got {occurrences}"
+        )
     else:
         assert occurrences > 0, f"{expected_message} was not found in a logger.debug call"
 

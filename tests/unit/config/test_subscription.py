@@ -5,15 +5,11 @@ from typing import Dict
 from unittest.mock import patch
 
 import pytest
-import yaml
 
 from ytdl_sub.config.config_file import ConfigFile
-from ytdl_sub.config.validators.variable_validation import ResolutionLevel
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
 from ytdl_sub.plugins.nfo_tags import NfoTagsOptions
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ValidationException
-from ytdl_sub.utils.script import ScriptUtils
 
 
 @contextmanager
@@ -428,7 +424,7 @@ def test_subscription_file_invalid_form(config_file: ConfigFile):
         mock_load_yaml(preset_dict={"sub_name": 4332}),
         pytest.raises(
             ValidationException,
-            match=re.escape(f"Subscription value should either be a string, list, or object"),
+            match=re.escape("Subscription value should either be a string, list, or object"),
         ),
     ):
         _ = Subscription.from_file_path(config=config_file, subscription_path="mocked")

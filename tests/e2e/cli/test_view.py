@@ -15,10 +15,9 @@ class TestView:
         output_directory,
         split_chapters,
     ):
-
-        args = f"view "
+        args = "view "
         args += "--split-chapters " if split_chapters else ""
-        args += f"https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
+        args += "https://www.youtube.com/playlist?list=PLBsm_SagFMmdWnCnrNtLjA9kzfrRkto4i"
         subscriptions = mock_run_from_cli(args=args)
 
         assert len(subscriptions) == 1

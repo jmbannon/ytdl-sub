@@ -6,8 +6,7 @@ from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
 from ytdl_sub.script.types.array import Array
 from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.utils.exceptions import CycleDetected
-from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
+from ytdl_sub.script.utils.exceptions import CycleDetected, IncompatibleFunctionArguments
 
 
 class TestLambdaFunction:

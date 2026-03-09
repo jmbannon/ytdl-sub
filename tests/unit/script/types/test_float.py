@@ -2,12 +2,10 @@ import re
 
 import pytest
 
-from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR
-from ytdl_sub.script.parser import NUMERICS_ONLY_ARGS
+from ytdl_sub.script.parser import NUMERICS_INVALID_CHAR, NUMERICS_ONLY_ARGS
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.script_output import ScriptOutput
-from ytdl_sub.script.types.resolvable import Float
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Float, String
 from ytdl_sub.script.utils.exceptions import InvalidSyntaxException
 
 

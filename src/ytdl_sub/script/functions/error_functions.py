@@ -1,6 +1,4 @@
-from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import ReturnableArgument
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import AnyArgument, ReturnableArgument, String
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 
 

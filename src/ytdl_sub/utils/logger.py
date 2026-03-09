@@ -5,8 +5,7 @@ import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ytdl_sub import __local_version__
 from ytdl_sub.utils.exceptions import ValidationException
@@ -84,7 +83,6 @@ class StreamToLogger(io.StringIO):
 
 
 class Logger:
-
     # The level set via CLI arguments
     _LOGGER_LEVEL: LoggerLevel = LoggerLevels.DEBUG
 

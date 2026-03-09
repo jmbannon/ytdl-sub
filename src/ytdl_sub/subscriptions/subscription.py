@@ -1,9 +1,6 @@
 import copy
 from pathlib import Path
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from mergedeep import mergedeep
 
@@ -143,7 +140,6 @@ class Subscription(SubscriptionDownload):
             }
 
         for subscription_name, subscription_object in subscriptions_dicts.items():
-
             # Hard-override subscriptions here
             mergedeep.merge(
                 subscription_object,

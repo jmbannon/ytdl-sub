@@ -1,12 +1,9 @@
 import pytest
-from conftest import assert_logs
 
 from ytdl_sub.downloaders.url.downloader import MultiUrlDownloader
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
-from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.subscriptions.subscription import Subscription
 
 v: VariableDefinitions = VARIABLES
@@ -29,7 +26,6 @@ def subscription_dict(output_directory):
 
 
 class TestUrl:
-
     def test_modified_url_when_downloading(
         self,
         config,

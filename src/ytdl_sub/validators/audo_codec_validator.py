@@ -1,5 +1,4 @@
-from typing import Dict
-from typing import Set
+from typing import Dict, Set
 
 from ytdl_sub.validators.string_select_validator import StringSelectValidator
 

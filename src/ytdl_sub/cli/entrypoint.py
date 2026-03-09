@@ -4,23 +4,21 @@ import random
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Dict, List, Optional
 
 from yt_dlp.utils import sanitize_filename
 
 from ytdl_sub.cli.output_summary import output_summary
-from ytdl_sub.cli.output_transaction_log import _maybe_validate_transaction_log_file
-from ytdl_sub.cli.output_transaction_log import output_transaction_log
+from ytdl_sub.cli.output_transaction_log import (
+    _maybe_validate_transaction_log_file,
+    output_transaction_log,
+)
 from ytdl_sub.cli.parsers.cli_to_sub import print_cli_to_sub
 from ytdl_sub.cli.parsers.dl import DownloadArgsParser
-from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME
-from ytdl_sub.cli.parsers.main import parser
+from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME, parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
-from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
-from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled, ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_lock import working_directory_lock
 from ytdl_sub.utils.logger import Logger

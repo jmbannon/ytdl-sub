@@ -1,14 +1,12 @@
 import re
 import sys
 from pathlib import Path
-from typing import Callable
-from typing import List
+from typing import Callable, List
 from unittest.mock import patch
 
 import pytest
 
-from ytdl_sub.cli.entrypoint import _download_subscriptions_from_yaml_files
-from ytdl_sub.cli.entrypoint import main
+from ytdl_sub.cli.entrypoint import _download_subscriptions_from_yaml_files, main
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled
@@ -129,7 +127,6 @@ def test_subscription_shuffle(
     mock_subscription_download_factory: Callable,
     music_video_subscription_path: Path,
 ):
-
     subscription_paths = [str(music_video_subscription_path)]
 
     with (

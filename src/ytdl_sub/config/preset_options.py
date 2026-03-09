@@ -1,24 +1,22 @@
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Set
+from typing import Any, Dict, Optional, Set
 
 from ytdl_sub.config.defaults import DEFAULT_DOWNLOAD_ARCHIVE_NAME
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.validators.options import OptionsDictValidator
 from ytdl_sub.entries.script.variable_definitions import VARIABLES as v
-from ytdl_sub.utils.exceptions import SubscriptionPermissionError
-from ytdl_sub.utils.exceptions import ValidationException
+from ytdl_sub.utils.exceptions import SubscriptionPermissionError, ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
-from ytdl_sub.validators.file_path_validators import OverridesStringFormatterFilePathValidator
-from ytdl_sub.validators.file_path_validators import StringFormatterFileNameValidator
+from ytdl_sub.validators.file_path_validators import (
+    OverridesStringFormatterFilePathValidator,
+    StringFormatterFileNameValidator,
+)
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesIntegerFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StandardizedDateValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 from ytdl_sub.validators.string_formatter_validators import (
+    OverridesIntegerFormatterValidator,
+    OverridesStringFormatterValidator,
+    StandardizedDateValidator,
+    StringFormatterValidator,
     UnstructuredOverridesDictFormatterValidator,
 )
 from ytdl_sub.validators.validators import BoolValidator

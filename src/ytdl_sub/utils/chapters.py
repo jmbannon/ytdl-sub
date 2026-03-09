@@ -1,19 +1,14 @@
 import re
-from typing import Dict
-from typing import List
-from typing import Tuple
+from typing import Dict, List, Tuple
 
-from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.entry import ytdl_sub_chapters_from_comments
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.entry import Entry, ytdl_sub_chapters_from_comments
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.utils.file_handler import FileMetadata
 
 v: VariableDefinitions = VARIABLES
 
 
 class Timestamp:
-
     # Captures the following formats:
     # 0:00 title
     # 00:00 title

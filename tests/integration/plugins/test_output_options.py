@@ -36,7 +36,6 @@ def output_options_subscription_dict(output_directory) -> Dict:
 
 
 class TestOutputOptions:
-
     @classmethod
     def _ensure_subscription_migrates(
         cls,
@@ -114,9 +113,9 @@ class TestOutputOptions:
             expected_download_summary_file_name="plugins/output_options/pre_migration.json",
         )
 
-        output_options_subscription_dict["output_options"][
-            "migrated_download_archive_name"
-        ] = ".ytdl-sub-{tv_show_name_sanitized}-migrated-download-archive.json"
+        output_options_subscription_dict["output_options"]["migrated_download_archive_name"] = (
+            ".ytdl-sub-{tv_show_name_sanitized}-migrated-download-archive.json"
+        )
         subscription = Subscription.from_dict(
             config=config,
             preset_name=subscription_name,

@@ -1,11 +1,9 @@
-import os
 import re
 import tempfile
 
 import pytest
 
-from ytdl_sub.utils.exceptions import FileNotFoundException
-from ytdl_sub.utils.exceptions import InvalidYamlException
+from ytdl_sub.utils.exceptions import FileNotFoundException, InvalidYamlException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.yaml import load_yaml
 

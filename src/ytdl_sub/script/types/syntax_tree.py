@@ -1,12 +1,8 @@
 from dataclasses import dataclass
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Dict, List, Optional
 
 from ytdl_sub.script.types.function import BuiltInFunction
-from ytdl_sub.script.types.resolvable import Argument
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.resolvable import String
+from ytdl_sub.script.types.resolvable import Argument, Resolvable, String
 from ytdl_sub.script.types.variable import Variable
 from ytdl_sub.script.types.variable_dependency import VariableDependency
 

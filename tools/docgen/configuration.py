@@ -7,7 +7,6 @@ from ytdl_sub.config.preset import Preset
 
 
 class ConfigurationDocGen(DocGen):
-
     LOCATION = Path("docs/source/config_reference/config_yaml.rst")
     DOCSTRING_LOCATION = (
         "The respective function docstrings within ytdl_sub/config/config_validator.py"

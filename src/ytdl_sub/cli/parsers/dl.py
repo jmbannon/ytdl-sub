@@ -1,10 +1,7 @@
 import hashlib
 import re
 import shlex
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Tuple
+from typing import Any, Dict, List, Tuple
 
 from mergedeep import mergedeep
 

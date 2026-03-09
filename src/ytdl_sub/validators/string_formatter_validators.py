@@ -1,23 +1,23 @@
 from datetime import datetime
-from typing import Any
-from typing import Dict
-from typing import Set
-from typing import Union
-from typing import final
+from typing import Any, Dict, Set, Union, final
 
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.script import Script
 from ytdl_sub.script.types.syntax_tree import SyntaxTree
-from ytdl_sub.script.utils.exceptions import RuntimeException
-from ytdl_sub.script.utils.exceptions import ScriptVariableNotResolved
-from ytdl_sub.script.utils.exceptions import UserException
+from ytdl_sub.script.utils.exceptions import (
+    RuntimeException,
+    ScriptVariableNotResolved,
+    UserException,
+)
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 from ytdl_sub.utils.script import ScriptUtils
-from ytdl_sub.validators.validators import DictValidator
-from ytdl_sub.validators.validators import ListValidator
-from ytdl_sub.validators.validators import LiteralDictValidator
-from ytdl_sub.validators.validators import StringValidator
-from ytdl_sub.validators.validators import Validator
+from ytdl_sub.validators.validators import (
+    DictValidator,
+    ListValidator,
+    LiteralDictValidator,
+    StringValidator,
+    Validator,
+)
 
 # pylint: disable=protected-access
 

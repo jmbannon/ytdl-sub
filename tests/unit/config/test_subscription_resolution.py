@@ -42,7 +42,6 @@ def _ensure_resolved_yaml(
 
 @pytest.mark.parametrize("resolution_level", ResolutionLevel.all())
 class TestResolution:
-
     def test_resolution_tv_show(
         self,
         resolution_level: int,

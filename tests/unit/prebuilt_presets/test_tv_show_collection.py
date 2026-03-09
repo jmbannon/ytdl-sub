@@ -7,7 +7,6 @@ from ytdl_sub.subscriptions.subscription import Subscription
 
 
 class TestTvShowCollectionPreset:
-
     def test_url_error_thrown(self, default_config):
         with pytest.raises(
             UserThrownRuntimeError,

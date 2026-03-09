@@ -4,8 +4,7 @@ import threading
 import time
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Optional
-from typing import Set
+from typing import Optional, Set
 
 from ytdl_sub.utils.logger import Logger
 

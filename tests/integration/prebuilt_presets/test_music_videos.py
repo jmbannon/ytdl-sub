@@ -57,7 +57,6 @@ class TestPrebuiltMusicVideoPresets:
 @pytest.mark.parametrize("music_video_preset", MusicVideoPresets.preset_names)
 @pytest.mark.parametrize("multi_url", [True, False])
 class TestPrebuiltMusicVideoPresetsWithCategories:
-
     def _preset_dict(
         self,
         output_directory: Path,

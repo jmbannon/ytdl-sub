@@ -1,13 +1,7 @@
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
-from typing import Type
+from typing import Iterable, List, Optional, Set, Tuple, Type
 
 from ytdl_sub.config.plugin.plugin import Plugin
-from ytdl_sub.config.validators.options import OptionsValidator
-from ytdl_sub.config.validators.options import OptionsValidatorT
+from ytdl_sub.config.validators.options import OptionsValidator, OptionsValidatorT
 
 
 class PresetPlugins:

@@ -4,12 +4,7 @@ import os
 import shutil
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Union
+from typing import Any, Dict, List, Optional, Set, Union
 
 from ytdl_sub.utils.subtitles import SUBTITLE_EXTENSIONS
 

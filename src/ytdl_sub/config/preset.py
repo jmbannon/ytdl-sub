@@ -1,8 +1,5 @@
 import copy
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Set
+from typing import Any, Dict, List, Set
 
 from mergedeep import mergedeep
 
@@ -10,17 +7,14 @@ from ytdl_sub.config.config_validator import ConfigValidator
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
 from ytdl_sub.config.plugin.preset_plugins import PresetPlugins
-from ytdl_sub.config.preset_options import OutputOptions
-from ytdl_sub.config.preset_options import YTDLOptions
+from ytdl_sub.config.preset_options import OutputOptions, YTDLOptions
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES
-from ytdl_sub.prebuilt_presets import PUBLISHED_PRESET_NAMES
+from ytdl_sub.prebuilt_presets import PREBUILT_PRESET_NAMES, PUBLISHED_PRESET_NAMES
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.utils.yaml import dump_yaml
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.validators import StringListValidator
-from ytdl_sub.validators.validators import validation_exception
+from ytdl_sub.validators.validators import StringListValidator, validation_exception
 
 PRESET_KEYS = {
     "preset",

@@ -1,7 +1,5 @@
 from abc import ABC
-from typing import Dict
-from typing import Set
-from typing import TypeVar
+from typing import Dict, Set, TypeVar
 
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.utils.exceptions import ValidationException
@@ -61,9 +59,9 @@ class ToggleableOptionsDictValidator(OptionsDictValidator):
     _optional_keys = {"enable"}
 
     def __init__(self, name, value):
-        assert (
-            "enable" in self._optional_keys
-        ), f"{self.__class__.__name__} does not have enable as an optional field"
+        assert "enable" in self._optional_keys, (
+            f"{self.__class__.__name__} does not have enable as an optional field"
+        )
         super().__init__(name, value)
 
         self._enable = self._validate_key(

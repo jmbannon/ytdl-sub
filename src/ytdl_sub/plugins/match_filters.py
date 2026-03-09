@@ -1,7 +1,5 @@
 import copy
-from typing import Any
-from typing import List
-from typing import Tuple
+from typing import Any, List, Tuple
 
 from ytdl_sub.config.plugin.plugin import Plugin
 from ytdl_sub.config.validators.options import ToggleableOptionsDictValidator

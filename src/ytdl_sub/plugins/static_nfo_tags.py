@@ -1,7 +1,5 @@
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.plugins.nfo_tags import NfoTagsValidator
-from ytdl_sub.plugins.nfo_tags import SharedNfoTagsOptions
-from ytdl_sub.plugins.nfo_tags import SharedNfoTagsPlugin
+from ytdl_sub.plugins.nfo_tags import NfoTagsValidator, SharedNfoTagsOptions, SharedNfoTagsPlugin
 from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
 
 

@@ -1,6 +1,5 @@
 import re
-from typing import Dict
-from typing import List
+from typing import Dict, List
 
 import pytest
 from expected_download import assert_expected_downloads
@@ -15,7 +14,6 @@ DEFAULT_EPISODE_ORDERING = "upload-year-month-day"
 
 
 class TestPrebuiltTvShowCollectionPresets:
-
     @staticmethod
     def run(
         config: ConfigFile,
@@ -124,7 +122,6 @@ class TestPrebuiltTvShowCollectionPresets:
         media_player_preset: str,
         season_indices: List[int],
     ):
-
         with mock_download_collection_entries(
             is_youtube_channel=True, num_urls=len(season_indices)
         ):
@@ -158,7 +155,6 @@ class TestPrebuiltTvShowCollectionPresets:
         episode_ordering: str,
         season_indices: List[int],
     ):
-
         with mock_download_collection_entries(
             is_youtube_channel=True, num_urls=len(season_indices)
         ):

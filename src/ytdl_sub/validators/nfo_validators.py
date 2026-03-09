@@ -1,18 +1,17 @@
 from abc import ABC
 from collections import defaultdict
-from typing import Dict
-from typing import List
+from typing import Dict, List
 
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.string_formatter_validators import DictFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import ListFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
-from ytdl_sub.validators.validators import DictValidator
-from ytdl_sub.validators.validators import ListValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    DictFormatterValidator,
+    ListFormatterValidator,
+    StringFormatterValidator,
+)
+from ytdl_sub.validators.validators import DictValidator, ListValidator
 
 
 class NfoTagsWithAttributesValidator(StrictDictValidator):
-
     _required_keys = {"attributes", "tag"}
 
     def __init__(self, name, value):

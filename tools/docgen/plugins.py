@@ -1,16 +1,11 @@
 from pathlib import Path
-from typing import Dict
-from typing import Set
-from typing import Type
+from typing import Dict, Set, Type
 
 from tools.docgen.docgen import DocGen
-from tools.docgen.utils import generate_options_validator_docs
-from tools.docgen.utils import line_section
-from tools.docgen.utils import section
+from tools.docgen.utils import generate_options_validator_docs, line_section, section
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
-from ytdl_sub.config.preset_options import OutputOptions
-from ytdl_sub.config.preset_options import YTDLOptions
+from ytdl_sub.config.preset_options import OutputOptions, YTDLOptions
 from ytdl_sub.config.validators.options import OptionsValidator
 from ytdl_sub.downloaders.url.validators import MultiUrlValidator
 
@@ -28,7 +23,6 @@ PLUGIN_NAMES_TO_SKIP_PROPERTIES: Set[str] = {
 
 
 class PluginsDocGen(DocGen):
-
     LOCATION = Path("docs/source/config_reference/plugins.rst")
     DOCSTRING_LOCATION = "The respective plugin files under src/ytdl_sub/plugins/"
 

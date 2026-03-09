@@ -2,11 +2,9 @@ import json
 import os.path
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
-from resources import REGENERATE_FIXTURES
-from resources import RESOURCE_PATH
+from resources import REGENERATE_FIXTURES, RESOURCE_PATH
 
 from ytdl_sub.utils.file_handler import get_file_md5_hash
 from ytdl_sub.utils.system import IS_WINDOWS
@@ -131,9 +129,9 @@ def assert_expected_downloads(
 ):
     if dry_run:
         output_directory_contents = list(Path(output_directory).rglob("*"))
-        assert (
-            len(output_directory_contents) == 0
-        ), f"Expected output directory to be empty after a dry-run, but found {output_directory_contents}"
+        assert len(output_directory_contents) == 0, (
+            f"Expected output directory to be empty after a dry-run, but found {output_directory_contents}"
+        )
         return
 
     summary_full_path = _EXPECTED_DOWNLOADS_SUMMARY_PATH / expected_download_summary_file_name

@@ -1,8 +1,6 @@
 from typing import Optional
 
-from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import ReturnableArgument
+from ytdl_sub.script.types.resolvable import AnyArgument, Integer, ReturnableArgument
 from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get(name="preset")

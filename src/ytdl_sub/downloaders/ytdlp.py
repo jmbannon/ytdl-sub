@@ -5,15 +5,10 @@ import os
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Callable, Dict, List, Optional
 
 import yt_dlp as ytdl
-from yt_dlp.utils import ExistingVideoReached
-from yt_dlp.utils import MaxDownloadsReached
-from yt_dlp.utils import RejectedVideoReached
+from yt_dlp.utils import ExistingVideoReached, MaxDownloadsReached, RejectedVideoReached
 
 from ytdl_sub.thread.log_entries_downloaded_listener import LogEntriesDownloadedListener
 from ytdl_sub.utils.exceptions import FileNotDownloadedException

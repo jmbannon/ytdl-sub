@@ -1,12 +1,9 @@
 import sys
-from typing import List
-from typing import TypeVar
+from typing import List, TypeVar
 
 from ytdl_sub.script.types.resolvable import BuiltInFunctionType
-from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments
-from ytdl_sub.script.utils.exceptions import UserException
-from ytdl_sub.script.utils.type_checking import FunctionSpec
-from ytdl_sub.script.utils.type_checking import is_union
+from ytdl_sub.script.utils.exceptions import IncompatibleFunctionArguments, UserException
+from ytdl_sub.script.utils.type_checking import FunctionSpec, is_union
 
 UserExceptionT = TypeVar("UserExceptionT", bound=UserException)
 

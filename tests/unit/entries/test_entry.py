@@ -1,8 +1,7 @@
 import pytest
 
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 
 v: VariableDefinitions = VARIABLES
 
@@ -32,7 +31,6 @@ class TestEntry(object):
         month_rev_pad,
         day_rev_pad,
     ):
-
         mock_entry_kwargs["upload_date"] = upload_date
         entry = Entry(entry_dict=mock_entry_kwargs, working_directory=".").initialize_script()
         assert entry.get(v.upload_year_truncated_reversed, int) == year_rev

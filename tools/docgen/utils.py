@@ -1,13 +1,8 @@
 import inspect
 from functools import cached_property
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Type
+from typing import Any, Dict, List, Optional, Type
 
-from ytdl_sub.script.utils.type_checking import get_optional_type
-from ytdl_sub.script.utils.type_checking import is_optional
+from ytdl_sub.script.utils.type_checking import get_optional_type, is_optional
 from ytdl_sub.validators.validators import Validator
 
 LEVEL_CHARS: Dict[int, str] = {0: "=", 1: "-", 2: "~", 3: "^"}

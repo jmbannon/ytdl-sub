@@ -1,16 +1,10 @@
 import math
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
+from typing import Any, Dict, List, Optional, Set
 from urllib.parse import urlparse
 
-from ytdl_sub.entries.base_entry import BaseEntry
-from ytdl_sub.entries.base_entry import BaseEntryT
+from ytdl_sub.entries.base_entry import BaseEntry, BaseEntryT
 from ytdl_sub.entries.entry import Entry
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.entries.script.variable_types import MetadataVariable
 
 v: VariableDefinitions = VARIABLES

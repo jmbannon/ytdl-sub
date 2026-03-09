@@ -4,9 +4,11 @@ import pytest
 from unit.script.conftest import single_variable_output
 
 from ytdl_sub.script.script import Script
-from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
-from ytdl_sub.script.utils.exceptions import KeyDoesNotExistRuntimeException
-from ytdl_sub.script.utils.exceptions import KeyNotHashableRuntimeException
+from ytdl_sub.script.utils.exceptions import (
+    FunctionRuntimeException,
+    KeyDoesNotExistRuntimeException,
+    KeyNotHashableRuntimeException,
+)
 
 
 class TestMapFunctions:

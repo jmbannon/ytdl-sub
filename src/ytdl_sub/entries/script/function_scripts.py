@@ -1,7 +1,6 @@
 from typing import Dict
 
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 
 v: VariableDefinitions = VARIABLES
 

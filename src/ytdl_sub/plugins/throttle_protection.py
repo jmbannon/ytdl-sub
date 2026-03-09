@@ -1,10 +1,7 @@
 import random
 import time
 from abc import ABC
-from typing import Dict
-from typing import Optional
-from typing import Type
-from typing import TypeVar
+from typing import Dict, Optional, Type, TypeVar
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin import Plugin
@@ -13,8 +10,10 @@ from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.file_handler import FileMetadata
 from ytdl_sub.utils.logger import Logger
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
-from ytdl_sub.validators.string_formatter_validators import FloatFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import OverridesFloatFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    FloatFormatterValidator,
+    OverridesFloatFormatterValidator,
+)
 from ytdl_sub.validators.validators import ProbabilityValidator
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 

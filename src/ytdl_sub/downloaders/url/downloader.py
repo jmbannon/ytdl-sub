@@ -1,33 +1,29 @@
 import contextlib
 import os
 from pathlib import Path
-from typing import Dict
-from typing import Iterable
-from typing import Iterator
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
+from typing import Dict, Iterable, Iterator, List, Optional, Set, Tuple
 
 from yt_dlp.utils import RejectedVideoReached
 
 from ytdl_sub.config.overrides import Overrides
-from ytdl_sub.downloaders.source_plugin import SourcePlugin
-from ytdl_sub.downloaders.source_plugin import SourcePluginExtension
-from ytdl_sub.downloaders.url.validators import MultiUrlValidator
-from ytdl_sub.downloaders.url.validators import UrlThumbnailListValidator
-from ytdl_sub.downloaders.url.validators import UrlValidator
+from ytdl_sub.downloaders.source_plugin import SourcePlugin, SourcePluginExtension
+from ytdl_sub.downloaders.url.validators import (
+    MultiUrlValidator,
+    UrlThumbnailListValidator,
+    UrlValidator,
+)
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.entries.entry_parent import EntryParent
-from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_definitions import VariableDefinitions
+from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.logger import Logger
-from ytdl_sub.utils.thumbnail import ThumbnailTypes
-from ytdl_sub.utils.thumbnail import download_and_convert_url_thumbnail
-from ytdl_sub.utils.thumbnail import try_convert_download_thumbnail
+from ytdl_sub.utils.thumbnail import (
+    ThumbnailTypes,
+    download_and_convert_url_thumbnail,
+    try_convert_download_thumbnail,
+)
 from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadArchive
 
 v: VariableDefinitions = VARIABLES
@@ -97,7 +93,6 @@ class UrlDownloaderThumbnailPlugin(UrlDownloaderBasePluginExtension):
 
             # If latest entry, always update the thumbnail on each entry
             if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
-
                 # always save in dry-run even if it doesn't exist...
                 if self.is_dry_run or entry.is_thumbnail_downloaded():
                     self.save_file(

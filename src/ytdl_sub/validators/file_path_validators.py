@@ -3,8 +3,10 @@ from pathlib import Path
 from typing import Any
 
 from ytdl_sub.utils.file_path import FilePathTruncater
-from ytdl_sub.validators.string_formatter_validators import OverridesStringFormatterValidator
-from ytdl_sub.validators.string_formatter_validators import StringFormatterValidator
+from ytdl_sub.validators.string_formatter_validators import (
+    OverridesStringFormatterValidator,
+    StringFormatterValidator,
+)
 from ytdl_sub.validators.validators import StringValidator
 
 

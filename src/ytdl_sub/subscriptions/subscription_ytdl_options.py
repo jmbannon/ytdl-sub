@@ -1,9 +1,5 @@
 from pathlib import Path
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Type
-from typing import TypeVar
+from typing import Dict, List, Optional, Type, TypeVar
 
 from yt_dlp import match_filter_func
 
@@ -15,9 +11,7 @@ from ytdl_sub.plugins.audio_extract import AudioExtractPlugin
 from ytdl_sub.plugins.chapters import ChaptersPlugin
 from ytdl_sub.plugins.file_convert import FileConvertPlugin
 from ytdl_sub.plugins.format import FormatPlugin
-from ytdl_sub.plugins.match_filters import MatchFiltersPlugin
-from ytdl_sub.plugins.match_filters import combine_filters
-from ytdl_sub.plugins.match_filters import default_filters
+from ytdl_sub.plugins.match_filters import MatchFiltersPlugin, combine_filters, default_filters
 from ytdl_sub.plugins.subtitles import SubtitlesPlugin
 from ytdl_sub.plugins.throttle_protection import ThrottleProtectionPlugin
 from ytdl_sub.utils.ffmpeg import FFMPEG

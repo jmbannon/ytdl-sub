@@ -1,24 +1,17 @@
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict
-from typing import Iterable
-from typing import List
-from typing import Set
-from typing import Tuple
-from typing import Type
-from typing import TypeVar
-from typing import final
+from typing import Dict, Iterable, List, Set, Tuple, Type, TypeVar, final
 
-from ytdl_sub.script.types.resolvable import Argument
-from ytdl_sub.script.types.resolvable import BuiltInFunctionType
-from ytdl_sub.script.types.resolvable import FunctionType
-from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import NamedCustomFunction
-from ytdl_sub.script.types.resolvable import ParsedCustomFunction
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.types.variable import FunctionArgument
-from ytdl_sub.script.types.variable import Variable
+from ytdl_sub.script.types.resolvable import (
+    Argument,
+    BuiltInFunctionType,
+    FunctionType,
+    Lambda,
+    NamedCustomFunction,
+    ParsedCustomFunction,
+    Resolvable,
+)
+from ytdl_sub.script.types.variable import FunctionArgument, Variable
 from ytdl_sub.script.utils.exceptions import UNREACHABLE
 
 TypeT = TypeVar("TypeT")
@@ -44,7 +37,7 @@ class VariableDependency(ABC):
                 output.append(arg)
             elif instance and isinstance(arg, ttype):
                 output.append(arg)
-            elif type(arg) == ttype:  # pylint: disable=unidiomatic-typecheck
+            elif type(arg) is ttype:  # pylint: disable=unidiomatic-typecheck
                 output.append(arg)
 
             if isinstance(arg, VariableDependency):

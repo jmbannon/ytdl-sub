@@ -1,5 +1,4 @@
-from typing import Callable
-from typing import Dict
+from typing import Callable, Dict
 
 from ytdl_sub.script.functions.array_functions import ArrayFunctions
 from ytdl_sub.script.functions.boolean_functions import BooleanFunctions

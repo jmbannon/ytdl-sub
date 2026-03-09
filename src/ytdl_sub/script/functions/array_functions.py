@@ -1,18 +1,21 @@
 import itertools
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ytdl_sub.script.types.array import Array
-from ytdl_sub.script.types.resolvable import AnyArgument
-from ytdl_sub.script.types.resolvable import Boolean
-from ytdl_sub.script.types.resolvable import Integer
-from ytdl_sub.script.types.resolvable import Lambda
-from ytdl_sub.script.types.resolvable import LambdaReduce
-from ytdl_sub.script.types.resolvable import LambdaTwo
-from ytdl_sub.script.types.resolvable import Resolvable
-from ytdl_sub.script.utils.exceptions import UNREACHABLE
-from ytdl_sub.script.utils.exceptions import ArrayValueDoesNotExist
-from ytdl_sub.script.utils.exceptions import FunctionRuntimeException
+from ytdl_sub.script.types.resolvable import (
+    AnyArgument,
+    Boolean,
+    Integer,
+    Lambda,
+    LambdaReduce,
+    LambdaTwo,
+    Resolvable,
+)
+from ytdl_sub.script.utils.exceptions import (
+    UNREACHABLE,
+    ArrayValueDoesNotExist,
+    FunctionRuntimeException,
+)
 
 
 class ArrayFunctions:

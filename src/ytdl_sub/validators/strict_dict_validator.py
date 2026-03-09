@@ -1,5 +1,4 @@
-from typing import List
-from typing import Set
+from typing import List, Set
 
 from ytdl_sub.validators.validators import DictValidator
 
