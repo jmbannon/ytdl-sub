@@ -1,6 +1,6 @@
 from abc import ABC
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 from ytdl_sub.config.config_validator import ConfigOptions
 from ytdl_sub.config.overrides import Overrides
@@ -254,7 +254,11 @@ class BaseSubscription(ABC):
         """
         return self._preset_options.yaml(subscription_only=False)
 
-    def resolved_yaml(self, resolution_level: int = ResolutionLevel.RESOLVE) -> str:
+    def resolved_yaml(
+        self,
+        resolution_level: int = ResolutionLevel.RESOLVE,
+        mocks: Optional[Dict[str, str]] = None,
+    ) -> str:
         """
         Returns
         -------
@@ -269,5 +273,6 @@ class BaseSubscription(ABC):
             output_options=self.output_options,
             plugins=self.plugins,
             resolution_level=resolution_level,
+            mocks=mocks,
         ).ensure_proper_usage(partial_resolve_formatters=True)
         return dump_yaml(out)

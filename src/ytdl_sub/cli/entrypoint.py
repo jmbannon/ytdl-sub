@@ -15,7 +15,7 @@ from ytdl_sub.cli.output_transaction_log import (
 )
 from ytdl_sub.cli.parsers.cli_to_sub import print_cli_to_sub
 from ytdl_sub.cli.parsers.dl import DownloadArgsParser
-from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME, parser, InspectArguments
+from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME, InspectArguments, parser
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled, ValidationException
@@ -215,10 +215,10 @@ def _parse_inspect_mocks(mocks: Optional[List[str]]) -> Dict[str, str]:
     return out
 
 
-def _parse_inspect_level(inspect_level: str) -> str:
+def _parse_inspect_level(inspect_level: str) -> int:
     for val, name in InspectArguments.LevelChoices.items():
         if inspect_level == val or inspect_level == name:
-            return name
+            return int(val)
 
     raise ValueError("should not reach here")
 
@@ -228,7 +228,7 @@ def _inspect(
     subscription_paths: List[str],
     subscription_matches: List[str],
     subscription_override_dict: Dict,
-    inspection_level: str,
+    inspection_level: int,
     mocks: Dict[str, str],
 ) -> None:
 
@@ -243,12 +243,11 @@ def _inspect(
 
     if len(subscriptions) > 1:
         print(
-            "inspect can only inspect a single subscription. "
-            "Use --match to filter for a single one"
+            "inspect can only inspect a single subscription. Use --match to filter for a single one"
         )
         return
 
-    print(subscriptions[0].resolved_yaml())
+    print(subscriptions[0].resolved_yaml(resolution_level=inspection_level, mocks=mocks))
 
 
 def main() -> List[Subscription]:

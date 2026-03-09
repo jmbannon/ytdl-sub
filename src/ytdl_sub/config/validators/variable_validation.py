@@ -1,4 +1,4 @@
-from typing import Dict, List, Set
+from typing import Dict, List, Optional, Set
 
 from ytdl_sub.config.overrides import Overrides
 from ytdl_sub.config.plugin.plugin_mapping import PluginMapping
@@ -52,7 +52,7 @@ class VariableValidation:
             if name not in self.unresolved_variables and not name.endswith("_sanitized")
         }
 
-    def _apply_resolution_level(self) -> None:
+    def _apply_resolution_level(self, mocks: Optional[Dict[str, str]]) -> None:
         if self._resolution_level == ResolutionLevel.FILL:
             self.unresolved_variables |= VARIABLES.variable_names(include_sanitized=True)
             # Only partial resolve definitions that are already resolved
@@ -70,6 +70,12 @@ class VariableValidation:
         else:
             raise ValueError("Invalid resolution level for validation")
 
+        if mocks is not None:
+            self.script.add(
+                variables=mocks,
+                unresolvable=self.unresolved_variables,
+            )
+
         self.script = self.script.resolve_partial(
             unresolvable=self.unresolved_variables,
             output_filter=self._get_resolve_partial_filter(),
@@ -82,6 +88,7 @@ class VariableValidation:
         output_options: OutputOptions,
         plugins: PresetPlugins,
         resolution_level: int = ResolutionLevel.RESOLVE,
+        mocks: Optional[Dict[str, str]] = None,
     ):
         self.overrides = overrides
         self.downloader_options = downloader_options
@@ -99,8 +106,7 @@ class VariableValidation:
             additional_options=[self.output_options, self.downloader_options]
         )
         self._resolution_level = resolution_level
-
-        self._apply_resolution_level()
+        self._apply_resolution_level(mocks=mocks)
 
     def _add_runtime_variables(self, plugin_op: PluginOperation, options: OptionsValidator) -> None:
         """

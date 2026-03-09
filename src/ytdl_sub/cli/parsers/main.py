@@ -1,7 +1,6 @@
 import argparse
 import dataclasses
-from typing import Dict
-from typing import List
+from typing import Dict, List
 
 from ytdl_sub import __local_version__
 from ytdl_sub.utils.logger import LoggerLevels
