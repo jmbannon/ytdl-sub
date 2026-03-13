@@ -36,6 +36,21 @@ class ResolutionLevel:
         raise ValueError("Invalid resolution level")
 
     @classmethod
+    def level_number(cls, resolution_arg: str) -> int:
+        """
+        Numeric resolution level
+        """
+        if resolution_arg in ("0", "original"):
+            return 0
+        if resolution_arg in ("1", "fill"):
+            return 1
+        if resolution_arg in ("2", "resolve"):
+            return 2
+        if resolution_arg in ("3", "internal"):
+            return 3
+        raise ValueError("Invalid resolution level")
+
+    @classmethod
     def all(cls) -> List[int]:
         """
         All possible resolution levels.
@@ -80,8 +95,6 @@ class VariableValidation:
                 variables=mocks,
                 unresolvable=self.unresolved_variables,
             )
-
-
 
         self.script = self.script.resolve_partial(
             unresolvable=self.unresolved_variables,
@@ -132,9 +145,7 @@ class VariableValidation:
             value = self.script.definition_of(name)
             if name in self.script.function_names:
                 # Keep custom functions as-is
-                output[name] = self.overrides.dict_with_format_strings[
-                    name
-                ]
+                output[name] = self.overrides.dict_with_format_strings[name]
             elif resolved := value.maybe_resolvable:
                 output[name] = resolved.native
             else:

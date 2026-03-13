@@ -15,8 +15,9 @@ from ytdl_sub.cli.output_transaction_log import (
 )
 from ytdl_sub.cli.parsers.cli_to_sub import print_cli_to_sub
 from ytdl_sub.cli.parsers.dl import DownloadArgsParser
-from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME, InspectArguments, parser
+from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME, parser
 from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.config.validators.variable_validation import ResolutionLevel
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled, ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
@@ -215,14 +216,6 @@ def _parse_inspect_mocks(mocks: Optional[List[str]]) -> Dict[str, str]:
     return out
 
 
-def _parse_inspect_level(inspect_level: str) -> int:
-    for val, name in InspectArguments.LevelChoices.items():
-        if inspect_level == val or inspect_level == name:
-            return int(val)
-
-    raise ValueError("should not reach here")
-
-
 def _inspect(
     config: ConfigFile,
     subscription_paths: List[str],
@@ -288,7 +281,7 @@ def main() -> List[Subscription]:
             subscription_paths=args.subscription_paths,
             subscription_matches=args.match,
             subscription_override_dict=subscription_override_dict,
-            inspection_level=_parse_inspect_level(args.inspection_level),
+            inspection_level=ResolutionLevel.level_number(args.inspection_level),
             mocks=_parse_inspect_mocks(args.mock),
         )
         return []

@@ -266,12 +266,12 @@ inspect_parser.add_argument(
     metavar=",".join(str(i) for i in range(4)),
     type=str,
     help="""level of inspection to perform:
-    0 - original   present the subscription as-is (default)
+    0 - original   present the subscription as-is
     1 - fill       fill in defined values
-    2 - resolve    resolve all variables
+    2 - resolve    resolve all possible variables (default)
     3 - internal   resolve all variables to their internal representation
     """,
-    default="0",
+    default="resolve",
     choices=list(InspectArguments.LevelChoices.keys())
     + list(InspectArguments.LevelChoices.values()),
     dest="inspection_level",
