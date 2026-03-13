@@ -215,5 +215,4 @@ class VariableValidation:
 
         resolved_subscription["overrides"] = self._output_override_variables()
 
-        # assert not self.unresolved_variables
         return resolved_subscription
