@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 from typing import Dict
 
-DISABLE_YOUTUBE_TESTS: bool = True
+DISABLE_E2E_TESTS: bool = True
 REGENERATE_FIXTURES: bool = False
 
 RESOURCE_PATH: Path = Path("tests") / "resources"
