@@ -111,6 +111,20 @@ class ScriptUtils:
         return "'''"
 
     @classmethod
+    def _maybe_to_optimized_sanitize(cls, arg: Argument) -> Argument:
+        # If it is %sanitize(%concat(...)), return %sanitize(...)
+        if (
+            isinstance(arg, Function)
+            and arg.name == "sanitize"
+            and len(arg.args) == 1
+            and isinstance(arg.args[0], Function)
+            and arg.args[0].name == "concat"
+        ):
+            return BuiltInFunction(name="sanitize", args=arg.args[0].args)
+
+        return arg
+
+    @classmethod
     def _to_script_code(cls, arg: Argument, top_level: bool = False) -> str:
         if not top_level and isinstance(arg, (Integer, Boolean, Float)):
             return str(arg.native)
@@ -122,6 +136,8 @@ class ScriptUtils:
             quote = cls._get_quote_char(arg.native)
 
             return arg.native if top_level else f"{quote}{arg.native}{quote}"
+
+        arg = cls._maybe_to_optimized_sanitize(arg)
 
         if isinstance(arg, Integer):
             out = f"%int({arg.native})"

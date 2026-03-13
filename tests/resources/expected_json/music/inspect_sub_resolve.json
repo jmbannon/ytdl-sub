@@ -79,7 +79,7 @@
     "file_name": "Lester Young/{ %concat( \"[\", playlist_max_upload_year, \"] \", %sanitize( playlist_title ) ) }/{ %concat( playlist_index_padded, \" - \", %sanitize( title ), \".\", ext ) }",
     "keep_files_date_eval": "{ upload_date_standardized }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpd5oeacb3",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp4r39cf_g",
     "preserve_mtime": false,
     "thumbnail_name": "Lester Young/{ %concat( \"[\", playlist_max_upload_year, \"] \", %sanitize( playlist_title ) ) }/folder.{ thumbnail_ext }"
   },
@@ -93,7 +93,7 @@
     "enable_throttle_protection": true,
     "include_sibling_metadata": true,
     "modified_webpage_url": "{ webpage_url }",
-    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpd5oeacb3",
+    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp4r39cf_g",
     "resolution_assert": "{ %if( %and( enable_resolution_assert, %ne( height, 0 ), %not( resolution_assert_is_ignored ) ), %assert( %gte( height, resolution_assert_height_gte ), %concat( \"Entry \", title, \" downloaded at a low resolution (\", resolution_readable, \"), you've probably been throttled. \", \"Stopping further downloads, wait a few hours and try again. \", \"Disable using the override variable `enable_resolution_assert: False`.\" ) ), \"false is no-op\" ) }",
     "resolution_assert_height_gte": 361,
     "resolution_assert_ignore_titles": "{ [  ] }",

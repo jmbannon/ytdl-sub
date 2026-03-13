@@ -38,7 +38,7 @@
     "info_json_name": "{ %concat( \"Rick Astley\", \"/\", %sanitize( %get_url_field( \"title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ), '' ) }.info.json",
     "keep_files_date_eval": "{ %string( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"date_standardized\" ) ) }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmput7fc_rs",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpadwjf29c",
     "preserve_mtime": false,
     "thumbnail_name": "{ %concat( \"Rick Astley\", \"/\", %sanitize( %get_url_field( \"title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ), '' ) }.jpg"
   },
@@ -66,7 +66,7 @@
     "music_video_album_default": "Music Videos",
     "music_video_artist": "Rick Astley",
     "music_video_date": "{ %elif( %contains_url_field( \"date\" ), %get_url_field( \"date\", upload_date_standardized ), %contains_url_field( \"year\" ), %concat( %get_url_field( \"date\", upload_year ), \"-01-01\" ), upload_date_standardized ) }",
-    "music_video_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmput7fc_rs",
+    "music_video_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpadwjf29c",
     "music_video_file_name": "Rick Astley/{ %sanitize( %get_url_field( \"title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) }",
     "music_video_file_name_suffix": "",
     "music_video_genre": "Pop",
