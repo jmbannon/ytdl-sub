@@ -30,7 +30,7 @@ class TestInspect:
         # Shares same test fixture as `test_subscription_resolution.py`
         args = f"--config {default_config_path} " if config_provided else ""
         args += f"inspect {tv_show_subscriptions_path} --match 'NOVA PBS' "
-        args += f"--level {inspect_level}"
+        args += f"--level {inspect_level} "
 
         subscriptions = mock_run_from_cli(args=args)
         assert len(subscriptions) == 0
