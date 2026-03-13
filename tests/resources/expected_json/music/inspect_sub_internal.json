@@ -76,15 +76,15 @@
   },
   "output_options": {
     "download_archive_name": ".ytdl-sub-Lester Young-download-archive.json",
-    "file_name": "Lester Young/{ %concat( \"[\", %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ), \"] \", %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) }/{ %concat( %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ), \" - \", %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ), \".\", ext ) }",
+    "file_name": "Lester Young/[{ %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ) }] { %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) }/{ %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ) } - { %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) }.{ ext }",
     "keep_files_date_eval": "{ %string( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"date_standardized\" ) ) }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpiqt5f8bw",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp7z9ceu_d",
     "preserve_mtime": false,
-    "thumbnail_name": "Lester Young/{ %concat( \"[\", %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ), \"] \", %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) }/folder.jpg"
+    "thumbnail_name": "Lester Young/[{ %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ) }] { %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) }/folder.jpg"
   },
   "overrides": {
-    "album_cover_path": "Lester Young/{ %concat( \"[\", %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ), \"] \", %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) }/folder.jpg",
+    "album_cover_path": "Lester Young/[{ %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ) }] { %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) }/folder.jpg",
     "album_dir": "[{ %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ) }] { %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) }",
     "artist_dir": "Lester Young",
     "avatar_uncropped_thumbnail_file_name": "",
@@ -93,7 +93,7 @@
     "enable_throttle_protection": true,
     "include_sibling_metadata": true,
     "modified_webpage_url": "{ %map_get( entry_metadata, \"webpage_url\" ) }",
-    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpiqt5f8bw",
+    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp7z9ceu_d",
     "resolution_assert": "{ %if( %and( enable_resolution_assert, %ne( height, 0 ), %not( resolution_assert_is_ignored ) ), %assert( %gte( height, resolution_assert_height_gte ), %concat( \"Entry \", title, \" downloaded at a low resolution (\", resolution_readable, \"), you've probably been throttled. \", \"Stopping further downloads, wait a few hours and try again. \", \"Disable using the override variable `enable_resolution_assert: False`.\" ) ), \"false is no-op\" ) }",
     "resolution_assert_height_gte": 361,
     "resolution_assert_ignore_titles": "{ [  ] }",
@@ -111,7 +111,7 @@
     "track_artist": "Lester Young",
     "track_date": "{ %string( %map_get( %to_date_metadata( %map_get_non_empty( entry_metadata, \"upload_date\", %datetime_strftime( %map_get( entry_metadata, \"epoch\" ), \"%Y%m%d\" ) ) ), \"date_standardized\" ) ) }",
     "track_file_name": "{ %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ) } - { %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) }.{ ext }",
-    "track_full_path": "Lester Young/{ %concat( \"[\", %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ), \"] \", %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) ) }/{ %concat( %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ), \" - \", %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ), \".\", ext ) }",
+    "track_full_path": "Lester Young/[{ %int( %map_get( %to_date_metadata( %array_reduce( %if_passthrough( %extract_field_from_siblings( \"upload_date\" ), [ upload_date ] ), %max ) ), \"year\" ) ) }] { %sanitize( %map_get_non_empty( entry_metadata, \"playlist_title\", %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) ) }/{ %pad_zero( %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ), 2 ) } - { %sanitize( %map_get_non_empty( entry_metadata, \"title\", %map_get( entry_metadata, \"id\" ) ) ) }.{ ext }",
     "track_genre": "Jazz",
     "track_genre_default": "Unset",
     "track_number": "{ %map_get_non_empty( entry_metadata, \"playlist_index\", 1 ) }",

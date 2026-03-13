@@ -837,7 +837,7 @@ behavior.
 
 sanitize
 ~~~~~~~~
-:spec: ``sanitize(value: AnyArgument) -> String``
+:spec: ``sanitize(value: AnyArgument, ...) -> String``
 
 Sanitize a string using yt-dlp's ``sanitize_filename`` method to ensure it's safe to use
 for file/directory names on any OS.
