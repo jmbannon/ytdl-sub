@@ -2,6 +2,8 @@ import json
 import re
 from typing import Any, Dict, Optional
 
+from ytdl_sub.entries.script.variable_definitions import VARIABLES
+from ytdl_sub.entries.script.variable_types import IntegerVariable, BooleanVariable
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.array import Array, UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction, Function
@@ -125,6 +127,24 @@ class ScriptUtils:
         return arg
 
     @classmethod
+    def _maybe_sanitized_script_code(cls, arg: Argument) -> Optional[str]:
+        if not (isinstance(arg, Function) and arg.name == "sanitize"):
+            return None
+
+        output = ""
+        for sub_arg in arg.args:
+            if isinstance(sub_arg, Variable):
+                # No need to sanitize built-in integer variables
+                if isinstance(VARIABLES.get(sub_arg.name), (IntegerVariable, BooleanVariable)):
+                    output += f"{{ {sub_arg.name} }}"
+                else:
+                    output += f"{{ {sub_arg.name}_sanitized }}"
+            else:
+                output += cls._to_script_code(sub_arg, top_level=True)
+
+        return output
+
+    @classmethod
     def _to_script_code(cls, arg: Argument, top_level: bool = False) -> str:
         if not top_level and isinstance(arg, (Integer, Boolean, Float)):
             return str(arg.native)
@@ -138,6 +158,10 @@ class ScriptUtils:
             return arg.native if top_level else f"{quote}{arg.native}{quote}"
 
         arg = cls._maybe_to_optimized_sanitize(arg)
+
+        maybe_out = cls._maybe_sanitized_script_code(arg)
+        if top_level and maybe_out is not None:
+            return maybe_out
 
         if isinstance(arg, Integer):
             out = f"%int({arg.native})"
