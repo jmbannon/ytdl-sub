@@ -1,6 +1,6 @@
 from abc import ABC
 from functools import cache, cached_property
-from typing import Dict, Set
+from typing import Dict, Optional, Set
 
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
 from ytdl_sub.entries.script.variable_types import (
@@ -1214,6 +1214,14 @@ class VariableDefinitions(
         return {
             VARIABLES.entry_metadata,
         } | self.injected_variables()
+
+    def get(self, name: str) -> Optional[Variable]:
+        """
+        Returns the variable attribute if it exists. None otherwise.
+        """
+        if not hasattr(self, name):
+            return None
+        return getattr(self, name)
 
 
 # Singletons to use externally

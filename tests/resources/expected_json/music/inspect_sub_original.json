@@ -71,7 +71,7 @@
     "enable_throttle_protection": true,
     "include_sibling_metadata": true,
     "modified_webpage_url": "{webpage_url}",
-    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpk6coazyn",
+    "music_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpgcphf_8p",
     "resolution_assert": "{\n  %if(\n    %and(\n      enable_resolution_assert,\n      %ne( height, 0 ),\n      %not(resolution_assert_is_ignored)\n    ),\n    %assert(\n      %gte( height, resolution_assert_height_gte ),\n      %concat(\n        \"Entry \",\n        title,\n        \" downloaded at a low resolution (\",\n        resolution_readable,\n        \"), you've probably been throttled. \",\n        \"Stopping further downloads, wait a few hours and try again. \",\n        \"Disable using the override variable `enable_resolution_assert: False`.\"\n      )\n    ),\n    \"false is no-op\"\n  )\n}",
     "resolution_assert_height_gte": 361,
     "resolution_assert_ignore_titles": "{ [] }",

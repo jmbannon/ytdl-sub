@@ -46,12 +46,12 @@ class CustomFunctions:
         return String(FilePathTruncater.maybe_truncate_file_path(filepath.value))
 
     @staticmethod
-    def sanitize(value: AnyArgument) -> String:
+    def sanitize(*value: AnyArgument) -> String:
         """
         Sanitize a string using yt-dlp's ``sanitize_filename`` method to ensure it's safe to use
         for file/directory names on any OS.
         """
-        return String(sanitize_filename(str(value)))
+        return String("".join(sanitize_filename(str(val)) for val in value))
 
     @staticmethod
     def sanitize_plex_episode(string: String) -> String:
