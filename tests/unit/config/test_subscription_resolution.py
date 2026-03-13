@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Dict
 
 import pytest
 import yaml
@@ -10,12 +11,13 @@ from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.file_path import FilePathTruncater
 
 
-def _ensure_resolved_yaml(
-    sub: Subscription, output_directory: str, preset_type: str, resolution_level: int
+def compare_resolved_yaml(
+    out: Dict,
+    output_directory: str,
+    subscription_name: str,
+    preset_type: str,
+    resolution_level: int,
 ) -> None:
-    output_yaml = sub.resolved_yaml(resolution_level=resolution_level)
-    out = yaml.safe_load(output_yaml)
-
     expected_out_filename = (
         f"{preset_type}/inspect_sub_{ResolutionLevel.name_of(resolution_level)}.json"
     )
@@ -24,7 +26,7 @@ def _ensure_resolved_yaml(
     if resolution_level > ResolutionLevel.ORIGINAL:
         output_path = Path(output_directory)
         if "tv_show_directory" in expected_out["overrides"]:
-            output_path = output_path / sub.name
+            output_path = output_path / subscription_name
 
         expected_out["output_options"]["output_directory"] = FilePathTruncater.to_native_filepath(
             str(output_path)
@@ -38,6 +40,21 @@ def _ensure_resolved_yaml(
         expected_out["overrides"]["music_video_directory"] = output_directory
 
     assert out == expected_out
+
+
+def _ensure_resolved_yaml(
+    sub: Subscription, output_directory: str, preset_type: str, resolution_level: int
+) -> None:
+    output_yaml = sub.resolved_yaml(resolution_level=resolution_level)
+    out = yaml.safe_load(output_yaml)
+
+    compare_resolved_yaml(
+        out=out,
+        output_directory=output_directory,
+        subscription_name=sub.name,
+        preset_type=preset_type,
+        resolution_level=resolution_level,
+    )
 
 
 @pytest.mark.parametrize("resolution_level", ResolutionLevel.all())

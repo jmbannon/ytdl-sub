@@ -17,11 +17,14 @@ from ytdl_sub.cli.parsers.cli_to_sub import print_cli_to_sub
 from ytdl_sub.cli.parsers.dl import DownloadArgsParser
 from ytdl_sub.cli.parsers.main import DEFAULT_CONFIG_FILE_NAME, parser
 from ytdl_sub.config.config_file import ConfigFile
+from ytdl_sub.config.validators.variable_validation import ResolutionLevel
 from ytdl_sub.subscriptions.subscription import Subscription
 from ytdl_sub.utils.exceptions import ExperimentalFeatureNotEnabled, ValidationException
 from ytdl_sub.utils.file_handler import FileHandler
 from ytdl_sub.utils.file_lock import working_directory_lock
 from ytdl_sub.utils.logger import Logger
+
+# pylint: disable=too-many-branches
 
 logger = Logger.get()
 
@@ -202,6 +205,44 @@ def _view_url_from_cli(config: ConfigFile, url: str, split_chapters: bool) -> Su
     return subscription
 
 
+def _parse_inspect_mocks(mocks: Optional[List[str]]) -> Dict[str, str]:
+    out: Dict[str, str] = {}
+    for mock in mocks or []:
+        spl = mock.split("=", 1)
+        if len(spl) == 1:
+            raise ValidationException("inspect mock must be in the form of VAR=VALUE")
+        out[spl[0].strip()] = spl[1]
+
+    return out
+
+
+def _inspect(
+    config: ConfigFile,
+    subscription_paths: List[str],
+    subscription_matches: List[str],
+    subscription_override_dict: Dict,
+    inspection_level: int,
+    mocks: Dict[str, str],
+) -> None:
+
+    subscriptions: List[Subscription] = []
+    for path in subscription_paths:
+        subscriptions += Subscription.from_file_path(
+            config=config,
+            subscription_path=path,
+            subscription_matches=subscription_matches,
+            subscription_override_dict=subscription_override_dict,
+        )
+
+    if len(subscriptions) > 1:
+        print(
+            "inspect can only inspect a single subscription. Use --match to filter for a single one"
+        )
+        return
+
+    print(subscriptions[0].resolved_yaml(resolution_level=inspection_level, mocks=mocks))
+
+
 def main() -> List[Subscription]:
     """
     Entrypoint for ytdl-sub, without the error handling
@@ -227,6 +268,23 @@ def main() -> List[Subscription]:
         config = ConfigFile.default()
 
     subscriptions: List[Subscription] = []
+
+    if args.subparser == "inspect":
+        subscription_override_dict = {}
+        if args.dl_override:
+            subscription_override_dict = DownloadArgsParser.from_dl_override(
+                override=args.dl_override, config=config
+            ).to_subscription_dict()
+
+        _inspect(
+            config=config,
+            subscription_paths=args.subscription_paths,
+            subscription_matches=args.match,
+            subscription_override_dict=subscription_override_dict,
+            inspection_level=ResolutionLevel.level_number(args.inspection_level),
+            mocks=_parse_inspect_mocks(args.mock),
+        )
+        return []
 
     # If transaction log file is specified, make sure we can open it
     _maybe_validate_transaction_log_file(transaction_log_file_path=args.transaction_log)
