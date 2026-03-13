@@ -38,7 +38,7 @@
     "info_json_name": "{ music_video_file_name }.{ info_json_ext }",
     "keep_files_date_eval": "{ upload_date_standardized }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpnmjbiv6a",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp23dslv3t",
     "preserve_mtime": false,
     "thumbnail_name": "{ music_video_file_name }.jpg"
   },
@@ -66,7 +66,7 @@
     "music_video_album_default": "Music Videos",
     "music_video_artist": "Rick Astley",
     "music_video_date": "{ %elif( %contains_url_field( \"date\" ), %get_url_field( \"date\", upload_date_standardized ), %contains_url_field( \"year\" ), %concat( %get_url_field( \"date\", upload_year ), \"-01-01\" ), upload_date_standardized ) }",
-    "music_video_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpnmjbiv6a",
+    "music_video_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp23dslv3t",
     "music_video_file_name": "Rick Astley/{ %sanitize( %get_url_field( \"title\", title ) ) }",
     "music_video_file_name_suffix": "",
     "music_video_genre": "Pop",

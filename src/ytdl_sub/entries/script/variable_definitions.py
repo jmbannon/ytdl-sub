@@ -1,6 +1,6 @@
 from abc import ABC
 from functools import cache, cached_property
-from typing import Dict, Set, Optional
+from typing import Dict, Optional, Set
 
 from ytdl_sub.entries.script.custom_functions import CustomFunctions
 from ytdl_sub.entries.script.variable_types import (
@@ -1219,6 +1219,7 @@ class VariableDefinitions(
         if not hasattr(self, name):
             return None
         return getattr(self, name)
+
 
 # Singletons to use externally
 VARIABLES: VariableDefinitions = VariableDefinitions()

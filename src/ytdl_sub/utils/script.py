@@ -2,8 +2,9 @@ import json
 import re
 from typing import Any, Dict, Optional
 
+from ytdl_sub.entries.script.custom_functions import CustomFunctions
 from ytdl_sub.entries.script.variable_definitions import VARIABLES
-from ytdl_sub.entries.script.variable_types import IntegerVariable, BooleanVariable
+from ytdl_sub.entries.script.variable_types import BooleanVariable, IntegerVariable
 from ytdl_sub.script.parser import parse
 from ytdl_sub.script.types.array import Array, UnresolvedArray
 from ytdl_sub.script.types.function import BuiltInFunction, Function
@@ -15,7 +16,7 @@ from ytdl_sub.script.utils.exceptions import UNREACHABLE
 from ytdl_sub.script.utils.name_validation import is_function
 
 # pylint: disable=too-many-return-statements
-
+# pylint: disable=too-many-branches
 
 class ScriptUtils:
     @classmethod
@@ -139,10 +140,34 @@ class ScriptUtils:
                     output += f"{{ {sub_arg.name} }}"
                 else:
                     output += f"{{ {sub_arg.name}_sanitized }}"
-            else:
+            elif isinstance(sub_arg, (Integer, Float, Boolean)):
+                output += str(sub_arg.native)
+            elif isinstance(sub_arg, String):
+                output += CustomFunctions.sanitize(sub_arg).native
+            elif isinstance(sub_arg, BuiltInFunction) and (
+                issubclass(sub_arg.function_spec.return_type, (Integer, Float, Boolean))
+                or sub_arg.name == "pad_zero"
+            ):
+                # If we know the function's output is sanitized, let's not wrap it
                 output += cls._to_script_code(sub_arg, top_level=True)
+            else:
+                # Purposefully do not set top_level to True so we do not recurse
+                output += (
+                    f"{{ {cls._to_script_code(BuiltInFunction(name='sanitize', args=[sub_arg]))} }}"
+                )
 
         return output
+
+    @classmethod
+    def _maybe_concat_script_code(cls, arg: Argument) -> Optional[str]:
+        if not (isinstance(arg, Function) and arg.name == "concat"):
+            return None
+
+        out = ""
+        for sub_arg in arg.args:
+            out += cls._to_script_code(sub_arg, top_level=True)
+
+        return out
 
     @classmethod
     def _to_script_code(cls, arg: Argument, top_level: bool = False) -> str:
@@ -159,9 +184,11 @@ class ScriptUtils:
 
         arg = cls._maybe_to_optimized_sanitize(arg)
 
-        maybe_out = cls._maybe_sanitized_script_code(arg)
-        if top_level and maybe_out is not None:
-            return maybe_out
+        if top_level:
+            if (out := cls._maybe_sanitized_script_code(arg)) is not None:
+                return out
+            if (out := cls._maybe_concat_script_code(arg)) is not None:
+                return out
 
         if isinstance(arg, Integer):
             out = f"%int({arg.native})"
