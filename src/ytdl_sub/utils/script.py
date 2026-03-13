@@ -18,6 +18,7 @@ from ytdl_sub.script.utils.name_validation import is_function
 # pylint: disable=too-many-return-statements
 # pylint: disable=too-many-branches
 
+
 class ScriptUtils:
     @classmethod
     def add_sanitized_variables(cls, variables: Dict[str, str]) -> Dict[str, str]:

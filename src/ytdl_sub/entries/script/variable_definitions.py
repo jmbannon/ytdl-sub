@@ -1216,6 +1216,9 @@ class VariableDefinitions(
         } | self.injected_variables()
 
     def get(self, name: str) -> Optional[Variable]:
+        """
+        Returns the variable attribute if it exists. None otherwise.
+        """
         if not hasattr(self, name):
             return None
         return getattr(self, name)
