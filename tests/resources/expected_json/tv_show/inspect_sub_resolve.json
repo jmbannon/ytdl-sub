@@ -54,7 +54,7 @@
     "info_json_name": "{ %concat( %sanitize( \"Season \", upload_year ), \"/\", %sanitize( \"s\", upload_year, \".e\", %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ), \" - \", title_sanitized_plex ) ) }.{ info_json_ext }",
     "keep_files_date_eval": "{ upload_date_standardized }",
     "maintain_download_archive": true,
-    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp0cjk_b8x/NOVA PBS",
+    "output_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpt530p9rt/NOVA PBS",
     "preserve_mtime": false,
     "thumbnail_name": "{ %concat( %sanitize( \"Season \", upload_year ), \"/\", %sanitize( \"s\", upload_year, \".e\", %pad_zero( %int( %concat( upload_month, upload_day_padded, upload_date_index_padded ) ), 6 ), \" - \", title_sanitized_plex ) ) }-thumb.jpg"
   },
@@ -112,7 +112,7 @@
     "tv_show_content_rating": "TV-14",
     "tv_show_content_rating_default": "TV-14",
     "tv_show_date_range_type": "upload_date",
-    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmp0cjk_b8x",
+    "tv_show_directory": "/var/folders/rw/hl1xmkmj68zdl2kjx3l0dwzc0000gn/T/tmpt530p9rt",
     "tv_show_fanart_file_name": "fanart.jpg",
     "tv_show_genre": "Documentaries",
     "tv_show_genre_default": "ytdl-sub",
