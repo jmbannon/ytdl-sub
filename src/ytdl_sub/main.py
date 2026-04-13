@@ -1,7 +1,7 @@
 import sys
 
 from ytdl_sub.cli.parsers.main import parser
-from ytdl_sub.utils.logger import Logger
+from ytdl_sub.utils.logger import Logger, LoggerLevels
 
 
 def _main() -> int:
@@ -9,6 +9,11 @@ def _main() -> int:
     # get initialized, they will see the set log level
     args, _ = parser.parse_known_args()
     Logger.set_log_level(log_level_name=args.ytdl_sub_log_level)
+
+    # Suppress all logs during inspection since the output of the subcommand itself
+    # is all that is necessary
+    if args.subparser == "inspect":
+        Logger.set_log_level(log_level_name=LoggerLevels.QUIET.name)
 
     # pylint: disable=import-outside-toplevel
     import ytdl_sub.cli.entrypoint

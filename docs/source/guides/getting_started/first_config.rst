@@ -242,3 +242,22 @@ Be sure to tell ytdl-sub to use your config by using the argument ``--config
 
 If you run ytdl-sub in the same directory, and the config file is named ``config.yaml``,
 it will use it by default.
+
+Visualizing a subscription in Preset form
+-----------------------------------------
+
+Subscription file syntax is designed to minimize boiler-plate when authoring new subscriptions.
+You can unpack any subscription using the ``inspect`` sub-command to see its boiler-plate *preset format*.
+
+.. code-block:: bash
+
+   ytdl-sub inspect --config /path/to/config.yaml --match "BBC News" /path/to/subscriptions.yaml
+
+This can be utilized for numerous purposes including:
+
+* Ensuring your custom preset is getting applied correctly.
+* Figuring out which variables set things like file names, metadata, etc.
+* Understanding how subscription syntax translates to preset representation.
+
+The default ``--level`` of inspect will fill in defined variables. Using ``--level original`` will
+present the subscription's raw layout with no fill.
