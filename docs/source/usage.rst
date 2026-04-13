@@ -126,7 +126,7 @@ Usage:
 
 .. code-block:: bash
 
-   ytdl-sub inspect --match "Game Chops" -mock 'title=Lets Play' examples/music_subscriptions.yaml
+   ytdl-sub inspect --match "Game Chops" --mock 'title=Lets Play' examples/music_subscriptions.yaml
 
 .. code-block:: text
   :caption: Additional Options
