@@ -112,3 +112,35 @@ Convert yt-dlp cli arguments to ytdl-sub `ytdl_options` arguments.
 .. code-block::
 
    ytdl-sub cli-to-sub [YT-DLP ARGS]
+
+Inspect
+-------
+Inspect a single subscription's underlying preset representation.
+This can be utilized for numerous purposes including:
+
+* Ensuring your custom preset is getting applied correctly.
+* Figuring out which variables set things like file names, metadata, etc.
+* Understanding how subscription syntax translates to preset representation.
+
+Usage:
+
+.. code-block:: bash
+
+   ytdl-sub inspect --match "Game Chops" -mock 'title=Lets Play' examples/music_subscriptions.yaml
+
+.. code-block:: text
+  :caption: Additional Options
+
+     -l 0,1,2,3, --level 0,1,2,3
+                           level of inspection to perform:
+                               0 - original   present the subscription as-is
+                               1 - fill       fill in defined values
+                               2 - resolve    resolve all possible variables (default)
+                               3 - internal   resolve all variables to their internal representation
+
+     -m MATCH [MATCH ...], --match MATCH [MATCH ...]
+                           match subscription names to one or more substrings, and only run those subscriptions
+     -o DL_OVERRIDE, --dl-override DL_OVERRIDE
+                           override all subscription config values using `dl` syntax, i.e. --dl-override='--ytdl_options.max_downloads 3'
+     -k VAR=VALUE, --mock VAR=VALUE
+                           ability to mock one or more variable values, i.e. --mock 'title=Lets Play'
