@@ -259,5 +259,5 @@ This can be utilized for numerous purposes including:
 * Figuring out which variables set things like file names, metadata, etc.
 * Understanding how subscription syntax translates to preset representation.
 
-The default ``--level`` of inspect will fill in strings. Using ``--level original`` will
-present the subscription's raw layout.
+The default ``--level`` of inspect will fill in defined variables. Using ``--level original`` will
+present the subscription's raw layout with no fill.
