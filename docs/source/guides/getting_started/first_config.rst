@@ -251,7 +251,7 @@ You can unpack any subscription using the ``inspect`` sub-command to see its boi
 
 .. code-block:: bash
 
-   ytdl-sub inspect --config /path/to/config.yaml --match "BBC News" /path/to/subscriptions.yaml
+   ytdl-sub inspect --match "BBC News" /path/to/subscriptions.yaml
 
 This can be utilized for numerous purposes including:
 
