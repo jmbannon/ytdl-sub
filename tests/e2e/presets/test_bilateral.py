@@ -2,7 +2,7 @@ from typing import Dict
 
 import pytest
 from expected_transaction_log import assert_transaction_log_matches
-from resources import DISABLE_YOUTUBE_TESTS
+from resources import DISABLE_E2E_TESTS
 
 from ytdl_sub.config.config_file import ConfigFile
 from ytdl_sub.subscriptions.subscription import Subscription
@@ -51,7 +51,7 @@ def tv_show_collection_bilateral_dict(output_directory):
     }
 
 
-@pytest.mark.skipif(DISABLE_YOUTUBE_TESTS, reason="YouTube tests cannot run in GH")
+@pytest.mark.skipif(DISABLE_E2E_TESTS, reason="YouTube tests cannot run in GH")
 class TestBilateral:
     def test_tv_show_by_date_downloads_bilateral(
         self,
