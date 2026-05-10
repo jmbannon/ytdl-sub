@@ -146,8 +146,7 @@ class ScriptUtils:
             elif isinstance(sub_arg, String):
                 output += CustomFunctions.sanitize(sub_arg).native
             elif isinstance(sub_arg, BuiltInFunction) and (
-                issubclass(sub_arg.function_spec.return_type, (Integer, Float, Boolean))
-                or sub_arg.name == "pad_zero"
+                sub_arg.function_spec.has_sanitized_output() or sub_arg.name == "pad_zero"
             ):
                 # If we know the function's output is sanitized, let's not wrap it
                 output += cls._to_script_code(sub_arg, top_level=True)

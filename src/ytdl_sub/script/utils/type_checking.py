@@ -7,8 +7,11 @@ from typing import Callable, List, Optional, Type, TypeVar, Union, get_origin
 
 from ytdl_sub.script.types.resolvable import (
     Argument,
+    Boolean,
     BuiltInFunctionType,
+    Float,
     FutureResolvable,
+    Integer,
     Lambda,
     LambdaReduce,
     LambdaThree,
@@ -247,6 +250,17 @@ class FunctionSpec:
         if l_type := self.is_lambda_function:
             return l_type
         return None
+
+    def has_sanitized_output(self) -> bool:
+        """
+        Returns
+        -------
+        If this function were to be sanitized, whether it's redundant or not based on its
+        output
+        """
+        return inspect.isclass(self.return_type) and issubclass(
+            self.return_type, (Integer, Float, Boolean)
+        )
 
     @classmethod
     def _to_human_readable_name(cls, python_type: Type[NamedType] | Type[Union[NamedType]]) -> str:
