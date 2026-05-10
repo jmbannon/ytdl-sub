@@ -134,28 +134,28 @@ class ScriptUtils:
             return None
 
         output = ""
-        for sub_arg in arg.args:
-            if isinstance(sub_arg, Variable):
-                # No need to sanitize built-in integer variables
-                if isinstance(VARIABLES.get(sub_arg.name), (IntegerVariable, BooleanVariable)):
-                    output += f"{{ {sub_arg.name} }}"
+        try:
+            for sub_arg in arg.args:
+                if isinstance(sub_arg, Variable):
+                    # No need to sanitize built-in integer variables
+                    if isinstance(VARIABLES.get(sub_arg.name), (IntegerVariable, BooleanVariable)):
+                        output += f"{{ {sub_arg.name} }}"
+                    else:
+                        output += f"{{ {sub_arg.name}_sanitized }}"
+                elif isinstance(sub_arg, (Integer, Float, Boolean)):
+                    output += str(sub_arg.native)
+                elif isinstance(sub_arg, String):
+                    output += CustomFunctions.sanitize(sub_arg).native
+                elif isinstance(sub_arg, BuiltInFunction) and (
+                    sub_arg.function_spec.has_sanitized_output() or sub_arg.name == "pad_zero"
+                ):
+                    # If we know the function's output is sanitized, let's not wrap it
+                    output += cls._to_script_code(sub_arg, top_level=True)
                 else:
-                    output += f"{{ {sub_arg.name}_sanitized }}"
-            elif isinstance(sub_arg, (Integer, Float, Boolean)):
-                output += str(sub_arg.native)
-            elif isinstance(sub_arg, String):
-                output += CustomFunctions.sanitize(sub_arg).native
-            elif isinstance(sub_arg, BuiltInFunction) and (
-                issubclass(sub_arg.function_spec.return_type, (Integer, Float, Boolean))
-                or sub_arg.name == "pad_zero"
-            ):
-                # If we know the function's output is sanitized, let's not wrap it
-                output += cls._to_script_code(sub_arg, top_level=True)
-            else:
-                # Purposefully do not set top_level to True so we do not recurse
-                output += (
-                    f"{{ {cls._to_script_code(BuiltInFunction(name='sanitize', args=[sub_arg]))} }}"
-                )
+                    # Purposefully do not set top_level to True so we do not recurse
+                    output += f"{{ {cls._to_script_code(BuiltInFunction(name='sanitize', args=[sub_arg]))} }}"
+        except TypeError:
+            print("huh")
 
         return output
 
