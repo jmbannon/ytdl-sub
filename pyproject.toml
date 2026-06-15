@@ -47,7 +47,7 @@ test = [
     "pytest-rerunfailures>=14,<17",
 ]
 lint = [
-    "pylint==4.0.5",
+    "pylint==4.0.6",
     "ruff==0.15.16",
 ]
 docs = [
