@@ -52,6 +52,13 @@ class FilePathTruncater:
         return f"{file_sub_name}{delimiter}{file_ext}"
 
     @classmethod
+    def _truncate_directory_name(cls, directory_name: str) -> str:
+        while len(directory_name.encode("utf-8")) > cls._MAX_BASE_FILE_NAME_BYTES:
+            directory_name = directory_name[:-1]
+
+        return directory_name
+
+    @classmethod
     def maybe_truncate_file_path(cls, file_path: str) -> str:
         """Turn into a Path, then a string, to get correct directory separators"""
         file_directory, file_name = os.path.split(Path(file_path))
@@ -60,6 +67,30 @@ class FilePathTruncater:
             return str(Path(file_directory) / cls._truncate_file_name(file_name))
 
         return str(file_path)
+
+    @classmethod
+    def maybe_truncate_file_name_path(cls, file_name_path: str) -> str:
+        """
+        Truncates each component of a relative output file name path. Both the
+        subdirectories (which can be derived from metadata such as the title) and the
+        final file name are truncated if they exceed the OS limit. The file name's
+        extension is always preserved.
+        """
+        parts = Path(file_name_path).parts
+        if not parts:
+            return file_name_path
+
+        *directory_parts, file_name = parts
+
+        truncated_parts = [
+            cls._truncate_directory_name(part) if cls._is_file_name_too_long(part) else part
+            for part in directory_parts
+        ]
+
+        if cls._is_file_name_too_long(file_name):
+            file_name = cls._truncate_file_name(file_name)
+
+        return str(Path(*truncated_parts, file_name))
 
     @classmethod
     def to_native_filepath(cls, file_path: str) -> str:

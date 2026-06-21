@@ -77,6 +77,46 @@ class TestStringFormatterFilePathValidator:
                 assert len(dir_paths) == 1
                 assert Path(truncated_file_path) == dir_paths[0]
 
+    @pytest.mark.parametrize("ext", ["mp4", "-thumb.jpg"])
+    def test_truncates_subdirectory_in_file_name_path(self, ext: str):
+        if "thumb" not in ext:  # do not put . in front of -thumb
+            ext = f".{ext}"
+
+        # Mathematical bold unicode characters are 4 bytes each in UTF-8, so a title used
+        # as a subdirectory can easily exceed the OS file name limit (typically 255 bytes).
+        long_directory = (
+            "[2026] 𝗿𝘁𝗶𝘀𝘁 𝗢𝗻𝗲 - 𝗔 𝗩𝗲𝗿𝘆 𝗟𝗼𝗻𝗴 𝗦𝗼𝗻𝗴 𝗧𝗶𝘁𝗹𝗲 "
+            "𝗧𝗵𝗮𝘁 𝗘𝘅𝗰𝗲𝗲𝗱𝘀 𝗧𝗵𝗲 𝗟𝗶𝗺𝗶𝘁 (𝗘𝘅𝘁𝗲𝗻𝗱𝗲𝗱 𝗠𝗶𝘅 𝘅 "
+            "𝗦𝗲𝗰𝗼𝗻𝗱 𝗔𝗿𝘁𝗶𝘀𝘁 & 𝗧𝗵𝗶𝗿𝗱 𝗔𝗿𝘁𝗶𝘀𝘁)"
+        )
+        # Sanity check that the directory really does exceed the limit
+        assert len(long_directory.encode("utf-8")) > FilePathTruncater._MAX_BASE_FILE_NAME_BYTES
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            file_path = str(Path(temp_dir) / long_directory / f"video{ext}")
+
+            formatter = StringFormatterFileNameValidator(name="test", value="")
+            truncated_file_path = formatter.post_process(file_path)
+
+            truncated_directory, truncated_file_name = os.path.split(truncated_file_path)
+            _, truncated_directory_name = os.path.split(truncated_directory)
+
+            # Both the subdirectory and the file name must fit within the OS limit
+            assert (
+                len(truncated_directory_name.encode("utf-8"))
+                <= FilePathTruncater._MAX_BASE_FILE_NAME_BYTES
+            )
+            assert (
+                len(truncated_file_name.encode("utf-8"))
+                <= FilePathTruncater._MAX_BASE_FILE_NAME_BYTES
+            )
+            assert truncated_file_name.endswith(ext)
+
+            # The original bug raised "OSError: [Errno 36] Filename too long" here because
+            # the subdirectory component was never truncated.
+            os.makedirs(truncated_directory, exist_ok=True)
+            assert os.path.isdir(truncated_directory)
+
     @pytest.mark.parametrize(
         "file_name_max_bytes, expected_max",
         [
