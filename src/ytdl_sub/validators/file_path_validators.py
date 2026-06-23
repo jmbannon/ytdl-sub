@@ -48,7 +48,7 @@ class StringFormatterFileNameValidator(StringFormatterValidator):
 
     def post_process(self, resolved: str) -> str:
         return FilePathTruncater.to_native_filepath(
-            FilePathTruncater.maybe_truncate_file_path(resolved)
+            FilePathTruncater.maybe_truncate_file_name_path(resolved)
         )
 
 
