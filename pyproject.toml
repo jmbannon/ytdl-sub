@@ -48,7 +48,7 @@ test = [
 ]
 lint = [
     "pylint==4.0.5",
-    "ruff==0.15.16",
+    "ruff==0.15.19",
 ]
 docs = [
     "sphinx>=7,<10",
