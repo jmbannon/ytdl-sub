@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: ytdl
+spec:
+  schedule: '@hourly'
+  successfulJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    metadata:
+      labels:
+        app: ytdl
+    spec:
+      parallelism: 1
+      template:
+        metadata:
+          labels:
+            app: ytdl
+        spec:
+          containers:
+          - name: ytdl
+            image: kaictl/ytdl-sub:notlatest
+            command:
+            - ytdl-sub
+            - sub
+            volumeMounts:
+            # Where to download to
+            - mountPath: /media
+              name: media
+            # Storage for .ytdl-sub-working-directory.
+            - mountPath: /cache
+              name: cache
+            # Configuration and preset files location.
+            - mountPath: /config
+              name: config
+            # Run in the cache directory, just for ease of use.
+            workingDir: /cache/
+            # Run as non-root so we don't have security issues.
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              privileged: false
+              readOnlyRootFilesystem: false
+              runAsNonRoot: true
+          volumes:
+          - name: media
+            persistentVolumeClaim:
+              claimName: yt-media
+          - name: cache
+            persistentVolumeClaim:
+              claimName: yt-cache
+          - name: config
+            configMap:
+              name: ytdl
+          # More security settings. Runs as `nobody`.
+          securityContext:
+            fsGroup: 65534
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 65534
+            runAsNonRoot: false
+            runAsUser: 65534
