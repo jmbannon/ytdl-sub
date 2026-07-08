@@ -147,3 +147,75 @@ class TestRemoveStaleFilesSortBy:
 
         remaining_ids = list(archive.mapping.entry_mappings.keys())
         assert sorted(remaining_ids) == ["id1", "id2", "id3"]
+
+
+class TestRemoveStaleFilesUploadDate:
+    def _make_archive(self, tmp_path, mappings_dict):
+        working = tmp_path / "working"
+        output = tmp_path / "output"
+        working.mkdir()
+        output.mkdir()
+
+        archive = EnhancedDownloadArchive(
+            file_name="archive.json",
+            working_directory=str(working),
+            output_directory=str(output),
+        )
+        archive._download_mapping = DownloadMappings()
+        for uid, mapping in mappings_dict.items():
+            archive._download_mapping._entry_mappings[uid] = mapping
+            for fname in mapping.file_names:
+                (output / fname).write_text("content")
+        return archive
+
+    def test_sort_by_upload_date_keeps_most_recent(self, tmp_path):
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}, playlist_index=1),
+            "id2": DownloadMapping("2024-01-05", "yt", {"b.mp4"}, playlist_index=2),
+            "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}, playlist_index=3),
+            "id4": DownloadMapping("2024-01-04", "yt", {"d.mp4"}, playlist_index=4),
+            "id5": DownloadMapping("2024-01-02", "yt", {"e.mp4"}, playlist_index=5),
+        }
+        archive = self._make_archive(tmp_path, mappings)
+        archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="upload_date")
+
+        remaining_ids = list(archive.mapping.entry_mappings.keys())
+        assert sorted(remaining_ids) == ["id2", "id3", "id4"]
+
+    def test_old_archive_without_playlist_index_sorts_by_upload_date(self, tmp_path):
+        mappings = {
+            "id1": DownloadMapping.from_dict(
+                {"upload_date": "2024-01-01", "extractor": "yt", "file_names": ["a.mp4"]}
+            ),
+            "id2": DownloadMapping.from_dict(
+                {"upload_date": "2024-01-05", "extractor": "yt", "file_names": ["b.mp4"]}
+            ),
+            "id3": DownloadMapping.from_dict(
+                {"upload_date": "2024-01-03", "extractor": "yt", "file_names": ["c.mp4"]}
+            ),
+            "id4": DownloadMapping.from_dict(
+                {"upload_date": "2024-01-04", "extractor": "yt", "file_names": ["d.mp4"]}
+            ),
+            "id5": DownloadMapping.from_dict(
+                {"upload_date": "2024-01-02", "extractor": "yt", "file_names": ["e.mp4"]}
+            ),
+        }
+        archive = self._make_archive(tmp_path, mappings)
+        archive.remove_stale_files(date_range=None, keep_max_files=3)
+
+        remaining_ids = list(archive.mapping.entry_mappings.keys())
+        assert sorted(remaining_ids) == ["id2", "id3", "id4"]
+        for uid in remaining_ids:
+            assert archive.mapping.entry_mappings[uid].playlist_index is None
+
+    def test_sort_by_upload_date_keep_max_zero_does_not_prune(self, tmp_path):
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}),
+            "id2": DownloadMapping("2024-01-02", "yt", {"b.mp4"}),
+            "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}),
+        }
+        archive = self._make_archive(tmp_path, mappings)
+        archive.remove_stale_files(date_range=None, keep_max_files=0, sort_by="upload_date")
+
+        remaining_ids = list(archive.mapping.entry_mappings.keys())
+        assert sorted(remaining_ids) == ["id1", "id2", "id3"]
