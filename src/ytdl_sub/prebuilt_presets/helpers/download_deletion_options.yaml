@@ -25,9 +25,11 @@ presets:
     output_options:
       keep_files_after: "today-{only_recent_date_range}"
       keep_max_files: "{only_recent_max_files}"
+      keep_max_files_sort_by: "{only_recent_sort_by}"
 
     overrides:
       only_recent_max_files: 0
+      only_recent_sort_by: "upload_date"
 
   #############################################################################
   # Download in Chunks

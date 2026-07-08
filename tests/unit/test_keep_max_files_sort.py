@@ -1,7 +1,11 @@
 import pytest
 
 from ytdl_sub.validators.sort_by_validator import KeepMaxFilesSortByValidator
-from ytdl_sub.ytdl_additions.enhanced_download_archive import DownloadMapping
+from ytdl_sub.ytdl_additions.enhanced_download_archive import (
+    DownloadMapping,
+    DownloadMappings,
+    EnhancedDownloadArchive,
+)
 
 
 class TestDownloadMappingPlaylistIndex:
@@ -63,3 +67,83 @@ class TestKeepMaxFilesSortByValidator:
         validator = KeepMaxFilesSortByValidator(name="test", value="title")
         with pytest.raises(ValidationException, match="Must be one of the following values"):
             validator.post_process("title")
+
+
+class TestRemoveStaleFilesSortBy:
+    def _make_archive(self, tmp_path, mappings_dict):
+        working = tmp_path / "working"
+        output = tmp_path / "output"
+        working.mkdir()
+        output.mkdir()
+
+        archive = EnhancedDownloadArchive(
+            file_name="archive.json",
+            working_directory=str(working),
+            output_directory=str(output),
+        )
+        archive._download_mapping = DownloadMappings()
+        for uid, mapping in mappings_dict.items():
+            archive._download_mapping._entry_mappings[uid] = mapping
+            for fname in mapping.file_names:
+                (output / fname).write_text("content")
+        return archive
+
+    def test_sort_by_playlist_index_keeps_lowest_indices(self, tmp_path):
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}, playlist_index=1),
+            "id2": DownloadMapping("2024-01-02", "yt", {"b.mp4"}, playlist_index=2),
+            "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}, playlist_index=3),
+            "id4": DownloadMapping("2024-01-04", "yt", {"d.mp4"}, playlist_index=4),
+            "id5": DownloadMapping("2024-01-05", "yt", {"e.mp4"}, playlist_index=5),
+        }
+        archive = self._make_archive(tmp_path, mappings)
+        archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index")
+
+        remaining_ids = list(archive.mapping.entry_mappings.keys())
+        assert sorted(remaining_ids) == ["id1", "id2", "id3"]
+
+    def test_sort_by_playlist_index_prunes_none_first(self, tmp_path):
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}, playlist_index=1),
+            "id2": DownloadMapping("2024-01-02", "yt", {"b.mp4"}, playlist_index=None),
+            "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}, playlist_index=3),
+            "id4": DownloadMapping("2024-01-04", "yt", {"d.mp4"}, playlist_index=None),
+            "id5": DownloadMapping("2024-01-05", "yt", {"e.mp4"}, playlist_index=5),
+        }
+        archive = self._make_archive(tmp_path, mappings)
+        archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index")
+
+        remaining_ids = list(archive.mapping.entry_mappings.keys())
+        assert sorted(remaining_ids) == ["id1", "id3", "id5"]
+
+    def test_sort_by_playlist_index_all_none_falls_back_to_upload_date(self, tmp_path):
+        from unittest.mock import patch
+
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}, playlist_index=None),
+            "id2": DownloadMapping("2024-01-05", "yt", {"b.mp4"}, playlist_index=None),
+            "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}, playlist_index=None),
+            "id4": DownloadMapping("2024-01-04", "yt", {"d.mp4"}, playlist_index=None),
+            "id5": DownloadMapping("2024-01-02", "yt", {"e.mp4"}, playlist_index=None),
+        }
+        archive = self._make_archive(tmp_path, mappings)
+
+        with patch("ytdl_sub.ytdl_additions.enhanced_download_archive.logger") as mock_logger:
+            archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index")
+            mock_logger.warning.assert_called_once()
+            assert "Falling back" in mock_logger.warning.call_args[0][0]
+
+        remaining_ids = list(archive.mapping.entry_mappings.keys())
+        assert sorted(remaining_ids) == ["id2", "id3", "id4"]
+
+    def test_sort_by_playlist_index_keep_max_zero_does_not_prune(self, tmp_path):
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}, playlist_index=1),
+            "id2": DownloadMapping("2024-01-02", "yt", {"b.mp4"}, playlist_index=2),
+            "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}, playlist_index=3),
+        }
+        archive = self._make_archive(tmp_path, mappings)
+        archive.remove_stale_files(date_range=None, keep_max_files=0, sort_by="playlist_index")
+
+        remaining_ids = list(archive.mapping.entry_mappings.keys())
+        assert sorted(remaining_ids) == ["id1", "id2", "id3"]
