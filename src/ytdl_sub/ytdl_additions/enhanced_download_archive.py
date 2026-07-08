@@ -25,6 +25,7 @@ class DownloadMapping:
     upload_date: str
     extractor: str
     file_names: Set[str]
+    playlist_index: Optional[int] = None
 
     @property
     def dict(self) -> Dict[str, Any]:
@@ -35,6 +36,7 @@ class DownloadMapping:
             "upload_date": self.upload_date,
             "extractor": self.extractor,
             "file_names": sorted(list(self.file_names)),
+            "playlist_index": self.playlist_index,
         }
 
     @classmethod
@@ -53,6 +55,7 @@ class DownloadMapping:
             upload_date=mapping_dict["upload_date"],
             extractor=mapping_dict["extractor"],
             file_names=set(mapping_dict["file_names"]),
+            playlist_index=mapping_dict.get("playlist_index"),
         )
 
     @classmethod
@@ -67,10 +70,12 @@ class DownloadMapping:
         -------
         DownloadMapping for the entry
         """
+        raw_index = entry._kwargs_get("playlist_index")  # pylint: disable=protected-access
         return DownloadMapping(
             upload_date=entry.get(v.ytdl_sub_keep_files_date_eval, str),
             extractor=entry.download_archive_extractor,
             file_names=set(),
+            playlist_index=int(raw_index) if raw_index is not None else None,
         )
 
 
