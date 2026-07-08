@@ -695,6 +695,21 @@ Defines where to output files and thumbnails after all post-processing has compl
   Only keeps N most recently uploaded videos. If set to <= 0, ``keep_max_files`` will not be
   applied. Can be used in conjunction with ``keep_files_before`` and ``keep_files_after``.
 
+``keep_max_files_sort_by``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+  Sort key for count-based pruning when ``keep_max_files`` is set.
+  Accepted values: ``upload_date`` (default), ``playlist_index``.
+
+  When set to ``upload_date``, the most recently uploaded entries are kept.
+  When set to ``playlist_index``, entries with the lowest playlist indices are kept,
+  which is useful for playlists where position matters more than upload date (e.g. keeping
+  the first N episodes of a series).
+
+  If ``playlist_index`` is selected but no entries have a playlist index (e.g. when using
+  an older download archive), a warning is logged and sorting falls back to ``upload_date``.
+
 ``maintain_download_archive``
 
 :expected type: Optional[Boolean]
