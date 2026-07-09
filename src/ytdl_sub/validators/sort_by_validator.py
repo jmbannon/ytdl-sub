@@ -4,4 +4,4 @@ from ytdl_sub.validators.string_select_validator import OverridesStringSelectVal
 
 
 class KeepMaxFilesSortByValidator(OverridesStringSelectValidator):
-    _select_values: Set[str] = {"upload_date", "playlist_index"}
+    _select_values: Set[str] = {"upload_date", "playlist_index_asc", "playlist_index_desc"}

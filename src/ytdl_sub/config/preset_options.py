@@ -340,7 +340,18 @@ class OutputOptions(OptionsDictValidator):
         :expected type: Optional[OverridesFormatter]
         :description:
           Sort key for count-based pruning when ``keep_max_files`` is set.
-          Accepted values: ``upload_date`` (default), ``playlist_index``.
+          Accepted values: ``upload_date`` (default), ``playlist_index_asc``,
+          ``playlist_index_desc``.
+
+          When set to ``upload_date``, the most recently uploaded entries are kept.
+          When set to ``playlist_index_asc``, entries with the lowest playlist indices
+          are kept (e.g. keeping the first N episodes of a series).
+          When set to ``playlist_index_desc``, entries with the highest playlist indices
+          are kept (e.g. keeping the latest N items added to the end of a playlist).
+
+          If a playlist index sort is selected but no entries have a playlist index
+          (e.g. when using an older download archive), a warning is logged and sorting
+          falls back to ``upload_date``.
         """
         return self._keep_max_files_sort_by
 

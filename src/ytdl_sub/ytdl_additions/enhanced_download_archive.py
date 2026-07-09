@@ -574,7 +574,8 @@ class EnhancedDownloadArchive:
         keep_max_files
             Optional. Max number of files to keep
         sort_by
-            Sort key for count-based pruning. "upload_date" (default) or "playlist_index".
+            Sort key for count-based pruning. "upload_date" (default),
+            "playlist_index_asc", or "playlist_index_desc".
 
         Returns
         -------
@@ -589,25 +590,38 @@ class EnhancedDownloadArchive:
                 self._remove_entry(uid=uid, mapping=mapping)
 
         if keep_max_files is not None and keep_max_files > 0:
-            if sort_by == "playlist_index":
+            is_playlist_sort = sort_by in ("playlist_index_asc", "playlist_index_desc")
+            if is_playlist_sort:
                 all_none = all(
                     m.playlist_index is None for m in self.mapping.entry_mappings.values()
                 )
                 if all_none:
                     logger.warning(
-                        "keep_max_files_sort_by is 'playlist_index' but no entries have a "
-                        "playlist index. Falling back to 'upload_date'."
+                        "keep_max_files_sort_by is '%s' but no entries have a "
+                        "playlist index. Falling back to 'upload_date'.",
+                        sort_by,
                     )
                     sort_by = "upload_date"
+                    is_playlist_sort = False
 
-            if sort_by == "playlist_index":
-                sorted_entries = sorted(
-                    self.mapping.entry_mappings.items(),
-                    key=lambda kv_: (
-                        kv_[1].playlist_index is None,
-                        kv_[1].playlist_index if kv_[1].playlist_index is not None else 0,
-                    ),
-                )
+            if is_playlist_sort:
+                if sort_by == "playlist_index_desc":
+                    sorted_entries = sorted(
+                        self.mapping.entry_mappings.items(),
+                        key=lambda kv_: (
+                            kv_[1].playlist_index is not None,
+                            kv_[1].playlist_index if kv_[1].playlist_index is not None else 0,
+                        ),
+                        reverse=True,
+                    )
+                else:
+                    sorted_entries = sorted(
+                        self.mapping.entry_mappings.items(),
+                        key=lambda kv_: (
+                            kv_[1].playlist_index is None,
+                            kv_[1].playlist_index if kv_[1].playlist_index is not None else 0,
+                        ),
+                    )
             else:
                 sorted_entries = sorted(
                     self.mapping.entry_mappings.items(),

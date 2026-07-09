@@ -24,7 +24,7 @@ deleted automatically.
        # Set to a non-zero value to only keep this many files at once per sub
        only_recent_max_files: 0
        only_recent_date_range: "7days"
-       # Sort key for count-based pruning: "upload_date" (default) or "playlist_index"
+       # Sort key for count-based pruning: "upload_date" (default), "playlist_index_asc", or "playlist_index_desc"
        only_recent_sort_by: "upload_date"
 
    Plex TV Show by Date | Only Recent:

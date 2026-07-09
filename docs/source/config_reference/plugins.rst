@@ -700,15 +700,18 @@ Defines where to output files and thumbnails after all post-processing has compl
 :expected type: Optional[OverridesFormatter]
 :description:
   Sort key for count-based pruning when ``keep_max_files`` is set.
-  Accepted values: ``upload_date`` (default), ``playlist_index``.
+  Accepted values: ``upload_date`` (default), ``playlist_index_asc``,
+  ``playlist_index_desc``.
 
   When set to ``upload_date``, the most recently uploaded entries are kept.
-  When set to ``playlist_index``, entries with the lowest playlist indices are kept,
-  which is useful for playlists where position matters more than upload date (e.g. keeping
-  the first N episodes of a series).
+  When set to ``playlist_index_asc``, entries with the lowest playlist indices
+  are kept (e.g. keeping the first N episodes of a series).
+  When set to ``playlist_index_desc``, entries with the highest playlist indices
+  are kept (e.g. keeping the latest N items added to the end of a playlist).
 
-  If ``playlist_index`` is selected but no entries have a playlist index (e.g. when using
-  an older download archive), a warning is logged and sorting falls back to ``upload_date``.
+  If a playlist index sort is selected but no entries have a playlist index
+  (e.g. when using an older download archive), a warning is logged and sorting
+  falls back to ``upload_date``.
 
 ``maintain_download_archive``
 
