@@ -109,9 +109,7 @@ class TestRemoveStaleFilesSortByPlaylistIndexAsc:
             "id5": DownloadMapping("2024-01-05", "yt", {"e.mp4"}, playlist_index=5),
         }
         archive = _make_archive(tmp_path, mappings)
-        archive.remove_stale_files(
-            date_range=None, keep_max_files=3, sort_by="playlist_index_asc"
-        )
+        archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index_asc")
 
         remaining_ids = list(archive.mapping.entry_mappings.keys())
         assert sorted(remaining_ids) == ["id1", "id2", "id3"]
@@ -125,9 +123,7 @@ class TestRemoveStaleFilesSortByPlaylistIndexAsc:
             "id5": DownloadMapping("2024-01-05", "yt", {"e.mp4"}, playlist_index=5),
         }
         archive = _make_archive(tmp_path, mappings)
-        archive.remove_stale_files(
-            date_range=None, keep_max_files=3, sort_by="playlist_index_asc"
-        )
+        archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index_asc")
 
         remaining_ids = list(archive.mapping.entry_mappings.keys())
         assert sorted(remaining_ids) == ["id1", "id3", "id5"]
@@ -161,9 +157,7 @@ class TestRemoveStaleFilesSortByPlaylistIndexAsc:
             "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}, playlist_index=3),
         }
         archive = _make_archive(tmp_path, mappings)
-        archive.remove_stale_files(
-            date_range=None, keep_max_files=0, sort_by="playlist_index_asc"
-        )
+        archive.remove_stale_files(date_range=None, keep_max_files=0, sort_by="playlist_index_asc")
 
         remaining_ids = list(archive.mapping.entry_mappings.keys())
         assert sorted(remaining_ids) == ["id1", "id2", "id3"]
@@ -179,9 +173,7 @@ class TestRemoveStaleFilesSortByPlaylistIndexDesc:
             "id5": DownloadMapping("2024-01-05", "yt", {"e.mp4"}, playlist_index=5),
         }
         archive = _make_archive(tmp_path, mappings)
-        archive.remove_stale_files(
-            date_range=None, keep_max_files=3, sort_by="playlist_index_desc"
-        )
+        archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index_desc")
 
         remaining_ids = list(archive.mapping.entry_mappings.keys())
         assert sorted(remaining_ids) == ["id3", "id4", "id5"]
@@ -195,9 +187,7 @@ class TestRemoveStaleFilesSortByPlaylistIndexDesc:
             "id5": DownloadMapping("2024-01-05", "yt", {"e.mp4"}, playlist_index=5),
         }
         archive = _make_archive(tmp_path, mappings)
-        archive.remove_stale_files(
-            date_range=None, keep_max_files=3, sort_by="playlist_index_desc"
-        )
+        archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index_desc")
 
         remaining_ids = list(archive.mapping.entry_mappings.keys())
         assert sorted(remaining_ids) == ["id1", "id3", "id5"]
@@ -231,9 +221,7 @@ class TestRemoveStaleFilesSortByPlaylistIndexDesc:
             "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}, playlist_index=3),
         }
         archive = _make_archive(tmp_path, mappings)
-        archive.remove_stale_files(
-            date_range=None, keep_max_files=0, sort_by="playlist_index_desc"
-        )
+        archive.remove_stale_files(date_range=None, keep_max_files=0, sort_by="playlist_index_desc")
 
         remaining_ids = list(archive.mapping.entry_mappings.keys())
         assert sorted(remaining_ids) == ["id1", "id2", "id3"]
