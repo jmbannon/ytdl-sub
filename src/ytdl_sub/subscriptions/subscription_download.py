@@ -157,9 +157,17 @@ class SubscriptionDownload(BaseSubscription, ABC):
                     self.output_options.keep_max_files, expected_type=int
                 )
 
+            sort_by: str = "upload_date"
+            if self.output_options.keep_max_files_sort_by:
+                sort_by = self.overrides.apply_formatter(
+                    self.output_options.keep_max_files_sort_by, expected_type=str
+                )
+
             if date_range_to_keep or self.output_options.keep_max_files is not None:
                 self.download_archive.remove_stale_files(
-                    date_range=date_range_to_keep, keep_max_files=keep_max_files
+                    date_range=date_range_to_keep,
+                    keep_max_files=keep_max_files,
+                    sort_by=sort_by,
                 )
 
             self.download_archive.save_download_mappings()

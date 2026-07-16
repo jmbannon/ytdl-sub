@@ -25,6 +25,7 @@ class DownloadMapping:
     upload_date: str
     extractor: str
     file_names: Set[str]
+    playlist_index: Optional[int] = None
 
     @property
     def dict(self) -> Dict[str, Any]:
@@ -35,6 +36,7 @@ class DownloadMapping:
             "upload_date": self.upload_date,
             "extractor": self.extractor,
             "file_names": sorted(list(self.file_names)),
+            "playlist_index": self.playlist_index,
         }
 
     @classmethod
@@ -53,6 +55,7 @@ class DownloadMapping:
             upload_date=mapping_dict["upload_date"],
             extractor=mapping_dict["extractor"],
             file_names=set(mapping_dict["file_names"]),
+            playlist_index=mapping_dict.get("playlist_index"),
         )
 
     @classmethod
@@ -67,10 +70,12 @@ class DownloadMapping:
         -------
         DownloadMapping for the entry
         """
+        raw_index = entry._kwargs_get("playlist_index")  # pylint: disable=protected-access
         return DownloadMapping(
             upload_date=entry.get(v.ytdl_sub_keep_files_date_eval, str),
             extractor=entry.download_archive_extractor,
             file_names=set(),
+            playlist_index=int(raw_index) if raw_index is not None else None,
         )
 
 
@@ -553,7 +558,10 @@ class EnhancedDownloadArchive:
         self.num_entries_removed += 1
 
     def remove_stale_files(
-        self, date_range: Optional[DateRange], keep_max_files: Optional[int]
+        self,
+        date_range: Optional[DateRange],
+        keep_max_files: Optional[int],
+        sort_by: str = "upload_date",
     ) -> "EnhancedDownloadArchive":
         """
         Checks all entries within the mappings. If any entries' upload dates are not within the
@@ -565,6 +573,9 @@ class EnhancedDownloadArchive:
             Optional. Date range the upload date must be in to not get deleted
         keep_max_files
             Optional. Max number of files to keep
+        sort_by
+            Sort key for count-based pruning. "upload_date" (default),
+            "playlist_index_asc", or "playlist_index_desc".
 
         Returns
         -------
@@ -579,12 +590,47 @@ class EnhancedDownloadArchive:
                 self._remove_entry(uid=uid, mapping=mapping)
 
         if keep_max_files is not None and keep_max_files > 0:
+            is_playlist_sort = sort_by in ("playlist_index_asc", "playlist_index_desc")
+            if is_playlist_sort:
+                all_none = all(
+                    m.playlist_index is None for m in self.mapping.entry_mappings.values()
+                )
+                if all_none:
+                    logger.warning(
+                        "keep_max_files_sort_by is '%s' but no entries have a "
+                        "playlist index. Falling back to 'upload_date'.",
+                        sort_by,
+                    )
+                    sort_by = "upload_date"
+                    is_playlist_sort = False
+
+            if is_playlist_sort:
+                if sort_by == "playlist_index_desc":
+                    sorted_entries = sorted(
+                        self.mapping.entry_mappings.items(),
+                        key=lambda kv_: (
+                            kv_[1].playlist_index is not None,
+                            kv_[1].playlist_index if kv_[1].playlist_index is not None else 0,
+                        ),
+                        reverse=True,
+                    )
+                else:
+                    sorted_entries = sorted(
+                        self.mapping.entry_mappings.items(),
+                        key=lambda kv_: (
+                            kv_[1].playlist_index is None,
+                            kv_[1].playlist_index if kv_[1].playlist_index is not None else 0,
+                        ),
+                    )
+            else:
+                sorted_entries = sorted(
+                    self.mapping.entry_mappings.items(),
+                    key=lambda kv_: kv_[1].upload_date,
+                    reverse=True,
+                )
+
             num_files = 0
-            for uid, mapping in sorted(
-                self.mapping.entry_mappings.items(),
-                key=lambda kv_: kv_[1].upload_date,
-                reverse=True,
-            ):
+            for uid, mapping in sorted_entries:
                 num_files += 1
                 if num_files > keep_max_files:
                     self._remove_entry(uid=uid, mapping=mapping)
