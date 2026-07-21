@@ -624,16 +624,12 @@ class EnhancedDownloadArchive:
 
         if keep_max_files is not None and keep_max_files > 0:
             active_entries = {
-                uid: m
-                for uid, m in self.mapping.entry_mappings.items()
-                if not m.suppressed
+                uid: m for uid, m in self.mapping.entry_mappings.items() if not m.suppressed
             }
 
             is_playlist_sort = sort_by in ("playlist_index_asc", "playlist_index_desc")
             if is_playlist_sort:
-                all_none = all(
-                    m.playlist_index is None for m in active_entries.values()
-                )
+                all_none = all(m.playlist_index is None for m in active_entries.values())
                 if all_none:
                     logger.warning(
                         "keep_max_files_sort_by is '%s' but no entries have a "

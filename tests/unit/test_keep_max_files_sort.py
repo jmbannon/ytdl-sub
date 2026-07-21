@@ -9,19 +9,11 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import (
 
 
 def _active_ids(archive):
-    return sorted(
-        uid
-        for uid, m in archive.mapping.entry_mappings.items()
-        if not m.suppressed
-    )
+    return sorted(uid for uid, m in archive.mapping.entry_mappings.items() if not m.suppressed)
 
 
 def _suppressed_ids(archive):
-    return sorted(
-        uid
-        for uid, m in archive.mapping.entry_mappings.items()
-        if m.suppressed
-    )
+    return sorted(uid for uid, m in archive.mapping.entry_mappings.items() if m.suppressed)
 
 
 class TestDownloadMappingPlaylistIndex:
