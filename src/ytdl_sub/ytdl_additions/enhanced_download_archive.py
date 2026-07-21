@@ -26,18 +26,22 @@ class DownloadMapping:
     extractor: str
     file_names: Set[str]
     playlist_index: Optional[int] = None
+    suppressed: bool = False
 
     @property
     def dict(self) -> Dict[str, Any]:
         """
         :return: DownloadMapping as a dict that is serializable
         """
-        return {
+        result: Dict[str, Any] = {
             "upload_date": self.upload_date,
             "extractor": self.extractor,
             "file_names": sorted(list(self.file_names)),
             "playlist_index": self.playlist_index,
         }
+        if self.suppressed:
+            result["suppressed"] = True
+        return result
 
     @classmethod
     def from_dict(cls, mapping_dict: dict) -> "DownloadMapping":
@@ -56,6 +60,7 @@ class DownloadMapping:
             extractor=mapping_dict["extractor"],
             file_names=set(mapping_dict["file_names"]),
             playlist_index=mapping_dict.get("playlist_index"),
+            suppressed=mapping_dict.get("suppressed", False),
         )
 
     @classmethod
@@ -227,6 +232,8 @@ class DownloadMappings:
 
         if uid not in self.entry_ids:
             self._entry_mappings[uid] = DownloadMapping.from_entry(entry=entry)
+        elif self._entry_mappings[uid].suppressed:
+            self._entry_mappings[uid].suppressed = False
 
         self._entry_mappings[uid].file_names.add(entry_file_path)
         return self
@@ -244,6 +251,25 @@ class DownloadMappings:
         """
         if entry_id in self.entry_ids:
             del self._entry_mappings[entry_id]
+        return self
+
+    def suppress_entry(self, entry_id: str) -> "DownloadMappings":
+        """
+        Marks an entry as suppressed — its files are deleted but it stays in the
+        download archive so yt-dlp will not re-download it.
+
+        Parameters
+        ----------
+        entry_id
+            Id of the entry to suppress
+
+        Returns
+        -------
+        self
+        """
+        if entry_id in self._entry_mappings:
+            self._entry_mappings[entry_id].file_names.clear()
+            self._entry_mappings[entry_id].suppressed = True
         return self
 
     def get_num_entries_with_date(self, standardized_date: str) -> int:
@@ -557,6 +583,13 @@ class EnhancedDownloadArchive:
         self.mapping.remove_entry(entry_id=uid)
         self.num_entries_removed += 1
 
+    def _suppress_entry(self, uid: str, mapping: DownloadMapping) -> None:
+        for file_name in mapping.file_names:
+            self._file_handler.delete_file_from_output_directory(file_name=file_name)
+
+        self.mapping.suppress_entry(entry_id=uid)
+        self.num_entries_removed += 1
+
     def remove_stale_files(
         self,
         date_range: Optional[DateRange],
@@ -590,10 +623,16 @@ class EnhancedDownloadArchive:
                 self._remove_entry(uid=uid, mapping=mapping)
 
         if keep_max_files is not None and keep_max_files > 0:
+            active_entries = {
+                uid: m
+                for uid, m in self.mapping.entry_mappings.items()
+                if not m.suppressed
+            }
+
             is_playlist_sort = sort_by in ("playlist_index_asc", "playlist_index_desc")
             if is_playlist_sort:
                 all_none = all(
-                    m.playlist_index is None for m in self.mapping.entry_mappings.values()
+                    m.playlist_index is None for m in active_entries.values()
                 )
                 if all_none:
                     logger.warning(
@@ -607,7 +646,7 @@ class EnhancedDownloadArchive:
             if is_playlist_sort:
                 if sort_by == "playlist_index_desc":
                     sorted_entries = sorted(
-                        self.mapping.entry_mappings.items(),
+                        active_entries.items(),
                         key=lambda kv_: (
                             kv_[1].playlist_index is not None,
                             kv_[1].playlist_index if kv_[1].playlist_index is not None else 0,
@@ -616,7 +655,7 @@ class EnhancedDownloadArchive:
                     )
                 else:
                     sorted_entries = sorted(
-                        self.mapping.entry_mappings.items(),
+                        active_entries.items(),
                         key=lambda kv_: (
                             kv_[1].playlist_index is None,
                             kv_[1].playlist_index if kv_[1].playlist_index is not None else 0,
@@ -624,7 +663,7 @@ class EnhancedDownloadArchive:
                     )
             else:
                 sorted_entries = sorted(
-                    self.mapping.entry_mappings.items(),
+                    active_entries.items(),
                     key=lambda kv_: kv_[1].upload_date,
                     reverse=True,
                 )
@@ -633,7 +672,7 @@ class EnhancedDownloadArchive:
             for uid, mapping in sorted_entries:
                 num_files += 1
                 if num_files > keep_max_files:
-                    self._remove_entry(uid=uid, mapping=mapping)
+                    self._suppress_entry(uid=uid, mapping=mapping)
 
         return self
 
