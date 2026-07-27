@@ -632,6 +632,7 @@ Defines where to output files and thumbnails after all post-processing has compl
          keep_files_after: 19000101
          keep_max_files: 1000
          keep_files_date_eval: "{upload_date_standardized}"
+         sync_with_source: False
 
 ``download_archive_name``
 
@@ -749,6 +750,29 @@ Defines where to output files and thumbnails after all post-processing has compl
   Preserve the video's original upload time as the file modification time.
   When True, sets the file's mtime to match the video's upload_date from
   yt-dlp metadata. Defaults to False.
+
+``sync_with_source``
+
+:expected type: Optional[OverridesFormatter]
+:description:
+    Requires ``maintain_download_archive`` set to True.
+
+    Deletes files whose source entry is no longer present in the subscription's URL(s).
+    After the metadata pass, any entry in the download archive whose ID is absent from
+    the source is removed, along with all of its files.
+
+    This forces a metadata fetch of every URL on each invocation. ytdl-sub cannot
+    tell the difference between "this video was removed" and "metadata collection stopped
+    early", so ``break_on_existing`` and ``keep_max_files``' download cap are both
+    disabled during the metadata pass. Only enable this on sources you expect to change,
+    and expect slower runs on large playlists.
+
+    If metadata collection is truncated for a reason ytdl-sub cannot override (such as
+    ``date_range`` with ``breaks`` enabled, or a user-set ``max_downloads``), or if the
+    source returns no entries at all, syncing is skipped for that run and a warning is
+    logged rather than deleting files.
+
+    Defaults to False.
 
 ``thumbnail_name``
 

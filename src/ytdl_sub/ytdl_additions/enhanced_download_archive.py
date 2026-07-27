@@ -406,6 +406,11 @@ class EnhancedDownloadArchive:
         self.num_entries_added: int = 0
         self.num_entries_modified: int = 0
         self.num_entries_removed: int = 0
+        # None means no source enum has happened, which
+        # is not the same as a source that enumed to
+        # zero entries
+        self._source_entry_ids: Optional[Set[str]] = None
+        self._source_enumeration_truncated: bool = False
 
     @property
     def num_entries(self) -> int:
@@ -439,6 +444,8 @@ class EnhancedDownloadArchive:
             mapping_file_path=self._output_file_path,
             migrated_mapping_file_path=self._migrated_file_path,
         )
+        self._source_entry_ids = None
+        self._source_enumeration_truncated = False
         return self
 
     @property
@@ -550,6 +557,46 @@ class EnhancedDownloadArchive:
 
         return self
 
+    def record_source_entry_id(self, entry_id: str) -> None:
+        """
+        Records an entry ID seen in the source during the metadata pass.
+
+        Parameters
+        ----------
+        entry_id
+            Entry ID from the source.
+        """
+        if self._source_entry_ids is None:
+            self._source_entry_ids = set()
+
+        self._source_entry_ids.add(entry_id)
+
+    def mark_source_enumeration_truncated(self, reason: str) -> None:
+        """
+        Marks the source enumeration as an incomplete view of the source,
+        which disables any pruning that relies on knowing every entry.
+
+        Parameters
+        ----------
+        reason
+            Why metadata collection stopped early.
+        """
+        self._source_enumeration_truncated = True
+        logger.debug("Source enumeration truncated: %s", reason)
+
+    @property
+    def source_entry_ids(self) -> Optional[Set[str]]:
+        """
+        Returns
+        -------
+        Every entry ID seen in the source during metadata pass, or
+        None if the source was never enumerated or stopped early.
+        """
+        if self._source_enumeration_truncated:
+            return None
+
+        return self._source_entry_ids
+
     def _remove_entry(self, uid: str, mapping: DownloadMapping) -> None:
         for file_name in mapping.file_names:
             self._file_handler.delete_file_from_output_directory(file_name=file_name)
@@ -634,6 +681,32 @@ class EnhancedDownloadArchive:
                 num_files += 1
                 if num_files > keep_max_files:
                     self._remove_entry(uid=uid, mapping=mapping)
+
+        return self
+
+    def remove_entries_not_in_source(self, source_entry_ids: Set[str]) -> "EnhancedDownloadArchive":
+        """
+        Checks all entries within mappings. If any entry is no longer present
+        in the source, delete it.
+
+        Parameters
+        ----------
+        source_entry_ids
+            Every entry ID present in the source
+
+        Returns
+        -------
+        self
+        """
+        stale_mappings: Dict[str, DownloadMapping] = {
+            uid: mapping
+            for uid, mapping in self.mapping.entry_mappings.items()
+            if uid not in source_entry_ids
+        }
+
+        for uid, mapping in stale_mappings.items():
+            logger.info("Entry %s is no longer in the source, deleting its files", uid)
+            self._remove_entry(uid=uid, mapping=mapping)
 
         return self
 

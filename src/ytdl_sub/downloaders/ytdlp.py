@@ -189,6 +189,7 @@ class YTDLP:
         working_directory: str,
         ytdl_options_overrides: Dict,
         log_prefix_on_info_json_dl: Optional[str] = None,
+        truncation_reasons: Optional[List[str]] = None,
         **kwargs,
     ) -> List[Dict]:
         """
@@ -208,6 +209,10 @@ class YTDLP:
         log_prefix_on_info_json_dl
             Optional. Spin a new thread to listen for new info.json files. Log
             f'{log_prefix_on_info_json_dl} {title}' when a new one appears
+        truncation_reasons
+            Optional. Appends the name of any exception that stopped metadata
+            collection early. A non-empty list means the returned entries are
+            an incomplete view of the source.
         **kwargs
             arguments passed directory to YoutubeDL extract_info
         """
@@ -217,16 +222,22 @@ class YTDLP:
             ):
                 cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
         except RejectedVideoReached:
+            if truncation_reasons is not None:
+                truncation_reasons.append("RejectedVideoReached")
             cls.logger.debug(
                 "RejectedVideoReached, stopping additional downloads "
                 "(Can be disable by setting `date_range.breaks` to False)."
             )
         except ExistingVideoReached:
+            if truncation_reasons is not None:
+                truncation_reasons.append("ExistingVideoReached")
             cls.logger.debug(
                 "ExistingVideoReached, stopping additional downloads. "
                 "(Can be disable by setting `ytdl_options.break_on_existing` to False)."
             )
         except MaxDownloadsReached:
+            if truncation_reasons is not None:
+                truncation_reasons.append("MaxDownloadsReached")
             cls.logger.info("MaxDownloadsReached, stopping additional downloads.")
 
         parent_dicts: List[Dict] = []

@@ -144,6 +144,27 @@ class SubscriptionDownload(BaseSubscription, ABC):
         # If output options maintains stale file deletion, perform the delete here prior to saving
         # the download archive
         if self.maintain_download_archive:
+            if self.output_options.sync_with_source and self.overrides.apply_formatter(
+                self.output_options.sync_with_source, expected_type=bool
+            ):
+                source_entry_ids = self.download_archive.source_entry_ids
+
+                if source_entry_ids is None:
+                    logger.warning(
+                        "sync_with_source: the source was not fully enumerated, skipping sync "
+                        "to avoid deleting files. This happens when metadata collection stops "
+                        "early, i.e. from `date_range.breaks` or a user set `max_downloads`."
+                    )
+                elif not source_entry_ids:
+                    logger.warning(
+                        "sync_with_source: the source returned zero entries, skipping sync. "
+                        "An empty fetch is not treated as an emptied source."
+                    )
+                else:
+                    self.download_archive.remove_entries_not_in_source(
+                        source_entry_ids=source_entry_ids
+                    )
+
             date_range_to_keep = to_date_range(
                 before=self.output_options.keep_files_before,
                 after=self.output_options.keep_files_after,

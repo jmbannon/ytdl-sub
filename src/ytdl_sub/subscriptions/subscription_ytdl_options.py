@@ -80,6 +80,15 @@ class SubscriptionYTDLOptions:
         }
 
     @property
+    def _sync_with_source(self) -> bool:
+        if not self._preset.output_options.sync_with_source:
+            return False
+
+        return self._overrides.apply_formatter(
+            self._preset.output_options.sync_with_source, expected_type=bool
+        )
+
+    @property
     def _output_options(self) -> Dict:
         ytdl_options = {}
 
@@ -87,7 +96,11 @@ class SubscriptionYTDLOptions:
             ytdl_options["download_archive"] = (
                 self._enhanced_download_archive.working_ytdl_file_path
             )
-        if self._preset.output_options.keep_max_files:
+
+        # sync_with_source needs a full enumeration of the source,
+        # max_downloads would truncate the metadata pass and make
+        # present entries look removed.
+        if self._preset.output_options.keep_max_files and not self._sync_with_source:
             keep_max_files = self._overrides.apply_formatter(
                 self._preset.output_options.keep_max_files, expected_type=int
             )
@@ -96,6 +109,16 @@ class SubscriptionYTDLOptions:
                 ytdl_options["max_downloads"] = max(keep_max_files, 2)
 
         return ytdl_options
+
+    @property
+    def _sync_with_source_options(self) -> Dict:
+        if not self._sync_with_source:
+            return {}
+
+        # stopping at the first alreadt downloaded entry would hide
+        # the rest of the soure, which sync_with_source would then
+        # interpret as deleted entries
+        return {"break_on_existing": False}
 
     def _plugin_ytdl_options(self, plugin: Type[PluginT]) -> Dict:
         if plugin_obj := self._get_plugin(plugin):
@@ -175,6 +198,7 @@ class SubscriptionYTDLOptions:
             self._plugin_ytdl_options(AudioExtractPlugin),  # will override format
             self._user_ytdl_options,  # user ytdl options...
             self._info_json_only_options,  # then info_json_only options
+            self._sync_with_source_options,  # then sync_with_source overrides
         )
 
     def download_builder(self) -> YTDLOptionsBuilder:

@@ -14,6 +14,7 @@ from ytdl_sub.validators.file_path_validators import (
 from ytdl_sub.validators.sort_by_validator import KeepMaxFilesSortByValidator
 from ytdl_sub.validators.string_datetime import StringDatetimeValidator
 from ytdl_sub.validators.string_formatter_validators import (
+    OverridesBooleanFormatterValidator,
     OverridesIntegerFormatterValidator,
     OverridesStringFormatterValidator,
     StandardizedDateValidator,
@@ -107,6 +108,7 @@ class OutputOptions(OptionsDictValidator):
              keep_files_after: 19000101
              keep_max_files: 1000
              keep_files_date_eval: "{upload_date_standardized}"
+             sync_with_source: False
     """
 
     _required_keys = {"output_directory", "file_name"}
@@ -123,6 +125,7 @@ class OutputOptions(OptionsDictValidator):
         "keep_files_date_eval",
         "keep_max_files_sort_by",
         "preserve_mtime",
+        "sync_with_source",
     }
 
     @classmethod
@@ -195,11 +198,18 @@ class OutputOptions(OptionsDictValidator):
             key="preserve_mtime", validator=BoolValidator, default=False
         )
 
+        self._sync_with_source = self._validate_key_if_present(
+            key="sync_with_source", validator=OverridesBooleanFormatterValidator
+        )
+
         if (
-            self._keep_files_before or self._keep_files_after or self._keep_max_files
+            self._keep_files_before
+            or self._keep_files_after
+            or self._keep_max_files
+            or self._sync_with_source
         ) and not self.maintain_download_archive:
             raise self._validation_exception(
-                "keep_files/keep_max requires maintain_download_archive set to True"
+                "keep_files/keep_max/sync_with_source requires maintain_download_archive set to True"
             )
 
     @property
@@ -354,6 +364,32 @@ class OutputOptions(OptionsDictValidator):
           falls back to ``upload_date``.
         """
         return self._keep_max_files_sort_by
+
+    @property
+    def sync_with_source(self) -> Optional[OverridesBooleanFormatterValidator]:
+        """
+        :expected type: Optional[OverridesFormatter]
+        :description:
+            Requires ``maintain_download_archive`` set to True.
+
+            Deletes files whose source entry is no longer present in the subscription's URL(s).
+            After the metadata pass, any entry in the download archive whose ID is absent from
+            the source is removed, along with all of its files.
+
+            This forces a metadata fetch of every URL on each invocation. ytdl-sub cannot
+            tell the difference between "this video was removed" and "metadata collection stopped
+            early", so ``break_on_existing`` and ``keep_max_files``' download cap are both
+            disabled during the metadata pass. Only enable this on sources you expect to change,
+            and expect slower runs on large playlists.
+
+            If metadata collection is truncated for a reason ytdl-sub cannot override (such as
+            ``date_range`` with ``breaks`` enabled, or a user-set ``max_downloads``), or if the
+            source returns no entries at all, syncing is skipped for that run and a warning is
+            logged rather than deleting files.
+
+            Defaults to False.
+        """
+        return self._sync_with_source
 
     @property
     def preserve_mtime(self) -> bool:
