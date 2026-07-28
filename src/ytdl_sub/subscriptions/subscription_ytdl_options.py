@@ -189,9 +189,17 @@ class SubscriptionYTDLOptions:
         YTDLOptionsBuilder
             Builder with values set for fetching metadata (.info.json) only
         """
+        output_options = self._output_options
+        if self._sync_with_source:
+            # yt-dlp does not write an info.json for entries already in the download archive,
+            # which would make every previously downloaded entry look like it was removed
+            # from the source. Entries already downloaded are skipped by the downloader
+            # itself instead.
+            output_options.pop("download_archive", None)
+
         return YTDLOptionsBuilder().add(
             self._global_options,
-            self._output_options,
+            output_options,
             self._plugin_match_filters,
             self._plugin_ytdl_options(ThrottleProtectionPlugin),
             self._plugin_ytdl_options(FormatPlugin),

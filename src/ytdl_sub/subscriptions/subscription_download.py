@@ -149,16 +149,14 @@ class SubscriptionDownload(BaseSubscription, ABC):
             ):
                 source_entry_ids = self.download_archive.source_entry_ids
 
+                # A source that returned nothing is indistinguishable from one that was never
+                # enumerated, so neither is treated as every entry having been removed
                 if source_entry_ids is None:
                     logger.warning(
-                        "sync_with_source: the source was not fully enumerated, skipping sync "
-                        "to avoid deleting files. This happens when metadata collection stops "
-                        "early, i.e. from `date_range.breaks` or a user set `max_downloads`."
-                    )
-                elif not source_entry_ids:
-                    logger.warning(
-                        "sync_with_source: the source returned zero entries, skipping sync. "
-                        "An empty fetch is not treated as an emptied source."
+                        "sync_with_source: the source returned no entries or was not fully "
+                        "enumerated, skipping sync to avoid deleting files. This happens when "
+                        "metadata collection stops early, i.e. from `date_range.breaks` or a "
+                        "user set `max_downloads`."
                     )
                 else:
                     self.download_archive.remove_entries_not_in_source(

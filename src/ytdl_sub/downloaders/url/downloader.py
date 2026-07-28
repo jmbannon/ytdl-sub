@@ -300,6 +300,17 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
     def _is_downloaded(self, entry: Entry) -> bool:
         return entry.ytdl_uid() in self._downloaded_entries
 
+    def _is_in_download_archive(self, entry: Entry) -> bool:
+        """
+        Normally yt-dlp skips entries in the download archive before ytdl-sub ever sees them.
+        When the archive is withheld from the metadata fetch to obtain a full enumeration of
+        the source, they reach here and must be skipped instead.
+        """
+        if "download_archive" in self._metadata_ytdl_options_builder.to_dict():
+            return False
+
+        return entry.uid in self._enhanced_download_archive.mapping.entry_mappings
+
     def _mark_downloaded(self, entry: Entry) -> None:
         self._downloaded_entries.add(entry.ytdl_uid())
 
@@ -386,7 +397,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             )
             self._url_state.entries_downloaded += 1
 
-            if self._is_downloaded(entries_to_iter[idx]):
+            if self._is_downloaded(entries_to_iter[idx]) or self._is_in_download_archive(
+                entries_to_iter[idx]
+            ):
                 download_logger.info(
                     "Already downloaded entry %d/%d: %s",
                     self._url_state.entries_downloaded,

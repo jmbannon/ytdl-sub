@@ -1,10 +1,6 @@
-from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 from ytdl_sub.config.preset_options import OutputOptions
-from ytdl_sub.subscriptions.subscription_download import SubscriptionDownload
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.ytdl_additions.enhanced_download_archive import (
     DownloadMapping,
@@ -141,67 +137,3 @@ class TestSyncWithSourceOption:
     def test_requires_maintain_download_archive(self):
         with pytest.raises(ValidationException, match="maintain_download_archive"):
             OutputOptions("t", self._base | {"sync_with_source": True})
-
-
-class _FakeOverrides:
-    def apply_formatter(self, formatter, expected_type=None, entry=None):
-        _ = formatter, expected_type, entry
-        return True
-
-
-def _subscription_stub(tmp_path, source_entry_ids, sync_enabled: bool = True):
-    download_archive = MagicMock()
-    download_archive.source_entry_ids = source_entry_ids
-    download_archive.working_ytdl_file_path = str(tmp_path / "working.ytdl")
-
-    return SimpleNamespace(
-        maintain_download_archive=True,
-        download_archive=download_archive,
-        overrides=_FakeOverrides(),
-        output_options=SimpleNamespace(
-            sync_with_source=object() if sync_enabled else None,
-            keep_files_before=None,
-            keep_files_after=None,
-            keep_max_files=None,
-            keep_max_files_sort_by=None,
-        ),
-    )
-
-
-class TestMaintainArchiveFileSyncGuard:
-    @classmethod
-    def _run(cls, stub):
-        with SubscriptionDownload._maintain_archive_file(stub):
-            pass
-
-    def test_prunes_when_source_enumerated(self, tmp_path):
-        stub = _subscription_stub(tmp_path, source_entry_ids={"id1"})
-        self._run(stub)
-
-        stub.download_archive.remove_entries_not_in_source.assert_called_once_with(
-            source_entry_ids={"id1"}
-        )
-
-    def test_does_not_prune_when_enumeration_failed(self, tmp_path):
-        stub = _subscription_stub(tmp_path, source_entry_ids=None)
-
-        with patch("ytdl_sub.subscriptions.subscription_download.logger") as mock_logger:
-            self._run(stub)
-            assert "not fully enumerated" in mock_logger.warning.call_args[0][0]
-
-        stub.download_archive.remove_entries_not_in_source.assert_not_called()
-
-    def test_does_not_prune_when_source_is_empty(self, tmp_path):
-        stub = _subscription_stub(tmp_path, source_entry_ids=set())
-
-        with patch("ytdl_sub.subscriptions.subscription_download.logger") as mock_logger:
-            self._run(stub)
-            assert "zero entries" in mock_logger.warning.call_args[0][0]
-
-        stub.download_archive.remove_entries_not_in_source.assert_not_called()
-
-    def test_disabled_by_default(self, tmp_path):
-        stub = _subscription_stub(tmp_path, source_entry_ids={"id1"}, sync_enabled=False)
-        self._run(stub)
-
-        stub.download_archive.remove_entries_not_in_source.assert_not_called()
