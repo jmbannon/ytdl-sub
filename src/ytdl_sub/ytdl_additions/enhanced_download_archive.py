@@ -684,20 +684,24 @@ class EnhancedDownloadArchive:
 
         return self
 
-    def remove_entries_not_in_source(self, source_entry_ids: Set[str]) -> "EnhancedDownloadArchive":
+    def remove_entries_not_in_source(self) -> "EnhancedDownloadArchive":
         """
-        Checks all entries within mappings. If any entry is no longer present
-        in the source, delete it.
-
-        Parameters
-        ----------
-        source_entry_ids
-            Every entry ID present in the source
+        Checks all entries within the mappings. If any entry is no longer in the source, delete
+        it. Does nothing unless the source was fully enumerated, since a source that returned
+        nothing looks the same as one that was never enumerated.
 
         Returns
         -------
         self
         """
+        if (source_entry_ids := self.source_entry_ids) is None:
+            logger.warning(
+                "sync_with_source: the source returned no entries or stopped early, skipping "
+                "sync to avoid deleting files. Can be caused by `date_range.breaks` or "
+                "`max_downloads`."
+            )
+            return self
+
         stale_mappings: Dict[str, DownloadMapping] = {
             uid: mapping
             for uid, mapping in self.mapping.entry_mappings.items()

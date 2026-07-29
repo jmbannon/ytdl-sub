@@ -29,6 +29,12 @@ def _make_archive(tmp_path, mappings_dict, dry_run: bool = False):
     return archive
 
 
+def _record_source(archive, source_entry_ids):
+    for entry_id in source_entry_ids:
+        archive.record_source_entry_id(entry_id=entry_id)
+    return archive
+
+
 def _mappings():
     return {
         "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}),
@@ -40,14 +46,16 @@ def _mappings():
 class TestRemoveEntriesNotInSource:
     def test_entry_removed_from_source_is_pruned(self, tmp_path):
         archive = _make_archive(tmp_path, _mappings())
-        archive.remove_entries_not_in_source(source_entry_ids={"id1", "id3"})
+        _record_source(archive, {"id1", "id3"})
+        archive.remove_entries_not_in_source()
 
         assert sorted(archive.mapping.entry_mappings.keys()) == ["id1", "id3"]
         assert not (tmp_path / "output" / "b.mp4").exists()
 
     def test_entry_still_in_source_is_untouched(self, tmp_path):
         archive = _make_archive(tmp_path, _mappings())
-        archive.remove_entries_not_in_source(source_entry_ids={"id1", "id3"})
+        _record_source(archive, {"id1", "id3"})
+        archive.remove_entries_not_in_source()
 
         assert (tmp_path / "output" / "a.mp4").exists()
         assert (tmp_path / "output" / "c.mp4").exists()
@@ -55,14 +63,16 @@ class TestRemoveEntriesNotInSource:
 
     def test_all_entries_in_source_removes_nothing(self, tmp_path):
         archive = _make_archive(tmp_path, _mappings())
-        archive.remove_entries_not_in_source(source_entry_ids={"id1", "id2", "id3"})
+        _record_source(archive, {"id1", "id2", "id3"})
+        archive.remove_entries_not_in_source()
 
         assert sorted(archive.mapping.entry_mappings.keys()) == ["id1", "id2", "id3"]
         assert archive.num_entries_removed == 0
 
     def test_source_with_new_entries_removes_nothing(self, tmp_path):
         archive = _make_archive(tmp_path, _mappings())
-        archive.remove_entries_not_in_source(source_entry_ids={"id1", "id2", "id3", "id4"})
+        _record_source(archive, {"id1", "id2", "id3", "id4"})
+        archive.remove_entries_not_in_source()
 
         assert sorted(archive.mapping.entry_mappings.keys()) == ["id1", "id2", "id3"]
         assert archive.num_entries_removed == 0
@@ -77,7 +87,8 @@ class TestRemoveEntriesNotInSource:
             "id2": DownloadMapping("2024-01-02", "yt", {"b.mp4"}),
         }
         archive = _make_archive(tmp_path, mappings)
-        archive.remove_entries_not_in_source(source_entry_ids={"id2"})
+        _record_source(archive, {"id2"})
+        archive.remove_entries_not_in_source()
 
         for file_name in ("a.mp4", "a.nfo", "a-thumb.jpg", "a.info.json"):
             assert not (tmp_path / "output" / file_name).exists()
@@ -85,8 +96,25 @@ class TestRemoveEntriesNotInSource:
 
     def test_dry_run_does_not_delete_files(self, tmp_path):
         archive = _make_archive(tmp_path, _mappings(), dry_run=True)
-        archive.remove_entries_not_in_source(source_entry_ids={"id1", "id3"})
+        _record_source(archive, {"id1", "id3"})
+        archive.remove_entries_not_in_source()
 
+        assert (tmp_path / "output" / "b.mp4").exists()
+
+    def test_unenumerated_source_deletes_nothing(self, tmp_path):
+        archive = _make_archive(tmp_path, _mappings())
+        archive.remove_entries_not_in_source()
+
+        assert sorted(archive.mapping.entry_mappings.keys()) == ["id1", "id2", "id3"]
+        assert (tmp_path / "output" / "b.mp4").exists()
+
+    def test_truncated_source_deletes_nothing(self, tmp_path):
+        archive = _make_archive(tmp_path, _mappings())
+        _record_source(archive, {"id1"})
+        archive.mark_source_enumeration_truncated(reason="ExistingVideoReached")
+        archive.remove_entries_not_in_source()
+
+        assert sorted(archive.mapping.entry_mappings.keys()) == ["id1", "id2", "id3"]
         assert (tmp_path / "output" / "b.mp4").exists()
 
 
@@ -137,3 +165,23 @@ class TestSyncWithSourceOption:
     def test_requires_maintain_download_archive(self):
         with pytest.raises(ValidationException, match="maintain_download_archive"):
             OutputOptions("t", self._base | {"sync_with_source": True})
+
+    @pytest.mark.parametrize(
+        "keep_option, keep_value",
+        [
+            ("keep_files_before", "now"),
+            ("keep_files_after", "19000101"),
+            ("keep_max_files", 10),
+        ],
+    )
+    def test_cannot_be_used_with_keep_options(self, keep_option, keep_value):
+        with pytest.raises(ValidationException, match="cannot be used with"):
+            OutputOptions(
+                "t",
+                self._base
+                | {
+                    "maintain_download_archive": True,
+                    "sync_with_source": True,
+                    keep_option: keep_value,
+                },
+            )

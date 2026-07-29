@@ -97,10 +97,7 @@ class SubscriptionYTDLOptions:
                 self._enhanced_download_archive.working_ytdl_file_path
             )
 
-        # sync_with_source needs a full enumeration of the source,
-        # max_downloads would truncate the metadata pass and make
-        # present entries look removed.
-        if self._preset.output_options.keep_max_files and not self._sync_with_source:
+        if self._preset.output_options.keep_max_files:
             keep_max_files = self._overrides.apply_formatter(
                 self._preset.output_options.keep_max_files, expected_type=int
             )
@@ -115,9 +112,11 @@ class SubscriptionYTDLOptions:
         if not self._sync_with_source:
             return {}
 
-        # stopping at the first alreadt downloaded entry would hide
-        # the rest of the soure, which sync_with_source would then
-        # interpret as deleted entries
+        # stopping at the first already downloaded entry would hide the rest of the source,
+        # which sync_with_source would then interpret as deleted entries
+        logger.info(
+            "sync_with_source is enabled, disabling break_on_existing to fetch the entire source"
+        )
         return {"break_on_existing": False}
 
     def _plugin_ytdl_options(self, plugin: Type[PluginT]) -> Dict:

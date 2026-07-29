@@ -212,6 +212,16 @@ class OutputOptions(OptionsDictValidator):
                 "keep_files/keep_max/sync_with_source requires maintain_download_archive set to True"
             )
 
+        # sync_with_source needs the entire source. keep_max_files caps metadata collection,
+        # and the keep_files options are a competing retention policy
+        if self._sync_with_source and (
+            self._keep_files_before or self._keep_files_after or self._keep_max_files
+        ):
+            raise self._validation_exception(
+                "sync_with_source cannot be used with keep_files_before, keep_files_after, or "
+                "keep_max_files"
+            )
+
     @property
     def output_directory(self) -> OverridesStringFormatterValidator:
         """
@@ -370,17 +380,18 @@ class OutputOptions(OptionsDictValidator):
         """
         :expected type: Optional[OverridesFormatter]
         :description:
-            Requires ``maintain_download_archive`` set to True.
+            Requires ``maintain_download_archive`` set to True. Cannot be used with
+            ``keep_files_before``, ``keep_files_after``, or ``keep_max_files``, since those
+            deliberately stop metadata collection early.
 
             Deletes files whose source entry is no longer present in the subscription's URL(s).
             After the metadata pass, any entry in the download archive whose ID is absent from
             the source is removed, along with all of its files.
 
-            This forces a metadata fetch of every URL on each invocation. ytdl-sub cannot
-            tell the difference between "this video was removed" and "metadata collection stopped
-            early", so ``break_on_existing`` and ``keep_max_files``' download cap are both
-            disabled during the metadata pass. Only enable this on sources you expect to change,
-            and expect slower runs on large playlists.
+            This forces a metadata fetch of every URL on each invocation. ytdl-sub cannot tell
+            the difference between "this video was removed" and "metadata collection stopped
+            early", so ``break_on_existing`` is disabled for the metadata fetch. Only enable
+            this on sources you expect to change, and expect slower runs on large playlists.
 
             If metadata collection is truncated for a reason ytdl-sub cannot override (such as
             ``date_range`` with ``breaks`` enabled, or a user-set ``max_downloads``), or if the
