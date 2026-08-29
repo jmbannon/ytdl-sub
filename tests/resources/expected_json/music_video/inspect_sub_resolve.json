@@ -28,7 +28,9 @@
       ],
       "variables": {},
       "webpage_url": "{ webpage_url }",
-      "ytdl_options": {}
+      "ytdl_options": {},
+      "ytmusic_counterpart": "disabled",
+      "ytmusic_counterpart_when_missing": "original"
     }
   ],
   "format": "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)",
@@ -287,7 +289,9 @@
       "",
       "",
       ""
-    ]
+    ],
+    "ytmusic_counterpart": "disabled",
+    "ytmusic_counterpart_when_missing": "original"
   },
   "throttle_protection": {
     "enable": true,

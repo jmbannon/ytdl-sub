@@ -50,6 +50,24 @@ class YTDLP:
             return ytdlp.extract_info(**kwargs)
 
     @classmethod
+    def extract_entry_dict(cls, ytdl_options_overrides: Dict, **kwargs) -> Optional[Dict]:
+        """
+        Wrapper around ``extract_info`` that returns the info in the same sanitized form as
+        the .info.json files that entries are normally built from. Use this when an entry
+        dict is needed without writing it to the working directory first.
+
+        Parameters
+        ----------
+        ytdl_options_overrides
+            Dict containing ytdl args to override other predefined ytdl args
+        **kwargs
+            arguments passed directory to YoutubeDL extract_info
+        """
+        return ytdl.YoutubeDL.sanitize_info(
+            cls.extract_info(ytdl_options_overrides=ytdl_options_overrides, **kwargs)
+        )
+
+    @classmethod
     def extract_info_with_retry(
         cls,
         ytdl_options_overrides: Dict,

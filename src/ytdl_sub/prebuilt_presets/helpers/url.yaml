@@ -27,15 +27,21 @@ presets:
             uid: "banner_uncropped"
         include_sibling_metadata: "{include_sibling_metadata}"
         webpage_url: "{modified_webpage_url}"
+        ytmusic_counterpart: "{ytmusic_counterpart}"
+        ytmusic_counterpart_when_missing: "{ytmusic_counterpart_when_missing}"
 
       - url: "{ %array_slice(urls, 1) }"
         include_sibling_metadata: "{include_sibling_metadata}"
         webpage_url: "{modified_webpage_url}"
+        ytmusic_counterpart: "{ytmusic_counterpart}"
+        ytmusic_counterpart_when_missing: "{ytmusic_counterpart_when_missing}"
     overrides:
       avatar_uncropped_thumbnail_file_name: ""
       banner_uncropped_thumbnail_file_name: ""
       include_sibling_metadata: False
       modified_webpage_url: "{webpage_url}"
+      ytmusic_counterpart: "disabled"
+      ytmusic_counterpart_when_missing: "original"
 
       subscription_array: >-
         {
@@ -170,6 +176,8 @@ presets:
         ytdl_options:
           playlist_items: "-1:0:-1"
         webpage_url: "{modified_webpage_url}"
+        ytmusic_counterpart: "{ytmusic_counterpart}"
+        ytmusic_counterpart_when_missing: "{ytmusic_counterpart_when_missing}"
 
   _multi_url_bilateral:
     preset:

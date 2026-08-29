@@ -32,7 +32,9 @@
       ],
       "variables": {},
       "webpage_url": "{ webpage_url }",
-      "ytdl_options": {}
+      "ytdl_options": {},
+      "ytmusic_counterpart": "disabled",
+      "ytmusic_counterpart_when_missing": "original"
     }
   ],
   "format": "ba[ext=webm]/ba",
@@ -223,7 +225,9 @@
     "url99": "",
     "urls": [
       "https://www.youtube.com/channel/UCsItMF6_fP754ihIsSRLk5A/playlists"
-    ]
+    ],
+    "ytmusic_counterpart": "disabled",
+    "ytmusic_counterpart_when_missing": "original"
   },
   "throttle_protection": {
     "enable": true,

@@ -241,6 +241,29 @@ URL.
           - name: "season{season_index}-poster.jpg"
             uid: "latest_entry"
 
+:YouTube Music Song/Video:
+
+YouTube Music tracks that have both a song and a music video are two separate videos,
+linked by YouTube Music's song/video switcher. Set ``ytmusic_counterpart`` to ``song``
+to download the audio-only version whenever the URL returns music videos, or ``video``
+to do the reverse. Entries that are already the requested version are downloaded as-is,
+and file names and tags always come from whichever version is downloaded.
+
+Entries with no version of the requested type, like video-only releases and non-music
+uploads, are downloaded as-is unless ``ytmusic_counterpart_when_missing`` is set to
+``skip``.
+
+YouTube Music only exposes the song/video switcher to signed-in accounts, so
+``ytdl_options.cookiefile`` is required for this to have any effect.
+
+.. code-block:: yaml
+
+  download:
+    urls:
+      - url: "https://music.youtube.com/playlist?list=LM"
+        ytmusic_counterpart: "song"          # song, video, or disabled
+        ytmusic_counterpart_when_missing: "original"  # original or skip
+
 ----------------------------------------------------------------------------------------------------
 
 embed_thumbnail

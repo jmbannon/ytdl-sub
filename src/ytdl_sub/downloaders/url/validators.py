@@ -3,6 +3,13 @@ from typing import Any, Dict, List, Optional, Set
 from ytdl_sub.config.plugin.plugin_operation import PluginOperation
 from ytdl_sub.config.preset_options import YTDLOptions
 from ytdl_sub.config.validators.options import OptionsValidator
+from ytdl_sub.downloaders.url.ytmusic import (
+    PREFER_DISABLED,
+    PREFER_SONG,
+    PREFER_VIDEO,
+    WHEN_MISSING_ORIGINAL,
+    WHEN_MISSING_SKIP,
+)
 from ytdl_sub.script.parser import parse
 from ytdl_sub.validators.strict_dict_validator import StrictDictValidator
 from ytdl_sub.validators.string_formatter_validators import (
@@ -11,6 +18,7 @@ from ytdl_sub.validators.string_formatter_validators import (
     OverridesStringFormatterValidator,
     StringFormatterValidator,
 )
+from ytdl_sub.validators.string_select_validator import OverridesStringSelectValidator
 from ytdl_sub.validators.validators import ListValidator
 
 
@@ -55,6 +63,14 @@ class OverridesOneOrManyUrlValidator(OverridesStringFormatterValidator):
         raise self._validation_exception("Must be a string or an array of strings.")
 
 
+class YTMusicCounterpartValidator(OverridesStringSelectValidator):
+    _select_values = {PREFER_SONG, PREFER_VIDEO, PREFER_DISABLED}
+
+
+class YTMusicCounterpartWhenMissingValidator(OverridesStringSelectValidator):
+    _select_values = {WHEN_MISSING_ORIGINAL, WHEN_MISSING_SKIP}
+
+
 class UrlValidator(StrictDictValidator):
     _required_keys = {"url"}
     _optional_keys = {
@@ -65,6 +81,8 @@ class UrlValidator(StrictDictValidator):
         "ytdl_options",
         "include_sibling_metadata",
         "webpage_url",
+        "ytmusic_counterpart",
+        "ytmusic_counterpart_when_missing",
     }
 
     @classmethod
@@ -104,6 +122,16 @@ class UrlValidator(StrictDictValidator):
         )
         self._webpage_url = self._validate_key(
             key="webpage_url", validator=StringFormatterValidator, default="{webpage_url}"
+        )
+        self._ytmusic_counterpart = self._validate_key(
+            key="ytmusic_counterpart",
+            validator=YTMusicCounterpartValidator,
+            default=PREFER_DISABLED,
+        )
+        self._ytmusic_counterpart_when_missing = self._validate_key(
+            key="ytmusic_counterpart_when_missing",
+            validator=YTMusicCounterpartWhenMissingValidator,
+            default=WHEN_MISSING_ORIGINAL,
         )
 
     @property
@@ -209,6 +237,40 @@ class UrlValidator(StrictDictValidator):
         """
         return self._webpage_url
 
+    @property
+    def ytmusic_counterpart(self) -> OverridesStringSelectValidator:
+        """
+        Optional. YouTube Music tracks that have both a song and a music video are two
+        separate videos, linked by YouTube Music's song/video switcher. yt-dlp exposes no
+        way to reach the other side, so ytdl-sub resolves it using YouTube Music's API.
+
+        Set to ``song`` to download the audio-only version whenever the source points at a
+        music video, or ``video`` to do the reverse. Entries that are already the requested
+        version are downloaded as-is, and all metadata is taken from whichever version is
+        downloaded.
+
+        Requires ``ytdl_options.cookiefile``, since YouTube Music only exposes the
+        song/video switcher to signed-in accounts.
+
+        Supported values are ``song``, ``video``, and ``disabled``. Defaults to
+        ``disabled``.
+        """
+        return self._ytmusic_counterpart
+
+    @property
+    def ytmusic_counterpart_when_missing(self) -> OverridesStringSelectValidator:
+        """
+        Optional. What to do when ``ytmusic_counterpart`` is set but the entry has no
+        version of the requested type, which is the case for video-only releases and
+        non-music uploads.
+
+        Set to ``original`` to download the entry as it appears in the source, or ``skip``
+        to not download it at all.
+
+        Supported values are ``original`` and ``skip``. Defaults to ``original``.
+        """
+        return self._ytmusic_counterpart_when_missing
+
 
 class UrlStringOrDictValidator(UrlValidator):
     """
@@ -307,6 +369,29 @@ class MultiUrlValidator(OptionsValidator):
             playlist_thumbnails:
               - name: "season{season_index}-poster.jpg"
                 uid: "latest_entry"
+
+    :YouTube Music Song/Video:
+
+    YouTube Music tracks that have both a song and a music video are two separate videos,
+    linked by YouTube Music's song/video switcher. Set ``ytmusic_counterpart`` to ``song``
+    to download the audio-only version whenever the URL returns music videos, or ``video``
+    to do the reverse. Entries that are already the requested version are downloaded as-is,
+    and file names and tags always come from whichever version is downloaded.
+
+    Entries with no version of the requested type, like video-only releases and non-music
+    uploads, are downloaded as-is unless ``ytmusic_counterpart_when_missing`` is set to
+    ``skip``.
+
+    YouTube Music only exposes the song/video switcher to signed-in accounts, so
+    ``ytdl_options.cookiefile`` is required for this to have any effect.
+
+    .. code-block:: yaml
+
+      download:
+        urls:
+          - url: "https://music.youtube.com/playlist?list=LM"
+            ytmusic_counterpart: "song"          # song, video, or disabled
+            ytmusic_counterpart_when_missing: "original"  # original or skip
     """
 
     @classmethod

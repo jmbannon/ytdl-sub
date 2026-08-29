@@ -6,7 +6,9 @@
       "webpage_url": "{modified_webpage_url}",
       "ytdl_options": {
         "playlist_items": "-1:0:-1"
-      }
+      },
+      "ytmusic_counterpart": "{ytmusic_counterpart}",
+      "ytmusic_counterpart_when_missing": "{ytmusic_counterpart_when_missing}"
     },
     {
       "include_sibling_metadata": "{include_sibling_metadata}",
@@ -31,12 +33,16 @@
         }
       ],
       "url": "{ %array_at(urls, 0) }",
-      "webpage_url": "{modified_webpage_url}"
+      "webpage_url": "{modified_webpage_url}",
+      "ytmusic_counterpart": "{ytmusic_counterpart}",
+      "ytmusic_counterpart_when_missing": "{ytmusic_counterpart_when_missing}"
     },
     {
       "include_sibling_metadata": "{include_sibling_metadata}",
       "url": "{ %array_slice(urls, 1) }",
-      "webpage_url": "{modified_webpage_url}"
+      "webpage_url": "{modified_webpage_url}",
+      "ytmusic_counterpart": "{ytmusic_counterpart}",
+      "ytmusic_counterpart_when_missing": "{ytmusic_counterpart_when_missing}"
     }
   ],
   "format": "(bv*[ext=mp4][vcodec~='^((he|a)vc|h26[45])']+ba[ext=m4a]) / (bv[ext=mp4]*+ba[ext=m4a]/b)",
@@ -189,7 +195,9 @@
     "url97": "",
     "url98": "",
     "url99": "",
-    "urls": "{ %array_apply(%range(100, 1), %get_url_i) }"
+    "urls": "{ %array_apply(%range(100, 1), %get_url_i) }",
+    "ytmusic_counterpart": "disabled",
+    "ytmusic_counterpart_when_missing": "original"
   },
   "preset": [
     "_base",

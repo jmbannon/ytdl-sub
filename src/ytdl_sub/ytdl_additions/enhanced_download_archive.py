@@ -10,7 +10,11 @@ from typing import Any, Dict, List, Optional, Set
 from yt_dlp import DateRange
 from yt_dlp.utils import make_archive_id
 
-from ytdl_sub.entries.entry import Entry, ytdl_sub_split_by_chapters_parent_uid
+from ytdl_sub.entries.entry import (
+    YTMUSIC_SOURCE_UID_METADATA_KEY,
+    Entry,
+    ytdl_sub_split_by_chapters_parent_uid,
+)
 from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler, FileHandlerTransactionLog, FileMetadata
 from ytdl_sub.utils.logger import Logger
@@ -26,18 +30,26 @@ class DownloadMapping:
     extractor: str
     file_names: Set[str]
     playlist_index: Optional[int] = None
+    source_uid: Optional[str] = None
 
     @property
     def dict(self) -> Dict[str, Any]:
         """
         :return: DownloadMapping as a dict that is serializable
         """
-        return {
+        mapping_dict: Dict[str, Any] = {
             "upload_date": self.upload_date,
             "extractor": self.extractor,
             "file_names": sorted(list(self.file_names)),
             "playlist_index": self.playlist_index,
         }
+
+        # Only written for entries swapped via YouTube Music's song/video switcher, so that
+        # archives without any keep the exact same contents
+        if self.source_uid is not None:
+            mapping_dict["source_uid"] = self.source_uid
+
+        return mapping_dict
 
     @classmethod
     def from_dict(cls, mapping_dict: dict) -> "DownloadMapping":
@@ -56,6 +68,7 @@ class DownloadMapping:
             extractor=mapping_dict["extractor"],
             file_names=set(mapping_dict["file_names"]),
             playlist_index=mapping_dict.get("playlist_index"),
+            source_uid=mapping_dict.get("source_uid"),
         )
 
     @classmethod
@@ -70,12 +83,16 @@ class DownloadMapping:
         -------
         DownloadMapping for the entry
         """
-        raw_index = entry._kwargs_get("playlist_index")  # pylint: disable=protected-access
+        # pylint: disable=protected-access
+        raw_index = entry._kwargs_get("playlist_index")
+        source_uid = entry._kwargs_get(YTMUSIC_SOURCE_UID_METADATA_KEY)
+        # pylint: enable=protected-access
         return DownloadMapping(
             upload_date=entry.get(v.ytdl_sub_keep_files_date_eval, str),
             extractor=entry.download_archive_extractor,
             file_names=set(),
             playlist_index=int(raw_index) if raw_index is not None else None,
+            source_uid=str(source_uid) if source_uid else None,
         )
 
 
@@ -330,6 +347,12 @@ class DownloadMappings:
         lines: List[str] = []
         for entry_id, metadata in self._entry_mappings.items():
             lines.append(make_archive_id(ie=metadata.extractor, video_id=entry_id))
+
+            # Entries swapped to the other side of YouTube Music's song/video switcher are
+            # enumerated by the source under their original id. Record that one too, so
+            # yt-dlp skips it on the next run instead of re-resolving every entry.
+            if metadata.source_uid:
+                lines.append(make_archive_id(ie=metadata.extractor, video_id=metadata.source_uid))
 
         return DownloadArchive(download_archive_lines=lines)
 
@@ -702,10 +725,13 @@ class EnhancedDownloadArchive:
             )
             return self
 
+        # A swapped YouTube Music entry can be seen in the source under either id,
+        # depending on whether the swap happened during this run
         stale_mappings: Dict[str, DownloadMapping] = {
             uid: mapping
             for uid, mapping in self.mapping.entry_mappings.items()
             if uid not in source_entry_ids
+            and (mapping.source_uid is None or mapping.source_uid not in source_entry_ids)
         }
 
         for uid, mapping in stale_mappings.items():

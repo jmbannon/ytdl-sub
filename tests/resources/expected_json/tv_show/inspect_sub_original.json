@@ -12,7 +12,9 @@
       "webpage_url": "{modified_webpage_url}",
       "ytdl_options": {
         "playlist_items": "-1:0:-1"
-      }
+      },
+      "ytmusic_counterpart": "{ytmusic_counterpart}",
+      "ytmusic_counterpart_when_missing": "{ytmusic_counterpart_when_missing}"
     },
     {
       "include_sibling_metadata": "{include_sibling_metadata}",
@@ -37,12 +39,16 @@
         }
       ],
       "url": "{ %array_at(urls, 0) }",
-      "webpage_url": "{modified_webpage_url}"
+      "webpage_url": "{modified_webpage_url}",
+      "ytmusic_counterpart": "{ytmusic_counterpart}",
+      "ytmusic_counterpart_when_missing": "{ytmusic_counterpart_when_missing}"
     },
     {
       "include_sibling_metadata": "{include_sibling_metadata}",
       "url": "{ %array_slice(urls, 1) }",
-      "webpage_url": "{modified_webpage_url}"
+      "webpage_url": "{modified_webpage_url}",
+      "ytmusic_counterpart": "{ytmusic_counterpart}",
+      "ytmusic_counterpart_when_missing": "{ytmusic_counterpart_when_missing}"
     }
   ],
   "file_convert": {
@@ -215,7 +221,9 @@
     "url97": "",
     "url98": "",
     "url99": "",
-    "urls": "{subscription_array}"
+    "urls": "{subscription_array}",
+    "ytmusic_counterpart": "disabled",
+    "ytmusic_counterpart_when_missing": "original"
   },
   "preset": [
     "_season_by_year",

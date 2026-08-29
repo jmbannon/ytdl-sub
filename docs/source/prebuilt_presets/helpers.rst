@@ -237,3 +237,35 @@ Example:
    overrides:
      modified_webpage_url: >-
        { %regex_sub("#__youtubedl_smuggle=.*", "", webpage_url) }
+
+YouTube Music Song/Video
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+YouTube Music tracks that have both a song and a music video are two separate videos, linked
+by YouTube Music's song/video switcher. yt-dlp exposes no way to reach the other side, so
+``ytdl-sub`` resolves it using YouTube Music's own API.
+
+Set the variable ``ytmusic_counterpart`` to ``song`` to download the audio-only version
+whenever a URL returns music videos, or to ``video`` to do the reverse. Entries that are
+already the requested version are downloaded as-is, and file names and tags always come from
+whichever version is downloaded.
+
+Entries with no version of the requested type, like video-only releases and non-music uploads,
+are downloaded as-is. Set ``ytmusic_counterpart_when_missing`` to ``skip`` to not download
+them at all.
+
+.. note::
+
+   YouTube Music only exposes the song/video switcher to signed-in accounts, so
+   ``ytdl_options.cookiefile`` is required for this to have any effect.
+
+Example:
+
+.. code-block:: yaml
+  :caption:
+     Downloads the audio-only version of every liked music video
+
+   overrides:
+     ytmusic_counterpart: "song"
+   ytdl_options:
+     cookiefile: "/config/cookies.txt"

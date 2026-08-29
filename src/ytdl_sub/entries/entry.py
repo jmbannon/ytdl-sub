@@ -16,6 +16,10 @@ from ytdl_sub.validators.audo_codec_validator import AUDIO_CODEC_EXTS, VIDEO_COD
 v: VariableDefinitions = VARIABLES
 
 _YTDL_SUB_ENTRY_VARIABLES_KWARG_KEY: str = "ytdl_sub_entry_variables"
+
+# Set on entries that were swapped to the other side of YouTube Music's song/video
+# switcher, recording the video id the source actually pointed at
+YTMUSIC_SOURCE_UID_METADATA_KEY: str = "ytdl_sub_ytmusic_source_uid"
 ytdl_sub_chapters_from_comments = ArrayVariable(
     "ytdl_sub_chapters_from_comments", definition="{ [] }"
 )

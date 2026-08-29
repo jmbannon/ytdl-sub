@@ -12,9 +12,15 @@ from ytdl_sub.downloaders.url.validators import (
     UrlThumbnailListValidator,
     UrlValidator,
 )
+from ytdl_sub.downloaders.url.ytmusic import (
+    PREFER_DISABLED,
+    WHEN_MISSING_SKIP,
+    YTMusicCounterpartResolver,
+    to_watch_url,
+)
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
 from ytdl_sub.downloaders.ytdlp import YTDLP
-from ytdl_sub.entries.entry import Entry
+from ytdl_sub.entries.entry import YTMUSIC_SOURCE_UID_METADATA_KEY, Entry
 from ytdl_sub.entries.entry_parent import EntryParent
 from ytdl_sub.entries.script.variable_definitions import VARIABLES, VariableDefinitions
 from ytdl_sub.utils.file_handler import FileHandler
@@ -29,6 +35,23 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import EnhancedDownloadAr
 v: VariableDefinitions = VARIABLES
 
 download_logger = Logger.get(name="downloader")
+
+# Playlist context that a standalone video fetch cannot know, comprising yt-dlp's own
+# playlist fields and the parent metadata that EntryParent injects into each child
+_PLAYLIST_CONTEXT_METADATA_KEYS = [
+    v.playlist_metadata.metadata_key,
+    v.source_metadata.metadata_key,
+    v.sibling_metadata.metadata_key,
+    "playlist",
+    "playlist_autonumber",
+    "playlist_count",
+    "playlist_id",
+    "playlist_index",
+    "playlist_title",
+    "playlist_uploader",
+    "playlist_uploader_id",
+    "n_entries",
+]
 
 
 class URLDownloadState:
@@ -231,6 +254,7 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         )
         self._downloaded_entries: Set[str] = set()
         self._url_state: Optional[URLDownloadState] = None
+        self._ytmusic_resolver: Optional[YTMusicCounterpartResolver] = None
 
     def download_ytdl_options(self, url_idx: Optional[int] = None) -> Dict:
         """
@@ -363,6 +387,113 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             for info_json_file in info_json_files:
                 FileHandler.delete(info_json_file)
 
+    def _create_ytmusic_counterpart_entry(
+        self, entry: Entry, counterpart_uid: str, validator: UrlValidator
+    ) -> Entry:
+        """
+        Fetches the counterpart's own metadata so that file names, music tags and NFO tags
+        describe the version that actually gets downloaded rather than the one the source
+        pointed at. Falls back to the original entry if the fetch fails.
+        """
+        counterpart_dict: Optional[Dict] = None
+        try:
+            counterpart_dict = YTDLP.extract_entry_dict(
+                ytdl_options_overrides=self.metadata_ytdl_options(
+                    ytdl_option_overrides=validator.ytdl_options.to_native_dict(self.overrides)
+                )
+                | {
+                    # Read the metadata directly instead of via the working directory, so
+                    # info.json files belonging to the source URL are left alone
+                    "writeinfojson": False,
+                    "extract_flat": False,
+                    # The counterpart is being fetched precisely because it is wanted
+                    "download_archive": None,
+                },
+                url=to_watch_url(counterpart_uid),
+            )
+        except Exception as exc:  # pylint: disable=broad-except
+            download_logger.debug("Failed to fetch metadata for %s: %s", counterpart_uid, str(exc))
+
+        if not counterpart_dict:
+            download_logger.warning(
+                "Could not fetch YouTube Music metadata for '%s', downloading it as-is",
+                entry.title,
+            )
+            return entry
+
+        # pylint: disable=protected-access
+        for metadata_key in _PLAYLIST_CONTEXT_METADATA_KEYS:
+            if metadata_key in entry._kwargs:
+                counterpart_dict[metadata_key] = entry._kwargs[metadata_key]
+        # pylint: enable=protected-access
+
+        counterpart_dict[YTMUSIC_SOURCE_UID_METADATA_KEY] = entry.uid
+
+        return Entry(counterpart_dict, working_directory=self.working_directory)
+
+    def _maybe_swap_ytmusic_counterpart(
+        self, entry: Entry, validator: UrlValidator, prefer: str
+    ) -> Optional[Entry]:
+        """
+        YouTube Music's song/video switcher points at a different video entirely, and the
+        relation is absent from yt-dlp's info json. Resolve it here so the rest of the
+        download pipeline - file names, the download archive, plugins - only ever sees the
+        version that is actually wanted.
+
+        Returns
+        -------
+        The entry to download, or None to not download it at all
+        """
+        if not entry.download_archive_extractor.startswith("youtube"):
+            return entry
+
+        if self._ytmusic_resolver is None:
+            self._ytmusic_resolver = YTMusicCounterpartResolver(
+                ytdl_options=self.metadata_ytdl_options(
+                    ytdl_option_overrides=validator.ytdl_options.to_native_dict(self.overrides)
+                )
+            )
+
+        preferred_uid = self._ytmusic_resolver.resolve(video_id=entry.uid, prefer=prefer)
+
+        # YouTube Music has no version of the requested type for this entry
+        if preferred_uid is None:
+            when_missing = self.overrides.apply_formatter(
+                validator.ytmusic_counterpart_when_missing
+            )
+            if when_missing == WHEN_MISSING_SKIP:
+                download_logger.info(
+                    "Skipping '%s', it has no YouTube Music %s version", entry.title, prefer
+                )
+                return None
+            return entry
+
+        # The entry already is the requested version
+        if preferred_uid == entry.uid:
+            return entry
+
+        # Check the archive before fetching metadata, using the same rules as
+        # _is_in_download_archive. Only reachable when the archive is withheld from the
+        # metadata fetch, since yt-dlp otherwise skips downloaded entries before this point.
+        if (
+            "download_archive" not in self._metadata_ytdl_options_builder.to_dict()
+            and preferred_uid in self._enhanced_download_archive.mapping.entry_mappings
+        ):
+            self._enhanced_download_archive.record_source_entry_id(entry_id=preferred_uid)
+            self._url_state.entries_downloaded += 1
+            download_logger.info(
+                "Already downloaded entry %d/%d: %s",
+                self._url_state.entries_downloaded,
+                self._url_state.entries_total,
+                entry.title,
+            )
+            return None
+
+        download_logger.info("Using the YouTube Music %s version of '%s'", prefer, entry.title)
+        return self._create_ytmusic_counterpart_entry(
+            entry=entry, counterpart_uid=preferred_uid, validator=validator
+        )
+
     def _extract_entry_info_with_retry(self, entry: Entry) -> Entry:
         download_entry_dict = YTDLP.extract_info_with_retry(
             ytdl_options_overrides=self.download_ytdl_options(
@@ -391,7 +522,19 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         if self.overrides.apply_formatter(validator.download_reverse, expected_type=bool):
             indices = reversed(indices)
 
+        ytmusic_prefer = self.overrides.apply_formatter(validator.ytmusic_counterpart)
+
         for idx in indices:
+            # Resolve the YouTube Music song/video switcher first, so every identity check
+            # below - progress, the download archive, file names - sees the entry that will
+            # actually be downloaded
+            if ytmusic_prefer != PREFER_DISABLED:
+                entries_to_iter[idx] = self._maybe_swap_ytmusic_counterpart(
+                    entry=entries_to_iter[idx], validator=validator, prefer=ytmusic_prefer
+                )
+                if entries_to_iter[idx] is None:
+                    continue
+
             self._enhanced_download_archive.record_source_entry_id(
                 entry_id=entries_to_iter[idx].uid
             )
