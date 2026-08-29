@@ -90,7 +90,7 @@ TODO: screenshots of configuration
 Reproducing a Failing Subscription
 ----------------------------------
 
-Subscriptions will dump their entire *compiled* yaml at the beginning of exeuction
+Subscriptions will dump their entire *compiled* yaml at the beginning of execution
 :doc:`when using '--log-level debug' <../../debugging>`. This can be copy-pasted into
 the file ``resources/file_fixtures/repro.yaml``.
 
