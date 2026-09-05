@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Set this to wherever you want your jobs to run. It should exist already.
+namespace: ytdl-sub
+
+images:
+  # Override this with your own image if you would like.
+  # This is a smaller image than the default that includes all the editor stuff.
+  - name: kaictl/ytdl-sub
+    newName: kaictl/ytdl-sub
+    newTag: latest
+
+resources:
+  - ./volumes.yaml
+  - ./cronjob.yaml
+
+configMapGenerator:
+  - name: ytdl-config
+    files:
+      - ./config.yaml
+      - ./subscriptions.yaml
