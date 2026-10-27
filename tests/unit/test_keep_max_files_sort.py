@@ -8,6 +8,14 @@ from ytdl_sub.ytdl_additions.enhanced_download_archive import (
 )
 
 
+def _active_ids(archive):
+    return sorted(uid for uid, m in archive.mapping.entry_mappings.items() if not m.suppressed)
+
+
+def _suppressed_ids(archive):
+    return sorted(uid for uid, m in archive.mapping.entry_mappings.items() if m.suppressed)
+
+
 class TestDownloadMappingPlaylistIndex:
     def test_from_dict_with_playlist_index(self):
         mapping = DownloadMapping.from_dict(
@@ -50,6 +58,46 @@ class TestDownloadMappingPlaylistIndex:
         result = mapping.dict
         assert "playlist_index" in result
         assert result["playlist_index"] is None
+
+
+class TestDownloadMappingSuppressed:
+    def test_from_dict_without_suppressed_defaults_to_false(self):
+        mapping = DownloadMapping.from_dict(
+            {
+                "upload_date": "2024-01-15",
+                "extractor": "youtube",
+                "file_names": ["video1.mp4"],
+            }
+        )
+        assert mapping.suppressed is False
+
+    def test_from_dict_with_suppressed(self):
+        mapping = DownloadMapping.from_dict(
+            {
+                "upload_date": "2024-01-15",
+                "extractor": "youtube",
+                "file_names": [],
+                "suppressed": True,
+            }
+        )
+        assert mapping.suppressed is True
+
+    def test_dict_omits_suppressed_when_false(self):
+        mapping = DownloadMapping(
+            upload_date="2024-01-15",
+            extractor="youtube",
+            file_names={"video1.mp4"},
+        )
+        assert "suppressed" not in mapping.dict
+
+    def test_dict_includes_suppressed_when_true(self):
+        mapping = DownloadMapping(
+            upload_date="2024-01-15",
+            extractor="youtube",
+            file_names=set(),
+            suppressed=True,
+        )
+        assert mapping.dict["suppressed"] is True
 
 
 class TestKeepMaxFilesSortByValidator:
@@ -111,8 +159,8 @@ class TestRemoveStaleFilesSortByPlaylistIndexAsc:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index_asc")
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id1", "id2", "id3"]
+        assert _active_ids(archive) == ["id1", "id2", "id3"]
+        assert _suppressed_ids(archive) == ["id4", "id5"]
 
     def test_prunes_none_first(self, tmp_path):
         mappings = {
@@ -125,8 +173,8 @@ class TestRemoveStaleFilesSortByPlaylistIndexAsc:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index_asc")
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id1", "id3", "id5"]
+        assert _active_ids(archive) == ["id1", "id3", "id5"]
+        assert _suppressed_ids(archive) == ["id2", "id4"]
 
     def test_all_none_falls_back_to_upload_date(self, tmp_path):
         from unittest.mock import patch
@@ -147,8 +195,8 @@ class TestRemoveStaleFilesSortByPlaylistIndexAsc:
             mock_logger.warning.assert_called_once()
             assert "Falling back" in mock_logger.warning.call_args[0][0]
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id2", "id3", "id4"]
+        assert _active_ids(archive) == ["id2", "id3", "id4"]
+        assert _suppressed_ids(archive) == ["id1", "id5"]
 
     def test_keep_max_zero_does_not_prune(self, tmp_path):
         mappings = {
@@ -159,8 +207,8 @@ class TestRemoveStaleFilesSortByPlaylistIndexAsc:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=0, sort_by="playlist_index_asc")
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id1", "id2", "id3"]
+        assert _active_ids(archive) == ["id1", "id2", "id3"]
+        assert _suppressed_ids(archive) == []
 
 
 class TestRemoveStaleFilesSortByPlaylistIndexDesc:
@@ -175,8 +223,8 @@ class TestRemoveStaleFilesSortByPlaylistIndexDesc:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index_desc")
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id3", "id4", "id5"]
+        assert _active_ids(archive) == ["id3", "id4", "id5"]
+        assert _suppressed_ids(archive) == ["id1", "id2"]
 
     def test_prunes_none_first(self, tmp_path):
         mappings = {
@@ -189,8 +237,8 @@ class TestRemoveStaleFilesSortByPlaylistIndexDesc:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="playlist_index_desc")
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id1", "id3", "id5"]
+        assert _active_ids(archive) == ["id1", "id3", "id5"]
+        assert _suppressed_ids(archive) == ["id2", "id4"]
 
     def test_all_none_falls_back_to_upload_date(self, tmp_path):
         from unittest.mock import patch
@@ -211,8 +259,8 @@ class TestRemoveStaleFilesSortByPlaylistIndexDesc:
             mock_logger.warning.assert_called_once()
             assert "Falling back" in mock_logger.warning.call_args[0][0]
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id2", "id3", "id4"]
+        assert _active_ids(archive) == ["id2", "id3", "id4"]
+        assert _suppressed_ids(archive) == ["id1", "id5"]
 
     def test_keep_max_zero_does_not_prune(self, tmp_path):
         mappings = {
@@ -223,8 +271,8 @@ class TestRemoveStaleFilesSortByPlaylistIndexDesc:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=0, sort_by="playlist_index_desc")
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id1", "id2", "id3"]
+        assert _active_ids(archive) == ["id1", "id2", "id3"]
+        assert _suppressed_ids(archive) == []
 
 
 class TestRemoveStaleFilesUploadDate:
@@ -239,8 +287,8 @@ class TestRemoveStaleFilesUploadDate:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=3, sort_by="upload_date")
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id2", "id3", "id4"]
+        assert _active_ids(archive) == ["id2", "id3", "id4"]
+        assert _suppressed_ids(archive) == ["id1", "id5"]
 
     def test_old_archive_without_playlist_index_sorts_by_upload_date(self, tmp_path):
         mappings = {
@@ -263,9 +311,8 @@ class TestRemoveStaleFilesUploadDate:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=3)
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id2", "id3", "id4"]
-        for uid in remaining_ids:
+        assert _active_ids(archive) == ["id2", "id3", "id4"]
+        for uid in ["id2", "id3", "id4"]:
             assert archive.mapping.entry_mappings[uid].playlist_index is None
 
     def test_keep_max_zero_does_not_prune(self, tmp_path):
@@ -277,5 +324,75 @@ class TestRemoveStaleFilesUploadDate:
         archive = _make_archive(tmp_path, mappings)
         archive.remove_stale_files(date_range=None, keep_max_files=0, sort_by="upload_date")
 
-        remaining_ids = list(archive.mapping.entry_mappings.keys())
-        assert sorted(remaining_ids) == ["id1", "id2", "id3"]
+        assert _active_ids(archive) == ["id1", "id2", "id3"]
+        assert _suppressed_ids(archive) == []
+
+
+class TestSuppressedEntriesPreventRedownload:
+    def test_suppressed_entries_in_download_archive(self, tmp_path):
+        """Suppressed entries should appear in the yt-dlp download archive."""
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}),
+            "id2": DownloadMapping("2024-01-05", "yt", {"b.mp4"}),
+            "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}),
+        }
+        archive = _make_archive(tmp_path, mappings)
+        archive.remove_stale_files(date_range=None, keep_max_files=2, sort_by="upload_date")
+
+        assert _active_ids(archive) == ["id2", "id3"]
+        assert _suppressed_ids(archive) == ["id1"]
+
+        dl_archive = archive.mapping.to_download_archive()
+        archive_lines = dl_archive._download_archive_lines
+        archive_text = " ".join(archive_lines)
+        assert "id1" in archive_text
+        assert "id2" in archive_text
+        assert "id3" in archive_text
+
+    def test_suppressed_entries_not_recounted_on_subsequent_prune(self, tmp_path):
+        """Already-suppressed entries should not count toward keep_max_files."""
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", set(), suppressed=True),
+            "id2": DownloadMapping("2024-01-02", "yt", {"b.mp4"}),
+            "id3": DownloadMapping("2024-01-03", "yt", {"c.mp4"}),
+            "id4": DownloadMapping("2024-01-04", "yt", {"d.mp4"}),
+        }
+        archive = _make_archive(tmp_path, mappings)
+        archive.remove_stale_files(date_range=None, keep_max_files=2, sort_by="upload_date")
+
+        assert _active_ids(archive) == ["id3", "id4"]
+        assert _suppressed_ids(archive) == ["id1", "id2"]
+
+    def test_suppressed_entry_files_deleted(self, tmp_path):
+        """Files for suppressed entries should be deleted from disk."""
+        mappings = {
+            "id1": DownloadMapping("2024-01-01", "yt", {"a.mp4"}),
+            "id2": DownloadMapping("2024-01-05", "yt", {"b.mp4"}),
+        }
+        archive = _make_archive(tmp_path, mappings)
+        output = tmp_path / "output"
+        assert (output / "a.mp4").exists()
+
+        archive.remove_stale_files(date_range=None, keep_max_files=1, sort_by="upload_date")
+
+        assert not (output / "a.mp4").exists()
+        assert (output / "b.mp4").exists()
+
+    def test_suppress_then_serialize_roundtrip(self, tmp_path):
+        """Suppressed flag should survive JSON serialization roundtrip."""
+        mappings = DownloadMappings()
+        mappings._entry_mappings["id1"] = DownloadMapping(
+            "2024-01-01", "yt", set(), suppressed=True
+        )
+        mappings._entry_mappings["id2"] = DownloadMapping(
+            "2024-01-05", "yt", {"b.mp4"}, suppressed=False
+        )
+
+        json_path = str(tmp_path / "mappings.json")
+        mappings.to_file(json_path)
+        loaded = DownloadMappings.from_file(json_path)
+
+        assert loaded._entry_mappings["id1"].suppressed is True
+        assert loaded._entry_mappings["id1"].file_names == set()
+        assert loaded._entry_mappings["id2"].suppressed is False
+        assert loaded._entry_mappings["id2"].file_names == {"b.mp4"}
