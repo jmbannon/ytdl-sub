@@ -1,0 +1,13 @@
+FROM python:alpine
+
+# Install required non-python dependencies.
+# Just using the built-in ffmpeg for ease of creation.
+RUN apk add --no-cache ffmpeg aria2
+
+RUN --mount=type=cache,target=/root/.cache \
+  pip install ytdl-sub
+
+VOLUME /config
+VOLUME /media
+# Default to a non-root user after build.
+USER nobody
