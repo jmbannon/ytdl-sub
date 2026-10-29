@@ -9,15 +9,22 @@ from ytdl_sub.utils.logger import Logger
 
 logger = Logger.get(name="ffmpeg")
 
-_FFMPEG_METADATA_SPECIAL_CHARS = ["=", ";", "#", "\n", "\\"]
+_FFMPEG_METADATA_ESCAPE_MAP = str.maketrans(
+    {
+        # Backslash is escaped too, so the escapes added for the characters below are
+        # not interpreted as literal backslashes.
+        "\\": "\\\\",
+        "=": "\\=",
+        ";": "\\;",
+        "#": "\\#",
+        "\n": "\\\n",
+    }
+)
 
 
 def _ffmpeg_metadata_escape(str_to_escape: str) -> str:
-    # backslash at the end of the list is intentional
-    for special_char in _FFMPEG_METADATA_SPECIAL_CHARS:
-        str_to_escape.replace(special_char, f"\\{special_char}")
-
-    return str_to_escape
+    # Escape in a single pass so the order of the characters above cannot matter.
+    return str_to_escape.translate(_FFMPEG_METADATA_ESCAPE_MAP)
 
 
 class FFMPEG:
