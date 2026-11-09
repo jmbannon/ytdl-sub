@@ -22,7 +22,7 @@ RUN mkdir -pv "${DEFAULT_WORKSPACE}" && \
       make \
       deno \
       libffi-dev \
-      "python3>=3.10" \
+      "python3>=3.11" \
       py3-pip \
       fontconfig \
       py3-setuptools && \

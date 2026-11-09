@@ -4,15 +4,15 @@ dynamic = [ "version" ]
 authors = [ { name = "Jesse Bannon" } ]
 description = "Automate downloading metadata generation with YoutubeDL"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = { file = "LICENSE" }
 classifiers = [
     "Topic :: Multimedia :: Sound/Audio",
     "Topic :: Multimedia :: Video",
     "License :: Public Domain",
     "Environment :: Console",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
     "yt-dlp[default]==2026.10.21",
@@ -96,8 +96,8 @@ exclude_also = [
 line-length = 100
 indent-width = 4
 
-# Assume Python 3.10
-target-version = "py310"
+# Assume Python 3.11
+target-version = "py311"
 
 [tool.ruff.lint]
 extend-select = ["I"]

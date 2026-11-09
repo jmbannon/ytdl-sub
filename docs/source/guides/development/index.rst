@@ -5,7 +5,7 @@ Development and Contributing
 Requirements
 ------------
 
-- python >= 3.10
+- python >= 3.11
 - ffmpeg/ffprobe 4.4.5 (test checksums rely on this version)
 - make
 
