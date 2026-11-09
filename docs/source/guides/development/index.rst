@@ -6,7 +6,7 @@ Requirements
 ------------
 
 - python >= 3.11
-- ffmpeg/ffprobe 4.4.5 (test checksums rely on this version)
+- ffmpeg/ffprobe 4.4.8 (test checksums rely on this version)
 - make
 
 
