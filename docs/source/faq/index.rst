@@ -151,7 +151,9 @@ need to be removed:
 - Move aside the downloaded files:
 
   Rename or move the downloaded files, including the associated files with the same
-  base/stem name, such as ``./*.nfo``, ``./*.info-json``, etc..
+  base/stem name, such as ``./*.nfo``, ``./*.info-json``, etc... Ytdl-sub checks both
+  the file system and the download archive file, so we must remove the item in question
+  from both places for it to be downloaded again.
 
 - Ensure ``ytdl-sub`` is not running and won't run, such as by cron:
 
@@ -175,6 +177,9 @@ need to be removed:
   the subscriptions <guides/getting_started/downloading:preview>` to
   download only the files that you've renamed in the steps above.
 
+  Setting 'break_on_existing' to false will force a new scrape, but will not re-download
+  files that exist in the archive or on disk.
+
   Set the appropriate dates, :ref:`including a sufficient margin
   <config_reference/plugins:date_range>`, and subscription name to include only the
   files you've renamed, and re-run. For example, if you've renamed all the files from
@@ -197,6 +202,10 @@ use `the same CLI options as re-downloading a file`_
 
 .. _`the same CLI options as re-downloading a file`:
    `...force ytdl-sub to re-download a file`_
+
+The key option is 'break_on_existing'. Try setting 'break_on_existing' to 'false' in
+your subscription file. This will force a full re-scrape, but will not re-download
+existing files.
 
 ...get support?
 ~~~~~~~~~~~~~~~
