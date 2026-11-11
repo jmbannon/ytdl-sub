@@ -3,7 +3,9 @@ import os
 import tempfile
 from subprocess import CalledProcessError
 from typing import Optional
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
+
+from yt_dlp.utils.networking import std_headers
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import FFMPEG
@@ -72,7 +74,8 @@ def download_and_convert_url_thumbnail(
     if not thumbnail_url:
         return None
 
-    with urlopen(thumbnail_url, timeout=7.0) as file:
+    request = Request(thumbnail_url, headers=dict(std_headers))
+    with urlopen(request, timeout=7.0) as file:
         with tempfile.NamedTemporaryFile(delete=False) as thumbnail:
             thumbnail.write(file.read())
 
