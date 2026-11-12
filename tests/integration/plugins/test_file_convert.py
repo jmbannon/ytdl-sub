@@ -58,4 +58,5 @@ class TestFileConvert:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/file_convert/custom_ffmpeg_args.json",
+            ignore_md5_hashes_for=["JMC/Mock Entry 20-1.mkv"],
         )
