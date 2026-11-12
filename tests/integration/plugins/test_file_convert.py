@@ -19,7 +19,7 @@ def file_convert_subscription_dict(output_directory) -> Dict:
         "file_convert": {
             "convert_to": "mkv",
             "convert_with": "ffmpeg",
-            "ffmpeg_post_process_args": "-bitexact -vcodec copy -acodec copy -scodec mov_text",
+            "ffmpeg_post_process_args": "-vcodec copy -acodec copy -scodec mov_text -bitexact",
         },
     }
 
@@ -58,5 +58,4 @@ class TestFileConvert:
             output_directory=output_directory,
             dry_run=dry_run,
             expected_download_summary_file_name="plugins/file_convert/custom_ffmpeg_args.json",
-            ignore_md5_hashes_for=["JMC/Mock Entry 20-1.mkv"],
         )

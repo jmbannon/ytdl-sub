@@ -23,7 +23,7 @@ def _split_video_ffmpeg_cmd(
     cmd = ["-i", input_file, "-ss", timestamp_begin]
     if timestamp_end:
         cmd += ["-to", timestamp_end]
-    cmd += ["-vcodec", "copy", "-acodec", "copy", output_file]
+    cmd += ["-vcodec", "copy", "-acodec", "copy", "-bitexact", output_file]
     return cmd
 
 
