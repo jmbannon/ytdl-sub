@@ -47,10 +47,10 @@ jobs:
         tar -xf ffmpeg.tar.gz
         chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg
         chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe
-        mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg
-        mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe
+        mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg .
+        mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe .
 
-        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/unit && coverage xml -o /opt/coverage/unit/coverage.xml
+        YTDL_SUB_FFMPEG_PATH=ffmpeg YTDL_SUB_FFPROBE_PATH=ffprobe coverage run -m pytest --reruns 3 --reruns-delay 5 tests/unit && coverage xml -o /opt/coverage/unit/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
@@ -79,10 +79,10 @@ jobs:
         tar -xf ffmpeg.tar.gz
         chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg
         chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe
-        mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg
-        mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe
-        
-        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/integration --ignore tests/integration/prebuilt_presets && coverage xml -o /opt/coverage/integration/coverage.xml
+        mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg .
+        mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe .
+
+        YTDL_SUB_FFMPEG_PATH=ffmpeg YTDL_SUB_FFPROBE_PATH=ffprobe coverage run -m pytest --reruns 3 --reruns-delay 5 tests/integration --ignore tests/integration/prebuilt_presets && coverage xml -o /opt/coverage/integration/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
@@ -111,10 +111,10 @@ jobs:
         tar -xf ffmpeg.tar.gz
         chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg
         chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe
-        mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg
-        mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe
-        
-        coverage run -m pytest --reruns 3 --reruns-delay 5 tests/integration/prebuilt_presets && coverage xml -o /opt/coverage/integration-prebuilt-presets/coverage.xml
+        mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg .
+        mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe .
+
+        YTDL_SUB_FFMPEG_PATH=ffmpeg YTDL_SUB_FFPROBE_PATH=ffprobe coverage run -m pytest --reruns 3 --reruns-delay 5 tests/integration/prebuilt_presets && coverage xml -o /opt/coverage/integration-prebuilt-presets/coverage.xml
 
     - name: Save coverage
       uses: actions/cache@v3
@@ -143,10 +143,10 @@ jobs:
         tar -xf ffmpeg.tar.gz
         chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg
         chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffprobe
-        mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/bin/ffmpeg
-        mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/bin/ffprobe
-        
-        coverage run -m pytest tests/e2e && coverage xml -o /opt/coverage/e2e/coverage.xml
+        mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg .
+        mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe .
+
+        YTDL_SUB_FFMPEG_PATH=ffmpeg YTDL_SUB_FFPROBE_PATH=ffprobe coverage run -m pytest tests/e2e && coverage xml -o /opt/coverage/e2e/coverage.xml
 
   codecov-upload:
     runs-on: ubuntu-latest
