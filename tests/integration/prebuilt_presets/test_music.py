@@ -59,4 +59,5 @@ class TestPrebuiltMusicPresets:
                 output_directory=output_directory,
                 dry_run=False,
                 expected_download_summary_file_name=f"{expected_summary_name}.json",
+                ignore_md5_hashes_for=[],  # placeholder to find non-determinism in test suite
             )
