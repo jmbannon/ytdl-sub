@@ -48,6 +48,8 @@ class EmbedThumbnailPlugin(Plugin[EmbedThumbnailOptions]):
                 "1",
                 "-map",
                 "0",
+                "-map_metadata",
+                "0",  # preserve metadata (e.g. creation_time) from the original file
                 "-dn",  # ignore data streams
                 "-c",
                 "copy",
