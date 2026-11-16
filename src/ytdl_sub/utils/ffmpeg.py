@@ -30,12 +30,14 @@ def _ffmpeg_metadata_escape(str_to_escape: str) -> str:
 class FFMPEG:
     _FFMPEG_PATH: str = ""
     _FFPROBE_PATH: str = ""
+    _FFMPEG_INSTALLED: bool = False
 
     @classmethod
     def set_paths(cls, ffmpeg_path: str, ffprobe_path: str) -> None:
         """Set ffmpeg paths for usage"""
         cls._FFMPEG_PATH = ffmpeg_path
         cls._FFPROBE_PATH = ffprobe_path
+        cls._FFMPEG_INSTALLED = False
 
     @classmethod
     def ffmpeg_path(cls) -> str:
@@ -51,12 +53,17 @@ class FFMPEG:
 
     @classmethod
     def _ensure_installed(cls):
+        if cls._FFMPEG_INSTALLED:
+            return
+
         try:
             subprocess.check_output([cls.ffmpeg_path(), "-version"])
         except subprocess.CalledProcessError as subprocess_error:
             raise ValidationException(
                 "Trying to use a feature which requires ffmpeg, but it cannot be found"
             ) from subprocess_error
+
+        cls._FFMPEG_INSTALLED = True
 
     @classmethod
     def tmp_file_path(cls, relative_file_path: str, extension: Optional[str] = None) -> str:
