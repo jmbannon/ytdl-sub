@@ -234,11 +234,13 @@ def _inspect(
             subscription_override_dict=subscription_override_dict,
         )
 
+    if not subscriptions:
+        raise ValidationException("No subscriptions found to inspect")
+
     if len(subscriptions) > 1:
-        print(
+        raise ValidationException(
             "inspect can only inspect a single subscription. Use --match to filter for a single one"
         )
-        return
 
     print(subscriptions[0].resolved_yaml(resolution_level=inspection_level, mocks=mocks))
 
