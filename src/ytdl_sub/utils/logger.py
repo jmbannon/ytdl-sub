@@ -207,6 +207,11 @@ class Logger:
                         yield
             finally:
                 redirect_stream.flush()
+                for handler in logger.handlers:
+                    handler.close()
+                logger.handlers.clear()
+                if logger in cls._LOGGERS:
+                    cls._LOGGERS.remove(logger)
 
     @classmethod
     def _append_to_error_log(cls):
