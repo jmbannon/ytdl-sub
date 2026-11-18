@@ -411,7 +411,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         plugins = self._initialize_plugins()
         if not all(plugin.initialize_subscription() for plugin in plugins):
             # Any plugin that skips gracefully should have logs that explain why
-            logging.info("Skipping %s", self.name)
+            logger.info("Skipping %s", self.name)
             return FileHandlerTransactionLog()
 
         subscription_ytdl_options = self.get_ytdl_options(plugins=plugins, dry_run=dry_run)
