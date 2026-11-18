@@ -261,7 +261,9 @@ class YTDLP:
                     url=uploader_url,
                 )
             except Exception:  # pylint: disable=broad-except
-                pass
+                cls.logger.debug(
+                    "Failed to get parent metadata from URL %s", uploader_url, exc_info=True
+                )
 
             parent_id = parent_dict.get("id") if isinstance(parent_dict, dict) else None
             if parent_id and parent_id not in entry_ids:
