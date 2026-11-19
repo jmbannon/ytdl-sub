@@ -27,8 +27,7 @@ def retry(times: int, exceptions: Tuple[Type[Exception], ...], wait_sec: int = 5
 
     def decorator(func):
         def newfn(*args, **kwargs):
-            attempt = 0
-            while attempt < times:
+            for attempt in range(1, times + 1):
                 try:
                     return func(*args, **kwargs)
                 except exceptions as exc:
@@ -36,12 +35,12 @@ def retry(times: int, exceptions: Tuple[Type[Exception], ...], wait_sec: int = 5
                         "Exception thrown when attempting to run %s, attempt %d of %d\n"
                         "Exception:\n%s",
                         func.__name__,
-                        attempt + 1,
+                        attempt,
                         times,
                         str(exc),
                     )
-                    attempt += 1
-                    sleep(wait_sec)
+                    if attempt < times:
+                        sleep(wait_sec)
             return None
 
         return newfn

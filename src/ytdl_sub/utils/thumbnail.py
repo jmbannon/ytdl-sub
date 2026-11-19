@@ -79,6 +79,7 @@ def download_and_convert_url_thumbnail(
         with tempfile.NamedTemporaryFile(delete=False) as thumbnail:
             thumbnail.write(file.read())
 
+        tmp_output_path: Optional[str] = None
         try:
             os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
 
@@ -91,7 +92,8 @@ def download_and_convert_url_thumbnail(
             # Have FileHandler handle the move to a potential cross-device
             FileHandler.move(tmp_output_path, output_thumbnail_path)
         finally:
-            FileHandler.delete(tmp_output_path)
+            if tmp_output_path is not None:
+                FileHandler.delete(tmp_output_path)
             FileHandler.delete(thumbnail.name)
 
     return True
