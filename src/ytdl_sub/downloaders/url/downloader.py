@@ -10,6 +10,7 @@ from ytdl_sub.downloaders.source_plugin import SourcePlugin, SourcePluginExtensi
 from ytdl_sub.downloaders.url.validators import (
     MultiUrlValidator,
     UrlThumbnailListValidator,
+    UrlThumbnailValidator,
     UrlValidator,
 )
 from ytdl_sub.downloaders.ytdl_options_builder import YTDLOptionsBuilder
@@ -438,6 +439,38 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
 
             yield from self._iterate_child_entries(entries=orphans, validator=validator)
 
+    def _resolve_thumbnail_name_and_id(
+        self, thumbnail_info: UrlThumbnailValidator
+    ) -> Optional[Tuple[str, str]]:
+        """
+        Resolve a parent thumbnail's file name and yt-dlp thumbnail id using overrides only.
+        Returns None if it cannot be resolved, is empty, or is handled per-entry.
+        """
+        try:
+            thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name)
+            thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
+        except StringFormattingException:
+            download_logger.warning(
+                "Failed to resolve thumbnail name for '%s' (likely references "
+                "entry variables not available during metadata collection); "
+                "skipping. Use override-only names (e.g. poster.jpg) for "
+                "channel thumbnails.",
+                thumbnail_info.uid,
+            )
+            return None
+
+        if not thumbnail_name or thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
+            return None
+
+        return thumbnail_name, thumbnail_id
+
+    @staticmethod
+    def _get_parent_thumbnail_url(parents: List[EntryParent], thumbnail_id: str) -> Optional[str]:
+        for parent in parents:
+            if (thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)) is not None:
+                return thumbnail_url
+        return None
+
     def _download_parent_thumbnails_metadata(
         self,
         parents: List[EntryParent],
@@ -458,26 +491,11 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
 
         for thumbnail_list_info in thumbnail_lists:
             for thumbnail_info in thumbnail_list_info.list:
-                try:
-                    thumbnail_name = self.overrides.apply_formatter(thumbnail_info.name)
-                    thumbnail_id = self.overrides.apply_formatter(thumbnail_info.uid)
-                except StringFormattingException:
-                    download_logger.warning(
-                        "Failed to resolve thumbnail name for '%s' (likely references "
-                        "entry variables not available during metadata collection); "
-                        "skipping. Use override-only names (e.g. poster.jpg) for "
-                        "channel thumbnails.",
-                        thumbnail_info.uid,
-                    )
+                resolved = self._resolve_thumbnail_name_and_id(thumbnail_info)
+                if resolved is None:
                     continue
 
-                if not thumbnail_name:
-                    continue
-
-                # LATEST_ENTRY is handled per-entry in modify_entry.
-                if thumbnail_id == ThumbnailTypes.LATEST_ENTRY:
-                    continue
-
+                thumbnail_name, thumbnail_id = resolved
                 if thumbnail_name in self._thumbnails_downloaded:
                     continue
 
@@ -491,25 +509,22 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
                     )
                     continue
 
-                thumbnail_url = None
-                for parent in parents:
-                    if (
-                        thumbnail_url := parent.get_thumbnail_url(thumbnail_id=thumbnail_id)
-                    ) is not None:
-                        break
-
+                thumbnail_url = self._get_parent_thumbnail_url(
+                    parents=parents, thumbnail_id=thumbnail_id
+                )
                 if thumbnail_url is None:
                     download_logger.debug("Failed to find thumbnail id '%s'", thumbnail_id)
                     continue
 
-                if download_and_convert_url_thumbnail(
+                if not download_and_convert_url_thumbnail(
                     thumbnail_url=thumbnail_url,
                     output_thumbnail_path=str(Path(self.working_directory) / thumbnail_name),
                 ):
-                    self.save_file(file_name=thumbnail_name)
-                    self._thumbnails_downloaded.add(thumbnail_name)
-                else:
                     download_logger.debug("Failed to download thumbnail id '%s'", thumbnail_id)
+                    continue
+
+                self.save_file(file_name=thumbnail_name)
+                self._thumbnails_downloaded.add(thumbnail_name)
 
     def _download_metadata(self, url: str, validator: UrlValidator) -> Iterable[Entry]:
         metadata_ytdl_options = self.metadata_ytdl_options(
