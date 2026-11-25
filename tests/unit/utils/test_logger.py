@@ -1,3 +1,4 @@
+import logging
 import os.path
 import time
 
@@ -195,3 +196,17 @@ class TestLogger:
         with open(Logger._DEBUG_LOGGER_FILE.name, "r", encoding="utf-8") as log_file:
             lines = log_file.readlines()
         assert lines == expected_lines
+
+    def test_handle_external_logs_closes_handlers(self):
+        with Logger.handle_external_logs(name="name_test"):
+            external_logger = Logger._LOGGERS[-1]
+            file_handlers = [
+                handler
+                for handler in external_logger.handlers
+                if isinstance(handler, logging.FileHandler)
+            ]
+
+        assert external_logger not in Logger._LOGGERS
+        assert external_logger.handlers == []
+        assert file_handlers
+        assert all(handler.stream is None for handler in file_handlers)
