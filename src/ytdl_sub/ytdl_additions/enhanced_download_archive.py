@@ -154,6 +154,7 @@ class DownloadMappings:
         Initializes an empty mapping
         """
         self._entry_mappings: Dict[str, DownloadMapping] = {}
+        self._is_modified: bool = False
 
     @classmethod
     def from_file(cls, json_file_path: str) -> "DownloadMappings":
@@ -206,6 +207,24 @@ class DownloadMappings:
         """
         return self.get_num_entries() == 0
 
+    @property
+    def is_modified(self) -> bool:
+        """
+        Returns
+        -------
+        True if any entries were added or removed since the last save.
+        """
+        return self._is_modified
+
+    def mark_saved(self) -> "DownloadMappings":
+        """
+        Returns
+        -------
+        self
+        """
+        self._is_modified = False
+        return self
+
     def add_entry(self, entry: Entry, entry_file_path: str) -> "DownloadMappings":
         """
         Adds a file path for the entry. An entry can map to multiple file paths.
@@ -225,10 +244,13 @@ class DownloadMappings:
         if parent_uid := entry.try_get(ytdl_sub_split_by_chapters_parent_uid, str):
             uid = parent_uid
 
-        if uid not in self.entry_ids:
+        if uid not in self._entry_mappings:
             self._entry_mappings[uid] = DownloadMapping.from_entry(entry=entry)
+            self._is_modified = True
 
-        self._entry_mappings[uid].file_names.add(entry_file_path)
+        if entry_file_path not in self._entry_mappings[uid].file_names:
+            self._entry_mappings[uid].file_names.add(entry_file_path)
+            self._is_modified = True
         return self
 
     def remove_entry(self, entry_id: str) -> "DownloadMappings":
@@ -242,8 +264,9 @@ class DownloadMappings:
         -------
         self
         """
-        if entry_id in self.entry_ids:
+        if entry_id in self._entry_mappings:
             del self._entry_mappings[entry_id]
+            self._is_modified = True
         return self
 
     def get_num_entries_with_date(self, standardized_date: str) -> int:
@@ -716,7 +739,8 @@ class EnhancedDownloadArchive:
 
     def save_download_mappings(self) -> "EnhancedDownloadArchive":
         """
-        Saves the updated download mappings to the output directory if any files were changed.
+        Saves the updated download mappings to the output directory if any files or mappings
+        were changed.
 
         Returns
         -------
@@ -733,11 +757,16 @@ class EnhancedDownloadArchive:
             # and delete the old one if the name differs
             if self._file_name != self._migrated_file_name:
                 self.delete_file_from_output_directory(file_name=self.file_name)
-        # Otherwise, only save if there are changes to the transaction log
-        elif not self.get_file_handler_transaction_log().is_empty:
+        # Otherwise, save if the mapping or any files changed
+        elif (
+            self._download_mapping.is_modified
+            or not self.get_file_handler_transaction_log().is_empty
+        ):
             self._download_mapping.to_file(output_json_file=self.working_file_path)
             self.save_file_to_output_directory(file_name=self.file_name, copy_file=True)
             FileHandler.delete(file_path=self.working_file_path)
+
+        self._download_mapping.mark_saved()
         return self
 
     def delete_file_from_output_directory(self, file_name: str):
