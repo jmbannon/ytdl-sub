@@ -339,6 +339,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         downloader: SourcePlugin,
         dry_run: bool,
     ) -> FileHandlerTransactionLog:
+        split_plugin = _get_split_plugin(plugins)
         with self._subscription_download_context_managers():
             for entry in downloader.download_metadata():
                 if (entry := self._preprocess_entry(plugins=plugins, entry=entry)) is None:
@@ -352,7 +353,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
                 if isinstance(entry, tuple):
                     entry, entry_metadata = entry
 
-                if split_plugin := _get_split_plugin(plugins):
+                if split_plugin:
                     self._process_split_entry(
                         split_plugin=split_plugin, plugins=plugins, dry_run=dry_run, entry=entry
                     )
@@ -410,7 +411,7 @@ class SubscriptionDownload(BaseSubscription, ABC):
         plugins = self._initialize_plugins()
         if not all(plugin.initialize_subscription() for plugin in plugins):
             # Any plugin that skips gracefully should have logs that explain why
-            logging.info("Skipping %s", self.name)
+            logger.info("Skipping %s", self.name)
             return FileHandlerTransactionLog()
 
         subscription_ytdl_options = self.get_ytdl_options(plugins=plugins, dry_run=dry_run)

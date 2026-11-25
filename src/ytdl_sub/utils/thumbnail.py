@@ -3,7 +3,9 @@ import os
 import tempfile
 from subprocess import CalledProcessError
 from typing import Optional
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
+
+from yt_dlp.utils.networking import std_headers
 
 from ytdl_sub.entries.entry import Entry
 from ytdl_sub.utils.ffmpeg import FFMPEG
@@ -72,10 +74,12 @@ def download_and_convert_url_thumbnail(
     if not thumbnail_url:
         return None
 
-    with urlopen(thumbnail_url, timeout=7.0) as file:
+    request = Request(thumbnail_url, headers=dict(std_headers))
+    with urlopen(request, timeout=7.0) as file:
         with tempfile.NamedTemporaryFile(delete=False) as thumbnail:
             thumbnail.write(file.read())
 
+        tmp_output_path: Optional[str] = None
         try:
             os.makedirs(os.path.dirname(output_thumbnail_path), exist_ok=True)
 
@@ -88,7 +92,8 @@ def download_and_convert_url_thumbnail(
             # Have FileHandler handle the move to a potential cross-device
             FileHandler.move(tmp_output_path, output_thumbnail_path)
         finally:
-            FileHandler.delete(tmp_output_path)
+            if tmp_output_path is not None:
+                FileHandler.delete(tmp_output_path)
             FileHandler.delete(thumbnail.name)
 
     return True

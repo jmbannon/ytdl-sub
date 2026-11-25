@@ -10,7 +10,7 @@ PIP Install
 --------------
 
 You can install our `PyPI package <https://pypi.org/project/ytdl-sub/>`_.  Both ffmpeg
-and Python 3.10 or greater are required.
+and Python 3.11 or greater are required.
 
 .. code-block:: bash
 
@@ -26,7 +26,7 @@ development of ``ytdl-sub``. If you want to contribute your changes, please read
 Local Install
 --------------
 
-With a Python 3.10 virtual environment, you can clone and install the repo.
+With a Python 3.11 virtual environment, you can clone and install the repo.
 
 .. code-block:: bash
 

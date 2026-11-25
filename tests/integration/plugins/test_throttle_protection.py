@@ -8,6 +8,7 @@ from ytdl_sub.plugins.throttle_protection import logger as throttle_protection_l
 from ytdl_sub.script.functions.print_functions import logger as script_print_logger
 from ytdl_sub.script.utils.exceptions import UserThrownRuntimeError
 from ytdl_sub.subscriptions.subscription import Subscription
+from ytdl_sub.subscriptions.subscription_download import logger as subscription_download_logger
 from ytdl_sub.utils.exceptions import StringFormattingVariableNotFoundException
 
 
@@ -172,6 +173,12 @@ class TestThrottleProtectionPlugin:
             assert_logs(
                 logger=throttle_protection_logger,
                 expected_message="Subscription download probability of",
+                log_level="info",
+                expected_occurrences=1,
+            ),
+            assert_logs(
+                logger=subscription_download_logger,
+                expected_message="Skipping",
                 log_level="info",
                 expected_occurrences=1,
             ),
