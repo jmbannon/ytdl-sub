@@ -430,12 +430,14 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
         Downloads only info.json files and forms EntryParent trees
         """
         truncation_reasons: List[str] = []
+        enumerated_entry_ids: Set[str] = set()
         with self._separate_download_archives():
             entry_dicts = YTDLP.extract_info_via_info_json(
                 working_directory=self.working_directory,
                 ytdl_options_overrides=ytdl_options_overrides,
                 log_prefix_on_info_json_dl="Downloading metadata for",
                 truncation_reasons=truncation_reasons,
+                enumerated_entry_ids=enumerated_entry_ids,
                 url=url,
             )
 
@@ -443,6 +445,9 @@ class MultiUrlDownloader(SourcePlugin[MultiUrlValidator]):
             self._enhanced_download_archive.mark_source_enumeration_truncated(
                 reason=f"{reason} while collecting metadata for {url}"
             )
+
+        for entry_id in enumerated_entry_ids:
+            self._enhanced_download_archive.record_source_entry_id(entry_id=entry_id)
 
         parents = EntryParent.from_entry_dicts(
             url=url,

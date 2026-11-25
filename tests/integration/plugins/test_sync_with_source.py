@@ -2,7 +2,7 @@ import contextlib
 import json
 import os
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Set
 from unittest.mock import patch
 
 import pytest
@@ -37,6 +37,7 @@ def _mock_source(
     mock_entry_dict_factory: Callable,
     uids: List[str],
     truncate_after: Optional[int] = None,
+    failed_uids: Optional[Set[str]] = None,
 ):
     """
     Patches the inner ``extract_info`` rather than ``extract_info_via_info_json`` so that the
@@ -44,8 +45,9 @@ def _mock_source(
     an entry already recorded in the download archive, which is what distinguishes an entry
     removed from the source from an entry that is simply already downloaded.
 
-    Simulates a video being removed from a playlist by passing fewer uids on a later run, and
-    metadata collection stopping early by setting ``truncate_after``.
+    Simulates a video being removed from a playlist by passing fewer uids on a later run,
+    metadata collection stopping early by setting ``truncate_after``, and per-entry extraction
+    failures under ``ignoreerrors: True`` by passing ``failed_uids``.
     """
 
     def _extract_info(ytdl_options_overrides: Dict, **kwargs) -> Dict:
@@ -57,9 +59,13 @@ def _mock_source(
                 archived_ids = {line.split()[-1] for line in archive_file if line.strip()}
 
         num_written = 0
+        failed = failed_uids or set()
+        playlist_entries = []
         for idx, uid in enumerate(uids):
-            # yt-dlp writes no info.json for an entry already in the download archive
-            if uid in archived_ids:
+            playlist_entries.append({"_type": "url", "id": uid})
+
+            # yt-dlp writes no info.json for entries in the download archive or failed extractions
+            if uid in archived_ids or uid in failed:
                 continue
 
             if truncate_after is not None and num_written >= truncate_after:
@@ -79,7 +85,7 @@ def _mock_source(
 
             num_written += 1
 
-        return {}
+        return {"_type": "playlist", "id": "pl_mock", "entries": playlist_entries}
 
     def _mock_entry_download(_, entry):
         # The media file appears at download time, since metadata collection runs with
@@ -289,3 +295,139 @@ class TestSyncWithSource:
 
         assert transaction_log.is_empty
         assert _archived_uids(output_directory) == ["v1", "v2", "v3"]
+
+    def test_failed_extraction_entry_is_not_deleted_while_removed_entry_is_pruned(
+        self,
+        config: ConfigFile,
+        subscription_name: str,
+        sync_subscription_dict: Dict,
+        output_directory: str,
+        mock_downloaded_file_path: Callable,
+        mock_entry_dict_factory: Callable,
+        mock_download_collection_thumbnail,
+    ):
+        subscription = _subscription(config, subscription_name, sync_subscription_dict)
+
+        with _mock_source(mock_downloaded_file_path, mock_entry_dict_factory, ["v1", "v2", "v3"]):
+            subscription.download(dry_run=False)
+
+        # v2 is genuinely removed from the source, while v3 remains enumerated in the playlist
+        # but fails metadata extraction under ignoreerrors (no .info.json written for v3)
+        with _mock_source(
+            mock_downloaded_file_path,
+            mock_entry_dict_factory,
+            ["v1", "v3"],
+            failed_uids={"v3"},
+        ):
+            subscription.download(dry_run=False)
+
+        assert _archived_uids(output_directory) == ["v1", "v3"]
+        assert _output_files(output_directory) == [
+            "Mock Entry v1.mp4",
+            "Mock Entry v3.mp4",
+        ]
+
+    def test_all_entries_failing_extraction_preserves_archive(
+        self,
+        config: ConfigFile,
+        subscription_name: str,
+        sync_subscription_dict: Dict,
+        output_directory: str,
+        mock_downloaded_file_path: Callable,
+        mock_entry_dict_factory: Callable,
+        mock_download_collection_thumbnail,
+    ):
+        subscription = _subscription(config, subscription_name, sync_subscription_dict)
+
+        with _mock_source(mock_downloaded_file_path, mock_entry_dict_factory, ["v1", "v2", "v3"]):
+            subscription.download(dry_run=False)
+
+        with _mock_source(
+            mock_downloaded_file_path,
+            mock_entry_dict_factory,
+            ["v1", "v2", "v3"],
+            failed_uids={"v1", "v2", "v3"},
+        ):
+            subscription.download(dry_run=False)
+
+        assert _archived_uids(output_directory) == ["v1", "v2", "v3"]
+        assert len(_output_files(output_directory)) == 3
+
+    def test_ytdlp_real_playlist_extraction_failure_under_ignoreerrors_preserves_entry(
+        self,
+        config: ConfigFile,
+        subscription_name: str,
+        sync_subscription_dict: Dict,
+        output_directory: str,
+        mock_downloaded_file_path: Callable,
+        mock_entry_dict_factory: Callable,
+        mock_download_collection_thumbnail,
+    ):
+        import yt_dlp
+        from yt_dlp.utils import DownloadError
+
+        subscription = _subscription(config, subscription_name, sync_subscription_dict)
+
+        with _mock_source(mock_downloaded_file_path, mock_entry_dict_factory, ["v1", "v2", "v3"]):
+            subscription.download(dry_run=False)
+
+        def _fake_ytdl_extract_info(ydl_self, **kwargs):
+            _ = kwargs
+            orig_process = ydl_self.process_ie_result
+
+            def _fake_process(ie_result, download=True, extra_info=None):
+                entry_id = ie_result.get("id")
+                if entry_id == "v3":
+                    raise DownloadError("formats have been skipped as they are missing a URL")
+                if entry_id == "v1":
+                    entry_dict = mock_entry_dict_factory(
+                        uid="v1",
+                        upload_date="20210801",
+                        playlist_index=1,
+                        playlist_count=2,
+                        mock_download_to_working_dir=False,
+                    )
+                    with open(
+                        mock_downloaded_file_path("v1.info.json"), "w", encoding="utf-8"
+                    ) as f_out:
+                        json.dump(entry_dict, f_out)
+                    return entry_dict
+                return orig_process(ie_result, download=download, extra_info=extra_info)
+
+            ydl_self.process_ie_result = _fake_process
+            return ydl_self.process_ie_result(
+                {
+                    "_type": "playlist",
+                    "id": "pl_real",
+                    "title": "PL Real",
+                    "extractor": "youtube:tab",
+                    "extractor_key": "YoutubeTab",
+                    "entries": [
+                        {
+                            "_type": "url",
+                            "id": "v1",
+                            "url": "https://www.youtube.com/watch?v=v1",
+                            "ie_key": "Youtube",
+                        },
+                        {
+                            "_type": "url",
+                            "id": "v3",
+                            "url": "https://www.youtube.com/watch?v=v3",
+                            "ie_key": "Youtube",
+                        },
+                    ],
+                },
+                download=False,
+            )
+
+        with (
+            patch.object(yt_dlp.YoutubeDL, "extract_info", new=_fake_ytdl_extract_info),
+            patch.object(ThrottleProtectionPlugin, "perform_sleep", new=lambda _1, _2: None),
+        ):
+            subscription.download(dry_run=False)
+
+        assert _archived_uids(output_directory) == ["v1", "v3"]
+        assert _output_files(output_directory) == [
+            "Mock Entry v1.mp4",
+            "Mock Entry v3.mp4",
+        ]
