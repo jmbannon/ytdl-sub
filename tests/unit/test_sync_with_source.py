@@ -1,6 +1,11 @@
+from unittest.mock import patch
+
 import pytest
+import yt_dlp
+from yt_dlp.utils import DownloadError
 
 from ytdl_sub.config.preset_options import OutputOptions
+from ytdl_sub.downloaders.ytdlp import YTDLP
 from ytdl_sub.utils.exceptions import ValidationException
 from ytdl_sub.ytdl_additions.enhanced_download_archive import (
     DownloadMapping,
@@ -185,3 +190,215 @@ class TestSyncWithSourceOption:
                     keep_option: keep_value,
                 },
             )
+
+
+class TestExtractInfoViaInfoJsonEnumeration:
+    @staticmethod
+    def _base_ytdl_options() -> dict:
+        return {
+            "skip_download": True,
+            "writethumbnail": False,
+            "writeinfojson": True,
+            "extract_flat": "discard",
+            "ignoreerrors": True,
+            "quiet": True,
+        }
+
+    def test_failed_playlist_entry_keeps_id_in_enumerated_ids(self, tmp_path):
+        import json
+
+        working_dir = tmp_path / "working"
+        working_dir.mkdir()
+        opts = self._base_ytdl_options() | {"outtmpl": str(working_dir / "%(id)S.%(ext)s")}
+
+        def _fake_extract_info(ydl_self, **kwargs):
+            _ = kwargs
+            orig_process = ydl_self.process_ie_result
+
+            def _fake_process(ie_result, download=True, extra_info=None):
+                entry_id = ie_result.get("id")
+                if entry_id == "v_fail":
+                    raise DownloadError("formats have been skipped as they are missing a URL")
+                if entry_id == "v_ok":
+                    (working_dir / "v_ok.info.json").write_text(
+                        json.dumps({"_type": "video", "id": "v_ok", "title": "OK", "ext": "mp4"}),
+                        encoding="utf-8",
+                    )
+                    return {"_type": "video", "id": "v_ok", "title": "OK", "ext": "mp4"}
+                return orig_process(ie_result, download=download, extra_info=extra_info)
+
+            ydl_self.process_ie_result = _fake_process
+            return ydl_self.process_ie_result(
+                {
+                    "_type": "playlist",
+                    "id": "pl_1",
+                    "title": "PL 1",
+                    "extractor": "youtube:tab",
+                    "extractor_key": "YoutubeTab",
+                    "entries": [
+                        {
+                            "_type": "url",
+                            "id": "v_ok",
+                            "url": "https://www.youtube.com/watch?v=v_ok",
+                            "ie_key": "Youtube",
+                        },
+                        {
+                            "_type": "url",
+                            "id": "v_fail",
+                            "url": "https://www.youtube.com/watch?v=v_fail",
+                            "ie_key": "Youtube",
+                        },
+                    ],
+                },
+                download=False,
+            )
+
+        truncation_reasons = []
+        enumerated_ids = set()
+        with patch.object(yt_dlp.YoutubeDL, "extract_info", new=_fake_extract_info):
+            entry_dicts = YTDLP.extract_info_via_info_json(
+                working_directory=str(working_dir),
+                ytdl_options_overrides=opts,
+                truncation_reasons=truncation_reasons,
+                enumerated_entry_ids=enumerated_ids,
+                url="https://www.youtube.com/playlist?list=pl_1",
+            )
+
+        assert sorted(d["id"] for d in entry_dicts) == ["pl_1", "v_ok"]
+        assert enumerated_ids == {"v_ok", "v_fail"}
+        assert truncation_reasons == []
+
+    def test_nested_channel_tabs_record_leaf_ids_and_detect_failed_tab(self, tmp_path):
+        working_dir = tmp_path / "working"
+        working_dir.mkdir()
+        opts = self._base_ytdl_options() | {"outtmpl": str(working_dir / "%(id)S.%(ext)s")}
+
+        fail_shorts_tab = False
+
+        def _fake_extract_info(ydl_self, **kwargs):
+            _ = kwargs
+            orig_process = ydl_self.process_ie_result
+
+            def _fake_process(ie_result, download=True, extra_info=None):
+                entry_id = ie_result.get("id")
+                if entry_id == "tab_videos":
+                    return orig_process(
+                        {
+                            "_type": "playlist",
+                            "id": "tab_videos",
+                            "extractor": "youtube:tab",
+                            "extractor_key": "YoutubeTab",
+                            "entries": [
+                                {
+                                    "_type": "url",
+                                    "id": "v_ok",
+                                    "url": "https://www.youtube.com/watch?v=v_ok",
+                                    "ie_key": "Youtube",
+                                },
+                                {
+                                    "_type": "url",
+                                    "id": "v_fail",
+                                    "url": "https://www.youtube.com/watch?v=v_fail",
+                                    "ie_key": "Youtube",
+                                },
+                            ],
+                        },
+                        download=False,
+                        extra_info=extra_info,
+                    )
+                if entry_id == "tab_shorts":
+                    if fail_shorts_tab:
+                        raise DownloadError("HTTP Error 429: Too Many Requests")
+                    return orig_process(
+                        {
+                            "_type": "playlist",
+                            "id": "tab_shorts",
+                            "extractor": "youtube:tab",
+                            "extractor_key": "YoutubeTab",
+                            "entries": [
+                                {
+                                    "_type": "url",
+                                    "id": "s_ok",
+                                    "url": "https://www.youtube.com/watch?v=s_ok",
+                                    "ie_key": "Youtube",
+                                }
+                            ],
+                        },
+                        download=False,
+                        extra_info=extra_info,
+                    )
+                if entry_id == "v_fail":
+                    raise DownloadError("Requested format is not available")
+                if entry_id in ("v_ok", "s_ok"):
+                    return {"_type": "video", "id": entry_id, "title": entry_id, "ext": "mp4"}
+                return orig_process(ie_result, download=download, extra_info=extra_info)
+
+            ydl_self.process_ie_result = _fake_process
+            return ydl_self.process_ie_result(
+                {
+                    "_type": "playlist",
+                    "id": "UC_chan",
+                    "extractor": "youtube:tab",
+                    "extractor_key": "YoutubeTab",
+                    "entries": [
+                        {
+                            "_type": "url",
+                            "id": "tab_videos",
+                            "url": "https://www.youtube.com/@chan/videos",
+                            "ie_key": "YoutubeTab",
+                        },
+                        {
+                            "_type": "url",
+                            "id": "tab_shorts",
+                            "url": "https://www.youtube.com/@chan/shorts",
+                            "ie_key": "YoutubeTab",
+                        },
+                    ],
+                },
+                download=False,
+            )
+
+        with patch.object(yt_dlp.YoutubeDL, "extract_info", new=_fake_extract_info):
+            truncation_ok = []
+            ids_ok = set()
+            YTDLP.extract_info_via_info_json(
+                working_directory=str(working_dir),
+                ytdl_options_overrides=opts,
+                truncation_reasons=truncation_ok,
+                enumerated_entry_ids=ids_ok,
+                url="https://www.youtube.com/@chan",
+            )
+            assert ids_ok == {"v_ok", "v_fail", "s_ok"}
+            assert truncation_ok == []
+
+            fail_shorts_tab = True
+            truncation_err = []
+            ids_err = set()
+            YTDLP.extract_info_via_info_json(
+                working_directory=str(working_dir),
+                ytdl_options_overrides=opts,
+                truncation_reasons=truncation_err,
+                enumerated_entry_ids=ids_err,
+                url="https://www.youtube.com/@chan",
+            )
+            assert ids_err == {"v_ok", "v_fail"}
+            assert truncation_err == ["PlaylistExtractionFailed:tab_shorts"]
+
+    def test_top_level_failure_returning_none_marks_truncation(self, tmp_path):
+        working_dir = tmp_path / "working"
+        working_dir.mkdir()
+        opts = self._base_ytdl_options() | {"outtmpl": str(working_dir / "%(id)S.%(ext)s")}
+
+        truncation_reasons = []
+        enumerated_ids = set()
+        with patch.object(yt_dlp.YoutubeDL, "extract_info", return_value=None):
+            YTDLP.extract_info_via_info_json(
+                working_directory=str(working_dir),
+                ytdl_options_overrides=opts,
+                truncation_reasons=truncation_reasons,
+                enumerated_entry_ids=enumerated_ids,
+                url="https://www.youtube.com/playlist?list=broken",
+            )
+
+        assert truncation_reasons == ["ExtractionFailed"]
+        assert enumerated_ids == set()
